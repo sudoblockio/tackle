@@ -34,6 +34,7 @@ requirements = [
     'requests>=2.23.0',
     'six>=1.10',
     'MarkupSafe<2.0.0',
+    'PyInquirer',
 ]
 
 if sys.argv[-1] == 'readme':

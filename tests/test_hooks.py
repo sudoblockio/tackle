@@ -8,7 +8,7 @@ import stat
 import sys
 import textwrap
 
-from cookiecutter import hooks, utils, exceptions
+from cookiecutter import hook, utils, exceptions
 
 
 def make_test_repo(name):
@@ -69,27 +69,27 @@ class TestFindHooks(object):
         """Finds the specified hook."""
         with utils.work_in(self.repo_path):
             expected_pre = os.path.abspath('hooks/pre_gen_project.py')
-            actual_hook_path = hooks.find_hook('pre_gen_project')
+            actual_hook_path = hook.find_hook('pre_gen_project')
             assert expected_pre == actual_hook_path
 
             expected_post = os.path.abspath('hooks/{}'.format(self.post_hook))
-            actual_hook_path = hooks.find_hook('post_gen_project')
+            actual_hook_path = hook.find_hook('post_gen_project')
             assert expected_post == actual_hook_path
 
     def test_no_hooks(self):
         """`find_hooks` should return None if the hook could not be found."""
         with utils.work_in('tests/fake-repo'):
-            assert None is hooks.find_hook('pre_gen_project')
+            assert None is hook.find_hook('pre_gen_project')
 
     def test_unknown_hooks_dir(self):
         """`find_hooks` should return None if hook directory not found."""
         with utils.work_in(self.repo_path):
-            assert hooks.find_hook('pre_gen_project', hooks_dir='hooks_dir') is None
+            assert hook.find_hook('pre_gen_project', hooks_dir='hooks_dir') is None
 
     def test_hook_not_found(self):
         """`find_hooks` should return None if the hook could not be found."""
         with utils.work_in(self.repo_path):
-            assert hooks.find_hook('unknown_hook') is None
+            assert hook.find_hook('unknown_hook') is None
 
 
 class TestExternalHooks(object):
@@ -121,12 +121,12 @@ class TestExternalHooks(object):
 
     def test_run_script(self):
         """Execute a hook script, independently of project generation."""
-        hooks.run_script(os.path.join(self.hooks_path, self.post_hook))
+        hook.run_script(os.path.join(self.hooks_path, self.post_hook))
         assert os.path.isfile('shell_post.txt')
 
     def test_run_script_cwd(self):
         """Change directory before running hook."""
-        hooks.run_script(os.path.join(self.hooks_path, self.post_hook), 'tests')
+        hook.run_script(os.path.join(self.hooks_path, self.post_hook), 'tests')
         assert os.path.isfile('tests/shell_post.txt')
         assert 'tests' not in os.getcwd()
 
@@ -150,7 +150,7 @@ class TestExternalHooks(object):
                 fh.write("touch '{{cookiecutter.file}}'\n")
                 os.chmod(hook_path, os.stat(hook_path).st_mode | stat.S_IXUSR)
 
-        hooks.run_script_with_context(
+        hook.run_script_with_context(
             os.path.join(self.hooks_path, self.post_hook),
             'tests',
             {'cookiecutter': {'file': 'context_post.txt'}},
@@ -163,10 +163,10 @@ class TestExternalHooks(object):
         directory."""
         tests_dir = os.path.join(self.repo_path, 'input{{hooks}}')
         with utils.work_in(self.repo_path):
-            hooks.run_hook('pre_gen_project', tests_dir, {})
+            hook.run_hook('pre_gen_project', tests_dir, {})
             assert os.path.isfile(os.path.join(tests_dir, 'python_pre.txt'))
 
-            hooks.run_hook('post_gen_project', tests_dir, {})
+            hook.run_hook('post_gen_project', tests_dir, {})
             assert os.path.isfile(os.path.join(tests_dir, 'shell_post.txt'))
 
     def test_run_failing_hook(self):
@@ -180,7 +180,7 @@ class TestExternalHooks(object):
 
         with utils.work_in(self.repo_path):
             with pytest.raises(exceptions.FailedHookException) as excinfo:
-                hooks.run_hook('pre_gen_project', tests_dir, {})
+                hook.run_hook('pre_gen_project', tests_dir, {})
             assert 'Hook script failed' in str(excinfo.value)
 
 
@@ -222,5 +222,5 @@ def test_ignore_hook_backup_files(monkeypatch, dir_with_hooks):
     """Test `find_hook` correctly use `valid_hook` verification function."""
     # Change the current working directory that contains `hooks/`
     monkeypatch.chdir(dir_with_hooks)
-    assert hooks.find_hook('pre_gen_project') is None
-    assert hooks.find_hook('post_gen_project') is None
+    assert hook.find_hook('pre_gen_project') is None
+    assert hook.find_hook('post_gen_project') is None

@@ -14,6 +14,10 @@ from cookiecutter import utils
 from cookiecutter.environment import StrictEnvironment
 from cookiecutter.exceptions import FailedHookException
 
+from cookiecutter.hooks import BaseHook  # noqa
+from cookiecutter.hooks import *  # noqa
+
+
 logger = logging.getLogger(__name__)
 
 _HOOKS = [
@@ -129,3 +133,18 @@ def run_hook(hook_name, project_dir, context):
         return
     logger.debug('Running hook %s', hook_name)
     run_script_with_context(script, project_dir, context)
+
+
+class Hooks(object):
+    """Hook object."""
+
+    def __init__(self):
+        """Initialize Hook object."""
+        self.hooks: list = BaseHook.__subclasses__()
+        self.types: list = self.__types()
+
+    def __types(self):
+        types = list()
+        for h in self.hooks:
+            types.append(h.type)
+        return types
