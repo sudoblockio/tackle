@@ -24,7 +24,7 @@ from cookiecutter.exceptions import (
     UndefinedVariableInTemplate,
 )
 from cookiecutter.find import find_template
-from cookiecutter.hook import run_hook
+from cookiecutter.hooks import run_hook
 from cookiecutter.utils import make_sure_path_exists, work_in, rmtree
 
 logger = logging.getLogger(__name__)

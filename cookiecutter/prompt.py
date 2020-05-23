@@ -124,7 +124,7 @@ def read_user_dict(var_name, default_value):
     return user_value
 
 
-def run_hook(
+def run_operator(
     context,
     key,
     hook_dict,
@@ -153,7 +153,7 @@ def run_hook(
     if loop_targets:
         for l in loop_targets:
             loop_context = context.update({'item': l})
-            run_hook(
+            run_operator(
                 loop_context,
                 key,
                 hook_dict,
@@ -162,6 +162,9 @@ def run_hook(
             )
 
     if 'when' in hook_dict:
+        if not context:
+            raise ValueError("Can't have when condition without establishing context")
+
         when_condition = render_variable(env, hook_dict['when'], cookiecutter_dict)
         hook_dict.pop('when')
         if not isinstance(when_condition, bool):
@@ -174,6 +177,9 @@ def run_hook(
         hook_dict = render_variable(env, hook_dict, cookiecutter_dict)
         if not no_input:
             hook_dict = read_user_dict(key, hook_dict)
+
+        elif 'default' in hook_dict and no_input:
+            hook_dict = hook_dict['default']
 
         cookiecutter_dict[key] = hook_dict
         return cookiecutter_dict
@@ -278,7 +284,7 @@ def prompt_for_config(context, no_input=False):
                         val = read_user_dict(key, val)
                     cookiecutter_dict[key] = val
                 else:
-                    cookiecutter_dict = run_hook(
+                    cookiecutter_dict = run_operator(
                         context, key, raw, cookiecutter_dict, no_input=no_input
                     )
 
