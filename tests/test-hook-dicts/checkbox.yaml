@@ -1,0 +1,6 @@
+stuff:
+  type: checkbox
+  message: What do you want?
+  choices:
+    - thigns
+    - crabs

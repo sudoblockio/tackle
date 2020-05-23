@@ -124,6 +124,63 @@ def read_user_dict(var_name, default_value):
     return user_value
 
 
+def run_hook(
+    context,
+    key,
+    hook_dict,
+    cookiecutter_dict,
+    loop_targets: list = None,
+    no_input: bool = False,
+):
+    """Parse input dict for loop and when logic and calls hooks.
+
+    :param context:
+    :param key:
+    :param hook_dict:
+    :param cookiecutter_dict:
+    :param loop_targets:
+    :param no_input:
+    :return: cookiecutter_dict
+    """
+    env = StrictEnvironment(context=context)
+
+    # Extract loop
+    if 'loop' in cookiecutter_dict and not loop_targets:
+        loop_targets = render_variable(env, hook_dict['loop'], cookiecutter_dict)
+        hook_dict[key].pop('loop')
+
+    # Loop through targets
+    if loop_targets:
+        for l in loop_targets:
+            loop_context = context.update({'item': l})
+            run_hook(
+                loop_context,
+                key,
+                hook_dict,
+                cookiecutter_dict,
+                loop_targets=loop_targets,
+            )
+
+    if 'when' in hook_dict:
+        when_condition = render_variable(env, hook_dict['when'], cookiecutter_dict)
+        hook_dict.pop('when')
+        if not isinstance(when_condition, bool):
+            raise ValueError("When condition needs to render with jinja to boolean")
+
+    else:
+        when_condition = True
+
+    if when_condition:
+        hook_dict = render_variable(env, hook_dict, cookiecutter_dict)
+        if not no_input:
+            hook_dict = read_user_dict(key, hook_dict)
+
+        cookiecutter_dict[key] = hook_dict
+        return cookiecutter_dict
+    else:
+        return cookiecutter_dict
+
+
 def render_variable(env, raw, cookiecutter_dict):
     """Render the next variable to be displayed in the user prompt.
 
@@ -214,13 +271,17 @@ def prompt_for_config(context, no_input=False):
 
         try:
             if isinstance(raw, dict):
-                # We are dealing with a dict variable
-                val = render_variable(env, raw, cookiecutter_dict)
+                # dict parsing logic
+                if 'type' not in raw:
+                    val = render_variable(env, raw, cookiecutter_dict)
+                    if not no_input:
+                        val = read_user_dict(key, val)
+                    cookiecutter_dict[key] = val
+                else:
+                    cookiecutter_dict = run_hook(
+                        context, key, raw, cookiecutter_dict, no_input=no_input
+                    )
 
-                if not no_input:
-                    val = read_user_dict(key, val)
-
-                cookiecutter_dict[key] = val
         except UndefinedError as err:
             msg = "Unable to render variable '{}'".format(key)
             raise UndefinedVariableInTemplate(msg, err, context)
