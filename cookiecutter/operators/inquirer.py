@@ -5,7 +5,8 @@ from __future__ import unicode_literals
 
 from __future__ import print_function
 from PyInquirer import prompt
-from cookiecutter.operator import BaseOperator
+
+from cookiecutter.operators import BaseOperator
 
 
 class InquirerHook(BaseOperator):
@@ -13,14 +14,14 @@ class InquirerHook(BaseOperator):
 
     types = ['confirm', 'checkbox', 'list', 'password', 'editor']
 
-    def __init__(self, hook_dict, context=None):
+    def __init__(self, operator_dict, context=None):
         """
         Initialize PyInquirer Hook.
 
-        :param hook_dict:
+        :param operator_dict:
         :param context:
         """
-        super(InquirerHook, self).__init__(hook_dict=hook_dict, context=context)
+        super(InquirerHook, self).__init__(operator_dict=operator_dict, context=context)
 
     def execute(self):
         """
