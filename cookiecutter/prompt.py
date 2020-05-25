@@ -136,15 +136,23 @@ def parse_operator(
     operator_dict = context['cookiecutter'][key]
 
     # Extract loop
-    if 'loop' in cookiecutter_dict:
+    if 'loop' in operator_dict:
         loop_targets = render_variable(env, operator_dict['loop'], cookiecutter_dict)
-        operator_dict[key].pop('loop')
+        operator_dict.pop('loop')
 
+        loop_output = []
         for l in loop_targets:
-            loop_context = context.update({'item': l})
-            parse_operator(
-                loop_context, key, cookiecutter_dict, append_key=True, no_input=no_input
-            )
+            loop_cookiecutter = cookiecutter_dict
+            loop_cookiecutter.update({'item': l})
+            loop_output += [
+                parse_operator(
+                    context, key, loop_cookiecutter, append_key=True, no_input=no_input
+                )
+            ]
+
+        cookiecutter_dict.pop('item')
+        cookiecutter_dict[key] = loop_output
+        return cookiecutter_dict
 
     if 'when' in operator_dict:
         if not context:
@@ -163,19 +171,17 @@ def parse_operator(
     if when_condition:
         operator_dict = render_variable(env, operator_dict, cookiecutter_dict)
         if not no_input:
-            # Deal with loops by adding outputs to list
-            # TODO: Is there a output that is a map and how do we deal with this?
-            #  Right now outputs need to be list
-            if append_key and key in cookiecutter_dict:
-                cookiecutter_dict[key] += run_operator(operator_dict)
-            elif append_key:
-                cookiecutter_dict[key] = run_operator(operator_dict)  # output is list
+
+            cookiecutter_dict[key] = run_operator(operator_dict)  # output is list
 
         elif 'default' in operator_dict and no_input:
             operator_dict = operator_dict['default']
 
-        cookiecutter_dict[key] = operator_dict
-        return cookiecutter_dict
+        if append_key:
+            return operator_dict
+        else:
+            cookiecutter_dict[key] = operator_dict
+            return cookiecutter_dict
     else:
         return cookiecutter_dict
 
@@ -278,7 +284,7 @@ def prompt_for_config(context, no_input=False):
                     cookiecutter_dict[key] = val
                 else:
                     cookiecutter_dict = parse_operator(
-                        context, key, cookiecutter_dict, no_input=no_input
+                        context, key, dict(cookiecutter_dict), no_input=no_input
                     )
 
         except UndefinedError as err:
