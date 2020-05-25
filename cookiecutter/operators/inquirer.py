@@ -15,11 +15,13 @@ class InquirerCheckboxOperator(BaseOperator):
     type = 'checkbox'
 
     def __init__(self, operator_dict, context=None):
-        """Initialize PyInquirer Hook.""" # noqa
-        super(InquirerCheckboxOperator, self).__init__(operator_dict=operator_dict, context=context)
+        """Initialize PyInquirer Hook."""  # noqa
+        super(InquirerCheckboxOperator, self).__init__(
+            operator_dict=operator_dict, context=context
+        )
 
     def execute(self):
-        """Run the prompt.""" # noqa
+        """Run the prompt."""  # noqa
         if 'name' not in self.operator_dict:
             self.operator_dict.update({'name': 'tmp'})
             print(self.operator_dict)
@@ -34,11 +36,13 @@ class InquirerConfirmOperator(BaseOperator):
     type = 'confirm'
 
     def __init__(self, operator_dict, context=None):
-        """Initialize PyInquirer Hook.""" # noqa
-        super(InquirerConfirmOperator, self).__init__(operator_dict=operator_dict, context=context)
+        """Initialize PyInquirer Hook."""  # noqa
+        super(InquirerConfirmOperator, self).__init__(
+            operator_dict=operator_dict, context=context
+        )
 
     def execute(self):
-        """Run the prompt.""" # noqa
+        """Run the prompt."""  # noqa
         if 'name' not in self.operator_dict:
             self.operator_dict.update({'name': 'tmp'})
             print(self.operator_dict)
@@ -46,8 +50,9 @@ class InquirerConfirmOperator(BaseOperator):
         else:
             return prompt([self.operator_dict])
 
-
         # class InquirerConfirm(BaseHook):
+
+
 #     type = "confirm"
 #
 #     def __init__(self, hook_dict, context=None):

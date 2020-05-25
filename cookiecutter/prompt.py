@@ -12,6 +12,7 @@ from jinja2.exceptions import UndefinedError
 
 from cookiecutter.exceptions import UndefinedVariableInTemplate
 from cookiecutter.environment import StrictEnvironment
+from cookiecutter.ops import run_operator
 
 
 def read_user_variable(var_name, default_value):
@@ -124,49 +125,35 @@ def read_user_dict(var_name, default_value):
     return user_value
 
 
-def run_operator(
-    context,
-    key,
-    hook_dict,
-    cookiecutter_dict,
-    loop_targets: list = None,
-    no_input: bool = False,
+def parse_operator(
+    context, key, cookiecutter_dict, append_key: bool = False, no_input: bool = False,
 ):
     """Parse input dict for loop and when logic and calls hooks.
 
-    :param context:
-    :param key:
-    :param hook_dict:
-    :param cookiecutter_dict:
-    :param loop_targets:
-    :param no_input:
-    :return: cookiecutter_dict
+    :return: cookiecutter_dict # noqa
     """
     env = StrictEnvironment(context=context)
+    operator_dict = context['cookiecutter'][key]
 
     # Extract loop
-    if 'loop' in cookiecutter_dict and not loop_targets:
-        loop_targets = render_variable(env, hook_dict['loop'], cookiecutter_dict)
-        hook_dict[key].pop('loop')
+    if 'loop' in cookiecutter_dict:
+        loop_targets = render_variable(env, operator_dict['loop'], cookiecutter_dict)
+        operator_dict[key].pop('loop')
 
-    # Loop through targets
-    if loop_targets:
         for l in loop_targets:
             loop_context = context.update({'item': l})
-            run_operator(
-                loop_context,
-                key,
-                hook_dict,
-                cookiecutter_dict,
-                loop_targets=loop_targets,
+            parse_operator(
+                loop_context, key, cookiecutter_dict, append_key=True, no_input=no_input
             )
 
-    if 'when' in hook_dict:
+    if 'when' in operator_dict:
         if not context:
             raise ValueError("Can't have when condition without establishing context")
 
-        when_condition = render_variable(env, hook_dict['when'], cookiecutter_dict)
-        hook_dict.pop('when')
+        when_condition = (
+            render_variable(env, operator_dict['when'], cookiecutter_dict) == 'True'
+        )
+        operator_dict.pop('when')
         if not isinstance(when_condition, bool):
             raise ValueError("When condition needs to render with jinja to boolean")
 
@@ -174,14 +161,20 @@ def run_operator(
         when_condition = True
 
     if when_condition:
-        hook_dict = render_variable(env, hook_dict, cookiecutter_dict)
+        operator_dict = render_variable(env, operator_dict, cookiecutter_dict)
         if not no_input:
-            hook_dict = read_user_dict(key, hook_dict)
+            # Deal with loops by adding outputs to list
+            # TODO: Is there a output that is a map and how do we deal with this?
+            #  Right now outputs need to be list
+            if append_key and key in cookiecutter_dict:
+                cookiecutter_dict[key] += run_operator(operator_dict)
+            elif append_key:
+                cookiecutter_dict[key] = run_operator(operator_dict)  # output is list
 
-        elif 'default' in hook_dict and no_input:
-            hook_dict = hook_dict['default']
+        elif 'default' in operator_dict and no_input:
+            operator_dict = operator_dict['default']
 
-        cookiecutter_dict[key] = hook_dict
+        cookiecutter_dict[key] = operator_dict
         return cookiecutter_dict
     else:
         return cookiecutter_dict
@@ -284,8 +277,8 @@ def prompt_for_config(context, no_input=False):
                         val = read_user_dict(key, val)
                     cookiecutter_dict[key] = val
                 else:
-                    cookiecutter_dict = run_operator(
-                        context, key, raw, cookiecutter_dict, no_input=no_input
+                    cookiecutter_dict = parse_operator(
+                        context, key, cookiecutter_dict, no_input=no_input
                     )
 
         except UndefinedError as err:

@@ -25,14 +25,14 @@ class BaseOperator(metaclass=ABCMeta):
 
 # def run_operator(operator_dict: dict):
 #     # operators = Operators()
-# 
+#
 #     operator_list = BaseOperator.__subclasses__()
 #     for o in operator_list:
 #         if operator_dict['type'] in o.types:
 #             operator_output = o(operator_dict)
-# 
+#
 #             print('using %s operator' % operator_dict['type'])
-# 
-# 
+#
+#
 #     operator_output = 1
 #     return operator_output
