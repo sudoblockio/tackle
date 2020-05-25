@@ -19,5 +19,20 @@ class BaseOperator(metaclass=ABCMeta):
 
     def __init__(self, operator_dict, context=None):
         """Initialize Basehook."""
-        self.hook_dict = operator_dict
+        self.operator_dict = operator_dict
         self.context = context or {}
+
+
+# def run_operator(operator_dict: dict):
+#     # operators = Operators()
+# 
+#     operator_list = BaseOperator.__subclasses__()
+#     for o in operator_list:
+#         if operator_dict['type'] in o.types:
+#             operator_output = o(operator_dict)
+# 
+#             print('using %s operator' % operator_dict['type'])
+# 
+# 
+#     operator_output = 1
+#     return operator_output
