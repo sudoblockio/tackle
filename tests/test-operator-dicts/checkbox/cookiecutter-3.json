@@ -20,8 +20,5 @@
     ],
     "when": "{{ 'aws' in cookiecutter.providers }}"
   },
-  "do_stuff": {
-    "type": "command",
-    "command": "echo this"
-  }
+  "foo": "bar"
 }

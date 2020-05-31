@@ -78,13 +78,15 @@ def parse_operator(
         operator_dict = render_variable(env, operator_dict, cookiecutter_dict)
 
         if not no_input:
+            # Run prompt
             cookiecutter_dict[key] = run_operator(operator_dict)  # output is list
         elif 'default' in operator_dict and no_input:
             operator_dict = operator_dict['default']
+        else:
+            # Case where no default is defined and no input - last case
+            cookiecutter_dict[key] = operator_dict
 
         if append_key:
             return operator_dict
-
-        cookiecutter_dict[key] = operator_dict
 
     return cookiecutter_dict

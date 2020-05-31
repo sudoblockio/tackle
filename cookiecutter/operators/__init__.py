@@ -22,21 +22,6 @@ class BaseOperator(metaclass=ABCMeta):
         self.operator_dict = operator_dict
         self.context = context or {}
 
-    # @abstractmethod
-    # def default(self):
-    #     pass
-
-
-# def run_operator(operator_dict: dict):
-#     # operators = Operators()
-#
-#     operator_list = BaseOperator.__subclasses__()
-#     for o in operator_list:
-#         if operator_dict['type'] in o.types:
-#             operator_output = o(operator_dict)
-#
-#             print('using %s operator' % operator_dict['type'])
-#
-#
-#     operator_output = 1
-#     return operator_output
+    @abstractmethod
+    def execute(self):
+        pass

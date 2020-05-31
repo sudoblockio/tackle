@@ -4,27 +4,33 @@
 
 import pytest
 import yaml
+import os
+import shutil
 
 from cookiecutter import prompt
 
 from cookiecutter.operator import run_operator
 from cookiecutter.main import cookiecutter
 
-from helpers import create_example_fixture, keys
-
 from pprint import pprint
 
 FIXTURES = ['checkbox_bad.yaml']
 
-example_app = create_example_fixture('./checkbox.py')
+
+def checkbox():
+
+    fixture = 'checkbox_bad.yaml'
+    with open(fixture, 'r') as f:
+        context = yaml.load(f, Loader=yaml.FullLoader)
+
+    if os.path.exists('./best_eva'):
+        shutil.rmtree('best_eva')
+
+    cookiecutter('.')
 
 
-def test_checkbox(example_app):
-    example_app.write(keys.ENTER)
-    # example_app.write(keys.ENTER)
-    # example_app.write(keys.ENTER)
-    # example_app.write(keys.ENTER)
-
+if __name__ == '__main__':
+    checkbox()
 
 # class TestPromptHookDicts(object):
 #     """Class to test all the dict input objects."""
