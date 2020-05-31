@@ -25,13 +25,13 @@ class InquirerCheckboxOperator(BaseOperator):
         if 'name' not in self.operator_dict:
             self.operator_dict.update({'name': 'tmp'})
             a = prompt([self.operator_dict])['tmp']
-            print(a)
+            # print(a)
             return a
         else:
             return prompt([self.operator_dict])
 
-    # def default(self):
-    #     return self.
+    def default(self):
+        return self.operator_dict
 
 
 # class InquirerConfirmOperator(BaseOperator):

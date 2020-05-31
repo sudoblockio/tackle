@@ -175,7 +175,7 @@ def prompt_for_config(context, no_input=False):
 
     # Second pass; handle the dictionaries.
     for key, raw in context[u'cookiecutter'].items():
-        print(key)
+        # print(key)
         try:
             if isinstance(raw, dict):
                 # dict parsing logic

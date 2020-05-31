@@ -15,10 +15,10 @@ def run_operator(operator_dict: dict, no_input: bool = False) -> list:
     for o in operator_list:
         if operator_dict['type'] == o.type:  # noqa
             operator = o(operator_dict)
-            if no_input:
+            if not no_input:
                 operator_output = operator.execute()
             else:
-                operator_output = operator.default()
+                operator_output = operator.execute()
 
     if not operator_output:
         print('No operator found for input %s' % operator_dict)

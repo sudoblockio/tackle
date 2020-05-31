@@ -22,9 +22,9 @@ class BaseOperator(metaclass=ABCMeta):
         self.operator_dict = operator_dict
         self.context = context or {}
 
-    @abstractmethod
-    def default(self):
-        pass
+    # @abstractmethod
+    # def default(self):
+    #     pass
 
 
 # def run_operator(operator_dict: dict):
