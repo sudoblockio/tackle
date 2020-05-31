@@ -3,7 +3,7 @@
 """Functions for generating a project from a project template."""
 from __future__ import unicode_literals
 
-from abc import ABCMeta
+from abc import ABCMeta, abstractmethod
 from os import listdir
 from os.path import dirname, basename
 
@@ -21,6 +21,10 @@ class BaseOperator(metaclass=ABCMeta):
         """Initialize Basehook."""
         self.operator_dict = operator_dict
         self.context = context or {}
+
+    @abstractmethod
+    def default(self):
+        pass
 
 
 # def run_operator(operator_dict: dict):

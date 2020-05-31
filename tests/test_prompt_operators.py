@@ -3,7 +3,7 @@
 """Tests dict input objects for `cookiecutter.prompt` module."""
 
 # import pytest
-
+import cookiecutter.operator
 from cookiecutter import prompt
 
 
@@ -28,7 +28,7 @@ def test_operator_when_false_no_input_no_default():
         'project_name': "Slartibartfast",
     }
 
-    out_dict = prompt.parse_operator(
+    out_dict = cookiecutter.operator.parse_operator(
         context, 'details', cookiecutter_dict, no_input=True
     )
     assert out_dict == cookiecutter_dict
@@ -52,7 +52,7 @@ def test_operator_when_true_no_input_no_default():
         'project_name': "Slartibartfast",
     }
 
-    out_dict = prompt.parse_operator(
+    out_dict = cookiecutter.operator.parse_operator(
         context, 'details', cookiecutter_dict, no_input=True
     )
     assert out_dict == cookiecutter_dict
@@ -78,7 +78,7 @@ def test_operator_when_true_no_input_with_default():
         'project_name': "Slartibartfast",
     }
 
-    out_dict = prompt.parse_operator(
+    out_dict = cookiecutter.operator.parse_operator(
         context, 'details', cookiecutter_dict, no_input=True
     )
     assert out_dict == {'project_name': 'Slartibartfast', 'details': 'stuff'}
@@ -88,7 +88,6 @@ def test_operator_when_true_no_input_loop():
     """Verify `prompt_for_config` call `read_user_variable` on dict request."""
     context = {
         'cookiecutter': {
-            'project_name': "Slartibartfast",
             'details': {
                 "message": "what details?",
                 "type": "checkbox",
@@ -97,13 +96,6 @@ def test_operator_when_true_no_input_loop():
                 'loop': ['foo', 'bar'],
                 'default': '{{ cookiecutter.item }}',
             },
-            'things': {
-                "message": "what things?",
-                "type": "checkbox",
-                "choices": [{"name": "value 1"}, {"name": "value 2"},],
-                'when': "{{ 'stuff' in cookiecutter.details }}",
-                'default': 'mo tings',
-            },
         }
     }
 
@@ -111,7 +103,7 @@ def test_operator_when_true_no_input_loop():
         'project_name': "Slartibartfast",
     }
 
-    out_dict = prompt.parse_operator(
+    out_dict = cookiecutter.operator.parse_operator(
         context, 'details', cookiecutter_dict, no_input=True
     )
     assert out_dict == {'project_name': 'Slartibartfast', 'details': ['foo', 'bar']}

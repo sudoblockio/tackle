@@ -6,13 +6,13 @@ from collections import OrderedDict
 import json
 
 import click
-import six
 
 from jinja2.exceptions import UndefinedError
 
+from cookiecutter.enivironment import render_variable
 from cookiecutter.exceptions import UndefinedVariableInTemplate
 from cookiecutter.environment import StrictEnvironment
-from cookiecutter.ops import run_operator
+from cookiecutter.operator import parse_operator
 
 
 def read_user_variable(var_name, default_value):
@@ -125,104 +125,6 @@ def read_user_dict(var_name, default_value):
     return user_value
 
 
-def parse_operator(
-    context, key, cookiecutter_dict, append_key: bool = False, no_input: bool = False,
-):
-    """Parse input dict for loop and when logic and calls hooks.
-
-    :return: cookiecutter_dict # noqa
-    """
-    env = StrictEnvironment(context=context)
-    operator_dict = context['cookiecutter'][key]
-
-    # Extract loop
-    if 'loop' in operator_dict:
-        loop_targets = render_variable(env, operator_dict['loop'], cookiecutter_dict)
-        operator_dict.pop('loop')
-
-        loop_output = []
-        for l in loop_targets:
-            loop_cookiecutter = cookiecutter_dict
-            loop_cookiecutter.update({'item': l})
-            loop_output += [
-                parse_operator(
-                    context, key, loop_cookiecutter, append_key=True, no_input=no_input
-                )
-            ]
-
-        cookiecutter_dict.pop('item')
-        cookiecutter_dict[key] = loop_output
-        return cookiecutter_dict
-
-    if 'when' in operator_dict:
-        if not context:
-            raise ValueError("Can't have when condition without establishing context")
-
-        when_condition = (
-            render_variable(env, operator_dict['when'], cookiecutter_dict) == 'True'
-        )
-        operator_dict.pop('when')
-        if not isinstance(when_condition, bool):
-            raise ValueError("When condition needs to render with jinja to boolean")
-
-    else:
-        when_condition = True
-
-    if when_condition:
-        operator_dict = render_variable(env, operator_dict, cookiecutter_dict)
-        if not no_input:
-
-            cookiecutter_dict[key] = run_operator(operator_dict)  # output is list
-
-        elif 'default' in operator_dict and no_input:
-            operator_dict = operator_dict['default']
-
-        if append_key:
-            return operator_dict
-        else:
-            cookiecutter_dict[key] = operator_dict
-            return cookiecutter_dict
-    else:
-        return cookiecutter_dict
-
-
-def render_variable(env, raw, cookiecutter_dict):
-    """Render the next variable to be displayed in the user prompt.
-
-    Inside the prompting taken from the cookiecutter.json file, this renders
-    the next variable. For example, if a project_name is "Peanut Butter
-    Cookie", the repo_name could be be rendered with:
-
-        `{{ cookiecutter.project_name.replace(" ", "_") }}`.
-
-    This is then presented to the user as the default.
-
-    :param Environment env: A Jinja2 Environment object.
-    :param raw: The next value to be prompted for by the user.
-    :param dict cookiecutter_dict: The current context as it's gradually
-        being populated with variables.
-    :return: The rendered value for the default variable.
-    """
-    if raw is None:
-        return None
-    elif isinstance(raw, dict):
-        return {
-            render_variable(env, k, cookiecutter_dict): render_variable(
-                env, v, cookiecutter_dict
-            )
-            for k, v in raw.items()
-        }
-    elif isinstance(raw, list):
-        return [render_variable(env, v, cookiecutter_dict) for v in raw]
-    elif not isinstance(raw, six.string_types):
-        raw = str(raw)
-
-    template = env.from_string(raw)
-
-    rendered_template = template.render(cookiecutter=cookiecutter_dict)
-    return rendered_template
-
-
 def prompt_choice_for_config(cookiecutter_dict, env, key, options, no_input):
     """Prompt user with a set of options to choose from.
 
@@ -273,7 +175,7 @@ def prompt_for_config(context, no_input=False):
 
     # Second pass; handle the dictionaries.
     for key, raw in context[u'cookiecutter'].items():
-
+        print(key)
         try:
             if isinstance(raw, dict):
                 # dict parsing logic

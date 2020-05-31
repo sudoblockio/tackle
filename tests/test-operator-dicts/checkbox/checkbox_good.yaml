@@ -1,0 +1,9 @@
+project_slug: best_eva
+confirm: [true, false]
+stuff:
+  type: checkbox
+  message: What do you want?
+  choices:
+    - things
+    - crabs
+  default: "{{ cookiecutter.item }}"

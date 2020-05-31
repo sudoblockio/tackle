@@ -1,0 +1,16 @@
+{
+  "project_slug": "best_eva",
+  "confirm": [
+    true,
+    false
+  ],
+  "stuff": {
+    "type": "checkbox",
+    "message": "What do you want?",
+    "choices": [
+      {"name": "things"},
+      {"name": "stuff"},
+      {"name": "mo-tings"}
+    ]
+  }
+}

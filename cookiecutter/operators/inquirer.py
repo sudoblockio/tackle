@@ -24,34 +24,35 @@ class InquirerCheckboxOperator(BaseOperator):
         """Run the prompt."""  # noqa
         if 'name' not in self.operator_dict:
             self.operator_dict.update({'name': 'tmp'})
-            print(self.operator_dict)
-            return prompt([self.operator_dict])['tmp']
+            a = prompt([self.operator_dict])['tmp']
+            print(a)
+            return a
         else:
             return prompt([self.operator_dict])
 
+    # def default(self):
+    #     return self.
 
-class InquirerConfirmOperator(BaseOperator):
-    """Operator for PyInquirer type prompts."""
 
-    type = 'confirm'
-
-    def __init__(self, operator_dict, context=None):
-        """Initialize PyInquirer Hook."""  # noqa
-        super(InquirerConfirmOperator, self).__init__(
-            operator_dict=operator_dict, context=context
-        )
-
-    def execute(self):
-        """Run the prompt."""  # noqa
-        if 'name' not in self.operator_dict:
-            self.operator_dict.update({'name': 'tmp'})
-            print(self.operator_dict)
-            return prompt([self.operator_dict])['tmp']
-        else:
-            return prompt([self.operator_dict])
-
-        # class InquirerConfirm(BaseHook):
-
+# class InquirerConfirmOperator(BaseOperator):
+#     """Operator for PyInquirer type prompts."""
+#
+#     type = 'confirm'
+#
+#     def __init__(self, operator_dict, context=None):
+#         """Initialize PyInquirer Hook."""  # noqa
+#         super(InquirerConfirmOperator, self).__init__(
+#             operator_dict=operator_dict, context=context
+#         )
+#
+#     def execute(self):
+#         """Run the prompt."""  # noqa
+#         if 'name' not in self.operator_dict:
+#             self.operator_dict.update({'name': 'tmp'})
+#             print(self.operator_dict)
+#             return prompt([self.operator_dict])['tmp']
+#         else:
+#             return prompt([self.operator_dict])
 
 #     type = "confirm"
 #
