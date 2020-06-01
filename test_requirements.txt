@@ -3,6 +3,4 @@ pytest-cov
 pytest-mock
 freezegun
 
-ansible
-
 ptyprocess

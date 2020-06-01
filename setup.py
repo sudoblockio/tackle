@@ -58,7 +58,7 @@ setup(
     url='https://github.com/cookiecutter/cookiecutter',
     packages=['cookiecutter'],
     package_dir={'cookiecutter': 'cookiecutter'},
-    entry_points={'console_scripts': ['cookiecutter = cookiecutter.__main__:main']},
+    entry_points={'console_scripts': ['nukikata = cookiecutter.__main__:main']},
     include_package_data=True,
     python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*',
     install_requires=requirements,
