@@ -22,8 +22,7 @@ class CookiecutterOperator(BaseOperator):
             checkout = None
 
         result = cookiecutter.main.cookiecutter(
-            template=self.operator_dict['template'],
-            checkout=checkout,
+            template=self.operator_dict['template'], checkout=checkout,
         )
 
         return result

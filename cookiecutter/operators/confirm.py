@@ -18,7 +18,6 @@ class InquirerConfirmOperator(BaseOperator):
         """Run the prompt."""  # noqa
         if 'name' not in self.operator_dict:
             self.operator_dict.update({'name': 'tmp'})
-            print(self.operator_dict)
             return prompt([self.operator_dict])['tmp']
         else:
             return prompt([self.operator_dict])
