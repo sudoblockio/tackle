@@ -117,7 +117,7 @@ def test_prompt_operator_when_true_no_input_loop():
             'details': {
                 "message": "what details?",
                 "type": "checkbox",
-                "choices": [{"name": "value 1"}, {"name": "value 2"},],
+                "choices": [{"name": "value 1"}, {"name": "value 2"}],
                 'when': "{{ cookiecutter.project_name == 'Slartibartfast' }}",
                 'loop': ['foo', 'bar'],
                 'default': 'stuff',
@@ -125,7 +125,7 @@ def test_prompt_operator_when_true_no_input_loop():
             'things': {
                 "message": "what things?",
                 "type": "checkbox",
-                "choices": [{"name": "value 1"}, {"name": "value 2"},],
+                "choices": [{"name": "value 1"}, {"name": "value 2"}],
                 'when': "{{ 'stuff' in cookiecutter.details }}",
                 'default': 'mo tings',
             },

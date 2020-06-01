@@ -26,8 +26,8 @@ def checkbox():
     if os.path.exists('./best_eva'):
         shutil.rmtree('best_eva')
 
-    cookiecutter('.')
-
+    out_dict = prompt.prompt_for_config(context)
+    return out_dict
 
 if __name__ == '__main__':
     checkbox()

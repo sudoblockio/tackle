@@ -1,6 +1,14 @@
-stuff:
-  type: checkbox
-  message: What do you want?
-  choices:
-    - thigns
-    - crabs
+cookiecutter:
+  stuff:
+    type: checkbox
+    message: What do you want?
+    choices:
+      - name: bunny
+      - name: crabs
+
+  things:
+    type: checkbox
+    message: Are you sure?
+    choices:
+      - name: yes
+      - name: no

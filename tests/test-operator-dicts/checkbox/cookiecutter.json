@@ -5,12 +5,10 @@
     "message": "What providers?",
     "choices": [
       {"name": "aws"},
-      {"name": "azure"},
-      {"name": "do"},
       {"name": "gcp"}
     ]
   },
-  "regions": {
+  "aws_regions": {
     "type": "checkbox",
     "message": "Which regions?",
     "choices": [
@@ -22,6 +20,26 @@
   },
   "do_stuff": {
     "type": "command",
-    "command": "echo this"
+    "command": "pwd"
+  },
+  "gcp_regions": {
+    "type": "checkbox",
+    "message": "Which regions?",
+    "choices": [
+      {"name": "us-east1"},
+      {"name": "us-east2"},
+      {"name": "us-wast1"}
+    ],
+    "when": "{{ 'gcp' in cookiecutter.providers }}"
+  },
+  "some_cc": {
+    "type": "cookiecutter",
+    "template": "https://github.com/tiangolo/full-stack-fastapi-postgresql",
+    "when": "{{ 'gcp' in cookiecutter.providers }}"
+  },
+  "demo_loop": {
+    "type": "confirm",
+    "message": "Do you want to apply {{ cookiecutter.item }}?",
+    "loop": "{{ cookiecutter.aws_regions }}"
   }
 }

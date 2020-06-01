@@ -8,7 +8,7 @@ from collections import OrderedDict
 import pytest
 import six
 
-import cookiecutter.enivironment
+import cookiecutter.environment
 from cookiecutter import prompt, exceptions, environment
 
 
@@ -40,7 +40,7 @@ class TestRenderVariable:
         )
         context = {'project': 'foobar'}
 
-        result = cookiecutter.enivironment.render_variable(env, raw_var, context)
+        result = cookiecutter.environment.render_variable(env, raw_var, context)
         assert result == rendered_var
 
         # Make sure that non None non str variables are converted beforehand
@@ -67,7 +67,7 @@ class TestRenderVariable:
         env = environment.StrictEnvironment()
         context = {'project': 'foobar'}
 
-        result = cookiecutter.enivironment.render_variable(env, raw_var, context)
+        result = cookiecutter.environment.render_variable(env, raw_var, context)
         assert result == rendered_var
 
 
