@@ -27,6 +27,3 @@ class InquirerCheckboxOperator(BaseOperator):
             return prompt([self.operator_dict])['tmp']
         else:
             return prompt([self.operator_dict])
-
-    def default(self):
-        return self.operator_dict

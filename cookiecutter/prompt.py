@@ -9,9 +9,8 @@ import click
 
 from jinja2.exceptions import UndefinedError
 
-from cookiecutter.enivironment import render_variable
 from cookiecutter.exceptions import UndefinedVariableInTemplate
-from cookiecutter.environment import StrictEnvironment
+from cookiecutter.environment import StrictEnvironment, render_variable
 from cookiecutter.operator import parse_operator
 
 

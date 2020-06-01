@@ -29,6 +29,7 @@ def checkbox():
     out_dict = prompt.prompt_for_config(context)
     return out_dict
 
+
 if __name__ == '__main__':
     checkbox()
 

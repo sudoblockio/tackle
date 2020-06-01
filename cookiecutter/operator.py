@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
 """Functions for discovering and executing various cookiecutter operators."""
-from cookiecutter.environment import StrictEnvironment
+from cookiecutter.environment import StrictEnvironment, render_variable
 from cookiecutter.operators import *  # noqa
 
 from cookiecutter.operators import BaseOperator
-from cookiecutter.enivironment import render_variable
 
 
 def run_operator(operator_dict: dict, no_input: bool = False) -> list:
@@ -15,19 +14,11 @@ def run_operator(operator_dict: dict, no_input: bool = False) -> list:
     for o in operator_list:
         if operator_dict['type'] == o.type:  # noqa
             operator = o(operator_dict)
-            if not no_input:
-                operator_output = operator.execute()
-            else:
-                operator_output = operator.execute()
-
-    if not operator_output:
-        print('No operator found for input %s' % operator_dict)
+            # TODO: Determine if default method is needed across all operators
+            # If so, need to feed in `no_input` from both cases in call
+            operator_output = operator.execute()
 
     return operator_output
-
-
-def loop_operator():
-    pass
 
 
 def parse_operator(
@@ -76,17 +67,16 @@ def parse_operator(
 
     if when_condition:
         operator_dict = render_variable(env, operator_dict, cookiecutter_dict)
-
         if not no_input:
             # Run prompt
             cookiecutter_dict[key] = run_operator(operator_dict)  # output is list
         elif 'default' in operator_dict and no_input:
-            operator_dict = operator_dict['default']
+            cookiecutter_dict[key] = operator_dict['default']
         else:
             # Case where no default is defined and no input - last case
             cookiecutter_dict[key] = operator_dict
 
         if append_key:
-            return operator_dict
+            return cookiecutter_dict[key]
 
     return cookiecutter_dict
