@@ -31,25 +31,6 @@ def parse_operator(
     env = StrictEnvironment(context=context)
     operator_dict = context['cookiecutter'][key]
 
-    # Extract loop
-    if 'loop' in operator_dict:
-        loop_targets = render_variable(env, operator_dict['loop'], cookiecutter_dict)
-        operator_dict.pop('loop')
-
-        loop_output = []
-        for l in loop_targets:
-            loop_cookiecutter = cookiecutter_dict
-            loop_cookiecutter.update({'item': l})
-            loop_output += [
-                parse_operator(
-                    context, key, loop_cookiecutter, append_key=True, no_input=no_input
-                )
-            ]
-
-        cookiecutter_dict.pop('item')
-        cookiecutter_dict[key] = loop_output
-        return cookiecutter_dict
-
     if 'when' in operator_dict:
         if not context:
             raise ValueError("Can't have when condition without establishing context")
@@ -66,6 +47,32 @@ def parse_operator(
         when_condition = True
 
     if when_condition:
+
+        # Extract loop
+        if 'loop' in operator_dict:
+            loop_targets = render_variable(
+                env, operator_dict['loop'], cookiecutter_dict
+            )
+            operator_dict.pop('loop')
+
+            loop_output = []
+            for l in loop_targets:
+                loop_cookiecutter = cookiecutter_dict
+                loop_cookiecutter.update({'item': l})
+                loop_output += [
+                    parse_operator(
+                        context,
+                        key,
+                        loop_cookiecutter,
+                        append_key=True,
+                        no_input=no_input,
+                    )
+                ]
+
+            cookiecutter_dict.pop('item')
+            cookiecutter_dict[key] = loop_output
+            return cookiecutter_dict
+
         operator_dict = render_variable(env, operator_dict, cookiecutter_dict)
         if not no_input:
             # Run prompt
