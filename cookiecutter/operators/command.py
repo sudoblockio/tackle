@@ -1,6 +1,16 @@
+# -*- coding: utf-8 -*-
+
+"""Functions for generating a project from a project template."""
+from __future__ import unicode_literals
+from __future__ import print_function
+
 import sys
+import logging
+
 from cookiecutter.operators import BaseOperator
 import subprocess
+
+logger = logging.getLogger(__name__)
 
 
 class CommandOperator(BaseOperator):

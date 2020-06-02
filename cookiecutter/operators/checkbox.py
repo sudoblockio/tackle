@@ -4,9 +4,12 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 
+import logging
 from PyInquirer import prompt
 
 from cookiecutter.operators import BaseOperator
+
+logger = logging.getLogger(__name__)
 
 
 class InquirerCheckboxOperator(BaseOperator):
