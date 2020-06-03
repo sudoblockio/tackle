@@ -19,6 +19,7 @@ class JsonOperator(BaseOperator):
     def __init__(self, operator_dict, context=None):
         """Initialize yaml Hook."""  # noqa
         super(JsonOperator, self).__init__(operator_dict=operator_dict, context=context)
+        self.post_gen_operator = True
 
     def execute(self):
         """Run the operator."""  # noqa
