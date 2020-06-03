@@ -10,6 +10,9 @@ import os
 import stat
 import shutil
 import sys
+import json
+import yaml
+from _collections import OrderedDict
 
 from cookiecutter.prompt import read_user_yes_no
 
@@ -109,3 +112,32 @@ def prompt_and_delete(path, no_input=False):
             return False
 
         sys.exit()
+
+
+def read_config_file(file):
+    """Read files into objects."""
+    file_extension = file.split('.')[-1]
+
+    if not os.path.exists(file):
+        raise FileNotFoundError
+
+    logger.debug(
+        f'Using \"{file}\" as input file and \"{file_extension}\" as file extension'
+    )
+    if file_extension == 'json':
+        with open(file) as f:
+            config = json.load(f, object_pairs_hook=OrderedDict)
+        return config
+    elif file_extension in ('yaml', 'cookiecutter2rc'):
+        with open(file, encoding='utf-8') as f:
+            config = yaml.load(f, Loader=yaml.FullLoader)
+        return config
+    # elif file_extension == 'hcl':
+    #     with open(file) as f:
+    #         config = hcl.loads(f.read())
+    #     return config
+    else:
+        raise ValueError(
+            'Unable to parse file {}. Error: Unsupported extension (json/yaml only)'
+            ''.format(file)
+        )  # noqa

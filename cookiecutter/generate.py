@@ -27,6 +27,8 @@ from cookiecutter.find import find_template
 from cookiecutter.hooks import run_hook
 from cookiecutter.utils import make_sure_path_exists, work_in, rmtree
 
+from cookiecutter.operator import post_gen_operator_list
+
 logger = logging.getLogger(__name__)
 
 
@@ -361,5 +363,9 @@ def generate_files(
     _run_hook_from_repo_dir(
         repo_dir, 'post_gen_project', project_dir, context, delete_project_on_failure
     )
+
+    for o in post_gen_operator_list:
+        o.execute()
+    print(post_gen_operator_list)
 
     return project_dir

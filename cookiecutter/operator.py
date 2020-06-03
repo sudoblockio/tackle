@@ -6,19 +6,27 @@ from cookiecutter.operators import *  # noqa
 
 from cookiecutter.operators import BaseOperator
 
+post_gen_operator_list = []
 
-def run_operator(operator_dict: dict, no_input: bool = False) -> list:
+
+def run_operator(operator_dict: dict, context=None):
     """Run operator."""
+    if context is None:
+        context = {}
     operator_output = None
+    delayed_output = None
     operator_list = BaseOperator.__subclasses__()
     for o in operator_list:
         if operator_dict['type'] == o.type:  # noqa
-            operator = o(operator_dict)
+            operator = o(operator_dict, context)
             # TODO: Determine if default method is needed across all operators
             # If so, need to feed in `no_input` from both cases in call
-            operator_output = operator.execute()
+            if operator.post_gen_operator:
+                delayed_output = operator
+            else:
+                operator_output = operator.execute()
 
-    return operator_output
+    return operator_output, delayed_output
 
 
 def parse_operator(
@@ -30,6 +38,8 @@ def parse_operator(
     """
     env = StrictEnvironment(context=context)
     operator_dict = context['cookiecutter'][key]
+
+    global post_gen_operator_list
 
     if 'when' in operator_dict:
         if not context:
@@ -47,7 +57,6 @@ def parse_operator(
         when_condition = True
 
     if when_condition:
-
         # Extract loop
         if 'loop' in operator_dict:
             loop_targets = render_variable(
@@ -76,7 +85,12 @@ def parse_operator(
         operator_dict = render_variable(env, operator_dict, cookiecutter_dict)
         if not no_input:
             # Run prompt
-            cookiecutter_dict[key] = run_operator(operator_dict)  # output is list
+            cookiecutter_dict[key], post_gen_operator = run_operator(
+                operator_dict, context
+            )  # output is list
+            if post_gen_operator:
+                post_gen_operator_list.append(post_gen_operator)
+
         elif 'default' in operator_dict and no_input:
             cookiecutter_dict[key] = operator_dict['default']
         else:

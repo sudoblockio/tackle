@@ -21,6 +21,7 @@ class BaseOperator(metaclass=ABCMeta):
         """Initialize Basehook."""
         self.operator_dict = operator_dict
         self.context = context or {}
+        self.post_gen_operator = False
 
     @abstractmethod
     def execute(self):

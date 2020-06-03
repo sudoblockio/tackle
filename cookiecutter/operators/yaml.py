@@ -17,8 +17,9 @@ class YamlOperator(BaseOperator):
     type = 'yaml'
 
     def __init__(self, operator_dict, context=None):
-        """Initialize yaml Hook."""  # noqa
+        """Initialize yaml operator."""  # noqa
         super(YamlOperator, self).__init__(operator_dict=operator_dict, context=context)
+        self.post_gen_operator = True
 
     def execute(self):
         """Run the operator."""  # noqa
