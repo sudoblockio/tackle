@@ -22,7 +22,7 @@ class JsonOperator(BaseOperator):
 
     def execute(self):
         """Run the operator."""  # noqa
-        if 'contents' not in self.operator_dict:
+        if 'contents' in self.operator_dict:
             with open(self.operator_dict['path'], 'w') as f:
                 json.dump(self.operator_dict['contents'], f)
 
