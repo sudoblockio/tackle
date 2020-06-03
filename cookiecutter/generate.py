@@ -366,6 +366,5 @@ def generate_files(
 
     for o in post_gen_operator_list:
         o.execute()
-    print(post_gen_operator_list)
 
     return project_dir
