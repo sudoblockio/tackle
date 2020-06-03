@@ -110,4 +110,9 @@ def render_variable(env, raw, cookiecutter_dict):
         """If variable looks like list, return literal list"""
         return ast.literal_eval(rendered_template)
 
+    DICT_REGEX = r'^\{.*\}$'
+    if bool(re.search(DICT_REGEX, rendered_template)):
+        """If variable looks like dict, return literal dict"""
+        return ast.literal_eval(rendered_template)
+
     return rendered_template
