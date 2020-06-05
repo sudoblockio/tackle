@@ -23,6 +23,10 @@ class CommandOperator(BaseOperator):
         super(CommandOperator, self).__init__(
             operator_dict=operator_dict, context=context
         )
+        if 'delay' in self.operator_dict:
+            self.post_gen_operator = self.operator_dict['delay']
+        else:
+            self.post_gen_operator = True
 
     def execute(self):
         """Run the prompt."""  # noqa
@@ -36,4 +40,5 @@ class CommandOperator(BaseOperator):
 
         if err:
             sys.exit(err)
+
         return output.decode("utf-8")

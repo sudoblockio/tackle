@@ -25,4 +25,5 @@ class BaseOperator(metaclass=ABCMeta):
 
     @abstractmethod
     def execute(self):
-        pass
+        """Run the operator."""
+        raise NotImplementedError()
