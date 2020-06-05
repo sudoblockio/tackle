@@ -13,20 +13,19 @@ import subprocess
 logger = logging.getLogger(__name__)
 
 
-class CommandOperator(BaseOperator):
+class CookiecutterOperator(BaseOperator):
     """Operator for PyInquirer type prompts."""
 
     type = 'command'
 
     def __init__(self, operator_dict, context=None):
         """Initialize PyInquirer Hook."""  # noqa
-        super(CommandOperator, self).__init__(
+        super(CookiecutterOperator, self).__init__(
             operator_dict=operator_dict, context=context
         )
-        if 'delay' in self.operator_dict:
-            self.post_gen_operator = self.operator_dict['delay']
-        else:
-            self.post_gen_operator = True
+        self.post_gen_operator = (
+            self.operator_dict['delay'] if 'delay' in self.operator_dict else True
+        )
 
     def execute(self):
         """Run the prompt."""  # noqa
