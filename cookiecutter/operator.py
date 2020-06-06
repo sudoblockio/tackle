@@ -9,7 +9,7 @@ from cookiecutter.operators import BaseOperator
 post_gen_operator_list = []
 
 
-def run_operator(operator_dict: dict, context=None):
+def run_operator(operator_dict: dict, context=None, no_input=False):
     """Run operator."""
     if context is None:
         context = {}
@@ -18,7 +18,7 @@ def run_operator(operator_dict: dict, context=None):
     operator_list = BaseOperator.__subclasses__()
     for o in operator_list:
         if operator_dict['type'] == o.type:  # noqa
-            operator = o(operator_dict, context)
+            operator = o(operator_dict, context, no_input)
             # TODO: Determine if default method is needed across all operators
             # If so, need to feed in `no_input` from both cases in call
             if operator.post_gen_operator:
@@ -83,19 +83,11 @@ def parse_operator(
             return cookiecutter_dict
 
         operator_dict = render_variable(env, operator_dict, cookiecutter_dict)
-        if not no_input:
-            # Run prompt
-            cookiecutter_dict[key], post_gen_operator = run_operator(
-                operator_dict, context
-            )  # output is list
-            if post_gen_operator:
-                post_gen_operator_list.append(post_gen_operator)
-
-        elif 'default' in operator_dict and no_input:
-            cookiecutter_dict[key] = operator_dict['default']
-        else:
-            # Case where no default is defined and no input - last case
-            cookiecutter_dict[key] = operator_dict
+        cookiecutter_dict[key], post_gen_operator = run_operator(
+            operator_dict, context, no_input
+        )  # output is list
+        if post_gen_operator:
+            post_gen_operator_list.append(post_gen_operator)
 
         if append_key:
             return cookiecutter_dict[key]

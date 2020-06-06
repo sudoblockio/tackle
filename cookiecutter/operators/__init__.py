@@ -17,10 +17,11 @@ __all__ = [
 class BaseOperator(metaclass=ABCMeta):
     """Base hook mixin class."""
 
-    def __init__(self, operator_dict, context=None):
+    def __init__(self, operator_dict, context=None, no_input=False):
         """Initialize Basehook."""
         self.operator_dict = operator_dict
         self.context = context or {}
+        self.no_input = no_input
         self.post_gen_operator = False
 
     @abstractmethod

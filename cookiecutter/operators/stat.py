@@ -16,9 +16,11 @@ class StatOperator(BaseOperator):
 
     type = 'stat'
 
-    def __init__(self, operator_dict, context=None):
+    def __init__(self, operator_dict, context=None, no_input=False):
         """Initialize PyInquirer Hook."""  # noqa
-        super(StatOperator, self).__init__(operator_dict=operator_dict, context=context)
+        super(StatOperator, self).__init__(
+            operator_dict=operator_dict, context=context, no_input=no_input
+        )
 
     def execute(self):
         """."""  # noqa

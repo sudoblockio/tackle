@@ -17,10 +17,10 @@ class InquirerPasswordOperator(BaseOperator):
 
     type = 'password'
 
-    def __init__(self, operator_dict, context=None):
+    def __init__(self, operator_dict, context=None, no_input=False):
         """Initialize PyInquirer Hook."""  # noqa
         super(InquirerPasswordOperator, self).__init__(
-            operator_dict=operator_dict, context=context
+            operator_dict=operator_dict, context=context, no_input=no_input
         )
 
     def execute(self):

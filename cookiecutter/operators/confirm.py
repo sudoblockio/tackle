@@ -17,16 +17,21 @@ class InquirerConfirmOperator(BaseOperator):
 
     type = 'confirm'
 
-    def __init__(self, operator_dict, context=None):
+    def __init__(self, operator_dict, context=None, no_input=False):
         """Initialize PyInquirer Hook."""  # noqa
         super(InquirerConfirmOperator, self).__init__(
-            operator_dict=operator_dict, context=context
+            operator_dict=operator_dict, context=context, no_input=no_input
         )
 
     def execute(self):
         """Run the prompt."""  # noqa
-        if 'name' not in self.operator_dict:
-            self.operator_dict.update({'name': 'tmp'})
-            return prompt([self.operator_dict])['tmp']
+        if not self.no_input:
+            if 'name' not in self.operator_dict:
+                self.operator_dict.update({'name': 'tmp'})
+                return prompt([self.operator_dict])['tmp']
+            else:
+                return prompt([self.operator_dict])
+        elif 'default' in self.operator_dict:
+            return self.operator_dict['default']
         else:
-            return prompt([self.operator_dict])
+            return True

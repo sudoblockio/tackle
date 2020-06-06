@@ -18,10 +18,10 @@ class JinjaOperator(BaseOperator):
 
     type = 'jinja'
 
-    def __init__(self, operator_dict, context):
+    def __init__(self, operator_dict, context=None, no_input=False):
         """Initialize PyInquirer Hook."""  # noqa
         super(JinjaOperator, self).__init__(
-            operator_dict=operator_dict, context=context
+            operator_dict=operator_dict, context=context, no_input=no_input
         )
         self.post_gen_operator = True
 
