@@ -5,7 +5,6 @@ from __future__ import unicode_literals
 
 import fnmatch
 import io
-import json
 import logging
 import os
 import shutil
@@ -25,7 +24,9 @@ from cookiecutter.exceptions import (
 )
 from cookiecutter.find import find_template
 from cookiecutter.hooks import run_hook
-from cookiecutter.utils import make_sure_path_exists, work_in, rmtree
+from cookiecutter.utils import make_sure_path_exists, work_in, rmtree, read_config_file
+
+# from cookiecutter.repository import valid_context_files
 
 from cookiecutter.operator import post_gen_operator_list
 
@@ -89,8 +90,7 @@ def generate_context(
     context = OrderedDict([])
 
     try:
-        with open(context_file) as file_handle:
-            obj = json.load(file_handle, object_pairs_hook=OrderedDict)
+        obj = read_config_file(context_file)
     except ValueError as e:
         # JSON decoding error.  Let's throw a new exception that is more
         # friendly for the developer or user.
