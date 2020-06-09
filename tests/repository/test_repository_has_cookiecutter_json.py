@@ -18,3 +18,11 @@ def test_valid_repository():
 def test_invalid_repository(invalid_repository):
     """Validate correct response if `cookiecutter.json` file not exist."""
     assert not repository_has_cookiecutter_json(invalid_repository)
+
+
+@pytest.mark.parametrize(
+    'valid_repository', (['tests/fixtures/nuki-input', 'tests/fixtures/yaml-input'])
+)
+def test_valid_repositories_yaml_nuki(valid_repository):
+    """Validate correct response if `cookiecutter.json` file not exist."""
+    assert repository_has_cookiecutter_json(valid_repository)

@@ -21,6 +21,15 @@ REPO_REGEX = re.compile(
     re.VERBOSE,
 )
 
+valid_context_files = [
+    'cookiecutter.json',
+    'cookiecutter.yaml',
+    'cookiecutter.yml',
+    'nuki.json',
+    'nuki.yaml',
+    'nuki.yml',
+]
+
 
 def is_repo_url(value):
     """Return True if value is a repository URL."""
@@ -57,11 +66,12 @@ def repository_has_cookiecutter_json(repo_directory):
     :return: True if the `repo_directory` is valid, else False.
     """
     repo_directory_exists = os.path.isdir(repo_directory)
-
-    repo_config_exists = os.path.isfile(
-        os.path.join(repo_directory, 'cookiecutter.json')
-    )
-    return repo_directory_exists and repo_config_exists
+    if repo_directory_exists:
+        for f in valid_context_files:
+            if os.path.isfile(os.path.join(repo_directory, f)):
+                return True
+    else:
+        return False
 
 
 def determine_repo_dir(
