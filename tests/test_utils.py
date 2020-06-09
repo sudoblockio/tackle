@@ -192,3 +192,18 @@ def test_prompt_should_not_ask_if_no_input_and_rm_repo_file(mocker, tmpdir):
     assert not mock_read_user.called
     assert not repo_file.exists()
     assert deleted
+
+
+@pytest.mark.parametrize(
+    'valid_config_file',
+    (
+        [
+            'tests/fixtures/valid/nuki-input/nuki.yml',
+            'tests/fixtures/valid/yaml-input/cookiecutter.yaml',
+        ]
+    ),
+)
+def test_valid_read_config_file(valid_config_file):
+    """Validate generic reader works properly."""
+    output = utils.read_config_file(valid_config_file)
+    assert output == {'project_slug': 'best_eva', 'stuff': 'things'}
