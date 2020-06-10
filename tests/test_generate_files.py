@@ -45,18 +45,20 @@ def remove_additional_folders():
         utils.rmtree('inputpermissions')
 
 
-@pytest.mark.usefixtures('clean_system', 'remove_additional_folders')
-def test_generate_files_nontemplated_exception():
-    """
-    Verify `generate_files` raises when no directories to render exist.
-
-    Note: Check `tests/test-generate-files-nontemplated` location to understand.
-    """
-    with pytest.raises(exceptions.NonTemplatedInputDirException):
-        generate.generate_files(
-            context={'cookiecutter': {'food': 'pizza'}},
-            repo_dir='tests/test-generate-files-nontemplated',
-        )
+# Removed because now we don't want to force actual rendering now that we have more
+# to do...
+# @pytest.mark.usefixtures('clean_system', 'remove_additional_folders')
+# def test_generate_files_nontemplated_exception():
+#     """
+#     Verify `generate_files` raises when no directories to render exist.
+#
+#     Note: Check `tests/test-generate-files-nontemplated` location to understand.
+#     """
+#     with pytest.raises(exceptions.NonTemplatedInputDirException):
+#         generate.generate_files(
+#             context={'cookiecutter': {'food': 'pizza'}},
+#             repo_dir='tests/test-generate-files-nontemplated',
+#         )
 
 
 @pytest.mark.usefixtures('clean_system', 'remove_additional_folders')

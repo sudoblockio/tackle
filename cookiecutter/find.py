@@ -5,8 +5,6 @@
 import logging
 import os
 
-from cookiecutter.exceptions import NonTemplatedInputDirException
-
 logger = logging.getLogger(__name__)
 
 
@@ -31,4 +29,4 @@ def find_template(repo_dir):
         logger.debug('The project template appears to be %s', project_template)
         return project_template
     else:
-        raise NonTemplatedInputDirException
+        return None
