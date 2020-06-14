@@ -9,7 +9,7 @@ import sys
 
 from setuptools import setup
 
-version = "1.7.2.1"
+version = "1.7.2.2"
 
 if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist upload')
@@ -46,15 +46,16 @@ setup(
     name='nukikata',
     version=version,
     description=(
-        'A command-line utility that creates projects from project '
+        'Fork of cookiecutter - https://github.com/cookiecutter/cookiecutter '
+        'The most popular command-line utility to create projects from project '
         'templates, e.g. creating a Python package project from a '
         'Python package project template.'
     ),
     long_description=readme,
     long_description_content_type='text/markdown',
-    author='Audrey Roy',
-    author_email='audreyr@gmail.com',
-    url='https://github.com/cookiecutter/cookiecutter',
+    author='Original Author - Audrey Roy, Fork by Rob Cannon',
+    author_email='rob.cannon@insightinfrastructure.com',
+    url='https://github.com/insight-infrastructure/nukikata',
     packages=['cookiecutter'],
     package_dir={'cookiecutter': 'cookiecutter'},
     entry_points={'console_scripts': ['nukikata = cookiecutter.__main__:main']},
@@ -85,6 +86,7 @@ setup(
     keywords=(
         'cookiecutter, Python, projects, project templates, Jinja2, '
         'skeleton, scaffolding, project directory, setup.py, package, '
-        'packaging'
+        'packaging, insight, insight data science, insight infrastructure, '
+        'cli'
     ),
 )
