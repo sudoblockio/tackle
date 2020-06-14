@@ -122,7 +122,7 @@ def read_config_file(file):
         raise FileNotFoundError
 
     logger.debug(
-        f'Using \"%s\" as input file and \"%s\" as file extension'.format(
+        'Using \"{}\" as input file and \"{}\" as file extension'.format(
             file, file_extension
         )
     )
