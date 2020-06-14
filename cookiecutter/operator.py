@@ -25,6 +25,7 @@ def run_operator(operator_dict: dict, context=None, no_input=False):
                 delayed_output = operator
             else:
                 operator_output = operator.execute()
+            break
 
     return operator_output, delayed_output
 
