@@ -21,7 +21,10 @@ class JsonOperator(BaseOperator):
         super(JsonOperator, self).__init__(
             operator_dict=operator_dict, context=context, no_input=no_input
         )
-        self.post_gen_operator = True
+        # Defaulting to run inline
+        self.post_gen_operator = (
+            self.operator_dict['delay'] if 'delay' in self.operator_dict else False
+        )
 
     def execute(self):
         """Run the operator."""  # noqa

@@ -11,14 +11,14 @@ from cookiecutter.operators import BaseOperator
 logger = logging.getLogger(__name__)
 
 
-class JsonOperator(BaseOperator):
+class TfvarsOperator(BaseOperator):
     """Operator for yaml type prompts."""
 
     type = 'json'
 
     def __init__(self, operator_dict, context=None, no_input=False):
         """Initialize yaml Hook."""  # noqa
-        super(JsonOperator, self).__init__(
+        super(TfvarsOperator, self).__init__(
             operator_dict=operator_dict, context=context, no_input=no_input
         )
         # self.post_gen_operator = True
