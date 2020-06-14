@@ -1,5 +1,9 @@
 # nukikata
 
+Japanese for `cookiecutter`: クッキーの抜き型 - Kukkī no nukikata
+
+Direct translation: To shape or mold
+
 [![pypi](https://img.shields.io/pypi/v/nukikata.svg)](https://pypi.python.org/pypi/nukikata)
 [![python](https://img.shields.io/pypi/pyversions/nukikata.svg)](https://pypi.python.org/pypi/nukikata)
 [![Build Status](https://travis-ci.org/nukikata/nukikata.svg?branch=master)](https://travis-ci.org/nukikata/nukikata)
