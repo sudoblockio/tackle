@@ -23,14 +23,14 @@ Inspired by [Ansible's](https://github.com/ansible/ansible) syntax, this project
 ## Quick Demo
 
 ```
-pip install nukikata
-nukikata https://github.com/insight-infrastructure/nukikata-demo-basic
+pip3 install nukikata
+nukikata https://github.com/insight-infrastructure/nukikata-demo-monty
 cat output.json
 ```
 
 ## Features
 
-All cookiecutter features are supported in addition to loops, conditionals, and plugins. These features are only available to supplied dictionary objects with a `type` key to trigger the associated [operator](). Loops and conditionals are triggered by rendering [jinja]() expressions per the example below.
+All cookiecutter features are supported in addition to loops, conditionals, and plugins. These features are only available to supplied dictionary objects with a `type` key to trigger the associated [operator](cookiecutter/operators). Loops and conditionals are triggered by rendering [jinja](https://github.com/pallets/jinja) expressions per the example below.
 
 ```json
 {
@@ -44,8 +44,6 @@ All cookiecutter features are supported in addition to loops, conditionals, and 
     "choices": [
       {"name": "blue"},
       {"name": "green"},
-      {"name": "red"},
-      {"name": "yellow"},
       {"name": "grey"}
     ]
   },
@@ -57,23 +55,33 @@ All cookiecutter features are supported in addition to loops, conditionals, and 
       {"name": "What do you mean? African or European swallow?"}
     ]
   },
-  "outcome": {
+  "bad_outcome": {
     "type": "print",
-    "statement": "Wrong answer {{ cookiecutter.name}}...",
+    "statement": "Wrong answer {{ cookiecutter.name }}...",
     "when": "{{ 'I donno' in cookiecutter.wingspeed }}"
   },
   "color_essays": {
     "type": "input",
     "message": "Please tell me how much you like the color {{cookiecutter.item}}?",
     "default": "Oh color {{cookiecutter.item}}, you are so frickin cool...",
-    "loop": "{{ cookiecutter.colors }}"
+    "loop": "{{ cookiecutter.colors }}",
+    "when": "{{ cookiecutter.colors|length > 1 }}"
+  },
+  "democmd": {
+    "type": "command",
+    "command": "pwd"
+  },
+  "dump_json": {
+    "type": "json",
+    "contents": "{{ cookiecutter }}",
+    "path": "output.json"
   }
 }
 ```
 
 Prompts are enhanced by extending the functionality from [PyInquirer](https://github.com/CITGuru/PyInquirer) as a set of operators as noted by the types `input`, `list`, and `checkbox`. Writing new operators is super simple as seen in the `print` operator:
 
-[`cookiecuttuer/operators/print.py`](cookiecuttuer/operators/print.py)
+[`cookiecuttuer/operators/print.py`](cookiecutter/operators/print.py)
 ```
 class PrintOperator(BaseOperator):
     """Operator for PyInquirer type prompts."""
@@ -173,7 +181,7 @@ Here is a short list of the operators currently supported.
 
 ## Note to Users and Developers
 
-This is a very early WIP but has long term ambitions of being a sort of swiss army knife for management of configuration files and boilerplate. Please consider contributing or leaving your comments in the issues section on where you see this project going and what features you would like added. All future improvements are being migrated into github issues from a local [ttd file][TTD.md].
+This is a very early WIP but has long term ambitions of being a sort of swiss army knife for management of configuration files and boilerplate. Please consider contributing or leaving your comments in the issues section on where you see this project going and what features you would like added. All future improvements are being migrated into github issues from a local [ttd file](TTD.md).
 
 This project intends on being an edge release of `cookiecutter` and would not have been possible were it not for the orginal maintainers of that repository.  Development in this repository is meant to be a proving ground for features that could be implemented and merged into the original `cookiecutter` repository. Please consider supporting both projects.
 
