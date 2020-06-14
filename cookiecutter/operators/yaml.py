@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Functions for generating a project from a project template."""
+"""Operator plugin that inherits a base class and is made available through `type`."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class YamlOperator(BaseOperator):
-    """Operator for yaml type prompts."""
+    """Operator for yaml."""
 
     type = 'yaml'
 

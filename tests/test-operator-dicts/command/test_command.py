@@ -2,19 +2,23 @@
 
 """Tests dict input objects for `cookiecutter.prompt` module."""
 
-from cookiecutter.operators.command import CookiecutterOperator
-import os
+from cookiecutter.operator import run_operator, parse_operator
 
 context = {
     'cookiecutter': {
         'project_name': "Slartibartfast",
-        'details': {"type": "command", "command": "pwd"},
+        'details': {"type": "command", "command": "echo here"},
     }
 }
 
 
 def test_command():
     """Verify simplest functionality."""
-    c = CookiecutterOperator(context['cookiecutter']['details'], context)
-    d = c.execute()
-    assert d.rstrip() == os.path.abspath(os.path.dirname(__file__))
+    operator_output, delayed_output = run_operator(
+        context['cookiecutter']['details'], context
+    )
+    assert operator_output == 'here\n'
+    assert delayed_output
+
+    cookiecutter_dict = parse_operator(context, 'details', {})
+    assert cookiecutter_dict == {'details': 'here\n'}

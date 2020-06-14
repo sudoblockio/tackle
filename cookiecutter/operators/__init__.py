@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Functions for generating a project from a project template."""
+"""Operator plugin base class that all __subclassess__ are brought in scope."""
 from __future__ import unicode_literals
 
 from abc import ABCMeta, abstractmethod
@@ -15,10 +15,10 @@ __all__ = [
 
 
 class BaseOperator(metaclass=ABCMeta):
-    """Base hook mixin class."""
+    """Base operator mixin class."""
 
     def __init__(self, operator_dict, context=None, no_input=False):
-        """Initialize Basehook."""
+        """Initialize BaseOperator."""
         self.operator_dict = operator_dict
         self.context = context or {}
         self.no_input = no_input

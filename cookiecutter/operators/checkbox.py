@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Functions for generating a project from a project template."""
+"""Operator plugin that inherits a base class and is made available through `type`."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -18,7 +18,7 @@ class InquirerCheckboxOperator(BaseOperator):
     type = 'checkbox'
 
     def __init__(self, operator_dict, context=None, no_input=False):
-        """Initialize PyInquirer Hook."""  # noqa
+        """Initialize PyInquirer 'checkbox` type prompt."""  # noqa
         super(InquirerCheckboxOperator, self).__init__(
             operator_dict=operator_dict, context=context, no_input=no_input
         )
