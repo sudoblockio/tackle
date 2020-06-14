@@ -1,8 +1,6 @@
 # nukikata
 
-Japanese for `cookiecutter`: クッキーの抜き型 - Kukkī no nukikata
-
-Direct translation: To shape or mold
+Japanese for `cookiecutter`: クッキーの抜き型 - Kukkī no nukikata | Direct translation: To shape or mold
 
 [![pypi](https://img.shields.io/pypi/v/nukikata.svg)](https://pypi.python.org/pypi/nukikata)
 [![python](https://img.shields.io/pypi/pyversions/nukikata.svg)](https://pypi.python.org/pypi/nukikata)
@@ -82,7 +80,7 @@ All cookiecutter features are supported in addition to loops, conditionals, and 
 Prompts are enhanced by extending the functionality from [PyInquirer](https://github.com/CITGuru/PyInquirer) as a set of operators as noted by the types `input`, `list`, and `checkbox`. Writing new operators is super simple as seen in the `print` operator:
 
 [`cookiecuttuer/operators/print.py`](cookiecutter/operators/print.py)
-```
+```python
 class PrintOperator(BaseOperator):
     """Operator for PyInquirer type prompts."""
 
