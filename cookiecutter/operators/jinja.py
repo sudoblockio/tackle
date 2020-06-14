@@ -26,7 +26,7 @@ class JinjaOperator(BaseOperator):
         self.post_gen_operator = True
 
     def execute(self):
-        """Run the prompt."""  # noqa
+        """Run the operator."""  # noqa
         env = StrictEnvironment(context=self.context)
         env.loader = FileSystemLoader('.')
         template = env.get_template(self.operator_dict['template_path'])
@@ -34,3 +34,5 @@ class JinjaOperator(BaseOperator):
         output_from_parsed_template = template.render(**self.context)
         with open(self.operator_dict['output_path'], 'w') as fh:
             fh.write(output_from_parsed_template)
+
+        return self.operator_dict['output_path']

@@ -29,7 +29,7 @@ class NukikataOperator(BaseOperator):
         )
 
     def execute(self):
-        """Run the prompt."""  # noqa
+        """Run the operator."""  # noqa
 
         return cookiecutter.main.cookiecutter(
             template=self.operator_dict['template'],
@@ -82,7 +82,7 @@ class NukikataOperator(BaseOperator):
 #         )
 #
 #     def execute(self):
-#         """Run the prompt."""  # noqa
+#         """Run the operator."""  # noqa
 #         if 'template' in self.operator_dict:
 #             context = cookiecutter.utils.read_config_file(
 #                 self.operator_dict['template']

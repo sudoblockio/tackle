@@ -34,7 +34,7 @@ class CommandOperator(BaseOperator):
         )
 
     def execute(self):
-        """Run the prompt."""  # noqa
+        """Run the operator."""  # noqa
         p = subprocess.Popen(
             self.operator_dict['command'],
             shell=True,
@@ -65,7 +65,7 @@ class CommandOperator(BaseOperator):
 #         self.post_gen_operator = True
 #
 #     def execute(self):
-#         """Run the prompt."""  # noqa
+#         """Run the operator."""  # noqa
 #         p = subprocess.Popen(
 #             self.operator_dict['command'],
 #             shell=True,

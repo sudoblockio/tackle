@@ -41,6 +41,6 @@ class PprintOperator(BaseOperator):
         )
 
     def execute(self):
-        """Run the prompt."""  # noqa
+        """Run the operator."""  # noqa
         pprint(self.operator_dict['statement'])
         return self.operator_dict['statement']
