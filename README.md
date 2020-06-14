@@ -21,9 +21,8 @@ Inspired by [Ansible's](https://github.com/ansible/ansible) syntax, this project
 ```
 pip install nukikata
 nukikata https://github.com/insight-infrastructure/nukikata-demo-basic
-cat
+cat output.json
 ```
-
 
 ## Features
 
@@ -170,8 +169,9 @@ Here is a short list of the operators currently supported.
 
 ## Note to Users and Developers
 
-This is a very early WIP but has long term ambitions of being a sort of swiss army knife for management of configuration files and boilerplate. Please consider contributing or leaving your comments in the issues section on where you see this project going and what features you would like added. All future improvements will be tracked in github issues.
+This is a very early WIP but has long term ambitions of being a sort of swiss army knife for management of configuration files and boilerplate. Please consider contributing or leaving your comments in the issues section on where you see this project going and what features you would like added. All future improvements are being migrated into github issues from a local [ttd file][TTD.md].
 
 This project intends on being an edge release of `cookiecutter` and would not have been possible were it not for the orginal maintainers of that repository.  Development in this repository is meant to be a proving ground for features that could be implemented and merged into the original `cookiecutter` repository. Please consider supporting both projects.
 
 Windows will not be supported and hence certain features will likely only exist in this repo compared to the original. This tool was built to handle the mountains of configuration files normally dealt with in declarative infrastructure deployments.
+
