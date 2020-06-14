@@ -26,7 +26,7 @@ class PrintOperator(BaseOperator):
     def execute(self):
         """Run the prompt."""  # noqa
         print(self.operator_dict['statement'])
-        return None
+        return self.operator_dict['statement']
 
 
 class PprintOperator(BaseOperator):
@@ -43,4 +43,4 @@ class PprintOperator(BaseOperator):
     def execute(self):
         """Run the prompt."""  # noqa
         pprint(self.operator_dict['statement'])
-        return None
+        return self.operator_dict['statement']
