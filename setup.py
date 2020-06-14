@@ -43,7 +43,7 @@ if sys.argv[-1] == 'readme':
     sys.exit()
 
 setup(
-    name='cookiecutter',
+    name='nukikata',
     version=version,
     description=(
         'A command-line utility that creates projects from project '
