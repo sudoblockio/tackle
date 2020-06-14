@@ -122,7 +122,9 @@ def read_config_file(file):
         raise FileNotFoundError
 
     logger.debug(
-        f'Using \"{file}\" as input file and \"{file_extension}\" as file extension'
+        f'Using \"%s\" as input file and \"%s\" as file extension'.format(
+            file, file_extension
+        )
     )
     if file_extension == 'json':
         with open(file) as f:
