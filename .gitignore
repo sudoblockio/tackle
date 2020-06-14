@@ -69,3 +69,4 @@ target/
 
 scratch*.py
 .bak/
+pyvenv.cfg
