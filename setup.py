@@ -42,7 +42,6 @@ if sys.argv[-1] == 'readme':
     print(readme)
     sys.exit()
 
-
 setup(
     name='cookiecutter',
     version=version,
