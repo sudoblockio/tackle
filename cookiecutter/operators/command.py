@@ -28,7 +28,10 @@ class CommandOperator(BaseOperator):
         self.post_gen_operator = (
             self.operator_dict['delay'] if 'delay' in self.operator_dict else True
         )
-        self.post_gen_operator = True
+        # Defaulting to run inline
+        self.post_gen_operator = (
+            self.operator_dict['delay'] if 'delay' in self.operator_dict else False
+        )
 
     def execute(self):
         """Run the prompt."""  # noqa
@@ -43,12 +46,12 @@ class CommandOperator(BaseOperator):
         if err:
             sys.exit(err)
 
-        a = output.decode("utf-8")
-        print(a)
-        return a
-        # return output.decode("utf-8")
+        return output.decode("utf-8")
 
 
+# TODO: We need a way to spawn a pseudo terminal like session.
+#  This should likely be the default for this operator
+#
 # class CommandInputOperator(BaseOperator):
 #     """Operator for PyInquirer type prompts."""
 #
