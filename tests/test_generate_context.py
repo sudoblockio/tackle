@@ -23,6 +23,10 @@ def context_data():
         {'context_file': 'tests/test-generate-context/test.json'},
         {'test': {'1': 2, 'some_key': 'some_val'}},
     )
+    # context_yaml = (
+    #     {'context_file': 'tests/test-generate-context/test.yaml'},
+    #     {'test': {'1': 2, 'some_key': 'some_val'}},
+    # )
 
     context_with_default = (
         {
@@ -50,6 +54,7 @@ def context_data():
     )
 
     yield context
+    # yield context_yaml
     yield context_with_default
     yield context_with_extra
     yield context_with_default_and_extra
