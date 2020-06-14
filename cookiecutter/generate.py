@@ -385,4 +385,6 @@ def generate_files(
 
         return project_dir
     else:
+        for o in post_gen_operator_list:
+            o.execute()
         return None
