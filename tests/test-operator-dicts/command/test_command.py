@@ -18,7 +18,7 @@ def test_command():
         context['cookiecutter']['details'], context
     )
     assert operator_output == 'here\n'
-    assert delayed_output
+    assert not delayed_output
 
     cookiecutter_dict = parse_operator(context, 'details', {})
     assert cookiecutter_dict == {'details': 'here\n'}
