@@ -31,6 +31,7 @@ class JsonOperator(BaseOperator):
         if 'contents' in self.operator_dict:
             with open(self.operator_dict['path'], 'w') as f:
                 json.dump(self.operator_dict['contents'], f)
+            return self.operator_dict['path']
 
         else:
             with open(self.operator_dict['path'], 'w') as f:
