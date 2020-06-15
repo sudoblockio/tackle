@@ -22,6 +22,8 @@
 - [ ] Handler attribute
 - [ ] Validation attribute
 - [ ] Filter attribute
+- [ ] Before / After operator hook
+- [ ]
 
 ### Main
 - [x] nuki....

@@ -4,8 +4,8 @@ Japanese for `cookiecutter`: クッキーの抜き型 - Kukkī no nukikata | Dir
 
 [![pypi](https://img.shields.io/pypi/v/nukikata.svg)](https://pypi.python.org/pypi/nukikata)
 [![python](https://img.shields.io/pypi/pyversions/nukikata.svg)](https://pypi.python.org/pypi/nukikata)
-[![Build Status](https://travis-ci.org/nukikata/nukikata.svg?branch=master)](https://travis-ci.org/nukikata/nukikata)
-[![codecov](https://codecov.io/gh/nukikata/nukikata/branch/master/graphs/badge.svg?branch=master)](https://codecov.io/github/nukikata/nukikata?branch=master)
+[![Build Status](https://travis-ci.org/insight-infrastructure/nukikata.svg?branch=master)](https://travis-ci.org/insight-infrastructure/nukikata)
+[![codecov](https://codecov.io/gh/insight-infrastructure/nukikata/branch/master/graphs/badge.svg?branch=master)](https://codecov.io/github/insight-infrastructure/nukikata?branch=master)
 
 ### Fork of
 
