@@ -26,7 +26,29 @@ class ListdirOperator(BaseOperator):
         self.post_gen_operator = (
             self.operator_dict['delay'] if 'delay' in self.operator_dict else False
         )
+        self.ignore_hidden_files = (
+            self.operator_dict['ignore_hidden_files']
+            if 'ignore_hidden_files' in self.operator_dict
+            else False
+        )
 
     def execute(self):
         """Run the operator."""  # noqa
-        return os.listdir(self.operator_dict['directory'])
+        if 'directory' in self.operator_dict:
+            files = os.listdir(self.operator_dict['directory'])
+            if self.ignore_hidden_files:
+                return [f for f in files if not f.startswith('.')]
+            else:
+                return files
+
+        elif isinstance(self.operator_dict['directories'], list):
+            # If instance is a list, return a dict with the keys as the items in list
+            contents = {}
+            for i in self.operator_dict['directories']:
+                contents[i] = os.listdir(i)
+            return contents
+        else:
+            raise NotImplementedError(
+                "Have not implemented dict input to "
+                "`directories` for `type` 'listdir'"
+            )
