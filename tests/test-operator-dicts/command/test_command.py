@@ -1,24 +1,34 @@
 # -*- coding: utf-8 -*-
 
 """Tests dict input objects for `cookiecutter.prompt` module."""
+import os
 
 from cookiecutter.operator import run_operator, parse_operator
 
 context = {
     'cookiecutter': {
         'project_name': "Slartibartfast",
-        'details': {"type": "command", "command": "echo here"},
+        'details': {"type": "command", "command": "ls"},
     }
 }
 
 
 def test_command():
     """Verify simplest functionality."""
-    operator_output, delayed_output = run_operator(
-        context['cookiecutter']['details'], context
-    )
-    assert operator_output == 'here\n'
-    assert not delayed_output
+    if os.name == 'nt':
+        # Not testing windows
+        pass
 
-    cookiecutter_dict = parse_operator(context, 'details', {})
-    assert cookiecutter_dict == {'details': 'here\n'}
+    else:
+        operator_output, delayed_output = run_operator(
+            context['cookiecutter']['details'], context
+        )
+        expected_output = """__init__.py
+__pycache__
+test_command.py
+"""
+        assert operator_output == expected_output
+        assert not delayed_output
+
+        cookiecutter_dict = parse_operator(context, 'details', {})
+        assert cookiecutter_dict == {'details': expected_output}
