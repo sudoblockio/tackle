@@ -2,15 +2,25 @@
 
 """Tests dict input objects for `cookiecutter.prompt` module."""
 from cookiecutter.operator import run_operator, parse_operator
+import os
+
+base_dir = os.path.dirname(__file__)
 
 context = {
     'cookiecutter': {
         'project_name': "Slartibartfast",
-        'details': {"type": "listdir", "directory": "dir"},
-        'hidden': {"type": "listdir", "directory": "dir", "ignore_hidden_files": True},
+        'details': {"type": "listdir", "directory": os.path.join(base_dir, "dir")},
+        'hidden': {
+            "type": "listdir",
+            "directory": os.path.join(base_dir, "dir"),
+            "ignore_hidden_files": True,
+        },
         'list_directories': {
             "type": "listdir",
-            "directories": ["dir", "dirs"],
+            "directories": [
+                os.path.join(base_dir, "dir"),
+                os.path.join(base_dir, "dirs"),
+            ],
             "ignore_hidden_files": True,
         },
     }
@@ -19,6 +29,7 @@ context = {
 
 def test_listdir_operator():
     """Verify simplest functionality."""
+    # os.chdir(os.path.abspath(os.path.dirname(__file__)))
     operator_output, delayed_output = run_operator(
         context['cookiecutter']['details'], context
     )
@@ -32,6 +43,7 @@ def test_listdir_operator():
 
 def test_listdir_operator_ignore_hidden():
     """Verify simplest functionality."""
+    # os.chdir(os.path.abspath(os.path.dirname(__file__)))
     operator_output, delayed_output = run_operator(
         context['cookiecutter']['hidden'], context
     )
@@ -45,13 +57,20 @@ def test_listdir_operator_ignore_hidden():
 
 def test_listdir_operator_directories_list():
     """Verify simplest functionality."""
+    # os.chdir(os.path.abspath(os.path.dirname(__file__)))
     operator_output, delayed_output = run_operator(
         context['cookiecutter']['list_directories'], context
     )
 
     expected_output = {
-        'dir': ['things.py', 'stuff.txt', '.hidden-stuff'],
-        'dirs': ['dir2', 'dir1', 'things.py', 'stuff.txt', '.hidden-stuff'],
+        os.path.join(base_dir, "dir"): ['things.py', 'stuff.txt', '.hidden-stuff'],
+        os.path.join(base_dir, "dirs"): [
+            'dir2',
+            'dir1',
+            'things.py',
+            'stuff.txt',
+            '.hidden-stuff',
+        ],
     }
     assert operator_output == expected_output
 

@@ -27,11 +27,17 @@ class JinjaOperator(BaseOperator):
         self.post_gen_operator = (
             self.operator_dict['delay'] if 'delay' in self.operator_dict else False
         )
+        self.file_system_loader = (
+            self.operator_dict['file_system_loader']
+            if 'file_system_loader' in self.operator_dict
+            else '.'
+        )
 
     def execute(self):
         """Run the operator."""  # noqa
         env = StrictEnvironment(context=self.context)
-        env.loader = FileSystemLoader('.')
+
+        env.loader = FileSystemLoader(self.file_system_loader)
         template = env.get_template(self.operator_dict['template_path'])
 
         output_from_parsed_template = template.render(**self.context)

@@ -5,10 +5,12 @@ import os
 
 from cookiecutter.operator import run_operator, parse_operator
 
+base_dir = os.path.dirname(__file__)
+
 context = {
     'cookiecutter': {
         'project_name': "Slartibartfast",
-        'details': {"type": "command", "command": "ls"},
+        'details': {"type": "command", "command": "ls " + base_dir},
     }
 }
 

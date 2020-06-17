@@ -7,8 +7,6 @@ from __future__ import print_function
 import sys
 import logging
 
-# import shlex
-
 from cookiecutter.operators import BaseOperator
 import subprocess
 
@@ -24,9 +22,6 @@ class CommandOperator(BaseOperator):
         """Initialize `command` Hook."""  # noqa
         super(CommandOperator, self).__init__(
             operator_dict=operator_dict, context=context, no_input=no_input
-        )
-        self.post_gen_operator = (
-            self.operator_dict['delay'] if 'delay' in self.operator_dict else True
         )
         # Defaulting to run inline
         self.post_gen_operator = (
