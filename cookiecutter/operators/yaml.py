@@ -33,5 +33,5 @@ class YamlOperator(BaseOperator):
                 yaml.dump(self.operator_dict['contents'], f)
 
         else:
-            with open(self.operator_dict['path'], 'w') as f:
-                return yaml.load(f)
+            with open(self.operator_dict['path'], 'r') as f:
+                return yaml.safe_load(f)

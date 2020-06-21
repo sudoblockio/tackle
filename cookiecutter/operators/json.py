@@ -34,5 +34,5 @@ class JsonOperator(BaseOperator):
             return self.operator_dict['path']
 
         else:
-            with open(self.operator_dict['path'], 'w') as f:
+            with open(self.operator_dict['path'], 'r') as f:
                 return json.load(f)
