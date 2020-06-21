@@ -3,18 +3,18 @@
 ---
 
 ### Operators
-- command
+- inquirer
   - [ ] Get pty process running to launch pseudo shell
   - [ ] Allow for returning pipe output from popen
   - [ ] Mock pseudo shell process to be rolled out across testing
-  - [ ] Jinja templates folder fallback
-  - [ ] Requests...
-  - [ ] git
-  - [ ] ssh
-  - [ ] Templating operators
-      - [ ] tfvars
-      - [ ] terragrunt?
-  - [ ]
+- [ ] Jinja templates folder fallback
+- [ ] Requests...
+- [ ] git
+- [ ] ssh
+- [ ] Templating operators
+  - [ ] tfvars
+  - [ ] terragrunt?
+- [ ]
 
 ### Operator Parsing
 - [x] Move no_input to run operator section
@@ -23,7 +23,7 @@
 - [ ] Validation attribute
 - [ ] Filter attribute
 - [ ] Before / After operator hook
-- [ ]
+- [ ] Fallback override
 
 ### Main
 - [x] nuki....
