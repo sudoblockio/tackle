@@ -23,9 +23,10 @@ logger = logging.getLogger(__name__)
 
 
 def cookiecutter(
-    template,
+    template=None,
     checkout=None,
     no_input=False,
+    context_file=None,
     extra_context=None,
     replay=False,
     overwrite_if_exists=False,
@@ -64,12 +65,13 @@ def cookiecutter(
         config_file=config_file, default_config=default_config,
     )
 
-    repo_dir, cleanup = determine_repo_dir(
+    repo_dir, context_file, cleanup = determine_repo_dir(
         template=template,
         abbreviations=config_dict['abbreviations'],
         clone_to_dir=config_dict['cookiecutters_dir'],
         checkout=checkout,
         no_input=no_input,
+        context_file=context_file,
         password=password,
         directory=directory,
     )
@@ -79,7 +81,7 @@ def cookiecutter(
     if replay:
         context = load(config_dict['replay_dir'], template_name)
     else:
-        context_file = os.path.join(repo_dir, 'cookiecutter.json')
+        context_file = os.path.join(repo_dir, context_file)
         logger.debug('context_file is %s', context_file)
 
         context = generate_context(

@@ -17,19 +17,22 @@ from cookiecutter import repository, exceptions
         ('http://example.com/path/to/zipfile.zip', True),
     ],
 )
-def test_zipfile_unzip(mocker, template, is_url, user_config_data):
+def test_zipfile_unzip(monkeypatch, mocker, template, is_url, user_config_data):
     """Verify zip files correctly handled for different source locations.
 
     `unzip()` should be called with correct args when `determine_repo_dir()`
     is passed a zipfile, or a URL to a zipfile.
     """
+    test_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', '..')
+    monkeypatch.chdir(test_dir)
+
     mock_clone = mocker.patch(
         'cookiecutter.repository.unzip',
         return_value='tests/fake-repo-tmpl',
         autospec=True,
     )
 
-    project_dir, cleanup = repository.determine_repo_dir(
+    project_dir, context_file, cleanup = repository.determine_repo_dir(
         template,
         abbreviations={},
         clone_to_dir=user_config_data['cookiecutters_dir'],
@@ -60,19 +63,24 @@ def template_url():
     return 'https://github.com/pytest-dev/cookiecutter-pytest-plugin.git'
 
 
-def test_repository_url_should_clone(mocker, template_url, user_config_data):
+def test_repository_url_should_clone(
+    monkeypatch, mocker, template_url, user_config_data
+):
     """Verify repository url triggers clone function.
 
     `clone()` should be called with correct args when `determine_repo_dir()` is
     passed a repository template url.
     """
+    test_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', '..')
+    monkeypatch.chdir(test_dir)
+
     mock_clone = mocker.patch(
         'cookiecutter.repository.clone',
         return_value='tests/fake-repo-tmpl',
         autospec=True,
     )
 
-    project_dir, cleanup = repository.determine_repo_dir(
+    project_dir, context_file, cleanup = repository.determine_repo_dir(
         template_url,
         abbreviations={},
         clone_to_dir=user_config_data['cookiecutters_dir'],
@@ -89,6 +97,7 @@ def test_repository_url_should_clone(mocker, template_url, user_config_data):
 
     assert os.path.isdir(project_dir)
     assert not cleanup
+    assert context_file == 'cookiecutter.json'
     assert 'tests/fake-repo-tmpl' == project_dir
 
 

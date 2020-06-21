@@ -9,9 +9,12 @@ import pytest
 from cookiecutter import repository, exceptions
 
 
-def test_finds_local_repo(tmpdir):
+def test_finds_local_repo(monkeypatch, tmpdir):
     """A valid local repository should be returned."""
-    project_dir, cleanup = repository.determine_repo_dir(
+    test_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', '..')
+    monkeypatch.chdir(test_dir)
+
+    project_dir, context_file, cleanup = repository.determine_repo_dir(
         'tests/fake-repo',
         abbreviations={},
         clone_to_dir=str(tmpdir),
@@ -20,6 +23,7 @@ def test_finds_local_repo(tmpdir):
     )
 
     assert 'tests/fake-repo' == project_dir
+    assert context_file == 'cookiecutter.json'
     assert not cleanup
 
 

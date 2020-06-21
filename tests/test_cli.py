@@ -57,12 +57,17 @@ def test_cli_version(cli_runner, version_cli_flag):
 
 
 @pytest.mark.usefixtures('make_fake_project_dir', 'remove_fake_project_dir')
-def test_cli_error_on_existing_output_directory(cli_runner):
+def test_cli_error_on_existing_output_directory(monkeypatch, cli_runner):
     """Test cli invocation without `overwrite-if-exists` fail if dir exist."""
+    test_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
+    monkeypatch.chdir(test_dir)
+
     result = cli_runner('tests/fake-repo-pre/', '--no-input')
     assert result.exit_code != 0
-    expected_error_msg = 'Error: "fake-project" directory already exists\n'
-    assert result.output == expected_error_msg
+    result_output = result.output.split('\n')[-2]
+    expected_error_msg = 'Error: "fake-project" directory already exists'
+    assert result_output == expected_error_msg
+    # assert result.output == expected_error_msg
 
 
 @pytest.mark.usefixtures('remove_fake_project_dir')

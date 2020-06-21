@@ -37,7 +37,7 @@ def test_should_find_existing_cookiecutter(
 
     This folder is considered like previously cloned project directory.
     """
-    project_dir, cleanup = repository.determine_repo_dir(
+    project_dir, context_file, cleanup = repository.determine_repo_dir(
         template=template,
         abbreviations={},
         clone_to_dir=user_config_data['cookiecutters_dir'],
@@ -46,4 +46,5 @@ def test_should_find_existing_cookiecutter(
     )
 
     assert cloned_cookiecutter_path == project_dir
+    assert context_file == 'cookiecutter.json'
     assert not cleanup

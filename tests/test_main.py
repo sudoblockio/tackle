@@ -2,6 +2,7 @@
 
 """Collection of tests around cookiecutter's replay feature."""
 
+import os
 from cookiecutter.main import cookiecutter
 
 
@@ -19,7 +20,9 @@ def test_replay_dump_template_name(
     Change the current working directory temporarily to 'tests/fake-repo-tmpl'
     for this test and call cookiecutter with '.' for the target template.
     """
-    monkeypatch.chdir('tests/fake-repo-tmpl')
+    monkeypatch.chdir(
+        os.path.join(os.path.abspath(os.path.dirname(__file__)), 'fake-repo-tmpl')
+    )
 
     mock_replay_dump = mocker.patch('cookiecutter.main.dump')
     mocker.patch('cookiecutter.main.generate_files')
@@ -43,7 +46,9 @@ def test_replay_load_template_name(
     Change the current working directory temporarily to 'tests/fake-repo-tmpl'
     for this test and call cookiecutter with '.' for the target template.
     """
-    monkeypatch.chdir('tests/fake-repo-tmpl')
+    monkeypatch.chdir(
+        os.path.join(os.path.abspath(os.path.dirname(__file__)), 'fake-repo-tmpl')
+    )
 
     mock_replay_load = mocker.patch('cookiecutter.main.load')
     mocker.patch('cookiecutter.main.generate_files')

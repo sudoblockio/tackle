@@ -59,17 +59,27 @@ def expand_abbreviations(template, abbreviations):
     return template
 
 
-def repository_has_cookiecutter_json(repo_directory):
+def repository_has_cookiecutter_json(repo_directory, context_file=None):
     """Determine if `repo_directory` contains a `cookiecutter.json` file.
 
     :param repo_directory: The candidate repository directory.
+    :param context_file:
     :return: True if the `repo_directory` is valid, else False.
     """
     repo_directory_exists = os.path.isdir(repo_directory)
+    if context_file:
+        context_file_exists = os.path.isfile(
+            os.path.join(os.path.abspath(repo_directory), context_file)
+        )
+        if context_file_exists:
+            # The supplied context file exists
+            return context_file
+
     if repo_directory_exists:
+        # Check for valid context files as default
         for f in valid_context_files:
             if os.path.isfile(os.path.join(repo_directory, f)):
-                return True
+                return f
     else:
         return False
 
@@ -80,6 +90,7 @@ def determine_repo_dir(
     clone_to_dir,
     checkout,
     no_input,
+    context_file=None,
     password=None,
     directory=None,
 ):
@@ -135,8 +146,12 @@ def determine_repo_dir(
         ]
 
     for repo_candidate in repository_candidates:
-        if repository_has_cookiecutter_json(repo_candidate):
-            return repo_candidate, cleanup
+        context_file = repository_has_cookiecutter_json(repo_candidate, context_file)
+        if not context_file:
+            # Means that no valid context file has been found or provided
+            continue
+        else:
+            return repo_candidate, context_file, cleanup
 
     raise RepositoryNotFound(
         'A valid repository for "{}" could not be found in the following '
