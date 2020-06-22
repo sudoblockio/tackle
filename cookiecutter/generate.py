@@ -33,7 +33,7 @@ from cookiecutter.operator import post_gen_operator_list
 logger = logging.getLogger(__name__)
 
 
-def is_copy_only_path(path, context):
+def is_copy_only_path(path, context, context_key='cookiecutter'):
     """Check whether the given `path` should only be copied and not rendered.
 
     Returns True if `path` matches a pattern in the given `context` dict,
@@ -44,7 +44,7 @@ def is_copy_only_path(path, context):
     :param context: cookiecutter context.
     """
     try:
-        for dont_render in context['cookiecutter']['_copy_without_render']:
+        for dont_render in context[context_key]['_copy_without_render']:
             if fnmatch.fnmatch(path, dont_render):
                 return True
     except KeyError:
@@ -93,8 +93,6 @@ def generate_context(
     context = OrderedDict([])
 
     try:
-        # if not context_file:
-
         obj = read_config_file(context_file)
     except ValueError as e:
         # JSON decoding error.  Let's throw a new exception that is more
@@ -259,6 +257,7 @@ def generate_files(
     output_dir='.',
     overwrite_if_exists=False,
     skip_if_file_exists=False,
+    context_key=None,
 ):
     """Render the templates and saves them to files.
 
@@ -268,6 +267,9 @@ def generate_files(
     :param overwrite_if_exists: Overwrite the contents of the output directory
         if it exists.
     """
+    if not context_key:
+        context_key = next(iter(context))
+
     template_dir = find_template(repo_dir)
     if template_dir:
         logger.debug('Generating project from %s...', template_dir)
@@ -317,7 +319,7 @@ def generate_files(
                     # We check the full path, because that's how it can be
                     # specified in the ``_copy_without_render`` setting, but
                     # we store just the dir name
-                    if is_copy_only_path(d_, context):
+                    if is_copy_only_path(d_, context, context_key):
                         copy_dirs.append(d)
                     else:
                         render_dirs.append(d)
@@ -352,7 +354,7 @@ def generate_files(
 
                 for f in files:
                     infile = os.path.normpath(os.path.join(root, f))
-                    if is_copy_only_path(infile, context):
+                    if is_copy_only_path(infile, context, context_key):
                         outfile_tmpl = env.from_string(infile)
                         outfile_rendered = outfile_tmpl.render(**context)
                         outfile = os.path.join(project_dir, outfile_rendered)

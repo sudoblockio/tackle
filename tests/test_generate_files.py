@@ -363,11 +363,11 @@ def test_raise_undefined_variable_project_dir(tmpdir):
         generate.generate_files(
             repo_dir='tests/undefined-variable/dir-name/',
             output_dir=str(output_dir),
-            context={},
+            context={'stuff': 'things'},
         )
     error = err.value
     msg = "Unable to create project directory '{{cookiecutter.project_slug}}'"
     assert msg == error.message
-    assert error.context == {}
+    assert error.context == {'stuff': 'things'}
 
     assert not output_dir.join('testproject').exists()

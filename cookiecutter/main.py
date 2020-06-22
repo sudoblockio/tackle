@@ -80,6 +80,7 @@ def cookiecutter(
 
     if replay:
         context = load(config_dict['replay_dir'], template_name)
+        context_key = context_file.split('.')[0]
     else:
         context_key = context_file.split('.')[0]
         context_file_path = os.path.join(repo_dir, context_file)
@@ -107,6 +108,7 @@ def cookiecutter(
         overwrite_if_exists=overwrite_if_exists,
         skip_if_file_exists=skip_if_file_exists,
         output_dir=output_dir,
+        context_key=context_key,
     )
 
     # Cleanup (if required)
