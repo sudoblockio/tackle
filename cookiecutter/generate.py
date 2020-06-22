@@ -270,7 +270,7 @@ def generate_files(
     if not context_key:
         context_key = next(iter(context))
 
-    template_dir = find_template(repo_dir)
+    template_dir = find_template(repo_dir, context_key)
     if template_dir:
         logger.debug('Generating project from %s...', template_dir)
         context = context or OrderedDict([])

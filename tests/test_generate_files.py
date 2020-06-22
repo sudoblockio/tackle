@@ -355,19 +355,20 @@ def test_raise_undefined_variable_dir_name_existing_project(tmpdir, undefined_co
     assert output_dir.join('testproject').exists()
 
 
-def test_raise_undefined_variable_project_dir(tmpdir):
+def test_raise_undefined_variable_project_dir(monkeypatch, tmpdir):
     """Verify correct error raised when directory name cannot be rendered."""
+    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
     output_dir = tmpdir.mkdir('output')
 
     with pytest.raises(exceptions.UndefinedVariableInTemplate) as err:
         generate.generate_files(
-            repo_dir='tests/undefined-variable/dir-name/',
+            repo_dir='undefined-variable/dir-name/',
             output_dir=str(output_dir),
-            context={'stuff': 'things'},
+            context={'cookiecutter': {'stuff': 'things'}},
         )
     error = err.value
     msg = "Unable to create project directory '{{cookiecutter.project_slug}}'"
     assert msg == error.message
-    assert error.context == {'stuff': 'things'}
+    assert error.context == {'cookiecutter': {'stuff': 'things'}}
 
     assert not output_dir.join('testproject').exists()

@@ -8,7 +8,7 @@ import os
 logger = logging.getLogger(__name__)
 
 
-def find_template(repo_dir):
+def find_template(repo_dir, context_key='cookiecutter'):
     """Determine which child directory of `repo_dir` is the project template.
 
     :param repo_dir: Local directory of newly cloned repo.
@@ -20,7 +20,7 @@ def find_template(repo_dir):
 
     project_template = None
     for item in repo_dir_contents:
-        if 'cookiecutter' in item and '{{' in item and '}}' in item:
+        if context_key in item and '{{' in item and '}}' in item:
             project_template = item
             break
 

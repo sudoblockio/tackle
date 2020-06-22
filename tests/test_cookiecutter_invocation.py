@@ -41,11 +41,32 @@ def test_should_raise_error_without_template_arg(monkeypatch, capfd):
 def test_should_invoke_main(monkeypatch, project_dir):
     """Should create a project and exit with 0 code on cli invocation."""
     monkeypatch.setenv('PYTHONPATH', '.')
-    # test_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
-    # monkeypatch.chdir(test_dir)
+    test_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
+    monkeypatch.chdir(test_dir)
 
     exit_code = subprocess.check_call(
         [sys.executable, '-m', 'cookiecutter.cli', 'tests/fake-repo-tmpl', '--no-input']
     )
+    assert exit_code == 0
+    assert os.path.isdir(project_dir)
+
+
+@pytest.mark.usefixtures('clean_system')
+def test_should_invoke_main_nuki(monkeypatch, project_dir):
+    """Should create a project and exit with 0 code on cli invocation."""
+    monkeypatch.setenv('PYTHONPATH', '.')
+    test_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
+    monkeypatch.chdir(test_dir)
+
+    exit_code = subprocess.check_call(
+        [
+            sys.executable,
+            '-m',
+            'cookiecutter.cli',
+            'tests/fake-repo-tmpl-nuki',
+            '--no-input',
+        ]
+    )
+
     assert exit_code == 0
     assert os.path.isdir(project_dir)
