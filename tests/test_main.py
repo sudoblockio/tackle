@@ -32,7 +32,7 @@ def test_replay_dump_template_name(
     )
 
     mock_replay_dump.assert_called_once_with(
-        user_config_data['replay_dir'], 'fake-repo-tmpl', mocker.ANY,
+        user_config_data['replay_dir'], 'fake-repo-tmpl', mocker.ANY, 'cookiecutter'
     )
 
 

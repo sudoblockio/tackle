@@ -45,11 +45,12 @@ def test_type_error_if_not_dict_context(replay_test_dir, template_name):
         replay.dump(replay_test_dir, template_name, 'not_a_dict')
 
 
-def test_value_error_if_key_missing_in_context(replay_test_dir, template_name):
-    """Test that replay.dump raises if the context does not contain a key \
-    named 'cookiecutter'."""
-    with pytest.raises(ValueError):
-        replay.dump(replay_test_dir, template_name, {'foo': 'bar'})
+# Deprecated due to wanting flexible context key now - nuki
+# def test_value_error_if_key_missing_in_context(replay_test_dir, template_name):
+#     """Test that replay.dump raises if the context does not contain a key \
+#     named 'cookiecutter'."""
+#     with pytest.raises(ValueError):
+#         replay.dump(replay_test_dir, template_name, {'foo': 'bar'})
 
 
 @pytest.fixture
@@ -81,6 +82,7 @@ def test_ioerror_if_replay_dir_creation_fails(mock_ensure_failure, replay_test_d
 
 
 def test_run_json_dump(
+    monkeypatch,
     mocker,
     mock_ensure_success,
     mock_user_config,
@@ -91,6 +93,9 @@ def test_run_json_dump(
 ):
     """Test that replay.dump runs json.dump under the hood and that the context \
     is correctly written to the expected file in the replay_dir."""
+    test_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
+    monkeypatch.chdir(test_dir)
+
     spy_get_replay_file = mocker.spy(replay, 'get_file_name')
 
     mock_json_dump = mocker.patch('json.dump', side_effect=json.dump)

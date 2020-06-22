@@ -22,8 +22,11 @@ def get_file_name(replay_dir, template_name):
     return os.path.join(replay_dir, file_name)
 
 
-def dump(replay_dir, template_name, context):
+def dump(replay_dir, template_name, context, context_key=None):
     """Write json data to file."""
+    if not context_key:
+        context_key = next(iter(context))
+
     if not make_sure_path_exists(replay_dir):
         raise IOError('Unable to create replay dir at {}'.format(replay_dir))
 
@@ -33,7 +36,7 @@ def dump(replay_dir, template_name, context):
     if not isinstance(context, dict):
         raise TypeError('Context is required to be of type dict')
 
-    if 'cookiecutter' not in context:
+    if context_key not in context:
         raise ValueError('Context is required to contain a cookiecutter key')
 
     replay_file = get_file_name(replay_dir, template_name)

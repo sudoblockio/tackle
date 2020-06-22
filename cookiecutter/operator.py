@@ -31,14 +31,22 @@ def run_operator(operator_dict: dict, context=None, no_input=False):
 
 
 def parse_operator(
-    context, key, cookiecutter_dict, append_key: bool = False, no_input: bool = False,
+    context,
+    key,
+    cookiecutter_dict,
+    append_key: bool = False,
+    no_input: bool = False,
+    context_key=None,
 ):
     """Parse input dict for loop and when logic and calls hooks.
 
     :return: cookiecutter_dict # noqa
     """
+    if not context_key:
+        context_key = next(iter(context))
+
     env = StrictEnvironment(context=context)
-    operator_dict = context['cookiecutter'][key]
+    operator_dict = context[context_key][key]
 
     global post_gen_operator_list
 
