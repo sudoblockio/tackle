@@ -2,23 +2,17 @@
 
 """Tests dict input objects for `cookiecutter.prompt` module."""
 
-import pytest
 import yaml
 import os
 import shutil
 
 from cookiecutter import prompt
 
-from cookiecutter.operator import run_operator
-from cookiecutter.main import cookiecutter
-
-from pprint import pprint
-
 FIXTURES = ['checkbox_bad.yaml']
 
 
 def checkbox():
-
+    """Test mo stuff."""
     fixture = 'checkbox_bad.yaml'
     with open(fixture, 'r') as f:
         context = yaml.load(f, Loader=yaml.FullLoader)
