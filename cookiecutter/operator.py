@@ -55,7 +55,8 @@ def parse_operator(
             raise ValueError("Can't have when condition without establishing context")
 
         when_condition = (
-            render_variable(env, operator_dict['when'], cookiecutter_dict) == 'True'
+            render_variable(env, operator_dict['when'], cookiecutter_dict, context_key)
+            == 'True'
         )
 
         operator_dict.pop('when')
@@ -69,7 +70,7 @@ def parse_operator(
         # Extract loop
         if 'loop' in operator_dict:
             loop_targets = render_variable(
-                env, operator_dict['loop'], cookiecutter_dict
+                env, operator_dict['loop'], cookiecutter_dict, context_key
             )
             operator_dict.pop('loop')
 
@@ -91,7 +92,9 @@ def parse_operator(
             cookiecutter_dict[key] = loop_output
             return cookiecutter_dict
 
-        operator_dict = render_variable(env, operator_dict, cookiecutter_dict)
+        operator_dict = render_variable(
+            env, operator_dict, cookiecutter_dict, context_key
+        )
         cookiecutter_dict[key], post_gen_operator = run_operator(
             operator_dict, context, no_input
         )  # output is list

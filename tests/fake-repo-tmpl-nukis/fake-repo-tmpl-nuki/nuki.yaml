@@ -1,0 +1,6 @@
+---
+
+project_name: Fake Nuki Templated
+repo_name: "{{ nuki.project_name|lower|replace(' ', '-') }}"
+project_short_description: This is a nuki.
+year: '2020'

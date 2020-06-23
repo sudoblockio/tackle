@@ -70,3 +70,24 @@ def test_should_invoke_main_nuki(monkeypatch, project_dir):
 
     assert exit_code == 0
     assert os.path.isdir(project_dir)
+
+
+# @pytest.mark.usefixtures('clean_system')
+# def test_should_invoke_main_nuki_nukis(monkeypatch, project_dir):
+#     """Should create a project and exit with 0 code on cli invocation."""
+#     monkeypatch.setenv('PYTHONPATH', '.')
+#     test_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
+#     monkeypatch.chdir(test_dir)
+#
+#     exit_code = subprocess.check_call(
+#         [
+#             sys.executable,
+#             '-m',
+#             'cookiecutter.cli',
+#             'tests/fake-repo-tmpl-nukis',
+#             '--no-input',
+#         ]
+#     )
+#
+#     assert exit_code == 0
+#     assert os.path.isdir(project_dir)

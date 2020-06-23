@@ -40,7 +40,9 @@ class TestRenderVariable:
         )
         context = {'project': 'foobar'}
 
-        result = cookiecutter.environment.render_variable(env, raw_var, context)
+        result = cookiecutter.environment.render_variable(
+            env, raw_var, context, context_key='cookiecutter'
+        )
         assert result == rendered_var
 
         # Make sure that non None non str variables are converted beforehand
@@ -67,7 +69,9 @@ class TestRenderVariable:
         env = environment.StrictEnvironment()
         context = {'project': 'foobar'}
 
-        result = cookiecutter.environment.render_variable(env, raw_var, context)
+        result = cookiecutter.environment.render_variable(
+            env, raw_var, context, context_key='cookiecutter'
+        )
         assert result == rendered_var
 
 
@@ -324,6 +328,7 @@ class TestPromptChoiceForConfig(object):
             key='orientation',
             options=choices,
             no_input=True,  # Suppress user input
+            context_key='cookiecutter',
         )
 
         assert not read_user_choice.called
@@ -342,6 +347,7 @@ class TestPromptChoiceForConfig(object):
             key='orientation',
             options=choices,
             no_input=False,  # Ask the user for input
+            context_key='cookiecutter',
         )
         read_user_choice.assert_called_once_with('orientation', choices)
         assert expected_choice == actual_choice

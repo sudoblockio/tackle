@@ -3,5 +3,3 @@ Fake Project
 ============
 
 Blah!!!!
-
-{{ nuki }}

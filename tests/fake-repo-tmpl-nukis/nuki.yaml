@@ -1,4 +1,9 @@
 ---
 
+full_name: Audrey Roy
 project_name: Fake Project Templated
 repo_name: "{{ nuki.project_name|lower|replace(' ', '-') }}"
+
+other_nuki:
+  type: nukikata
+  template: fake-repo-tmpl-nuki

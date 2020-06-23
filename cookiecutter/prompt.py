@@ -124,12 +124,16 @@ def read_user_dict(var_name, default_value):
     return user_value
 
 
-def prompt_choice_for_config(cookiecutter_dict, env, key, options, no_input):
+def prompt_choice_for_config(
+    cookiecutter_dict, env, key, options, no_input, context_key
+):
     """Prompt user with a set of options to choose from.
 
     Each of the possible choices is rendered beforehand.
     """
-    rendered_options = [render_variable(env, raw, cookiecutter_dict) for raw in options]
+    rendered_options = [
+        render_variable(env, raw, cookiecutter_dict, context_key) for raw in options
+    ]
 
     if no_input:
         return rendered_options[0]
@@ -160,12 +164,12 @@ def prompt_for_config(context, no_input=False, context_key=None):
             if isinstance(raw, list):
                 # We are dealing with a choice variable
                 val = prompt_choice_for_config(
-                    cookiecutter_dict, env, key, raw, no_input
+                    cookiecutter_dict, env, key, raw, no_input, context_key
                 )
                 cookiecutter_dict[key] = val
             elif not isinstance(raw, dict):
                 # We are dealing with a regular variable
-                val = render_variable(env, raw, cookiecutter_dict)
+                val = render_variable(env, raw, cookiecutter_dict, context_key)
 
                 if not no_input:
                     val = read_user_variable(key, val)
@@ -181,7 +185,7 @@ def prompt_for_config(context, no_input=False, context_key=None):
             if isinstance(raw, dict):
                 # dict parsing logic
                 if 'type' not in raw:
-                    val = render_variable(env, raw, cookiecutter_dict)
+                    val = render_variable(env, raw, cookiecutter_dict, context_key)
                     if not no_input:
                         val = read_user_dict(key, val)
                     cookiecutter_dict[key] = val

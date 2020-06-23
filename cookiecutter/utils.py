@@ -130,7 +130,7 @@ def read_config_file(file):
         with open(file) as f:
             config = json.load(f, object_pairs_hook=OrderedDict)
         return config
-    elif file_extension in ('yaml', 'yml', 'cookiecutter2rc'):
+    elif file_extension in ('yaml', 'yml', 'nukirc'):
         with open(file, encoding='utf-8') as f:
             config = yaml.load(f, Loader=yaml.FullLoader)
         return config

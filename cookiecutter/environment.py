@@ -70,7 +70,7 @@ class StrictEnvironment(ExtensionLoaderMixin, Environment):
         super(StrictEnvironment, self).__init__(undefined=StrictUndefined, **kwargs)
 
 
-def render_variable(env, raw, cookiecutter_dict):
+def render_variable(env, raw, cookiecutter_dict, context_key):
     """Render the next variable to be displayed in the user prompt.
 
     Inside the prompting taken from the cookiecutter.json file, this renders
@@ -91,19 +91,19 @@ def render_variable(env, raw, cookiecutter_dict):
         return None
     elif isinstance(raw, dict):
         return {
-            render_variable(env, k, cookiecutter_dict): render_variable(
-                env, v, cookiecutter_dict
+            render_variable(env, k, cookiecutter_dict, context_key): render_variable(
+                env, v, cookiecutter_dict, context_key
             )
             for k, v in raw.items()
         }
     elif isinstance(raw, list):
-        return [render_variable(env, v, cookiecutter_dict) for v in raw]
+        return [render_variable(env, v, cookiecutter_dict, context_key) for v in raw]
     elif not isinstance(raw, six.string_types):
         raw = str(raw)
 
     template = env.from_string(raw)
 
-    rendered_template = template.render(cookiecutter=cookiecutter_dict)
+    rendered_template = template.render({context_key: cookiecutter_dict})
 
     LIST_REGEX = r'^\[.*\]$'
     if bool(re.search(LIST_REGEX, rendered_template)):
