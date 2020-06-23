@@ -4,7 +4,7 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 
-import cookiecutter
+import cookiecutter as cc
 import logging
 
 from cookiecutter.operators import BaseOperator
@@ -19,7 +19,7 @@ class NukikataOperator(BaseOperator):
     type = 'nukikata'
 
     def __init__(self, operator_dict, context=None, no_input=False):
-        """Initialize operator."""  # noqa
+        """Initialize operator."""
         super(NukikataOperator, self).__init__(
             operator_dict=operator_dict, context=context, no_input=no_input
         )
@@ -29,16 +29,16 @@ class NukikataOperator(BaseOperator):
         )
 
     def execute(self):
-        """Run the operator."""  # noqa
-
-        return cookiecutter.main.cookiecutter(
+        """Run the nukikata operator."""
+        return cc.main.cookiecutter(
             template=self.operator_dict['template'],
             checkout=self.operator_dict['checkout']
             if 'checkout' in self.operator_dict
             else None,
-            no_input=self.operator_dict['no_input']
-            if 'no_input' in self.operator_dict
-            else False,
+            no_input=self.no_input,
+            context_file=self.operator_dict['context_file']
+            if 'context_file' in self.operator_dict
+            else None,
             extra_context=self.operator_dict['extra_context']
             if 'extra_context' in self.operator_dict
             else None,
@@ -69,30 +69,35 @@ class NukikataOperator(BaseOperator):
         )
 
 
-# TODO: Is this needed?  We need to verify that the
-# class NukikataPromptOperator(BaseOperator):
-#     """Operator for cookiecutter type prompts."""
-#
-#     type = 'nukikata_prompt'
-#
-#     def __init__(self, operator_dict, context=None):
-#         """Initialize operator."""  # noqa
-#         super(NukikataPromptOperator, self).__init__(
-#             operator_dict=operator_dict, context=context
-#         )
-#
-#     def execute(self):
-#         """Run the operator."""  # noqa
-#         if 'template' in self.operator_dict:
-#             context = cookiecutter.utils.read_config_file(
-#                 self.operator_dict['template']
-#             )  # noqa
-#         else:
-#             context = self.operator_dict['context']
-#
-#         return cookiecutter.prompt_for_config.cookiecutter(
-#             context=context,
-#             no_input=self.operator_dict['no_input']
-#             if 'no_input' in self.operator_dict
-#             else False,
-#         )  # noqa
+# # TODO: Is this needed?  Once we fix the output of the
+# #  normal cookiecutter this won't be needed likely
+class NukikataPromptOperator(BaseOperator):
+    """Operator for nukikata type prompts."""
+
+    type = 'nukikata_prompt'
+
+    def __init__(self, operator_dict, context=None, no_input=False):
+        """Initialize operator."""
+        super(NukikataPromptOperator, self).__init__(
+            operator_dict=operator_dict, context=context, no_input=no_input
+        )
+
+    def execute(self):
+        """Run the operator."""
+        context = {'cookiecutter': {}}
+        if 'context_file' in self.operator_dict:
+            context['cookiecutter'] = cc.utils.read_config_file(
+                self.operator_dict['template']
+            )
+        else:
+            context['cookiecutter'] = self.operator_dict['context']
+
+        return cc.prompt.prompt_for_config(
+            context=context,
+            no_input=self.operator_dict['no_input']
+            if 'no_input' in self.operator_dict
+            else False,
+            context_key=self.operator_dict['context_key']
+            if 'context_key' in self.operator_dict
+            else None,
+        )
