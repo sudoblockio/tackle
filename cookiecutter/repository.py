@@ -22,12 +22,15 @@ REPO_REGEX = re.compile(
 )
 
 valid_context_files = [
-    'cookiecutter.json',
-    'cookiecutter.yaml',
-    'cookiecutter.yml',
     'nuki.json',
     'nuki.yaml',
     'nuki.yml',
+    'nukikata.json',
+    'nukikata.yaml',
+    'nukikata.yml',
+    'cookiecutter.json',
+    'cookiecutter.yaml',
+    'cookiecutter.yml',
 ]
 
 
