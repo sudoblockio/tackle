@@ -27,9 +27,9 @@ context = {
 }
 
 
-def test_listdir_operator():
+def test_listdir_operator(monkeypatch):
     """Verify simplest functionality."""
-    # os.chdir(os.path.abspath(os.path.dirname(__file__)))
+    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
     operator_output, delayed_output = run_operator(
         context['cookiecutter']['details'], context
     )
@@ -41,9 +41,10 @@ def test_listdir_operator():
     assert cookiecutter_dict == {'details': expected_output}
 
 
-def test_listdir_operator_ignore_hidden():
+def test_listdir_operator_ignore_hidden(monkeypatch):
     """Verify simplest functionality."""
-    # os.chdir(os.path.abspath(os.path.dirname(__file__)))
+    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
+
     operator_output, delayed_output = run_operator(
         context['cookiecutter']['hidden'], context
     )
@@ -55,9 +56,9 @@ def test_listdir_operator_ignore_hidden():
     assert cookiecutter_dict == {'hidden': expected_output}
 
 
-def test_listdir_operator_directories_list():
+def test_listdir_operator_directories_list(monkeypatch):
     """Verify simplest functionality."""
-    # os.chdir(os.path.abspath(os.path.dirname(__file__)))
+    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
     operator_output, delayed_output = run_operator(
         context['cookiecutter']['list_directories'], context
     )
