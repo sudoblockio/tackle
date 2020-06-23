@@ -23,6 +23,7 @@ Inspired by [Ansible's](https://github.com/ansible/ansible) syntax, this project
 ```
 pip3 install nukikata
 nukikata https://github.com/insight-infrastructure/nukikata-demo-monty
+curl
 cat output.json
 ```
 
@@ -30,51 +31,48 @@ cat output.json
 
 All cookiecutter features are supported in addition to loops, conditionals, and plugins. These features are only available to supplied dictionary objects with a `type` key to trigger the associated [operator](cookiecutter/operators). Loops and conditionals are triggered by rendering [jinja](https://github.com/pallets/jinja) expressions per the example below.
 
-```json
-{
-  "name": {
-    "type": "input",
-    "message": "What is your name?"
-  },
-  "colors": {
-    "type": "checkbox",
-    "message": "What are your favorite colors?",
-    "choices": [
-      {"name": "blue"},
-      {"name": "green"},
-      {"name": "grey"}
-    ]
-  },
-  "wingspeed": {
-    "type": "list",
-    "message": "What is the airspeed velocity of an unladen swallow??",
-    "choices": [
-      {"name": "I donno"},
-      {"name": "What do you mean? African or European swallow?"}
-    ]
-  },
-  "bad_outcome": {
-    "type": "print",
-    "statement": "Wrong answer {{ cookiecutter.name }}...",
-    "when": "{{ 'I donno' in cookiecutter.wingspeed }}"
-  },
-  "color_essays": {
-    "type": "input",
-    "message": "Please tell me how much you like the color {{cookiecutter.item}}?",
-    "default": "Oh color {{cookiecutter.item}}, you are so frickin cool...",
-    "loop": "{{ cookiecutter.colors }}",
-    "when": "{{ cookiecutter.colors|length > 1 }}"
-  },
-  "democmd": {
-    "type": "command",
-    "command": "pwd"
-  },
-  "dump_json": {
-    "type": "json",
-    "contents": "{{ cookiecutter }}",
-    "path": "output.json"
-  }
-}
+`
+```yaml
+---
+name:
+  type: input
+  message: What is your name?
+
+colors:
+  type: checkbox
+  message: What are your favorite colors?
+  choices:
+    - name: blue
+    - name: green
+    - name: grey
+
+wingspeed:
+  type: list
+  message: What is the airspeed velocity of an unladen swallow??
+  choices:
+    - name: I donno
+    - name: What do you mean? African or European swallow?
+
+bad_outcome:
+  type: print
+  statement: Wrong answer {{ nuki.name }}...
+  when: "{{ 'I donno' in nuki.wingspeed }}"
+
+color_essays:
+  type: input
+  message: Please tell me how much you like the color {{nuki.item}}?
+  default: Oh color {{nuki.item}}, you are so frickin cool...
+  loop: "{{ nuki.colors }}"
+  when: "{{ nuki.colors|length > 1 }}"
+
+democmd:
+  type: command
+  command: pwd
+
+dump_json:
+  type: json
+  contents: "{{ nuki }}"
+  path: output.json
 ```
 
 Prompts are enhanced by extending the functionality from [PyInquirer](https://github.com/CITGuru/PyInquirer) as a set of operators as noted by the types `input`, `list`, and `checkbox`. Writing new operators is super simple as seen in the `print` operator:
