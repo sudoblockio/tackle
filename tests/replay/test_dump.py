@@ -16,8 +16,10 @@ def template_name():
 
 
 @pytest.fixture
-def replay_file(replay_test_dir, template_name):
+def replay_file(monkeypatch, replay_test_dir, template_name):
     """Fixture to return a actual file name of the dump."""
+    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
+
     file_name = '{}.json'.format(template_name)
     return os.path.join(replay_test_dir, file_name)
 
