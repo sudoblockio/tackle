@@ -1,15 +1,18 @@
 # History
 
-Nukikata will be a couple months behind the major updates for cookiecutter at which point it will be on exact feature parity. The initial major update only broke one test and intends on doing it's best to not break any additional tests.
+Nukikata will be a couple months behind the major releases for cookiecutter at which point it will be on exact feature parity. Each update is done maintaining coverage doing it's best to not break any tests and inherit all the existing functionality of cookiecutter.
 
 The cookiecutter history can be viewed in the [project tab](https://github.com/cookiecutter/cookiecutter/projects) and [HISTORY.md](https://github.com/cookiecutter/cookiecutter/blob/master/HISTORY.md)
 
 
-## 1.7.2.3 (2020-06-X)
+## 1.7.2.3 (2020-06-23)
 
+- Breaking change - main function returns context instead of result_directory.  This makes it much easier to use when stitching cookiecutters together as now the context can be kept namespaced per the actual context they are being called in.  This change only affects tests and those using the package as a function. The idea is that the output directory can be resolved out of scope and does not need to be returned.
+- Added yaml support
+- Added context_key variable. Now this defaults to the name of the context_file without the extension.  Can be overridden in cli
 - Added listdir, split,
 - Added coverage over non-pty requiring operators
-
+- Convert many tests to run both from tox and local - broke `test_cookiecutter_no_input_return_project_dir`
 
 ## 1.7.2.2 (2020-06-01)
 
