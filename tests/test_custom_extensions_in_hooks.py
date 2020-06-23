@@ -9,6 +9,7 @@ pre- and post-gen hooks.
 
 import codecs
 import os
+from _collections import OrderedDict
 
 import pytest
 
@@ -21,7 +22,7 @@ from cookiecutter import main
 )
 def template(request):
     """Fixture. Allows to split pre and post hooks test directories."""
-    return 'tests/test-extensions/' + request.param
+    return 'test-extensions/' + request.param
 
 
 @pytest.fixture
@@ -33,25 +34,27 @@ def output_dir(tmpdir):
 @pytest.fixture(autouse=True)
 def modify_syspath(monkeypatch):
     """Fixture. Make sure that the custom extension can be loaded."""
-    monkeypatch.syspath_prepend('tests/test-extensions/hello_extension')
+    monkeypatch.syspath_prepend('test-extensions/hello_extension')
 
 
-def test_hook_with_extension(template, output_dir):
+def test_hook_with_extension(monkeypatch, template, output_dir):
     """Verify custom Jinja2 extension correctly work in hooks and file rendering.
 
     Each file in hooks has simple tests inside and will raise error if not
     correctly rendered.
     """
-    project_dir = main.cookiecutter(
+    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
+
+    context = main.cookiecutter(
         template,
         no_input=True,
         output_dir=output_dir,
         extra_context={'project_slug': 'foobar', 'name': 'Cookiemonster'},
     )
 
-    readme_file = os.path.join(project_dir, 'README.rst')
-
+    readme_file = os.path.join(os.path.join(output_dir, 'foobar', 'README.rst'))
     with codecs.open(readme_file, encoding='utf8') as f:
         readme = f.read().strip()
-
     assert readme == 'Hello Cookiemonster!'
+
+    assert type(context) == OrderedDict

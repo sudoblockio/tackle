@@ -92,7 +92,7 @@ def cookiecutter(
             extra_context=extra_context,
         )
 
-        # prompt the user to manually configure at the command line.
+        # prompt the user to manually configure at the command line.pyth
         # except when 'no-input' flag is set
         context[context_key] = prompt_for_config(context, no_input, context_key)
 
@@ -110,9 +110,13 @@ def cookiecutter(
         output_dir=output_dir,
         context_key=context_key,
     )
+    if result:
+        logger.debug('Resulting project directory created at %s', result)
+    else:
+        logger.debug('No project directory was created')
 
     # Cleanup (if required)
     if cleanup:
         rmtree(repo_dir)
 
-    return result
+    return context

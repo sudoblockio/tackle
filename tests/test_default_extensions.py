@@ -4,6 +4,7 @@
 
 import io
 import os
+from _collections import OrderedDict
 
 import freezegun
 import pytest
@@ -20,12 +21,17 @@ def freeze():
     freezer.stop()
 
 
-def test_jinja2_time_extension(tmpdir):
+def test_jinja2_time_extension(monkeypatch, tmpdir):
     """Verify Jinja2 time extension work correctly."""
-    project_dir = cookiecutter(
-        'tests/test-extensions/default/', no_input=True, output_dir=str(tmpdir)
+    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
+
+    context = cookiecutter(
+        'test-extensions/default/', no_input=True, output_dir=str(tmpdir)
     )
-    changelog_file = os.path.join(project_dir, 'HISTORY.rst')
+
+    assert type(context) == OrderedDict
+
+    changelog_file = os.path.join(tmpdir, os.listdir(tmpdir)[0], 'HISTORY.rst')
     assert os.path.isfile(changelog_file)
 
     with io.open(changelog_file, 'r', encoding='utf-8') as f:
@@ -43,10 +49,26 @@ def test_jinja2_time_extension(tmpdir):
     assert expected_lines == changelog_lines
 
 
-def test_jinja2_slugify_extension(tmpdir):
+def test_jinja2_slugify_extension(monkeypatch, tmpdir):
     """Verify Jinja2 slugify extension work correctly."""
-    project_dir = cookiecutter(
-        'tests/test-extensions/default/', no_input=True, output_dir=str(tmpdir)
+    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
+
+    context = cookiecutter(
+        'test-extensions/default/', no_input=True, output_dir=str(tmpdir)
     )
 
-    assert os.path.basename(project_dir) == "it-s-slugified-foobar"
+    assert os.listdir(tmpdir)[0] == "it-s-slugified-foobar"
+    assert context == OrderedDict(
+        [
+            (
+                'cookiecutter',
+                OrderedDict(
+                    [
+                        ('project_slug', 'it-s-slugified-foobar'),
+                        ('year', '2015'),
+                        ('_template', 'test-extensions/default/'),
+                    ]
+                ),
+            )
+        ]
+    )
