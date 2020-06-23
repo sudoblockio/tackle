@@ -27,6 +27,7 @@ def cookiecutter(
     checkout=None,
     no_input=False,
     context_file=None,
+    context_key=None,
     extra_context=None,
     replay=False,
     overwrite_if_exists=False,
@@ -79,10 +80,10 @@ def cookiecutter(
     template_name = os.path.basename(os.path.abspath(repo_dir))
 
     if replay:
-        context = load(config_dict['replay_dir'], template_name)
-        context_key = context_file.split('.')[0]
+        if not context_key:
+            context_key = context_file.split('.')[0]
+        context = load(config_dict['replay_dir'], template_name, context_key)
     else:
-        context_key = context_file.split('.')[0]
         context_file_path = os.path.join(repo_dir, context_file)
         logger.debug('context_file is %s', context_file_path)
 
@@ -92,6 +93,8 @@ def cookiecutter(
             extra_context=extra_context,
         )
 
+        if not context_key:
+            context_key = context_file.split('.')[0]
         # prompt the user to manually configure at the command line.pyth
         # except when 'no-input' flag is set
         context[context_key] = prompt_for_config(context, no_input, context_key)

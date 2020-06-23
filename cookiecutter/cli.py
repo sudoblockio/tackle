@@ -57,6 +57,11 @@ def validate_extra_context(ctx, param, value):
     help=u'The input context file to parse - overrides default cookiecutter.json',
 )
 @click.option(
+    u'--context-key',
+    default=None,
+    help=u'The key to use in the output context - overrides default \'cookiecutter\'',
+)
+@click.option(
     u'--no-input',
     is_flag=True,
     help=u'Do not prompt for parameters and only use cookiecutter.json '
@@ -117,6 +122,7 @@ def main(
     template,
     extra_context,
     context_file,
+    context_key,
     no_input,
     checkout,
     verbose,
@@ -149,6 +155,7 @@ def main(
             checkout,
             no_input,
             context_file=context_file,
+            context_key=context_key,
             extra_context=extra_context,
             replay=replay,
             overwrite_if_exists=overwrite_if_exists,
