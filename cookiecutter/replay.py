@@ -45,7 +45,7 @@ def dump(replay_dir, template_name, context, context_key=None):
         json.dump(context, outfile, indent=2)
 
 
-def load(replay_dir, template_name):
+def load(replay_dir, template_name, context_key):
     """Read json data from file."""
     if not isinstance(template_name, six.string_types):
         raise TypeError('Template name is required to be of type str')
@@ -55,7 +55,7 @@ def load(replay_dir, template_name):
     with open(replay_file, 'r') as infile:
         context = json.load(infile)
 
-    if 'cookiecutter' not in context:
-        raise ValueError('Context is required to contain a cookiecutter key')
+    if context_key not in context:
+        raise ValueError('Context does not contain the context_key %s' % context_key)
 
     return context

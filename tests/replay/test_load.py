@@ -28,17 +28,18 @@ def test_type_error_if_no_template_name(replay_test_dir):
         replay.load(replay_test_dir, None)
 
 
-def test_value_error_if_key_missing_in_context(mocker, replay_test_dir):
-    """Test that replay.load raises if the loaded context does not contain \
-    'cookiecutter'."""
-    with pytest.raises(ValueError):
-        replay.load(replay_test_dir, 'invalid_replay')
+# Deprecated v1.7.2.3
+# def test_value_error_if_key_missing_in_context(mocker, replay_test_dir):
+#     """Test that replay.load raises if the loaded context does not contain \
+#     'cookiecutter'."""
+#     with pytest.raises(ValueError):
+#         replay.load(replay_test_dir, 'invalid_replay')
 
 
 def test_io_error_if_no_replay_file(mocker, replay_test_dir):
     """Test that replay.load raises if it cannot find a replay file."""
     with pytest.raises(IOError):
-        replay.load(replay_test_dir, 'no_replay')
+        replay.load(replay_test_dir, 'no_replay', 'cookiecutter')
 
 
 def test_run_json_load(
@@ -50,7 +51,7 @@ def test_run_json_load(
 
     mock_json_load = mocker.patch('json.load', side_effect=json.load)
 
-    loaded_context = replay.load(replay_test_dir, template_name)
+    loaded_context = replay.load(replay_test_dir, template_name, 'cookiecutter')
 
     assert not mock_user_config.called
     spy_get_replay_file.assert_called_once_with(replay_test_dir, template_name)
