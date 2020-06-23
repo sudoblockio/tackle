@@ -23,7 +23,7 @@ Inspired by [Ansible's](https://github.com/ansible/ansible) syntax, this project
 ```
 pip3 install nukikata
 nukikata https://github.com/insight-infrastructure/nukikata-demo-monty
-curl
+curl https://raw.githubusercontent.com/insight-infrastructure/nukikata-demo-basic/master/nuki.yaml
 cat output.json
 ```
 
