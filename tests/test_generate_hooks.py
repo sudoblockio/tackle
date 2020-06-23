@@ -180,7 +180,6 @@ def test_run_shell_hooks(tmpdir):
 
     This test for .sh files.
     """
-    out = os.path.abspath(os.path.curdir)
     generate.generate_files(
         context={'cookiecutter': {'shellhooks': 'shellhooks'}},
         repo_dir='tests/test-shellhooks/',
