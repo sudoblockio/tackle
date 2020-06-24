@@ -15,7 +15,6 @@ from cookiecutter.environment import StrictEnvironment
 from cookiecutter.exceptions import FailedHookException
 
 
-
 logger = logging.getLogger(__name__)
 
 _HOOKS = [
@@ -131,5 +130,3 @@ def run_hook(hook_name, project_dir, context):
         return
     logger.debug('Running hook %s', hook_name)
     run_script_with_context(script, project_dir, context)
-
-
