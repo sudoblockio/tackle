@@ -2,4 +2,4 @@
 
 """Main package for Cookiecutter."""
 
-__version__ = '1.7.2.6'
+__version__ = '1.7.2.7'
