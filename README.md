@@ -31,7 +31,7 @@ cat output.json
 
 All cookiecutter features are supported in addition to loops, conditionals, and plugins. These features are only available to supplied dictionary objects with a `type` key to trigger the associated [operator](cookiecutter/operators). Loops and conditionals are triggered by rendering [jinja](https://github.com/pallets/jinja) expressions per the example below.
 
-`
+`nuki.yaml`
 ```yaml
 ---
 name:
@@ -74,6 +74,8 @@ dump_json:
   contents: "{{ nuki }}"
   path: output.json
 ```
+
+Here the jinja default context key goes to the name of file - ie `{{ nuki.<> }}`
 
 Prompts are enhanced by extending the functionality from [PyInquirer](https://github.com/CITGuru/PyInquirer) as a set of operators as noted by the types `input`, `list`, and `checkbox`. Writing new operators is super simple as seen in the `print` operator:
 
