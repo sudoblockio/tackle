@@ -140,10 +140,10 @@ Here is a short list of the operators currently supported.
     - Single select from list
     - [PyInquirer Example](https://github.com/CITGuru/PyInquirer/blob/master/examples/list.py)
     - Outputs string
-- [`rawlist`](cookiecutter/operators/rawlist.py)
-    - Single select from list
-    - [PyInquirer Example](https://github.com/CITGuru/PyInquirer/blob/master/examples/rawlist.py)
-    - Outputs string
+<!--- [`rawlist`](cookiecutter/operators/rawlist.py)-->
+<!--    - Single select from list-->
+<!--    - [PyInquirer Example](https://github.com/CITGuru/PyInquirer/blob/master/examples/rawlist.py)-->
+<!--    - Outputs string-->
 - [`password`](cookiecutter/operators/password.py)
     - Input that is hidden
     - [PyInquirer Example](https://github.com/CITGuru/PyInquirer/blob/master/examples/password.py)
