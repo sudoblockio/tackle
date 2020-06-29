@@ -11,7 +11,9 @@ import os
 import subprocess
 import sys
 
+# import shutil
 import pytest
+
 
 from cookiecutter import utils
 
@@ -55,17 +57,11 @@ def test_should_invoke_main(monkeypatch, project_dir):
 def test_should_invoke_main_nuki(monkeypatch, project_dir):
     """Should create a project and exit with 0 code on cli invocation."""
     monkeypatch.setenv('PYTHONPATH', '.')
-    test_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
+    test_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)))
     monkeypatch.chdir(test_dir)
 
     exit_code = subprocess.check_call(
-        [
-            sys.executable,
-            '-m',
-            'cookiecutter.cli',
-            'tests/fake-repo-tmpl-nuki',
-            '--no-input',
-        ]
+        [sys.executable, '-m', 'cookiecutter.cli', 'fake-repo-tmpl-nuki', '--no-input',]
     )
 
     assert exit_code == 0
@@ -76,18 +72,26 @@ def test_should_invoke_main_nuki(monkeypatch, project_dir):
 # def test_should_invoke_main_nuki_nukis(monkeypatch, project_dir):
 #     """Should create a project and exit with 0 code on cli invocation."""
 #     monkeypatch.setenv('PYTHONPATH', '.')
-#     test_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
+#     test_dir = os.path.join(os.path.abspath(os.path.dirname(
+#         __file__)), 'fake-repo-tmpl-nukis')
 #     monkeypatch.chdir(test_dir)
+#
+#     output_dir = 'fake-nuki-templated'
+#     if os.path.isdir(output_dir):
+#         shutil.rmtree(output_dir)
 #
 #     exit_code = subprocess.check_call(
 #         [
 #             sys.executable,
 #             '-m',
 #             'cookiecutter.cli',
-#             'tests/fake-repo-tmpl-nukis',
+#             '.',
 #             '--no-input',
 #         ]
 #     )
 #
 #     assert exit_code == 0
 #     assert os.path.isdir(project_dir)
+#
+#     if os.path.isdir(output_dir):
+#         shutil.rmtree(output_dir)
