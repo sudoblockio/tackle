@@ -5,7 +5,7 @@
 ### Operators
 - inquirer
   - [ ] Get pty process running to launch pseudo shell
-  - [ ] Allow for returning pipe output from popen
+  - [x] Allow for returning pipe output from popen
   - [ ] Mock pseudo shell process to be rolled out across testing
 - [ ] Jinja templates folder fallback
 - [ ] Requests...
@@ -28,8 +28,8 @@
 ### Main
 - [x] nuki....
 - [ ] Choose option Accept input for template name
-- [ ] Accept yaml file inputs
-- [ ] Catch `nuki.*` files when walking directory and parse
+- [x] Accept yaml file inputs
+- [x] Catch `nuki.*` files when walking directory and parse
     - Partially implemented
     - Need to add valid_context_files from `repository.py` in `generate.py`
 - [ ]
