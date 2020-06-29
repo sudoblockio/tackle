@@ -11,12 +11,12 @@ Japanese for `cookiecutter`: クッキーの抜き型 - Kukkī no nukikata | Dir
 
 ![Cookiecutter](https://raw.githubusercontent.com/cookiecutter/cookiecutter/3ac078356adf5a1a72042dfe72ebfa4a9cd5ef38/logo/cookiecutter_medium.png)
 
-[github.com/cookiecutter/cookiecutter](https://github.com/cookiecutter/cookiecutter) with additional features including:
+[Cookiecutter](https://github.com/cookiecutter/cookiecutter) is the worlds most popular code scaffolding tool with over [4 thousand open source cookiecutters](https://github.com/search?q=cookiecutter) available today.  This fork includes many additional features including:
 - Loops
 - Conditionals
 - Plugins
 
-Inspired by [Ansible's](https://github.com/ansible/ansible) syntax, this project aims to be a config driven CLI with a plugins based rendering and hooking capabilities.
+Inspired by [Ansible's](https://github.com/ansible/ansible) syntax, this project aims to be a flexible declarative CLI that is easy to write operators for to extend functionality. It was originally built to extend cookiecutter to include conditionals and loops in the configuration file format.  We are now looking at it as an upstream declarative CLI sandbox to prove out patterns that can either be integrated back into cookiecutter or fit a variety of other use cases.
 
 ## Quick Demo
 
@@ -75,7 +75,7 @@ dump_json:
   path: output.json
 ```
 
-Here the jinja default context key goes to the name of file - ie `{{ nuki.<> }}`
+Here the jinja default context key goes to the name of file - ie `{{ nuki.<> }}` but work is being done on maintaining a namespacing convention when stitching other cookiecutters together.
 
 Prompts are enhanced by extending the functionality from [PyInquirer](https://github.com/CITGuru/PyInquirer) as a set of operators as noted by the types `input`, `list`, and `checkbox`. Writing new operators is super simple as seen in the `print` operator:
 
