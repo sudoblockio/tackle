@@ -1,14 +1,9 @@
-# -*- coding: utf-8 -*-
-
 """
 tests_output_folder.
 
 Test formerly known from a unittest residing in test_generate.py named
 TestOutputFolder.test_output_folder
 """
-
-from __future__ import unicode_literals
-
 import os
 
 import pytest
@@ -27,12 +22,13 @@ def remove_output_folder(request):
 
 
 @pytest.mark.usefixtures('clean_system', 'remove_output_folder')
-def test_output_folder():
+def test_output_folder(monkeypatch):
     """Tests should correctly create content, as output_folder does not yet exist."""
+    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__))))
     context = generate.generate_context(
-        context_file='tests/test-output-folder/cookiecutter.json'
+        context_file='test-output-folder/cookiecutter.json'
     )
-    generate.generate_files(context=context, repo_dir='tests/test-output-folder')
+    generate.generate_files(context=context, repo_dir='test-output-folder')
 
     something = """Hi!
 My name is Audrey Greenfeld.

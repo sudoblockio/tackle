@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 test_cookiecutter_invocation.
 
@@ -25,18 +23,6 @@ def project_dir():
 
     if os.path.isdir('fake-project-templated'):
         utils.rmtree('fake-project-templated')
-
-
-def test_should_raise_error_without_template_arg(monkeypatch, capfd):
-    """Verify expected error in command line on invocation without arguments."""
-    monkeypatch.setenv('PYTHONPATH', '.')
-
-    with pytest.raises(subprocess.CalledProcessError):
-        subprocess.check_call([sys.executable, '-m', 'cookiecutter.cli'])
-
-    _, err = capfd.readouterr()
-    exp_message = "Error: Missing argument"
-    assert exp_message in err and "TEMPLATE" in err
 
 
 @pytest.mark.usefixtures('clean_system')

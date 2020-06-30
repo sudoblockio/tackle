@@ -1,10 +1,5 @@
-# -*- coding: utf-8 -*-
-
 """Functions for generating a project from a project template."""
-from __future__ import unicode_literals
-
 import fnmatch
-import io
 import logging
 import os
 import shutil
@@ -16,19 +11,20 @@ from jinja2.exceptions import TemplateSyntaxError, UndefinedError
 
 from cookiecutter.environment import StrictEnvironment
 from cookiecutter.exceptions import (
-    NonTemplatedInputDirException,
     ContextDecodingException,
     FailedHookException,
+    NonTemplatedInputDirException,
     OutputDirExistsException,
     UndefinedVariableInTemplate,
 )
 from cookiecutter.find import find_template
 from cookiecutter.hooks import run_hook
-from cookiecutter.utils import make_sure_path_exists, work_in, rmtree, read_config_file
+from cookiecutter.utils import read_config_file
 
 # from cookiecutter.repository import valid_context_files
 
 from cookiecutter.operator import post_gen_operator_list
+from cookiecutter.utils import make_sure_path_exists, rmtree, work_in
 
 logger = logging.getLogger(__name__)
 
@@ -94,6 +90,7 @@ def generate_context(
 
     try:
         obj = read_config_file(context_file)
+
     except ValueError as e:
         # JSON decoding error.  Let's throw a new exception that is more
         # friendly for the developer or user.
@@ -121,7 +118,14 @@ def generate_context(
     return context
 
 
-def generate_file(project_dir, infile, context, env, skip_if_file_exists=False):
+def generate_file(
+    project_dir,
+    infile,
+    context,
+    env,
+    skip_if_file_exists=False,
+    context_key='cookiecutter',
+):
     """Render filename of infile as name of outfile, handle infile correctly.
 
     Dealing with infile appropriately:
@@ -179,9 +183,20 @@ def generate_file(project_dir, infile, context, env, skip_if_file_exists=False):
             raise
         rendered_file = tmpl.render(**context)
 
+        # Detect original file newline to output the rendered file
+        # note: newline='' ensures newlines are not converted
+        with open(infile, 'r', encoding='utf-8', newline='') as rd:
+            rd.readline()  # Read the first line to load 'newlines' value
+
+            # Use `_new_lines` overwrite from context, if configured.
+            newline = rd.newlines
+            if context[context_key].get('_new_lines', False):
+                newline = context[context_key]['_new_lines']
+                logger.debug('Overwriting end line character with %s', newline)
+
         logger.debug('Writing contents to file %s', outfile)
 
-        with io.open(outfile, 'w', encoding='utf-8') as fh:
+        with open(outfile, 'w', encoding='utf-8', newline=newline) as fh:
             fh.write(rendered_file)
 
     # Apply file permissions to output file
@@ -258,6 +273,7 @@ def generate_files(
     overwrite_if_exists=False,
     skip_if_file_exists=False,
     context_key=None,
+    accept_hooks=True,
 ):
     """Render the templates and saves them to files.
 
@@ -266,18 +282,18 @@ def generate_files(
     :param output_dir: Where to output the generated project dir into.
     :param overwrite_if_exists: Overwrite the contents of the output directory
         if it exists.
+    :param accept_hooks: Accept pre and post hooks if set to `True`.
     """
     if not context_key:
         context_key = next(iter(context))
 
     template_dir = find_template(repo_dir, context_key)
     if template_dir:
-        logger.debug('Generating project from %s...', template_dir)
-        context = context or OrderedDict([])
+        envvars = context.get(context_key, {}).get('_jinja2_env_vars', {})
 
         unrendered_dir = os.path.split(template_dir)[1]
         ensure_dir_is_templated(unrendered_dir)
-        env = StrictEnvironment(context=context, keep_trailing_newline=True)
+        env = StrictEnvironment(context=context, keep_trailing_newline=True, **envvars)
         try:
             project_dir, output_directory_created = render_and_create_dir(
                 unrendered_dir, context, output_dir, env, overwrite_if_exists
@@ -300,9 +316,14 @@ def generate_files(
         # if rendering fails
         delete_project_on_failure = output_directory_created
 
-        _run_hook_from_repo_dir(
-            repo_dir, 'pre_gen_project', project_dir, context, delete_project_on_failure
-        )
+        if accept_hooks:
+            _run_hook_from_repo_dir(
+                repo_dir,
+                'pre_gen_project',
+                project_dir,
+                context,
+                delete_project_on_failure,
+            )
 
         with work_in(template_dir):
             env.loader = FileSystemLoader('.')
@@ -319,7 +340,7 @@ def generate_files(
                     # We check the full path, because that's how it can be
                     # specified in the ``_copy_without_render`` setting, but
                     # we store just the dir name
-                    if is_copy_only_path(d_, context, context_key):
+                    if is_copy_only_path(d_, context):
                         copy_dirs.append(d)
                     else:
                         render_dirs.append(d)
@@ -327,6 +348,7 @@ def generate_files(
                 for copy_dir in copy_dirs:
                     indir = os.path.normpath(os.path.join(root, copy_dir))
                     outdir = os.path.normpath(os.path.join(project_dir, indir))
+                    outdir = env.from_string(outdir).render(**context)
                     logger.debug(
                         'Copying dir %s to %s without rendering', indir, outdir
                     )
@@ -354,7 +376,7 @@ def generate_files(
 
                 for f in files:
                     infile = os.path.normpath(os.path.join(root, f))
-                    if is_copy_only_path(infile, context, context_key):
+                    if is_copy_only_path(infile, context):
                         outfile_tmpl = env.from_string(infile)
                         outfile_rendered = outfile_tmpl.render(**context)
                         outfile = os.path.join(project_dir, outfile_rendered)
@@ -366,7 +388,12 @@ def generate_files(
                         continue
                     try:
                         generate_file(
-                            project_dir, infile, context, env, skip_if_file_exists
+                            project_dir,
+                            infile,
+                            context,
+                            env,
+                            skip_if_file_exists,
+                            context_key,
                         )
                     except UndefinedError as err:
                         if delete_project_on_failure:
@@ -374,19 +401,29 @@ def generate_files(
                         msg = "Unable to create file '{}'".format(infile)
                         raise UndefinedVariableInTemplate(msg, err, context)
 
-        _run_hook_from_repo_dir(
-            repo_dir,
-            'post_gen_project',
-            project_dir,
-            context,
-            delete_project_on_failure,
-        )
+        if accept_hooks:
+            _run_hook_from_repo_dir(
+                repo_dir,
+                'post_gen_project',
+                project_dir,
+                context,
+                delete_project_on_failure,
+            )
 
-        for o in post_gen_operator_list:
-            o.execute()
+            for o in post_gen_operator_list:
+                o.execute()
 
-        return project_dir
+            return project_dir
     else:
+        if accept_hooks:
+            _run_hook_from_repo_dir(
+                repo_dir,
+                'post_gen_project',
+                '.',  # TODO: This needs context switching
+                context,
+                False,
+            )
+
         for o in post_gen_operator_list:
             o.execute()
         return None

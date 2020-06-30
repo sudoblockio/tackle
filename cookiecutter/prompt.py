@@ -1,17 +1,15 @@
-# -*- coding: utf-8 -*-
-
 """Functions for prompting the user for project info."""
-
-from collections import OrderedDict
 import json
+from collections import OrderedDict
 
 import click
 
+from cookiecutter.operator import parse_operator
 from jinja2.exceptions import UndefinedError
 
+from cookiecutter.environment import StrictEnvironment
 from cookiecutter.exceptions import UndefinedVariableInTemplate
-from cookiecutter.environment import StrictEnvironment, render_variable
-from cookiecutter.operator import parse_operator
+from cookiecutter.render import render_variable
 
 
 def read_user_variable(var_name, default_value):
@@ -63,17 +61,17 @@ def read_user_choice(var_name, options):
         raise ValueError
 
     choice_map = OrderedDict(
-        (u'{}'.format(i), value) for i, value in enumerate(options, 1)
+        ('{}'.format(i), value) for i, value in enumerate(options, 1)
     )
     choices = choice_map.keys()
-    default = u'1'
+    default = '1'
 
-    choice_lines = [u'{} - {}'.format(*c) for c in choice_map.items()]
-    prompt = u'\n'.join(
+    choice_lines = ['{} - {}'.format(*c) for c in choice_map.items()]
+    prompt = '\n'.join(
         (
-            u'Select {}:'.format(var_name),
-            u'\n'.join(choice_lines),
-            u'Choose from {}'.format(u', '.join(choices)),
+            'Select {}:'.format(var_name),
+            '\n'.join(choice_lines),
+            'Choose from {}'.format(', '.join(choices)),
         )
     )
 
@@ -124,6 +122,43 @@ def read_user_dict(var_name, default_value):
     return user_value
 
 
+# def render_variable(env, raw, cookiecutter_dict):
+#     """Render the next variable to be displayed in the user prompt.
+#
+#     Inside the prompting taken from the cookiecutter.json file, this renders
+#     the next variable. For example, if a project_name is "Peanut Butter
+#     Cookie", the repo_name could be be rendered with:
+#
+#         `{{ cookiecutter.project_name.replace(" ", "_") }}`.
+#
+#     This is then presented to the user as the default.
+#
+#     :param Environment env: A Jinja2 Environment object.
+#     :param raw: The next value to be prompted for by the user.
+#     :param dict cookiecutter_dict: The current context as it's gradually
+#         being populated with variables.
+#     :return: The rendered value for the default variable.
+#     """
+#     if raw is None:
+#         return None
+#     elif isinstance(raw, dict):
+#         return {
+#             render_variable(env, k, cookiecutter_dict): render_variable(
+#                 env, v, cookiecutter_dict
+#             )
+#             for k, v in raw.items()
+#         }
+#     elif isinstance(raw, list):
+#         return [render_variable(env, v, cookiecutter_dict) for v in raw]
+#     elif not isinstance(raw, str):
+#         raw = str(raw)
+#
+#     template = env.from_string(raw)
+#
+#     rendered_template = template.render(cookiecutter=cookiecutter_dict)
+#     return rendered_template
+
+
 def prompt_choice_for_config(
     cookiecutter_dict, env, key, options, no_input, context_key
 ):
@@ -156,8 +191,13 @@ def prompt_for_config(context, no_input=False, context_key=None):
     # These must be done first because the dictionaries keys and
     # values might refer to them.
     for key, raw in context[context_key].items():
-        if key.startswith(u'_'):
+        if key.startswith(u'_') and not key.startswith('__'):
             cookiecutter_dict[key] = raw
+            continue
+        elif key.startswith('__'):
+            cookiecutter_dict[key] = render_variable(
+                env, raw, cookiecutter_dict, context_key
+            )
             continue
 
         try:
@@ -181,6 +221,8 @@ def prompt_for_config(context, no_input=False, context_key=None):
 
     # Second pass; handle the dictionaries.
     for key, raw in context[context_key].items():
+        if key.startswith('_') and not key.startswith('__'):
+            continue
         try:
             if isinstance(raw, dict):
                 # dict parsing logic

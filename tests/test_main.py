@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Collection of tests around cookiecutter's replay feature."""
 
 import os
@@ -60,3 +58,21 @@ def test_replay_load_template_name(
     mock_replay_load.assert_called_once_with(
         user_config_data['replay_dir'], 'fake-repo-tmpl', 'cookiecutter'
     )
+
+
+def test_custom_replay_file(monkeypatch, mocker, user_config_file):
+    """Check that reply.load is called with the custom replay_file."""
+    monkeypatch.chdir(
+        os.path.join(
+            os.path.abspath(os.path.join(os.path.dirname(__file__), 'fake-repo-tmpl'))
+        )
+    )
+
+    mock_replay_load = mocker.patch('cookiecutter.main.load')
+    mocker.patch('cookiecutter.main.generate_files')
+
+    cookiecutter(
+        '.', replay='./custom-replay-file', config_file=user_config_file,
+    )
+
+    mock_replay_load.assert_called_once_with('.', 'custom-replay-file', 'cookiecutter')

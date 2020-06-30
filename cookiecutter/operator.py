@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """Functions for discovering and executing various cookiecutter operators."""
-from cookiecutter.environment import StrictEnvironment, render_variable
+from cookiecutter.environment import StrictEnvironment
+from cookiecutter.render import render_variable
 from cookiecutter.operators import *  # noqa
 
 from cookiecutter.operators import BaseOperator

@@ -1,8 +1,4 @@
-# -*- coding: utf-8 -*-
-
 """Verify Jinja2 filters/extensions are available from pre-gen/post-gen hooks."""
-
-import io
 import os
 from _collections import OrderedDict
 
@@ -34,7 +30,7 @@ def test_jinja2_time_extension(monkeypatch, tmpdir):
     changelog_file = os.path.join(tmpdir, os.listdir(tmpdir)[0], 'HISTORY.rst')
     assert os.path.isfile(changelog_file)
 
-    with io.open(changelog_file, 'r', encoding='utf-8') as f:
+    with open(changelog_file, 'r', encoding='utf-8') as f:
         changelog_lines = f.readlines()
 
     expected_lines = [
@@ -67,6 +63,7 @@ def test_jinja2_slugify_extension(monkeypatch, tmpdir):
                         ('project_slug', 'it-s-slugified-foobar'),
                         ('year', '2015'),
                         ('_template', 'test-extensions/default/'),
+                        ('_output_dir', tmpdir),
                     ]
                 ),
             )

@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
-
 """Tests for cookiecutter's output directory customization feature."""
-
 import pytest
 
 from cookiecutter import main
@@ -11,11 +8,11 @@ from cookiecutter import main
 def context():
     """Fixture to return a valid context as known from a cookiecutter.json."""
     return {
-        u'cookiecutter': {
-            u'email': u'raphael@hackebrot.de',
-            u'full_name': u'Raphael Pierzina',
-            u'github_username': u'hackebrot',
-            u'version': u'0.1.0',
+        'cookiecutter': {
+            'email': 'raphael@hackebrot.de',
+            'full_name': 'Raphael Pierzina',
+            'github_username': 'hackebrot',
+            'version': '0.1.0',
         }
     }
 
@@ -28,6 +25,14 @@ def output_dir(tmpdir):
 
 @pytest.fixture
 def template(tmpdir):
+    """Fixture to prepare test template directory."""
+    template_dir = tmpdir.mkdir('template')
+    template_dir.join('cookiecutter.json').ensure(file=True)
+    return str(template_dir)
+
+
+@pytest.fixture
+def template_renderable(tmpdir):
     """Fixture to prepare test template directory."""
     template_dir = tmpdir.mkdir('template')
     template_dir.join('cookiecutter.json').ensure(file=True)
@@ -65,6 +70,7 @@ def test_api_invocation(mocker, template, output_dir, context):
         skip_if_file_exists=False,
         output_dir=output_dir,
         context_key='cookiecutter',
+        accept_hooks=True,
     )
 
 
@@ -81,4 +87,5 @@ def test_default_output_dir(mocker, template, context):
         skip_if_file_exists=False,
         output_dir='.',
         context_key='cookiecutter',
+        accept_hooks=True,
     )

@@ -11,6 +11,11 @@ Japanese for `cookiecutter`: クッキーの抜き型 - Kukkī no nukikata | Dir
 
 ![Cookiecutter](https://raw.githubusercontent.com/cookiecutter/cookiecutter/3ac078356adf5a1a72042dfe72ebfa4a9cd5ef38/logo/cookiecutter_medium.png)
 
+* Documentation: [https://cookiecutter.readthedocs.io](https://cookiecutter.readthedocs.io)
+* GitHub: [https://github.com/cookiecutter/cookiecutter](https://github.com/cookiecutter/cookiecutter)
+* PyPI: [https://pypi.org/project/cookiecutter/](https://pypi.org/project/cookiecutter/)
+* Free and open source software: [BSD license](https://github.com/cookiecutter/cookiecutter/blob/master/LICENSE)
+
 [Cookiecutter](https://github.com/cookiecutter/cookiecutter) is the worlds most popular code scaffolding tool with over [4 thousand open source cookiecutters](https://github.com/search?q=cookiecutter) available today.  This fork includes many additional features including:
 - Loops
 - Conditionals
@@ -140,10 +145,10 @@ Here is a short list of the operators currently supported.
     - Single select from list
     - [PyInquirer Example](https://github.com/CITGuru/PyInquirer/blob/master/examples/list.py)
     - Outputs string
-<!--- [`rawlist`](cookiecutter/operators/rawlist.py)-->
-<!--    - Single select from list-->
-<!--    - [PyInquirer Example](https://github.com/CITGuru/PyInquirer/blob/master/examples/rawlist.py)-->
-<!--    - Outputs string-->
+- [`rawlist`](cookiecutter/operators/rawlist.py)
+    - Single select from list
+    - [PyInquirer Example](https://github.com/CITGuru/PyInquirer/blob/master/examples/rawlist.py)
+    - Outputs string
 - [`password`](cookiecutter/operators/password.py)
     - Input that is hidden
     - [PyInquirer Example](https://github.com/CITGuru/PyInquirer/blob/master/examples/password.py)

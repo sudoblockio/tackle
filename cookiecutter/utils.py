@@ -1,14 +1,10 @@
-# -*- coding: utf-8 -*-
-
 """Helper functions used throughout Cookiecutter."""
-
-from __future__ import unicode_literals
 import contextlib
 import errno
 import logging
 import os
-import stat
 import shutil
+import stat
 import sys
 import json
 import yaml
@@ -92,7 +88,7 @@ def prompt_and_delete(path, no_input=False):
         ok_to_delete = True
     else:
         question = (
-            "You've downloaded {} before. " "Is it okay to delete and re-download it?"
+            "You've downloaded {} before. Is it okay to delete and re-download it?"
         ).format(path)
 
         ok_to_delete = read_user_yes_no(question, 'yes')
