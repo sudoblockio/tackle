@@ -14,8 +14,9 @@ from cookiecutter import utils
 
 
 @pytest.fixture(scope='function')
-def remove_output_folder(request):
+def remove_output_folder(monkeypatch, request):
     """Remove the output folder after test."""
+    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__))))
     yield
     if os.path.exists('output_folder'):
         utils.rmtree('output_folder')
@@ -45,14 +46,16 @@ It is 2014."""
 
 
 @pytest.mark.usefixtures('clean_system', 'remove_output_folder')
-def test_exception_when_output_folder_exists():
+def test_exception_when_output_folder_exists(monkeypatch):
     """Tests should raise error as output folder created before `generate_files`."""
+    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__))))
+
     context = generate.generate_context(
-        context_file='tests/test-output-folder/cookiecutter.json'
+        context_file='test-output-folder/cookiecutter.json'
     )
     output_folder = context['cookiecutter']['test_name']
 
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
     with pytest.raises(exceptions.OutputDirExistsException):
-        generate.generate_files(context=context, repo_dir='tests/test-output-folder')
+        generate.generate_files(context=context, repo_dir='test-output-folder')
