@@ -47,7 +47,8 @@ def test_jinja2_time_extension(monkeypatch, tmpdir):
 
 def test_jinja2_slugify_extension(monkeypatch, tmpdir):
     """Verify Jinja2 slugify extension work correctly."""
-    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
+    cwd = os.path.abspath(os.path.dirname(__file__))
+    monkeypatch.chdir(cwd)
 
     context = cookiecutter(
         'test-extensions/default/', no_input=True, output_dir=str(tmpdir)
@@ -62,7 +63,7 @@ def test_jinja2_slugify_extension(monkeypatch, tmpdir):
                     [
                         ('project_slug', 'it-s-slugified-foobar'),
                         ('year', '2015'),
-                        ('_template', 'test-extensions/default/'),
+                        ('_template', os.path.join(cwd, 'test-extensions/default')),
                         ('_output_dir', tmpdir),
                     ]
                 ),

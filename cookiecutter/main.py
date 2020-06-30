@@ -105,7 +105,7 @@ def cookiecutter(
         context[context_key] = prompt_for_config(context, no_input, context_key)
 
         # include template dir or url in the context dict
-        context[context_key]['_template'] = template
+        context[context_key]['_template'] = os.path.abspath(template)
         # include output+dir in the context dict
         context[context_key]['_output_dir'] = os.path.abspath(output_dir)
 

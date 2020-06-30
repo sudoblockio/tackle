@@ -390,10 +390,13 @@ def test_default_user_config(mocker, cli_runner):
     sys.version_info[0] == 3 and sys.version_info[1] == 6 and sys.version_info[2] == 1,
     reason="Outdated pypy3 version on Travis CI/CD with wrong OrderedDict syntax.",
 )
-def test_echo_undefined_variable_error(tmpdir, cli_runner):
+def test_echo_undefined_variable_error(monkeypatch, tmpdir, cli_runner):
     """Cli invocation return error if variable undefined in template."""
+    cwd = os.path.abspath(os.path.dirname(__file__))
+    monkeypatch.chdir(cwd)
+
     output_dir = str(tmpdir.mkdir('output'))
-    template_path = 'tests/undefined-variable/file-name/'
+    template_path = 'undefined-variable/file-name'
 
     result = cli_runner(
         '--no-input', '--default-config', '--output-dir', output_dir, template_path,
@@ -409,11 +412,12 @@ def test_echo_undefined_variable_error(tmpdir, cli_runner):
     )
     assert message in result.output
 
+    template_abs_path = os.path.join(cwd, template_path)
     context = {
         'cookiecutter': {
             'github_username': 'hackebrot',
             'project_slug': 'testproject',
-            '_template': template_path,
+            '_template': template_abs_path,
             '_output_dir': output_dir,
         }
     }
