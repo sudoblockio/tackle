@@ -197,30 +197,33 @@ def test_generate_files_binaries(tmp_path):
     assert is_binary(str(Path(dst_dir, 'binary_files/binary_files/logo.png')))
 
 
-def test_generate_files_absolute_path(tmp_path):
+def test_generate_files_absolute_path(monkeypatch, tmp_path):
     """Verify usage of absolute path does not change files generation behaviour."""
+    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__))))
     generate.generate_files(
         context={'cookiecutter': {'food': 'pizzä'}},
-        repo_dir=Path('tests/test-generate-files').absolute(),
+        repo_dir=Path('test-generate-files').absolute(),
         output_dir=tmp_path,
     )
-    assert Path(tmp_path, 'inputpizzä/simple.txt').is_file()
+    assert Path(tmp_path, u'inputpizzä/simple.txt').is_file()
 
 
-def test_generate_files_output_dir(tmp_path):
+def test_generate_files_output_dir(monkeypatch, tmp_path):
     """Verify `output_dir` option for `generate_files` changing location correctly."""
+    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__))))
+
     output_dir = Path(tmp_path, 'custom_output_dir')
     output_dir.mkdir()
 
     project_dir = generate.generate_files(
         context={'cookiecutter': {'food': 'pizzä'}},
-        repo_dir=Path('tests/test-generate-files').absolute(),
+        repo_dir=Path('test-generate-files').absolute(),
         output_dir=output_dir,
     )
 
-    assert Path(output_dir, 'inputpizzä/simple.txt').exists()
-    assert Path(output_dir, 'inputpizzä/simple.txt').is_file()
-    assert Path(project_dir) == Path(tmp_path, 'custom_output_dir/inputpizzä')
+    assert Path(output_dir, u'inputpizzä/simple.txt').exists()
+    assert Path(output_dir, u'inputpizzä/simple.txt').is_file()
+    assert Path(project_dir) == Path(tmp_path, u'custom_output_dir/inputpizzä')
 
 
 def test_generate_files_permissions(tmp_path):
