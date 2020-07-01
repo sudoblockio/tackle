@@ -18,10 +18,13 @@ class JinjaOperator(BaseOperator):
 
     type = 'jinja'
 
-    def __init__(self, operator_dict, context=None, no_input=False):
+    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
         """Initialize operator."""  # noqa
         super(JinjaOperator, self).__init__(
-            operator_dict=operator_dict, context=context, no_input=no_input
+            operator_dict=operator_dict,
+            context=context,
+            no_input=no_input,
+            context_key=context_key,
         )
         # Defaulting to run inline
         self.post_gen_operator = (

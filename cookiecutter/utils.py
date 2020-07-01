@@ -1,5 +1,4 @@
 """Helper functions used throughout Cookiecutter."""
-import contextlib
 import errno
 import logging
 import os
@@ -46,21 +45,6 @@ def make_sure_path_exists(path):
         if exception.errno != errno.EEXIST:
             return False
     return True
-
-
-@contextlib.contextmanager
-def work_in(dirname=None):
-    """Context manager version of os.chdir.
-
-    When exited, returns to the working directory prior to entering.
-    """
-    curdir = os.getcwd()
-    try:
-        if dirname is not None:
-            os.chdir(dirname)
-        yield
-    finally:
-        os.chdir(curdir)
 
 
 def make_executable(script_path):

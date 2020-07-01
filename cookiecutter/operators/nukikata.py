@@ -18,19 +18,21 @@ class NukikataOperator(BaseOperator):
 
     type = 'nukikata'
 
-    def __init__(self, operator_dict, context=None, no_input=False):
+    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
         """Initialize operator."""
         super(NukikataOperator, self).__init__(
-            operator_dict=operator_dict, context=context, no_input=no_input
+            operator_dict=operator_dict,
+            context=context,
+            no_input=no_input,
+            context_key=context_key,
         )
-        # Doesn't work, gets called twice
         self.post_gen_operator = (
             self.operator_dict['delay'] if 'delay' in self.operator_dict else False
         )
 
     def execute(self):
         """Run the nukikata operator."""
-        return cc.main.cookiecutter(
+        output_context = cc.main.cookiecutter(
             template=self.operator_dict['template'],
             checkout=self.operator_dict['checkout']
             if 'checkout' in self.operator_dict
@@ -68,6 +70,8 @@ class NukikataOperator(BaseOperator):
             else False,
         )
 
+        return output_context
+
 
 # # TODO: Is this needed?  Once we fix the output of the
 # #  normal cookiecutter this won't be needed likely
@@ -76,21 +80,24 @@ class NukikataPromptOperator(BaseOperator):
 
     type = 'nukikata_prompt'
 
-    def __init__(self, operator_dict, context=None, no_input=False):
+    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
         """Initialize operator."""
         super(NukikataPromptOperator, self).__init__(
-            operator_dict=operator_dict, context=context, no_input=no_input
+            operator_dict=operator_dict,
+            context=context,
+            no_input=no_input,
+            context_key=context_key,
         )
 
     def execute(self):
         """Run the operator."""
-        context = {'cookiecutter': {}}
+        context = {self.context_key: {}}
         if 'context_file' in self.operator_dict:
-            context['cookiecutter'] = cc.utils.read_config_file(
+            context[self.context_key] = cc.utils.read_config_file(
                 self.operator_dict['template']
             )
         else:
-            context['cookiecutter'] = self.operator_dict['context']
+            context[self.context_key] = self.operator_dict['context']
 
         return cc.prompt.prompt_for_config(
             context=context,

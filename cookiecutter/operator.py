@@ -10,7 +10,9 @@ from cookiecutter.operators import BaseOperator
 post_gen_operator_list = []
 
 
-def run_operator(operator_dict: dict, context=None, no_input=False):
+def run_operator(
+    operator_dict: dict, context=None, no_input=False, context_key='cookiecutter'
+):
     """Run operator."""
     if context is None:
         context = {}
@@ -19,13 +21,11 @@ def run_operator(operator_dict: dict, context=None, no_input=False):
     operator_list = BaseOperator.__subclasses__()
     for o in operator_list:
         if operator_dict['type'] == o.type:  # noqa
-            operator = o(operator_dict, context, no_input)
-            # TODO: Determine if default method is needed across all operators
-            # If so, need to feed in `no_input` from both cases in call
+            operator = o(operator_dict, context, context_key, no_input)
             if operator.post_gen_operator:
                 delayed_output = operator
             else:
-                operator_output = operator.execute()
+                operator_output = operator._execute()
             break
 
     return operator_output, delayed_output
@@ -97,7 +97,7 @@ def parse_operator(
             env, operator_dict, cookiecutter_dict, context_key
         )
         cookiecutter_dict[key], post_gen_operator = run_operator(
-            operator_dict, context, no_input
+            operator_dict, context, no_input, context_key
         )  # output is list
         if post_gen_operator:
             post_gen_operator_list.append(post_gen_operator)

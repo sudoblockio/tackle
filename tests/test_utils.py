@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pytest
 
+import cookiecutter.context_manager
 from cookiecutter import utils
 
 
@@ -80,7 +81,7 @@ def test_work_in(tmp_path):
     assert ch_to != Path.cwd()
 
     # Under context manager we should work in tmp_path.
-    with utils.work_in(ch_to):
+    with cookiecutter.context_manager.work_in(ch_to):
         assert ch_to == Path.cwd()
 
     # Make sure we return to the correct folder

@@ -76,3 +76,14 @@ def test_custom_replay_file(monkeypatch, mocker, user_config_file):
     )
 
     mock_replay_load.assert_called_once_with('.', 'custom-replay-file', 'cookiecutter')
+
+
+def test_nuki_embed(monkeypatch, tmpdir):
+    """Verify Jinja2 time extension work correctly."""
+    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
+
+    context = cookiecutter(
+        'fake-repo-tmpl-nuki-embed', no_input=True, output_dir=str(tmpdir)
+    )
+
+    assert ['stuff'] == list(context['nuki']['stuff_nuki'].keys())

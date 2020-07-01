@@ -8,3 +8,4 @@ other_nuki:
   type: nukikata
   template: fake-repo-tmpl-nuki
   no_input: true
+  output_dir: .

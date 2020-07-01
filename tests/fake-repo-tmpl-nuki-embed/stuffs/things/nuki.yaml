@@ -1,0 +1,9 @@
+---
+
+print_a_file:
+  type: yaml
+  path: .
+  contents:
+    sterf:
+      - things
+      - penguins

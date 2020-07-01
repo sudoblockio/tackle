@@ -1,0 +1,12 @@
+---
+
+stuff_nuki:
+  type: nukikata
+  template: .
+  context_file: stuff.yaml
+  no_input: true
+  chdir: stuffs
+
+#debug:
+#  type: print
+#  statement: "{{ cwd }}"
