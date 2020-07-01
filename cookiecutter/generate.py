@@ -24,7 +24,8 @@ from cookiecutter.utils import read_config_file
 # from cookiecutter.repository import valid_context_files
 
 from cookiecutter.operator import post_gen_operator_list
-from cookiecutter.utils import make_sure_path_exists, rmtree, work_in
+from cookiecutter.utils import make_sure_path_exists, rmtree
+from cookiecutter.context_manager import work_in
 
 logger = logging.getLogger(__name__)
 
