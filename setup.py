@@ -20,6 +20,8 @@ requirements = [
     'MarkupSafe<2.0.0',
     'PyInquirer>=1.0.3',
     'PyYAML>=5.3',
+    'boto3>=1.14',
+    'google-api-python-client>=1.9',
 ]
 
 if sys.argv[-1] == 'readme':
@@ -37,7 +39,7 @@ setup(
     ),
     long_description=readme,
     long_description_content_type='text/markdown',
-    author='Original Author - Audrey Roy, Fork by Rob Cannon',
+    author='Fork by Rob Cannon',
     author_email='rob.cannon@insightinfrastructure.com',
     url='https://github.com/insight-infrastructure/nukikata',
     packages=['cookiecutter'],

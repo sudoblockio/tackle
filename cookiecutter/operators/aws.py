@@ -12,6 +12,30 @@ from cookiecutter.operators import BaseOperator
 logger = logging.getLogger(__name__)
 
 
+class AwsRegionsOperator(BaseOperator):
+    """Operator for printing an input and returning the output."""
+
+    type = 'aws_regions'
+
+    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
+        """Initialize operator."""
+        super(AwsRegionsOperator, self).__init__(
+            operator_dict=operator_dict,
+            context=context,
+            no_input=no_input,
+            context_key=context_key,
+        )
+
+    def execute(self):
+        """Print the statement."""
+        client = boto3.client('ec2')
+
+        regions = [
+            region['RegionName'] for region in client.describe_regions()['Regions']
+        ]
+        return regions
+
+
 class AwsAzsOperator(BaseOperator):
     """Operator for retrieving the availability zones in a given region."""
 
@@ -28,7 +52,7 @@ class AwsAzsOperator(BaseOperator):
 
     def execute(self):
         """Print the statement."""
-        client = boto3.client('ec2')
+        client = boto3.client('ec2', region_name=self.operator_dict['region'])
 
         availability_zones = [
             zone['ZoneName']
@@ -58,9 +82,8 @@ class AwsEc2TypesOperator(BaseOperator):
 
     def execute(self):
         """Print the statement."""
-        client = boto3.client('ec2')
-
         selected_region = self.operator_dict['region']
+        client = boto3.client('ec2', region_name=selected_region)
 
         instances = [
             instance['InstanceType']
@@ -78,7 +101,6 @@ class AwsEc2TypesOperator(BaseOperator):
             )
             split_instances.sort()
 
-            # selected_family = ['a1', 'c1']
             selected_family = self.operator_dict['instance_families']
             selected_family = [name + '*' for name in selected_family]
 
@@ -90,27 +112,3 @@ class AwsEc2TypesOperator(BaseOperator):
             ]
 
             return instances
-
-
-class AwsRegionsOperator(BaseOperator):
-    """Operator for printing an input and returning the output."""
-
-    type = 'aws_regions'
-
-    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize operator."""
-        super(AwsRegionsOperator, self).__init__(
-            operator_dict=operator_dict,
-            context=context,
-            no_input=no_input,
-            context_key=context_key,
-        )
-
-    def execute(self):
-        """Print the statement."""
-        client = boto3.client('ec2')
-
-        regions = [
-            region['RegionName'] for region in client.describe_regions()['Regions']
-        ]
-        return regions
