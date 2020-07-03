@@ -1,0 +1,9 @@
+stuff: things
+
+choices:
+  type: checkbox
+  message: You foo?
+  default: bar
+  choices:
+    - name: ya foo
+    - name: bar

@@ -28,6 +28,13 @@ class InquirerCheckboxOperator(BaseOperator):
 
     def execute(self):
         """Run the prompt."""  # noqa
+        # Fix the input choices if they don't have the pattern {'name': 'thing'}
+        # and are just a list of strings
+        self.operator_dict['choices'] = [
+            {'name': x} if isinstance(x, str) else x
+            for x in self.operator_dict['choices']
+        ]
+
         if not self.no_input:
             if 'name' not in self.operator_dict:
                 self.operator_dict.update({'name': 'tmp'})
