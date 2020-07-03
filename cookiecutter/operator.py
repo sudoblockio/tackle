@@ -2,10 +2,11 @@
 
 """Functions for discovering and executing various cookiecutter operators."""
 from cookiecutter.environment import StrictEnvironment
+from cookiecutter.exceptions import InvalidOperatorType
 from cookiecutter.render import render_variable
 from cookiecutter.operators import *  # noqa
-
 from cookiecutter.operators import BaseOperator
+
 
 post_gen_operator_list = []
 
@@ -27,6 +28,13 @@ def run_operator(
             else:
                 operator_output = operator._execute()
             break
+        if o == operator_list[-1]:
+            msg = (
+                "The operator %s is not available out of a list of "
+                "the following operators." % operator_dict['type'],
+                operator_list,
+            )
+            raise InvalidOperatorType(msg)
 
     return operator_output, delayed_output
 

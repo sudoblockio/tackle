@@ -1,5 +1,5 @@
 stuff: things
 
 instance_types:
-  type: aws_ec2_types
+  type: something-should-be-wrong
   region: us-east-1

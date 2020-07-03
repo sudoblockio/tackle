@@ -161,3 +161,12 @@ class InvalidZipRepository(CookiecutterException):
     Raised when the specified cookiecutter repository isn't a valid
     Zip archive.
     """
+
+
+class InvalidOperatorType(CookiecutterException):
+    """
+    Exception for bad zip repo.
+
+    Raised when the specified cookiecutter repository isn't a valid
+    Zip archive.
+    """

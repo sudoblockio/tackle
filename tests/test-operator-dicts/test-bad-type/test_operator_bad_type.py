@@ -6,11 +6,15 @@ import os
 from cookiecutter.main import cookiecutter
 
 
-def test_operator_aws_ec2_meta(monkeypatch, tmpdir):
+def test_missing_operator_fails(monkeypatch, tmpdir):
     """Verify Jinja2 time extension work correctly."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
 
-    context = cookiecutter('.', no_input=True, output_dir=str(tmpdir))
-
+    stuff = None
+    context = False
+    try:
+        stuff = cookiecutter('.', no_input=True, output_dir=str(tmpdir))
+    except:  # noqa
+        context = True
+    assert not stuff
     assert context
-    # assert len(context['nuki']['instance_types']) > 1
