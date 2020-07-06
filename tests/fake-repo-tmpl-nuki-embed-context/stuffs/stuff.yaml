@@ -1,0 +1,23 @@
+---
+
+stuff: Indeed
+
+#before:
+#  type: yaml
+#  path: before.yaml
+#  contents: "{{ stuff }}"
+
+things_nuki:
+  type: nukikata
+  template: .
+  context_file: things.yaml
+  no_input: true
+  chdir: things
+  existing_context: "{{ stuff }}"
+
+#after:
+#  type: yaml
+#  path: after.yaml
+#  contents: "{{ stuff }}"
+
+

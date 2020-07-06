@@ -3,7 +3,7 @@
 stuff_nuki:
   type: nukikata
   template: .
-  context_file: stuff.yaml
+  context_file: this.yaml
   no_input: true
   chdir: stuffs
 

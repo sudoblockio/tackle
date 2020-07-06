@@ -45,15 +45,17 @@ def test_main_does_not_invoke_dump_but_load(mocker):
     assert mock_gen_files.called
 
 
-def test_main_does_not_invoke_load_but_dump(mocker):
+def test_main_does_not_invoke_load_but_dump(monkeypatch, mocker):
     """Test `cookiecutter` calling correct functions on non-replay launch."""
+    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
+
     mock_prompt = mocker.patch('cookiecutter.main.prompt_for_config')
     mock_gen_context = mocker.patch('cookiecutter.main.generate_context')
     mock_gen_files = mocker.patch('cookiecutter.main.generate_files')
     mock_replay_dump = mocker.patch('cookiecutter.main.dump')
     mock_replay_load = mocker.patch('cookiecutter.main.load')
 
-    main.cookiecutter('tests/fake-repo-tmpl/', replay=False)
+    main.cookiecutter('../fake-repo-tmpl/', replay=False)
 
     assert mock_prompt.called
     assert mock_gen_context.called

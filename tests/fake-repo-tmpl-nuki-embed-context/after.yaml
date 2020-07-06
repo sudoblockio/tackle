@@ -1,0 +1,15 @@
+_output_dir: /tmp/pytest-of-rob/pytest-85/test_embedded_context0
+_template: /home/rob/PycharmProjects/terrace/nukikata/tests/fake-repo-tmpl-nuki-embed-context
+foo: bar
+stuff_nuki:
+  _output_dir: /home/rob/PycharmProjects/terrace/nukikata/tests/fake-repo-tmpl-nuki-embed-context/stuffs
+  _template: /home/rob/PycharmProjects/terrace/nukikata/tests/fake-repo-tmpl-nuki-embed-context/stuffs
+  foo: bar
+  stuff: Indeed
+  things_nuki:
+    _output_dir: /home/rob/PycharmProjects/terrace/nukikata/tests/fake-repo-tmpl-nuki-embed-context/stuffs/things
+    _template: /home/rob/PycharmProjects/terrace/nukikata/tests/fake-repo-tmpl-nuki-embed-context/stuffs/things
+    before: null
+    foo: bar
+    stuff: Indeed
+    things: yes please

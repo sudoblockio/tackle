@@ -86,4 +86,4 @@ def test_nuki_embed(monkeypatch, tmpdir):
         'fake-repo-tmpl-nuki-embed', no_input=True, output_dir=str(tmpdir)
     )
 
-    assert ['stuff'] == list(context['nuki']['stuff_nuki'].keys())
+    assert 'sterf' in list(context['stuff_nuki'].keys())

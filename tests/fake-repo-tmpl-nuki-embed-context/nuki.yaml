@@ -1,0 +1,28 @@
+---
+foo: bar
+
+#debug:
+#  type: print
+#  statement: "{{ nuki }}"
+#
+#stop:
+#  type: confirm
+#  message: stop
+#
+#before:
+#  type: yaml
+#  path: before.yaml
+#  contents: "{{ nuki }}"
+
+stuff_nuki:
+  type: nukikata
+  template: .
+  context_file: stuff.yaml
+  no_input: true
+  chdir: stuffs
+  existing_context: "{{ nuki }}"
+
+after:
+  type: yaml
+  path: after.yaml
+  contents: "{{ nuki }}"

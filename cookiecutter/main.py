@@ -6,6 +6,8 @@ library rather than a script.
 """
 import logging
 import os
+import json
+from _collections import OrderedDict
 
 from cookiecutter.config import get_user_config
 from cookiecutter.exceptions import InvalidModeException
@@ -24,6 +26,7 @@ def cookiecutter(
     no_input=False,
     context_file=None,
     context_key=None,
+    existing_context=None,
     extra_context=None,
     replay=None,
     overwrite_if_exists=False,
@@ -80,7 +83,7 @@ def cookiecutter(
 
     if replay:
         if not context_key:
-            context_key = context_file.split('.')[0]
+            context_key = os.path.basename(context_file).split('.')[0]
 
         if isinstance(replay, bool):
             context = load(config_dict['replay_dir'], template_name, context_key)
@@ -99,7 +102,7 @@ def cookiecutter(
         )
 
         if not context_key:
-            context_key = context_file.split('.')[0]
+            context_key = os.path.basename(context_file).split('.')[0]
 
         # include template dir or url in the context dict
         context[context_key]['_template'] = os.path.abspath(template)
@@ -108,7 +111,9 @@ def cookiecutter(
 
         # prompt the user to manually configure at the command line.pyth
         # except when 'no-input' flag is set
-        context[context_key] = prompt_for_config(context, no_input, context_key)
+        context[context_key] = prompt_for_config(
+            context, no_input, context_key, existing_context
+        )
 
         dump(config_dict['replay_dir'], template_name, context, context_key)
 
@@ -132,4 +137,7 @@ def cookiecutter(
     if cleanup:
         rmtree(repo_dir)
 
-    return context
+    if isinstance(context, OrderedDict):
+        context = json.loads(json.dumps(context))
+
+    return context[context_key]

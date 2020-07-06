@@ -113,12 +113,13 @@ def test_default_context_replacement_in_generate_context():
     assert generated_context == expected_context
 
 
-def test_generate_context_decodes_non_ascii_chars():
+def test_generate_context_decodes_non_ascii_chars(monkeypatch):
     """Verify `generate_context` correctly decodes non-ascii chars."""
-    expected_context = {'non_ascii': OrderedDict([('full_name', 'éèà'),])}
+    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__))))
+    expected_context = {'non_ascii': OrderedDict([('full_name', u'éèà'),])}
 
     generated_context = generate.generate_context(
-        context_file='tests/test-generate-context/non_ascii.json'
+        context_file='test-generate-context/non_ascii.json'
     )
 
     assert generated_context == expected_context

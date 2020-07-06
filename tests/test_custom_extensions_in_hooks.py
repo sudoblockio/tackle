@@ -6,7 +6,6 @@ pre- and post-gen hooks.
 """
 import codecs
 import os
-from _collections import OrderedDict
 
 import pytest
 
@@ -54,4 +53,4 @@ def test_hook_with_extension(monkeypatch, template, output_dir):
         readme = f.read().strip()
     assert readme == 'Hello Cookiemonster!'
 
-    assert type(context) == OrderedDict
+    assert type(context) == dict

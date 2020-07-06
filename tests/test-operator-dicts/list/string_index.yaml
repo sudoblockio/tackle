@@ -1,0 +1,14 @@
+stuff: things
+
+choices:
+  type: list
+  message: You foo?
+  default: bar
+  index: true
+  choices:
+    - foo: bar
+    - stuff: things
+
+debug:
+  type: print
+  statement: "{{ index_ok }}"

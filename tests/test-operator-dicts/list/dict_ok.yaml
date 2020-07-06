@@ -1,0 +1,9 @@
+stuff: things
+
+choices:
+  type: list
+  message: You foo?
+  default: bar
+  choices:
+    - ya foo
+    - bar

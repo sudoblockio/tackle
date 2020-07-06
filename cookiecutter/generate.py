@@ -21,8 +21,6 @@ from cookiecutter.find import find_template
 from cookiecutter.hooks import run_hook
 from cookiecutter.utils import read_config_file
 
-# from cookiecutter.repository import valid_context_files
-
 from cookiecutter.operator import post_gen_operator_list
 from cookiecutter.utils import make_sure_path_exists, rmtree
 from cookiecutter.context_manager import work_in
@@ -73,10 +71,7 @@ def apply_overwrites_to_context(context, overwrite_context):
 
 
 def generate_context(
-    # context_file=None, default_context=None, extra_context=None
-    context_file='cookiecutter.json',
-    default_context=None,
-    extra_context=None,
+    context_file='cookiecutter.json', default_context=None, extra_context=None,
 ):
     """Generate the context for a Cookiecutter project template.
 

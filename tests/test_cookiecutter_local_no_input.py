@@ -7,7 +7,6 @@ import os
 import textwrap
 
 import pytest
-from _collections import OrderedDict
 
 from cookiecutter import main, utils
 
@@ -41,7 +40,7 @@ def test_cookiecutter_no_input_return_project_dir(monkeypatch):
 
     context = main.cookiecutter('fake-repo-pre', no_input=True)
 
-    assert type(context) == OrderedDict
+    assert type(context) == dict
     assert os.path.isdir('fake-repo-pre/{{cookiecutter.repo_name}}')
     assert not os.path.isdir('fake-repo-pre/fake-project')
 
@@ -83,7 +82,7 @@ def test_cookiecutter_no_input_return_rendered_file(monkeypatch):
     context = main.cookiecutter('fake-repo-pre', no_input=True)
     project_dir = os.path.join(os.path.abspath(os.path.curdir), 'fake-project')
 
-    assert type(context) == OrderedDict
+    assert type(context) == dict
     assert project_dir == os.path.abspath('fake-project')
     with open(os.path.join(project_dir, 'README.rst')) as fh:
         contents = fh.read()
@@ -99,7 +98,7 @@ def test_cookiecutter_dict_values_in_context(monkeypatch):
     project_dir = os.path.abspath(os.path.curdir)
 
     assert 'fake-project-dict' in os.listdir(project_dir)
-    assert type(context) == OrderedDict
+    assert type(context) == dict
 
     project_dir = os.path.join(project_dir, 'fake-project-dict')
 

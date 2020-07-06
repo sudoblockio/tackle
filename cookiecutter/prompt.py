@@ -122,43 +122,6 @@ def read_user_dict(var_name, default_value):
     return user_value
 
 
-# def render_variable(env, raw, cookiecutter_dict):
-#     """Render the next variable to be displayed in the user prompt.
-#
-#     Inside the prompting taken from the cookiecutter.json file, this renders
-#     the next variable. For example, if a project_name is "Peanut Butter
-#     Cookie", the repo_name could be be rendered with:
-#
-#         `{{ cookiecutter.project_name.replace(" ", "_") }}`.
-#
-#     This is then presented to the user as the default.
-#
-#     :param Environment env: A Jinja2 Environment object.
-#     :param raw: The next value to be prompted for by the user.
-#     :param dict cookiecutter_dict: The current context as it's gradually
-#         being populated with variables.
-#     :return: The rendered value for the default variable.
-#     """
-#     if raw is None:
-#         return None
-#     elif isinstance(raw, dict):
-#         return {
-#             render_variable(env, k, cookiecutter_dict): render_variable(
-#                 env, v, cookiecutter_dict
-#             )
-#             for k, v in raw.items()
-#         }
-#     elif isinstance(raw, list):
-#         return [render_variable(env, v, cookiecutter_dict) for v in raw]
-#     elif not isinstance(raw, str):
-#         raw = str(raw)
-#
-#     template = env.from_string(raw)
-#
-#     rendered_template = template.render(cookiecutter=cookiecutter_dict)
-#     return rendered_template
-
-
 def prompt_choice_for_config(
     cookiecutter_dict, env, key, options, no_input, context_key
 ):
@@ -175,13 +138,16 @@ def prompt_choice_for_config(
     return read_user_choice(key, rendered_options)
 
 
-def prompt_for_config(context, no_input=False, context_key=None):
+def prompt_for_config(context, no_input=False, context_key=None, existing_context=None):
     """Prompt user to enter a new config.
 
     :param dict context: Source for field names and sample values.
     :param no_input: Prompt the user at command line for manual configuration?
     """
-    cookiecutter_dict = OrderedDict([])
+    if not existing_context:
+        cookiecutter_dict = OrderedDict([])
+    else:
+        cookiecutter_dict = OrderedDict(existing_context)
     env = StrictEnvironment(context=context)
 
     if not context_key:
