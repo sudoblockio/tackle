@@ -1,0 +1,6 @@
+stuff: things
+azs:
+  type: aws_azs
+  regions:
+    - us-east-1
+    - us-east-2

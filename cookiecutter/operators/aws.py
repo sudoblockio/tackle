@@ -52,13 +52,26 @@ class AwsAzsOperator(BaseOperator):
 
     def execute(self):
         """Print the statement."""
-        client = boto3.client('ec2', region_name=self.operator_dict['region'])
+        if 'region' in self.operator_dict:
+            client = boto3.client('ec2', region_name=self.operator_dict['region'])
+            azs = self._call_azs(client, self.operator_dict['region'])
+            return azs
 
+        elif 'regions' in self.operator_dict:
+            output = {}
+            for r in self.operator_dict['regions']:
+                client = boto3.client('ec2', region_name=r)
+                azs = self._call_azs(client, r)
+                output.update({r: azs})
+            return output
+
+    @staticmethod
+    def _call_azs(client, region):
         availability_zones = [
             zone['ZoneName']
             for zone in client.describe_availability_zones(
                 Filters=[
-                    {'Name': 'region-name', 'Values': [self.operator_dict['region']]},
+                    {'Name': 'region-name', 'Values': [region]},
                     {'Name': 'state', 'Values': ['available']},
                 ]
             )['AvailabilityZones']
