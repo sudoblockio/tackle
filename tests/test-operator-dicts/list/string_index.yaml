@@ -6,9 +6,9 @@ choices:
   default: bar
   index: true
   choices:
-    - foo: bar
-    - stuff: things
+    - bar
+    - things
 
 debug:
   type: print
-  statement: "{{ index_ok }}"
+  statement: "{{ string_index }}"

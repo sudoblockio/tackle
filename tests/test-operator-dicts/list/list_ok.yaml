@@ -1,7 +1,7 @@
 stuff: things
 
 choices:
-  type: checkbox
+  type: list
   message: You foo?
   default: bar
   choices:

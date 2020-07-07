@@ -6,9 +6,9 @@ choices:
   default: bar
   index: true
   choices:
-    - foo: bar
-    - stuff: things
+    - foo: Do you want to bar?
+    - stuff: All the things?
 
 debug:
   type: print
-  statement: "{{ index_ok }}"
+  statement: "{{ dict_index }}"
