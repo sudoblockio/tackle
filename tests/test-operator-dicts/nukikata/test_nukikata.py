@@ -25,14 +25,15 @@ context_prompt = {
 }
 
 
-def test_nukikata_operator():
+def test_nukikata_operator(monkeypatch):
     """Verify simplest functionality."""
     # TODO: Get this to run in IDE - import error
+    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
     operator_output, delayed_output = run_operator(
         context['cookiecutter']['details'], context, no_input=True
     )
 
-    assert type(operator_output) == OrderedDict
+    assert type(operator_output) == dict
     assert not delayed_output
     prompt_output = parse_operator(context, 'details', {}, no_input=True)
     assert type(prompt_output) == dict

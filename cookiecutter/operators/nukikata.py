@@ -41,6 +41,12 @@ class NukikataOperator(BaseOperator):
             context_file=self.operator_dict['context_file']
             if 'context_file' in self.operator_dict
             else None,
+            context_key=self.operator_dict['context_key']
+            if 'context_key' in self.operator_dict
+            else None,
+            existing_context=self.operator_dict['existing_context']
+            if 'existing_context' in self.operator_dict
+            else None,
             extra_context=self.operator_dict['extra_context']
             if 'extra_context' in self.operator_dict
             else None,
