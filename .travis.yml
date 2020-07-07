@@ -1,71 +1,65 @@
-# Config file for automatic testing at travis-ci.org
 dist: xenial
 os: linux
 language: python
-
 jobs:
-    include:
-      - python: 3.7
-        env: TOXENV=lint
-      - python: 3.6
-        env: TOXENV=py36
-      - python: 3.7
-        env: TOXENV=py37
-      - python: 3.8
-        env: TOXENV=py38
-      - python: pypy3
-        env: TOXENV=pypy3
-# Travis pypy3 excluded as outdated.
-# Currently done on github, will be resumed after Travis update.
-#      - python: pypy3
-#        env: TOXENV=pypy3
-      - name: "Python 3.6 on Windows"
-        os: windows
-        language: shell
-        before_install:
-          - choco install python --version 3.6.7
-          - python --version
-          - python -m pip install --upgrade pip
-          - python -m pip install --upgrade virtualenv wheel
-          - python -m virtualenv $HOME/venv
-          - source $HOME/venv/Scripts/activate
-        env:
-          - TOXENV=py36
-          - PATH=/c/Python36:/c/Python36/Scripts:$PATH
-      - name: "Python 3.7 on Windows"
-        os: windows
-        language: shell
-        before_install:
-          - choco install python --version 3.7.2
-          - python --version
-          - python -m pip install --upgrade pip
-          - python -m pip install --upgrade virtualenv wheel
-          - python -m virtualenv $HOME/venv
-          - source $HOME/venv/Scripts/activate
-        env:
-          - TOXENV=py37
-          - PATH=/c/Python37:/c/Python37/Scripts:$PATH
-      - name: "Python 3.8 on Windows"
-        os: windows
-        language: shell
-        before_install:
-          - choco install python --version 3.8.0
-          - python --version
-          - python -m pip install --upgrade pip
-          - python -m pip install --upgrade virtualenv wheel
-          - python -m virtualenv $HOME/venv
-          - source $HOME/venv/Scripts/activate
-        env:
-          - TOXENV=py38
-          - PATH=/c/Python38:/c/Python38/Scripts:$PATH
-
+  include:
+    - python: 3.7
+      env:
+        - TOXENV=lint
+    - python: 3.6
+      env: TOXENV=py36
+    - python: 3.7
+      env: TOXENV=py37
+    - python: 3.8
+      env: TOXENV=py38
+    - python: pypy3
+      env: TOXENV=pypy3
+    - name: Python 3.6 on Windows
+      os: windows
+      language: shell
+      before_install:
+        - choco install python --version 3.6.7
+        - python --version
+        - python -m pip install --upgrade pip
+        - python -m pip install --upgrade virtualenv wheel
+        - python -m virtualenv $HOME/venv
+        - source $HOME/venv/Scripts/activate
+      env:
+        - TOXENV=py36
+        - PATH=/c/Python36:/c/Python36/Scripts:$PATH
+    - name: Python 3.7 on Windows
+      os: windows
+      language: shell
+      before_install:
+        - choco install python --version 3.7.2
+        - python --version
+        - python -m pip install --upgrade pip
+        - python -m pip install --upgrade virtualenv wheel
+        - python -m virtualenv $HOME/venv
+        - source $HOME/venv/Scripts/activate
+      env:
+        - TOXENV=py37
+        - PATH=/c/Python37:/c/Python37/Scripts:$PATH
+    - name: Python 3.8 on Windows
+      os: windows
+      language: shell
+      before_install:
+        - choco install python --version 3.8.0
+        - python --version
+        - python -m pip install --upgrade pip
+        - python -m pip install --upgrade virtualenv wheel
+        - python -m virtualenv $HOME/venv
+        - source $HOME/venv/Scripts/activate
+      env:
+        - TOXENV=py38
+        - PATH=/c/Python38:/c/Python38/Scripts:$PATH
 script: tox
-
 install:
-    - python -m pip install tox
-
+  - python -m pip install tox
 after_success:
-    # Report coverage results to codecov.io
-    # and export tox environment variables
-    - pip install codecov
-    - codecov -e TOXENV TRAVIS_OS_NAME
+  - pip install codecov
+  - codecov -e TOXENV TRAVIS_OS_NAME
+env:
+  global:
+    - secure: f0CUtCqH9w9WbwyetapGtTonCSH/aej/v5rEu3E6CfhYL3PKqjUSPC3kqWoJVdWKmBYnogZxYG6tOiwTPN0fgzgjCm6xP7J+Y6bWDLHwFeC8s1lYyxJ0F/7EeZrCV1suNrETDdZ/JY5uRIn+zI2NDvim5DVrEYVGZJ/mUFx836eEFCPw4yGM5Q4oKZW32B9I4g3wElCC6qJRC5VSe85iQ68O8Mc+g7Fi6krAPPQ75BXXkKAX9Dqw1+8r+j3ph7GZ5FKgga4qJyd4xXw4JwzGZIZvWFXdEv3sxzyLo9T07pt4uMMpwBBXKT+ZuxfY4lZGIuGJ9Hj7E5dRK2CVrDGwgrw9TIZJ/cvMUdOnRUi+6ZxpqRR0jsjoUT60FGjpLw2cXIPxACQYg5SWI0WmiYwzz3f7lJvPwsrCTJMAKN8P2BCQun3tMZOfO41y87Yywiw2d2RZwiXehYmhM2cp6yQKC4Wb/5ko10gH2sAbjyAufklj8+E8CggpM5QEK+HUBWh9YIZlF1B52UmtngQr6fSmRD1mjkLfep7PEcHHgVKkJXuMZ9KG+GsX28ezI5mWC7yCK0AM64oRKxgMEXP4NHBO9+gFLYY31AJOiVNXe0/ayB9CzEvQlWPe4HzQXDfWuhBKmumXHkI9vPYmLdKyED5oJSCxfiF7cj3jvATXYgli50A=
+    - secure: Ut8BVX09O3YoNejKphVHeDGD0HUz3ZMGWZXZ1YQwQDflzR97iI/v3KuXspEvun3QQb6mVzrofYxoEGkG10O7B/mJA8Ah02QnLam0X90a4mLCgru0Oe4pykZa+4da0AfcWxC9pmgZH27YJZHGjtY+sSMlgsspQxUPFVBNRYYB1wb2GLwoBBTDGzvHtAHUJ/FHIJ/f1XdcUa+wMkNLCnGzGIXohoShPQGAG8cB9FrFn5uXO1RVBCHyy+fJJ23Kb9N4bCdj6nou8iGpe9lLX+5pewDYTRTO3D7yz62Yky4ZLYGps4ncXKNEyYlQH86iixkVFToggkMaAeNeG2R9V9ewxzrrCFbtjDX90OPFZ94lX8bp1xTF/yQGutu9r2xt/WfGp/RsEoexu+EGPra8eVLDpO0m8uvXOxGgKPCRwpvpVveWy9ndofXPNEs9Z/4mkb4N/aANrC9mKndDvn9u5x/U76Gx4O0tV9v79hMNX9p3Pl7wQ1PsgVsoekakle+zYo4MPrkDjpDlQfjF24SGz8be9Yhg7VVWzDQaq54YMtakKRaTFmxUND8vuoggKByvgYZXhE/JIJiJjPWYsdEUYgOB8R+Shnf2g/e+9+JEQSSVvA7uQbKJlFDm/QMZAjlNpRvrzXiSDWrdTww2gBMSH5MnrKyZtpoWWPiI16ognSSJMXI=
