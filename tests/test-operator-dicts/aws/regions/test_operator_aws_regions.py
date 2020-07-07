@@ -11,4 +11,4 @@ def test_operator_aws_regions(monkeypatch, tmpdir):
 
     context = cookiecutter('.', no_input=True, output_dir=str(tmpdir))
 
-    assert len(context['nuki']['azs']) > 1
+    assert len(context['azs']) > 1
