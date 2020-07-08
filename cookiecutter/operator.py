@@ -59,17 +59,13 @@ def parse_operator(
     env = StrictEnvironment(context=context)
     operator_dict = context[context_key][key]
 
-    if 'block' in operator_dict['type']:
-        return cc.prompt.prompt_for_config(
-            context={context_key: operator_dict['items']},
-            no_input=no_input,
-            context_key=context_key,
-            existing_context=cookiecutter_dict,
-        )
-
     if 'when' in operator_dict:
         if not context:
             raise ValueError("Can't have when condition without establishing context")
+
+        if 'block' in operator_dict:
+
+            pass
 
         when_condition = (
             render_variable(env, operator_dict['when'], cookiecutter_dict, context_key)
@@ -108,6 +104,14 @@ def parse_operator(
             cookiecutter_dict.pop('item')
             cookiecutter_dict[key] = loop_output
             return cookiecutter_dict
+
+        if 'block' in operator_dict['type']:
+            return cc.prompt.prompt_for_config(
+                context={context_key: operator_dict['items']},
+                no_input=no_input,
+                context_key=context_key,
+                existing_context=cookiecutter_dict,
+            )
 
         operator_dict = render_variable(
             env, operator_dict, cookiecutter_dict, context_key
