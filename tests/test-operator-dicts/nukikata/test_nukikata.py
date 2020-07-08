@@ -2,7 +2,6 @@
 
 """Tests dict input objects for `cookiecutter.prompt` module."""
 import os
-from _collections import OrderedDict
 
 from cookiecutter.operator import run_operator, parse_operator
 
@@ -39,13 +38,13 @@ def test_nukikata_operator(monkeypatch):
     assert type(prompt_output) == dict
 
 
-def test_nukikata_prompt_operator():
-    """Verify simplest functionality."""
-    operator_output, delayed_output = run_operator(
-        context_prompt['cookiecutter']['details'], context_prompt, no_input=True
-    )
-
-    assert type(operator_output) == OrderedDict
-    assert not delayed_output
-    prompt_output = parse_operator(context_prompt, 'details', {}, no_input=True)
-    assert type(prompt_output) == dict
+# def test_nukikata_prompt_operator():
+#     """Verify simplest functionality."""
+#     operator_output, delayed_output = run_operator(
+#         context_prompt['cookiecutter']['details'], context_prompt, no_input=True
+#     )
+#
+#     assert type(operator_output) == OrderedDict
+#     assert not delayed_output
+#     prompt_output = parse_operator(context_prompt, 'details', {}, no_input=True)
+#     assert type(prompt_output) == dict

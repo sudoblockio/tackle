@@ -9,7 +9,6 @@ import logging
 
 from cookiecutter.operators import BaseOperator
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -32,6 +31,44 @@ class NukikataOperator(BaseOperator):
 
     def execute(self):
         """Run the nukikata operator."""
+        templates = (
+            self.operator_dict['templates']
+            if 'templates' in self.operator_dict
+            else None
+        )
+        directories = (
+            self.operator_dict['directories']
+            if 'directories' in self.operator_dict
+            else None
+        )
+        context_files = (
+            self.operator_dict['context_files']
+            if 'context_files' in self.operator_dict
+            else None
+        )
+
+        if not templates and not directories and not context_files:
+            return self._run_nukikata()
+
+        output = {}
+        if templates:
+            for i in templates:
+                self.operator_dict['template'] = i
+                output.update({i: self._run_nukikata()})
+
+        if directories:
+            for i in directories:
+                self.operator_dict['directory'] = i
+                output.update({i: self._run_nukikata()})
+
+        if context_files:
+            for i in context_files:
+                self.operator_dict['context_file'] = i
+                output.update({i: self._run_nukikata()})
+
+        return output
+
+    def _run_nukikata(self):
         output_context = cc.main.cookiecutter(
             template=self.operator_dict['template'],
             checkout=self.operator_dict['checkout']
@@ -79,38 +116,38 @@ class NukikataOperator(BaseOperator):
         return output_context
 
 
-# # TODO: Is this needed?  Once we fix the output of the
-# #  normal cookiecutter this won't be needed likely
-class NukikataPromptOperator(BaseOperator):
-    """Operator for nukikata type prompts."""
-
-    type = 'nukikata_prompt'
-
-    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize operator."""
-        super(NukikataPromptOperator, self).__init__(
-            operator_dict=operator_dict,
-            context=context,
-            no_input=no_input,
-            context_key=context_key,
-        )
-
-    def execute(self):
-        """Run the operator."""
-        context = {self.context_key: {}}
-        if 'context_file' in self.operator_dict:
-            context[self.context_key] = cc.utils.read_config_file(
-                self.operator_dict['template']
-            )
-        else:
-            context[self.context_key] = self.operator_dict['context']
-
-        return cc.prompt.prompt_for_config(
-            context=context,
-            no_input=self.operator_dict['no_input']
-            if 'no_input' in self.operator_dict
-            else False,
-            context_key=self.operator_dict['context_key']
-            if 'context_key' in self.operator_dict
-            else None,
-        )
+# # # TODO: Is this needed?  Once we fix the output of the
+# # #  normal cookiecutter this won't be needed likely
+# class NukikataPromptOperator(BaseOperator):
+#     """Operator for nukikata type prompts."""
+#
+#     type = 'nukikata_prompt'
+#
+#     def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
+#         """Initialize operator."""
+#         super(NukikataPromptOperator, self).__init__(
+#             operator_dict=operator_dict,
+#             context=context,
+#             no_input=no_input,
+#             context_key=context_key,
+#         )
+#
+#     def execute(self):
+#         """Run the operator."""
+#         context = {self.context_key: {}}
+#         if 'context_file' in self.operator_dict:
+#             context[self.context_key] = cc.utils.read_config_file(
+#                 self.operator_dict['template']
+#             )
+#         else:
+#             context[self.context_key] = self.operator_dict['context']
+#
+#         return cc.prompt.prompt_for_config(
+#             context=context,
+#             no_input=self.operator_dict['no_input']
+#             if 'no_input' in self.operator_dict
+#             else False,
+#             context_key=self.operator_dict['context_key']
+#             if 'context_key' in self.operator_dict
+#             else None,
+#         )
