@@ -11,4 +11,14 @@ def test_operator_block(monkeypatch, tmpdir):
 
     context = cookiecutter('.', no_input=True, output_dir=str(tmpdir))
 
-    assert context['blocker']['stuff'] == 'here'
+    assert context['stuff'] == 'here'
+
+    context = cookiecutter(
+        '.',
+        context_key='nuki',
+        context_file='embedded_blocks.yaml',
+        no_input=True,
+        output_dir=str(tmpdir),
+    )
+
+    assert context['things'] == 'things'

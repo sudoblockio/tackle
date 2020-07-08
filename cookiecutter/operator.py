@@ -7,6 +7,7 @@ from cookiecutter.render import render_variable
 from cookiecutter.operators import *  # noqa
 from cookiecutter.operators import BaseOperator
 
+import cookiecutter as cc
 
 post_gen_operator_list = []
 
@@ -51,13 +52,20 @@ def parse_operator(
 
     :return: cookiecutter_dict # noqa
     """
+    global post_gen_operator_list
     if not context_key:
         context_key = next(iter(context))
 
     env = StrictEnvironment(context=context)
     operator_dict = context[context_key][key]
 
-    global post_gen_operator_list
+    if 'block' in operator_dict['type']:
+        return cc.prompt.prompt_for_config(
+            context={context_key: operator_dict['items']},
+            no_input=no_input,
+            context_key=context_key,
+            existing_context=cookiecutter_dict,
+        )
 
     if 'when' in operator_dict:
         if not context:

@@ -1,0 +1,26 @@
+stuff: things
+
+blocker:
+  type: block
+  items:
+    things:
+      type: print
+      statement: "{{ nuki.stuff }}"
+
+    friend: dog
+    test_block:
+      type: block
+      items:
+        my_dog:
+          type: stat
+          input: Penny
+          when: "{{ nuki.friend == 'dog' }}"
+
+    foo:
+      type: print
+      statement: bar
+
+yaml:
+  type: yaml
+  contents: "{{ nuki }}"
+  path: output.yaml

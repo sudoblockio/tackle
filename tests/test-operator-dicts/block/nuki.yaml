@@ -8,7 +8,7 @@ blocker:
       statement: here
     things:
       type: print
-      statement: there
+      statement: "{{ nuki.stuff }}"
 
 yaml:
   type: yaml
