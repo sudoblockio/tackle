@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 def cookiecutter(
-    template=None,
+    template='.',
     checkout=None,
     no_input=False,
     context_file=None,
@@ -80,11 +80,10 @@ def cookiecutter(
     )
 
     template_name = os.path.basename(os.path.abspath(repo_dir))
+    if not context_key:
+        context_key = os.path.basename(context_file).split('.')[0]
 
     if replay:
-        if not context_key:
-            context_key = os.path.basename(context_file).split('.')[0]
-
         if isinstance(replay, bool):
             context = load(config_dict['replay_dir'], template_name, context_key)
         else:
@@ -99,10 +98,8 @@ def cookiecutter(
             context_file=context_file_path,
             default_context=config_dict['default_context'],
             extra_context=extra_context,
+            context_key=context_key,
         )
-
-        if not context_key:
-            context_key = os.path.basename(context_file).split('.')[0]
 
         # include template dir or url in the context dict
         context[context_key]['_template'] = os.path.abspath(template)

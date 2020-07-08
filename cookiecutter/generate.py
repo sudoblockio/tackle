@@ -71,7 +71,10 @@ def apply_overwrites_to_context(context, overwrite_context):
 
 
 def generate_context(
-    context_file='cookiecutter.json', default_context=None, extra_context=None,
+    context_file='cookiecutter.json',
+    default_context=None,
+    context_key=None,
+    extra_context=None,
 ):
     """Generate the context for a Cookiecutter project template.
 
@@ -99,9 +102,12 @@ def generate_context(
         raise ContextDecodingException(our_exc_message)
 
     # Add the Python object to the context dictionary
-    file_name = os.path.split(context_file)[1]
-    file_stem = file_name.split('.')[0]
-    context[file_stem] = obj
+    if not context_key:
+        file_name = os.path.split(context_file)[1]
+        file_stem = file_name.split('.')[0]
+        context[file_stem] = obj
+    else:
+        context[context_key] = obj
 
     # Overwrite context variable defaults with the default context from the
     # user's global config, if available
