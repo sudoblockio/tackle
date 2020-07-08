@@ -1,0 +1,16 @@
+stuff: things
+
+blocker:
+  type: block
+  items:
+    stuff:
+      type: print
+      statement: here
+    things:
+      type: print
+      statement: there
+
+yaml:
+  type: yaml
+  contents: "{{ nuki }}"
+  path: output.yaml

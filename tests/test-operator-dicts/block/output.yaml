@@ -1,0 +1,23 @@
+_output_dir: /tmp/pytest-of-rob/pytest-138/test_operator_yaml0
+_template: /home/rob/PycharmProjects/terrace/nukikata/tests/test-operator-dicts/block
+blocker:
+  nuki:
+    _output_dir: /tmp/pytest-of-rob/pytest-138/test_operator_yaml0
+    _template: /home/rob/PycharmProjects/terrace/nukikata/tests/test-operator-dicts/block
+    blocker:
+      items:
+        stuff:
+          statement: here
+          type: print
+        things:
+          statement: there
+          type: print
+      type: block
+    stuff: things
+    yaml:
+      contents: '{{ nuki }}'
+      path: output.yaml
+      type: yaml
+  stuff: here
+  things: there
+stuff: things
