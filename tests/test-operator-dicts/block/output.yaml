@@ -1,8 +1,8 @@
-_output_dir: /tmp/pytest-of-rob/pytest-138/test_operator_yaml0
+_output_dir: /tmp/pytest-of-rob/pytest-148/test_operator_block0
 _template: /home/rob/PycharmProjects/terrace/nukikata/tests/test-operator-dicts/block
 blocker:
   nuki:
-    _output_dir: /tmp/pytest-of-rob/pytest-138/test_operator_yaml0
+    _output_dir: /tmp/pytest-of-rob/pytest-148/test_operator_block0
     _template: /home/rob/PycharmProjects/terrace/nukikata/tests/test-operator-dicts/block
     blocker:
       items:

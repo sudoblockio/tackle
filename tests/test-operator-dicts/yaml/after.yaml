@@ -1,0 +1,12 @@
+stuff: things
+
+things:
+  type: stat
+  input:
+    - stuff
+    - things
+
+yaml:
+  type: yaml
+  path: output.yaml
+

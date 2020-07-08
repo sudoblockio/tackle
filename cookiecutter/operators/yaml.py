@@ -30,11 +30,20 @@ class YamlOperator(BaseOperator):
         )
 
     def execute(self):
-        """Run the operator."""  # noqa
+        """
+        Execute the yaml operator.
+
+        :param path: The file path to put read or write to
+        :param contents: Supplied dictionary or list to write.
+        :param mode: The mode that the file should write. Defaults to write 'w'.
+            Seee https://docs.python.org/3/library/functions.html#open
+        """
         if 'contents' in self.operator_dict:
-            with open(self.operator_dict['path'], 'w') as f:
+            mode = self.operator_dict['mode'] if 'mode' in self.operator_dict else 'w'
+            with open(self.operator_dict['path'], mode) as f:
                 yaml.dump(self.operator_dict['contents'], f)
 
         else:
-            with open(self.operator_dict['path'], 'r') as f:
+            mode = self.operator_dict['mode'] if 'mode' in self.operator_dict else 'r'
+            with open(self.operator_dict['path'], mode) as f:
                 return yaml.safe_load(f)
