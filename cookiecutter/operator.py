@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """Functions for discovering and executing various cookiecutter operators."""
+import logging
+
 from cookiecutter.environment import StrictEnvironment
 from cookiecutter.exceptions import InvalidOperatorType
 from cookiecutter.render import render_variable
@@ -9,6 +11,8 @@ from cookiecutter.operators import BaseOperator
 
 import cookiecutter as cc
 
+
+logger = logging.getLogger(__name__)
 post_gen_operator_list = []
 
 
@@ -23,6 +27,7 @@ def run_operator(
     operator_list = BaseOperator.__subclasses__()
     for o in operator_list:
         if operator_dict['type'] == o.type:  # noqa
+            logger.debug("Using the %s operator" % o.type)  # noqa
             operator = o(operator_dict, context, context_key, no_input)
             if operator.post_gen_operator:
                 delayed_output = operator
@@ -52,6 +57,8 @@ def parse_operator(
 
     :return: cookiecutter_dict # noqa
     """
+    logger.debug("Parsing the %s key" % key)
+
     global post_gen_operator_list
     if not context_key:
         context_key = next(iter(context))
@@ -62,10 +69,6 @@ def parse_operator(
     if 'when' in operator_dict:
         if not context:
             raise ValueError("Can't have when condition without establishing context")
-
-        if 'block' in operator_dict:
-
-            pass
 
         when_condition = (
             render_variable(env, operator_dict['when'], cookiecutter_dict, context_key)
@@ -116,9 +119,17 @@ def parse_operator(
         operator_dict = render_variable(
             env, operator_dict, cookiecutter_dict, context_key
         )
-        cookiecutter_dict[key], post_gen_operator = run_operator(
-            operator_dict, context, no_input, context_key
-        )  # output is list
+
+        # Run the operator
+        if operator_dict['merge'] if 'merge' in operator_dict else False:
+            to_merge, post_gen_operator = run_operator(
+                operator_dict, context, no_input, context_key
+            )
+            cookiecutter_dict.update(to_merge)
+        else:
+            cookiecutter_dict[key], post_gen_operator = run_operator(
+                operator_dict, context, no_input, context_key
+            )
         if post_gen_operator:
             post_gen_operator_list.append(post_gen_operator)
 

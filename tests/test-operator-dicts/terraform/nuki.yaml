@@ -31,3 +31,14 @@ output_with_list:
   path: terraform_list.tfvars.json
   contents: "{{ nuki.vars_with_list }}"
 
+going to merge this:
+  type: terraform_variables
+  variables_file: variables.tf
+  merge: true
+  var_skip_list:
+    - owner
+
+output_merged:
+  type: json
+  path: terraform_merged.tfvars.json
+  contents: "{{ nuki }}"
