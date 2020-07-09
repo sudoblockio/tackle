@@ -34,6 +34,12 @@ class InquirerListOperator(BaseOperator):
         if 'index' not in self.operator_dict:
             self.operator_dict['index'] = False
 
+        if self.no_input:
+            if 'default' in self.operator_dict:
+                return self.operator_dict['defualt']
+            else:
+                return None
+
         # Figure out what type of dictionary it is
         choices_type = None
         for i, v in enumerate(self.operator_dict['choices']):
