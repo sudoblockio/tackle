@@ -7,6 +7,7 @@ import stat
 import sys
 import json
 import yaml
+import hcl
 from _collections import OrderedDict
 
 from cookiecutter.prompt import read_user_yes_no
@@ -114,10 +115,10 @@ def read_config_file(file):
         with open(file, encoding='utf-8') as f:
             config = yaml.load(f, Loader=yaml.FullLoader)
         return config
-    # elif file_extension == 'hcl':
-    #     with open(file) as f:
-    #         config = hcl.loads(f.read())
-    #     return config
+    elif file_extension == 'hcl':
+        with open(file) as f:
+            config = hcl.loads(f.read())
+        return config
     else:
         raise ValueError(
             'Unable to parse file {}. Error: Unsupported extension (json/yaml only)'

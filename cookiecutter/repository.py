@@ -21,12 +21,15 @@ valid_context_files = [
     'nuki.json',
     'nuki.yaml',
     'nuki.yml',
+    'nuki.hcl',
     'nukikata.json',
     'nukikata.yaml',
     'nukikata.yml',
+    'nukikata.hcl',
     'cookiecutter.json',
     'cookiecutter.yaml',
     'cookiecutter.yml',
+    'cookiecutter.hcl',
 ]
 
 

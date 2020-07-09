@@ -22,6 +22,7 @@ requirements = [
     'PyYAML>=5.3',
     'boto3>=1.14',
     'google-api-python-client>=1.9',
+    'pyhcl>=0.4.4',
 ]
 
 if sys.argv[-1] == 'readme':

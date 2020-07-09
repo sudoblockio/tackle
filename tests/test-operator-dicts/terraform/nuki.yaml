@@ -1,0 +1,33 @@
+stuff: things
+
+vars:
+  type: terraform_variables
+  variables_file: variables.tf
+
+output:
+  type: json
+  path: terraform.tfvars.json
+  contents: "{{ nuki.vars }}"
+
+vars_with_skip:
+  type: terraform_variables
+  variables_file: variables.tf
+  var_skip_list:
+    - owner
+
+output_with_skip:
+  type: json
+  path: terraform_skip.tfvars.json
+  contents: "{{ nuki.vars_with_skip }}"
+
+vars_with_list:
+  type: terraform_variables
+  variables_file: variables.tf
+  var_list:
+    - owner
+
+output_with_list:
+  type: json
+  path: terraform_list.tfvars.json
+  contents: "{{ nuki.vars_with_list }}"
+
