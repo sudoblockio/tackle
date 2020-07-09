@@ -23,6 +23,5 @@ stuff_nuki:
   existing_context: "{{ nuki }}"
 
 after:
-  type: yaml
-  path: after.yaml
-  contents: "{{ nuki }}"
+  type: print
+  statement: "{{ nuki }}"

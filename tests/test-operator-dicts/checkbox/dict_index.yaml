@@ -4,10 +4,10 @@ choices:
   type: checkbox
   message: You foo?
   choices:
-    - name: ya foo
-    - name: bar
+    - foo: ya foo?
+    - bar: you bar?
 
 debug:
   type: yaml
-  contents: "{{ dict_ok.choices }}"
+  contents: "{{ dict_index.choices }}"
   path: output.yaml

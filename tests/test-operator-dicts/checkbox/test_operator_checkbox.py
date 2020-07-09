@@ -6,11 +6,11 @@ import os
 from cookiecutter.main import cookiecutter
 
 
-def test_operator_checkbox_with_dict_and_name_key(monkeypatch, tmpdir):
+def test_operator_checkbox(monkeypatch, tmpdir):
     """Verify Jinja2 time extension work correctly."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
 
-    # TODO: Need to properly test this with pty but it works now
+    # TODO: Need to properly test this with pty. Tests don't cover now
     context_dict_ok = cookiecutter(
         '.', context_file='dict_ok.yaml', no_input=True, output_dir=str(tmpdir)
     )
@@ -22,3 +22,9 @@ def test_operator_checkbox_with_dict_and_name_key(monkeypatch, tmpdir):
     )
 
     assert context_string_ok
+
+    context_dict_ok = cookiecutter(
+        '.', context_file='dict_ok.yaml', no_input=True, output_dir=str(tmpdir)
+    )
+
+    assert context_dict_ok

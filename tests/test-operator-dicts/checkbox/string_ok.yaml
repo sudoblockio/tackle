@@ -3,7 +3,12 @@ stuff: things
 choices:
   type: checkbox
   message: You foo?
-  default: bar
+  checked: true
   choices:
     - ya foo
     - bar
+
+debug:
+  type: yaml
+  contents: "{{ string_ok.choices }}"
+  path: output.yaml
