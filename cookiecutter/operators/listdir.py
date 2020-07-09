@@ -44,12 +44,16 @@ class ListdirOperator(BaseOperator):
             else:
                 return files
 
-        elif isinstance(self.operator_dict['directories'], list):
-            # If instance is a list, return a dict with the keys as the items in list
-            contents = {}
-            for i in self.operator_dict['directories']:
-                contents[i] = os.listdir(i)
-            return contents
+        elif 'directories' in self.operator_dict:
+            if isinstance(self.operator_dict['directories'], list):
+                # If instance is a list, return a dict with the keys as
+                # the items in list
+                contents = {}
+                for i in self.operator_dict['directories']:
+                    contents[i] = os.listdir(i)
+                return contents
+            else:
+                raise ValueError("directories key must be list")
         else:
             raise NotImplementedError(
                 "Have not implemented dict input to "
