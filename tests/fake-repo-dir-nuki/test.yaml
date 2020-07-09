@@ -1,0 +1,4 @@
+_output_dir: /home/rob/PycharmProjects/terrace/nukikata/tests/fake-repo-dir-nuki
+_template: /home/rob/PycharmProjects/terrace/nukikata/tests/fake-repo-dir-nuki/https:/github.com/robc-io/nukikata-test-repo
+foo: bar
+testing: testing

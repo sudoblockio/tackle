@@ -1,0 +1,11 @@
+_output_dir: /home/rob/PycharmProjects/terrace/nukikata/tests/fake-repo-dir-nuki
+_template: /home/rob/PycharmProjects/terrace/nukikata/tests/fake-repo-dir-nuki
+foo: bar
+friends:
+- cats
+- dogs
+print: "\n\n    cats\n    hats\n    \n\n\n    dogs\n    bags\n    \n"
+stuff:
+- hats
+- bags
+- computers

@@ -1,0 +1,5 @@
+stuff: things
+
+zones:
+  type: gcp_zones
+  region: us-east-1
