@@ -1,8 +1,16 @@
+# -*- coding: utf-8 -*-
+
 """Functions to perform rendering."""
 import ast
 import re
-
 import six
+import os
+
+
+def get_vars(context_key=None, cookiecutter_dict=None):
+    """Get special variables - WIP."""
+    vars = {'cwd': os.getcwd(), 'key': context_key, 'this': cookiecutter_dict}
+    return vars
 
 
 def render_variable(env, raw, cookiecutter_dict, context_key):
@@ -38,7 +46,10 @@ def render_variable(env, raw, cookiecutter_dict, context_key):
 
     template = env.from_string(raw)
 
-    rendered_template = template.render({context_key: cookiecutter_dict})
+    special_variables = get_vars(context_key, cookiecutter_dict)
+    render_context = {context_key: cookiecutter_dict}
+    render_context.update(special_variables)
+    rendered_template = template.render(render_context)
 
     LIST_REGEX = r'^\[.*\]$'
     if bool(re.search(LIST_REGEX, rendered_template)):
