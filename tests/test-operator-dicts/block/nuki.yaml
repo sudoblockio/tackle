@@ -10,7 +10,6 @@ blocker:
       type: print
       statement: "{{ nuki.stuff }}"
 
-yaml:
-  type: yaml
-  contents: "{{ nuki }}"
-  path: output.yaml
+#yaml:
+#  type: pprint
+#  statement: "{{ nuki }}"

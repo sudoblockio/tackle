@@ -20,7 +20,7 @@ blocker:
       type: print
       statement: bar
 
-yaml:
-  type: yaml
-  contents: "{{ nuki }}"
-  path: output.yaml
+#yaml:
+#  type: yaml
+#  contents: "{{ nuki }}"
+#  path: output.yaml

@@ -6,8 +6,3 @@ things:
     - stuff
     - things
 
-yaml:
-  type: yaml
-  contents: "{{ before }}"
-  path: output.yaml
-

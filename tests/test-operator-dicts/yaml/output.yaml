@@ -1,6 +1,0 @@
-_output_dir: /tmp/pytest-of-rob/pytest-209/test_operator_yaml0
-_template: /home/rob/PycharmProjects/terrace/nukikata/tests/test-operator-dicts/yaml
-stuff: things
-things:
-- stuff
-- things

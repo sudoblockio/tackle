@@ -6,7 +6,3 @@ things:
     - stuff
     - things
 
-yaml:
-  type: yaml
-  path: output.yaml
-

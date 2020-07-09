@@ -1,7 +1,0 @@
-_output_dir: /tmp/pytest-of-rob/pytest-209/test_operator_block0
-_template: /home/rob/PycharmProjects/terrace/nukikata/tests/test-operator-dicts/block
-foo: bar
-friend: dog
-my_dog: Penny
-stuff: things
-things: things
