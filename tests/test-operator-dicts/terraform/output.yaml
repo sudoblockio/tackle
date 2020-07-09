@@ -1,8 +1,0 @@
-_output_dir: /home/rob/PycharmProjects/terrace/nukikata/tests/test-operator-dicts/terraform
-_template: /home/rob/PycharmProjects/terrace/nukikata/tests/test-operator-dicts/terraform
-stuff: things
-vars:
-  acm_enable: false
-  cloudflare_enable: false
-  name: polkadot-api
-  owner: ''

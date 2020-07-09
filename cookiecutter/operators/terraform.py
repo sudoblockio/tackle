@@ -29,7 +29,11 @@ class TerraformVariablesOperator(BaseOperator):
         )
 
     def execute(self):
-        """Read the variables file and prompt user to fill in then return output."""
+        """
+        Read the variables file and prompt user to fill in then return output.
+
+        :return: Dictionary that can be dumped into json for a `terraform.tfvars.json`
+        """
         with open(self.operator_dict['variables_file'], 'r') as f:
             vars = hcl.load(f)
 
