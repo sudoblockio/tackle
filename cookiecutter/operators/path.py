@@ -13,7 +13,11 @@ logger = logging.getLogger(__name__)
 
 
 class PathExistsListOperator(BaseOperator):
-    """Operator for os package 'path_exists' operator."""
+    """Operator for os package 'path_exists' operator.
+
+    :param path: The path to file or directory
+    :return boolean:
+    """
 
     type = 'path_exists'
 
@@ -32,7 +36,12 @@ class PathExistsListOperator(BaseOperator):
 
 
 class PathIsdirListOperator(BaseOperator):
-    """Operator for os package 'path_exists' operator."""
+    """
+    Operator for os package 'path_exists' operator.
+
+    :param path: The path to file or directory
+    :return boolean:
+    """
 
     type = 'path_isdir'
 
