@@ -6,6 +6,9 @@ from __future__ import print_function
 
 import logging
 import yaml
+import re
+import warnings
+
 from cookiecutter.operators import BaseOperator
 
 logger = logging.getLogger(__name__)
@@ -35,15 +38,40 @@ class YamlOperator(BaseOperator):
 
         :param path: The file path to put read or write to
         :param contents: Supplied dictionary or list to write.
+        :param remove: Parameter or regex to remove from list or dict
         :param mode: The mode that the file should write. Defaults to write 'w'.
             Seee https://docs.python.org/3/library/functions.html#open
         """
+        if 'remove' in self.operator_dict:
+            if isinstance(self.operator_dict['remove'], str):
+                self._remove_from_contents(self.operator_dict['remove'])
+
+            if isinstance(self.operator_dict['remove'], list):
+                for i in self.operator_dict['remove']:
+                    self._remove_from_contents(i)
+
+            elif isinstance(self.operator_dict['remove'], dict):
+                warnings.warn(
+                    "Warning: the `remove` parameter can't be a dict - ignored"
+                )
+
         if 'contents' in self.operator_dict:
             mode = self.operator_dict['mode'] if 'mode' in self.operator_dict else 'w'
             with open(self.operator_dict['path'], mode) as f:
                 yaml.dump(self.operator_dict['contents'], f)
+                return None
 
         else:
             mode = self.operator_dict['mode'] if 'mode' in self.operator_dict else 'r'
             with open(self.operator_dict['path'], mode) as f:
                 return yaml.safe_load(f)
+
+    def _remove_from_contents(self, regex):
+        if isinstance(self.operator_dict['contents'], list):
+            self.operator_dict['contents'] = [
+                i for i in self.operator_dict['contents'] if not re.search(regex, i)
+            ]
+        if isinstance(self.operator_dict['contents'], dict):
+            for k in list(self.operator_dict['contents'].keys()):
+                if re.search(regex, k):
+                    self.operator_dict['contents'].pop(k)

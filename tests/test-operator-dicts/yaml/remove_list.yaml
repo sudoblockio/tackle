@@ -1,0 +1,20 @@
+stuff: things
+
+things:
+  type: stat
+  input:
+    - stuff
+    - things
+    - _stuff
+    - _thing
+    - _foo
+    - bar_
+
+out:
+  type: yaml
+  contents: "{{ remove_list.things }}"
+  path: output.yaml
+  remove:
+   - ^_
+   - _$
+
