@@ -1,0 +1,9 @@
+stuff: things
+
+path_isdir:
+  type: path_isdir
+  path: a-path
+
+path_exists:
+  type: path_exists
+  path: a-path/.gitkeep
