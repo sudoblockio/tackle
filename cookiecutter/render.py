@@ -5,11 +5,35 @@ import ast
 import re
 import six
 import os
+import platform
+import distro
 
 
 def get_vars(context_key=None, cookiecutter_dict=None):
     """Get special variables - WIP."""
-    vars = {'cwd': os.getcwd(), 'key': context_key, 'this': cookiecutter_dict}
+    vars = {
+        'cwd': os.getcwd(),
+        'key': context_key,
+        'this': cookiecutter_dict,
+        'system': platform.system(),
+        'platform': platform.platform(),
+        'release': platform.release(),
+        'version': platform.version(),
+        'processor': platform.processor,
+        'architecture': platform.architecture(),
+    }
+
+    if platform.system() == 'Linux':
+        linux_id_name, linux_version, linux_codename = distro.linux_distribution(
+            full_distribution_name=False
+        )
+        linux_vars = {
+            'linux_id_name': linux_id_name,
+            'linux_version': linux_version,
+            'linux_codename': linux_codename,
+        }
+        vars.update(linux_vars)
+
     return vars
 
 
