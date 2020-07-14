@@ -1,0 +1,28 @@
+column_names:
+  type: stat
+  input:
+    - stuff
+    - things
+
+data_split:
+  type: stat
+  input:
+    - foo-bar
+    - here-there
+
+table_split:
+  type: table
+  column_names: "{{ table_split.column_names }}"
+  contents_split: "{{ table_split.data_split }}"
+  separator: "-"
+
+data:
+  type: stat
+  input:
+    - ['foo', 'bar']
+    - ['here', 'there']
+
+table:
+  type: table
+  column_names: "{{ table_split.column_names }}"
+  contents: "{{ table_split.data }}"

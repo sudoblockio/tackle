@@ -1,0 +1,15 @@
+stuff: things
+
+blocker:
+  type: block
+  items:
+    stuff:
+      type: print
+      statement: here
+    things:
+      type: print
+      statement: "{{ nuki.stuff }}"
+
+#yaml:
+#  type: pprint
+#  statement: "{{ nuki }}"
