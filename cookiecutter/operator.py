@@ -9,8 +9,6 @@ from cookiecutter.render import render_variable
 from cookiecutter.operators import *  # noqa
 from cookiecutter.operators import BaseOperator
 
-import cookiecutter as cc
-
 
 logger = logging.getLogger(__name__)
 post_gen_operator_list = []
@@ -91,9 +89,9 @@ def parse_operator(
             operator_dict.pop('loop')
 
             loop_output = []
-            for l in loop_targets:
+            for i, l in enumerate(loop_targets):
                 loop_cookiecutter = cookiecutter_dict
-                loop_cookiecutter.update({'item': l})
+                loop_cookiecutter.update({'index': i, 'item': l})
                 loop_output += [
                     parse_operator(
                         context,
@@ -105,20 +103,14 @@ def parse_operator(
                 ]
 
             cookiecutter_dict.pop('item')
+            cookiecutter_dict.pop('index')
             cookiecutter_dict[key] = loop_output
             return cookiecutter_dict
 
-        if 'block' in operator_dict['type']:
-            return cc.prompt.prompt_for_config(
-                context={context_key: operator_dict['items']},
-                no_input=no_input,
-                context_key=context_key,
-                existing_context=cookiecutter_dict,
+        if 'block' not in operator_dict['type']:
+            operator_dict = render_variable(
+                env, operator_dict, cookiecutter_dict, context_key
             )
-
-        operator_dict = render_variable(
-            env, operator_dict, cookiecutter_dict, context_key
-        )
 
         # Run the operator
         if operator_dict['merge'] if 'merge' in operator_dict else False:
