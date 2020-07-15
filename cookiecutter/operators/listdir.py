@@ -13,7 +13,16 @@ logger = logging.getLogger(__name__)
 
 
 class ListdirOperator(BaseOperator):
-    """Operator for PyInquirer type prompts."""
+    """
+    Operator for `listdir`. Lists the contents of a directory.
+
+    :param directory: String for the path to directory
+    :param directories: List of paths to directories to list
+    :param sort: Boolean to sort the output
+    :param ignore_hidden_files: Boolean to ignore hidden files
+
+    :return A list of contents of the directory
+    """
 
     type = 'listdir'
 
@@ -39,6 +48,8 @@ class ListdirOperator(BaseOperator):
         """Run the operator."""  # noqa
         if 'directory' in self.operator_dict:
             files = os.listdir(self.operator_dict['directory'])
+            if self.operator_dict['sort'] if 'sort' in self.operator_dict else False:
+                files.sort()
             if self.ignore_hidden_files:
                 return [f for f in files if not f.startswith('.')]
             else:
@@ -51,6 +62,12 @@ class ListdirOperator(BaseOperator):
                 contents = {}
                 for i in self.operator_dict['directories']:
                     contents[i] = os.listdir(i)
+                    if (
+                        self.operator_dict['sort']
+                        if 'sort' in self.operator_dict
+                        else False
+                    ):
+                        contents[i].sort()
                 return contents
             else:
                 raise ValueError("directories key must be list")
