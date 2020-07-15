@@ -70,7 +70,9 @@ class NukikataOperator(BaseOperator):
 
     def _run_nukikata(self):
         output_context = cc.main.cookiecutter(
-            template=self.operator_dict['template'],
+            template=self.operator_dict['template']
+            if 'template' in self.operator_dict
+            else '.',
             checkout=self.operator_dict['checkout']
             if 'checkout' in self.operator_dict
             else None,
@@ -114,6 +116,28 @@ class NukikataOperator(BaseOperator):
         )
 
         return output_context
+
+
+class ConfigToNukikataOperator(BaseOperator):
+    """Operator for calling external cookiecutters."""
+
+    type = 'obj_to_nuki'
+
+    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
+        """Initialize operator."""
+        super(ConfigToNukikataOperator, self).__init__(
+            operator_dict=operator_dict,
+            context=context,
+            no_input=no_input,
+            context_key=context_key,
+        )
+
+    def execute(self):
+        """Run the nukikata operator."""
+        for k, v in self.operator_dict['contents']:
+            if isinstance(v, str):
+
+                pass
 
 
 # # # TODO: Is this needed?  Once we fix the output of the
