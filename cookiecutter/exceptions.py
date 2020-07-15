@@ -146,6 +146,14 @@ class RepositoryNotFound(CookiecutterException):
     """
 
 
+class ContextFileNotFound(CookiecutterException):
+    """
+    Exception for missing context file.
+
+    Raised when the specified context file doesn't exist.
+    """
+
+
 class RepositoryCloneFailed(CookiecutterException):
     """
     Exception for un-cloneable repo.

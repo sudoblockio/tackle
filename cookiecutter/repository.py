@@ -2,7 +2,7 @@
 import os
 import re
 
-from cookiecutter.exceptions import RepositoryNotFound
+from cookiecutter.exceptions import RepositoryNotFound, ContextFileNotFound
 from cookiecutter.vcs import clone
 from cookiecutter.zipfile import unzip
 
@@ -148,6 +148,11 @@ def determine_repo_dir(
         ]
 
     for repo_candidate in repository_candidates:
+        if context_file:
+            if not os.path.exists(context_file):
+                raise ContextFileNotFound(
+                    'The context file "{}" could not be found'.format(context_file)
+                )
         context_file = repository_has_cookiecutter_json(repo_candidate, context_file)
         if not context_file:
             # Means that no valid context file has been found or provided
