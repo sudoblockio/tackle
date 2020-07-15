@@ -13,7 +13,11 @@ logger = logging.getLogger(__name__)
 
 
 class AwsRegionsOperator(BaseOperator):
-    """Operator for printing an input and returning the output."""
+    """
+    Operator for printing an input and returning the output.
+
+    :return List of regions
+    """
 
     type = 'aws_regions'
 
@@ -37,7 +41,13 @@ class AwsRegionsOperator(BaseOperator):
 
 
 class AwsAzsOperator(BaseOperator):
-    """Operator for retrieving the availability zones in a given region."""
+    """
+    Operator for retrieving the availability zones in a given region.
+
+    :param region: A region to search in
+    :param regions: A list of regions to search in
+    :return A list of availability zones
+    """
 
     type = 'aws_azs'
 
@@ -80,7 +90,13 @@ class AwsAzsOperator(BaseOperator):
 
 
 class AwsEc2TypesOperator(BaseOperator):
-    """Operator retrieving the available instance types in a region."""
+    """
+    Operator retrieving the available instance types in a region.
+
+    :param region: [Required] The region to determine the instances in
+    :param instance_families: A list of instance families, ie ['c5', 'm5']
+    :return A list of instance types
+    """
 
     type = 'aws_ec2_types'
 
