@@ -1,6 +1,6 @@
 stuff: things
 
-blocker:
+nuki_block:
   type: block
   merge: true
   items:
@@ -9,16 +9,18 @@ blocker:
     furry:
       type: confirm
       message: Are our friends furry?
+    friend: dog
 
     beer:
-      type: pprint
-      statement: "{{ embedded_blocks }}"
+      type: nukikata
+      template: .
+      chdir: fake-nuki
+      existing_context: "{{ block_nuki }}"
 
     things:
       type: print
-      statement: "{{ embedded_blocks.stuff }}"
+      statement: "{{ block_nuki.stuff }}"
 
-    friend: dog
 
     test_block:
       type: block
@@ -26,7 +28,7 @@ blocker:
         my_dog:
           type: stat
           input: Penny
-          when: "{{ embedded_blocks.friend == 'dog' }}"
+          when: "{{ block_nuki.friend == 'dog' }}"
 
     foo:
       type: print

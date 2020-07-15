@@ -1,8 +1,7 @@
-stuff: things
+inner: innertings
 
 blocker:
   type: block
-  merge: true
   items:
     stuff:
       type: print

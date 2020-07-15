@@ -1,0 +1,43 @@
+---
+foo: bar
+
+#debug:
+#  type: print
+#  statement: "{{ nuki }}"
+#
+#stop:
+#  type: confirm
+#  message: stop
+#
+#before:
+#  type: yaml
+#  path: before.yaml
+#  contents: "{{ nuki }}"
+blocker:
+#  merge: true
+  type: block
+  items:
+#    yaml:
+#      type: yaml
+#      path: debug-in-block.yaml
+#      contents: "{{ nuki }}"
+
+    stuff_nuki:
+      type: nukikata
+      merge: true
+      template: .
+      context_file: stuff.yaml
+      no_input: true
+      chdir: stuffs
+      existing_context: "{{ nuki }}"
+#    yaml2:
+#      type: yaml
+#      path: debug-out-block.yaml
+#      contents: "{{ nuki }}"
+#after:
+#  type: pprint
+#  statement: "{{ nuki }}"
+#yaml:
+#  type: yaml
+#  path: debug.yaml
+#  contents: "{{ nuki }}"

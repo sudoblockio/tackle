@@ -15,7 +15,7 @@ blocker:
 
     print:
       type: print
-      statement: "{{ looped.item }}"
+      statement: "{{ looped }}"
 
 output:
   type: print

@@ -1,0 +1,17 @@
+---
+
+things: yes please
+
+before:
+  type: yaml
+  path: before.yaml
+  contents: "{{ things }}"
+#
+#ok:
+#  type: confirm
+#  message: chill winston
+
+#after:
+#  type: yaml
+#  path: after.yaml
+#  contents: "{{ things }}"
