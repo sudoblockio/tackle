@@ -19,7 +19,7 @@ class JinjaOperator(BaseOperator):
     type = 'jinja'
 
     def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize operator."""  # noqa
+        """Initialize operator."""
         super(JinjaOperator, self).__init__(
             operator_dict=operator_dict,
             context=context,
@@ -37,12 +37,18 @@ class JinjaOperator(BaseOperator):
         )
 
     def execute(self):
-        """Run the operator."""  # noqa
+        """Run the operator."""
         env = StrictEnvironment(context=self.context)
 
         env.loader = FileSystemLoader(self.file_system_loader)
         template = env.get_template(self.operator_dict['template_path'])
 
+        extra_context = (
+            self.operator_dict['extra_context']
+            if 'extra_context' in self.operator_dict
+            else {}
+        )
+        self.context.update({self.context_key: extra_context})
         output_from_parsed_template = template.render(**self.context)
         with open(self.operator_dict['output_path'], 'w') as fh:
             fh.write(output_from_parsed_template)

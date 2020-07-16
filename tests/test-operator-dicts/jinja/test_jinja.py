@@ -64,6 +64,6 @@ def test_operator_dict(monkeypatch, tmpdir):
     context = cookiecutter(
         '.', context_file='nuki.yaml', no_input=True, output_dir=str(tmpdir)
     )
-    assert context
+    assert context['foo'] == 'things'
     if os.path.exists('things.py'):
         os.remove('things.py')
