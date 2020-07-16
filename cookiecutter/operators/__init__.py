@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 
 from abc import ABCMeta, abstractmethod
 from os import listdir as _listdir  # To not conflict with operator
-from os.path import dirname, basename, join
+from os.path import dirname, basename, join, isdir
 from cookiecutter.context_manager import work_in
 
 # TODO: Allow for imports of custom operators and subdirectories.
@@ -37,7 +37,14 @@ class BaseOperator(metaclass=ABCMeta):
         raise NotImplementedError()
 
     def _execute(self):
-        if self.chdir:
+        if self.chdir and isdir(self.chdir):
+            # Use contextlib to switch dirs and come back out
+            with work_in(self.chdir):
+                return self.execute()
+        elif self.chdir:
+            # This makes no sense really but it was working then broke so above
+            # is fix, leave this but should remove. Works when given relative path
+            # But so does above...
             template_dir = self.context[self.context_key]['_template']
             target_dir = join(template_dir, self.chdir)
             with work_in(target_dir):
