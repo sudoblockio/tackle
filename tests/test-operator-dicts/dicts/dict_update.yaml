@@ -1,0 +1,13 @@
+stuff:
+  type: stat
+  input:
+    - things: blah
+    - thingys: blu
+    - tings: blue
+
+zones:
+  type: update
+  merge: true
+  inputs: "{{ dict_update.stuff }}"
+  dict: "{{ dict_update }}"
+
