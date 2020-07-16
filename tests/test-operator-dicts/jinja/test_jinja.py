@@ -4,15 +4,13 @@
 import os
 
 from cookiecutter.operator import parse_operator
+from cookiecutter.main import cookiecutter
 
-# from cookiecutter.operator import run_operator
 
 base_dir = os.path.dirname(__file__)
-# tpl_file = os.path.join(base_dir, "tpl", "things.py.j2")
-# output_file = os.path.join(base_dir, "things.py")
 
 context = {
-    'cookiecutter': {
+    'nuki': {
         'project_name': "Slartibartfast",
         'details': {
             "type": "jinja",
@@ -26,23 +24,20 @@ context = {
 }
 
 
-# def test_jinja_operator():
-#     """Verify simplest functionality."""
-#     if os.path.exists('things.py'):
-#         os.remove('things.py')
-#
-#     operator_output, delayed_output = run_operator(
-#         context['cookiecutter']['details'], context
-#     )
-#
-#     expected_output = 'things.py'
-#     dir_output = os.listdir(base_dir)
-#     expected_dir_output = ['templates', 'test_jinja.py', 'things.py', '__pycache__', '__init__.py'] # noqa
-#
-#     assert operator_output == expected_output
-#     assert dir_output == expected_dir_output
-#     assert not delayed_output
-#     os.remove('things.py')
+def test_jinja_operator(monkeypatch, tmpdir):
+    """Verify simplest functionality."""
+    if os.path.exists('things.py'):
+        os.remove('things.py')
+
+    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
+
+    context = cookiecutter('.', no_input=True, output_dir=str(tmpdir))
+
+    assert context
+    expected_output = 'things.py'
+    assert expected_output in os.listdir()
+
+    # os.remove('things.py')
 
 
 def test_jinja_parse_operator():
@@ -58,3 +53,17 @@ def test_jinja_parse_operator():
 
     assert expected_file_output in output
     os.remove('things.py')
+
+
+def test_operator_dict(monkeypatch, tmpdir):
+    """Verify Jinja2 time extension work correctly."""
+    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
+    if os.path.exists('things.py'):
+        os.remove('things.py')
+
+    context = cookiecutter(
+        '.', context_file='nuki.yaml', no_input=True, output_dir=str(tmpdir)
+    )
+    assert context
+    if os.path.exists('things.py'):
+        os.remove('things.py')

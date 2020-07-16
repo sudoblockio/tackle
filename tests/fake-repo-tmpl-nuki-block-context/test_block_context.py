@@ -7,7 +7,7 @@ import yaml
 from cookiecutter.main import cookiecutter
 
 
-def test_embedded_context(monkeypatch, tmpdir):
+def test_block_context(monkeypatch, tmpdir):
     """Verify Jinja2 time extension work correctly."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
 

@@ -5,7 +5,7 @@ import os
 from cookiecutter.main import cookiecutter
 
 
-def test_operator_block(monkeypatch, tmpdir):
+def test_operator_path(monkeypatch, tmpdir):
     """Verify Jinja2 time extension work correctly."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
 

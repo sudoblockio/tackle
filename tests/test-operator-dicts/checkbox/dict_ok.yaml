@@ -8,6 +8,5 @@ choices:
     - name: bar
 
 debug:
-  type: yaml
-  contents: "{{ dict_ok.choices }}"
-  path: output.yaml
+  type: pprint
+  statement: "{{ dict_ok.choices }}"

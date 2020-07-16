@@ -9,6 +9,5 @@ choices:
     - bar
 
 debug:
-  type: yaml
-  contents: "{{ string_ok.choices }}"
-  path: output.yaml
+  type: pprint
+  statement: "{{ string_ok.choices }}"

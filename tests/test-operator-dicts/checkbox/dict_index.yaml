@@ -8,6 +8,5 @@ choices:
     - bar: you bar?
 
 debug:
-  type: yaml
-  contents: "{{ dict_index.choices }}"
-  path: output.yaml
+  type: pprint
+  statement: "{{ dict_index.choices }}"

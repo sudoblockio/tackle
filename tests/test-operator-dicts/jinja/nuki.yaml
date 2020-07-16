@@ -1,14 +1,30 @@
-stuff: things
+foo: bar
 
-blocker:
-  type: block
-  items:
-    stuff:
-      type: print
-      statement: here
-    things:
-      type: print
-      statement: "{{ nuki.stuff }}"
+#blocker:
+#  type: block
+#  merge: true
+#  items:
+#
+#    stuff:
+#      type: print
+#      statement:
+#        here: there
+#
+#    things:
+#      type: print
+#      statement:
+#        fun: "{{ nuki.foo }}"
+
+#output:
+#  type: yaml
+#  contents: "{{ nuki }}"
+#  path: output.yaml
+
+jinja:
+  type: jinja
+  template_path: templates/things.py.j2
+  output_path: things.py
+  extra_context: "{{ nuki }}"
 
 #yaml:
 #  type: pprint
