@@ -123,6 +123,7 @@ class AwsEc2TypesOperator(BaseOperator):
         ]
 
         if 'instance_families' not in self.operator_dict:
+            instances.sort()
             return instances
         else:
             split_instances = list(
@@ -139,5 +140,5 @@ class AwsEc2TypesOperator(BaseOperator):
                     Filters=[{'Name': 'instance-type', 'Values': selected_family}]
                 )['InstanceTypeOfferings']
             ]
-
+            instances.sort()
             return instances
