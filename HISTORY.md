@@ -5,6 +5,14 @@ Nukikata will be a couple months behind the major releases for cookiecutter at w
 The cookiecutter history can be viewed in the [project tab](https://github.com/cookiecutter/cookiecutter/projects) and [HISTORY.md](https://github.com/cookiecutter/cookiecutter/blob/master/HISTORY.md)
 
 
+## 2.0.0.0 (2020-07-X)
+- Merged changes as of this date from cookiecutter 2.0.0
+- Added numerous new operators
+- Added warning for unknown operator type
+- Added `chdir` to operator allowing temporary working directory context to be shifted
+- Added `block` operator which uncovered defficiencies in how we are currently handling the running of the context in the operators
+
+
 ## 1.7.2.3 (2020-06-23)
 
 - Breaking change - main function returns context instead of result_directory.  This makes it much easier to use when stitching cookiecutters together as now the context can be kept namespaced per the actual context they are being called in.  This change only affects tests and those using the package as a function. The idea is that the output directory can be resolved out of scope and does not need to be returned.
@@ -14,7 +22,7 @@ The cookiecutter history can be viewed in the [project tab](https://github.com/c
 - Added coverage over non-pty requiring operators
 - Convert many tests to run both from tox and local - broke `test_cookiecutter_no_input_return_project_dir`
 
-## 1.7.2.2 (2020-06-01)
+## 1.7.2.2 (2020-06-15)
 
 - Fixed operator call order and postgen operator logic for delayed operators
 - Added proper metadata to setup.py

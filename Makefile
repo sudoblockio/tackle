@@ -62,6 +62,7 @@ docs: ## Generate Sphinx HTML documentation, including API docs
 	@echo "+ $@"
 	@rm -f docs/cookiecutter.rst
 	@sphinx-apidoc -o docs/ cookiecutter
+	@sphinx-apidoc -fMeET cookiecutter/operators -o docs/operators
 	@rm -f docs/modules.rst
 	@$(MAKE) -C docs clean
 	@$(MAKE) -C docs html

@@ -94,7 +94,7 @@ source_suffix = {'.rst': 'restructuredtext', '.md': 'markdown'}
 master_doc = 'index'
 
 # General information about the project.
-project = 'cookiecutter'
+project = 'nukikata'
 copyright = '2013-2019, Audrey Roy and Cookiecutter community'
 
 # The version info for the project you're documenting, acts as replacement for

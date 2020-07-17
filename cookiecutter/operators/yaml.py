@@ -15,12 +15,20 @@ logger = logging.getLogger(__name__)
 
 
 class YamlOperator(BaseOperator):
-    """Operator for yaml."""
+    """
+    Operator for yaml.
+
+    :param path: The path to read or write to
+    :param contents: The contents to write to a file.  If empty the operator then
+        reads the path.
+    :param remove: List or string of items or regex patterns to remove from list
+    :param mode: The mode to read or write the file in
+    """
 
     type = 'yaml'
 
     def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize yaml operator."""  # noqa
+        """Initialize yaml operator."""
         super(YamlOperator, self).__init__(
             operator_dict=operator_dict,
             context=context,

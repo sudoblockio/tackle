@@ -13,7 +13,11 @@ logger = logging.getLogger(__name__)
 
 
 class PrintOperator(BaseOperator):
-    """Operator for printing an input and returning the output."""
+    """
+    Operator for printing an input and returning the output.
+
+    :param statement: The thing to print
+    """
 
     type = 'print'
 
@@ -33,7 +37,11 @@ class PrintOperator(BaseOperator):
 
 
 class PprintOperator(BaseOperator):
-    """Operator for pretty printing an input and returning the output."""
+    """
+    Operator for pretty printing an input and returning the output.
+
+    :param statement: The thing to print
+    """
 
     type = 'pprint'
 

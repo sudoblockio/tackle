@@ -25,9 +25,11 @@ Inspired by [Ansible's](https://github.com/ansible/ansible) syntax, this project
 
 ## Quick Demo
 
+**Broken - Updating 7/20/2020**
+
 ```
 pip3 install nukikata
-nukikata https://github.com/insight-infrastructure/nukikata-demo-monty
+nukikata https://github.com/insight-infrastructure/nukikata-demo-monty --directory demos/monty-python
 curl https://raw.githubusercontent.com/insight-infrastructure/nukikata-demo-basic/master/nuki.yaml
 cat output.json
 ```

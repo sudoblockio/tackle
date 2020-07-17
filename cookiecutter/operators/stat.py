@@ -12,7 +12,11 @@ logger = logging.getLogger(__name__)
 
 
 class StatOperator(BaseOperator):
-    """Operator for registering a variable based on an input. Useful with rendering."""
+    """
+    Operator for registering a variable based on an input. Useful with rendering.
+
+    :param input: Any type input
+    """
 
     type = 'stat'
 

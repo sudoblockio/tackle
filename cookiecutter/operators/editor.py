@@ -13,7 +13,16 @@ logger = logging.getLogger(__name__)
 
 
 class InquirerEditorOperator(BaseOperator):
-    """Operator for PyInquirer `editor` type prompts."""
+    """
+    Operator for PyInquirer `editor` type prompts.
+
+    https://github.com/CITGuru/PyInquirer/blob/master/examples/expand.py
+
+    :param message: String message to show when prompting.
+    :param choices: A list of strings or list of k/v pairs per above description
+    :param name: A key to insert the output value to. If not provided defaults to
+        inserting into parent key
+    """
 
     type = 'editor'
 

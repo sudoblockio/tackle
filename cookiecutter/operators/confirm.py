@@ -13,7 +13,15 @@ logger = logging.getLogger(__name__)
 
 
 class InquirerConfirmOperator(BaseOperator):
-    """Operator for PyInquirer `confirm` type prompts."""
+    """
+    Operator for PyInquirer `confirm` type prompts.
+
+    :param message: String message to show when prompting.
+    :param choices: A list of strings or list of k/v pairs per above description
+    :param name: A key to insert the output value to. If not provided defaults to
+    inserting into parent key
+    :return Boolean
+    """
 
     type = 'confirm'
 

@@ -21,13 +21,18 @@ class InquirerCheckboxOperator(BaseOperator):
     2. list of maps with all keys = `name`
     3. list of maps with the key as the output, the value as displayed question
 
+    :param message: String message to show when prompting.
+    :param choices: A list of strings or list of k/v pairs per above description
+    :param name: A key to insert the output value to. If not provided defaults to
+        inserting into parent key
+    :param qmark: A marker to select with like 😃
     :return List of answers
     """
 
     type = 'checkbox'
 
     def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize PyInquirer 'checkbox` type prompt."""  # noqa
+        """Initialize PyInquirer 'checkbox` type prompt."""
         super(InquirerCheckboxOperator, self).__init__(
             operator_dict=operator_dict,
             context=context,
@@ -36,7 +41,7 @@ class InquirerCheckboxOperator(BaseOperator):
         )
 
     def execute(self):
-        """Run the prompt."""  # noqa
+        """Run the prompt."""
         # Fix the input choices if they don't have the pattern {'name': 'thing'}
         # and are just a list of strings
         if self.no_input:

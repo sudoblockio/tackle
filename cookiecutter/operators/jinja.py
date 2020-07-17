@@ -14,7 +14,14 @@ logger = logging.getLogger(__name__)
 
 
 class JinjaOperator(BaseOperator):
-    """Operator for jinja templates."""
+    """
+    Operator for jinja templates.
+
+    :param template_path: Path to the template to render
+    :param extra_context: A dict to use to render
+    :param output_path: Path to the output file
+    :return String path to the output file
+    """
 
     type = 'jinja'
 

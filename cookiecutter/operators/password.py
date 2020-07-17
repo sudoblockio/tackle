@@ -13,12 +13,20 @@ logger = logging.getLogger(__name__)
 
 
 class InquirerPasswordOperator(BaseOperator):
-    """Operator for PyInquirer `password` type prompts."""
+    """
+    Operator for PyInquirer `password` type prompts.
+
+    :param message: String message to show when prompting.
+    :param choices: A list of strings or list of k/v pairs per above description
+    :param name: A key to insert the output value to. If not provided defaults to
+        inserting into parent key
+    :return
+    """
 
     type = 'password'
 
     def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize PyInquirer operator."""  # noqa
+        """Initialize PyInquirer operator."""
         super(InquirerPasswordOperator, self).__init__(
             operator_dict=operator_dict,
             context=context,
@@ -27,7 +35,7 @@ class InquirerPasswordOperator(BaseOperator):
         )
 
     def execute(self):
-        """Run the prompt."""  # noqa
+        """Run the prompt."""
         if 'name' not in self.operator_dict:
             self.operator_dict.update({'name': 'tmp'})
             return prompt([self.operator_dict])['tmp']

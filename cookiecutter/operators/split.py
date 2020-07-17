@@ -12,7 +12,13 @@ logger = logging.getLogger(__name__)
 
 
 class SplitOperator(BaseOperator):
-    """Operator for PyInquirer type prompts."""
+    """
+    Operator for PyInquirer type prompts.
+
+    :param items: A list of string to split or just a string
+    :param separator: String separator
+    :return List if input items is list otherwise string
+    """
 
     type = 'split'
 

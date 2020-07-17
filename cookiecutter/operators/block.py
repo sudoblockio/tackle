@@ -13,7 +13,14 @@ logger = logging.getLogger(__name__)
 
 
 class BlockOperator(BaseOperator):
-    """Operator for printing an input and returning the output."""
+    """
+    Operator for blocks of operators.
+
+    This is a special case where the operators input variables are not rendered
+    until it is later executed.
+
+    :param items: Map of inputs
+    """
 
     type = 'block'
 

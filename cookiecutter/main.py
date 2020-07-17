@@ -56,6 +56,8 @@ def cookiecutter(
     :param password: The password to use when extracting the repository.
     :param directory: Relative path to a cookiecutter template in a repository.
     :param accept_hooks: Accept pre and post hooks if set to `True`.
+
+    :return Dictionary of output
     """
     if replay and ((no_input is not False) or (extra_context is not None)):
         err_msg = (

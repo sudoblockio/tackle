@@ -13,7 +13,27 @@ logger = logging.getLogger(__name__)
 
 
 class NukikataOperator(BaseOperator):
-    """Operator for calling external cookiecutters."""
+    """
+    Operator for calling external cookiecutters.
+
+    :param template: A directory containing a project template directory,
+        or a URL to a git repository.
+    :param checkout: The branch, tag or commit ID to checkout after clone.
+    :param no_input: Prompt the user at command line for manual configuration?
+    :param extra_context: A dictionary of context that overrides default
+        and user configuration.
+    :param replay: Do not prompt for input, instead read from saved json. If
+        ``True`` read from the ``replay_dir``.
+        if it exists
+    :param output_dir: Where to output the generated project dir into.
+    :param config_file: User configuration file path.
+    :param default_config: Use default values rather than a config file.
+    :param password: The password to use when extracting the repository.
+    :param directory: Relative path to a cookiecutter template in a repository.
+    :param accept_hooks: Accept pre and post hooks if set to `True`.
+
+    :return Dictionary of output
+    """
 
     type = 'nukikata'
 

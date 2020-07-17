@@ -13,12 +13,25 @@ logger = logging.getLogger(__name__)
 
 
 class InquirerListOperator(BaseOperator):
-    """Operator for PyInquirer 'list' type prompts."""
+    """
+    Operator for PyInquirer 'list' type prompts.
+
+    Takes in two forms of `choices` inputs.
+    1. list of string
+    2. list of maps with the key as the output, the value as displayed question
+
+    :param message: String message to show when prompting.
+    :param choices: A list of strings or list of k/v pairs per above description
+    :param name: A key to insert the output value to. If not provided defaults to
+        inserting into parent key
+    :param index: Boolean to return the index instead of the answer
+    :return String for answer
+    """
 
     type = 'list'
 
     def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize PyInquirer operator."""  # noqa
+        """Initialize PyInquirer operator."""
         super(InquirerListOperator, self).__init__(
             operator_dict=operator_dict,
             context=context,

@@ -3,10 +3,14 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Cookiecutter: Better Project Templates
+Nukikata: Cookiecutter Fork
 ======================================
 
 Cookiecutter creates projects from project templates, e.g. Python package projects.
+
+Nukikata extends this functionality to include a plugins based system of operators
+with conditionals and loops. With these new options, users can now create modular
+user journeys connecting a web of declarative CLIs.
 
 Basics
 ------
@@ -16,8 +20,9 @@ Basics
 
    README
    overview
-   installation
-   usage
+   installation-nukikata
+   nukikata/demos
+..   usage
    first_steps
    tutorials
    tutorial1
@@ -31,9 +36,11 @@ API Reference
 -------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
+   :name: API
 
    cookiecutter
+   cookiecutter.operators
 
 Project Info
 ------------
@@ -41,7 +48,8 @@ Project Info
 .. toctree::
    :maxdepth: 2
 
-   CONTRIBUTING
+   HISTORY
+..   CONTRIBUTING
    AUTHORS
    sprint-contributors
    HISTORY

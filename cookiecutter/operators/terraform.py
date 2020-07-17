@@ -15,7 +15,14 @@ logger = logging.getLogger(__name__)
 
 
 class TerraformVariablesOperator(BaseOperator):
-    """Operator for printing an input and returning the output."""
+    """
+    Operator for printing an input and returning the output.
+
+    :param variables_file: A path to a file to read
+    :param var_list: A list of items to only parse and prompt
+    :param var_skip_list: A list of items to skip when prompting
+    :return Dict of outputs from prompt
+    """
 
     type = 'terraform_variables'
 

@@ -1,6 +1,14 @@
 cookiecutter package
 ====================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   cookiecutter.operators
+
 Submodules
 ----------
 
@@ -16,6 +24,14 @@ cookiecutter.config module
 --------------------------
 
 .. automodule:: cookiecutter.config
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cookiecutter.context\_manager module
+------------------------------------
+
+.. automodule:: cookiecutter.context_manager
    :members:
    :undoc-members:
    :show-inheritance:
@@ -84,10 +100,26 @@ cookiecutter.main module
    :undoc-members:
    :show-inheritance:
 
+cookiecutter.operator module
+----------------------------
+
+.. automodule:: cookiecutter.operator
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 cookiecutter.prompt module
 --------------------------
 
 .. automodule:: cookiecutter.prompt
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cookiecutter.render module
+--------------------------
+
+.. automodule:: cookiecutter.render
    :members:
    :undoc-members:
    :show-inheritance:
