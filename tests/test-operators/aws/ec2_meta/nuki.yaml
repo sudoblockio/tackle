@@ -1,0 +1,16 @@
+stuff: things
+
+instance_types:
+  type: aws_ec2_types
+  region: us-east-1
+
+
+deploy_:
+  type: moncc_template
+  inputs:
+    inherits: "{{ nuki. }}"
+
+instance:
+  type: list
+  message: What do you want?
+  choices: "{{ nuki.instance_types }}"

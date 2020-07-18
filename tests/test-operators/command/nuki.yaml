@@ -1,0 +1,3 @@
+cmd:
+  type: shell
+  command: ssh localhost
