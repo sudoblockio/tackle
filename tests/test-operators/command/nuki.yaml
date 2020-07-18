@@ -1,3 +1,7 @@
-cmd:
+shell:
   type: shell
-  command: ssh localhost
+  command: ls
+
+cmd:
+  type: command
+  command: ls
