@@ -18,11 +18,11 @@ class YamlOperator(BaseOperator):
     """
     Operator for yaml.
 
-    :param path: The path to read or write to
-    :param contents: The contents to write to a file.  If empty the operator then
-        reads the path.
-    :param remove: List or string of items or regex patterns to remove from list
-    :param mode: The mode to read or write the file in
+    :param path: The file path to put read or write to
+    :param contents: Supplied dictionary or list to write.
+    :param remove: Parameter or regex to remove from list or dict
+    :param mode: The mode that the file should write. Defaults to write 'w'.
+        Seee https://docs.python.org/3/library/functions.html#open
     """
 
     type = 'yaml'
@@ -41,15 +41,7 @@ class YamlOperator(BaseOperator):
         )
 
     def execute(self):
-        """
-        Execute the yaml operator.
-
-        :param path: The file path to put read or write to
-        :param contents: Supplied dictionary or list to write.
-        :param remove: Parameter or regex to remove from list or dict
-        :param mode: The mode that the file should write. Defaults to write 'w'.
-            Seee https://docs.python.org/3/library/functions.html#open
-        """
+        """Execute the yaml operator."""
         if 'remove' in self.operator_dict:
             if isinstance(self.operator_dict['remove'], str):
                 self._remove_from_contents(self.operator_dict['remove'])
