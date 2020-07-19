@@ -65,6 +65,7 @@ class AwsAzsOperator(BaseOperator):
         if 'region' in self.operator_dict:
             client = boto3.client('ec2', region_name=self.operator_dict['region'])
             azs = self._call_azs(client, self.operator_dict['region'])
+            azs.sort()
             return azs
 
         elif 'regions' in self.operator_dict:
@@ -72,6 +73,7 @@ class AwsAzsOperator(BaseOperator):
             for r in self.operator_dict['regions']:
                 client = boto3.client('ec2', region_name=r)
                 azs = self._call_azs(client, r)
+                azs.sort()
                 output.update({r: azs})
             return output
 
@@ -86,6 +88,7 @@ class AwsAzsOperator(BaseOperator):
                 ]
             )['AvailabilityZones']
         ]
+        availability_zones.sort()
         return availability_zones
 
 
