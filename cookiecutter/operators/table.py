@@ -60,13 +60,9 @@ class TableOperator(BaseOperator):
         if 'contents_split' in self.operator_dict:
             for i in self.operator_dict['contents_split']:
                 table.add_row(
-                    *set(
-                        i.split(
-                            self.operator_dict['separator'][
-                                0 : len(self.operator_dict['column_names'])  # noqa
-                            ]
-                        )
-                    )
+                    *i.split(self.operator_dict['separator'])[
+                        0 : len(self.operator_dict['column_names'])  # noqa
+                    ]
                 )
 
         if 'contents' in self.operator_dict:
