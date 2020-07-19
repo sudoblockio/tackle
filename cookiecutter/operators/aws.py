@@ -114,23 +114,15 @@ class AwsEc2TypesOperator(BaseOperator):
         selected_region = self.operator_dict['region']
         client = boto3.client('ec2', region_name=selected_region)
 
-        instances = [
-            instance['InstanceType']
-            for instance in client.describe_instance_type_offerings(
-                LocationType='region',
-                Filters=[{'Name': 'location', 'Values': [selected_region]}],
-            )['InstanceTypeOfferings']
-        ]
-
         if 'instance_families' not in self.operator_dict:
-            instances.sort()
-            return instances
+            instances = [
+                instance['InstanceType']
+                for instance in client.describe_instance_type_offerings(
+                    LocationType='region',
+                    Filters=[{'Name': 'location', 'Values': [selected_region]}],
+                )['InstanceTypeOfferings']
+            ]
         else:
-            split_instances = list(
-                set([instance.split(".")[0] for instance in instances])
-            )
-            split_instances.sort()
-
             selected_family = self.operator_dict['instance_families']
             selected_family = [name + '*' for name in selected_family]
 
@@ -140,5 +132,38 @@ class AwsEc2TypesOperator(BaseOperator):
                     Filters=[{'Name': 'instance-type', 'Values': selected_family}]
                 )['InstanceTypeOfferings']
             ]
-            instances.sort()
-            return instances
+
+        instances.sort()
+
+        instance_sizes = [
+            'nano',
+            'micro',
+            'small',
+            'medium',
+            'large',
+            'xlarge',
+            '2xlarge',
+            '3xlarge',
+            '4xlarge',
+            '6xlarge',
+            '8xlarge',
+            '9xlarge',
+            '10xlarge',
+            '12xlarge',
+            '16xlarge',
+            '18xlarge',
+            '20xlarge',
+            '20xlarge',
+            '24xlarge',
+            '32xlarge',
+            'metal',
+        ]
+
+        instance_sizes_set = [
+            (x.split('.')[0], x.split('.')[1], instance_sizes.index(x.split('.')[1]))
+            for i, x in enumerate(instances)
+        ]
+        instance_sizes_set.sort(key=lambda x: x[2])
+        instances = ['.'.join([s[0], s[1]]) for s in instance_sizes_set]
+
+        return instances
