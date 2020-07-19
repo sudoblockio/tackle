@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """Functions for discovering and executing various cookiecutter operators."""
+from __future__ import print_function
 import logging
 
 from cookiecutter.environment import StrictEnvironment
@@ -53,15 +54,14 @@ def parse_operator(
 ):
     """Parse input dict for loop and when logic and calls hooks.
 
-    :return: cookiecutter_dict # noqa
+    :return: cookiecutter_dict
     """
-    logger.debug("Parsing the %s key" % key)
-
     global post_gen_operator_list
     if not context_key:
         context_key = next(iter(context))
 
     env = StrictEnvironment(context=context)
+    logger.debug("Parsing context_key: %s and key: %s" % (context_key, key))
     operator_dict = context[context_key][key]
 
     if 'when' in operator_dict:

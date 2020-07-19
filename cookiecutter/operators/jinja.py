@@ -50,13 +50,12 @@ class JinjaOperator(BaseOperator):
         env.loader = FileSystemLoader(self.file_system_loader)
         template = env.get_template(self.operator_dict['template_path'])
 
-        extra_context = (
-            self.operator_dict['extra_context']
-            if 'extra_context' in self.operator_dict
-            else {}
+        jinja_context = (
+            self.operator_dict['context'] if 'context' in self.operator_dict else {}
         )
-        self.context.update({self.context_key: extra_context})
-        output_from_parsed_template = template.render(**self.context)
+        output_from_parsed_template = template.render(
+            **{self.context_key: jinja_context}
+        )
         with open(self.operator_dict['output_path'], 'w') as fh:
             fh.write(output_from_parsed_template)
 

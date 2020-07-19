@@ -1,0 +1,37 @@
+
+a_list_of_strings:
+  type: stat
+  input:
+    - cats
+    - dogs
+    - chickens
+
+a_list_of_dicts:
+  type: stat
+  input:
+    - cats: scratch
+      foo: bars
+    - dogs: sniff
+      my_dog: penny
+    - chickens: yum
+      things: stuff
+
+a_list_of_strings_nuki:
+  type: nukikata
+  context_file: list_of_strings.yaml
+  loop: "{{ nuki.a_list_of_strings }}"
+  existing_context: "{{ nuki }}"
+  no_input: true
+  chdir: nukis
+
+a_list_of_dicts_nuki:
+  type: nukikata
+  context_file: list_of_dicts.yaml
+  loop: "{{ nuki.a_list_of_dicts }}"
+  existing_context: "{{ nuki }}"
+  no_input: true
+  chdir: nukis
+
+after:
+  type: pprint
+  statement: "{{ nuki }}"

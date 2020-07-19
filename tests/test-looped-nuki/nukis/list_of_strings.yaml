@@ -1,0 +1,11 @@
+---
+
+render_strings_:
+  type: jinja
+  template_path: list_of_strings.py.j2
+  output_path: "output_list_of_strings-{{list_of_strings.index}}.py"
+  context: "{{ list_of_strings.a_list_of_strings[list_of_strings.index] }}"
+
+after:
+  type: pprint
+  statement: "{{ list_of_strings }}"
