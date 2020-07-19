@@ -5,9 +5,6 @@ foo: bar
 #  type: print
 #  statement: "{{ nuki }}"
 #
-#stop:
-#  type: confirm
-#  message: stop
 #
 #before:
 #  type: yaml

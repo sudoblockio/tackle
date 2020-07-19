@@ -4,9 +4,20 @@
 import os
 
 from cookiecutter.operator import run_operator, parse_operator
+from cookiecutter.main import cookiecutter
+
+
+def test_operator_command(monkeypatch, tmpdir):
+    """Verify Jinja2 time extension work correctly."""
+    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
+
+    context = cookiecutter('.', no_input=True, output_dir=str(tmpdir))
+
+    assert '__init__.py' in context['shell']
+    assert '__init__.py' in context['cmd']
+
 
 base_dir = os.path.dirname(__file__)
-
 context = {
     'cookiecutter': {
         'project_name': "Slartibartfast",
@@ -25,12 +36,8 @@ def test_command():
         operator_output, delayed_output = run_operator(
             context['cookiecutter']['details'], context
         )
-        expected_output = """__init__.py
-__pycache__
-test_command.py
-"""
-        assert operator_output == expected_output
+        assert '__init__.py' in operator_output
         assert not delayed_output
 
         cookiecutter_dict = parse_operator(context, 'details', {})
-        assert cookiecutter_dict == {'details': expected_output}
+        assert '__init__.py' in cookiecutter_dict['details']
