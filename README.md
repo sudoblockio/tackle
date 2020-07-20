@@ -89,18 +89,11 @@ Prompts are enhanced by extending the functionality from [PyInquirer](https://gi
 [`cookiecuttuer/operators/print.py`](cookiecutter/operators/print.py)
 ```python
 class PrintOperator(BaseOperator):
-    """Operator for PyInquirer type prompts."""
-
     type = 'print'
-
-    def __init__(self, operator_dict, context=None, no_input=False):
-        """Initialize PyInquirer Hook."""
-        super(PrintOperator, self).__init__(
-            operator_dict=operator_dict, context=context, no_input=no_input
-        )
+    def __init__(self, *args, **kwargs):
+        super(PrintOperator, self).__init__(*args, **kwargs)
 
     def execute(self):
-        """Run the prompt."""
         print(self.operator_dict['statement'])
         return self.operator_dict['statement']
 ```

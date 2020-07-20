@@ -148,6 +148,14 @@ cookiecutter.operators.rawlist module
    :undoc-members:
    :show-inheritance:
 
+cookiecutter.operators.return module
+------------------------------------
+
+.. automodule:: cookiecutter.operators.return
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 cookiecutter.operators.split module
 -----------------------------------
 

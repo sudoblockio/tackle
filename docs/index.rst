@@ -40,7 +40,7 @@ API Reference
    :name: API
 
    cookiecutter
-   cookiecutter.operators
+   modules
 
 Project Info
 ------------
