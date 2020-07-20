@@ -9,13 +9,14 @@ import logging
 import subprocess
 import errno
 import os
-import pty
+import click
 from select import select
 
-import click
-
-
 from cookiecutter.operators import BaseOperator
+
+if os.name != 'nt':
+    import pty
+
 
 logger = logging.getLogger(__name__)
 
