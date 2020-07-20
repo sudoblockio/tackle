@@ -1,6 +1,9 @@
 dist: xenial
 os: linux
 language: python
+before_install:
+  - python -m pip install --upgrade pip
+
 jobs:
   include:
     - python: 3.7
