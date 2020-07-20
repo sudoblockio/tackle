@@ -45,6 +45,12 @@ def cookiecutter(
         or a URL to a git repository.
     :param checkout: The branch, tag or commit ID to checkout after clone.
     :param no_input: Prompt the user at command line for manual configuration?
+    :param context_file: The file to load to set the context, ie list of prompts.
+        Defaults to nuki.yaml, nukikata.yml, then cookiecutter.json.
+    :param context_key: The key to all the context under - defaults to the name
+        of the context file minus the file extension.
+    :param existing_context: An additional dictionary to use in rendering
+        additional prompts.
     :param extra_context: A dictionary of context that overrides default
         and user configuration.
     :param replay: Do not prompt for input, instead read from saved json. If
