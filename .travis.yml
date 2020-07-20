@@ -1,9 +1,15 @@
 dist: xenial
 os: linux
 language: python
+addons:
+  snaps:
+    - name: aws-cli
+      confinement: classic
+      channel: latest/edge
 jobs:
   include:
     - python: 3.7
+      before_install:
       env:
         - TOXENV=lint
     - python: 3.6
@@ -23,6 +29,7 @@ jobs:
         - python -m pip install --upgrade pip
         - python -m pip install --upgrade virtualenv wheel
         - python -m virtualenv $HOME/venv
+        - pip install awscli
         - source $HOME/venv/Scripts/activate
       env:
         - TOXENV=py36
@@ -36,6 +43,7 @@ jobs:
         - python -m pip install --upgrade pip
         - python -m pip install --upgrade virtualenv wheel
         - python -m virtualenv $HOME/venv
+        - pip install awscli
         - source $HOME/venv/Scripts/activate
       env:
         - TOXENV=py37
@@ -49,6 +57,7 @@ jobs:
         - python -m pip install --upgrade pip
         - python -m pip install --upgrade virtualenv wheel
         - python -m virtualenv $HOME/venv
+        - pip install awscli
         - source $HOME/venv/Scripts/activate
       env:
         - TOXENV=py38
