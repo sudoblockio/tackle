@@ -90,10 +90,10 @@ Prompts are enhanced by extending the functionality from [PyInquirer](https://gi
 ```python
 class PrintOperator(BaseOperator):
     type = 'print'
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):  # noqa
         super(PrintOperator, self).__init__(*args, **kwargs)
 
-    def execute(self):
+    def _execute(self):
         print(self.operator_dict['statement'])
         return self.operator_dict['statement']
 ```
