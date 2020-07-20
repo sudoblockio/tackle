@@ -17,31 +17,21 @@ class SplitOperator(BaseOperator):
 
     :param items: A list of string to split or just a string
     :param separator: String separator
-    :return List if input items is list otherwise string
+    :return: List if input items is list otherwise string
     """
 
     type = 'split'
 
-    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize operator."""
-        super(SplitOperator, self).__init__(
-            operator_dict=operator_dict,
-            context=context,
-            no_input=no_input,
-            context_key=context_key,
-        )
-        # Defaulting to run inline
-        self.post_gen_operator = (
-            self.operator_dict['delay'] if 'delay' in self.operator_dict else False
-        )
+    def __init__(self, *args, **kwargs):  # noqa
+        super(SplitOperator, self).__init__(*args, **kwargs)
+
         self.separator = (
             self.operator_dict['separator']
             if 'separator' in self.operator_dict
             else "."
         )
 
-    def execute(self):
-        """Run the operator."""  # noqa
+    def _execute(self):
         if isinstance(self.operator_dict['items'], str):
             # If item is a string then return a list
             return self.operator_dict['items'].split(self.separator)

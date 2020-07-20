@@ -20,15 +20,8 @@ class StatOperator(BaseOperator):
 
     type = 'stat'
 
-    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize operator."""  # noqa
-        super(StatOperator, self).__init__(
-            operator_dict=operator_dict,
-            context=context,
-            no_input=no_input,
-            context_key=context_key,
-        )
+    def __init__(self, *args, **kwargs):  # noqa
+        super(StatOperator, self).__init__(*args, **kwargs)
 
-    def execute(self):
-        """."""  # noqa
+    def _execute(self):
         return self.operator_dict['input']

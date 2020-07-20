@@ -21,31 +21,21 @@ class ListdirOperator(BaseOperator):
     :param sort: Boolean to sort the output
     :param ignore_hidden_files: Boolean to ignore hidden files
 
-    :return A list of contents of the directory
+    :return: A list of contents of the directory
     """
 
     type = 'listdir'
 
-    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize operator."""
-        super(ListdirOperator, self).__init__(
-            operator_dict=operator_dict,
-            context=context,
-            no_input=no_input,
-            context_key=context_key,
-        )
-        # Defaulting to run inline
-        self.post_gen_operator = (
-            self.operator_dict['delay'] if 'delay' in self.operator_dict else False
-        )
+    def __init__(self, *args, **kwargs):  # noqa
+        super(ListdirOperator, self).__init__(*args, **kwargs)
+
         self.ignore_hidden_files = (
             self.operator_dict['ignore_hidden_files']
             if 'ignore_hidden_files' in self.operator_dict
             else False
         )
 
-    def execute(self):
-        """Run the operator."""  # noqa
+    def _execute(self):
         if 'directory' in self.operator_dict:
             files = os.listdir(self.operator_dict['directory'])
             if self.operator_dict['sort'] if 'sort' in self.operator_dict else False:

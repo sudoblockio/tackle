@@ -19,28 +19,49 @@ __all__ = [
 class BaseOperator(metaclass=ABCMeta):
     """Base operator mixin class."""
 
-    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize BaseOperator."""
+    def __init__(
+        self, operator_dict=None, context=None, context_key=None, no_input=False
+    ):
+        """
+        Initialize BaseOperator.
+
+        :param operator_dict: A dictionary of the operator that is already rendered
+            and has kwargs for the specific operator.
+        :param context: The entire context of the operator.
+        :param context_key: The key for the context - defaults to filename without
+            extension
+        :param no_input: Boolean to indicate whether to prompt the user for anything
+        :param post_gen_operator: Boolean to indiciate if to run the operator after
+            all the other operators.
+        :param chdir: A directory to temporarily change directories into and execute
+             the operator.
+        """
         self.operator_dict = operator_dict
         self.context = context or {}
         self.context_key = context_key or 'cookiecutter'
         self.no_input = no_input
-        self.post_gen_operator = False
 
+        self.post_gen_operator = (
+            self.operator_dict['delay'] if 'delay' in self.operator_dict else False
+        )
         self.chdir = (
             self.operator_dict['chdir'] if 'chdir' in self.operator_dict else None
         )
 
     @abstractmethod
-    def execute(self):
-        """Run the operator."""
+    def _execute(self):
         raise NotImplementedError()
 
-    def _execute(self):
+    def execute(self):
+        """
+        Execute the `_execute` method within each operator.
+
+        Handles `chdir` method.
+        """
         if self.chdir and isdir(self.chdir):
             # Use contextlib to switch dirs and come back out
             with work_in(self.chdir):
-                return self.execute()
+                return self._execute()
         elif self.chdir:
             # This makes no sense really but it was working then broke so above
             # is fix, leave this but should remove. Works when given relative path
@@ -48,6 +69,6 @@ class BaseOperator(metaclass=ABCMeta):
             template_dir = self.context[self.context_key]['_template']
             target_dir = join(template_dir, self.chdir)
             with work_in(target_dir):
-                return self.execute()
+                return self._execute()
         else:
-            return self.execute()
+            return self._execute()

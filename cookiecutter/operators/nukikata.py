@@ -16,7 +16,9 @@ class NukikataOperator(BaseOperator):
     """
     Operator for calling external cookiecutters.
 
-    :param template: A directory containing a project template directory,
+    :param template: A directory containing a project template,
+        or a URL to a git repository.
+    :param templates: A list of directories containing a project template,
         or a URL to a git repository.
     :param checkout: The branch, tag or commit ID to checkout after clone.
     :param no_input: Prompt the user at command line for manual configuration?
@@ -32,25 +34,15 @@ class NukikataOperator(BaseOperator):
     :param directory: Relative path to a cookiecutter template in a repository.
     :param accept_hooks: Accept pre and post hooks if set to `True`.
 
-    :return Dictionary of output
+    :return: Dictionary of output
     """
 
     type = 'nukikata'
 
-    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize operator."""
-        super(NukikataOperator, self).__init__(
-            operator_dict=operator_dict,
-            context=context,
-            no_input=no_input,
-            context_key=context_key,
-        )
-        self.post_gen_operator = (
-            self.operator_dict['delay'] if 'delay' in self.operator_dict else False
-        )
+    def __init__(self, *args, **kwargs):  # noqa
+        super(NukikataOperator, self).__init__(*args, **kwargs)
 
-    def execute(self):
-        """Run the nukikata operator."""
+    def _execute(self):
         templates = (
             self.operator_dict['templates']
             if 'templates' in self.operator_dict
@@ -136,62 +128,3 @@ class NukikataOperator(BaseOperator):
         )
 
         return output_context
-
-
-class ConfigToNukikataOperator(BaseOperator):
-    """Operator for calling external cookiecutters."""
-
-    type = 'obj_to_nuki'
-
-    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize operator."""
-        super(ConfigToNukikataOperator, self).__init__(
-            operator_dict=operator_dict,
-            context=context,
-            no_input=no_input,
-            context_key=context_key,
-        )
-
-    def execute(self):
-        """Run the nukikata operator."""
-        for k, v in self.operator_dict['contents']:
-            if isinstance(v, str):
-
-                pass
-
-
-# # # TODO: Is this needed?  Once we fix the output of the
-# # #  normal cookiecutter this won't be needed likely
-# class NukikataPromptOperator(BaseOperator):
-#     """Operator for nukikata type prompts."""
-#
-#     type = 'nukikata_prompt'
-#
-#     def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-#         """Initialize operator."""
-#         super(NukikataPromptOperator, self).__init__(
-#             operator_dict=operator_dict,
-#             context=context,
-#             no_input=no_input,
-#             context_key=context_key,
-#         )
-#
-#     def execute(self):
-#         """Run the operator."""
-#         context = {self.context_key: {}}
-#         if 'context_file' in self.operator_dict:
-#             context[self.context_key] = cc.utils.read_config_file(
-#                 self.operator_dict['template']
-#             )
-#         else:
-#             context[self.context_key] = self.operator_dict['context']
-#
-#         return cc.prompt.prompt_for_config(
-#             context=context,
-#             no_input=self.operator_dict['no_input']
-#             if 'no_input' in self.operator_dict
-#             else False,
-#             context_key=self.operator_dict['context_key']
-#             if 'context_key' in self.operator_dict
-#             else None,
-#         )

@@ -25,25 +25,15 @@ class InquirerListOperator(BaseOperator):
     :param name: A key to insert the output value to. If not provided defaults to
         inserting into parent key
     :param index: Boolean to return the index instead of the answer
-    :return String for answer
+    :return: String for answer
     """
 
     type = 'list'
 
-    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize PyInquirer operator."""
-        super(InquirerListOperator, self).__init__(
-            operator_dict=operator_dict,
-            context=context,
-            no_input=no_input,
-            context_key=context_key,
-        )
+    def __init__(self, *args, **kwargs):  # noqa
+        super(InquirerListOperator, self).__init__(*args, **kwargs)
 
-    def execute(self):
-        """Run the pyinquirer list style prompt.
-
-        Exposes options to output value or index of choice to be used elsewhere.
-        """
+    def _execute(self):
         if 'index' not in self.operator_dict:
             self.operator_dict['index'] = False
 

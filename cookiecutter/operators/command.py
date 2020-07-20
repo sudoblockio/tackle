@@ -28,26 +28,15 @@ class CommandOperator(BaseOperator):
     operator.
 
     :param command: The command to run on the host
-    :return String output of command
+    :return: String output of command
     """
 
     type = 'command'
 
-    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize `command` Hook."""  # noqa
-        super(CommandOperator, self).__init__(
-            operator_dict=operator_dict,
-            context=context,
-            no_input=no_input,
-            context_key=context_key,
-        )
-        # Defaulting to run inline
-        self.post_gen_operator = (
-            self.operator_dict['delay'] if 'delay' in self.operator_dict else False
-        )
+    def __init__(self, *args, **kwargs):  # noqa
+        super(CommandOperator, self).__init__(*args, **kwargs)
 
-    def execute(self):
-        """Run the operator."""
+    def _execute(self):
         p = subprocess.Popen(
             self.operator_dict['command'],
             shell=True,
@@ -69,26 +58,15 @@ class ShellOperator(BaseOperator):
     Streams the output of the process.
 
     :param command: The command to run on the host
-    :return String output of command
+    :return: String output of command
     """
 
     type = 'shell'
 
-    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize `command` Hook."""  # noqa
-        super(ShellOperator, self).__init__(
-            operator_dict=operator_dict,
-            context=context,
-            no_input=no_input,
-            context_key=context_key,
-        )
-        # Defaulting to run inline
-        self.post_gen_operator = (
-            self.operator_dict['delay'] if 'delay' in self.operator_dict else False
-        )
+    def __init__(self, *args, **kwargs):  # noqa
+        super(ShellOperator, self).__init__(*args, **kwargs)
 
-    def execute(self):
-        """Run the operator."""
+    def _execute(self):
         masters, slaves = zip(pty.openpty(), pty.openpty())
         cmd = self.operator_dict['command'].split()
 

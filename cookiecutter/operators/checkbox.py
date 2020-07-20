@@ -26,22 +26,15 @@ class InquirerCheckboxOperator(BaseOperator):
     :param name: A key to insert the output value to. If not provided defaults to
         inserting into parent key
     :param qmark: A marker to select with like 😃
-    :return List of answers
+    :return: List of answers
     """
 
     type = 'checkbox'
 
-    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize PyInquirer 'checkbox` type prompt."""
-        super(InquirerCheckboxOperator, self).__init__(
-            operator_dict=operator_dict,
-            context=context,
-            no_input=no_input,
-            context_key=context_key,
-        )
+    def __init__(self, *args, **kwargs):  # noqa
+        super(InquirerCheckboxOperator, self).__init__(*args, **kwargs)
 
-    def execute(self):
-        """Run the prompt."""
+    def _execute(self):
         # Fix the input choices if they don't have the pattern {'name': 'thing'}
         # and are just a list of strings
         if self.no_input:

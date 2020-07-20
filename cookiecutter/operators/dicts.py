@@ -18,22 +18,15 @@ class DictUpdateOperator(BaseOperator):
     :param dict: The input dict to update
     :param input: A dict to update the input `dict`
     :param inputs: A list of dicts to update `dict` with
-    :return An updated dict object.
+    :return: An updated dict object.
     """
 
     type = 'update'
 
-    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize operator."""
-        super(DictUpdateOperator, self).__init__(
-            operator_dict=operator_dict,
-            context=context,
-            no_input=no_input,
-            context_key=context_key,
-        )
+    def __init__(self, *args, **kwargs):  # noqa
+        super(DictUpdateOperator, self).__init__(*args, **kwargs)
 
-    def execute(self):
-        """Print the statement."""
+    def _execute(self):
         if 'inputs' in self.operator_dict:
             for i in self.operator_dict['inputs']:
                 self.operator_dict['dict'].update(i)

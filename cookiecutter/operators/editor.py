@@ -26,17 +26,10 @@ class InquirerEditorOperator(BaseOperator):
 
     type = 'editor'
 
-    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize PyInquirer operator."""  # noqa
-        super(InquirerEditorOperator, self).__init__(
-            operator_dict=operator_dict,
-            context=context,
-            no_input=no_input,
-            context_key=context_key,
-        )
+    def __init__(self, *args, **kwargs):  # noqa
+        super(InquirerEditorOperator, self).__init__(*args, **kwargs)
 
-    def execute(self):
-        """Run the prompt."""  # noqa
+    def _execute(self):
         if not self.no_input:
             if 'name' not in self.operator_dict:
                 self.operator_dict.update({'name': 'tmp'})

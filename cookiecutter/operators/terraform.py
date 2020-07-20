@@ -16,31 +16,23 @@ logger = logging.getLogger(__name__)
 
 class TerraformVariablesOperator(BaseOperator):
     """
-    Operator for printing an input and returning the output.
+    Operator that reads an input hcl file and prompts user to fill in.
+
+    Typically this is used with a `variables.tf` file.
 
     :param variables_file: A path to a file to read
     :param var_list: A list of items to only parse and prompt
     :param var_skip_list: A list of items to skip when prompting
-    :return Dict of outputs from prompt
+
+    :return: Dictionary that can be dumped into json for a `terraform.tfvars.json`
     """
 
     type = 'terraform_variables'
 
-    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize operator."""
-        super(TerraformVariablesOperator, self).__init__(
-            operator_dict=operator_dict,
-            context=context,
-            no_input=no_input,
-            context_key=context_key,
-        )
+    def __init__(self, *args, **kwargs):  # noqa
+        super(TerraformVariablesOperator, self).__init__(*args, **kwargs)
 
-    def execute(self):
-        """
-        Read the variables file and prompt user to fill in then return output.
-
-        :return: Dictionary that can be dumped into json for a `terraform.tfvars.json`
-        """
+    def _execute(self):
         with open(self.operator_dict['variables_file'], 'r') as f:
             vars = hcl.load(f)
 

@@ -26,17 +26,10 @@ class TableOperator(BaseOperator):
 
     type = 'table'
 
-    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize operator."""
-        super(TableOperator, self).__init__(
-            operator_dict=operator_dict,
-            context=context,
-            no_input=no_input,
-            context_key=context_key,
-        )
+    def __init__(self, *args, **kwargs):  # noqa
+        super(TableOperator, self).__init__(*args, **kwargs)
 
-    def execute(self):
-        """Run the operator."""
+    def _execute(self):
         if self.operator_dict['sort'] if 'sort' in self.operator_dict else False:
             if 'contents' in self.operator_dict:
                 self.operator_dict['contents'].sort()

@@ -24,17 +24,10 @@ class BlockOperator(BaseOperator):
 
     type = 'block'
 
-    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize operator."""
-        super(BlockOperator, self).__init__(
-            operator_dict=operator_dict,
-            context=context,
-            no_input=no_input,
-            context_key=context_key,
-        )
+    def __init__(self, *args, **kwargs):  # noqa
+        super(BlockOperator, self).__init__(*args, **kwargs)
 
-    def execute(self):
-        """Run the operator."""
+    def _execute(self):
         return cc.prompt.prompt_for_config(
             context={self.context_key: self.operator_dict['items']},
             no_input=self.no_input,

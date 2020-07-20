@@ -22,22 +22,15 @@ class InquirerExpandOperator(BaseOperator):
     :param choices: A list of strings or list of k/v pairs per above description
     :param name: A key to insert the output value to. If not provided defaults
         to inserting into parent key
-    :return List of answers
+    :return: List of answers
     """
 
     type = 'expand'
 
-    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize PyInquirer operator."""
-        super(InquirerExpandOperator, self).__init__(
-            operator_dict=operator_dict,
-            context=context,
-            no_input=no_input,
-            context_key=context_key,
-        )
+    def __init__(self, *args, **kwargs):  # noqa
+        super(InquirerExpandOperator, self).__init__(*args, **kwargs)
 
-    def execute(self):
-        """Run the prompt."""
+    def _execute(self):
         if not self.no_input:
             if 'name' not in self.operator_dict:
                 self.operator_dict.update({'name': 'tmp'})

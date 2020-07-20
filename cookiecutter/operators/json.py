@@ -20,26 +20,15 @@ class JsonOperator(BaseOperator):
 
     :param contents: A dict to write
     :param path: The path to write the file
-    :return When writing, returns path. When reading, returns dict
+    :return: When writing, returns path. When reading, returns dict
     """
 
     type = 'json'
 
-    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize json operator."""
-        super(JsonOperator, self).__init__(
-            operator_dict=operator_dict,
-            context=context,
-            no_input=no_input,
-            context_key=context_key,
-        )
-        # Defaulting to run inline
-        self.post_gen_operator = (
-            self.operator_dict['delay'] if 'delay' in self.operator_dict else False
-        )
+    def __init__(self, *args, **kwargs):  # noqa
+        super(JsonOperator, self).__init__(*args, **kwargs)
 
-    def execute(self):
-        """Run the operator."""
+    def _execute(self):
         if 'contents' in self.operator_dict:
             with open(self.operator_dict['path'], 'w') as f:
                 json.dump(self.operator_dict['contents'], f)

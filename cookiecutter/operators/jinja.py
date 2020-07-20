@@ -20,31 +20,20 @@ class JinjaOperator(BaseOperator):
     :param template_path: Path to the template to render
     :param extra_context: A dict to use to render
     :param output_path: Path to the output file
-    :return String path to the output file
+    :return: String path to the output file
     """
 
     type = 'jinja'
 
-    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize operator."""
-        super(JinjaOperator, self).__init__(
-            operator_dict=operator_dict,
-            context=context,
-            no_input=no_input,
-            context_key=context_key,
-        )
-        # Defaulting to run inline
-        self.post_gen_operator = (
-            self.operator_dict['delay'] if 'delay' in self.operator_dict else False
-        )
+    def __init__(self, *args, **kwargs):  # noqa
+        super(JinjaOperator, self).__init__(*args, **kwargs)
         self.file_system_loader = (
             self.operator_dict['file_system_loader']
             if 'file_system_loader' in self.operator_dict
             else '.'
         )
 
-    def execute(self):
-        """Run the operator."""
+    def _execute(self):
         env = StrictEnvironment(context=self.context)
 
         env.loader = FileSystemLoader(self.file_system_loader)

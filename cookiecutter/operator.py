@@ -31,7 +31,7 @@ def run_operator(
             if operator.post_gen_operator:
                 delayed_output = operator
             else:
-                operator_output = operator._execute()
+                operator_output = operator.execute()
             break
         if o == operator_list[-1]:
             msg = (

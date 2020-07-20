@@ -21,17 +21,10 @@ class PrintOperator(BaseOperator):
 
     type = 'print'
 
-    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize operator."""
-        super(PrintOperator, self).__init__(
-            operator_dict=operator_dict,
-            context=context,
-            no_input=no_input,
-            context_key=context_key,
-        )
+    def __init__(self, *args, **kwargs):  # noqa
+        super(PrintOperator, self).__init__(*args, **kwargs)
 
-    def execute(self):
-        """Print the statement."""
+    def _execute(self):
         print(self.operator_dict['statement'])
         return self.operator_dict['statement']
 
@@ -45,16 +38,9 @@ class PprintOperator(BaseOperator):
 
     type = 'pprint'
 
-    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize operator."""
-        super(PprintOperator, self).__init__(
-            operator_dict=operator_dict,
-            context=context,
-            no_input=no_input,
-            context_key=context_key,
-        )
+    def __init__(self, *args, **kwargs):  # noqa
+        super(PprintOperator, self).__init__(*args, **kwargs)
 
-    def execute(self):
-        """Run the operator."""
+    def _execute(self):
         pprint(self.operator_dict['statement'])
         return self.operator_dict['statement']

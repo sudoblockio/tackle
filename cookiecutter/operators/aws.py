@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Operator plugin that inherits a base class and is made available through `type`."""
+"""AWS Operators."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -13,25 +13,17 @@ logger = logging.getLogger(__name__)
 
 
 class AwsRegionsOperator(BaseOperator):
-    """
-    Operator for printing an input and returning the output.
+    """Operator retrieving AWS regions.
 
-    :return List of regions
+    :return: List of regions
     """
 
     type = 'aws_regions'
 
-    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize operator."""
-        super(AwsRegionsOperator, self).__init__(
-            operator_dict=operator_dict,
-            context=context,
-            no_input=no_input,
-            context_key=context_key,
-        )
+    def __init__(self, *args, **kwargs):  # noqa
+        super(AwsRegionsOperator, self).__init__(*args, **kwargs)
 
-    def execute(self):
-        """Print the statement."""
+    def _execute(self):
         client = boto3.client('ec2')
 
         regions = [
@@ -46,22 +38,15 @@ class AwsAzsOperator(BaseOperator):
 
     :param region: A region to search in
     :param regions: A list of regions to search in
-    :return A list of availability zones
+    :return: A list of availability zones
     """
 
     type = 'aws_azs'
 
-    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize operator."""
-        super(AwsAzsOperator, self).__init__(
-            operator_dict=operator_dict,
-            context=context,
-            no_input=no_input,
-            context_key=context_key,
-        )
+    def __init__(self, *args, **kwargs):  # noqa
+        super(AwsAzsOperator, self).__init__(*args, **kwargs)
 
-    def execute(self):
-        """Print the statement."""
+    def _execute(self):
         if 'region' in self.operator_dict:
             client = boto3.client('ec2', region_name=self.operator_dict['region'])
             azs = self._call_azs(client, self.operator_dict['region'])
@@ -98,22 +83,15 @@ class AwsEc2TypesOperator(BaseOperator):
 
     :param region: [Required] The region to determine the instances in
     :param instance_families: A list of instance families, ie ['c5', 'm5']
-    :return A list of instance types
+    :return: A list of instance types
     """
 
     type = 'aws_ec2_types'
 
-    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize operator."""
-        super(AwsEc2TypesOperator, self).__init__(
-            operator_dict=operator_dict,
-            context=context,
-            no_input=no_input,
-            context_key=context_key,
-        )
+    def __init__(self, *args, **kwargs):  # noqa
+        super(AwsEc2TypesOperator, self).__init__(*args, **kwargs)
 
-    def execute(self):
-        """Print the statement."""
+    def _execute(self):
         selected_region = self.operator_dict['region']
         client = boto3.client('ec2', region_name=selected_region)
 

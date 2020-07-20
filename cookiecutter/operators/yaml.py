@@ -27,21 +27,10 @@ class YamlOperator(BaseOperator):
 
     type = 'yaml'
 
-    def __init__(self, operator_dict, context=None, context_key=None, no_input=False):
-        """Initialize yaml operator."""
-        super(YamlOperator, self).__init__(
-            operator_dict=operator_dict,
-            context=context,
-            no_input=no_input,
-            context_key=context_key,
-        )
-        # Defaulting to run inline
-        self.post_gen_operator = (
-            self.operator_dict['delay'] if 'delay' in self.operator_dict else False
-        )
+    def __init__(self, *args, **kwargs):  # noqa
+        super(YamlOperator, self).__init__(*args, **kwargs)
 
-    def execute(self):
-        """Execute the yaml operator."""
+    def _execute(self):
         if 'remove' in self.operator_dict:
             if isinstance(self.operator_dict['remove'], str):
                 self._remove_from_contents(self.operator_dict['remove'])
