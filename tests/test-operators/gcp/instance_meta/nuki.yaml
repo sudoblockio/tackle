@@ -1,0 +1,11 @@
+stuff: things
+
+instance_types:
+  type: gcp_instance_types
+  zone: us-east1-a
+  gcp_project: nukikata-ci
+
+instance:
+  type: list
+  message: What do you want?
+  choices: "{{ nuki.instance_types }}"
