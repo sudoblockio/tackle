@@ -1,0 +1,15 @@
+shell:
+  type: nukikata
+  template: https://github.com/insight-infrastructure/nukikata
+  directory: tests/test-operators/nukikata/fixture
+  existing_context:
+    foo: bing
+
+#this:
+#  type: nukikata
+#  template: https://github.com/insight-w3f/terraform-polkadot-aws-network
+#  checkout: nuki-init
+#  existing_context:
+#    region: us-east-1
+
+#  chdir: ~/.cookiecutters/nukikata-installs

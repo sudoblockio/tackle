@@ -118,7 +118,6 @@ def determine_repo_dir(
     :raises: `RepositoryNotFound` if a repository directory could not be found.
     """
     template = expand_abbreviations(template, abbreviations)
-
     if is_zip_file(template):
         unzipped_dir = unzip(
             zip_uri=template,
