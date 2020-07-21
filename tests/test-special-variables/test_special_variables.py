@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-"""Tests dict input objects for `cookiecutter.operator.block` module."""
+"""Tests dict rednering special variables."""
 import os
 from cookiecutter.main import cookiecutter
 
 
-def test_operator_block(monkeypatch, tmpdir):
+def test_special_variables(monkeypatch, tmpdir):
     """Verify Jinja2 time extension work correctly."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
 
