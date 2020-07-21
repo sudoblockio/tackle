@@ -84,3 +84,98 @@ class GcpAzsOperator(BaseOperator):
         ]
         availability_zones.sort()
         return availability_zones
+
+
+class GcpInstanceTypesOperator(BaseOperator):
+    """
+    Operator retrieving the available instance types in a zone.
+
+    :param region: [Required] The zone to determine the instances in
+    :param instance_families: A list of instance families, ie ['n1', 'e2']
+    :return: A list of instance types
+    """
+
+    type = 'gcp_instance_types'
+
+    def __init__(self, *args, **kwargs):  # noqa
+        super(GcpInstanceTypesOperator, self).__init__(*args, **kwargs)
+
+    def _execute(self):
+        client = build('compute', 'v1')
+
+        if 'instance_families' not in self.operator_dict:
+            instances = [
+                item['name']
+                for item in client.machineTypes()
+                .list(
+                    project=self.operator_dict['gcp_project'],
+                    zone=self.operator_dict['zone'],
+                )
+                .execute()['items']
+            ]
+
+        else:
+            selected_family = self.operator_dict['instance_families']
+            selected_family = [name + '*' for name in selected_family]
+
+            for i, name in enumerate(selected_family):
+                if i == 0:
+                    query = "name = \"" + name + "\""
+                else:
+                    query += " OR name = \"" + name + "\""
+
+            instances = [
+                item['name']
+                for item in client.machineTypes()
+                .list(
+                    project=self.operator_dict['gcp_project'],
+                    zone=self.operator_dict['zone'],
+                    filter=query,
+                )
+                .execute()['items']
+            ]
+
+        instances.sort()
+
+        instance_sizes = [
+            'micro',
+            'small',
+            'medium',
+            'standard',
+            'highcpu',
+            'highmem',
+            'megamem',
+            'ultramem',
+        ]
+
+        instance_sizes_set = []
+        for _, x in enumerate(instances):
+            if len(x.split('-')) == 2:
+                instance_sizes_set.append(
+                    (
+                        x.split('-')[0],
+                        x.split('-')[1],
+                        None,
+                        instance_sizes.index(x.split('-')[1]),
+                    )
+                )
+            else:
+                instance_sizes_set.append(
+                    (
+                        x.split('-')[0],
+                        x.split('-')[1],
+                        x.split('-')[2],
+                        instance_sizes.index(x.split('-')[1]),
+                    )
+                )
+
+        instance_sizes_set.sort(key=lambda x: x[3])
+
+        instances = []
+        for s in instance_sizes_set:
+            if s[2]:
+                instances.append('-'.join([s[0], s[1], s[2]]))
+            else:
+                instances.append('-'.join([s[0], s[1]]))
+
+        return instances
