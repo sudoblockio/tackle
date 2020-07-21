@@ -7,7 +7,7 @@ from cookiecutter.main import cookiecutter
 
 
 def test_operator_jinja(monkeypatch, tmpdir):
-    """Verify Jinja2 time extension work correctly."""
+    """Verify the operator call works successfully."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
     if os.path.exists('things.py'):
         os.remove('things.py')
