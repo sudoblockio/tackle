@@ -12,7 +12,6 @@ import subprocess
 import errno
 import struct
 import shutil
-import fcntl
 import os
 import click
 from itertools import chain
@@ -23,6 +22,7 @@ from cookiecutter.operators import BaseOperator
 if os.name != 'nt':
     # Don't import on windows as pty is not available there
     import pty
+    import fcntl
     import termios
 
 
