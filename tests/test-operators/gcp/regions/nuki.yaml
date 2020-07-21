@@ -1,0 +1,9 @@
+stuff: things
+
+azs:
+  type: gcp_regions
+  gcp_project: nukikata-ci
+
+print:
+  type: print
+  statement: "{{ nuki.azs }}"
