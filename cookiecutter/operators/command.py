@@ -5,17 +5,25 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 import sys
+
+# import re
 import logging
 import subprocess
 import errno
+import struct
+import shutil
+import fcntl
 import os
 import click
+from itertools import chain
 from select import select
 
 from cookiecutter.operators import BaseOperator
 
 if os.name != 'nt':
+    # Don't import on windows as pty is not available there
     import pty
+    import termios
 
 
 logger = logging.getLogger(__name__)
@@ -66,9 +74,24 @@ class ShellOperator(BaseOperator):
 
     def __init__(self, *args, **kwargs):  # noqa
         super(ShellOperator, self).__init__(*args, **kwargs)
+        self._COLUMNS, self._ROWS, = shutil.get_terminal_size(fallback=(80, 20))
+
+    def _set_size(self, fd):
+        """Found at: https://stackoverflow.com/a/6420070."""
+        size = struct.pack("HHHH", self._ROWS, self._COLUMNS, 0, 0)
+        fcntl.ioctl(fd, termios.TIOCSWINSZ, size)
 
     def _execute(self):
+        # Copied from
+        # https://terminallabs.com/blog/a-better-cli-passthrough-in-python/
         masters, slaves = zip(pty.openpty(), pty.openpty())
+        for fd in chain(masters, slaves):
+            self._set_size(fd)
+
+        # cmd = re.findall(r'\S+|\n', self.operator_dict['command'])
+        # cmds = self.operator_dict['command'].split('\n')
+        # for cmd in cmds:
+        # TODO: Fix multi-line calls
         cmd = self.operator_dict['command'].split()
 
         with subprocess.Popen(
