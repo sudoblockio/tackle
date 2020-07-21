@@ -26,3 +26,9 @@ def test_embedded_context(monkeypatch, tmpdir):
     assert embedded_yaml['foo'] == 'bar'
     assert embedded_yaml['stuff'] == 'Indeed'
     assert embedded_yaml['things'] == 'yes please'
+
+    inner_yaml = os.path.join('stuffs', 'things', 'before.yaml')
+    if os.path.exists('after.yaml'):
+        os.remove('after.yaml')
+    if os.path.exists(inner_yaml):
+        os.remove(inner_yaml)

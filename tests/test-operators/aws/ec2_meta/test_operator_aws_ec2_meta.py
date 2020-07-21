@@ -7,7 +7,7 @@ from cookiecutter.main import cookiecutter
 
 
 def test_operator_aws_ec2_meta(monkeypatch, tmpdir):
-    """Verify Jinja2 time extension work correctly."""
+    """Verify the operator call works successfully."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
 
     context = cookiecutter('.', no_input=True, output_dir=str(tmpdir))
@@ -16,7 +16,7 @@ def test_operator_aws_ec2_meta(monkeypatch, tmpdir):
 
 
 def test_operator_aws_ec2_meta_instance_family(monkeypatch, tmpdir):
-    """Verify Jinja2 time extension work correctly."""
+    """Verify the operator call works successfully."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
 
     context = cookiecutter(

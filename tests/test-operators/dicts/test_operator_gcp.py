@@ -6,7 +6,7 @@ from cookiecutter.main import cookiecutter
 
 
 def test_operator_dict(monkeypatch, tmpdir):
-    """Verify Jinja2 time extension work correctly."""
+    """Verify the operator call works successfully."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
 
     context = cookiecutter(

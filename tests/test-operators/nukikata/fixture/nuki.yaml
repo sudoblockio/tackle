@@ -1,0 +1,8 @@
+foo:
+  type: stat
+  input: bar
+  when: "{{ nuki.foo is defined }}"
+
+read_stuff:
+  type: yaml
+  path: example.yaml

@@ -10,6 +10,7 @@ from jinja2.exceptions import UndefinedError
 from cookiecutter.environment import StrictEnvironment
 from cookiecutter.exceptions import UndefinedVariableInTemplate
 from cookiecutter.render import render_variable
+from cookiecutter.context_manager import work_in
 
 
 def read_user_variable(var_name, default_value):
@@ -138,24 +139,16 @@ def prompt_choice_for_config(
     return read_user_choice(key, rendered_options)
 
 
-def prompt_for_config(context, no_input=False, context_key=None, existing_context=None):
-    """Prompt user to enter a new config.
+def parse_context(context, env, cookiecutter_dict, context_key, no_input):
+    """Parse the context and iterate over values.
 
     :param dict context: Source for field names and sample values.
-    :param no_input: Prompt the user at command line for manual configuration?
+    :param env: Jinja environment to render values with.
+    :param no_input: Prompt the user at command line for manual configuration.
+    :param context_key: The key to insert all the outputs under in the context dict.
+    :param existing_context: A dictionary of values to use during rendering.
+    :return: cookiecutter_dict
     """
-    if not existing_context:
-        cookiecutter_dict = OrderedDict([])
-    else:
-        cookiecutter_dict = OrderedDict(existing_context)
-    env = StrictEnvironment(context=context)
-
-    if not context_key:
-        context_key = next(iter(context))
-
-    # First pass: Handle simple and raw variables, plus choices.
-    # These must be done first because the dictionaries keys and
-    # values might refer to them.
     for key, raw in context[context_key].items():
         if key.startswith(u'_') and not key.startswith('__'):
             cookiecutter_dict[key] = raw
@@ -185,7 +178,7 @@ def prompt_for_config(context, no_input=False, context_key=None, existing_contex
             msg = "Unable to render variable '{}'".format(key)
             raise UndefinedVariableInTemplate(msg, err, context)
 
-    # Second pass; handle the dictionaries.
+            # Second pass; handle the dictionaries.
     for key, raw in context[context_key].items():
         if key.startswith('_') and not key.startswith('__'):
             continue
@@ -211,3 +204,32 @@ def prompt_for_config(context, no_input=False, context_key=None, existing_contex
             raise UndefinedVariableInTemplate(msg, err, context)
 
     return cookiecutter_dict
+
+
+def prompt_for_config(context, no_input=False, context_key=None, existing_context=None):
+    """
+    Prompt user to enter values.
+
+    Function sets the jinja environment and brings in extensions.
+
+    :param dict context: Source for field names and sample values.
+    :param no_input: Prompt the user at command line for manual configuration.
+    :param context_key: The key to insert all the outputs under in the context dict.
+    :param existing_context: A dictionary of values to use during rendering.
+    """
+    if not existing_context:
+        cookiecutter_dict = OrderedDict([])
+    else:
+        cookiecutter_dict = OrderedDict(existing_context)
+    env = StrictEnvironment(context=context)
+
+    if not context_key:
+        context_key = next(iter(context))
+
+    if '_template' in context[context_key]:
+        # Normal case where '_template' is set in the context in `main`
+        with work_in(context[context_key]['_template']):
+            return parse_context(context, env, cookiecutter_dict, context_key, no_input)
+    else:
+        # Case where prompt is being called directly as is the case with an operator
+        return parse_context(context, env, cookiecutter_dict, context_key, no_input)

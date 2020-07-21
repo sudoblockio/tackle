@@ -412,12 +412,11 @@ def test_echo_undefined_variable_error(monkeypatch, tmpdir, cli_runner):
     )
     assert message in result.output
 
-    template_abs_path = os.path.join(cwd, template_path)
     context = {
         'cookiecutter': {
             'github_username': 'hackebrot',
             'project_slug': 'testproject',
-            '_template': template_abs_path,
+            '_template': template_path,
             '_output_dir': output_dir,
         }
     }

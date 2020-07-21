@@ -1,0 +1,5 @@
+shell:
+  type: nukikata
+  template: https://github.com/insight-w3f/terraform-polkadot-aws-network
+  checkout: nuki-init
+#  chdir: ~/.cookiecutters/nukikata-installs

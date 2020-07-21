@@ -4,6 +4,17 @@
 import os
 
 from cookiecutter.operator import run_operator, parse_operator
+from cookiecutter.main import cookiecutter
+
+
+def test_operator_command(monkeypatch, tmpdir):
+    """Verify the operator call works successfully."""
+    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
+
+    context = cookiecutter('.', no_input=True, output_dir=str(tmpdir))
+
+    assert context
+
 
 base_name = os.path.abspath(os.path.dirname(__file__))
 

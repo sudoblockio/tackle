@@ -24,7 +24,7 @@ class AwsRegionsOperator(BaseOperator):
         super(AwsRegionsOperator, self).__init__(*args, **kwargs)
 
     def _execute(self):
-        client = boto3.client('ec2')
+        client = boto3.client('ec2', region_name='us-east-1')
 
         regions = [
             region['RegionName'] for region in client.describe_regions()['Regions']
