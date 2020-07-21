@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 
 from abc import ABCMeta, abstractmethod
 from os import listdir as _listdir  # To not conflict with operator
-from os.path import dirname, basename, join, isdir
+from os.path import dirname, basename, join, isdir, abspath, expanduser
 from cookiecutter.context_manager import work_in
 
 # TODO: Allow for imports of custom operators and subdirectories.
@@ -58,9 +58,9 @@ class BaseOperator(metaclass=ABCMeta):
 
         Handles `chdir` method.
         """
-        if self.chdir and isdir(self.chdir):
+        if self.chdir and isdir(abspath(expanduser(self.chdir))):
             # Use contextlib to switch dirs and come back out
-            with work_in(self.chdir):
+            with work_in(abspath(expanduser(self.chdir))):
                 return self._execute()
         elif self.chdir:
             # This makes no sense really but it was working then broke so above
