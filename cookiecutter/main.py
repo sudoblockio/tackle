@@ -110,7 +110,7 @@ def cookiecutter(
         )
 
         # include template dir or url in the context dict
-        context[context_key]['_template'] = os.path.abspath(template)
+        context[context_key]['_template'] = repo_dir
         # include output+dir in the context dict
         context[context_key]['_output_dir'] = os.path.abspath(output_dir)
 
