@@ -53,6 +53,7 @@ class PathRelativeOperator(BaseOperator):
     :param target: The name of the file to find the absolute path to
     :param starting_dir: The starting directory to search from. Defaults to current
         working directory.
+    :param fallback: String to fallback on if the target is not found.
     :return: string: Absolute path to the target file
     """
 
@@ -68,17 +69,32 @@ class PathRelativeOperator(BaseOperator):
             if 'starting_dir' in self.operator_dict
             else '.'
         )
-        return self._find_in_parent(self.operator_dict['target'], starting_dir)
+        return self._find_in_parent(starting_dir)
 
-    def _find_in_parent(self, target, dir):
+    def _find_in_parent(self, dir):
         for i in os.listdir(dir):
-            if os.path.isdir(os.path.join(dir, i)) and i == target:
+            if (
+                os.path.isdir(os.path.join(dir, i))
+                and i == self.operator_dict['target']
+            ):
                 return os.path.abspath(dir)
-            if os.path.isfile(os.path.join(dir, i)) and i == target:
+            if (
+                os.path.isfile(os.path.join(dir, i))
+                and i == self.operator_dict['target']
+            ):
                 return os.path.abspath(os.path.join(dir, i))
 
         if os.path.abspath(dir) == '/':
-            raise NotADirectoryError(
-                'The %s target doesn\'t exist in the parent directories.' % target
+            fallback = (
+                self.operator_dict['fallback']
+                if 'fallback' in self.operator_dict
+                else None
             )
-        return self._find_in_parent(target, dir=os.path.dirname(os.path.abspath(dir)))
+            if fallback:
+                return fallback
+            else:
+                raise NotADirectoryError(
+                    'The %s target doesn\'t exist in the parent directories.'
+                    % self.operator_dict['target']
+                )
+        return self._find_in_parent(dir=os.path.dirname(os.path.abspath(dir)))
