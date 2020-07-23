@@ -7,3 +7,11 @@ path_isdir:
 path_exists:
   type: path_exists
   path: a-path/.gitkeep
+
+find_in_parent_dir:
+  type: find_in_parent
+  target: tests
+
+find_in_parent_file:
+  type: find_in_parent
+  target: Makefile
