@@ -25,3 +25,4 @@ def test_operator_gcp_instance_meta_instance_family(monkeypatch, tmpdir):
 
     assert len(context['instance_types']) > 1
     assert len(context['instance_types']) < 75
+    assert "n2d-standard-2" not in context['instance_types']
