@@ -116,7 +116,7 @@ class GcpInstanceTypesOperator(BaseOperator):
 
         else:
             selected_family = self.operator_dict['instance_families']
-            selected_family = [name + '*' for name in selected_family]
+            selected_family = [name + '-*' for name in selected_family]
 
             for i, name in enumerate(selected_family):
                 if i == 0:
