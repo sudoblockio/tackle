@@ -1,0 +1,10 @@
+stuff: things
+
+instance_types:
+  type: azure_vm_types
+  region: eastus
+
+instance:
+  type: list
+  message: What do you want?
+  choices: "{{ nuki.instance_types }}"
