@@ -15,3 +15,8 @@ find_in_parent_dir:
 find_in_parent_file:
   type: find_in_parent
   target: Makefile
+
+find_in_parent_fallback:
+  type: find_in_parent
+  target: something-not-right
+  fallback: "{{ nuki.find_in_parent_dir }}"

@@ -42,9 +42,14 @@ class JinjaOperator(BaseOperator):
         jinja_context = (
             self.operator_dict['context'] if 'context' in self.operator_dict else {}
         )
+
+        if 'extra_context' in self.operator_dict:
+            jinja_context.update(self.operator_dict['extra_context'])
+
         output_from_parsed_template = template.render(
             **{self.context_key: jinja_context}
         )
+
         with open(self.operator_dict['output_path'], 'w') as fh:
             fh.write(output_from_parsed_template)
 
