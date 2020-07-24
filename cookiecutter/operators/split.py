@@ -15,9 +15,9 @@ class SplitOperator(BaseOperator):
     """
     Operator for PyInquirer type prompts.
 
-    :param items: A list of string to split or just a string
+    :param input: A list of string to split or just a string
     :param separator: String separator
-    :return: List if input items is list otherwise string
+    :return: List of lists if `input` is list otherwise list
     """
 
     type = 'split'

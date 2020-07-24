@@ -18,7 +18,11 @@ class StatOperator(BaseOperator):
     """
     Operator for registering a variable based on an input. Useful with rendering.
 
+    :param remove: Parameter or regex to remove from list or dict
+    :param update: Use the python `update` dict method on `contents` before writing
+    :param merge_config: Recursively update the contents before writing.
     :param input: Any type input
+    :return: any: Processed input.
     """
 
     type = 'stat'
