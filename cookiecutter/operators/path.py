@@ -74,12 +74,7 @@ class PathRelativeOperator(BaseOperator):
     def _find_in_parent(self, dir):
         for i in os.listdir(dir):
             if (
-                os.path.isdir(os.path.join(dir, i))
-                and i == self.operator_dict['target']
-            ):
-                return os.path.abspath(dir)
-            if (
-                os.path.isfile(os.path.join(dir, i))
+                os.path.exists(os.path.join(dir, i))
                 and i == self.operator_dict['target']
             ):
                 return os.path.abspath(os.path.join(dir, i))

@@ -14,6 +14,6 @@ def test_operator_path(monkeypatch, tmpdir):
     assert context['path_isdir']
 
     assert context['path_exists']
-    assert os.path.exists(context['find_in_parent_dir'])
+    assert os.path.exists(context['find_in_parent_dir'])  # Should be tests/tests...
     assert os.path.exists(context['find_in_parent_file'])
     assert context['find_in_parent_fallback'] == context['find_in_parent_dir']
