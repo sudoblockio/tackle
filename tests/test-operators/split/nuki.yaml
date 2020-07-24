@@ -1,0 +1,11 @@
+a_list:
+  type: split
+  separator: .
+  input:
+    - stuff.thing
+    - things.stuffs
+
+a_str:
+  type: split
+  separator: .
+  input: things.stuffs

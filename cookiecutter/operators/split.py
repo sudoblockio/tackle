@@ -32,16 +32,16 @@ class SplitOperator(BaseOperator):
         )
 
     def _execute(self):
-        if isinstance(self.operator_dict['items'], str):
+        if isinstance(self.operator_dict['input'], str):
             # If item is a string then return a list
-            return self.operator_dict['items'].split(self.separator)
-        elif isinstance(self.operator_dict['items'], list):
-            # If items is a list then return a nested list
+            return self.operator_dict['input'].split(self.separator)
+        elif isinstance(self.operator_dict['input'], list):
+            # If input is a list then return a nested list
             output = []
-            for i in self.operator_dict['items']:
-                output.append(i.split('-'))
+            for i in self.operator_dict['input']:
+                output.append(i.split(self.separator))
             return output
         else:
             raise NotImplementedError(
-                "Have not implemented dict input to " "`items` for `type` 'split'"
+                "Have not implemented dict `input` for `type` 'split'"
             )
