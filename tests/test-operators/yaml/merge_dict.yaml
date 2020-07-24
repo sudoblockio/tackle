@@ -1,0 +1,16 @@
+foo: bar
+
+stuff:
+  things:
+    dog: food
+  tangs:
+    dog: penny
+
+include:
+  type: yaml
+  path: output.yaml
+  contents: "{{ merge_dict }}"
+  merge_dict:
+    stuff:
+      things:
+        cats: scratch

@@ -10,6 +10,7 @@ import re
 import warnings
 
 from cookiecutter.operators import BaseOperator
+from cookiecutter.config import merge_configs
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +22,8 @@ class YamlOperator(BaseOperator):
     :param path: The file path to put read or write to
     :param contents: Supplied dictionary or list to write.
     :param remove: Parameter or regex to remove from list or dict
+    :param update: Use the python `update` dict method on `contents` before writing
+    :param merge_config: Recursively update the contents before writing.
     :param mode: The mode that the file should write. Defaults to write 'w'.
         Seee https://docs.python.org/3/library/functions.html#open
     """
@@ -44,10 +47,26 @@ class YamlOperator(BaseOperator):
                     "Warning: the `remove` parameter can't be a dict - ignored"
                 )
 
+        contents = (
+            self.operator_dict['contents'] if 'contents' in self.operator_dict else None
+        )
+        if 'update' in self.operator_dict:
+            if isinstance(self.operator_dict['update'], dict):
+                contents.update(self.operator_dict['update'])
+            else:
+                raise ValueError("`update` param must be dictionary.")
+
+        if 'merge_dict' in self.operator_dict:
+            if isinstance(self.operator_dict['merge_dict'], dict):
+                contents = merge_configs(contents, self.operator_dict['merge_dict'])
+            else:
+                raise ValueError("`merge_dict` param must be dictionary.")
+
+        # We are writing yaml
         if 'contents' in self.operator_dict:
             mode = self.operator_dict['mode'] if 'mode' in self.operator_dict else 'w'
             with open(self.operator_dict['path'], mode) as f:
-                yaml.dump(self.operator_dict['contents'], f)
+                yaml.dump(contents, f)
                 return None
 
         else:

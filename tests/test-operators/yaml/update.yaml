@@ -1,0 +1,16 @@
+foo: bar
+
+stuff:
+  things:
+    dog: food
+  tangs:
+    dog: penny
+
+include:
+  type: yaml
+  path: output.yaml
+  contents: "{{ update }}"
+  update:
+    stuff:
+      things:
+        cats: scratch
