@@ -1,0 +1,65 @@
+a_list:
+  type: stat
+  input:
+    - stuff
+    - things
+
+another_list:
+  type: stat
+  input:
+    - dogs
+    - cats
+
+a_list_remove:
+  type: stat
+  input:
+    - _stuff
+    - things
+    - thangs_
+  remove:
+    - ^_
+    - _$
+
+a_map:
+  type: stat
+  input:
+    stuff:
+      things: 3
+    foo: bar
+
+map_update:
+  type: stat
+  input: "{{ nuki.a_map }}"
+  update:
+    stuff:
+      dogs: cats
+
+map_merge:
+  type: stat
+  input: "{{ nuki.a_map }}"
+  merge_dict:
+    stuff:
+      dogs: cats
+
+loop_merge:
+  type: stat
+  input: "{{ nuki.a_map }}"
+  loop: "{{ nuki.a_list }}"
+  merge_dict:
+    stuff:
+      "{{ nuki.item }}": "{{ nuki.index }}"
+
+print:
+  type: pprint
+  statement: |
+    {% for i in nuki.a_list %}{{i}}:
+      animals: "{{ loop.index }}"
+    {% endfor %}
+
+#jinja_merge:
+#  type: stat
+#  input: "{{ nuki.a_map }}"
+#  merge_dict: |
+#    {% for i in nuki.a_list %}{{i}}:
+#      animals: "{{ loop.index }}"
+#    {% endfor %}
