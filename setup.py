@@ -27,6 +27,7 @@ requirements = [
     'pyhcl>=0.4.4',
     'distro>=1.5.0',
     'rich>=3.3.0',
+    'dopy>=0.3.7',
 ]
 
 if sys.argv[-1] == 'readme':
