@@ -14,3 +14,23 @@ include:
     stuff:
       things:
         cats: scratch
+
+envs:
+  type: stat
+  input:
+    - dev
+    - prod
+    - stage
+
+map:
+  dev: null
+  stage: null
+  prod: null
+
+merger:
+  type: yaml
+  path: output.yaml
+  loop: "{{ merge_dict.envs }}"
+  contents: "{{ merge_dict }}"
+  merge_dict:
+    "{{ merge_dict.item }}": "{{ merge_dict.index }}"

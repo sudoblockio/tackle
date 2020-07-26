@@ -1,9 +1,0 @@
-_output_dir: /tmp/pytest-of-rob/pytest-24/test_operator_yaml0
-_template: .
-foo: bar
-stuff:
-  tangs:
-    dog: penny
-  things:
-    cats: scratch
-    dog: food
