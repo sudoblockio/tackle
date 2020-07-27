@@ -21,18 +21,6 @@ def test_operator_yaml(monkeypatch, tmpdir):
 
     assert output['stuff'] == {'things': {'cats': 'scratch'}}
 
-    # cookiecutter(
-    #     '.', context_file='merge_dict.yaml', no_input=True, output_dir=str(tmpdir),
-    # )
-    #
-    # with open('output.yaml', 'r') as f:
-    #     output = yaml.load(f)
-    #
-    # assert output['stuff'] == {
-    #     'tangs': {'dog': 'penny'},
-    #     'things': {'cats': 'scratch', 'dog': 'food'},
-    # }
-
     context = cookiecutter(
         '.', context_file='before.yaml', no_input=True, output_dir=str(tmpdir),
     )
@@ -65,3 +53,33 @@ def test_operator_yaml(monkeypatch, tmpdir):
     )
 
     assert read['stuff'] == 'things'
+
+
+def test_operator_yaml_update_in_place(monkeypatch, tmpdir):
+    """Verify the operator call works successfully."""
+    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
+
+    cookiecutter(
+        '.', context_file='update_in_place.yaml', no_input=True, output_dir=str(tmpdir),
+    )
+
+    with open('output_update_in_place.yaml', 'r') as f:
+        output = yaml.load(f)
+
+    assert output['dev']['stuff'] == 'things'
+    os.remove('output_update_in_place.yaml')
+
+
+def test_operator_yaml_merge_in_place(monkeypatch, tmpdir):
+    """Verify the operator call works successfully."""
+    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
+
+    cookiecutter(
+        '.', context_file='merge_in_place.yaml', no_input=True, output_dir=str(tmpdir),
+    )
+
+    with open('output_merge_in_place.yaml', 'r') as f:
+        output = yaml.load(f)
+
+    assert output['dev']['stuff'] == 'things'
+    os.remove('output_merge_in_place.yaml')

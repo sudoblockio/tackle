@@ -63,7 +63,21 @@ class YamlOperator(BaseOperator):
                 raise ValueError("`merge_dict` param must be dictionary.")
 
         # We are writing yaml
-        if 'contents' in self.operator_dict:
+        if 'update_in_place' in self.operator_dict:
+            with open(self.operator_dict['path'], 'r') as f:
+                update_dict = yaml.safe_load(f)
+            update_dict.update(self.operator_dict['update_in_place'])
+            with open(self.operator_dict['path'], 'w') as f:
+                yaml.dump(update_dict, f)
+
+        if 'merge_in_place' in self.operator_dict:
+            with open(self.operator_dict['path'], 'r') as f:
+                merge_dict = yaml.safe_load(f)
+            merge_dict = merge_configs(merge_dict, self.operator_dict['merge_in_place'])
+            with open(self.operator_dict['path'], 'w') as f:
+                yaml.dump(merge_dict, f)
+
+        elif 'contents' in self.operator_dict:
             mode = self.operator_dict['mode'] if 'mode' in self.operator_dict else 'w'
             with open(self.operator_dict['path'], mode) as f:
                 yaml.dump(contents, f)

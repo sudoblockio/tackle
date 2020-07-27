@@ -1,0 +1,25 @@
+write:
+  type: yaml
+  path: output_merge_in_place.yaml
+  contents:
+#    foo: bar
+#    bing: baz
+    prod:
+      sturff: stuff
+    dev:
+      sturff: stuff
+    stage:
+      sturff: stuff
+
+_a_list:
+  - prod
+  - dev
+  - stage
+
+merge:
+  type: yaml
+  loop: "{{ merge_in_place._a_list }}"
+  path: output_merge_in_place.yaml
+  merge_in_place:
+    "{{ merge_in_place.item }}":
+      stuff: things
