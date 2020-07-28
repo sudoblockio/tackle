@@ -6,7 +6,8 @@ The cookiecutter history can be viewed in the [project tab](https://github.com/c
 
 
 ## 2.0.0.1 (2020-07-28)
-- Updating docs
+- Added special variable `calling_directory` to preserve path regardless of context changing in remote nukikata calls.
+- Fixing listdir and list operators
 
 ## 2.0.0.0 (2020-07-27)
 - Added no_input to operator level discovery
@@ -20,7 +21,6 @@ The cookiecutter history can be viewed in the [project tab](https://github.com/c
 - Added warning for unknown operator type
 - Added `chdir` to operator allowing temporary working directory context to be shifted
 - Added `block` operator which uncovered defficiencies in how we are currently handling the running of the context in the operators
-
 
 ## 1.7.2.3 (2020-06-23)
 
