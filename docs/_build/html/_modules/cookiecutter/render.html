@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>cookiecutter.render &mdash; nukikata 2.0.0.0 documentation</title>
+  <title>cookiecutter.render &mdash; nukikata 2.0.0.1 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.0.0
+                2.0.0.1
               </div>
 
 
@@ -169,9 +169,11 @@
 <span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">distro</span>
 
+<span class="kn">import</span> <span class="nn">cookiecutter</span> <span class="k">as</span> <span class="nn">cc</span>
+
 
 <div class="viewcode-block" id="get_vars"><a class="viewcode-back" href="../../cookiecutter.html#cookiecutter.render.get_vars">[docs]</a><span class="k">def</span> <span class="nf">get_vars</span><span class="p">(</span><span class="n">context_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cookiecutter_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Get special variables - WIP.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Get special variables.&quot;&quot;&quot;</span>
     <span class="nb">vars</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;cwd&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span>
         <span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="n">context_key</span><span class="p">,</span>
@@ -182,6 +184,7 @@
         <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">version</span><span class="p">(),</span>
         <span class="s1">&#39;processor&#39;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">processor</span><span class="p">,</span>
         <span class="s1">&#39;architecture&#39;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">architecture</span><span class="p">(),</span>
+        <span class="s1">&#39;calling_directory&#39;</span><span class="p">:</span> <span class="n">cc</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">calling_directory</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Linux&#39;</span><span class="p">:</span>

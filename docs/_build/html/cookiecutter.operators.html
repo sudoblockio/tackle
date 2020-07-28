@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>cookiecutter.operators package &mdash; nukikata 2.0.0.0 documentation</title>
+  <title>cookiecutter.operators package &mdash; nukikata 2.0.0.1 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                2.0.0.0
+                2.0.0.1
               </div>
 
 
@@ -637,14 +637,14 @@ inserting into parent key</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>directory</strong> – String for the path to directory</p></li>
-<li><p><strong>directories</strong> – List of paths to directories to list</p></li>
+<li><p><strong>path</strong> – String or list to directories to list</p></li>
 <li><p><strong>sort</strong> – Boolean to sort the output</p></li>
 <li><p><strong>ignore_hidden_files</strong> – Boolean to ignore hidden files</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A list of contents of the directory</p>
+<dd class="field-even"><p>A list of contents of the <cite>path</cite> if input is string,
+A map with keys of items if input <cite>path</cite> is list.</p>
 </dd>
 </dl>
 <dl class="py attribute">

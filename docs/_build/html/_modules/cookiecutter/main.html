@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>cookiecutter.main &mdash; nukikata 2.0.0.0 documentation</title>
+  <title>cookiecutter.main &mdash; nukikata 2.0.0.1 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.0.0
+                2.0.0.1
               </div>
 
 
@@ -180,6 +180,8 @@
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
+<span class="n">calling_directory</span> <span class="o">=</span> <span class="kc">None</span>
+
 
 <div class="viewcode-block" id="cookiecutter"><a class="viewcode-back" href="../../cookiecutter.html#cookiecutter.main.cookiecutter">[docs]</a><span class="k">def</span> <span class="nf">cookiecutter</span><span class="p">(</span>
     <span class="n">template</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span>
@@ -226,6 +228,9 @@
 
 <span class="sd">    :return Dictionary of output</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">calling_directory</span>  <span class="c1"># Preserve this path for special variable usage</span>
+    <span class="n">calling_directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+
     <span class="k">if</span> <span class="n">replay</span> <span class="ow">and</span> <span class="p">((</span><span class="n">no_input</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">extra_context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)):</span>
         <span class="n">err_msg</span> <span class="o">=</span> <span class="p">(</span>
             <span class="s2">&quot;You can not use both replay and no_input or extra_context &quot;</span>

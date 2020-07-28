@@ -29,7 +29,7 @@ Inspired by [Ansible's](https://github.com/ansible/ansible) syntax, this project
 
 ```
 pip3 install nukikata
-nukikata https://github.com/insight-infrastructure/nukikata-demos --directory demos/monty-python
+nukikata https://github.com/insight-infrastructure/nukikata-demos
 ```
 
 ## Features
@@ -40,11 +40,11 @@ All cookiecutter features are supported in addition to loops, conditionals, and 
 ```yaml
 ---
 name:
-  type: input
+  type: input # Input box
   message: What is your name?
 
 colors:
-  type: checkbox
+  type: checkbox # Multi selector - returns a list
   message: What are your favorite colors?
   choices:
     - name: blue
@@ -52,7 +52,7 @@ colors:
     - name: grey
 
 wingspeed:
-  type: list
+  type: list # Single selector - returns a string
   message: What is the airspeed velocity of an unladen swallow??
   choices:
     - name: I donno
@@ -74,13 +74,13 @@ democmd:
   type: command
   command: pwd
 
-dump_json:
-  type: json
+dump_yaml:
+  type: yaml
   contents: "{{ nuki }}"
-  path: output.json
+  path: "{{ calling_directory }}/output.yaml"
 ```
 
-Here the jinja default context key goes to the name of file - ie `{{ nuki.<> }}` but work is being done on maintaining a namespacing convention when stitching other cookiecutters together.
+Here the jinja default context key goes to the name of file - ie `{{ nuki.<> }}` but can be customized if needed. We can also see the use of a special variable
 
 Prompts are enhanced by extending the functionality from [PyInquirer](https://github.com/CITGuru/PyInquirer) as a set of operators as noted by the types `input`, `list`, and `checkbox`. Writing new operators is super simple as seen in the `print` operator:
 
@@ -103,6 +103,8 @@ New operator PRs welcome.  We're aiming to interface with various APIs and popul
 Over 35 different operators are currently available with more coming down the line. To understand how to use them, please refer to the [API Docs](https://insight-infrastructure.github.io/nukikata/docs/_build/html/cookiecutter.operators.html#submodules).
 
 The main type of operators are derivations of [PyInquirer](https://github.com/CITGuru/PyInquirer) which greatly enhanced the capabilities of the original cookiecutter due to the ability to use multi-select inputs that return lists. Please inspect the [PyInquirer](https://github.com/CITGuru/PyInquirer) API docs to understand the interface. All features are supported except for `validation` and `filter` which is not supported and `when` which is implemented in jinja.
+
+To see a number of good examples of the types of interfaces available for each operator, consider downloading the demo above and walking through the syntax.
 
 ## Note to Users and Developers
 

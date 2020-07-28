@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>nukikata &mdash; nukikata 2.0.0.0 documentation</title>
+  <title>nukikata &mdash; nukikata 2.0.0.1 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                2.0.0.0
+                2.0.0.1
               </div>
 
 
@@ -203,7 +203,7 @@
 <div class="section" id="quick-demo">
 <h2>Quick Demo<a class="headerlink" href="#quick-demo" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="n">nukikata</span>
-<span class="n">nukikata</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">insight</span><span class="o">-</span><span class="n">infrastructure</span><span class="o">/</span><span class="n">nukikata</span><span class="o">-</span><span class="n">demos</span> <span class="o">--</span><span class="n">directory</span> <span class="n">demos</span><span class="o">/</span><span class="n">monty</span><span class="o">-</span><span class="n">python</span>
+<span class="n">nukikata</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">insight</span><span class="o">-</span><span class="n">infrastructure</span><span class="o">/</span><span class="n">nukikata</span><span class="o">-</span><span class="n">demos</span>
 </pre></div>
 </div>
 </div>
@@ -213,11 +213,11 @@
 <p><code class="docutils literal notranslate"><span class="pre">nuki.yaml</span></code></p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span>
 <span class="nt">name</span><span class="p">:</span>
-  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">input</span>
+  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">input</span> <span class="c1"># Input box</span>
   <span class="nt">message</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">What is your name?</span>
 
 <span class="nt">colors</span><span class="p">:</span>
-  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">checkbox</span>
+  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">checkbox</span> <span class="c1"># Multi selector - returns a list</span>
   <span class="nt">message</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">What are your favorite colors?</span>
   <span class="nt">choices</span><span class="p">:</span>
     <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">blue</span>
@@ -225,7 +225,7 @@
     <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">grey</span>
 
 <span class="nt">wingspeed</span><span class="p">:</span>
-  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">list</span>
+  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">list</span> <span class="c1"># Single selector - returns a string</span>
   <span class="nt">message</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">What is the airspeed velocity of an unladen swallow??</span>
   <span class="nt">choices</span><span class="p">:</span>
     <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">I donno</span>
@@ -247,13 +247,13 @@
   <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">command</span>
   <span class="nt">command</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pwd</span>
 
-<span class="nt">dump_json</span><span class="p">:</span>
-  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">json</span>
+<span class="nt">dump_yaml</span><span class="p">:</span>
+  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">yaml</span>
   <span class="nt">contents</span><span class="p">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">nuki</span><span class="nv"> </span><span class="s">}}&quot;</span>
-  <span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">output.json</span>
+  <span class="nt">path</span><span class="p">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">calling_directory</span><span class="nv"> </span><span class="s">}}/output.yaml&quot;</span>
 </pre></div>
 </div>
-<p>Here the jinja default context key goes to the name of file - ie <code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">nuki.&lt;&gt;</span> <span class="pre">}}</span></code> but work is being done on maintaining a namespacing convention when stitching other cookiecutters together.</p>
+<p>Here the jinja default context key goes to the name of file - ie <code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">nuki.&lt;&gt;</span> <span class="pre">}}</span></code> but can be customized if needed. We can also see the use of a special variable</p>
 <p>Prompts are enhanced by extending the functionality from <a class="reference external" href="https://github.com/CITGuru/PyInquirer">PyInquirer</a> as a set of operators as noted by the types <code class="docutils literal notranslate"><span class="pre">input</span></code>, <code class="docutils literal notranslate"><span class="pre">list</span></code>, and <code class="docutils literal notranslate"><span class="pre">checkbox</span></code>. Writing new operators is super simple as seen in the <code class="docutils literal notranslate"><span class="pre">print</span></code> operator:</p>
 <p><a class="reference external" href="cookiecutter/operators/print.py"><code class="docutils literal notranslate"><span class="pre">cookiecuttuer/operators/print.py</span></code></a></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">PrintOperator</span><span class="p">(</span><span class="n">BaseOperator</span><span class="p">):</span>
@@ -271,6 +271,7 @@
 <h3>Operators<a class="headerlink" href="#operators" title="Permalink to this headline">¶</a></h3>
 <p>Over 35 different operators are currently available with more coming down the line. To understand how to use them, please refer to the <a class="reference external" href="https://insight-infrastructure.github.io/nukikata/docs/_build/html/cookiecutter.operators.html#submodules">API Docs</a>.</p>
 <p>The main type of operators are derivations of <a class="reference external" href="https://github.com/CITGuru/PyInquirer">PyInquirer</a> which greatly enhanced the capabilities of the original cookiecutter due to the ability to use multi-select inputs that return lists. Please inspect the <a class="reference external" href="https://github.com/CITGuru/PyInquirer">PyInquirer</a> API docs to understand the interface. All features are supported except for <code class="docutils literal notranslate"><span class="pre">validation</span></code> and <code class="docutils literal notranslate"><span class="pre">filter</span></code> which is not supported and <code class="docutils literal notranslate"><span class="pre">when</span></code> which is implemented in jinja.</p>
+<p>To see a number of good examples of the types of interfaces available for each operator, consider downloading the demo above and walking through the syntax.</p>
 </div>
 </div>
 <div class="section" id="note-to-users-and-developers">
