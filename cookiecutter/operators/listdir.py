@@ -37,7 +37,7 @@ class ListdirOperator(BaseOperator):
 
     def _execute(self):
         if isinstance(self.operator_dict['path'], str):
-            files = os.listdir(self.operator_dict['path'])
+            files = os.listdir(os.path.expanduser(self.operator_dict['path']))
             if self.operator_dict['sort'] if 'sort' in self.operator_dict else False:
                 files.sort()
             if self.ignore_hidden_files:
@@ -48,7 +48,7 @@ class ListdirOperator(BaseOperator):
         if isinstance(self.operator_dict['path'], list):
             contents = {}
             for i in self.operator_dict['path']:
-                contents[i] = os.listdir(i)
+                contents[i] = os.listdir(os.path.expanduser(i))
                 if (
                     self.operator_dict['sort']
                     if 'sort' in self.operator_dict
