@@ -24,7 +24,7 @@ def test_operator_checkbox(monkeypatch, tmpdir):
     assert context_string_ok
 
     context_dict_ok = cookiecutter(
-        '.', context_file='dict_ok.yaml', no_input=True, output_dir=str(tmpdir)
+        '.', context_file='dict_index.yaml', no_input=True, output_dir=str(tmpdir)
     )
 
     assert context_dict_ok
