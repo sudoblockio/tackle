@@ -32,6 +32,8 @@ pip3 install nukikata
 nukikata https://github.com/insight-infrastructure/nukikata-demos
 ```
 
+Note: If you experience installation errors try `pip3 install nukikata --no-binary :all:`.
+
 ## Features
 
 All cookiecutter features are supported in addition to loops, conditionals, and plugins. These features are only available to supplied dictionary objects with a `type` key to trigger the associated [operator](cookiecutter/operators). Loops and conditionals are triggered by rendering [jinja](https://github.com/pallets/jinja) expressions per the example below. Other cookiecutters can be called from a single nukikata to knit together modularized components.
