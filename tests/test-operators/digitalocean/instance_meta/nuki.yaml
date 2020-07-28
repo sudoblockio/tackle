@@ -1,0 +1,10 @@
+stuff: things
+
+instance_types:
+  type: digitalocean_instance_types
+  region: nyc1
+
+instance:
+  type: list
+  message: What do you want?
+  choices: "{{ nuki.instance_types }}"
