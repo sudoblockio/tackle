@@ -1,0 +1,19 @@
+foo: bar
+
+list:
+  type: list
+  message: What you?
+  no_input: true
+  choices:
+    - cats
+    - dogs
+    - chickens
+
+checkbox:
+  type: checkbox
+  message: What you?
+  choices:
+    - cats
+    - dogs
+    - chickens
+

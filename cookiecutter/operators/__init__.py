@@ -37,9 +37,13 @@ class BaseOperator(metaclass=ABCMeta):
              the operator.
         """
         self.operator_dict = operator_dict
-        self.context = context or {}
         self.context_key = context_key or 'cookiecutter'
-        self.no_input = no_input
+        self.context = context or {}
+
+        if 'no_input' in self.operator_dict:
+            self.no_input = self.operator_dict['no_input']
+        else:
+            self.no_input = no_input
 
         self.post_gen_operator = (
             self.operator_dict['delay'] if 'delay' in self.operator_dict else False
