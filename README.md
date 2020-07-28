@@ -11,10 +11,12 @@ Japanese for `cookiecutter`: クッキーの抜き型 - Kukkī no nukikata | Dir
 
 ![Cookiecutter](https://raw.githubusercontent.com/cookiecutter/cookiecutter/3ac078356adf5a1a72042dfe72ebfa4a9cd5ef38/logo/cookiecutter_medium.png)
 
-* Documentation: [https://cookiecutter.readthedocs.io](https://cookiecutter.readthedocs.io)
+* Nukikata Documentation: [https://insight-infrastructure.github.io/nukikata](https://insight-infrastructure.github.io/nukikata)
+    * [API Docs](https://insight-infrastructure.github.io/nukikata/docs/_build/html/cookiecutter.operators.html#submodules)
+* Cookiecutter Documentation: [https://cookiecutter.readthedocs.io](https://cookiecutter.readthedocs.io)
 * GitHub: [https://github.com/cookiecutter/cookiecutter](https://github.com/cookiecutter/cookiecutter)
-* PyPI: [https://pypi.org/project/cookiecutter/](https://pypi.org/project/cookiecutter/)
-* Free and open source software: [BSD license](https://github.com/cookiecutter/cookiecutter/blob/master/LICENSE)
+* PyPI: [https://pypi.org/project/nukikata/](https://pypi.org/project/nukikata/)
+* Free and open source software: [BSD license](https://github.com/nukikata/cookiecutter/blob/master/LICENSE)
 
 [Cookiecutter](https://github.com/cookiecutter/cookiecutter) is the worlds most popular code scaffolding tool with over [4 thousand open source cookiecutters](https://github.com/search?q=cookiecutter) available today.  This fork includes many additional features including:
 - Loops
@@ -25,18 +27,14 @@ Inspired by [Ansible's](https://github.com/ansible/ansible) syntax, this project
 
 ## Quick Demo
 
-**Broken - Updating 7/20/2020**
-
 ```
 pip3 install nukikata
-nukikata https://github.com/insight-infrastructure/nukikata-demo-monty --directory demos/monty-python
-curl https://raw.githubusercontent.com/insight-infrastructure/nukikata-demo-basic/master/nuki.yaml
-cat output.json
+nukikata https://github.com/insight-infrastructure/nukikata-demos --directory demos/monty-python
 ```
 
 ## Features
 
-All cookiecutter features are supported in addition to loops, conditionals, and plugins. These features are only available to supplied dictionary objects with a `type` key to trigger the associated [operator](cookiecutter/operators). Loops and conditionals are triggered by rendering [jinja](https://github.com/pallets/jinja) expressions per the example below.
+All cookiecutter features are supported in addition to loops, conditionals, and plugins. These features are only available to supplied dictionary objects with a `type` key to trigger the associated [operator](cookiecutter/operators). Loops and conditionals are triggered by rendering [jinja](https://github.com/pallets/jinja) expressions per the example below. Other cookiecutters can be called from a single nukikata to knit together modularized components.
 
 `nuki.yaml`
 ```yaml
@@ -102,86 +100,14 @@ New operator PRs welcome.  We're aiming to interface with various APIs and popul
 
 ### Operators
 
-Numerous operators are currently available with more coming down the line. Below is a current list of operators.
+Over 35 different operators are currently available with more coming down the line. To understand how to use them, please refer to the [API Docs](https://insight-infrastructure.github.io/nukikata/docs/_build/html/cookiecutter.operators.html#submodules).
 
-> Note: This is a WIP. API docs will be generated with sphinx soon to cover the operators.
-
-The main type of operator being used are derivations of [PyInquirer](https://github.com/CITGuru/PyInquirer) which greatly enhanced the capabilities of the original cookiecutter due to the ability to use multi-select inputs that return lists. Please inspect the [PyInquirer](https://github.com/CITGuru/PyInquirer) API docs to understand the interface. All features are supported except for `validation` and `filter` which is not supported and `when` which is implemented in jinja.
-
-Here is a short list of the operators currently supported.
-
-**PyInquirer**
-
-> All PyInquirer operators require `message` input
-
-- [`checkbox`](cookiecutter/operators/checkbox.py)
-    - Multi-select list
-    - Inputs
-        - `choices` - list of dicts with `name` as choice. See example above.
-    - [PyInquirer Example](https://github.com/CITGuru/PyInquirer/blob/master/examples/checkbox.py)
-    - Outputs list
-- [`confirm`](cookiecutter/operators/confirm.py)
-    - Verification
-    - [PyInquirer Example](https://github.com/CITGuru/PyInquirer/blob/master/examples/confirm.py)
-    - Outputs boolean
-- [`editor`](cookiecutter/operators/editor.py)
-    - Opens up editor
-    - [PyInquirer Example](https://github.com/CITGuru/PyInquirer/blob/master/examples/editor.py)
-    - Outputs string
-- [`expand`](cookiecutter/operators/expand.py)
-    - Path completion to local file
-    - [PyInquirer Example](https://github.com/CITGuru/PyInquirer/blob/master/examples/expand.py)
-    - Outputs string
-- [`input`](cookiecutter/operators/input.py)
-    - Simple input with question
-    - [PyInquirer Example](https://github.com/CITGuru/PyInquirer/blob/master/examples/input.py)
-    - Outputs string
-- [`list`](cookiecutter/operators/list.py)
-    - Single select from list
-    - [PyInquirer Example](https://github.com/CITGuru/PyInquirer/blob/master/examples/list.py)
-    - Outputs string
-- [`rawlist`](cookiecutter/operators/rawlist.py)
-    - Single select from list
-    - [PyInquirer Example](https://github.com/CITGuru/PyInquirer/blob/master/examples/rawlist.py)
-    - Outputs string
-- [`password`](cookiecutter/operators/password.py)
-    - Input that is hidden
-    - [PyInquirer Example](https://github.com/CITGuru/PyInquirer/blob/master/examples/password.py)
-    - Outputs string
-
-**Python wrappers**
-- [`command`](cookiecutter/operators/command.py)
-    - Execute an arbitrary shell command
-    - Outputs stdout as `string`
-- [`jinja`](cookiecutter/operators/jinja.py)
-    - Takes template as path and renders to path
-    - Inputs
-        - `template_path` - string
-        - `output_path` - string
-    - Outputs `None`
-- [`json`](cookiecutter/operators/json.py)
-    - Writes json to file if `contents` key supplied
-    - Reads json from file
-    - Requires `path` to output file
-    - Outputs path to outputs or  `dict`
-- [`nukikata`](cookiecutter/operators/nukikata.py)
-    - Wraps calls to other nukikatas
-    - Outputs project_dir
-- [`print`](cookiecutter/operators/print.py)
-    - Prints the statement
-    - Outputs `statement` parameter
-    - Useful for intermediary rendering
-- [`stat`](cookiecutter/operators/stat.py)
-    - Reinserts `input` parameter to the variable
-    - Useful for intermediary rendering
-- [`yaml`](cookiecutter/operators/yaml.py)
-    - Same as `json` operator
+The main type of operators are derivations of [PyInquirer](https://github.com/CITGuru/PyInquirer) which greatly enhanced the capabilities of the original cookiecutter due to the ability to use multi-select inputs that return lists. Please inspect the [PyInquirer](https://github.com/CITGuru/PyInquirer) API docs to understand the interface. All features are supported except for `validation` and `filter` which is not supported and `when` which is implemented in jinja.
 
 ## Note to Users and Developers
 
-This is a very early WIP but has long term ambitions of being a sort of swiss army knife for management of configuration files and boilerplate. Please consider contributing or leaving your comments in the issues section on where you see this project going and what features you would like added. All future improvements are being migrated into github issues from a local [ttd file](TTD.md).
+This is a very early WIP but has long term ambitions of being a sort of swiss army knife for management of configuration files and boilerplate. Please consider contributing or leaving your comments in the issues section on where you see this project going and what features you would like added.
 
 This project intends on being an edge release of `cookiecutter` and would not have been possible were it not for the orginal maintainers of that repository.  Development in this repository is meant to be a proving ground for features that could be implemented and merged into the original `cookiecutter` repository. Please consider supporting both projects.
 
-Windows will not be supported and hence certain features will likely only exist in this repo compared to the original. This tool was built to handle the mountains of configuration files normally dealt with in declarative infrastructure deployments.
-
+Windows will not have first class support. Several operators are built for POSIX systems.  PRs welcome to build in full support.  Basic features like PyInquirer style prompts are supported.
