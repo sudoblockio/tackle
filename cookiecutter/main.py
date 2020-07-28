@@ -19,6 +19,8 @@ from cookiecutter.utils import rmtree
 
 logger = logging.getLogger(__name__)
 
+calling_directory = None
+
 
 def cookiecutter(
     template='.',
@@ -65,6 +67,9 @@ def cookiecutter(
 
     :return Dictionary of output
     """
+    global calling_directory  # Preserve this path for special variable usage
+    calling_directory = os.getcwd()
+
     if replay and ((no_input is not False) or (extra_context is not None)):
         err_msg = (
             "You can not use both replay and no_input or extra_context "

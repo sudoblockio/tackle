@@ -8,9 +8,11 @@ import os
 import platform
 import distro
 
+import cookiecutter as cc
+
 
 def get_vars(context_key=None, cookiecutter_dict=None):
-    """Get special variables - WIP."""
+    """Get special variables."""
     vars = {
         'cwd': os.getcwd(),
         'key': context_key,
@@ -21,6 +23,7 @@ def get_vars(context_key=None, cookiecutter_dict=None):
         'version': platform.version(),
         'processor': platform.processor,
         'architecture': platform.architecture(),
+        'calling_directory': cc.main.calling_directory,
     }
 
     if platform.system() == 'Linux':

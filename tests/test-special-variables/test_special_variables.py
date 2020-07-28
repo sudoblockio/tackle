@@ -9,6 +9,6 @@ def test_special_variables(monkeypatch, tmpdir):
     """Verify Jinja2 time extension work correctly."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
 
-    context = cookiecutter('.', no_input=True, output_dir=str(tmpdir))
+    output = cookiecutter('.', no_input=True, output_dir=str(tmpdir))
 
-    assert context
+    assert output['calling_directory'] == os.path.dirname(__file__)
