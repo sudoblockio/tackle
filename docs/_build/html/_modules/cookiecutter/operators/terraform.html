@@ -177,7 +177,9 @@
 
 <div class="viewcode-block" id="TerraformVariablesOperator"><a class="viewcode-back" href="../../../cookiecutter.operators.html#cookiecutter.operators.terraform.TerraformVariablesOperator">[docs]</a><span class="k">class</span> <span class="nc">TerraformVariablesOperator</span><span class="p">(</span><span class="n">BaseOperator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    BaseOperator reading the variables file and prompt user to fill in then return output.</span>
+<span class="sd">    Operator that reads an input hcl file and prompts user to fill in.</span>
+
+<span class="sd">    Typically this is used with a `variables.tf` file.</span>
 
 <span class="sd">    :param variables_file: A path to a file to read</span>
 <span class="sd">    :param var_list: A list of items to only parse and prompt</span>

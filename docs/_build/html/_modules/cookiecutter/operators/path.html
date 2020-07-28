@@ -205,6 +205,55 @@
     <span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Run the prompt.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">operator_dict</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="PathRelativeOperator"><a class="viewcode-back" href="../../../cookiecutter.operators.html#cookiecutter.operators.path.PathRelativeOperator">[docs]</a><span class="k">class</span> <span class="nc">PathRelativeOperator</span><span class="p">(</span><span class="n">BaseOperator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Operator to find the absolute path to a file or directory in parent directories.</span>
+
+<span class="sd">    :param target: The name of the file to find the absolute path to</span>
+<span class="sd">    :param starting_dir: The starting directory to search from. Defaults to current</span>
+<span class="sd">        working directory.</span>
+<span class="sd">    :param fallback: String to fallback on if the target is not found.</span>
+<span class="sd">    :return: string: Absolute path to the target file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;find_in_parent&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c1"># noqa</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">PathRelativeOperator</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Run the prompt.&quot;&quot;&quot;</span>
+        <span class="n">starting_dir</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">operator_dict</span><span class="p">[</span><span class="s1">&#39;starting_dir&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s1">&#39;starting_dir&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">operator_dict</span>
+            <span class="k">else</span> <span class="s1">&#39;.&#39;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_in_parent</span><span class="p">(</span><span class="n">starting_dir</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_find_in_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">dir</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="nb">dir</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">dir</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+                <span class="ow">and</span> <span class="n">i</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">operator_dict</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span>
+            <span class="p">):</span>
+                <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">dir</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="nb">dir</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;/&#39;</span><span class="p">:</span>
+            <span class="n">fallback</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">operator_dict</span><span class="p">[</span><span class="s1">&#39;fallback&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s1">&#39;fallback&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">operator_dict</span>
+                <span class="k">else</span> <span class="kc">None</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">fallback</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">fallback</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NotADirectoryError</span><span class="p">(</span>
+                    <span class="s1">&#39;The </span><span class="si">%s</span><span class="s1"> target doesn</span><span class="se">\&#39;</span><span class="s1">t exist in the parent directories.&#39;</span>
+                    <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">operator_dict</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_in_parent</span><span class="p">(</span><span class="nb">dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="nb">dir</span><span class="p">)))</span></div>
 </pre></div>
 
            </div>

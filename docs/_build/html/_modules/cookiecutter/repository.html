@@ -279,7 +279,6 @@
 <span class="sd">    :raises: `RepositoryNotFound` if a repository directory could not be found.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">template</span> <span class="o">=</span> <span class="n">expand_abbreviations</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">abbreviations</span><span class="p">)</span>
-
     <span class="k">if</span> <span class="n">is_zip_file</span><span class="p">(</span><span class="n">template</span><span class="p">):</span>
         <span class="n">unzipped_dir</span> <span class="o">=</span> <span class="n">unzip</span><span class="p">(</span>
             <span class="n">zip_uri</span><span class="o">=</span><span class="n">template</span><span class="p">,</span>

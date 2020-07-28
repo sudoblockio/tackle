@@ -215,7 +215,7 @@
 <li class="toctree-l2"><a class="reference internal" href="cookiecutter.operators.html#module-cookiecutter.operators.path">cookiecutter.operators.path module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cookiecutter.operators.html#module-cookiecutter.operators.print">cookiecutter.operators.print module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cookiecutter.operators.html#module-cookiecutter.operators.rawlist">cookiecutter.operators.rawlist module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cookiecutter.operators.html#module-cookiecutter.operators.return">cookiecutter.operators.return module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cookiecutter.operators.html#cookiecutter-operators-return-module">cookiecutter.operators.return module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cookiecutter.operators.html#module-cookiecutter.operators.split">cookiecutter.operators.split module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cookiecutter.operators.html#module-cookiecutter.operators.stat">cookiecutter.operators.stat module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cookiecutter.operators.html#module-cookiecutter.operators.table">cookiecutter.operators.table module</a></li>
@@ -818,6 +818,26 @@ if it exists</p></li>
 <span id="cookiecutter-prompt-module"></span><h2>cookiecutter.prompt module<a class="headerlink" href="#module-cookiecutter.prompt" title="Permalink to this headline">¶</a></h2>
 <p>Functions for prompting the user for project info.</p>
 <dl class="py function">
+<dt id="cookiecutter.prompt.parse_context">
+<code class="sig-prename descclassname">cookiecutter.prompt.</code><code class="sig-name descname">parse_context</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span></em>, <em class="sig-param"><span class="n">env</span></em>, <em class="sig-param"><span class="n">cookiecutter_dict</span></em>, <em class="sig-param"><span class="n">context_key</span></em>, <em class="sig-param"><span class="n">no_input</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cookiecutter/prompt.html#parse_context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cookiecutter.prompt.parse_context" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the context and iterate over values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>context</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – Source for field names and sample values.</p></li>
+<li><p><strong>env</strong> – Jinja environment to render values with.</p></li>
+<li><p><strong>no_input</strong> – Prompt the user at command line for manual configuration.</p></li>
+<li><p><strong>context_key</strong> – The key to insert all the outputs under in the context dict.</p></li>
+<li><p><strong>existing_context</strong> – A dictionary of values to use during rendering.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>cookiecutter_dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="cookiecutter.prompt.process_json">
 <code class="sig-prename descclassname">cookiecutter.prompt.</code><code class="sig-name descname">process_json</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">user_value</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cookiecutter/prompt.html#process_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cookiecutter.prompt.process_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load user-supplied value as a JSON dict.</p>
@@ -838,12 +858,15 @@ if it exists</p></li>
 <dl class="py function">
 <dt id="cookiecutter.prompt.prompt_for_config">
 <code class="sig-prename descclassname">cookiecutter.prompt.</code><code class="sig-name descname">prompt_for_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span></em>, <em class="sig-param"><span class="n">no_input</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context_key</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">existing_context</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cookiecutter/prompt.html#prompt_for_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cookiecutter.prompt.prompt_for_config" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prompt user to enter a new config.</p>
+<dd><p>Prompt user to enter values.</p>
+<p>Function sets the jinja environment and brings in extensions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>context</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – Source for field names and sample values.</p></li>
-<li><p><strong>no_input</strong> – Prompt the user at command line for manual configuration?</p></li>
+<li><p><strong>no_input</strong> – Prompt the user at command line for manual configuration.</p></li>
+<li><p><strong>context_key</strong> – The key to insert all the outputs under in the context dict.</p></li>
+<li><p><strong>existing_context</strong> – A dictionary of values to use during rendering.</p></li>
 </ul>
 </dd>
 </dl>

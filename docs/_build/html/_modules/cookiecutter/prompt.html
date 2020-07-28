@@ -171,6 +171,7 @@
 <span class="kn">from</span> <span class="nn">cookiecutter.environment</span> <span class="kn">import</span> <span class="n">StrictEnvironment</span>
 <span class="kn">from</span> <span class="nn">cookiecutter.exceptions</span> <span class="kn">import</span> <span class="n">UndefinedVariableInTemplate</span>
 <span class="kn">from</span> <span class="nn">cookiecutter.render</span> <span class="kn">import</span> <span class="n">render_variable</span>
+<span class="kn">from</span> <span class="nn">cookiecutter.context_manager</span> <span class="kn">import</span> <span class="n">work_in</span>
 
 
 <div class="viewcode-block" id="read_user_variable"><a class="viewcode-back" href="../../cookiecutter.html#cookiecutter.prompt.read_user_variable">[docs]</a><span class="k">def</span> <span class="nf">read_user_variable</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="n">default_value</span><span class="p">):</span>
@@ -299,24 +300,16 @@
     <span class="k">return</span> <span class="n">read_user_choice</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">rendered_options</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="prompt_for_config"><a class="viewcode-back" href="../../cookiecutter.html#cookiecutter.prompt.prompt_for_config">[docs]</a><span class="k">def</span> <span class="nf">prompt_for_config</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">no_input</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">context_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">existing_context</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Prompt user to enter a new config.</span>
+<div class="viewcode-block" id="parse_context"><a class="viewcode-back" href="../../cookiecutter.html#cookiecutter.prompt.parse_context">[docs]</a><span class="k">def</span> <span class="nf">parse_context</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">cookiecutter_dict</span><span class="p">,</span> <span class="n">context_key</span><span class="p">,</span> <span class="n">no_input</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Parse the context and iterate over values.</span>
 
 <span class="sd">    :param dict context: Source for field names and sample values.</span>
-<span class="sd">    :param no_input: Prompt the user at command line for manual configuration?</span>
+<span class="sd">    :param env: Jinja environment to render values with.</span>
+<span class="sd">    :param no_input: Prompt the user at command line for manual configuration.</span>
+<span class="sd">    :param context_key: The key to insert all the outputs under in the context dict.</span>
+<span class="sd">    :param existing_context: A dictionary of values to use during rendering.</span>
+<span class="sd">    :return: cookiecutter_dict</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">existing_context</span><span class="p">:</span>
-        <span class="n">cookiecutter_dict</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([])</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">cookiecutter_dict</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span><span class="n">existing_context</span><span class="p">)</span>
-    <span class="n">env</span> <span class="o">=</span> <span class="n">StrictEnvironment</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">context_key</span><span class="p">:</span>
-        <span class="n">context_key</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">context</span><span class="p">))</span>
-
-    <span class="c1"># First pass: Handle simple and raw variables, plus choices.</span>
-    <span class="c1"># These must be done first because the dictionaries keys and</span>
-    <span class="c1"># values might refer to them.</span>
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">raw</span> <span class="ow">in</span> <span class="n">context</span><span class="p">[</span><span class="n">context_key</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">):</span>
             <span class="n">cookiecutter_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">raw</span>
@@ -346,7 +339,7 @@
             <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Unable to render variable &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">UndefinedVariableInTemplate</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
 
-    <span class="c1"># Second pass; handle the dictionaries.</span>
+            <span class="c1"># Second pass; handle the dictionaries.</span>
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">raw</span> <span class="ow">in</span> <span class="n">context</span><span class="p">[</span><span class="n">context_key</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">):</span>
             <span class="k">continue</span>
@@ -372,6 +365,35 @@
             <span class="k">raise</span> <span class="n">UndefinedVariableInTemplate</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">cookiecutter_dict</span></div>
+
+
+<div class="viewcode-block" id="prompt_for_config"><a class="viewcode-back" href="../../cookiecutter.html#cookiecutter.prompt.prompt_for_config">[docs]</a><span class="k">def</span> <span class="nf">prompt_for_config</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">no_input</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">context_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">existing_context</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prompt user to enter values.</span>
+
+<span class="sd">    Function sets the jinja environment and brings in extensions.</span>
+
+<span class="sd">    :param dict context: Source for field names and sample values.</span>
+<span class="sd">    :param no_input: Prompt the user at command line for manual configuration.</span>
+<span class="sd">    :param context_key: The key to insert all the outputs under in the context dict.</span>
+<span class="sd">    :param existing_context: A dictionary of values to use during rendering.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">existing_context</span><span class="p">:</span>
+        <span class="n">cookiecutter_dict</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cookiecutter_dict</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span><span class="n">existing_context</span><span class="p">)</span>
+    <span class="n">env</span> <span class="o">=</span> <span class="n">StrictEnvironment</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">context_key</span><span class="p">:</span>
+        <span class="n">context_key</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">context</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="s1">&#39;_template&#39;</span> <span class="ow">in</span> <span class="n">context</span><span class="p">[</span><span class="n">context_key</span><span class="p">]:</span>
+        <span class="c1"># Normal case where &#39;_template&#39; is set in the context in `main`</span>
+        <span class="k">with</span> <span class="n">work_in</span><span class="p">(</span><span class="n">context</span><span class="p">[</span><span class="n">context_key</span><span class="p">][</span><span class="s1">&#39;_template&#39;</span><span class="p">]):</span>
+            <span class="k">return</span> <span class="n">parse_context</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">cookiecutter_dict</span><span class="p">,</span> <span class="n">context_key</span><span class="p">,</span> <span class="n">no_input</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Case where prompt is being called directly as is the case with an operator</span>
+        <span class="k">return</span> <span class="n">parse_context</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">cookiecutter_dict</span><span class="p">,</span> <span class="n">context_key</span><span class="p">,</span> <span class="n">no_input</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

@@ -6,6 +6,12 @@ The cookiecutter history can be viewed in the [project tab](https://github.com/c
 
 
 ## 2.0.0.0 (2020-07-X)
+- Added no_input to operator level discovery
+- Added basic AWS, GCP, Azure, and DigitalOcean operators
+- Extended yaml operator to have regex remove, update, and merging functionalities both in place and on write.
+- Default `template` input to main to `.`.
+- Added `index` to loop to output count in loop.
+- Added `index` parameter to `list` and `checkbox` pyinquirer operators.
 - Merged changes as of this date from cookiecutter 2.0.0
 - Added numerous new operators
 - Added warning for unknown operator type

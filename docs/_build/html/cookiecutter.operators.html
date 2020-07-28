@@ -115,7 +115,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#module-cookiecutter.operators.path">cookiecutter.operators.path module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-cookiecutter.operators.print">cookiecutter.operators.print module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-cookiecutter.operators.rawlist">cookiecutter.operators.rawlist module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-cookiecutter.operators.return">cookiecutter.operators.return module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-return-module">cookiecutter.operators.return module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-cookiecutter.operators.split">cookiecutter.operators.split module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-cookiecutter.operators.stat">cookiecutter.operators.stat module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-cookiecutter.operators.table">cookiecutter.operators.table module</a></li>
@@ -769,6 +769,31 @@ inserting into parent key</p></li>
 
 </dd></dl>
 
+<dl class="py class">
+<dt id="cookiecutter.operators.path.PathRelativeOperator">
+<em class="property">class </em><code class="sig-prename descclassname">cookiecutter.operators.path.</code><code class="sig-name descname">PathRelativeOperator</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cookiecutter/operators/path.html#PathRelativeOperator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cookiecutter.operators.path.PathRelativeOperator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cookiecutter.operators.BaseOperator</span></code></p>
+<p>Operator to find the absolute path to a file or directory in parent directories.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> – The name of the file to find the absolute path to</p></li>
+<li><p><strong>starting_dir</strong> – The starting directory to search from. Defaults to current
+working directory.</p></li>
+<li><p><strong>fallback</strong> – String to fallback on if the target is not found.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>string: Absolute path to the target file</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="cookiecutter.operators.path.PathRelativeOperator.type">
+<code class="sig-name descname">type</code><em class="property"> = 'find_in_parent'</em><a class="headerlink" href="#cookiecutter.operators.path.PathRelativeOperator.type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-cookiecutter.operators.print">
 <span id="cookiecutter-operators-print-module"></span><h2>cookiecutter.operators.print module<a class="headerlink" href="#module-cookiecutter.operators.print" title="Permalink to this headline">¶</a></h2>
@@ -837,32 +862,8 @@ inserting into parent key</p></li>
 </dd></dl>
 
 </div>
-<div class="section" id="module-cookiecutter.operators.return">
-<span id="cookiecutter-operators-return-module"></span><h2>cookiecutter.operators.return module<a class="headerlink" href="#module-cookiecutter.operators.return" title="Permalink to this headline">¶</a></h2>
-<p>Operator plugin that inherits a base class and is made available through <cite>type</cite>.</p>
-<dl class="py class">
-<dt id="cookiecutter.operators.return.ReturnOperator">
-<em class="property">class </em><code class="sig-prename descclassname">cookiecutter.operators.return.</code><code class="sig-name descname">ReturnOperator</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cookiecutter/operators/return.html#ReturnOperator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cookiecutter.operators.return.ReturnOperator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cookiecutter.operators.BaseOperator</span></code></p>
-<p>Operator for printing an input and returning the output.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>statement</strong> – The thing to print</p>
-</dd>
-</dl>
-<dl class="py method">
-<dt id="cookiecutter.operators.return.ReturnOperator.execute">
-<code class="sig-name descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cookiecutter/operators/return.html#ReturnOperator.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cookiecutter.operators.return.ReturnOperator.execute" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print the statement.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="cookiecutter.operators.return.ReturnOperator.type">
-<code class="sig-name descname">type</code><em class="property"> = 'return'</em><a class="headerlink" href="#cookiecutter.operators.return.ReturnOperator.type" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<div class="section" id="cookiecutter-operators-return-module">
+<h2>cookiecutter.operators.return module<a class="headerlink" href="#cookiecutter-operators-return-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-cookiecutter.operators.split">
 <span id="cookiecutter-operators-split-module"></span><h2>cookiecutter.operators.split module<a class="headerlink" href="#module-cookiecutter.operators.split" title="Permalink to this headline">¶</a></h2>
@@ -875,12 +876,12 @@ inserting into parent key</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>items</strong> – A list of string to split or just a string</p></li>
+<li><p><strong>input</strong> – A list of string to split or just a string</p></li>
 <li><p><strong>separator</strong> – String separator</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>List if input items is list otherwise string</p>
+<dd class="field-even"><p>List of lists if <cite>input</cite> is list otherwise list</p>
 </dd>
 </dl>
 <dl class="py attribute">
@@ -901,7 +902,15 @@ inserting into parent key</p></li>
 <p>Operator for registering a variable based on an input. Useful with rendering.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>input</strong> – Any type input</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>remove</strong> – Parameter or regex to remove from list or dict</p></li>
+<li><p><strong>update</strong> – Use the python <cite>update</cite> dict method on <cite>contents</cite> before writing</p></li>
+<li><p><strong>merge_config</strong> – Recursively update the contents before writing.</p></li>
+<li><p><strong>input</strong> – Any type input</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>any: Processed input.</p>
 </dd>
 </dl>
 <dl class="py attribute">
@@ -946,7 +955,8 @@ inserting into parent key</p></li>
 <dt id="cookiecutter.operators.terraform.TerraformVariablesOperator">
 <em class="property">class </em><code class="sig-prename descclassname">cookiecutter.operators.terraform.</code><code class="sig-name descname">TerraformVariablesOperator</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cookiecutter/operators/terraform.html#TerraformVariablesOperator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cookiecutter.operators.terraform.TerraformVariablesOperator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cookiecutter.operators.BaseOperator</span></code></p>
-<p>BaseOperator reading the variables file and prompt user to fill in then return output.</p>
+<p>Operator that reads an input hcl file and prompts user to fill in.</p>
+<p>Typically this is used with a <cite>variables.tf</cite> file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -981,6 +991,8 @@ inserting into parent key</p></li>
 <li><p><strong>path</strong> – The file path to put read or write to</p></li>
 <li><p><strong>contents</strong> – Supplied dictionary or list to write.</p></li>
 <li><p><strong>remove</strong> – Parameter or regex to remove from list or dict</p></li>
+<li><p><strong>update</strong> – Use the python <cite>update</cite> dict method on <cite>contents</cite> before writing</p></li>
+<li><p><strong>merge_config</strong> – Recursively update the contents before writing.</p></li>
 <li><p><strong>mode</strong> – The mode that the file should write. Defaults to write ‘w’.
 Seee <a class="reference external" href="https://docs.python.org/3/library/functions.html#open">https://docs.python.org/3/library/functions.html#open</a></p></li>
 </ul>

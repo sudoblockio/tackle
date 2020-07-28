@@ -203,9 +203,14 @@
         <span class="n">jinja_context</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">operator_dict</span><span class="p">[</span><span class="s1">&#39;context&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;context&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">operator_dict</span> <span class="k">else</span> <span class="p">{}</span>
         <span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;extra_context&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">operator_dict</span><span class="p">:</span>
+            <span class="n">jinja_context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">operator_dict</span><span class="p">[</span><span class="s1">&#39;extra_context&#39;</span><span class="p">])</span>
+
         <span class="n">output_from_parsed_template</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span>
             <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">context_key</span><span class="p">:</span> <span class="n">jinja_context</span><span class="p">}</span>
         <span class="p">)</span>
+
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">operator_dict</span><span class="p">[</span><span class="s1">&#39;output_path&#39;</span><span class="p">],</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
             <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output_from_parsed_template</span><span class="p">)</span>
 
