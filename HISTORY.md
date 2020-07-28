@@ -5,7 +5,10 @@ Nukikata will be a couple months behind the major releases for cookiecutter at w
 The cookiecutter history can be viewed in the [project tab](https://github.com/cookiecutter/cookiecutter/projects) and [HISTORY.md](https://github.com/cookiecutter/cookiecutter/blob/master/HISTORY.md)
 
 
-## 2.0.0.0 (2020-07-X)
+## 2.0.0.1 (2020-07-28)
+- Updating docs
+
+## 2.0.0.0 (2020-07-27)
 - Added no_input to operator level discovery
 - Added basic AWS, GCP, Azure, and DigitalOcean operators
 - Extended yaml operator to have regex remove, update, and merging functionalities both in place and on write.
