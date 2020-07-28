@@ -16,12 +16,12 @@ class ListdirOperator(BaseOperator):
     """
     Operator for `listdir`. Lists the contents of a directory.
 
-    :param directory: String for the path to directory
-    :param directories: List of paths to directories to list
+    :param path: String or list to directories to list
     :param sort: Boolean to sort the output
     :param ignore_hidden_files: Boolean to ignore hidden files
 
-    :return: A list of contents of the directory
+    :return: A list of contents of the `path` if input is string,
+        A map with keys of items if input `path` is list.
     """
 
     type = 'listdir'
@@ -36,8 +36,8 @@ class ListdirOperator(BaseOperator):
         )
 
     def _execute(self):
-        if 'directory' in self.operator_dict:
-            files = os.listdir(self.operator_dict['directory'])
+        if isinstance(self.operator_dict['path'], str):
+            files = os.listdir(self.operator_dict['path'])
             if self.operator_dict['sort'] if 'sort' in self.operator_dict else False:
                 files.sort()
             if self.ignore_hidden_files:
@@ -45,22 +45,18 @@ class ListdirOperator(BaseOperator):
             else:
                 return files
 
-        elif 'directories' in self.operator_dict:
-            if isinstance(self.operator_dict['directories'], list):
-                # If instance is a list, return a dict with the keys as
-                # the items in list
-                contents = {}
-                for i in self.operator_dict['directories']:
-                    contents[i] = os.listdir(i)
-                    if (
-                        self.operator_dict['sort']
-                        if 'sort' in self.operator_dict
-                        else False
-                    ):
-                        contents[i].sort()
-                return contents
-            else:
-                raise ValueError("directories key must be list")
+        if isinstance(self.operator_dict['path'], list):
+            contents = {}
+            for i in self.operator_dict['path']:
+                contents[i] = os.listdir(i)
+                if (
+                    self.operator_dict['sort']
+                    if 'sort' in self.operator_dict
+                    else False
+                ):
+                    contents[i].sort()
+            return contents
+
         else:
             raise NotImplementedError(
                 "Have not implemented dict input to "

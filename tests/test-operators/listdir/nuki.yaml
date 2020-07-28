@@ -1,0 +1,21 @@
+string_input:
+  type: listdir
+  path: dir
+
+
+string_input_sorted:
+  type: listdir
+  path: dir
+  sort: true
+  ignore_hidden_files: true
+
+string_input_hidden:
+  type: listdir
+  path: dir
+  ignore_hidden_files: true
+
+list_input:
+  type: listdir
+  path:
+    - dirs/dir1
+    - dirs/dir2
