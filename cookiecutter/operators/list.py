@@ -39,7 +39,7 @@ class InquirerListOperator(BaseOperator):
 
         if self.no_input:
             if 'default' in self.operator_dict:
-                return self.operator_dict['defualt']
+                return self.operator_dict['default']
             else:
                 return None
 

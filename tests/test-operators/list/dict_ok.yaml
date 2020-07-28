@@ -3,7 +3,7 @@ stuff: things
 choices:
   type: list
   message: You foo?
-  default: bar
+  default: sturff
   choices:
     - foo: Do you want to bar?
     - stuff: All the things?
