@@ -1,0 +1,11 @@
+copy_file:
+  type: copy
+  src: nuki.yaml
+  dst: thing.yaml
+
+copy_files:
+  type: copy
+  src:
+    - nuki.yaml
+    - thing.yaml
+  dst: stuff/things
