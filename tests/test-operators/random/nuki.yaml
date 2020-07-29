@@ -1,0 +1,9 @@
+random_hex:
+  type: random_hex
+
+random_string_lower:
+  type: random_string
+  case: lower
+
+random_string:
+  type: random_string
