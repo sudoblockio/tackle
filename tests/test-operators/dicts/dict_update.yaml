@@ -8,6 +8,6 @@ stuff:
 zones:
   type: update
   merge: true
-  inputs: "{{ dict_update.stuff }}"
+  input: "{{ dict_update.stuff }}"
   dict: "{{ dict_update }}"
 

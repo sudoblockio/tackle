@@ -16,8 +16,7 @@ class DictUpdateOperator(BaseOperator):
     Operator for updating dict objects with items.
 
     :param dict: The input dict to update
-    :param input: A dict to update the input `dict`
-    :param inputs: A list of dicts to update `dict` with
+    :param input: A dict or list of dicts to update the input `dict`
     :return: An updated dict object.
     """
 
@@ -25,12 +24,14 @@ class DictUpdateOperator(BaseOperator):
 
     def __init__(self, *args, **kwargs):  # noqa
         super(DictUpdateOperator, self).__init__(*args, **kwargs)
+        self.input = self.operator_dict['input']
+        self.dict = self.operator_dict['dict']
 
     def _execute(self):
-        if 'inputs' in self.operator_dict:
-            for i in self.operator_dict['inputs']:
-                self.operator_dict['dict'].update(i)
-        if 'input' in self.operator_dict:
-            self.operator_dict['dict'].update(self.operator_dict['input'])
+        if isinstance(self.input, list):
+            for i in self.input:
+                self.dict.update(i)
+        else:
+            self.dict.update(self.input)
 
-        return self.operator_dict['dict']
+        return self.dict
