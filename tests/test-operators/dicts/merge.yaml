@@ -1,0 +1,21 @@
+input_map:
+  type: stat
+  input:
+    stuff: blah
+    sturf: blu
+
+dict_map:
+  type: stat
+  input:
+    stuff: bing
+    things: blu
+
+merge_map:
+  type: merge
+  dict: "{{ merge.dict_map }}"
+  input: "{{ merge.input_map }}"
+
+output:
+  type: yaml
+  path: output-merge.yaml
+  contents: "{{ merge }}"

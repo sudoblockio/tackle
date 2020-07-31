@@ -7,6 +7,7 @@ from __future__ import print_function
 import logging
 
 from cookiecutter.operators import BaseOperator
+from cookiecutter.config import merge_configs
 
 logger = logging.getLogger(__name__)
 
@@ -35,3 +36,28 @@ class DictUpdateOperator(BaseOperator):
             self.dict.update(self.input)
 
         return self.dict
+
+
+class DictMergeOperator(BaseOperator):
+    """
+    Operator for recursively merging dict objects with input maps.
+
+    :param dict: The input dict to update
+    :param input: A dict or list of dicts to update the input `dict`
+    :return: An updated dict object.
+    """
+
+    type = 'merge'
+
+    def __init__(self, *args, **kwargs):  # noqa
+        super(DictMergeOperator, self).__init__(*args, **kwargs)
+        self.input = self.operator_dict['input']
+        self.dict = self.operator_dict['dict']
+
+    def _execute(self):
+        if isinstance(self.input, list):
+            for i in self.input:
+                self.dict = merge_configs(self.dict, i)
+            return self.dict
+        else:
+            return merge_configs(self.dict, self.input)

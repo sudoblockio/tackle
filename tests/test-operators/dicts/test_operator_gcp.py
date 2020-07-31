@@ -9,7 +9,12 @@ def test_operator_dict(monkeypatch, tmpdir):
     """Verify the operator call works successfully."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
 
-    context = cookiecutter(
-        '.', context_file='dict_update.yaml', no_input=True, output_dir=str(tmpdir)
+    output = cookiecutter(
+        '.', context_file='merge.yaml', no_input=True, output_dir=str(tmpdir)
     )
-    assert context
+    assert output
+
+    output = cookiecutter(
+        '.', context_file='update.yaml', no_input=True, output_dir=str(tmpdir)
+    )
+    assert output

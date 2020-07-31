@@ -1,0 +1,29 @@
+#input_list:
+#  type: stat
+#  input:
+#    - things: blah
+#    - thingys: blu
+#    - tings: blue
+
+input_map:
+  type: stat
+  input:
+    stuff: blah
+    sturf: blu
+
+dict_map:
+  type: stat
+  input:
+    foo: bing
+    bar: blu
+
+update_map:
+  type: update
+  dict: "{{ update.input_map }}"
+  input:
+    stuff: "{{ update.dict_map }}"
+
+output:
+  type: yaml
+  path: output.yaml
+  contents: "{{ update }}"
