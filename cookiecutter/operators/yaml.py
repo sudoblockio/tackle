@@ -21,13 +21,11 @@ class YamlOperator(BaseOperator):
 
     :param path: The file path to put read or write to
     :param contents: Supplied dictionary or list to write.
+    :param in_place: Boolean to read the contents of the `path` and then write after
+        modifications.
     :param remove: Parameter or regex to remove from list or dict
     :param update: Use the python `update` dict method on `contents` before writing
-    :param update_in_place: Dict input that both reads and writes the contents to yaml
-        while merging the `update_in_place` dict.
-    :param merge_config: Recursively update the contents before writing.
-    :param merge_in_place: Dict input that both reads and writes the contents to yaml
-        while merging the `merge_in_place` dict.
+    :param merge_dict: Dict input that recursively overwrites the `contents`.
     :param append_items: List to append to `append_key` key.
     :param append_key: String or list of heirarcial keys to append item to. Defaults
         to root element.
