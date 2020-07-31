@@ -1,0 +1,30 @@
+_foo:
+  - bar
+  - baz
+#
+#append_str_list:
+#  type: yaml
+#  path: output.yaml
+#  contents: "{{ append._foo }}"
+#  append_items: bing
+#
+#append_list_list:
+#  type: yaml
+#  path: output.yaml
+#  in_place: true
+#  contents: "{{ append._foo }}"
+#  append_items:
+#    - bing
+#    - bang
+
+_stuff:
+  things:
+    - dogs
+    - cats
+
+append_dict:
+  type: yaml
+  path: output-dict.yaml
+  contents: "{{ append._stuff }}"
+  append_items: "{{ append._foo }}"
+  append_keys: things

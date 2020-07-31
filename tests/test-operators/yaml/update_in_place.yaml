@@ -15,6 +15,7 @@ update:
   type: yaml
   loop: "{{ update_in_place._a_list }}"
   path: output_update_in_place.yaml
-  update_in_place:
+  in_place: true
+  update:
     "{{ update_in_place.item }}":
       stuff: things

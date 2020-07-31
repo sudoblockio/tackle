@@ -29,7 +29,8 @@ class YamlOperator(BaseOperator):
     :param merge_in_place: Dict input that both reads and writes the contents to yaml
         while merging the `merge_in_place` dict.
     :param append_items: List to append to `append_key` key.
-    :param append_key: Keys to append to. Defaults to root element.
+    :param append_key: String or list of heirarcial keys to append item to. Defaults
+        to root element.
     :param mode: The mode that the file should write. Defaults to write 'w'.
         Seee https://docs.python.org/3/library/functions.html#open
     """
@@ -53,18 +54,55 @@ class YamlOperator(BaseOperator):
             if 'merge_dict' in self.operator_dict
             else None
         )
-        self.update_in_place = (
-            self.operator_dict['update_in_place']
-            if 'update_in_place' in self.operator_dict
+        self.in_place = (
+            self.operator_dict['in_place']
+            if 'in_place' in self.operator_dict
+            else False
+        )
+        self.append_items = (
+            self.operator_dict['append_items']
+            if 'append_items' in self.operator_dict
             else None
         )
-        self.merge_in_place = (
-            self.operator_dict['merge_in_place']
-            if 'merge_in_place' in self.operator_dict
+        self.append_keys = (
+            self.operator_dict['append_keys']
+            if 'append_keys' in self.operator_dict
             else None
         )
 
     def _execute(self):
+        # Load the path into contents unless it already exists
+        self._load_contents()
+        # Run all the modifiers
+        self._modify_dicts()
+
+        if self.write:
+            mode = self.operator_dict['mode'] if 'mode' in self.operator_dict else 'w'
+            with open(self.path, mode) as f:
+                yaml.dump(self.contents, f)
+                return self.contents
+        else:
+            # Read operation, just return contents
+            return self.contents
+
+    def _load_contents(self):
+        if self.contents:
+            # We are writing. Context is provided
+            self.write = True
+            pass
+        if self.in_place:
+            # We are modifying in place. Context is read from path
+            self.write = True
+            with open(self.path, 'r') as f:
+                self.contents = yaml.safe_load(f)
+        elif not self.contents:
+            # We are reading. Contents is read from path
+            self.write = False
+            mode = self.operator_dict['mode'] if 'mode' in self.operator_dict else 'r'
+            with open(self.path, mode) as f:
+                self.contents = yaml.safe_load(f)
+
+    def _modify_dicts(self):
         if self.remove:
             if isinstance(self.remove, str):
                 self._remove_from_contents(self.remove)
@@ -90,31 +128,24 @@ class YamlOperator(BaseOperator):
             else:
                 raise ValueError("`merge_dict` param must be dictionary.")
 
-        if self.update_in_place:
-            with open(self.path, 'r') as f:
-                update_dict = yaml.safe_load(f)
-            update_dict.update(self.update_in_place)
-            with open(self.path, 'w') as f:
-                yaml.dump(update_dict, f)
-            return update_dict
+        if self.append_items:
+            if isinstance(self.append_items, str) or isinstance(
+                self.append_items, dict
+            ):
+                self._append_each_item(self.append_items)
+            elif isinstance(self.append_items, list):
+                for i in self.append_items:
+                    self._append_each_item(i)
 
-        if self.merge_in_place:
-            with open(self.path, 'r') as f:
-                merge_dict = yaml.safe_load(f)
-            merge_dict = merge_configs(merge_dict, self.merge_in_place)
-            with open(self.path, 'w') as f:
-                yaml.dump(merge_dict, f)
-            return merge_dict
-
-        elif self.contents:
-            mode = self.operator_dict['mode'] if 'mode' in self.operator_dict else 'w'
-            with open(self.path, mode) as f:
-                yaml.dump(self.contents, f)
-                return None
+    def _append_each_item(self, append_item):
+        if isinstance(self.append_keys, str):
+            self.contents[self.append_keys].append(append_item)
+        elif isinstance(self.append_keys, list):
+            for k in self.append_keys[:-1]:
+                self.contents = self.contents.setdefault(k, {})
+            self.contents[self.append_keys[-1]].append(append_item)
         else:
-            mode = self.operator_dict['mode'] if 'mode' in self.operator_dict else 'r'
-            with open(self.path, mode) as f:
-                return yaml.safe_load(f)
+            self.contents.append(append_item)
 
     def _remove_from_contents(self, regex):
         if isinstance(self.contents, list):
