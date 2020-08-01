@@ -17,8 +17,8 @@ def test_operator_command(monkeypatch, tmpdir):
 
         context = cookiecutter('.', no_input=True, output_dir=str(tmpdir))
 
-        assert '__init__.py' in context['shell']
-        assert '__init__.py' in context['cmd']
+        assert 'nuki.yaml' in context['shell']
+        assert 'nuki.yaml' in context['cmd']
 
 
 def test_operator_command_multi_line(monkeypatch, tmpdir):
