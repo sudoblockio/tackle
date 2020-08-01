@@ -5,6 +5,6 @@ instance_types:
   region: us-east-1
 
 instance:
-  type: list
+  type: select
   message: What do you want?
   choices: "{{ nuki.instance_types }}"

@@ -1,7 +1,7 @@
 stuff: things
 
 choices:
-  type: list
+  type: select
   message: You foo?
   default: sturff
   choices:

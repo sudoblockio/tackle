@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-"""Tests dict input objects for `cookiecutter.operator.checkbox` module."""
+"""Tests dict input objects for `cookiecutter.operator.list` module."""
 
 import os
 from cookiecutter.main import cookiecutter
 
 
-def test_operator_list(monkeypatch, tmpdir):
+def test_operator_select(monkeypatch, tmpdir):
     """Verify the operator call works successfully."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
 
