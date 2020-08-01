@@ -45,3 +45,37 @@ class SplitOperator(BaseOperator):
             raise NotImplementedError(
                 "Have not implemented dict `input` for `type` 'split'"
             )
+
+
+class JoinOperator(BaseOperator):
+    """
+    Operator for PyInquirer type prompts.
+
+    :param input: A list of string to join
+    :param separator: String separator
+    :return: String
+    """
+
+    type = 'join'
+
+    def __init__(self, *args, **kwargs):  # noqa
+        super(JoinOperator, self).__init__(*args, **kwargs)
+
+        self.input = self.operator_dict['input']
+        self.separator = (
+            self.operator_dict['separator']
+            if 'separator' in self.operator_dict
+            else "."
+        )
+
+    def _execute(self):
+        if isinstance(self.input, str):
+            # If item is a string then return a list
+            raise ValueError("Input must be list")
+        elif isinstance(self.input, list):
+            # If input is a list then return a nested list
+            return self.separator.join(self.input)
+        else:
+            raise NotImplementedError(
+                "Have not implemented dict `input` for `type` 'join'"
+            )

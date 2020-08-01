@@ -9,3 +9,8 @@ a_str:
   type: split
   separator: .
   input: things.stuffs
+
+join_a_str:
+  type: join
+  separator: .
+  input: "{{ nuki.a_str }}"

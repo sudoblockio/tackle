@@ -13,3 +13,4 @@ def test_operator_split(monkeypatch, tmpdir):
 
     assert output['a_list'] == [['stuff', 'thing'], ['things', 'stuffs']]
     assert output['a_str'] == ['things', 'stuffs']
+    assert output['join_a_str'] == 'things.stuffs'

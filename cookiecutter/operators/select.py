@@ -28,7 +28,7 @@ class InquirerListOperator(BaseOperator):
     :return: String for answer
     """
 
-    type = 'list'
+    type = 'select'
 
     def __init__(self, *args, **kwargs):  # noqa
         super(InquirerListOperator, self).__init__(*args, **kwargs)
