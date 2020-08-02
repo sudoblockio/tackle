@@ -61,3 +61,29 @@ class DictMergeOperator(BaseOperator):
             return self.dict
         else:
             return merge_configs(self.dict, self.input)
+
+
+class DictPopOperator(BaseOperator):
+    """
+    Operator for recursively merging dict objects with input maps.
+
+    :param dict: The input dict to update
+    :param item: A list or string of items to remove from a dictionary or list
+    :return: An updated dict object.
+    """
+
+    type = 'pop'
+
+    def __init__(self, *args, **kwargs):  # noqa
+        super(DictPopOperator, self).__init__(*args, **kwargs)
+        self.dict = self.operator_dict['dict']
+        self.item = self.operator_dict['item']
+
+    def _execute(self):
+        if isinstance(self.item, list):
+            for i in self.item:
+                self.dict.pop(i)
+            return self.dict
+        else:
+            self.dict.pop(self.item)
+            return self.dict
