@@ -10,7 +10,6 @@ from cookiecutter.render import render_variable
 from cookiecutter.operators import *  # noqa
 from cookiecutter.operators import BaseOperator
 
-
 logger = logging.getLogger(__name__)
 post_gen_operator_list = []
 
@@ -64,21 +63,7 @@ def parse_operator(
     logger.debug("Parsing context_key: %s and key: %s" % (context_key, key))
     operator_dict = context[context_key][key]
 
-    if 'when' in operator_dict:
-        if not context:
-            raise ValueError("Can't have when condition without establishing context")
-
-        when_condition = (
-            render_variable(env, operator_dict['when'], cookiecutter_dict, context_key)
-            == 'True'
-        )
-
-        operator_dict.pop('when')
-        if not isinstance(when_condition, bool):
-            raise ValueError("When condition needs to render with jinja to boolean")
-
-    else:
-        when_condition = True
+    when_condition = _evaluate_when(operator_dict, env, cookiecutter_dict, context_key)
 
     if when_condition:
         # Extract loop
@@ -129,3 +114,30 @@ def parse_operator(
             return cookiecutter_dict[key]
 
     return cookiecutter_dict
+
+
+def _evaluate_when(
+    operator_dict, env, cookiecutter_dict, context_key,
+):
+    if 'when' not in operator_dict:
+        return True
+
+    when_raw = operator_dict['when']
+    when_condition = False
+    if isinstance(when_raw, str):
+        when_condition = (
+            render_variable(env, when_raw, cookiecutter_dict, context_key) == 'True'
+        )
+    elif isinstance(when_raw, list):
+        # Evaluate lists as successively evalutated 'and' conditions
+        for i in when_raw:
+            when_condition = (
+                render_variable(env, i, cookiecutter_dict, context_key) == 'True'
+            )
+            # If anything is false, then break immediately
+            if not when_condition:
+                break
+
+    operator_dict.pop('when')
+
+    return when_condition

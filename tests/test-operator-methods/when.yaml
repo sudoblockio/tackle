@@ -1,0 +1,27 @@
+_true: true
+_false: false
+
+is_true:
+  type: stat
+  input: this
+  when: "{{ when._true }}"
+
+is_false:
+  type: stat
+  input: that
+  when: "{{ when._false }}"
+
+list_true:
+  type: stat
+  input: that
+  when:
+    - "{{ when._true }}"
+    - "{{ when._true }}"
+
+list_false:
+  type: stat
+  input: that
+  when:
+    - "{{ when._true }}"
+    - "{{ when._false }}"
+    - "{{ when._true }}"
