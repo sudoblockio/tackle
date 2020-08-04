@@ -1,0 +1,11 @@
+a_map:
+  stuff: things
+  foo: bar
+
+things:
+  type: yaml
+  path: before.yaml
+  contents: "{{ filter.a_map }}"
+  filter:
+    - foo
+    - things

@@ -28,12 +28,6 @@ def test_operator_yaml(monkeypatch, tmpdir):
 
     assert output['stuff'] == {'things': {'cats': 'scratch'}}
 
-    context = cookiecutter(
-        '.', context_file='before.yaml', no_input=True, output_dir=str(tmpdir),
-    )
-
-    assert context['things'] == ['stuff', 'things']
-
     cookiecutter(
         '.', context_file='remove_str.yaml', no_input=True, output_dir=str(tmpdir)
     )
@@ -60,6 +54,12 @@ def test_operator_yaml(monkeypatch, tmpdir):
     )
 
     assert read['stuff'] == 'things'
+
+    output = cookiecutter(
+        '.', context_file='filter.yaml', no_input=True, output_dir=str(tmpdir)
+    )
+
+    assert 'stuff' not in output['things']
 
 
 def test_operator_yaml_update_in_place(monkeypatch, tmpdir):

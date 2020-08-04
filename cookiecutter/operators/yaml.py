@@ -25,9 +25,10 @@ class YamlOperator(BaseOperator):
         modifications.
     :param remove: Parameter or regex to remove from list or dict
     :param update: Use the python `update` dict method on `contents` before writing
+    :param filter: List or string to values to.
     :param merge_dict: Dict input that recursively overwrites the `contents`.
     :param append_items: List to append to `append_key` key.
-    :param append_key: String or list of heirarcial keys to append item to. Defaults
+    :param append_key: String or list of hierarchical keys to append item to. Defaults
         to root element.
     :param mode: The mode that the file should write. Defaults to write 'w'.
         Seee https://docs.python.org/3/library/functions.html#open
@@ -45,6 +46,9 @@ class YamlOperator(BaseOperator):
         )
         self.update = (
             self.operator_dict['update'] if 'update' in self.operator_dict else None
+        )
+        self.filter = (
+            self.operator_dict['filter'] if 'filter' in self.operator_dict else None
         )
         self.path = self.operator_dict['path']
         self.merge_dict = (
@@ -113,6 +117,11 @@ class YamlOperator(BaseOperator):
                 warnings.warn(
                     "Warning: the `remove` parameter can't be a dict - ignored"
                 )
+
+        if self.filter:
+            self.contents = {
+                k: v for (k, v) in self.contents.items() if k in self.filter
+            }
 
         if self.update:
             if isinstance(self.update, dict):
