@@ -6,8 +6,9 @@ import shutil
 from cookiecutter.main import cookiecutter
 
 
-def _clean_files():
-    files = ['thing.yaml', 'stuff']
+def clean_files():
+    """Clean the run."""
+    files = ['thing.yaml', 'thing2.yaml', 'stuff']
     for f in files:
         if os.path.isfile(f):
             os.remove(f)
@@ -15,14 +16,17 @@ def _clean_files():
             shutil.rmtree(f)
 
 
-def test_operator_file_copy(monkeypatch, tmpdir):
+def test_operator_file(monkeypatch, tmpdir):
     """Verify the operator call works successfully."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
-    _clean_files()
+    clean_files()
 
     cookiecutter('.', no_input=True, output_dir=str(tmpdir))
 
     assert 'thing.yaml' in os.listdir()
     assert 'stuff' in os.listdir()
 
-    _clean_files()
+    # If the file has been moved properly there should be only one file
+    assert len(os.listdir('stuff')) == 3
+
+    clean_files()
