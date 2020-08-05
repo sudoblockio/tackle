@@ -22,6 +22,7 @@ INSTALL_REQUIREMENTS = [
     'PyYAML>=5.3',
     # 'ruamel.yaml>=0.16.0',
     'boto3>=1.14.0' 'google-api-python-client>=1.9',
+    'google-api-python-client>=1.9',
     'azure-mgmt-compute>=13.0.0',
     'azure-mgmt-subscription>=0.6.0',
     'pyhcl>=0.4.4',
