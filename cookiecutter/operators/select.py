@@ -34,6 +34,9 @@ class InquirerListOperator(BaseOperator):
         super(InquirerListOperator, self).__init__(*args, **kwargs)
 
     def _execute(self):
+        # Fix type
+        self.operator_dict['type'] = 'list'
+
         if 'index' not in self.operator_dict:
             self.operator_dict['index'] = False
 
