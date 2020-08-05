@@ -4,6 +4,10 @@ Nukikata will be a couple months behind the major releases for cookiecutter at w
 
 The cookiecutter history can be viewed in the [project tab](https://github.com/cookiecutter/cookiecutter/projects) and [HISTORY.md](https://github.com/cookiecutter/cookiecutter/blob/master/HISTORY.md)
 
+## 2.0.0.2 (2020-8-4)
+- Modified yaml operator adding several methods
+- Refactor list to select operator
+- Added web, copy, move, dicts, lists operators
 
 ## 2.0.0.1 (2020-07-28)
 - Added special variable `calling_directory` to preserve path regardless of context changing in remote nukikata calls.

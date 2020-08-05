@@ -4,12 +4,12 @@ import sys
 
 from setuptools import setup
 
-version = "2.0.0.1"
+version = "2.0.0.2"
 
 with open('README.md', encoding='utf-8') as readme_file:
     readme = readme_file.read()
 
-requirements = [
+INSTALL_REQUIREMENTS = [
     'binaryornot>=0.4.4',
     'Jinja2<3.0.0',
     'click>=7.0',
@@ -20,8 +20,8 @@ requirements = [
     'MarkupSafe<2.0.0',
     'PyInquirer>=1.0.3',
     'PyYAML>=5.3',
-    'boto3>=1.14',
-    'google-api-python-client>=1.9',
+    # 'ruamel.yaml>=0.16.0',
+    'boto3>=1.14.0' 'google-api-python-client>=1.9',
     'azure-mgmt-compute>=13.0.0',
     'azure-mgmt-subscription>=0.6.0',
     'pyhcl>=0.4.4',
@@ -53,7 +53,7 @@ setup(
     entry_points={'console_scripts': ['nukikata = cookiecutter.__main__:main']},
     include_package_data=True,
     python_requires='>=3.6',
-    install_requires=requirements,
+    install_requires=INSTALL_REQUIREMENTS,
     license='BSD',
     zip_safe=False,
     classifiers=[

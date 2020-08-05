@@ -144,8 +144,8 @@ def parse_context(context, env, cookiecutter_dict, context_key, no_input):
 
     :param dict context: Source for field names and sample values.
     :param env: Jinja environment to render values with.
-    :param no_input: Prompt the user at command line for manual configuration.
     :param context_key: The key to insert all the outputs under in the context dict.
+    :param no_input: Prompt the user at command line for manual configuration.
     :param existing_context: A dictionary of values to use during rendering.
     :return: cookiecutter_dict
     """
