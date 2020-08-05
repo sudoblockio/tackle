@@ -44,7 +44,7 @@ class TableOperator(BaseOperator):
             else []
         )
         if len(self.operator_dict['column_names']) > 0:
-            table = Table(show_header=True, header_style="bold magenta")
+            table = Table(show_header=True, header_style="bold red")
             for c in self.operator_dict['column_names']:
                 table.add_column(c)
         else:

@@ -1,0 +1,7 @@
+regions:
+  type: aws_regions
+
+instance_types:
+  type: aws_ec2_types
+  region: "{{ all_regions.item }}"
+  loop: "{{ all_regions.regions }}"

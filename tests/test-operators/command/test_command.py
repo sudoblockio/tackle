@@ -60,8 +60,8 @@ def test_command():
         operator_output, delayed_output = run_operator(
             context['cookiecutter']['details'], context
         )
-        assert '__init__.py' in operator_output
+        assert 'nuki.yaml' in operator_output
         assert not delayed_output
 
         cookiecutter_dict = parse_operator(context, 'details', {})
-        assert '__init__.py' in cookiecutter_dict['details']
+        assert 'nuki.yaml' in cookiecutter_dict['details']

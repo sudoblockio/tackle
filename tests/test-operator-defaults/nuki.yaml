@@ -1,7 +1,7 @@
 foo: bar
 
 list:
-  type: list
+  type: select
   message: What you?
   no_input: true
   choices:

@@ -2,4 +2,4 @@ stuff: things
 
 things:
   type: yaml
-  path: before.yaml
+  path: append.yaml
