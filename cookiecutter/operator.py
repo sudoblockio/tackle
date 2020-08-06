@@ -125,15 +125,11 @@ def _evaluate_when(
     when_raw = operator_dict['when']
     when_condition = False
     if isinstance(when_raw, str):
-        when_condition = (
-            render_variable(env, when_raw, cookiecutter_dict, context_key) == 'True'
-        )
+        when_condition = render_variable(env, when_raw, cookiecutter_dict, context_key)
     elif isinstance(when_raw, list):
         # Evaluate lists as successively evalutated 'and' conditions
         for i in when_raw:
-            when_condition = (
-                render_variable(env, i, cookiecutter_dict, context_key) == 'True'
-            )
+            when_condition = render_variable(env, i, cookiecutter_dict, context_key)
             # If anything is false, then break immediately
             if not when_condition:
                 break

@@ -4,6 +4,9 @@ Nukikata will be a couple months behind the major releases for cookiecutter at w
 
 The cookiecutter history can be viewed in the [project tab](https://github.com/cookiecutter/cookiecutter/projects) and [HISTORY.md](https://github.com/cookiecutter/cookiecutter/blob/master/HISTORY.md)
 
+## 2.0.0.3 (2020-8-5)
+- Added tracking of whether reading `cookiecutter.*` context files which then informs whether the rendered values are interpretted literally or as strings.  Maintains support for old style rendering where users relied on having the lists, dicts, and booleans render as strings vs literals.
+
 ## 2.0.0.2 (2020-8-4)
 - Modified yaml operator adding several methods
 - Refactor list to select operator

@@ -24,7 +24,7 @@ class TestRenderVariable:
         'raw_var, rendered_var',
         [
             (1, '1'),
-            (True, 'True'),
+            (True, True),
             ('foo', 'foo'),
             ('{{cookiecutter.project}}', 'foobar'),
             (None, None),
@@ -54,10 +54,10 @@ class TestRenderVariable:
     @pytest.mark.parametrize(
         'raw_var, rendered_var',
         [
-            ({1: True, 'foo': False}, {'1': 'True', 'foo': 'False'}),
+            ({1: True, 'foo': False}, {'1': True, 'foo': False}),
             (
                 {'{{cookiecutter.project}}': ['foo', 1], 'bar': False},
-                {'foobar': ['foo', '1'], 'bar': 'False'},
+                {'foobar': ['foo', '1'], 'bar': False},
             ),
             (['foo', '{{cookiecutter.project}}', None], ['foo', 'foobar', None]),
         ],
