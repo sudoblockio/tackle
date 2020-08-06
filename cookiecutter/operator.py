@@ -63,7 +63,7 @@ def parse_operator(
     logger.debug("Parsing context_key: %s and key: %s" % (context_key, key))
     operator_dict = context[context_key][key]
 
-    when_condition = _evaluate_when(operator_dict, env, cookiecutter_dict, context_key)
+    when_condition = evaluate_when(operator_dict, env, cookiecutter_dict, context_key)
 
     if when_condition:
         # Extract loop
@@ -116,9 +116,10 @@ def parse_operator(
     return cookiecutter_dict
 
 
-def _evaluate_when(
+def evaluate_when(
     operator_dict, env, cookiecutter_dict, context_key,
 ):
+    """Evaluate the when condition and return bool."""
     if 'when' not in operator_dict:
         return True
 

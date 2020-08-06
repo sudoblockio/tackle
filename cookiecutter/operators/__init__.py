@@ -3,10 +3,15 @@
 """Operator plugin base class that all __subclassess__ are brought in scope."""
 from __future__ import unicode_literals
 
-from abc import ABCMeta, abstractmethod
+import logging
 from os import listdir as _listdir  # To not conflict with operator
 from os.path import dirname, basename, join, isdir, abspath, expanduser
+from abc import ABCMeta, abstractmethod
+from PyInquirer import prompt
+
 from cookiecutter.context_manager import work_in
+
+logger = logging.getLogger(__name__)
 
 # TODO: Allow for imports of custom operators and subdirectories.
 __all__ = [
@@ -35,6 +40,7 @@ class BaseOperator(metaclass=ABCMeta):
             all the other operators.
         :param chdir: A directory to temporarily change directories into and execute
              the operator.
+        :param confirm:
         """
         self.operator_dict = operator_dict
         self.context_key = context_key or 'cookiecutter'
@@ -51,6 +57,9 @@ class BaseOperator(metaclass=ABCMeta):
         self.chdir = (
             self.operator_dict['chdir'] if 'chdir' in self.operator_dict else None
         )
+        self.confirm = (
+            self.operator_dict['confirm'] if 'confirm' in self.operator_dict else None
+        )
 
     @abstractmethod
     def _execute(self):
@@ -62,6 +71,9 @@ class BaseOperator(metaclass=ABCMeta):
 
         Handles `chdir` method.
         """
+        if self._evaluate_confirm():
+            return None
+
         if self.chdir and isdir(abspath(expanduser(self.chdir))):
             # Use contextlib to switch dirs and come back out
             with work_in(abspath(expanduser(self.chdir))):
@@ -76,3 +88,24 @@ class BaseOperator(metaclass=ABCMeta):
                 return self._execute()
         else:
             return self._execute()
+
+    def _evaluate_confirm(self):
+        if self.confirm:
+            if isinstance(self.confirm, str):
+                return prompt(
+                    [{'type': 'confirm', 'name': 'tmp', 'message': self.confirm}]
+                )['tmp']
+            elif isinstance(self.confirm, dict):
+                if 'when' in self.confirm:
+                    # when_condition = cc.operator.evaluate_when(self.operator_dict)  # noqa
+                    pass
+                return prompt(
+                    [
+                        {
+                            'type': 'confirm',
+                            'name': 'tmp',
+                            'message': self.confirm['message'],
+                            'default': self.confirm['default'],
+                        }
+                    ]
+                )['tmp']
