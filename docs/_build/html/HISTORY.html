@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>History &mdash; nukikata 2.0.0.1 documentation</title>
+  <title>History &mdash; nukikata 2.0.0.2 documentation</title>
 
 
 
@@ -60,7 +60,7 @@
 
 
               <div class="version">
-                2.0.0.1
+                2.0.0.2
               </div>
 
 
@@ -96,11 +96,13 @@
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">History</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id1">2.0.0.1 (2020-07-28)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id2">2.0.0.0 (2020-07-27)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id3">1.7.2.3 (2020-06-23)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id4">1.7.2.2 (2020-06-15)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id5">1.7.2.1 (2020-06-01)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">2.0.0.3 (2020-8-5)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">2.0.0.2 (2020-8-4)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">2.0.0.1 (2020-07-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">2.0.0.0 (2020-07-27)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">1.7.2.3 (2020-06-23)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">1.7.2.2 (2020-06-15)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">1.7.2.1 (2020-06-01)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#first-release-on-pypi">1.7.2.0 (2020-06-01) First release on pypi</a></li>
 </ul>
 </li>
@@ -174,14 +176,28 @@
 <p>Nukikata will be a couple months behind the major releases for cookiecutter at which point it will be on exact feature parity. Each update is done maintaining coverage doing it’s best to not break any tests and inherit all the existing functionality of cookiecutter.</p>
 <p>The cookiecutter history can be viewed in the <a class="reference external" href="https://github.com/cookiecutter/cookiecutter/projects">project tab</a> and <a class="reference external" href="https://github.com/cookiecutter/cookiecutter/blob/master/HISTORY">HISTORY.md</a></p>
 <div class="section" id="id1">
-<h2>2.0.0.1 (2020-07-28)<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<h2>2.0.0.3 (2020-8-5)<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Added tracking of whether reading <code class="docutils literal notranslate"><span class="pre">cookiecutter.*</span></code> context files which then informs whether the rendered values are interpretted literally or as strings.  Maintains support for old style rendering where users relied on having the lists, dicts, and booleans render as strings vs literals.</p></li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2>2.0.0.2 (2020-8-4)<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Modified yaml operator adding several methods</p></li>
+<li><p>Refactor list to select operator</p></li>
+<li><p>Added web, copy, move, dicts, lists operators</p></li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h2>2.0.0.1 (2020-07-28)<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Added special variable <code class="docutils literal notranslate"><span class="pre">calling_directory</span></code> to preserve path regardless of context changing in remote nukikata calls.</p></li>
 <li><p>Fixing listdir and list operators</p></li>
 </ul>
 </div>
-<div class="section" id="id2">
-<h2>2.0.0.0 (2020-07-27)<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id4">
+<h2>2.0.0.0 (2020-07-27)<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Added no_input to operator level discovery</p></li>
 <li><p>Added basic AWS, GCP, Azure, and DigitalOcean operators</p></li>
@@ -196,8 +212,8 @@
 <li><p>Added <code class="docutils literal notranslate"><span class="pre">block</span></code> operator which uncovered defficiencies in how we are currently handling the running of the context in the operators</p></li>
 </ul>
 </div>
-<div class="section" id="id3">
-<h2>1.7.2.3 (2020-06-23)<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id5">
+<h2>1.7.2.3 (2020-06-23)<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Breaking change - main function returns context instead of result_directory.  This makes it much easier to use when stitching cookiecutters together as now the context can be kept namespaced per the actual context they are being called in.  This change only affects tests and those using the package as a function. The idea is that the output directory can be resolved out of scope and does not need to be returned.</p></li>
 <li><p>Added yaml support</p></li>
@@ -207,16 +223,16 @@
 <li><p>Convert many tests to run both from tox and local - broke <code class="docutils literal notranslate"><span class="pre">test_cookiecutter_no_input_return_project_dir</span></code></p></li>
 </ul>
 </div>
-<div class="section" id="id4">
-<h2>1.7.2.2 (2020-06-15)<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id6">
+<h2>1.7.2.2 (2020-06-15)<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed operator call order and postgen operator logic for delayed operators</p></li>
 <li><p>Added proper metadata to setup.py</p></li>
 <li><p>Fixed compatibility with py3.6</p></li>
 </ul>
 </div>
-<div class="section" id="id5">
-<h2>1.7.2.1 (2020-06-01)<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id7">
+<h2>1.7.2.1 (2020-06-01)<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed some packaging issue</p></li>
 </ul>

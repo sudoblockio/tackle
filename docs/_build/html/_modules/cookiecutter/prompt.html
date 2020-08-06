@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>cookiecutter.prompt &mdash; nukikata 2.0.0.1 documentation</title>
+  <title>cookiecutter.prompt &mdash; nukikata 2.0.0.2 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.0.1
+                2.0.0.2
               </div>
 
 
@@ -305,8 +305,8 @@
 
 <span class="sd">    :param dict context: Source for field names and sample values.</span>
 <span class="sd">    :param env: Jinja environment to render values with.</span>
-<span class="sd">    :param no_input: Prompt the user at command line for manual configuration.</span>
 <span class="sd">    :param context_key: The key to insert all the outputs under in the context dict.</span>
+<span class="sd">    :param no_input: Prompt the user at command line for manual configuration.</span>
 <span class="sd">    :param existing_context: A dictionary of values to use during rendering.</span>
 <span class="sd">    :return: cookiecutter_dict</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -394,6 +394,9 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># Case where prompt is being called directly as is the case with an operator</span>
         <span class="k">return</span> <span class="n">parse_context</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">cookiecutter_dict</span><span class="p">,</span> <span class="n">context_key</span><span class="p">,</span> <span class="n">no_input</span><span class="p">)</span></div>
+
+<span class="c1"># class Run(object):</span>
+<span class="c1">#     def __init__(self, context, existing_context, ):</span>
 </pre></div>
 
            </div>

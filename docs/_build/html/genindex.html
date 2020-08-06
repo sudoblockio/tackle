@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Index &mdash; nukikata 2.0.0.1 documentation</title>
+  <title>Index &mdash; nukikata 2.0.0.2 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.0.1
+                2.0.0.2
               </div>
 
 
@@ -544,6 +544,8 @@
         <li><a href="cookiecutter.html#module-cookiecutter.main">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     cookiecutter.operator
 
@@ -558,8 +560,6 @@
         <li><a href="cookiecutter.operators.html#module-cookiecutter.operators">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     cookiecutter.operators.aws
 
@@ -638,13 +638,6 @@
 </li>
       </ul></li>
       <li>
-    cookiecutter.operators.list
-
-      <ul>
-        <li><a href="cookiecutter.operators.html#module-cookiecutter.operators.list">module</a>
-</li>
-      </ul></li>
-      <li>
     cookiecutter.operators.listdir
 
       <ul>
@@ -666,13 +659,6 @@
 </li>
       </ul></li>
       <li>
-    cookiecutter.operators.path
-
-      <ul>
-        <li><a href="cookiecutter.operators.html#module-cookiecutter.operators.path">module</a>
-</li>
-      </ul></li>
-      <li>
     cookiecutter.operators.print
 
       <ul>
@@ -684,13 +670,6 @@
 
       <ul>
         <li><a href="cookiecutter.operators.html#module-cookiecutter.operators.rawlist">module</a>
-</li>
-      </ul></li>
-      <li>
-    cookiecutter.operators.split
-
-      <ul>
-        <li><a href="cookiecutter.operators.html#module-cookiecutter.operators.split">module</a>
 </li>
       </ul></li>
       <li>
@@ -780,8 +759,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="cookiecutter.html#cookiecutter.repository.determine_repo_dir">determine_repo_dir() (in module cookiecutter.repository)</a>
 </li>
+      <li><a href="cookiecutter.operators.html#cookiecutter.operators.dicts.DictMergeOperator">DictMergeOperator (class in cookiecutter.operators.dicts)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="cookiecutter.operators.html#cookiecutter.operators.dicts.DictPopOperator">DictPopOperator (class in cookiecutter.operators.dicts)</a>
+</li>
       <li><a href="cookiecutter.operators.html#cookiecutter.operators.dicts.DictUpdateOperator">DictUpdateOperator (class in cookiecutter.operators.dicts)</a>
 </li>
       <li><a href="cookiecutter.html#cookiecutter.replay.dump">dump() (in module cookiecutter.replay)</a>
@@ -873,14 +856,10 @@
 </li>
       <li><a href="cookiecutter.operators.html#cookiecutter.operators.input.InquirerInputOperator">InquirerInputOperator (class in cookiecutter.operators.input)</a>
 </li>
-      <li><a href="cookiecutter.operators.html#cookiecutter.operators.list.InquirerListOperator">InquirerListOperator (class in cookiecutter.operators.list)</a>
-
-      <ul>
-        <li><a href="cookiecutter.operators.html#cookiecutter.operators.rawlist.InquirerListOperator">(class in cookiecutter.operators.rawlist)</a>
-</li>
-      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="cookiecutter.operators.html#cookiecutter.operators.rawlist.InquirerListOperator">InquirerListOperator (class in cookiecutter.operators.rawlist)</a>
+</li>
       <li><a href="cookiecutter.operators.html#cookiecutter.operators.password.InquirerPasswordOperator">InquirerPasswordOperator (class in cookiecutter.operators.password)</a>
 </li>
       <li><a href="cookiecutter.html#cookiecutter.exceptions.InvalidConfiguration">InvalidConfiguration</a>
@@ -995,21 +974,15 @@
 </li>
         <li><a href="cookiecutter.operators.html#module-cookiecutter.operators.json">cookiecutter.operators.json</a>
 </li>
-        <li><a href="cookiecutter.operators.html#module-cookiecutter.operators.list">cookiecutter.operators.list</a>
-</li>
         <li><a href="cookiecutter.operators.html#module-cookiecutter.operators.listdir">cookiecutter.operators.listdir</a>
 </li>
         <li><a href="cookiecutter.operators.html#module-cookiecutter.operators.nukikata">cookiecutter.operators.nukikata</a>
 </li>
         <li><a href="cookiecutter.operators.html#module-cookiecutter.operators.password">cookiecutter.operators.password</a>
 </li>
-        <li><a href="cookiecutter.operators.html#module-cookiecutter.operators.path">cookiecutter.operators.path</a>
-</li>
         <li><a href="cookiecutter.operators.html#module-cookiecutter.operators.print">cookiecutter.operators.print</a>
 </li>
         <li><a href="cookiecutter.operators.html#module-cookiecutter.operators.rawlist">cookiecutter.operators.rawlist</a>
-</li>
-        <li><a href="cookiecutter.operators.html#module-cookiecutter.operators.split">cookiecutter.operators.split</a>
 </li>
         <li><a href="cookiecutter.operators.html#module-cookiecutter.operators.stat">cookiecutter.operators.stat</a>
 </li>
@@ -1064,18 +1037,12 @@
 </li>
       <li><a href="cookiecutter.html#cookiecutter.operator.parse_operator">parse_operator() (in module cookiecutter.operator)</a>
 </li>
-      <li><a href="cookiecutter.operators.html#cookiecutter.operators.path.PathExistsListOperator">PathExistsListOperator (class in cookiecutter.operators.path)</a>
-</li>
-      <li><a href="cookiecutter.operators.html#cookiecutter.operators.path.PathIsdirListOperator">PathIsdirListOperator (class in cookiecutter.operators.path)</a>
-</li>
-      <li><a href="cookiecutter.operators.html#cookiecutter.operators.path.PathRelativeOperator">PathRelativeOperator (class in cookiecutter.operators.path)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="cookiecutter.operators.html#cookiecutter.operators.print.PprintOperator">PprintOperator (class in cookiecutter.operators.print)</a>
 </li>
       <li><a href="cookiecutter.operators.html#cookiecutter.operators.print.PrintOperator">PrintOperator (class in cookiecutter.operators.print)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="cookiecutter.html#cookiecutter.prompt.process_json">process_json() (in module cookiecutter.prompt)</a>
 </li>
       <li><a href="cookiecutter.html#cookiecutter.utils.prompt_and_delete">prompt_and_delete() (in module cookiecutter.utils)</a>
@@ -1138,8 +1105,6 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="cookiecutter.operators.html#cookiecutter.operators.split.SplitOperator">SplitOperator (class in cookiecutter.operators.split)</a>
-</li>
       <li><a href="cookiecutter.operators.html#cookiecutter.operators.stat.StatOperator">StatOperator (class in cookiecutter.operators.stat)</a>
 </li>
       <li><a href="cookiecutter.html#cookiecutter.environment.StrictEnvironment">StrictEnvironment (class in cookiecutter.environment)</a>
@@ -1178,6 +1143,10 @@
 </li>
         <li><a href="cookiecutter.operators.html#cookiecutter.operators.confirm.InquirerConfirmOperator.type">(cookiecutter.operators.confirm.InquirerConfirmOperator attribute)</a>
 </li>
+        <li><a href="cookiecutter.operators.html#cookiecutter.operators.dicts.DictMergeOperator.type">(cookiecutter.operators.dicts.DictMergeOperator attribute)</a>
+</li>
+        <li><a href="cookiecutter.operators.html#cookiecutter.operators.dicts.DictPopOperator.type">(cookiecutter.operators.dicts.DictPopOperator attribute)</a>
+</li>
         <li><a href="cookiecutter.operators.html#cookiecutter.operators.dicts.DictUpdateOperator.type">(cookiecutter.operators.dicts.DictUpdateOperator attribute)</a>
 </li>
         <li><a href="cookiecutter.operators.html#cookiecutter.operators.editor.InquirerEditorOperator.type">(cookiecutter.operators.editor.InquirerEditorOperator attribute)</a>
@@ -1190,27 +1159,17 @@
 </li>
         <li><a href="cookiecutter.operators.html#cookiecutter.operators.json.JsonOperator.type">(cookiecutter.operators.json.JsonOperator attribute)</a>
 </li>
-        <li><a href="cookiecutter.operators.html#cookiecutter.operators.list.InquirerListOperator.type">(cookiecutter.operators.list.InquirerListOperator attribute)</a>
-</li>
         <li><a href="cookiecutter.operators.html#cookiecutter.operators.listdir.ListdirOperator.type">(cookiecutter.operators.listdir.ListdirOperator attribute)</a>
 </li>
         <li><a href="cookiecutter.operators.html#cookiecutter.operators.nukikata.NukikataOperator.type">(cookiecutter.operators.nukikata.NukikataOperator attribute)</a>
 </li>
         <li><a href="cookiecutter.operators.html#cookiecutter.operators.password.InquirerPasswordOperator.type">(cookiecutter.operators.password.InquirerPasswordOperator attribute)</a>
 </li>
-        <li><a href="cookiecutter.operators.html#cookiecutter.operators.path.PathExistsListOperator.type">(cookiecutter.operators.path.PathExistsListOperator attribute)</a>
-</li>
-        <li><a href="cookiecutter.operators.html#cookiecutter.operators.path.PathIsdirListOperator.type">(cookiecutter.operators.path.PathIsdirListOperator attribute)</a>
-</li>
-        <li><a href="cookiecutter.operators.html#cookiecutter.operators.path.PathRelativeOperator.type">(cookiecutter.operators.path.PathRelativeOperator attribute)</a>
-</li>
         <li><a href="cookiecutter.operators.html#cookiecutter.operators.print.PprintOperator.type">(cookiecutter.operators.print.PprintOperator attribute)</a>
 </li>
         <li><a href="cookiecutter.operators.html#cookiecutter.operators.print.PrintOperator.type">(cookiecutter.operators.print.PrintOperator attribute)</a>
 </li>
         <li><a href="cookiecutter.operators.html#cookiecutter.operators.rawlist.InquirerListOperator.type">(cookiecutter.operators.rawlist.InquirerListOperator attribute)</a>
-</li>
-        <li><a href="cookiecutter.operators.html#cookiecutter.operators.split.SplitOperator.type">(cookiecutter.operators.split.SplitOperator attribute)</a>
 </li>
         <li><a href="cookiecutter.operators.html#cookiecutter.operators.stat.StatOperator.type">(cookiecutter.operators.stat.StatOperator attribute)</a>
 </li>

@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>cookiecutter.operators package &mdash; nukikata 2.0.0.1 documentation</title>
+  <title>cookiecutter.operators package &mdash; nukikata 2.0.0.2 documentation</title>
 
 
 
@@ -61,7 +61,7 @@
 
 
               <div class="version">
-                2.0.0.1
+                2.0.0.2
               </div>
 
 
@@ -108,15 +108,15 @@
 <li class="toctree-l4"><a class="reference internal" href="#module-cookiecutter.operators.input">cookiecutter.operators.input module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-cookiecutter.operators.jinja">cookiecutter.operators.jinja module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-cookiecutter.operators.json">cookiecutter.operators.json module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-cookiecutter.operators.list">cookiecutter.operators.list module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-list-module">cookiecutter.operators.list module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-cookiecutter.operators.listdir">cookiecutter.operators.listdir module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-cookiecutter.operators.nukikata">cookiecutter.operators.nukikata module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-cookiecutter.operators.password">cookiecutter.operators.password module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-cookiecutter.operators.path">cookiecutter.operators.path module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-path-module">cookiecutter.operators.path module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-cookiecutter.operators.print">cookiecutter.operators.print module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-cookiecutter.operators.rawlist">cookiecutter.operators.rawlist module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-return-module">cookiecutter.operators.return module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-cookiecutter.operators.split">cookiecutter.operators.split module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-split-module">cookiecutter.operators.split module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-cookiecutter.operators.stat">cookiecutter.operators.stat module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-cookiecutter.operators.table">cookiecutter.operators.table module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-cookiecutter.operators.terraform">cookiecutter.operators.terraform module</a></li>
@@ -426,6 +426,52 @@ operator.</p>
 <span id="cookiecutter-operators-dicts-module"></span><h2>cookiecutter.operators.dicts module<a class="headerlink" href="#module-cookiecutter.operators.dicts" title="Permalink to this headline">¶</a></h2>
 <p>Operator plugin that inherits a base class and is made available through <cite>type</cite>.</p>
 <dl class="py class">
+<dt id="cookiecutter.operators.dicts.DictMergeOperator">
+<em class="property">class </em><code class="sig-prename descclassname">cookiecutter.operators.dicts.</code><code class="sig-name descname">DictMergeOperator</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cookiecutter/operators/dicts.html#DictMergeOperator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cookiecutter.operators.dicts.DictMergeOperator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cookiecutter.operators.BaseOperator</span></code></p>
+<p>Operator for recursively merging dict objects with input maps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dict</strong> – The input dict to update</p></li>
+<li><p><strong>input</strong> – A dict or list of dicts to update the input <cite>dict</cite></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An updated dict object.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="cookiecutter.operators.dicts.DictMergeOperator.type">
+<code class="sig-name descname">type</code><em class="property"> = 'merge'</em><a class="headerlink" href="#cookiecutter.operators.dicts.DictMergeOperator.type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="cookiecutter.operators.dicts.DictPopOperator">
+<em class="property">class </em><code class="sig-prename descclassname">cookiecutter.operators.dicts.</code><code class="sig-name descname">DictPopOperator</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cookiecutter/operators/dicts.html#DictPopOperator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cookiecutter.operators.dicts.DictPopOperator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cookiecutter.operators.BaseOperator</span></code></p>
+<p>Operator for recursively merging dict objects with input maps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dict</strong> – The input dict to update</p></li>
+<li><p><strong>item</strong> – A list or string of items to remove from a dictionary or list</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An updated dict object.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="cookiecutter.operators.dicts.DictPopOperator.type">
+<code class="sig-name descname">type</code><em class="property"> = 'pop'</em><a class="headerlink" href="#cookiecutter.operators.dicts.DictPopOperator.type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="cookiecutter.operators.dicts.DictUpdateOperator">
 <em class="property">class </em><code class="sig-prename descclassname">cookiecutter.operators.dicts.</code><code class="sig-name descname">DictUpdateOperator</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cookiecutter/operators/dicts.html#DictUpdateOperator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cookiecutter.operators.dicts.DictUpdateOperator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cookiecutter.operators.BaseOperator</span></code></p>
@@ -434,8 +480,7 @@ operator.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dict</strong> – The input dict to update</p></li>
-<li><p><strong>input</strong> – A dict to update the input <cite>dict</cite></p></li>
-<li><p><strong>inputs</strong> – A list of dicts to update <cite>dict</cite> with</p></li>
+<li><p><strong>input</strong> – A dict or list of dicts to update the input <cite>dict</cite></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -593,38 +638,8 @@ the <cite>contents</cite>.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-cookiecutter.operators.list">
-<span id="cookiecutter-operators-list-module"></span><h2>cookiecutter.operators.list module<a class="headerlink" href="#module-cookiecutter.operators.list" title="Permalink to this headline">¶</a></h2>
-<p>Operator plugin that inherits a base class and is made available through <cite>type</cite>.</p>
-<dl class="py class">
-<dt id="cookiecutter.operators.list.InquirerListOperator">
-<em class="property">class </em><code class="sig-prename descclassname">cookiecutter.operators.list.</code><code class="sig-name descname">InquirerListOperator</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cookiecutter/operators/list.html#InquirerListOperator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cookiecutter.operators.list.InquirerListOperator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cookiecutter.operators.BaseOperator</span></code></p>
-<p>Operator for PyInquirer ‘list’ type prompts.</p>
-<p>Takes in two forms of <cite>choices</cite> inputs.
-1. list of string
-2. list of maps with the key as the output, the value as displayed question</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>message</strong> – String message to show when prompting.</p></li>
-<li><p><strong>choices</strong> – A list of strings or list of k/v pairs per above description</p></li>
-<li><p><strong>name</strong> – A key to insert the output value to. If not provided defaults to
-inserting into parent key</p></li>
-<li><p><strong>index</strong> – Boolean to return the index instead of the answer</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>String for answer</p>
-</dd>
-</dl>
-<dl class="py attribute">
-<dt id="cookiecutter.operators.list.InquirerListOperator.type">
-<code class="sig-name descname">type</code><em class="property"> = 'list'</em><a class="headerlink" href="#cookiecutter.operators.list.InquirerListOperator.type" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<div class="section" id="cookiecutter-operators-list-module">
+<h2>cookiecutter.operators.list module<a class="headerlink" href="#cookiecutter-operators-list-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-cookiecutter.operators.listdir">
 <span id="cookiecutter-operators-listdir-module"></span><h2>cookiecutter.operators.listdir module<a class="headerlink" href="#module-cookiecutter.operators.listdir" title="Permalink to this headline">¶</a></h2>
@@ -726,74 +741,8 @@ inserting into parent key</p></li>
 </dd></dl>
 
 </div>
-<div class="section" id="module-cookiecutter.operators.path">
-<span id="cookiecutter-operators-path-module"></span><h2>cookiecutter.operators.path module<a class="headerlink" href="#module-cookiecutter.operators.path" title="Permalink to this headline">¶</a></h2>
-<p>Operator plugin that inherits a base class and is made available through <cite>type</cite>.</p>
-<dl class="py class">
-<dt id="cookiecutter.operators.path.PathExistsListOperator">
-<em class="property">class </em><code class="sig-prename descclassname">cookiecutter.operators.path.</code><code class="sig-name descname">PathExistsListOperator</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cookiecutter/operators/path.html#PathExistsListOperator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cookiecutter.operators.path.PathExistsListOperator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cookiecutter.operators.BaseOperator</span></code></p>
-<p>Operator for os package ‘path_exists’ operator.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>path</strong> – The path to file or directory</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>boolean:</p>
-</dd>
-</dl>
-<dl class="py attribute">
-<dt id="cookiecutter.operators.path.PathExistsListOperator.type">
-<code class="sig-name descname">type</code><em class="property"> = 'path_exists'</em><a class="headerlink" href="#cookiecutter.operators.path.PathExistsListOperator.type" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="cookiecutter.operators.path.PathIsdirListOperator">
-<em class="property">class </em><code class="sig-prename descclassname">cookiecutter.operators.path.</code><code class="sig-name descname">PathIsdirListOperator</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cookiecutter/operators/path.html#PathIsdirListOperator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cookiecutter.operators.path.PathIsdirListOperator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cookiecutter.operators.BaseOperator</span></code></p>
-<p>Operator for os package ‘path_exists’ operator.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>path</strong> – The path to file or directory</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>boolean:</p>
-</dd>
-</dl>
-<dl class="py attribute">
-<dt id="cookiecutter.operators.path.PathIsdirListOperator.type">
-<code class="sig-name descname">type</code><em class="property"> = 'path_isdir'</em><a class="headerlink" href="#cookiecutter.operators.path.PathIsdirListOperator.type" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="cookiecutter.operators.path.PathRelativeOperator">
-<em class="property">class </em><code class="sig-prename descclassname">cookiecutter.operators.path.</code><code class="sig-name descname">PathRelativeOperator</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cookiecutter/operators/path.html#PathRelativeOperator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cookiecutter.operators.path.PathRelativeOperator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cookiecutter.operators.BaseOperator</span></code></p>
-<p>Operator to find the absolute path to a file or directory in parent directories.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>target</strong> – The name of the file to find the absolute path to</p></li>
-<li><p><strong>starting_dir</strong> – The starting directory to search from. Defaults to current
-working directory.</p></li>
-<li><p><strong>fallback</strong> – String to fallback on if the target is not found.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>string: Absolute path to the target file</p>
-</dd>
-</dl>
-<dl class="py attribute">
-<dt id="cookiecutter.operators.path.PathRelativeOperator.type">
-<code class="sig-name descname">type</code><em class="property"> = 'find_in_parent'</em><a class="headerlink" href="#cookiecutter.operators.path.PathRelativeOperator.type" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<div class="section" id="cookiecutter-operators-path-module">
+<h2>cookiecutter.operators.path module<a class="headerlink" href="#cookiecutter-operators-path-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-cookiecutter.operators.print">
 <span id="cookiecutter-operators-print-module"></span><h2>cookiecutter.operators.print module<a class="headerlink" href="#module-cookiecutter.operators.print" title="Permalink to this headline">¶</a></h2>
@@ -865,32 +814,8 @@ inserting into parent key</p></li>
 <div class="section" id="cookiecutter-operators-return-module">
 <h2>cookiecutter.operators.return module<a class="headerlink" href="#cookiecutter-operators-return-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-cookiecutter.operators.split">
-<span id="cookiecutter-operators-split-module"></span><h2>cookiecutter.operators.split module<a class="headerlink" href="#module-cookiecutter.operators.split" title="Permalink to this headline">¶</a></h2>
-<p>Operator plugin that inherits a base class and is made available through <cite>type</cite>.</p>
-<dl class="py class">
-<dt id="cookiecutter.operators.split.SplitOperator">
-<em class="property">class </em><code class="sig-prename descclassname">cookiecutter.operators.split.</code><code class="sig-name descname">SplitOperator</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cookiecutter/operators/split.html#SplitOperator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cookiecutter.operators.split.SplitOperator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cookiecutter.operators.BaseOperator</span></code></p>
-<p>Operator for PyInquirer type prompts.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>input</strong> – A list of string to split or just a string</p></li>
-<li><p><strong>separator</strong> – String separator</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>List of lists if <cite>input</cite> is list otherwise list</p>
-</dd>
-</dl>
-<dl class="py attribute">
-<dt id="cookiecutter.operators.split.SplitOperator.type">
-<code class="sig-name descname">type</code><em class="property"> = 'split'</em><a class="headerlink" href="#cookiecutter.operators.split.SplitOperator.type" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<div class="section" id="cookiecutter-operators-split-module">
+<h2>cookiecutter.operators.split module<a class="headerlink" href="#cookiecutter-operators-split-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-cookiecutter.operators.stat">
 <span id="cookiecutter-operators-stat-module"></span><h2>cookiecutter.operators.stat module<a class="headerlink" href="#module-cookiecutter.operators.stat" title="Permalink to this headline">¶</a></h2>
@@ -990,9 +915,15 @@ inserting into parent key</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>path</strong> – The file path to put read or write to</p></li>
 <li><p><strong>contents</strong> – Supplied dictionary or list to write.</p></li>
+<li><p><strong>in_place</strong> – Boolean to read the contents of the <cite>path</cite> and then write after
+modifications.</p></li>
 <li><p><strong>remove</strong> – Parameter or regex to remove from list or dict</p></li>
 <li><p><strong>update</strong> – Use the python <cite>update</cite> dict method on <cite>contents</cite> before writing</p></li>
-<li><p><strong>merge_config</strong> – Recursively update the contents before writing.</p></li>
+<li><p><strong>filter</strong> – List or string to values to.</p></li>
+<li><p><strong>merge_dict</strong> – Dict input that recursively overwrites the <cite>contents</cite>.</p></li>
+<li><p><strong>append_items</strong> – List to append to <cite>append_key</cite> key.</p></li>
+<li><p><strong>append_key</strong> – String or list of hierarchical keys to append item to. Defaults
+to root element.</p></li>
 <li><p><strong>mode</strong> – The mode that the file should write. Defaults to write ‘w’.
 Seee <a class="reference external" href="https://docs.python.org/3/library/functions.html#open">https://docs.python.org/3/library/functions.html#open</a></p></li>
 </ul>

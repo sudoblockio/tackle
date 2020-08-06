@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>cookiecutter.render &mdash; nukikata 2.0.0.1 documentation</title>
+  <title>cookiecutter.render &mdash; nukikata 2.0.0.2 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                2.0.0.1
+                2.0.0.2
               </div>
 
 
@@ -185,6 +185,7 @@
         <span class="s1">&#39;processor&#39;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">processor</span><span class="p">,</span>
         <span class="s1">&#39;architecture&#39;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">architecture</span><span class="p">(),</span>
         <span class="s1">&#39;calling_directory&#39;</span><span class="p">:</span> <span class="n">cc</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">calling_directory</span><span class="p">,</span>
+        <span class="s1">&#39;cookiecutter_gen&#39;</span><span class="p">:</span> <span class="n">cc</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">cookiecutter_gen</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Linux&#39;</span><span class="p">:</span>
@@ -239,15 +240,23 @@
     <span class="n">render_context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">special_variables</span><span class="p">)</span>
     <span class="n">rendered_template</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">render_context</span><span class="p">)</span>
 
-    <span class="n">LIST_REGEX</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;^\[.*\]$&#39;</span>
-    <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">LIST_REGEX</span><span class="p">,</span> <span class="n">rendered_template</span><span class="p">)):</span>
-        <span class="sd">&quot;&quot;&quot;If variable looks like list, return literal list&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">rendered_template</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cc</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">cookiecutter_gen</span> <span class="o">==</span> <span class="s1">&#39;nukikata&#39;</span><span class="p">:</span>
+        <span class="c1"># Nukikata evaluates dicts, lists, and bools as literals where as cookiecutter renders them to string</span>
+        <span class="n">LIST_REGEX</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;^\[.*\]$&#39;</span>
+        <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">LIST_REGEX</span><span class="p">,</span> <span class="n">rendered_template</span><span class="p">)):</span>
+            <span class="sd">&quot;&quot;&quot;If variable looks like list, return literal list&quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">rendered_template</span><span class="p">)</span>
 
-    <span class="n">DICT_REGEX</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;^\{.*\}$&#39;</span>
-    <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">DICT_REGEX</span><span class="p">,</span> <span class="n">rendered_template</span><span class="p">)):</span>
-        <span class="sd">&quot;&quot;&quot;If variable looks like dict, return literal dict&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">rendered_template</span><span class="p">)</span>
+        <span class="n">DICT_REGEX</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;^\{.*\}$&#39;</span>
+        <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">DICT_REGEX</span><span class="p">,</span> <span class="n">rendered_template</span><span class="p">)):</span>
+            <span class="sd">&quot;&quot;&quot;If variable looks like dict, return literal dict&quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">rendered_template</span><span class="p">)</span>
+
+        <span class="c1"># Getting errors for booleans converted to strings</span>
+        <span class="n">BOOL_REGEX</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;^True$|^False$&#39;</span>
+        <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">BOOL_REGEX</span><span class="p">,</span> <span class="n">rendered_template</span><span class="p">)):</span>
+            <span class="sd">&quot;&quot;&quot;If variable looks like dict, return literal dict&quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">rendered_template</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">rendered_template</span></div>
 </pre></div>

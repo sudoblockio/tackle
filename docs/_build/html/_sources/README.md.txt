@@ -32,6 +32,8 @@ pip3 install nukikata
 nukikata https://github.com/insight-infrastructure/nukikata-demos
 ```
 
+Note: If you experience installation errors try `pip3 install nukikata --no-binary :all:`.
+
 ## Features
 
 All cookiecutter features are supported in addition to loops, conditionals, and plugins. These features are only available to supplied dictionary objects with a `type` key to trigger the associated [operator](cookiecutter/operators). Loops and conditionals are triggered by rendering [jinja](https://github.com/pallets/jinja) expressions per the example below. Other cookiecutters can be called from a single nukikata to knit together modularized components.
@@ -47,26 +49,26 @@ colors:
   type: checkbox # Multi selector - returns a list
   message: What are your favorite colors?
   choices:
-    - name: blue
-    - name: green
-    - name: grey
+    - blue
+    - green
+    - grey
 
-wingspeed:
-  type: list # Single selector - returns a string
+outcome:
+  type: select # Single selector - returns a string
   message: What is the airspeed velocity of an unladen swallow??
   choices:
-    - name: I donno
-    - name: What do you mean? African or European swallow?
+    - flung-off-bridge: I donno
+    - walk-across-bridge: What do you mean? African or European swallow?
 
 bad_outcome:
   type: print
   statement: Wrong answer {{ nuki.name }}...
-  when: "{{ 'I donno' in nuki.wingspeed }}"
+  when: "{{ nuki.outcome == 'flung-off-bridge' }}"
 
 color_essays:
   type: input
   message: Please tell me how much you like the color {{nuki.item}}?
-  default: Oh color {{nuki.item}}, you are so frickin cool...
+  default: Oh color {{nuki.item}}, you are so frickin cool... # loops over nuki.colors
   loop: "{{ nuki.colors }}"
   when: "{{ nuki.colors|length > 1 }}"
 
@@ -88,7 +90,7 @@ Prompts are enhanced by extending the functionality from [PyInquirer](https://gi
 ```python
 class PrintOperator(BaseOperator):
     type = 'print'
-    def __init__(self, *args, **kwargs):  # noqa
+    def __init__(self, *args, **kwargs):
         super(PrintOperator, self).__init__(*args, **kwargs)
 
     def _execute(self):
