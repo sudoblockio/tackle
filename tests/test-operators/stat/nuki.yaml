@@ -49,12 +49,16 @@ loop_merge:
     stuff:
       "{{ nuki.item }}": "{{ nuki.index }}"
 
-print:
-  type: pprint
-  statement: |
-    {% for i in nuki.a_list %}{{i}}:
-      animals: "{{ loop.index }}"
-    {% endfor %}
+boolean:
+  type: stat
+  input: true
+
+#print:
+#  type: pprint
+#  statement: |
+#    {% for i in nuki.a_list %}{{i}}:
+#      animals: "{{ loop.index }}"
+#    {% endfor %}
 
 #jinja_merge:
 #  type: stat

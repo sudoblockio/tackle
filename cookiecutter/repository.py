@@ -32,6 +32,8 @@ valid_context_files = [
     'cookiecutter.hcl',
 ]
 
+cookiecutter_gen = None
+
 
 def is_repo_url(value):
     """Return True if value is a repository URL."""
@@ -68,6 +70,7 @@ def repository_has_cookiecutter_json(repo_directory, context_file=None):
     :param context_file:
     :return: True if the `repo_directory` is valid, else False.
     """
+    global cookiecutter_gen
     repo_directory_exists = os.path.isdir(repo_directory)
     if context_file:
         context_file_exists = os.path.isfile(
@@ -75,12 +78,17 @@ def repository_has_cookiecutter_json(repo_directory, context_file=None):
         )
         if context_file_exists:
             # The supplied context file exists
+            cookiecutter_gen = 'nukikata'
             return context_file
 
     if repo_directory_exists:
         # Check for valid context files as default
         for f in valid_context_files:
             if os.path.isfile(os.path.join(repo_directory, f)):
+                if f.startswith('cookiecutter'):
+                    cookiecutter_gen = 'cookiecutter'
+                else:
+                    cookiecutter_gen = 'nukikata'
                 return f
     else:
         return False

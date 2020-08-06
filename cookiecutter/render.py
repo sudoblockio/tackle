@@ -23,7 +23,8 @@ def get_vars(context_key=None, cookiecutter_dict=None):
         'version': platform.version(),
         'processor': platform.processor,
         'architecture': platform.architecture(),
-        'calling_directory': cc.main.calling_directory,
+        'calling_directory': cc.main.calling_directory,  # noqa
+        'cookiecutter_gen': cc.repository.cookiecutter_gen,  # noqa
     }
 
     if platform.system() == 'Linux':
@@ -78,14 +79,23 @@ def render_variable(env, raw, cookiecutter_dict, context_key):
     render_context.update(special_variables)
     rendered_template = template.render(render_context)
 
-    LIST_REGEX = r'^\[.*\]$'
-    if bool(re.search(LIST_REGEX, rendered_template)):
-        """If variable looks like list, return literal list"""
-        return ast.literal_eval(rendered_template)
+    if cc.repository.cookiecutter_gen == 'nukikata':  # noqa
+        # Nukikata evaluates dicts, lists, and bools as literals where as cookiecutter
+        # renders them to string
+        LIST_REGEX = r'^\[.*\]$'
+        if bool(re.search(LIST_REGEX, rendered_template)):
+            """If variable looks like list, return literal list"""
+            return ast.literal_eval(rendered_template)
 
-    DICT_REGEX = r'^\{.*\}$'
-    if bool(re.search(DICT_REGEX, rendered_template)):
-        """If variable looks like dict, return literal dict"""
-        return ast.literal_eval(rendered_template)
+        DICT_REGEX = r'^\{.*\}$'
+        if bool(re.search(DICT_REGEX, rendered_template)):
+            """If variable looks like dict, return literal dict"""
+            return ast.literal_eval(rendered_template)
+
+        # Getting errors for booleans converted to strings
+        BOOL_REGEX = r'^True$|^False$'
+        if bool(re.search(BOOL_REGEX, rendered_template)):
+            """If variable looks like dict, return literal dict"""
+            return ast.literal_eval(rendered_template)
 
     return rendered_template
