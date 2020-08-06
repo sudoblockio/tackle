@@ -46,14 +46,14 @@ def run_operator(
 def parse_operator(
     context,
     key,
-    cookiecutter_dict,
+    cc_dict,
     append_key: bool = False,
     no_input: bool = False,
     context_key=None,
 ):
     """Parse input dict for loop and when logic and calls hooks.
 
-    :return: cookiecutter_dict
+    :return: cc_dict
     """
     global post_gen_operator_list
     if not context_key:
@@ -63,19 +63,19 @@ def parse_operator(
     logger.debug("Parsing context_key: %s and key: %s" % (context_key, key))
     operator_dict = context[context_key][key]
 
-    when_condition = evaluate_when(operator_dict, env, cookiecutter_dict, context_key)
+    when_condition = evaluate_when(operator_dict, env, cc_dict, context_key)
 
     if when_condition:
         # Extract loop
         if 'loop' in operator_dict:
             loop_targets = render_variable(
-                env, operator_dict['loop'], cookiecutter_dict, context_key
+                env, operator_dict['loop'], cc_dict, context_key
             )
             operator_dict.pop('loop')
 
             loop_output = []
             for i, l in enumerate(loop_targets):
-                loop_cookiecutter = cookiecutter_dict
+                loop_cookiecutter = cc_dict
                 loop_cookiecutter.update({'index': i, 'item': l})
                 loop_output += [
                     parse_operator(
@@ -87,37 +87,35 @@ def parse_operator(
                     )
                 ]
 
-            cookiecutter_dict.pop('item')
-            cookiecutter_dict.pop('index')
-            cookiecutter_dict[key] = loop_output
-            return cookiecutter_dict
+            cc_dict.pop('item')
+            cc_dict.pop('index')
+            cc_dict[key] = loop_output
+            return cc_dict
 
         if 'block' not in operator_dict['type']:
-            operator_dict = render_variable(
-                env, operator_dict, cookiecutter_dict, context_key
-            )
+            operator_dict = render_variable(env, operator_dict, cc_dict, context_key)
 
         # Run the operator
         if operator_dict['merge'] if 'merge' in operator_dict else False:
             to_merge, post_gen_operator = run_operator(
                 operator_dict, context, no_input, context_key
             )
-            cookiecutter_dict.update(to_merge)
+            cc_dict.update(to_merge)
         else:
-            cookiecutter_dict[key], post_gen_operator = run_operator(
+            cc_dict[key], post_gen_operator = run_operator(
                 operator_dict, context, no_input, context_key
             )
         if post_gen_operator:
             post_gen_operator_list.append(post_gen_operator)
 
         if append_key:
-            return cookiecutter_dict[key]
+            return cc_dict[key]
 
-    return cookiecutter_dict
+    return cc_dict
 
 
 def evaluate_when(
-    operator_dict, env, cookiecutter_dict, context_key,
+    operator_dict, env, cc_dict, context_key,
 ):
     """Evaluate the when condition and return bool."""
     if 'when' not in operator_dict:
@@ -126,11 +124,11 @@ def evaluate_when(
     when_raw = operator_dict['when']
     when_condition = False
     if isinstance(when_raw, str):
-        when_condition = render_variable(env, when_raw, cookiecutter_dict, context_key)
+        when_condition = render_variable(env, when_raw, cc_dict, context_key)
     elif isinstance(when_raw, list):
         # Evaluate lists as successively evalutated 'and' conditions
         for i in when_raw:
-            when_condition = render_variable(env, i, cookiecutter_dict, context_key)
+            when_condition = render_variable(env, i, cc_dict, context_key)
             # If anything is false, then break immediately
             if not when_condition:
                 break

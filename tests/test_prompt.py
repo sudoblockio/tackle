@@ -358,7 +358,7 @@ class TestPromptChoiceForConfig(object):
         expected_choice = choices[0]
 
         actual_choice = prompt.prompt_choice_for_config(
-            cookiecutter_dict=context,
+            cc_dict=context,
             env=environment.StrictEnvironment(),
             key='orientation',
             options=choices,
@@ -377,7 +377,7 @@ class TestPromptChoiceForConfig(object):
         expected_choice = 'all'
 
         actual_choice = prompt.prompt_choice_for_config(
-            cookiecutter_dict=context,
+            cc_dict=context,
             env=environment.StrictEnvironment(),
             key='orientation',
             options=choices,

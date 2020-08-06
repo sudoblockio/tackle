@@ -123,15 +123,13 @@ def read_user_dict(var_name, default_value):
     return user_value
 
 
-def prompt_choice_for_config(
-    cookiecutter_dict, env, key, options, no_input, context_key
-):
+def prompt_choice_for_config(cc_dict, env, key, options, no_input, context_key):
     """Prompt user with a set of options to choose from.
 
     Each of the possible choices is rendered beforehand.
     """
     rendered_options = [
-        render_variable(env, raw, cookiecutter_dict, context_key) for raw in options
+        render_variable(env, raw, cc_dict, context_key) for raw in options
     ]
 
     if no_input:
@@ -139,7 +137,7 @@ def prompt_choice_for_config(
     return read_user_choice(key, rendered_options)
 
 
-def parse_context(context, env, cookiecutter_dict, context_key, no_input):
+def parse_context(context, env, cc_dict, context_key, no_input):
     """Parse the context and iterate over values.
 
     :param dict context: Source for field names and sample values.
@@ -147,33 +145,31 @@ def parse_context(context, env, cookiecutter_dict, context_key, no_input):
     :param context_key: The key to insert all the outputs under in the context dict.
     :param no_input: Prompt the user at command line for manual configuration.
     :param existing_context: A dictionary of values to use during rendering.
-    :return: cookiecutter_dict
+    :return: cc_dict
     """
     for key, raw in context[context_key].items():
         if key.startswith(u'_') and not key.startswith('__'):
-            cookiecutter_dict[key] = raw
+            cc_dict[key] = raw
             continue
         elif key.startswith('__'):
-            cookiecutter_dict[key] = render_variable(
-                env, raw, cookiecutter_dict, context_key
-            )
+            cc_dict[key] = render_variable(env, raw, cc_dict, context_key)
             continue
 
         try:
             if isinstance(raw, list):
                 # We are dealing with a choice variable
                 val = prompt_choice_for_config(
-                    cookiecutter_dict, env, key, raw, no_input, context_key
+                    cc_dict, env, key, raw, no_input, context_key
                 )
-                cookiecutter_dict[key] = val
+                cc_dict[key] = val
             elif not isinstance(raw, dict):
                 # We are dealing with a regular variable
-                val = render_variable(env, raw, cookiecutter_dict, context_key)
+                val = render_variable(env, raw, cc_dict, context_key)
 
                 if not no_input:
                     val = read_user_variable(key, val)
 
-                cookiecutter_dict[key] = val
+                cc_dict[key] = val
         except UndefinedError as err:
             msg = "Unable to render variable '{}'".format(key)
             raise UndefinedVariableInTemplate(msg, err, context)
@@ -186,15 +182,15 @@ def parse_context(context, env, cookiecutter_dict, context_key, no_input):
             if isinstance(raw, dict):
                 # dict parsing logic
                 if 'type' not in raw:
-                    val = render_variable(env, raw, cookiecutter_dict, context_key)
+                    val = render_variable(env, raw, cc_dict, context_key)
                     if not no_input:
                         val = read_user_dict(key, val)
-                    cookiecutter_dict[key] = val
+                    cc_dict[key] = val
                 else:
-                    cookiecutter_dict = parse_operator(
+                    cc_dict = parse_operator(
                         context,
                         key,
-                        dict(cookiecutter_dict),
+                        dict(cc_dict),
                         no_input=no_input,
                         context_key=context_key,
                     )
@@ -203,7 +199,7 @@ def parse_context(context, env, cookiecutter_dict, context_key, no_input):
             msg = "Unable to render variable '{}'".format(key)
             raise UndefinedVariableInTemplate(msg, err, context)
 
-    return cookiecutter_dict
+    return cc_dict
 
 
 def prompt_for_config(context, no_input=False, context_key=None, existing_context=None):
@@ -218,32 +214,32 @@ def prompt_for_config(context, no_input=False, context_key=None, existing_contex
     :param existing_context: A dictionary of values to use during rendering.
     """
     if not existing_context:
-        cookiecutter_dict = OrderedDict([])
+        cc_dict = OrderedDict([])
     else:
-        cookiecutter_dict = OrderedDict(existing_context)
+        cc_dict = OrderedDict(existing_context)
     env = StrictEnvironment(context=context)
 
     if not context_key:
         context_key = next(iter(context))
 
-    # r = Run(context, env, cookiecutter_dict, context_key, no_input)
+    # r = Run(context, env, cc_dict, context_key, no_input)
 
     if '_template' in context[context_key]:
         # Normal case where '_template' is set in the context in `main`
         with work_in(context[context_key]['_template']):
-            return parse_context(context, env, cookiecutter_dict, context_key, no_input)
+            return parse_context(context, env, cc_dict, context_key, no_input)
     else:
         # Case where prompt is being called directly as is the case with an operator
-        return parse_context(context, env, cookiecutter_dict, context_key, no_input)
+        return parse_context(context, env, cc_dict, context_key, no_input)
 
 
 class Run(object):
     """Object to carry all the run parameters through the execution."""
 
-    def __init__(self, context, env, cookiecutter_dict, context_key, no_input):
+    def __init__(self, context, env, cc_dict, context_key, no_input):
         """Initialize with all the current params."""
         self.context = context
         self.env = env
-        self.cookiecutter_dict = cookiecutter_dict
+        self.cc_dict = cc_dict
         self.context_key = context_key
         self.no_input = no_input

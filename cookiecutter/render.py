@@ -11,12 +11,12 @@ import distro
 import cookiecutter as cc
 
 
-def get_vars(context_key=None, cookiecutter_dict=None):
+def get_vars(context_key=None, cc_dict=None):
     """Get special variables."""
     vars = {
         'cwd': os.getcwd(),
         'key': context_key,
-        'this': cookiecutter_dict,
+        'this': cc_dict,
         'system': platform.system(),
         'platform': platform.platform(),
         'release': platform.release(),
@@ -41,7 +41,7 @@ def get_vars(context_key=None, cookiecutter_dict=None):
     return vars
 
 
-def render_variable(env, raw, cookiecutter_dict, context_key):
+def render_variable(env, raw, cc_dict, context_key):
     """Render the next variable to be displayed in the user prompt.
 
     Inside the prompting taken from the cookiecutter.json file, this renders
@@ -54,7 +54,7 @@ def render_variable(env, raw, cookiecutter_dict, context_key):
 
     :param Environment env: A Jinja2 Environment object.
     :param raw: The next value to be prompted for by the user.
-    :param dict cookiecutter_dict: The current context as it's gradually
+    :param dict cc_dict: The current context as it's gradually
         being populated with variables.
     :return: The rendered value for the default variable.
     """
@@ -62,20 +62,20 @@ def render_variable(env, raw, cookiecutter_dict, context_key):
         return None
     elif isinstance(raw, dict):
         return {
-            render_variable(env, k, cookiecutter_dict, context_key): render_variable(
-                env, v, cookiecutter_dict, context_key
+            render_variable(env, k, cc_dict, context_key): render_variable(
+                env, v, cc_dict, context_key
             )
             for k, v in raw.items()
         }
     elif isinstance(raw, list):
-        return [render_variable(env, v, cookiecutter_dict, context_key) for v in raw]
+        return [render_variable(env, v, cc_dict, context_key) for v in raw]
     elif not isinstance(raw, six.string_types):
         raw = str(raw)
 
     template = env.from_string(raw)
 
-    special_variables = get_vars(context_key, cookiecutter_dict)
-    render_context = {context_key: cookiecutter_dict}
+    special_variables = get_vars(context_key, cc_dict)
+    render_context = {context_key: cc_dict}
     render_context.update(special_variables)
     rendered_template = template.render(render_context)
 
