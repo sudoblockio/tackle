@@ -9,28 +9,24 @@ def test_operator_block(monkeypatch, tmpdir):
     """Verify the operator call works successfully."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
 
-    context = cookiecutter('.', no_input=True, output_dir=str(tmpdir))
+    output = cookiecutter('.', no_input=True, output_dir=str(tmpdir))
 
-    assert context['stuff'] == 'here'
+    assert output['stuff'] == 'here'
 
-    context = cookiecutter(
+    output = cookiecutter(
         '.', context_file='embedded_blocks.yaml', no_input=True, output_dir=str(tmpdir),
     )
 
-    assert context['things'] == 'things'
+    assert output['things'] == 'things'
 
-    # context = cookiecutter(
-    #     '.',
-    #     # context_key='nuki',
-    #     context_file='looped.yaml',
-    #     no_input=True,
-    #     output_dir=str(tmpdir),
-    # )
-    #
-    # assert context['things'] == 'things'
+    output = cookiecutter(
+        '.', context_file='looped.yaml', no_input=True, output_dir=str(tmpdir),
+    )
 
-    context = cookiecutter(
+    assert len(output['blocker']) == 2
+
+    output = cookiecutter(
         '.', context_file='block_nuki.yaml', no_input=True, output_dir=str(tmpdir),
     )
 
-    assert context['things'] == 'things'
+    assert output['things'] == 'things'

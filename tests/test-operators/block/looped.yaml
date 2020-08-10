@@ -15,7 +15,17 @@ blocker:
 
     print:
       type: print
-      statement: "{{ looped }}"
+      statement: "{{ looped.nuki1 }}"
+
+blocker2:
+  type: block
+  loop: "{{ looped.alist }}"
+  items:
+    thing: false
+    print:
+      type: print
+      when: "{{ looped.thing }}"
+      statement: this
 
 output:
   type: print

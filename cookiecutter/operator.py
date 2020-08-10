@@ -15,7 +15,13 @@ post_gen_operator_list = []
 
 
 def run_operator(
-    operator_dict: dict, context=None, no_input=False, context_key='cookiecutter'
+    operator_dict: dict,
+    context=None,
+    no_input=False,
+    context_key='cookiecutter',
+    cc_dict=None,
+    env=None,
+    key=None,
 ):
     """Run operator."""
     if context is None:
@@ -26,7 +32,15 @@ def run_operator(
     for o in operator_list:
         if operator_dict['type'] == o.type:  # noqa
             logger.debug("Using the %s operator" % o.type)  # noqa
-            operator = o(operator_dict, context, context_key, no_input)
+            operator = o(
+                operator_dict=operator_dict,
+                context=context,
+                context_key=context_key,
+                no_input=no_input,
+                cc_dict=cc_dict,
+                env=env,
+                key=key,
+            )
             if operator.post_gen_operator:
                 delayed_output = operator
             else:
@@ -98,12 +112,12 @@ def parse_operator(
         # Run the operator
         if operator_dict['merge'] if 'merge' in operator_dict else False:
             to_merge, post_gen_operator = run_operator(
-                operator_dict, context, no_input, context_key
+                operator_dict, context, no_input, context_key, cc_dict, env
             )
             cc_dict.update(to_merge)
         else:
             cc_dict[key], post_gen_operator = run_operator(
-                operator_dict, context, no_input, context_key
+                operator_dict, context, no_input, context_key, cc_dict, env, key
             )
         if post_gen_operator:
             post_gen_operator_list.append(post_gen_operator)

@@ -32,5 +32,5 @@ class BlockOperator(BaseOperator):
             context={self.context_key: self.operator_dict['items']},
             no_input=self.no_input,
             context_key=self.context_key,
-            existing_context=self.context[self.context_key],
+            existing_context=self.cc_dict,
         )

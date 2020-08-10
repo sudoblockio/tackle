@@ -222,8 +222,6 @@ def prompt_for_config(context, no_input=False, context_key=None, existing_contex
     if not context_key:
         context_key = next(iter(context))
 
-    # r = Run(context, env, cc_dict, context_key, no_input)
-
     if '_template' in context[context_key]:
         # Normal case where '_template' is set in the context in `main`
         with work_in(context[context_key]['_template']):
@@ -231,15 +229,3 @@ def prompt_for_config(context, no_input=False, context_key=None, existing_contex
     else:
         # Case where prompt is being called directly as is the case with an operator
         return parse_context(context, env, cc_dict, context_key, no_input)
-
-
-class Run(object):
-    """Object to carry all the run parameters through the execution."""
-
-    def __init__(self, context, env, cc_dict, context_key, no_input):
-        """Initialize with all the current params."""
-        self.context = context
-        self.env = env
-        self.cc_dict = cc_dict
-        self.context_key = context_key
-        self.no_input = no_input
