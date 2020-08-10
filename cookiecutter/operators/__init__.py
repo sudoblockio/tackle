@@ -9,6 +9,7 @@ from os.path import dirname, basename, join, isdir, abspath, expanduser
 from abc import ABCMeta, abstractmethod
 from PyInquirer import prompt
 
+import cookiecutter as cc
 from cookiecutter.context_manager import work_in
 
 logger = logging.getLogger(__name__)
@@ -25,7 +26,14 @@ class BaseOperator(metaclass=ABCMeta):
     """Base operator mixin class."""
 
     def __init__(
-        self, operator_dict=None, context=None, context_key=None, no_input=False
+        self,
+        operator_dict=None,
+        context=None,
+        context_key=None,
+        no_input=False,
+        cc_dict=None,
+        env=None,
+        key=None,
     ):
         """
         Initialize BaseOperator.
@@ -45,6 +53,9 @@ class BaseOperator(metaclass=ABCMeta):
         self.operator_dict = operator_dict
         self.context_key = context_key or 'cookiecutter'
         self.context = context or {}
+        self.cc_dict = cc_dict
+        self.env = env
+        self.key = key
 
         if 'no_input' in self.operator_dict:
             self.no_input = self.operator_dict['no_input']
@@ -97,15 +108,20 @@ class BaseOperator(metaclass=ABCMeta):
                 )['tmp']
             elif isinstance(self.confirm, dict):
                 if 'when' in self.confirm:
-                    # when_condition = cc.operator.evaluate_when(self.operator_dict)  # noqa
-                    pass
-                return prompt(
-                    [
-                        {
-                            'type': 'confirm',
-                            'name': 'tmp',
-                            'message': self.confirm['message'],
-                            'default': self.confirm['default'],
-                        }
-                    ]
-                )['tmp']
+                    when_condition = cc.operator.evaluate_when(
+                        self.operator_dict,  # noqa
+                        self.env,
+                        self.cc_dict,
+                        self.context_key,
+                    )
+                    if when_condition:
+                        return prompt(
+                            [
+                                {
+                                    'type': 'confirm',
+                                    'name': 'tmp',
+                                    'message': self.confirm['message'],
+                                    'default': self.confirm['default'],
+                                }
+                            ]
+                        )['tmp']
