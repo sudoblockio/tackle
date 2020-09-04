@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 class GcpRegionsOperator(BaseOperator):
     """Operator retrieving GCP regions.
 
+    :param gcp_project: String for project name in GCP to use.
     :return: List of regions
     """
 
@@ -40,6 +41,7 @@ class GcpAzsOperator(BaseOperator):
     """
     Operator for retrieving the availability zones in a given region.
 
+    :param gcp_project: String for project to deploy into
     :param region: A region to search in
     :param regions: A list of regions to search in
     :return: A list of availability zones
