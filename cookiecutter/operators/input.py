@@ -27,6 +27,11 @@ class InquirerInputOperator(BaseOperator):
 
     def __init__(self, *args, **kwargs):  # noqa
         super(InquirerInputOperator, self).__init__(*args, **kwargs)
+        # default = (
+        #     str(self.operator_dict['default'])
+        #     if 'default' in self.operator_dict
+        #     else None
+        # )
 
     def _execute(self):
         if not self.no_input:
@@ -36,7 +41,7 @@ class InquirerInputOperator(BaseOperator):
             else:
                 return prompt([self.operator_dict])
         elif 'default' in self.operator_dict:
-            return self.operator_dict['default']
+            return self.default
         else:
             # When no_input then return empty list
             return []
