@@ -3,6 +3,7 @@
 """Functions for discovering and executing various cookiecutter operators."""
 from __future__ import print_function
 import logging
+import inspect
 
 from cookiecutter.environment import StrictEnvironment
 from cookiecutter.exceptions import InvalidOperatorType
@@ -30,10 +31,12 @@ def run_operator(
     delayed_output = None
     operator_list = BaseOperator.__subclasses__()
     for o in operator_list:
-        if operator_dict['type'] == o.type:  # noqa
-            logger.debug("Using the %s operator" % o.type)  # noqa
+        if (
+            operator_dict['type'] == inspect.signature(o).parameters['type'].default
+        ):  # noqa
+            logger.debug("Using the %s operator" % operator_dict['type'])  # noqa
             operator = o(
-                operator_dict=operator_dict,
+                **operator_dict,
                 context=context,
                 context_key=context_key,
                 no_input=no_input,
@@ -44,7 +47,7 @@ def run_operator(
             if operator.post_gen_operator:
                 delayed_output = operator
             else:
-                operator_output = operator.execute()
+                operator_output = operator.call()
             break
         if o == operator_list[-1]:
             msg = (
