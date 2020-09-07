@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 import logging
+from typing import Dict
 
 from cookiecutter.operators import BaseOperator
 import cookiecutter as cc
@@ -22,14 +23,12 @@ class BlockOperator(BaseOperator):
     :param items: Map of inputs
     """
 
-    type = 'block'
+    type: str = 'block'
+    items: Dict
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(BlockOperator, self).__init__(*args, **kwargs)
-
-    def _execute(self):
+    def execute(self):
         return cc.prompt.prompt_for_config(
-            context={self.context_key: self.operator_dict['items']},
+            context={self.context_key: self.items},
             no_input=self.no_input,
             context_key=self.context_key,
             existing_context=self.cc_dict,

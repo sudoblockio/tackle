@@ -6,6 +6,8 @@ from __future__ import print_function
 
 import cookiecutter as cc
 import logging
+from typing import Dict, List, Any
+from pydantic import SecretStr
 
 from cookiecutter.operators import BaseOperator
 
@@ -24,6 +26,8 @@ class NukikataOperator(BaseOperator):
     :param no_input: Prompt the user at command line for manual configuration?
     :param extra_context: A dictionary of context that overrides default
         and user configuration.
+    :param existing_context: An additional dictionary to use in rendering
+        additional prompts.
     :param replay: Do not prompt for input, instead read from saved json. If
         ``True`` read from the ``replay_dir``.
         if it exists
@@ -37,94 +41,67 @@ class NukikataOperator(BaseOperator):
     :return: Dictionary of output
     """
 
-    type = 'nukikata'
+    type: str = 'nukikata'
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(NukikataOperator, self).__init__(*args, **kwargs)
+    template: Any = '.'
+    templates: List[Any] = None
+    checkout: str = None
+    no_input: bool = False
+    context_file: str = None
+    context_files: List = None
+    existing_context: Dict = None
+    extra_context: Dict = None
+    replay: bool = None
+    overwrite_if_exists: bool = False
+    output_dir: str = '.'
+    config_file: str = None
+    default_config: str = None
+    password: SecretStr = None
+    directory: str = None
+    directories: List = None
+    skip_if_file_exists: bool = False
 
-    def _execute(self):
-        templates = (
-            self.operator_dict['templates']
-            if 'templates' in self.operator_dict
-            else None
-        )
-        directories = (
-            self.operator_dict['directories']
-            if 'directories' in self.operator_dict
-            else None
-        )
-        context_files = (
-            self.operator_dict['context_files']
-            if 'context_files' in self.operator_dict
-            else None
-        )
+    def execute(self):
 
-        if not templates and not directories and not context_files:
+        #  Run all the loops
+        if not self.templates and not self.directories and not self.context_files:
             return self._run_nukikata()
 
         output = {}
-        if templates:
-            for i in templates:
-                self.operator_dict['template'] = i
+        if self.templates:
+            for i in self.templates:
+                self.template = i
                 output.update({i: self._run_nukikata()})
 
-        if directories:
-            for i in directories:
-                self.operator_dict['directory'] = i
+        if self.directories:
+            for i in self.directories:
+                self.directory = i
                 output.update({i: self._run_nukikata()})
 
-        if context_files:
-            for i in context_files:
-                self.operator_dict['context_file'] = i
+        if self.context_files:
+            for i in self.context_files:
+                self.context_file = i
                 output.update({i: self._run_nukikata()})
 
         return output
 
     def _run_nukikata(self):
         output_context = cc.main.cookiecutter(
-            template=self.operator_dict['template']
-            if 'template' in self.operator_dict
-            else '.',
-            checkout=self.operator_dict['checkout']
-            if 'checkout' in self.operator_dict
-            else None,
+            template=self.template,
+            checkout=self.checkout,
             no_input=self.no_input,
-            context_file=self.operator_dict['context_file']
-            if 'context_file' in self.operator_dict
-            else None,
-            context_key=self.operator_dict['context_key']
-            if 'context_key' in self.operator_dict
-            else None,
-            existing_context=self.operator_dict['existing_context']
-            if 'existing_context' in self.operator_dict
-            else None,
-            extra_context=self.operator_dict['extra_context']
-            if 'extra_context' in self.operator_dict
-            else None,
-            replay=self.operator_dict['replay']
-            if 'replay' in self.operator_dict
-            else None,
-            overwrite_if_exists=self.operator_dict['overwrite_if_exists']
-            if 'overwrite_if_exists' in self.operator_dict
-            else False,
-            output_dir=self.operator_dict['output_dir']
-            if 'output_dir' in self.operator_dict
-            else '.',
-            config_file=self.operator_dict['config_file']
-            if 'config_file' in self.operator_dict
-            else None,
-            default_config=self.operator_dict['default_config']
-            if 'default_config' in self.operator_dict
-            else False,
-            password=self.operator_dict['password']
-            if 'password' in self.operator_dict
-            else None,
-            directory=self.operator_dict['directory']
-            if 'directory' in self.operator_dict
-            else None,
-            skip_if_file_exists=self.operator_dict['skip_if_file_exists']
-            if 'skip_if_file_exists' in self.operator_dict
-            else False,
+            context_file=self.context_file,
+            context_key=self.context_key,
+            existing_context=self.existing_context,
+            extra_context=self.extra_context,
+            replay=self.replay,
+            overwrite_if_exists=self.overwrite_if_exists,
+            output_dir=self.output_dir,
+            config_file=self.config_file,
+            default_config=self.default_config,
+            password=self.password,
+            directory=self.directory,
+            skip_if_file_exists=self.skip_if_file_exists,
         )
 
         return output_context
