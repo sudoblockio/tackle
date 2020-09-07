@@ -29,7 +29,7 @@ class BaseOperator(BaseModel):
 
     context: Dict = None
     context_key: str = None
-    no_input: bool = None
+    no_input: bool
     cc_dict: Dict = None
     env: Any = None
     key: str = None
@@ -56,11 +56,11 @@ class BaseOperator(BaseModel):
     class Config:
         arbitrary_types_allowed = True
 
-    def execute(self):
+    def execute(self) -> Any:
         """Abstract method."""
         raise NotImplementedError()
 
-    def call(self) -> None:
+    def call(self) -> Any:
         """
         Call main entrypoint to calling operator.
 
@@ -90,10 +90,7 @@ class BaseOperator(BaseModel):
             elif isinstance(self.confirm, dict):
                 if 'when' in self.confirm:
                     when_condition = cc.operator.evaluate_when(
-                        self.operator_dict,  # noqa
-                        self.env,
-                        self.cc_dict,
-                        self.context_key,
+                        self, self.env, self.cc_dict, self.context_key,  # noqa
                     )
                     if when_condition:
                         return prompt(
