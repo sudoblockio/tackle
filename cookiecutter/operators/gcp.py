@@ -19,18 +19,16 @@ class GcpRegionsOperator(BaseOperator):
     :return: List of regions
     """
 
-    type = 'gcp_regions'
+    type: str = 'gcp_regions'
+    gcp_project: str
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(GcpRegionsOperator, self).__init__(*args, **kwargs)
-
-    def _execute(self):
+    def execute(self):
         client = build('compute', 'v1')
 
         regions = [
             item['name']
             for item in client.regions()
-            .list(project=self.operator_dict['gcp_project'])
+            .list(project=self.gcp_project)
             .execute()['items']
         ]
 
@@ -47,25 +45,23 @@ class GcpAzsOperator(BaseOperator):
     :return: A list of availability zones
     """
 
-    type = 'gcp_azs'
+    type: str = 'gcp_azs'
+    gcp_project: str
+    region: str
+    regions: list = None
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(GcpAzsOperator, self).__init__(*args, **kwargs)
-
-    def _execute(self):
+    def execute(self):
         client = build('compute', 'v1')
 
-        if 'region' in self.operator_dict:
-            azs = self._call_azs(
-                client, self.operator_dict['region'], self.operator_dict['gcp_project']
-            )
+        if self.region:
+            azs = self._call_azs(client, self.region, self.gcp_project)
             azs.sort()
             return azs
 
-        elif 'regions' in self.operator_dict:
+        elif self.regions:
             output = {}
-            for r in self.operator_dict['regions']:
-                azs = self._call_azs(client, r, self.operator_dict['gcp_project'])
+            for r in self.regions:
+                azs = self._call_azs(client, r, self.gcp_project)
                 azs.sort()
                 output.update({r: azs})
             return output
@@ -97,28 +93,24 @@ class GcpInstanceTypesOperator(BaseOperator):
     :return: A list of instance types
     """
 
-    type = 'gcp_instance_types'
+    type: str = 'gcp_instance_types'
+    gcp_project: str
+    zone: str
+    instance_families: list
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(GcpInstanceTypesOperator, self).__init__(*args, **kwargs)
-
-    def _execute(self):
+    def execute(self):
         client = build('compute', 'v1')
 
-        if 'instance_families' not in self.operator_dict:
+        if not self.instance_families:
             instances = [
                 item['name']
                 for item in client.machineTypes()
-                .list(
-                    project=self.operator_dict['gcp_project'],
-                    zone=self.operator_dict['zone'],
-                )
+                .list(project=self.gcp_project, zone=self.zone,)
                 .execute()['items']
             ]
 
         else:
-            selected_family = self.operator_dict['instance_families']
-            selected_family = [name + '-*' for name in selected_family]
+            selected_family = [name + '-*' for name in self.instance_families]
 
             for i, name in enumerate(selected_family):
                 if i == 0:
@@ -129,11 +121,7 @@ class GcpInstanceTypesOperator(BaseOperator):
             instances = [
                 item['name']
                 for item in client.machineTypes()
-                .list(
-                    project=self.operator_dict['gcp_project'],
-                    zone=self.operator_dict['zone'],
-                    filter=query,
-                )
+                .list(project=self.gcp_project, zone=self.zone, filter=query,)
                 .execute()['items']
             ]
 

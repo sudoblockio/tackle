@@ -6,6 +6,8 @@ from __future__ import print_function
 
 import logging
 import json
+from typing import Dict
+
 from cookiecutter.operators import BaseOperator
 
 logger = logging.getLogger(__name__)
@@ -23,17 +25,17 @@ class JsonOperator(BaseOperator):
     :return: When writing, returns path. When reading, returns dict
     """
 
-    type = 'json'
+    type: str = 'json'
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(JsonOperator, self).__init__(*args, **kwargs)
+    contents: Dict = None
+    path: str
 
-    def _execute(self):
-        if 'contents' in self.operator_dict:
-            with open(self.operator_dict['path'], 'w') as f:
-                json.dump(self.operator_dict['contents'], f)
-            return self.operator_dict['path']
+    def execute(self):
+        if self.contents:
+            with open(self.path, 'w') as f:
+                json.dump(self.contents, f)
+            return self.path
 
         else:
-            with open(self.operator_dict['path'], 'r') as f:
+            with open(self.path, 'r') as f:
                 return json.load(f)

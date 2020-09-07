@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 import logging
+from typing import List, Union
 
 from cookiecutter.operators import BaseOperator
 
@@ -20,14 +21,11 @@ class ListAppendOperator(BaseOperator):
     :return: An appended list object.
     """
 
-    type = 'append'
+    type: str = 'append'
+    input: List
+    item: Union[List, str]
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(ListAppendOperator, self).__init__(*args, **kwargs)
-        self.input = self.operator_dict['input']
-        self.item = self.operator_dict['item']
-
-    def _execute(self):
+    def execute(self):
         if isinstance(self.item, list):
             for i in self.item:
                 self.input.append(i)

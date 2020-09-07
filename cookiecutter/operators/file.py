@@ -9,6 +9,7 @@ from pathlib import Path
 import logging
 import shutil
 from distutils.dir_util import copy_tree
+from typing import List, Union, Any
 
 from cookiecutter.operators import BaseOperator
 
@@ -36,26 +37,21 @@ class CopyOperator(BaseOperator):
     :return: None
     """
 
-    type = 'copy'
+    type: str = 'copy'
+    src: Union[List, str]
+    create_path: bool = True
+    dst: str
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(CopyOperator, self).__init__(*args, **kwargs)
-        if isinstance(self.operator_dict['src'], str):
-            self.src = os.path.abspath(os.path.expanduser(self.operator_dict['src']))
-        if isinstance(self.operator_dict['src'], list):
-            self.src = [
-                os.path.abspath(os.path.expanduser(f))
-                for f in self.operator_dict['src']
-            ]
+    def __init__(self, **data: Any):
+        super().__init__(**data)
+        if isinstance(self.src, str):
+            self.src = os.path.abspath(os.path.expanduser(self.src))
+        if isinstance(self.src, list):
+            self.src = [os.path.abspath(os.path.expanduser(f)) for f in self.src]
+        # Fix to abs path
+        self.dst = os.path.abspath(self.dst)
 
-        self.dst = os.path.abspath(self.operator_dict['dst'])
-        self.create_path = (
-            self.operator_dict['create_path']
-            if 'create_path' in self.operator_dict
-            else True
-        )
-
-    def _execute(self):
+    def execute(self) -> None:
         if self.create_path:
             create_directory_tree(self.src, self.dst)
 
@@ -79,33 +75,27 @@ class MoveOperator(BaseOperator):
     """
     Operator for updating dict objects with items.
 
-    :param src: String or list of sources, either a directories or files
+    :param src: String or list of sources, either directories or files
     :param dst: String for path to copy to
     :param create_path: Boolean to create the directory path if it does not exist.
         Defaults to true
     :return: None
     """
 
-    type = 'move'
+    type: str = 'move'
+    src: Union[List, str]
+    create_path: bool = True
+    dst: str
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(MoveOperator, self).__init__(*args, **kwargs)
-        if isinstance(self.operator_dict['src'], str):
-            self.src = os.path.abspath(os.path.expanduser(self.operator_dict['src']))
-        if isinstance(self.operator_dict['src'], list):
-            self.src = [
-                os.path.abspath(os.path.expanduser(f))
-                for f in self.operator_dict['src']
-            ]
+    def __init__(self, **data: Any):
+        super().__init__(**data)
+        if isinstance(self.src, str):
+            self.src = os.path.abspath(os.path.expanduser(self.src))
+        if isinstance(self.src, list):
+            self.src = [os.path.abspath(os.path.expanduser(f)) for f in self.src]
+        self.dst = os.path.abspath(self.dst)
 
-        self.dst = os.path.abspath(self.operator_dict['dst'])
-        self.create_path = (
-            self.operator_dict['create_path']
-            if 'create_path' in self.operator_dict
-            else True
-        )
-
-    def _execute(self):
+    def execute(self) -> None:
         if self.create_path:
             create_directory_tree(self.src, self.dst)
 

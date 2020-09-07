@@ -6,6 +6,7 @@ from __future__ import print_function
 
 import logging
 from pprint import pprint
+from typing import Union, Dict, List
 
 from cookiecutter.operators import BaseOperator
 
@@ -19,14 +20,14 @@ class PrintOperator(BaseOperator):
     :param statement: The thing to print
     """
 
-    type = 'print'
+    type: str = 'print'
+    statement: Union[Dict, List, str] = None
+    out: Union[Dict, List, str] = None
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(PrintOperator, self).__init__(*args, **kwargs)
-
-    def _execute(self):
-        print(self.operator_dict['statement'])
-        return self.operator_dict['statement']
+    def execute(self):
+        print(self.statement)
+        print(self.out)
+        return self.statement or self.out
 
 
 class PprintOperator(BaseOperator):
@@ -36,11 +37,11 @@ class PprintOperator(BaseOperator):
     :param statement: The thing to print
     """
 
-    type = 'pprint'
+    type: str = 'pprint'
+    statement: Union[Dict, List, str] = None
+    out: Union[Dict, List, str] = None
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(PprintOperator, self).__init__(*args, **kwargs)
-
-    def _execute(self):
-        pprint(self.operator_dict['statement'])
-        return self.operator_dict['statement']
+    def execute(self):
+        pprint(self.statement)
+        pprint(self.out)
+        return self.statement or self.out

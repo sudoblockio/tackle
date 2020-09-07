@@ -6,6 +6,7 @@ from __future__ import print_function
 
 import logging
 import webbrowser
+from pydantic import AnyUrl
 
 from cookiecutter.operators import BaseOperator
 
@@ -20,11 +21,8 @@ class WebBrowserOperator(BaseOperator):
     :return: None
     """
 
-    type = 'webbrowser'
+    type: str = 'webbrowser'
+    url: AnyUrl
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(WebBrowserOperator, self).__init__(*args, **kwargs)
-        self.url = self.operator_dict['url']
-
-    def _execute(self):
+    def execute(self):
         webbrowser.open(self.url, new=2)

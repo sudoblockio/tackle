@@ -6,7 +6,7 @@ from __future__ import print_function
 
 import logging
 import re
-import warnings
+from typing import Union, List, Dict
 
 from cookiecutter.operators import BaseOperator
 from cookiecutter.config import merge_configs
@@ -25,47 +25,35 @@ class StatOperator(BaseOperator):
     :return: any: Processed input.
     """
 
-    type = 'stat'
+    type: str = 'stat'
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(StatOperator, self).__init__(*args, **kwargs)
+    remove: Union[str, List] = None
+    update: Dict = None
+    merge_config: bool = None
+    input: Union[str, Dict, List]
+    merge_dict: Dict = None
 
-    def _execute(self):
-        if 'remove' in self.operator_dict:
-            if isinstance(self.operator_dict['remove'], str):
-                self._remove_from_contents(self.operator_dict['remove'])
+    def execute(self):
+        if self.remove:
+            if isinstance(self.remove, str):
+                self._remove_from_contents(self.remove)
 
-            if isinstance(self.operator_dict['remove'], list):
-                for i in self.operator_dict['remove']:
+            if isinstance(self.remove, list):
+                for i in self.remove:
                     self._remove_from_contents(i)
 
-            elif isinstance(self.operator_dict['remove'], dict):
-                warnings.warn(
-                    "Warning: the `remove` parameter can't be a dict - ignored"
-                )
+        if self.update:
+            self.input.update(self.update)
 
-        if 'update' in self.operator_dict:
-            if isinstance(self.operator_dict['update'], dict):
-                self.operator_dict['input'].update(self.operator_dict['update'])
-            else:
-                raise ValueError("`update` param must be dictionary.")
+        if self.merge_dict:
+            self.input = merge_configs(self.input, self.merge_dict)
 
-        if 'merge_dict' in self.operator_dict:
-            if isinstance(self.operator_dict['merge_dict'], dict):
-                self.operator_dict['input'] = merge_configs(
-                    self.operator_dict['input'], self.operator_dict['merge_dict']
-                )
-            else:
-                raise ValueError("`merge_dict` param must be dictionary.")
-
-        return self.operator_dict['input']
+        return self.input
 
     def _remove_from_contents(self, regex):
-        if isinstance(self.operator_dict['input'], list):
-            self.operator_dict['input'] = [
-                i for i in self.operator_dict['input'] if not re.search(regex, i)
-            ]
-        if isinstance(self.operator_dict['input'], dict):
-            for k in list(self.operator_dict['input'].keys()):
+        if isinstance(self.input, list):
+            self.input = [i for i in self.input if not re.search(regex, i)]
+        if isinstance(self.input, dict):
+            for k in list(self.input.keys()):
                 if re.search(regex, k):
-                    self.operator_dict['input'].pop(k)
+                    self.input.pop(k)

@@ -4,6 +4,7 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 
+from typing import Union, List
 import os
 import logging
 
@@ -24,41 +25,25 @@ class ListdirOperator(BaseOperator):
         A map with keys of items if input `path` is list.
     """
 
-    type = 'listdir'
+    type: str = 'listdir'
+    ignore_hidden_files: bool = False
+    path: Union[List[str], str]
+    sort: bool = False
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(ListdirOperator, self).__init__(*args, **kwargs)
-
-        self.ignore_hidden_files = (
-            self.operator_dict['ignore_hidden_files']
-            if 'ignore_hidden_files' in self.operator_dict
-            else False
-        )
-
-    def _execute(self):
-        if isinstance(self.operator_dict['path'], str):
-            files = os.listdir(os.path.expanduser(self.operator_dict['path']))
-            if self.operator_dict['sort'] if 'sort' in self.operator_dict else False:
+    def execute(self):
+        if isinstance(self.path, str):
+            files = os.listdir(os.path.expanduser(self.path))
+            if self.sort:
                 files.sort()
             if self.ignore_hidden_files:
                 return [f for f in files if not f.startswith('.')]
             else:
                 return files
 
-        if isinstance(self.operator_dict['path'], list):
+        if isinstance(self.path, list):
             contents = {}
-            for i in self.operator_dict['path']:
+            for i in self.path:
                 contents[i] = os.listdir(os.path.expanduser(i))
-                if (
-                    self.operator_dict['sort']
-                    if 'sort' in self.operator_dict
-                    else False
-                ):
+                if self.sort:
                     contents[i].sort()
             return contents
-
-        else:
-            raise NotImplementedError(
-                "Have not implemented dict input to "
-                "`directories` for `type` 'listdir'"
-            )

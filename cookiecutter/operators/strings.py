@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 import logging
+from typing import Union, List
 
 from cookiecutter.operators import BaseOperator
 
@@ -20,31 +21,20 @@ class SplitOperator(BaseOperator):
     :return: List of lists if `input` is list otherwise list
     """
 
-    type = 'split'
+    type: str = 'split'
+    separator: str = "."
+    input: Union[List[str], str]
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(SplitOperator, self).__init__(*args, **kwargs)
-
-        self.separator = (
-            self.operator_dict['separator']
-            if 'separator' in self.operator_dict
-            else "."
-        )
-
-    def _execute(self):
-        if isinstance(self.operator_dict['input'], str):
+    def execute(self):
+        if isinstance(self.input, str):
             # If item is a string then return a list
-            return self.operator_dict['input'].split(self.separator)
-        elif isinstance(self.operator_dict['input'], list):
+            return self.input.split(self.separator)
+        elif isinstance(self.input, list):
             # If input is a list then return a nested list
             output = []
-            for i in self.operator_dict['input']:
+            for i in self.input:
                 output.append(i.split(self.separator))
             return output
-        else:
-            raise NotImplementedError(
-                "Have not implemented dict `input` for `type` 'split'"
-            )
 
 
 class JoinOperator(BaseOperator):
@@ -56,26 +46,10 @@ class JoinOperator(BaseOperator):
     :return: String
     """
 
-    type = 'join'
+    type: str = 'join'
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(JoinOperator, self).__init__(*args, **kwargs)
+    separator: str = '.'
+    input: List[str]
 
-        self.input = self.operator_dict['input']
-        self.separator = (
-            self.operator_dict['separator']
-            if 'separator' in self.operator_dict
-            else "."
-        )
-
-    def _execute(self):
-        if isinstance(self.input, str):
-            # If item is a string then return a list
-            raise ValueError("Input must be list")
-        elif isinstance(self.input, list):
-            # If input is a list then return a nested list
-            return self.separator.join(self.input)
-        else:
-            raise NotImplementedError(
-                "Have not implemented dict `input` for `type` 'join'"
-            )
+    def execute(self):
+        return self.separator.join(self.input)

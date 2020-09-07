@@ -40,17 +40,13 @@ class CommandOperator(BaseOperator):
     :return: String output of command
     """
 
-    type = 'command'
+    type: str = 'command'
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(CommandOperator, self).__init__(*args, **kwargs)
+    command: str
 
-    def _execute(self):
+    def execute(self):
         p = subprocess.Popen(
-            self.operator_dict['command'],
-            shell=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            self.command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
         )
         output, err = p.communicate()
 
@@ -62,7 +58,7 @@ class CommandOperator(BaseOperator):
 
 class ShellOperator(BaseOperator):
     """
-    `Shell` operator for system calls.
+    `shell` operator for system calls.
 
     Streams the output of the process.
 
@@ -70,29 +66,28 @@ class ShellOperator(BaseOperator):
     :return: String output of command
     """
 
-    type = 'shell'
+    type: str = 'shell'
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(ShellOperator, self).__init__(*args, **kwargs)
-        self._COLUMNS, self._ROWS, = shutil.get_terminal_size(fallback=(80, 20))
+    command: str
 
     def _set_size(self, fd):
         """Found at: https://stackoverflow.com/a/6420070."""
-        size = struct.pack("HHHH", self._ROWS, self._COLUMNS, 0, 0)
+        _COLUMNS, _ROWS, = shutil.get_terminal_size(fallback=(80, 20))
+        size = struct.pack("HHHH", _ROWS, _COLUMNS, 0, 0)
         fcntl.ioctl(fd, termios.TIOCSWINSZ, size)
 
-    def _execute(self):
+    def execute(self):
         # Copied from
         # https://terminallabs.com/blog/a-better-cli-passthrough-in-python/
         masters, slaves = zip(pty.openpty(), pty.openpty())
         for fd in chain(masters, slaves):
             self._set_size(fd)
 
-        # cmd = re.findall(r'\S+|\n', self.operator_dict['command'])
-        # cmds = self.operator_dict['command'].split('\n')
+        # cmd = re.findall(r'\S+|\n', self.command)
+        # cmds = self.command.split('\n')
         # for cmd in cmds:
         # TODO: Fix multi-line calls
-        cmd = self.operator_dict['command'].split()
+        cmd = self.command.split()
 
         with subprocess.Popen(
             cmd, stdin=slaves[0], stdout=slaves[0], stderr=slaves[1]

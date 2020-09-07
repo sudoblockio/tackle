@@ -6,6 +6,9 @@ from __future__ import print_function
 
 from jinja2 import FileSystemLoader
 import logging
+from typing import Dict
+
+# from pathlib import Path
 
 from cookiecutter.operators import BaseOperator
 from cookiecutter.environment import StrictEnvironment
@@ -23,34 +26,29 @@ class JinjaOperator(BaseOperator):
     :return: String path to the output file
     """
 
-    type = 'jinja'
+    type: str = 'jinja'
+    file_system_loader: str = '.'
+    template_path: str
+    output_path: str
+    context: Dict = {}
+    extra_context: Dict = None
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(JinjaOperator, self).__init__(*args, **kwargs)
-        self.file_system_loader = (
-            self.operator_dict['file_system_loader']
-            if 'file_system_loader' in self.operator_dict
-            else '.'
-        )
-
-    def _execute(self):
+    def execute(self):
         env = StrictEnvironment(context=self.context)
 
         env.loader = FileSystemLoader(self.file_system_loader)
-        template = env.get_template(self.operator_dict['template_path'])
+        template = env.get_template(self.template_path)
 
-        jinja_context = (
-            self.operator_dict['context'] if 'context' in self.operator_dict else {}
-        )
+        jinja_context = self.context
 
-        if 'extra_context' in self.operator_dict:
-            jinja_context.update(self.operator_dict['extra_context'])
+        if self.extra_context:
+            jinja_context.update(self.extra_context)
 
         output_from_parsed_template = template.render(
             **{self.context_key: jinja_context}
         )
 
-        with open(self.operator_dict['output_path'], 'w') as fh:
+        with open(self.output_path, 'w') as fh:
             fh.write(output_from_parsed_template)
 
-        return self.operator_dict['output_path']
+        return self.output_path

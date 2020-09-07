@@ -7,6 +7,7 @@ from __future__ import print_function
 import logging
 import os
 from dopy.manager import DoManager
+from typing import List
 
 from cookiecutter.operators import BaseOperator
 
@@ -19,12 +20,10 @@ class DigitalOceanRegionsOperator(BaseOperator):
     :return: List of regions
     """
 
-    type = 'digitalocean_regions'
+    type: str = 'digitalocean_regions'
+    region: str
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(DigitalOceanRegionsOperator, self).__init__(*args, **kwargs)
-
-    def _execute(self):
+    def execute(self):
         api_key = os.getenv('DIGITALOCEAN_TOKEN')
         client = DoManager(None, api_key, 2)
 
@@ -42,24 +41,23 @@ class DigitalOceanInstanceTypesOperator(BaseOperator):
     :return: A list of instance types
     """
 
-    type = 'digitalocean_instance_types'
+    type: str = 'digitalocean_instance_types'
+    region: str
+    instance_families: List = None
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(DigitalOceanInstanceTypesOperator, self).__init__(*args, **kwargs)
-
-    def _execute(self):
-        selected_region = self.operator_dict['region']
+    def execute(self):
+        selected_region = self.region
         api_key = os.getenv('DIGITALOCEAN_TOKEN')
         client = DoManager(None, api_key, 2)
 
-        if 'instance_families' not in self.operator_dict:
+        if not self.instance_families:
             instances = [
                 item["slug"]
                 for item in client.sizes()
                 if selected_region in item["regions"]
             ]
         else:
-            selected_family = self.operator_dict['instance_families']
+            selected_family = self.instance_families
 
             instances = [
                 instance

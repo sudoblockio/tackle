@@ -7,7 +7,6 @@ from __future__ import print_function
 import logging
 import yaml
 import re
-import warnings
 
 from cookiecutter.operators import BaseOperator
 from cookiecutter.config import merge_configs
@@ -34,52 +33,30 @@ class YamlOperator(BaseOperator):
         Seee https://docs.python.org/3/library/functions.html#open
     """
 
-    type = 'yaml'
+    from typing import Union, Dict, List, Any
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(YamlOperator, self).__init__(*args, **kwargs)
-        self.remove = (
-            self.operator_dict['remove'] if 'remove' in self.operator_dict else None
-        )
-        self.contents = (
-            self.operator_dict['contents'] if 'contents' in self.operator_dict else None
-        )
-        self.update = (
-            self.operator_dict['update'] if 'update' in self.operator_dict else None
-        )
-        self.filter = (
-            self.operator_dict['filter'] if 'filter' in self.operator_dict else None
-        )
-        self.path = self.operator_dict['path']
-        self.merge_dict = (
-            self.operator_dict['merge_dict']
-            if 'merge_dict' in self.operator_dict
-            else None
-        )
-        self.in_place = (
-            self.operator_dict['in_place']
-            if 'in_place' in self.operator_dict
-            else False
-        )
-        self.append_items = (
-            self.operator_dict['append_items']
-            if 'append_items' in self.operator_dict
-            else None
-        )
-        self.append_keys = (
-            self.operator_dict['append_keys']
-            if 'append_keys' in self.operator_dict
-            else None
-        )
+    type: str = 'yaml'
 
-    def _execute(self):
+    remove: Union[List, str] = None
+    contents: Union[Dict, List] = None
+    update: Dict = None
+    filter: List = None
+    path: str
+    merge_dict: Dict = None
+    in_place: bool = False
+    append_items: Union[Dict, str, List[Any]] = None
+    append_keys: Union[Dict, str, List[Any]] = None
+    mode: str = None
+    write: bool = None
+
+    def execute(self):
         # Load the path into contents unless it already exists
         self._load_contents()
         # Run all the modifiers
         self._modify_dicts()
 
         if self.write:
-            mode = self.operator_dict['mode'] if 'mode' in self.operator_dict else 'w'
+            mode = self.mode or 'w'
             with open(self.path, mode) as f:
                 yaml.dump(self.contents, f)
                 return self.contents
@@ -100,7 +77,7 @@ class YamlOperator(BaseOperator):
         elif not self.contents:
             # We are reading. Contents is read from path
             self.write = False
-            mode = self.operator_dict['mode'] if 'mode' in self.operator_dict else 'r'
+            mode = self.mode or 'r'
             with open(self.path, mode) as f:
                 self.contents = yaml.safe_load(f)
 
@@ -113,27 +90,17 @@ class YamlOperator(BaseOperator):
                 for i in self.remove:
                     self._remove_from_contents(i)
 
-            elif isinstance(self.remove, dict):
-                warnings.warn(
-                    "Warning: the `remove` parameter can't be a dict - ignored"
-                )
-
         if self.filter:
-            self.contents = {
-                k: v for (k, v) in self.contents.items() if k in self.filter
-            }
+            if isinstance(self.contents, dict):
+                self.contents = {
+                    k: v for (k, v) in self.contents.items() if k in self.filter
+                }
 
         if self.update:
-            if isinstance(self.update, dict):
-                self.contents.update(self.update)
-            else:
-                raise ValueError("`update` param must be dictionary.")
+            self.contents.update(self.update)
 
         if self.merge_dict:
-            if isinstance(self.merge_dict, dict):
-                self.contents = merge_configs(self.contents, self.merge_dict)
-            else:
-                raise ValueError("`merge_dict` param must be dictionary.")
+            self.contents = merge_configs(self.contents, self.merge_dict)
 
         if self.append_items:
             if isinstance(self.append_items, str) or isinstance(

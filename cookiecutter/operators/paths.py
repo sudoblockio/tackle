@@ -4,6 +4,7 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 
+from typing import Any
 import logging
 import os
 
@@ -19,13 +20,11 @@ class PathExistsListOperator(BaseOperator):
     :return: boolean:
     """
 
-    type = 'path_exists'
+    type: str = 'path_exists'
+    path: str
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(PathExistsListOperator, self).__init__(*args, **kwargs)
-
-    def _execute(self):
-        return os.path.exists(self.operator_dict['path'])
+    def execute(self):
+        return os.path.exists(self.path)
 
 
 class PathIsdirListOperator(BaseOperator):
@@ -36,14 +35,12 @@ class PathIsdirListOperator(BaseOperator):
     :return: boolean:
     """
 
-    type = 'path_isdir'
+    type: str = 'path_isdir'
+    path: str
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(PathIsdirListOperator, self).__init__(*args, **kwargs)
-
-    def _execute(self):
+    def execute(self):
         """Run the prompt."""
-        return os.path.isdir(self.operator_dict['path'])
+        return os.path.isdir(self.path)
 
 
 class PathRelativeOperator(BaseOperator):
@@ -57,39 +54,27 @@ class PathRelativeOperator(BaseOperator):
     :return: string: Absolute path to the target file
     """
 
-    type = 'find_in_parent'
+    type: str = 'find_in_parent'
+    target: str
+    fallback: Any
+    starting_dir: str = '.'
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(PathRelativeOperator, self).__init__(*args, **kwargs)
-
-    def _execute(self):
+    def execute(self):
         """Run the prompt."""
-        starting_dir = (
-            self.operator_dict['starting_dir']
-            if 'starting_dir' in self.operator_dict
-            else '.'
-        )
-        return self._find_in_parent(starting_dir)
+        return self._find_in_parent(self.starting_dir)
 
     def _find_in_parent(self, dir):
         for i in os.listdir(dir):
-            if (
-                os.path.exists(os.path.join(dir, i))
-                and i == self.operator_dict['target']
-            ):
+            if os.path.exists(os.path.join(dir, i)) and i == self.target:
                 return os.path.abspath(os.path.join(dir, i))
 
         if os.path.abspath(dir) == '/':
-            fallback = (
-                self.operator_dict['fallback']
-                if 'fallback' in self.operator_dict
-                else None
-            )
-            if fallback:
-                return fallback
+
+            if self.fallback:
+                return self.fallback
             else:
                 raise NotADirectoryError(
                     'The %s target doesn\'t exist in the parent directories.'
-                    % self.operator_dict['target']
+                    % self.target
                 )
         return self._find_in_parent(dir=os.path.dirname(os.path.abspath(dir)))

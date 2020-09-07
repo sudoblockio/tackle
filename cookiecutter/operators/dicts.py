@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 import logging
+from typing import Union, Dict, List
 
 from cookiecutter.operators import BaseOperator
 from cookiecutter.config import merge_configs
@@ -16,74 +17,67 @@ class DictUpdateOperator(BaseOperator):
     """
     Operator for updating dict objects with items.
 
-    :param dict: The input dict to update
-    :param input: A dict or list of dicts to update the input `dict`
+    :param src: The input dict to update
+    :param input: A dict or list of dicts to update the input `src`
     :return: An updated dict object.
     """
 
-    type = 'update'
+    type: str = 'update'
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(DictUpdateOperator, self).__init__(*args, **kwargs)
-        self.input = self.operator_dict['input']
-        self.dict = self.operator_dict['dict']
+    input: Union[Dict, List[Dict]]
+    src: Dict
 
-    def _execute(self):
+    def execute(self):
         if isinstance(self.input, list):
             for i in self.input:
-                self.dict.update(i)
+                self.src.update(i)
         else:
-            self.dict.update(self.input)
+            self.src.update(self.input)
 
-        return self.dict
+        return self.src
 
 
 class DictMergeOperator(BaseOperator):
     """
     Operator for recursively merging dict objects with input maps.
 
-    :param dict: The input dict to update
+    :param src: The input dict to update
     :param input: A dict or list of dicts to update the input `dict`
     :return: An updated dict object.
     """
 
-    type = 'merge'
+    type: str = 'merge'
+    input: Union[Dict, List[Dict]]
+    src: Dict
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(DictMergeOperator, self).__init__(*args, **kwargs)
-        self.input = self.operator_dict['input']
-        self.dict = self.operator_dict['dict']
-
-    def _execute(self):
+    def execute(self):
         if isinstance(self.input, list):
             for i in self.input:
-                self.dict = merge_configs(self.dict, i)
-            return self.dict
+                self.src = merge_configs(self.src, i)
+            return self.src
         else:
-            return merge_configs(self.dict, self.input)
+            return merge_configs(self.src, self.input)
 
 
 class DictPopOperator(BaseOperator):
     """
     Operator for recursively merging dict objects with input maps.
 
-    :param dict: The input dict to update
+    :param src: The input dict to update
     :param item: A list or string of items to remove from a dictionary or list
     :return: An updated dict object.
     """
 
-    type = 'pop'
+    type: str = 'pop'
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(DictPopOperator, self).__init__(*args, **kwargs)
-        self.dict = self.operator_dict['dict']
-        self.item = self.operator_dict['item']
+    item: Union[Dict, List[str], str]
+    src: Dict
 
-    def _execute(self):
+    def execute(self):
         if isinstance(self.item, list):
             for i in self.item:
-                self.dict.pop(i)
-            return self.dict
+                self.src.pop(i)
+            return self.src
         else:
-            self.dict.pop(self.item)
-            return self.dict
+            self.src.pop(self.item)
+            return self.src

@@ -4,6 +4,7 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 
+from typing_extensions import Literal
 import random
 import string
 import logging
@@ -21,15 +22,10 @@ class RandomHexOperator(BaseOperator):
     :return: String
     """
 
-    type = 'random_hex'
+    type: str = 'random_hex'
+    length: int = 8
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(RandomHexOperator, self).__init__(*args, **kwargs)
-        self.length = (
-            self.operator_dict['length'] if 'length' in self.operator_dict else 8
-        )
-
-    def _execute(self):
+    def execute(self):
         return ''.join(['%0', str(self.length), 'x']) % random.randrange(
             16 ** self.length
         )
@@ -44,18 +40,11 @@ class RandomStringOperator(BaseOperator):
     :return: String
     """
 
-    type = 'random_string'
+    type: str = 'random_string'
+    case: Literal['upper', 'lower'] = 'upper'
+    length: int = 8
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(RandomStringOperator, self).__init__(*args, **kwargs)
-        self.case = (
-            self.operator_dict['case'] if 'case' in self.operator_dict else 'upper'
-        )
-        self.length = (
-            self.operator_dict['length'] if 'length' in self.operator_dict else 8
-        )
-
-    def _execute(self):
+    def execute(self):
         if self.case == 'upper':
             return ''.join(
                 random.choices(string.ascii_uppercase + string.digits, k=self.length)

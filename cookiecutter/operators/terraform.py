@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
 
 """Operator plugin that inherits a base class and is made available through `type`."""
-from __future__ import unicode_literals
 from __future__ import print_function
+from __future__ import unicode_literals
 
 import logging
+from typing import List
+
 import hcl
 from PyInquirer import prompt
+from pydantic import FilePath
 
-from cookiecutter.operators import BaseOperator
 from cookiecutter.exceptions import EscapeOperatorException
+from cookiecutter.operators import BaseOperator
 
 logger = logging.getLogger(__name__)
 
@@ -27,26 +30,18 @@ class TerraformVariablesOperator(BaseOperator):
     :return: Dictionary that can be dumped into json for a `terraform.tfvars.json`
     """
 
-    type = 'terraform_variables'
+    type: str = 'terraform_variables'
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(TerraformVariablesOperator, self).__init__(*args, **kwargs)
+    var_list: List[str] = None
+    var_skip_list: List[str] = []
+    variables_file: FilePath
 
-    def _execute(self):
-        with open(self.operator_dict['variables_file'], 'r') as f:
+    def execute(self):
+        with open(self.variables_file, 'r') as f:
             vars = hcl.load(f)
 
-        var_skip_list = (
-            self.operator_dict['var_skip_list']
-            if 'var_skip_list' in self.operator_dict
-            else []
-        )
         output = {}
-        for v in (
-            vars['variable'].keys()
-            if 'var_list' not in self.operator_dict
-            else self.operator_dict['var_list']
-        ):
+        for v in vars['variable'].keys() if not self.var_list else self.var_list:
             logger.debug('Parsing %s variable', v)
 
             var = vars['variable'][v]
@@ -57,7 +52,7 @@ class TerraformVariablesOperator(BaseOperator):
             message = f'What do you want to set the variable "{v}" {description}'
 
             if 'type' in var:
-                if var['type'] in ['bool', 'boolean'] and v not in var_skip_list:
+                if var['type'] in ['bool', 'boolean'] and v not in self.var_skip_list:
                     logger.debug('Variable type %s', var['type'])
                     question = {
                         'type': 'confirm',
@@ -67,7 +62,7 @@ class TerraformVariablesOperator(BaseOperator):
                     }
                     output = self._run_prompt(question, output, v)
 
-                if var['type'] in ['string'] and v not in var_skip_list:
+                if var['type'] in ['string'] and v not in self.var_skip_list:
                     logger.debug('Variable type %s', var['type'])
                     question = {
                         'type': 'input',
@@ -79,7 +74,7 @@ class TerraformVariablesOperator(BaseOperator):
 
                 if (
                     var['type'] in ['list', 'list(string)', 'list(map(string))']
-                    and v not in var_skip_list
+                    and v not in self.var_skip_list
                 ):
                     logger.debug('Variable type %s', var['type'])
                     question = {
@@ -93,7 +88,10 @@ class TerraformVariablesOperator(BaseOperator):
 
                     output = self._run_prompt(question, output, v)
 
-                if var['type'] in ['map', 'map(string)'] and v not in var_skip_list:
+                if (
+                    var['type'] in ['map', 'map(string)'] and
+                    v not in self.var_skip_list
+                ):
                     logger.debug('Variable type %s', var['type'])
                     question = {
                         'type': 'checkbox',
@@ -102,9 +100,6 @@ class TerraformVariablesOperator(BaseOperator):
                         'name': v,
                     }
                     output = self._run_prompt(question, output, v)
-
-            # if 'type' not in var and v not in var_skip_list:
-            #     pprint(var)
 
         return output
 

@@ -7,6 +7,7 @@ from __future__ import print_function
 import logging
 from rich.console import Console
 from rich.table import Table
+from typing import List, Any
 
 from cookiecutter.operators import BaseOperator
 
@@ -24,42 +25,39 @@ class TableOperator(BaseOperator):
     :param sort: Boolean to sort contents or contents_split
     """
 
-    type = 'table'
+    type: str = 'table'
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(TableOperator, self).__init__(*args, **kwargs)
+    column_names: List = []
+    sort: bool = False
+    contents: Any = None
+    contents_split: List = None
+    # TODO: Validate one of above is entered
+    separator: str = None
 
-    def _execute(self):
-        if self.operator_dict['sort'] if 'sort' in self.operator_dict else False:
-            if 'contents' in self.operator_dict:
-                self.operator_dict['contents'].sort()
-            if 'contents_split' in self.operator_dict:
-                self.operator_dict['contents_split'].sort()
+    def execute(self):
+        if self.sort:
+            if self.contents:
+                self.contents.sort()
+            if self.contents_split:
+                self.contents_split.sort()
 
         console = Console()
 
-        self.operator_dict['column_names'] = (
-            self.operator_dict['column_names']
-            if 'column_names' in self.operator_dict
-            else []
-        )
-        if len(self.operator_dict['column_names']) > 0:
+        if len(self.column_names) > 0:
             table = Table(show_header=True, header_style="bold red")
-            for c in self.operator_dict['column_names']:
+            for c in self.column_names:
                 table.add_column(c)
         else:
             table = Table()
 
-        if 'contents_split' in self.operator_dict:
-            for i in self.operator_dict['contents_split']:
+        if self.contents_split:
+            for i in self.contents_split:
                 table.add_row(
-                    *i.split(self.operator_dict['separator'])[
-                        0 : len(self.operator_dict['column_names'])  # noqa
-                    ]
+                    *i.split(self.separator)[0 : len(self.column_names)]  # noqa
                 )
 
-        if 'contents' in self.operator_dict:
-            for i in self.operator_dict['contents']:
+        if self.contents:
+            for i in self.contents:
                 table.add_row(*set(i))
 
         console.print(table)
