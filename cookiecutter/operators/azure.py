@@ -7,6 +7,7 @@ from __future__ import print_function
 import logging
 import os
 import re
+from typing import List
 
 from azure.common.credentials import ServicePrincipalCredentials
 import azure.mgmt.compute as compute
@@ -23,12 +24,9 @@ class AzureRegionsOperator(BaseOperator):
     :return: List of regions
     """
 
-    type = 'azure_regions'
+    type: str = 'azure_regions'
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(AzureRegionsOperator, self).__init__(*args, **kwargs)
-
-    def _execute(self):
+    def execute(self):
         subscription_id = os.environ['ARM_SUBSCRIPTION_ID']
 
         credentials = ServicePrincipalCredentials(
@@ -55,12 +53,11 @@ class AzureVMTypesOperator(BaseOperator):
     :return: A list of instance types
     """
 
-    type = 'azure_vm_types'
+    type: str = 'azure_vm_types'
+    region: str
+    instance_families: List = None
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(AzureVMTypesOperator, self).__init__(*args, **kwargs)
-
-    def _execute(self):
+    def execute(self):
         subscription_id = os.environ['ARM_SUBSCRIPTION_ID']
 
         credentials = ServicePrincipalCredentials(
@@ -69,10 +66,10 @@ class AzureVMTypesOperator(BaseOperator):
             tenant=os.environ['ARM_TENANT_ID'],
         )
 
-        selected_region = self.operator_dict['region']
+        selected_region = self.region
         client = compute.ComputeManagementClient(credentials, subscription_id)
 
-        if 'instance_families' not in self.operator_dict:
+        if not self.instance_families:
             instances = list(
                 set(
                     [
@@ -85,7 +82,7 @@ class AzureVMTypesOperator(BaseOperator):
             )
 
         else:
-            selected_family = self.operator_dict['instance_families']
+            selected_family = self.instance_families
             selected_family = ['^' + name for name in selected_family]
 
             instances = list(
