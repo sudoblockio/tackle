@@ -6,6 +6,7 @@ import click
 
 from cookiecutter.operator import parse_operator
 from jinja2.exceptions import UndefinedError
+from typing import Dict
 
 from cookiecutter.environment import StrictEnvironment
 from cookiecutter.exceptions import UndefinedVariableInTemplate
@@ -137,7 +138,7 @@ def prompt_choice_for_config(cc_dict, env, key, options, no_input, context_key):
     return read_user_choice(key, rendered_options)
 
 
-def parse_context(context, env, cc_dict, context_key, no_input):
+def parse_context(context, env, cc_dict, context_key, no_input: bool):
     """Parse the context and iterate over values.
 
     :param dict context: Source for field names and sample values.
@@ -202,7 +203,12 @@ def parse_context(context, env, cc_dict, context_key, no_input):
     return cc_dict
 
 
-def prompt_for_config(context, no_input=False, context_key=None, existing_context=None):
+def prompt_for_config(
+    context: Dict,
+    no_input: bool = False,
+    context_key: str = None,
+    existing_context: Dict = None,
+):
     """
     Prompt user to enter values.
 

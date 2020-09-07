@@ -2,7 +2,6 @@
 
 """Functions for discovering and executing various cookiecutter operators."""
 from __future__ import print_function
-import logging
 import inspect
 
 from cookiecutter.environment import StrictEnvironment
@@ -10,19 +9,22 @@ from cookiecutter.exceptions import InvalidOperatorType
 from cookiecutter.render import render_variable
 from cookiecutter.operators import *  # noqa
 from cookiecutter.operators import BaseOperator
+import logging
+from typing import Dict
+
+# import copy
 
 logger = logging.getLogger(__name__)
 post_gen_operator_list = []
 
 
 def run_operator(
-    operator_dict: dict,
-    context=None,
-    no_input=False,
-    context_key='cookiecutter',
-    cc_dict=None,
-    env=None,
-    key=None,
+    operator_dict: Dict,
+    context: Dict,
+    no_input: bool,
+    context_key: Dict,
+    cc_dict: Dict,
+    key: str,
 ):
     """Run operator."""
     if context is None:
@@ -34,14 +36,14 @@ def run_operator(
         if (
             operator_dict['type'] == inspect.signature(o).parameters['type'].default
         ):  # noqa
-            logger.debug("Using the %s operator" % operator_dict['type'])  # noqa
+            logger.debug("Using the %s operator" % operator_dict['type'])
+            # context_key_new = copy.deepcopy(context_key)
             operator = o(
                 **operator_dict,
                 context=context,
                 context_key=context_key,
                 no_input=no_input,
                 cc_dict=cc_dict,
-                env=env,
                 key=key,
             )
             if operator.post_gen_operator:
@@ -61,12 +63,12 @@ def run_operator(
 
 
 def parse_operator(
-    context,
-    key,
-    cc_dict,
-    append_key: bool = False,
-    no_input: bool = False,
-    context_key=None,
+    context: Dict,
+    key: str,
+    cc_dict: Dict,
+    no_input: bool,
+    context_key: bool = None,
+    append_key: bool = None,
 ):
     """Parse input dict for loop and when logic and calls hooks.
 
@@ -115,12 +117,12 @@ def parse_operator(
         # Run the operator
         if operator_dict['merge'] if 'merge' in operator_dict else False:
             to_merge, post_gen_operator = run_operator(
-                operator_dict, context, no_input, context_key, cc_dict, env
+                operator_dict, context, no_input, context_key, cc_dict, key
             )
             cc_dict.update(to_merge)
         else:
             cc_dict[key], post_gen_operator = run_operator(
-                operator_dict, context, no_input, context_key, cc_dict, env, key
+                operator_dict, context, no_input, context_key, cc_dict, key
             )
         if post_gen_operator:
             post_gen_operator_list.append(post_gen_operator)
