@@ -89,8 +89,8 @@ class TerraformVariablesOperator(BaseOperator):
                     output = self._run_prompt(question, output, v)
 
                 if (
-                    var['type'] in ['map', 'map(string)'] and
-                    v not in self.var_skip_list
+                    var['type'] in ['map', 'map(string)']
+                    and v not in self.var_skip_list
                 ):
                     logger.debug('Variable type %s', var['type'])
                     question = {
