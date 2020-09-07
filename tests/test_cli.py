@@ -91,7 +91,7 @@ def test_cli_verbose(cli_runner):
 @pytest.mark.usefixtures('remove_fake_project_dir')
 def test_cli_replay(mocker, cli_runner):
     """Test cli invocation display log with `verbose` and `replay` flags."""
-    mock_cookiecutter = mocker.patch('cookiecutter.cli.cookiecutter')
+    mock_cookiecutter = mocker.patch('cookiecutter.cli.cli_parser.cookiecutter')
 
     template_path = 'tests/fake-repo-pre/'
     result = cli_runner(template_path, '--replay', '-v')
@@ -119,7 +119,7 @@ def test_cli_replay(mocker, cli_runner):
 @pytest.mark.usefixtures('remove_fake_project_dir')
 def test_cli_replay_file(mocker, cli_runner):
     """Test cli invocation correctly pass --replay-file option."""
-    mock_cookiecutter = mocker.patch('cookiecutter.cli.cookiecutter')
+    mock_cookiecutter = mocker.patch('cookiecutter.cli.cli_parser.cookiecutter')
 
     template_path = 'tests/fake-repo-pre/'
     result = cli_runner(template_path, '--replay-file', '~/custom-replay-file', '-v')
@@ -148,7 +148,7 @@ def test_cli_replay_file(mocker, cli_runner):
 def test_cli_exit_on_noinput_and_replay(mocker, cli_runner):
     """Test cli invocation fail if both `no-input` and `replay` flags passed."""
     mock_cookiecutter = mocker.patch(
-        'cookiecutter.cli.cookiecutter', side_effect=cookiecutter
+        'cookiecutter.cli.cli_parser.cookiecutter', side_effect=cookiecutter
     )
 
     template_path = 'tests/fake-repo-pre/'
@@ -193,7 +193,7 @@ def test_run_cookiecutter_on_overwrite_if_exists_and_replay(
 ):
     """Test cli invocation with `overwrite-if-exists` and `replay` flags."""
     mock_cookiecutter = mocker.patch(
-        'cookiecutter.cli.cookiecutter', side_effect=cookiecutter
+        'cookiecutter.cli.cli_parser.cookiecutter', side_effect=cookiecutter
     )
 
     template_path = 'tests/fake-repo-pre/'
@@ -259,7 +259,7 @@ def output_dir(tmpdir):
 
 def test_cli_output_dir(mocker, cli_runner, output_dir_flag, output_dir):
     """Test cli invocation with `output-dir` flag changes output directory."""
-    mock_cookiecutter = mocker.patch('cookiecutter.cli.cookiecutter')
+    mock_cookiecutter = mocker.patch('cookiecutter.cli.cli_parser.cookiecutter')
 
     template_path = 'tests/fake-repo-pre/'
     result = cli_runner(template_path, output_dir_flag, output_dir)
@@ -305,7 +305,7 @@ def user_config_path(tmpdir):
 
 def test_user_config(mocker, cli_runner, user_config_path):
     """Test cli invocation works with `config-file` option."""
-    mock_cookiecutter = mocker.patch('cookiecutter.cli.cookiecutter')
+    mock_cookiecutter = mocker.patch('cookiecutter.cli.cli_parser.cookiecutter')
 
     template_path = 'tests/fake-repo-pre/'
     result = cli_runner(template_path, '--config-file', user_config_path)
@@ -332,7 +332,7 @@ def test_user_config(mocker, cli_runner, user_config_path):
 
 def test_default_user_config_overwrite(mocker, cli_runner, user_config_path):
     """Test cli invocation ignores `config-file` if `default-config` passed."""
-    mock_cookiecutter = mocker.patch('cookiecutter.cli.cookiecutter')
+    mock_cookiecutter = mocker.patch('cookiecutter.cli.cli_parser.cookiecutter')
 
     template_path = 'tests/fake-repo-pre/'
     result = cli_runner(
@@ -361,7 +361,7 @@ def test_default_user_config_overwrite(mocker, cli_runner, user_config_path):
 
 def test_default_user_config(mocker, cli_runner):
     """Test cli invocation accepts `default-config` flag correctly."""
-    mock_cookiecutter = mocker.patch('cookiecutter.cli.cookiecutter')
+    mock_cookiecutter = mocker.patch('cookiecutter.cli.cli_parser.cookiecutter')
 
     template_path = 'tests/fake-repo-pre/'
     result = cli_runner(template_path, '--default-config')
@@ -583,7 +583,7 @@ def test_cli_accept_hooks(
     expected,
 ):
     """Test cli invocation works with `accept-hooks` option."""
-    mock_cookiecutter = mocker.patch("cookiecutter.cli.cookiecutter")
+    mock_cookiecutter = mocker.patch("cookiecutter.cli.cli_parser.cookiecutter")
 
     template_path = "tests/fake-repo-pre/"
     result = cli_runner(

@@ -33,7 +33,13 @@ def test_should_invoke_main(monkeypatch, project_dir):
     monkeypatch.chdir(test_dir)
 
     exit_code = subprocess.check_call(
-        [sys.executable, '-m', 'cookiecutter.cli', 'tests/fake-repo-tmpl', '--no-input']
+        [
+            sys.executable,
+            '-m',
+            'cookiecutter.cli.cli_parser',
+            'tests/fake-repo-tmpl',
+            '--no-input',
+        ]
     )
     assert exit_code == 0
     assert os.path.isdir(project_dir)
@@ -47,7 +53,13 @@ def test_should_invoke_main_nuki(monkeypatch, project_dir):
     monkeypatch.chdir(test_dir)
 
     exit_code = subprocess.check_call(
-        [sys.executable, '-m', 'cookiecutter.cli', 'fake-repo-tmpl-nuki', '--no-input',]
+        [
+            sys.executable,
+            '-m',
+            'cookiecutter.cli.cli_parser',
+            'fake-repo-tmpl-nuki',
+            '--no-input',
+        ]
     )
 
     assert exit_code == 0
@@ -69,7 +81,7 @@ def test_should_invoke_main_nuki_nukis(monkeypatch, project_dir):
             shutil.rmtree(o)
 
     exit_code = subprocess.check_call(
-        [sys.executable, '-m', 'cookiecutter.cli', '.', '--no-input',]
+        [sys.executable, '-m', 'cookiecutter.cli.cli_parser', '.', '--no-input']
     )
 
     assert exit_code == 0

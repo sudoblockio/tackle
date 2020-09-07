@@ -1,5 +1,6 @@
 """Tests for `cookiecutter.prompt` module."""
 
+import inspect
 from cookiecutter.operators import *  # noqa
 from cookiecutter.operators import BaseOperator
 
@@ -9,7 +10,8 @@ def test_no_duplicate_named_operators():
     operator_list = BaseOperator.__subclasses__()
     operator_types = []
     for o in operator_list:
-        operator_types = operator_types + [o.type]  # noqa
+        type = inspect.signature(o).parameters['type'].default
+        operator_types = operator_types + [type]
 
     left_over_operators = set(operator_types)
     for i in operator_types:

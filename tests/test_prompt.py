@@ -23,7 +23,7 @@ class TestRenderVariable:
     @pytest.mark.parametrize(
         'raw_var, rendered_var',
         [
-            (1, '1'),
+            (1, 1),
             (True, True),
             ('foo', 'foo'),
             ('{{cookiecutter.project}}', 'foobar'),
@@ -54,10 +54,10 @@ class TestRenderVariable:
     @pytest.mark.parametrize(
         'raw_var, rendered_var',
         [
-            ({1: True, 'foo': False}, {'1': True, 'foo': False}),
+            ({1: True, 'foo': False}, {1: True, 'foo': False}),
             (
                 {'{{cookiecutter.project}}': ['foo', 1], 'bar': False},
-                {'foobar': ['foo', '1'], 'bar': False},
+                {'foobar': ['foo', 1], 'bar': False},
             ),
             (['foo', '{{cookiecutter.project}}', None], ['foo', 'foobar', None]),
         ],
@@ -154,11 +154,11 @@ class TestPrompt(object):
             'project_name': "Slartibartfast",
             'details': {
                 "key": "value",
-                "integer_key": "37",
+                "integer_key": 37,
                 "other_name": "Slartibartfast",
                 "dict_key": {
                     "deep_key": "deep_value",
-                    "deep_integer": "42",
+                    "deep_integer": 42,
                     "deep_other_name": "Slartibartfast",
                     "deep_list": ["deep value 1", "Slartibartfast", "deep value 3"],
                 },
@@ -229,13 +229,13 @@ class TestPrompt(object):
         assert cookiecutter_dict == OrderedDict(
             [
                 ('foo', 'Hello world'),
-                ('bar', '123'),
+                ('bar', 123),
                 ('rendered_foo', 'hello world'),
-                ('rendered_bar', '123'),
+                ('rendered_bar', 123),
                 ('_hidden_foo', u'{{ cookiecutter.foo|lower }}'),
                 ('_hidden_bar', 123),
                 ('__rendered_hidden_foo', 'hello world'),
-                ('__rendered_hidden_bar', '123'),
+                ('__rendered_hidden_bar', 123),
             ]
         )
 
