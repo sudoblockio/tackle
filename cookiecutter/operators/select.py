@@ -6,6 +6,7 @@ from __future__ import print_function
 
 import logging
 from PyInquirer import prompt
+from typing import Any
 
 from cookiecutter.operators import BaseOperator
 
@@ -28,60 +29,71 @@ class InquirerListOperator(BaseOperator):
     :return: String for answer
     """
 
-    type = 'select'
+    from typing import List, Union, Dict
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(InquirerListOperator, self).__init__(*args, **kwargs)
+    type: str = 'select'
 
-    def _execute(self):
-        # Fix type
-        self.operator_dict['type'] = 'list'
+    index: bool = False
+    default: Any = None
+    choices: Union[List[str], List[Dict]]
+    name: str = 'tmp'
+    message: str = None
 
-        if 'index' not in self.operator_dict:
-            self.operator_dict['index'] = False
+    def __init__(self, **data: Any):
+        super().__init__(**data)
+        if not self.message:
+            self.message = ''.join([self.key, " >> "])
 
-        if self.no_input:
-            if 'default' in self.operator_dict:
-                return self.operator_dict['default']
-            else:
-                return None
-
+    def execute(self) -> str:
         # Figure out what type of dictionary it is
         choices_type = None
-        for i, v in enumerate(self.operator_dict['choices']):
+        for i, v in enumerate(self.choices):
             if i != 0 and type(v) != choices_type:
                 raise ValueError("All items need to be of the same type")
             choices_type = type(v)
 
-        # if isinstance(self.operator_dict['choices'], list):
         if choices_type == str:
             answer = self._run_prompt()
-            if self.operator_dict['index']:
-                return self.operator_dict['choices'].index(answer)
+            if self.index:
+                return self.choices.index(answer)
             else:
                 return answer
         elif choices_type == dict:
             choices = []
-            for i in self.operator_dict['choices']:
+            for i in self.choices:
                 choices.append(i[list(i.keys())[0]])
 
-            choices_dict = self.operator_dict['choices']
-            self.operator_dict['choices'] = choices
+            choices_dict = self.choices
+            self.choices = choices
 
             answer = self._run_prompt()
             for i in choices_dict:
                 val = list(i.keys())[0]
                 if i[val] == answer:
-                    if self.operator_dict['index']:
-                        return self.operator_dict['choices'].index(answer)
+                    if self.index:
+                        return self.choices.index(answer)
                     else:
                         return val
         else:
             raise ValueError("Choices must be dict with ")
 
     def _run_prompt(self):
-        if 'name' not in self.operator_dict:
-            self.operator_dict.update({'name': 'tmp'})
-            return prompt([self.operator_dict])['tmp']
+        if not self.no_input:
+            question = {
+                'type': 'list',
+                'name': self.name,
+                'message': self.message,
+                'choices': self.choices,
+            }
+            if self.default:
+                question.update({'default': self.default})
+            response = prompt([question])
+
+            if self.name != 'tmp':
+                return response
+            else:
+                return response['tmp']
+        elif self.default:
+            return self.default
         else:
-            return prompt([self.operator_dict])
+            return []

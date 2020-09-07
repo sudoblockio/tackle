@@ -6,6 +6,7 @@ from __future__ import print_function
 
 import logging
 from PyInquirer import prompt
+from typing import Any
 
 from cookiecutter.operators import BaseOperator
 
@@ -23,15 +24,32 @@ class InquirerPasswordOperator(BaseOperator):
     :return:
     """
 
-    type = 'password'
+    type: str = 'password'
+    default: bool = True
+    name: str = 'tmp'
+    message: str = None
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(InquirerPasswordOperator, self).__init__(*args, **kwargs)
+    def __init__(self, **data: Any):
+        super().__init__(**data)
+        if not self.message:
+            self.message = ''.join([self.key, " >> "])
 
-    def _execute(self):
-        """Run the prompt."""
-        if 'name' not in self.operator_dict:
-            self.operator_dict.update({'name': 'tmp'})
-            return prompt([self.operator_dict])['tmp']
+    def execute(self) -> bool:
+        if not self.no_input:
+            question = {
+                'type': self.type,
+                'name': self.name,
+                'message': self.message,
+                'default': self.default,
+            }
+
+            response = prompt([question])
+            if self.name != 'tmp':
+                return response
+            else:
+                return response['tmp']
+        elif self.default:
+            return self.default
         else:
-            return prompt([self.operator_dict])
+            # When no_input then return empty list
+            return True

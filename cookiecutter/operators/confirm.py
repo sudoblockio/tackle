@@ -6,6 +6,7 @@ from __future__ import print_function
 
 import logging
 from PyInquirer import prompt
+from typing import Any
 
 from cookiecutter.operators import BaseOperator
 
@@ -23,19 +24,33 @@ class InquirerConfirmOperator(BaseOperator):
     :return: Boolean
     """
 
-    type = 'confirm'
+    type: str = 'confirm'
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(InquirerConfirmOperator, self).__init__(*args, **kwargs)
+    default: bool = True
+    name: str = 'tmp'
+    message: str = None
 
-    def _execute(self):
+    def __init__(self, **data: Any):
+        super().__init__(**data)
+        if not self.message:
+            self.message = ''.join([self.key, " >> "])
+
+    def execute(self) -> bool:
         if not self.no_input:
-            if 'name' not in self.operator_dict:
-                self.operator_dict.update({'name': 'tmp'})
-                return prompt([self.operator_dict])['tmp']
+            question = {
+                'type': 'confirm',
+                'name': self.name,
+                'message': self.message,
+                'default': self.default,
+            }
+
+            response = prompt([question])
+            if self.name != 'tmp':
+                return response
             else:
-                return prompt([self.operator_dict])
-        elif 'default' in self.operator_dict:
-            return self.operator_dict['default']
+                return response['tmp']
+        elif self.default:
+            return self.default
         else:
+            # When no_input then return empty list
             return True

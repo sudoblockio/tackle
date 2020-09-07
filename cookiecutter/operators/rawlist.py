@@ -7,12 +7,13 @@ from __future__ import print_function
 import logging
 from PyInquirer import prompt
 
+from typing import Union, List, Dict
 from cookiecutter.operators import BaseOperator
 
 logger = logging.getLogger(__name__)
 
 
-class InquirerListOperator(BaseOperator):
+class InquirerRawListOperator(BaseOperator):
     """
     Operator for PyInquirer 'rawlist' type prompts.
 
@@ -23,15 +24,30 @@ class InquirerListOperator(BaseOperator):
     :return: String for the answer
     """
 
-    type = 'rawlist'
+    type: str = 'rawlist'
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(InquirerListOperator, self).__init__(*args, **kwargs)
+    default: Union[Dict, List[str], str] = None
+    name: str = 'tmp'
+    message: str = None
 
-    def _execute(self):
-        """Run the prompt."""  # noqa
-        if 'name' not in self.operator_dict:
-            self.operator_dict.update({'name': 'tmp'})
-            return prompt([self.operator_dict])['tmp']
+    def execute(self):
+        if not self.no_input:
+            question = {
+                'type': self.type,
+                'name': self.name,
+                'message': self.message,
+                'choices': self.choices,
+            }
+            if self.default:
+                question.update({'default': self.default})
+
+            response = prompt([question])
+            if self.name != 'tmp':
+                return response
+            else:
+                return response['tmp']
+        elif self.default:
+            return self.default
         else:
-            return prompt([self.operator_dict])
+            # When no_input then return empty list
+            return []

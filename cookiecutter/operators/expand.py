@@ -7,6 +7,7 @@ from __future__ import print_function
 import logging
 from PyInquirer import prompt
 
+from typing import Union, List, Dict
 from cookiecutter.operators import BaseOperator
 
 logger = logging.getLogger(__name__)
@@ -25,20 +26,29 @@ class InquirerExpandOperator(BaseOperator):
     :return: List of answers
     """
 
-    type = 'expand'
+    type: str = 'expand'
 
-    def __init__(self, *args, **kwargs):  # noqa
-        super(InquirerExpandOperator, self).__init__(*args, **kwargs)
+    default: Union[Dict, List[str], str] = None
+    name: str = 'tmp'
+    message: str = None
 
-    def _execute(self):
+    def execute(self):
         if not self.no_input:
-            if 'name' not in self.operator_dict:
-                self.operator_dict.update({'name': 'tmp'})
-                return prompt([self.operator_dict])['tmp']
+            question = {
+                'type': self.type,
+                'name': self.name,
+                'message': self.message,
+            }
+            if self.default:
+                question.update({'default': self.default})
+
+            response = prompt([question])
+            if self.name != 'tmp':
+                return response
             else:
-                return prompt([self.operator_dict])
-        elif 'default' in self.operator_dict:
-            return self.operator_dict['default']
+                return response['tmp']
+        elif self.default:
+            return self.default
         else:
             # When no_input then return empty list
             return []
