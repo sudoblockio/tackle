@@ -21,7 +21,7 @@ def get_vars(context_key=None, cc_dict=None):
         'platform': platform.platform(),
         'release': platform.release(),
         'version': platform.version(),
-        'processor': platform.processor,
+        'processor': platform.processor(),
         'architecture': platform.architecture(),
         'calling_directory': cc.main.calling_directory,  # noqa
         'cookiecutter_gen': cc.repository.cookiecutter_gen,  # noqa
