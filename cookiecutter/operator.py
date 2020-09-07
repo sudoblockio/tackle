@@ -37,7 +37,12 @@ def run_operator(
             operator_dict['type'] == inspect.signature(o).parameters['type'].default
         ):  # noqa
             logger.debug("Using the %s operator" % operator_dict['type'])
-            # context_key_new = copy.deepcopy(context_key)
+
+            # Fix operator special keys
+            if 'no_input' in operator_dict:
+                no_input = operator_dict['no_input']
+                operator_dict.pop('no_input')
+
             operator = o(
                 **operator_dict,
                 context=context,
