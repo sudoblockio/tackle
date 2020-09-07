@@ -82,20 +82,17 @@ def render_variable(env, raw, cc_dict, context_key):
     if cc.repository.cookiecutter_gen == 'nukikata':  # noqa
         # Nukikata evaluates dicts, lists, and bools as literals where as cookiecutter
         # renders them to string
-        LIST_REGEX = r'^\[.*\]$'
-        if bool(re.search(LIST_REGEX, rendered_template)):
-            """If variable looks like list, return literal list"""
-            return ast.literal_eval(rendered_template)
 
-        DICT_REGEX = r'^\{.*\}$'
-        if bool(re.search(DICT_REGEX, rendered_template)):
-            """If variable looks like dict, return literal dict"""
-            return ast.literal_eval(rendered_template)
-
-        # Getting errors for booleans converted to strings
-        BOOL_REGEX = r'^True$|^False$'
-        if bool(re.search(BOOL_REGEX, rendered_template)):
-            """If variable looks like dict, return literal dict"""
-            return ast.literal_eval(rendered_template)
+        REGEX = [
+            r'^\[.*\]$',  # List
+            r'^\{.*\}$',  # Dict
+            r'^True$|^False$',  # Boolean
+            r'^\d+$',  # Integer
+            r'^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$',  # Float
+        ]
+        for r in REGEX:
+            if bool(re.search(r, rendered_template)):
+                """If variable looks like list, return literal list"""
+                return ast.literal_eval(rendered_template)
 
     return rendered_template
