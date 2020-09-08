@@ -4,11 +4,14 @@ import tempfile
 from zipfile import BadZipFile, ZipFile
 
 import requests
+import logging
 
 from cookiecutter.exceptions import InvalidZipRepository
 from cookiecutter.prompt import read_repo_password
-from cookiecutter.utils import prompt_and_delete
+from cookiecutter.utils2.prompt_delete import prompt_and_delete
 from cookiecutter.utils2.paths import make_sure_path_exists
+
+logger = logging.getLogger(__name__)
 
 
 def unzip(zip_uri, is_url, clone_to_dir='.', no_input=False, password=None):

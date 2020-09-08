@@ -5,8 +5,9 @@ from collections import OrderedDict
 
 import hcl
 import yaml
+import logging
 
-from cookiecutter.utils import logger
+logger = logging.getLogger(__name__)
 
 
 def read_config_file(file):

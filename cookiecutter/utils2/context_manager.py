@@ -1,6 +1,10 @@
 """Function to handle directory context."""
+import logging
 import contextlib
 import os
+
+
+logger = logging.getLogger(__name__)
 
 
 @contextlib.contextmanager
