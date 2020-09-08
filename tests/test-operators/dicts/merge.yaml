@@ -12,7 +12,7 @@ dict_map:
 
 merge_map:
   type: merge
-  dict: "{{ merge.dict_map }}"
+  src: "{{ merge.dict_map }}"
   input: "{{ merge.input_map }}"
 
 output:

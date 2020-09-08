@@ -1,6 +1,8 @@
 ---
 
-things: yes please
+things:
+  type: stat
+  input: yes please
 
 before:
   type: yaml

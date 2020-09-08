@@ -14,17 +14,19 @@ a_map:
 
 pop_map:
   type: pop
-  dict: "{{ pop.a_map }}"
+  src: "{{ pop.a_map }}"
   item: stuff
 
 pop_maps:
   type: pop
-  dict: "{{ pop.a_map }}"
+  src: "{{ pop.a_map }}"
   item:
     - stuff
     - things
 
-output:
-  type: yaml
-  path: output-pop.yaml
-  contents: "{{ pop }}"
+
+
+#output:
+#  type: yaml
+#  path: output-pop.yaml
+#  contents: "{{ pop }}"

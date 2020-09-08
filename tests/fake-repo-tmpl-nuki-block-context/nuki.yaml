@@ -1,5 +1,7 @@
 ---
-foo: bar
+foo:
+  type: stat
+  input: bar
 
 #debug:
 #  type: print
@@ -27,7 +29,6 @@ blocker:
       merge: true
       template: .
       context_file: stuff.yaml
-      no_input: true
       chdir: stuffs
       existing_context: "{{ nuki }}"
 #    yaml2:

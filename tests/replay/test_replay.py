@@ -3,7 +3,8 @@ import os
 
 import pytest
 
-from cookiecutter import exceptions, main, replay
+from cookiecutter import main, replay
+from cookiecutter import exceptions
 
 
 @pytest.mark.parametrize("replay_file_name", ['bar', 'bar.json'])

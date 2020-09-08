@@ -19,7 +19,7 @@ dict_map:
 
 update_map:
   type: update
-  dict: "{{ update.input_map }}"
+  src: "{{ update.input_map }}"
   input:
     stuff: "{{ update.dict_map }}"
 

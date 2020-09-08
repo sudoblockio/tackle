@@ -3,7 +3,6 @@
 """Tests dict input objects for `cookiecutter.prompt` module."""
 import os
 
-from cookiecutter.operator import run_operator, parse_operator
 from cookiecutter.main import cookiecutter
 
 
@@ -48,20 +47,3 @@ context = {
         'details': {"type": "command", "command": "ls " + base_dir},
     }
 }
-
-
-def test_command():
-    """Verify simplest functionality."""
-    if os.name == 'nt':
-        # Not testing windows
-        pass
-
-    else:
-        operator_output, delayed_output = run_operator(
-            context['cookiecutter']['details'], context
-        )
-        assert 'nuki.yaml' in operator_output
-        assert not delayed_output
-
-        cookiecutter_dict = parse_operator(context, 'details', {})
-        assert 'nuki.yaml' in cookiecutter_dict['details']

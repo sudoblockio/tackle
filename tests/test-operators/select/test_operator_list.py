@@ -33,3 +33,14 @@ def test_operator_select(monkeypatch, tmpdir):
         '.', context_file='list_ok.yaml', no_input=True, output_dir=str(tmpdir)
     )
     assert output
+
+
+# class TestOperatorSelect:
+#     @pytest.mark.parametrize('clean_operator', [['var1', 'var2']], indirect=True)
+#     def thing(self, clean_operator):
+
+# import pytest
+#
+# @pytest.mark.usefixtures('clean_operator', items=[1,2])
+# def test_thing():
+#     assert 1 == 1

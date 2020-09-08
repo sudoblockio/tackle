@@ -3,7 +3,8 @@ import os
 
 import pytest
 
-from cookiecutter import exceptions, repository
+from cookiecutter import repository
+from cookiecutter import exceptions
 
 
 @pytest.mark.parametrize(

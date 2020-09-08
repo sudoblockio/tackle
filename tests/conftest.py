@@ -5,7 +5,7 @@ import shutil
 
 import pytest
 
-from cookiecutter import utils
+import cookiecutter.utils2.paths
 
 
 USER_CONFIG = """
@@ -22,7 +22,7 @@ def backup_dir(original_dir, backup_dir):
 
     # Remove existing backups before backing up. If they exist, they're stale.
     if os.path.isdir(backup_dir):
-        utils.rmtree(backup_dir)
+        cookiecutter.utils2.paths.rmtree(backup_dir)
 
     shutil.copytree(original_dir, backup_dir)
     return True
@@ -37,18 +37,18 @@ def restore_backup_dir(original_dir, backup_dir, original_dir_found):
         # Delete the created original_dir as long as a backup
         # exists
         if original_dir_is_dir and os.path.isdir(backup_dir):
-            utils.rmtree(original_dir)
+            cookiecutter.utils2.paths.rmtree(original_dir)
     else:
         # Delete the created original_dir.
         # There's no backup because it never existed
         if original_dir_is_dir:
-            utils.rmtree(original_dir)
+            cookiecutter.utils2.paths.rmtree(original_dir)
 
     # Restore the user's default original_dir contents
     if os.path.isdir(backup_dir):
         shutil.copytree(backup_dir, original_dir)
     if os.path.isdir(original_dir):
-        utils.rmtree(backup_dir)
+        cookiecutter.utils2.paths.rmtree(backup_dir)
 
 
 @pytest.fixture(scope='function')
@@ -181,3 +181,20 @@ def user_config_file(user_dir, user_config_data):
 def disable_poyo_logging():
     """Fixture that disables poyo logging."""
     logging.getLogger('poyo').setLevel(logging.WARNING)
+
+
+# def clean_items(items):
+#     print(items)
+#     # for f in items:
+#     #     if os.path.isfile(f):
+#     #         os.remove(f)
+#     #     elif os.path.isdir(f):
+#     #         os.rmdir(f)
+#
+#
+# @pytest.fixture(autouse=True)
+# def clean_operator(items):
+#     clean_items(items)
+#     yield
+#     # clean_items(items)
+#     pass

@@ -15,15 +15,15 @@ def test_operator_dicts(monkeypatch, tmpdir):
     """Verify the operator call works successfully."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
     _clean_outputs()
-    output = cookiecutter(
-        '.', context_file='merge.yaml', no_input=True, output_dir=str(tmpdir)
-    )
-    assert output
-
-    output = cookiecutter(
-        '.', context_file='update.yaml', no_input=True, output_dir=str(tmpdir)
-    )
-    assert output
+    # output = cookiecutter(
+    #     '.', context_file='merge.yaml', no_input=True, output_dir=str(tmpdir)
+    # )
+    # assert output
+    #
+    # output = cookiecutter(
+    #     '.', context_file='update.yaml', no_input=True, output_dir=str(tmpdir)
+    # )
+    # assert output
 
     output = cookiecutter(
         '.', context_file='pop.yaml', no_input=True, output_dir=str(tmpdir)

@@ -1,6 +1,8 @@
 ---
 
-stuff: Indeed
+stuff:
+  type: stat
+  input: Indeed
 
 #before:
 #  type: yaml

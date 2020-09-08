@@ -1,0 +1,49 @@
+# Top Level
+
+# This would be a template or source to bring into the context
+#
+__import: https://github.com/insight-infrastructure/nukikata
+# or
+---
+__import:
+  - https://github.com/insight-infrastructure/nukikata
+
+# We should be able to point to a path that is local to pull in
+# another operator function
+__extra_operator: some_operator.py
+# or
+---
+__extra_operator:
+  - some_operator.py
+
+# Initialize the directory to execute in.
+__chdir: ./some/dir
+
+---
+# Base
+foo:
+  bar:
+    baz:
+      type: confirm
+      message: You baz?
+  bing: thing
+---
+# Rendered
+foo:
+  bar:
+    baz: true
+  bing: thing
+
+---
+# Complex
+
+stuff: "{{ foo }}"
+---
+# Rendered
+stuff:
+  foo:
+    bar:
+      baz: true
+    bing: thing
+
+

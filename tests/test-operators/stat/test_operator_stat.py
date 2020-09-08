@@ -14,8 +14,8 @@ def test_operator_stat(monkeypatch, tmpdir):
     assert output['a_list_remove'] == ['things']
     assert output['map_update'] == {'stuff': {'dogs': 'cats'}, 'foo': 'bar'}
     assert output['map_merge'] == {
-        'stuff': {'things': '3', 'dogs': 'cats'},
+        'stuff': {'things': 3, 'dogs': 'cats'},
         'foo': 'bar',
     }
-    assert output['loop_merge'][1] == {'stuff': {'things': '1'}, 'foo': 'bar'}
+    assert output['loop_merge'][1] == {'stuff': {'things': 1}, 'foo': 'bar'}
     assert output['boolean']

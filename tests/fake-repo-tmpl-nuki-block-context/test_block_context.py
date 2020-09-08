@@ -17,7 +17,8 @@ def test_block_context(monkeypatch, tmpdir):
     if os.path.exists(inner_yaml):
         os.remove(inner_yaml)
 
-    context = cookiecutter('.', no_input=True, output_dir=str(tmpdir))
+    # context = cookiecutter('.', no_input=True, output_dir=str(tmpdir))
+    context = cookiecutter('.', output_dir=str(tmpdir))
 
     assert context['foo'] == 'bar'
     with open(inner_yaml) as f:
