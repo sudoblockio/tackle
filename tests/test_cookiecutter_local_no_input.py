@@ -107,8 +107,8 @@ def test_cookiecutter_dict_values_in_context(monkeypatch):
         contents = fh.read()
 
     assert (
-        contents ==
-        textwrap.dedent(
+        contents
+        == textwrap.dedent(
             """
         # README
 
