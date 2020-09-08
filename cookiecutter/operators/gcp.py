@@ -47,7 +47,7 @@ class GcpAzsOperator(BaseOperator):
 
     type: str = 'gcp_azs'
     gcp_project: str
-    region: str
+    region: str = None
     regions: list = None
 
     def execute(self):
