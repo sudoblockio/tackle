@@ -7,7 +7,7 @@ import sys
 import pytest
 from click.testing import CliRunner
 
-from cookiecutter import utils
+from cookiecutter.utils2.paths import rmtree
 from cookiecutter.__main__ import main
 from cookiecutter.main import cookiecutter
 
@@ -30,7 +30,7 @@ def remove_fake_project_dir(request):
 
     def fin_remove_fake_project_dir():
         if os.path.isdir('fake-project'):
-            utils.rmtree('fake-project')
+            rmtree('fake-project')
 
     request.addfinalizer(fin_remove_fake_project_dir)
 

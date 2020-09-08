@@ -11,7 +11,7 @@ from typing import Dict
 from cookiecutter.environment import StrictEnvironment
 from cookiecutter.exceptions import UndefinedVariableInTemplate
 from cookiecutter.render import render_variable
-from cookiecutter.context_manager import work_in
+from cookiecutter.utils2.context_manager import work_in
 
 
 def read_user_variable(var_name, default_value):
@@ -179,26 +179,26 @@ def parse_context(context, env, cc_dict, context_key, no_input: bool):
     for key, raw in context[context_key].items():
         if key.startswith('_') and not key.startswith('__'):
             continue
-        try:
-            if isinstance(raw, dict):
-                # dict parsing logic
-                if 'type' not in raw:
-                    val = render_variable(env, raw, cc_dict, context_key)
-                    if not no_input:
-                        val = read_user_dict(key, val)
-                    cc_dict[key] = val
-                else:
-                    cc_dict = parse_operator(
-                        context,
-                        key,
-                        dict(cc_dict),
-                        no_input=no_input,
-                        context_key=context_key,
-                    )
+        # try:
+        if isinstance(raw, dict):
+            # dict parsing logic
+            if 'type' not in raw:
+                val = render_variable(env, raw, cc_dict, context_key)
+                if not no_input:
+                    val = read_user_dict(key, val)
+                cc_dict[key] = val
+            else:
+                cc_dict = parse_operator(
+                    context,
+                    key,
+                    dict(cc_dict),
+                    no_input=no_input,
+                    context_key=context_key,
+                )
 
-        except UndefinedError as err:
-            msg = "Unable to render variable '{}'".format(key)
-            raise UndefinedVariableInTemplate(msg, err, context)
+        # except UndefinedError as err:
+        #     msg = "Unable to render variable '{}'".format(key)
+        #     raise UndefinedVariableInTemplate(msg, err, context)
 
     return cc_dict
 

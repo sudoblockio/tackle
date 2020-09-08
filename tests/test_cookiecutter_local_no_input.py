@@ -8,7 +8,8 @@ import textwrap
 
 import pytest
 
-from cookiecutter import main, utils
+import cookiecutter.utils2.paths
+from cookiecutter import main
 
 
 @pytest.fixture(scope='function')
@@ -18,15 +19,15 @@ def remove_additional_dirs(monkeypatch, request):
 
     def fin_remove_additional_dirs():
         if os.path.isdir('fake-project'):
-            utils.rmtree('fake-project')
+            cookiecutter.utils2.paths.rmtree('fake-project')
         if os.path.isdir('fake-project-extra'):
-            utils.rmtree('fake-project-extra')
+            cookiecutter.utils2.paths.rmtree('fake-project-extra')
         if os.path.isdir('fake-project-templated'):
-            utils.rmtree('fake-project-templated')
+            cookiecutter.utils2.paths.rmtree('fake-project-templated')
         if os.path.isdir('fake-project-dict'):
-            utils.rmtree('fake-project-dict')
+            cookiecutter.utils2.paths.rmtree('fake-project-dict')
         if os.path.isdir('fake-tmp'):
-            utils.rmtree('fake-tmp')
+            cookiecutter.utils2.paths.rmtree('fake-tmp')
 
     request.addfinalizer(fin_remove_additional_dirs)
 
@@ -106,8 +107,7 @@ def test_cookiecutter_dict_values_in_context(monkeypatch):
         contents = fh.read()
 
     assert (
-        contents
-        == textwrap.dedent(
+        contents == textwrap.dedent(
             """
         # README
 

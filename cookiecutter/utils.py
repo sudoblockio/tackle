@@ -1,60 +1,12 @@
 """Helper functions used throughout Cookiecutter."""
-import errno
 import logging
 import os
-import shutil
-import stat
 import sys
-import json
-import yaml
-import hcl
-from _collections import OrderedDict
 
 from cookiecutter.prompt import read_user_yes_no
+from cookiecutter.utils2.paths import rmtree
 
 logger = logging.getLogger(__name__)
-
-
-def force_delete(func, path, exc_info):
-    """Error handler for `shutil.rmtree()` equivalent to `rm -rf`.
-
-    Usage: `shutil.rmtree(path, onerror=force_delete)`
-    From stackoverflow.com/questions/1889597
-    """
-    os.chmod(path, stat.S_IWRITE)
-    func(path)
-
-
-def rmtree(path):
-    """Remove a directory and all its contents. Like rm -rf on Unix.
-
-    :param path: A directory path.
-    """
-    shutil.rmtree(path, onerror=force_delete)
-
-
-def make_sure_path_exists(path):
-    """Ensure that a directory exists.
-
-    :param path: A directory path.
-    """
-    logger.debug('Making sure path exists: %s', path)
-    try:
-        os.makedirs(path)
-        logger.debug('Created directory at: %s', path)
-    except OSError as exception:
-        if exception.errno != errno.EEXIST:
-            return False
-    return True
-
-
-def make_executable(script_path):
-    """Make `script_path` executable.
-
-    :param script_path: The file to change
-    """
-    status = os.stat(script_path)
-    os.chmod(script_path, status.st_mode | stat.S_IEXEC)
 
 
 def prompt_and_delete(path, no_input=False):
@@ -93,34 +45,3 @@ def prompt_and_delete(path, no_input=False):
             return False
 
         sys.exit()
-
-
-def read_config_file(file):
-    """Read files into objects."""
-    file_extension = file.split('.')[-1]
-
-    if not os.path.exists(file):
-        raise FileNotFoundError
-
-    logger.debug(
-        'Using \"{}\" as input file and \"{}\" as file extension'.format(
-            file, file_extension
-        )
-    )
-    if file_extension == 'json':
-        with open(file) as f:
-            config = json.load(f, object_pairs_hook=OrderedDict)
-        return config
-    elif file_extension in ('yaml', 'yml', 'nukirc'):
-        with open(file, encoding='utf-8') as f:
-            config = yaml.load(f, Loader=yaml.FullLoader)
-        return config
-    elif file_extension == 'hcl':
-        with open(file) as f:
-            config = hcl.loads(f.read())
-        return config
-    else:
-        raise ValueError(
-            'Unable to parse file {}. Error: Unsupported extension (json/yaml only)'
-            ''.format(file)
-        )  # noqa

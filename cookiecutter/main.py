@@ -15,7 +15,7 @@ from cookiecutter.generate import generate_context, generate_files
 from cookiecutter.prompt import prompt_for_config
 from cookiecutter.replay import dump, load
 from cookiecutter.repository import determine_repo_dir
-from cookiecutter.utils import rmtree
+from cookiecutter.utils2.paths import rmtree
 
 logger = logging.getLogger(__name__)
 

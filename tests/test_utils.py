@@ -5,7 +5,9 @@ from pathlib import Path
 
 import pytest
 
-import cookiecutter.context_manager
+import cookiecutter.utils2.context_manager
+import cookiecutter.utils2.paths
+import cookiecutter.utils2.reader
 from cookiecutter import utils
 
 
@@ -25,7 +27,7 @@ def test_rmtree(tmp_path):
         f.write("Test data")
     make_readonly(Path(tmp_path, 'bar'))
 
-    utils.rmtree(tmp_path)
+    cookiecutter.utils2.paths.rmtree(tmp_path)
 
     assert not Path(tmp_path).exists()
 
@@ -43,8 +45,8 @@ def test_make_sure_path_exists(tmp_path):
     existing_directory = tmp_path
     directory_to_create = Path(tmp_path, "not_yet_created")
 
-    assert utils.make_sure_path_exists(existing_directory)
-    assert utils.make_sure_path_exists(directory_to_create)
+    assert cookiecutter.utils2.paths.make_sure_path_exists(existing_directory)
+    assert cookiecutter.utils2.paths.make_sure_path_exists(directory_to_create)
 
     # Ensure by base system methods.
     assert existing_directory.is_dir()
@@ -66,7 +68,7 @@ def test_make_sure_path_exists_correctly_handle_os_error(mocker):
     mocker.patch("os.makedirs", raiser)
     uncreatable_directory = Path('protected_path')
 
-    assert not utils.make_sure_path_exists(uncreatable_directory)
+    assert not cookiecutter.utils2.paths.make_sure_path_exists(uncreatable_directory)
 
 
 @pytest.mark.skipif(
@@ -81,7 +83,7 @@ def test_work_in(tmp_path):
     assert ch_to != Path.cwd()
 
     # Under context manager we should work in tmp_path.
-    with cookiecutter.context_manager.work_in(ch_to):
+    with cookiecutter.utils2.context_manager.work_in(ch_to):
         assert ch_to == Path.cwd()
 
     # Make sure we return to the correct folder
@@ -228,5 +230,5 @@ def test_prompt_should_not_ask_if_no_input_and_rm_repo_file(mocker, tmp_path):
 )
 def test_valid_read_config_file(valid_config_file):
     """Validate generic reader works properly."""
-    output = utils.read_config_file(valid_config_file)
+    output = cookiecutter.utils2.reader.read_config_file(valid_config_file)
     assert output == {'project_slug': 'best_eva', 'stuff': 'things'}

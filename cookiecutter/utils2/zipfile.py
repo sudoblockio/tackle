@@ -7,7 +7,8 @@ import requests
 
 from cookiecutter.exceptions import InvalidZipRepository
 from cookiecutter.prompt import read_repo_password
-from cookiecutter.utils import make_sure_path_exists, prompt_and_delete
+from cookiecutter.utils import prompt_and_delete
+from cookiecutter.utils2.paths import make_sure_path_exists
 
 
 def unzip(zip_uri, is_url, clone_to_dir='.', no_input=False, password=None):

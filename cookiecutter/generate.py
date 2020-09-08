@@ -19,11 +19,11 @@ from cookiecutter.exceptions import (
 )
 from cookiecutter.find import find_template
 from cookiecutter.hooks import run_hook
-from cookiecutter.utils import read_config_file
+from cookiecutter.utils2.reader import read_config_file
 
 from cookiecutter.operator import post_gen_operator_list
-from cookiecutter.utils import make_sure_path_exists, rmtree
-from cookiecutter.context_manager import work_in
+from cookiecutter.utils2.paths import rmtree, make_sure_path_exists
+from cookiecutter.utils2.context_manager import work_in
 
 logger = logging.getLogger(__name__)
 

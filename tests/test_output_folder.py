@@ -8,9 +8,9 @@ import os
 
 import pytest
 
+import cookiecutter.utils2.paths
 from cookiecutter import exceptions
 from cookiecutter import generate
-from cookiecutter import utils
 
 
 @pytest.fixture(scope='function')
@@ -19,7 +19,7 @@ def remove_output_folder(monkeypatch, request):
     monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__))))
     yield
     if os.path.exists('output_folder'):
-        utils.rmtree('output_folder')
+        cookiecutter.utils2.paths.rmtree('output_folder')
 
 
 @pytest.mark.usefixtures('clean_system', 'remove_output_folder')

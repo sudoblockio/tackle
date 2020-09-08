@@ -12,8 +12,7 @@ import sys
 import shutil
 import pytest
 
-
-from cookiecutter import utils
+import cookiecutter.utils2.paths
 
 
 @pytest.fixture
@@ -22,7 +21,7 @@ def project_dir():
     yield 'fake-project-templated'
 
     if os.path.isdir('fake-project-templated'):
-        utils.rmtree('fake-project-templated')
+        cookiecutter.utils2.paths.rmtree('fake-project-templated')
 
 
 @pytest.mark.usefixtures('clean_system')

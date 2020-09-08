@@ -10,7 +10,8 @@ from cookiecutter.exceptions import (
     UnknownRepoType,
     VCSNotInstalled,
 )
-from cookiecutter.utils import make_sure_path_exists, prompt_and_delete
+from cookiecutter.utils import prompt_and_delete
+from cookiecutter.utils2.paths import make_sure_path_exists
 
 logger = logging.getLogger(__name__)
 
