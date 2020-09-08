@@ -3,7 +3,7 @@ import logging
 
 import pytest
 
-from cookiecutter.log import configure_logger
+from cookiecutter.utils2.log import configure_logger
 
 
 def create_log_records():
