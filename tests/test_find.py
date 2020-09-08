@@ -3,7 +3,7 @@ import os
 
 import pytest
 
-from cookiecutter import find
+from cookiecutter.utils2 import find
 
 
 @pytest.fixture(params=['fake-repo-pre', 'fake-repo-pre2'])

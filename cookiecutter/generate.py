@@ -17,7 +17,7 @@ from cookiecutter.exceptions import (
     OutputDirExistsException,
     UndefinedVariableInTemplate,
 )
-from cookiecutter.find import find_template
+from cookiecutter.utils2.find import find_template
 from cookiecutter.hooks import run_hook
 from cookiecutter.utils2.reader import read_config_file
 
