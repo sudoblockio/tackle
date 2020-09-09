@@ -17,13 +17,13 @@ from cookiecutter.exceptions import (
     OutputDirExistsException,
     UndefinedVariableInTemplate,
 )
-from cookiecutter.utils2.find import find_template
+from cookiecutter.utils.find import find_template
 from cookiecutter.hooks import run_hook
-from cookiecutter.utils2.reader import read_config_file
+from cookiecutter.utils.reader import read_config_file
 
 from cookiecutter.operator import post_gen_operator_list
-from cookiecutter.utils2.paths import rmtree, make_sure_path_exists
-from cookiecutter.utils2.context_manager import work_in
+from cookiecutter.utils.paths import rmtree, make_sure_path_exists
+from cookiecutter.utils.context_manager import work_in
 
 logger = logging.getLogger(__name__)
 

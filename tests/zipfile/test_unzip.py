@@ -3,7 +3,7 @@ import tempfile
 
 import pytest
 
-from cookiecutter.utils2 import zipfile
+from cookiecutter.utils import zipfile
 from cookiecutter.exceptions import InvalidZipRepository
 
 
@@ -19,7 +19,7 @@ def mock_download():
 def test_unzip_local_file(mocker, tmpdir):
     """Local file reference can be unzipped."""
     mock_prompt_and_delete = mocker.patch(
-        'cookiecutter.utils2.zipfile.prompt_and_delete',
+        'cookiecutter.utils.zipfile.prompt_and_delete',
         return_value=True,
         autospec=True,
     )
@@ -37,7 +37,7 @@ def test_unzip_local_file(mocker, tmpdir):
 def test_unzip_protected_local_file_environment_password(mocker, tmpdir):
     """In `unzip()`, the environment can be used to provide a repo password."""
     mock_prompt_and_delete = mocker.patch(
-        'cookiecutter.utils2.zipfile.prompt_and_delete',
+        'cookiecutter.utils.zipfile.prompt_and_delete',
         return_value=True,
         autospec=True,
     )
@@ -58,7 +58,7 @@ def test_unzip_protected_local_file_environment_password(mocker, tmpdir):
 def test_unzip_protected_local_file_bad_environment_password(mocker, tmpdir):
     """In `unzip()`, an error occurs if the environment has a bad password."""
     mocker.patch(
-        'cookiecutter.utils2.zipfile.prompt_and_delete',
+        'cookiecutter.utils.zipfile.prompt_and_delete',
         return_value=True,
         autospec=True,
     )
@@ -77,7 +77,7 @@ def test_unzip_protected_local_file_bad_environment_password(mocker, tmpdir):
 def test_unzip_protected_local_file_user_password_with_noinput(mocker, tmpdir):
     """Can't unpack a password-protected repo in no_input mode."""
     mocker.patch(
-        'cookiecutter.utils2.zipfile.prompt_and_delete',
+        'cookiecutter.utils.zipfile.prompt_and_delete',
         return_value=True,
         autospec=True,
     )
@@ -96,13 +96,11 @@ def test_unzip_protected_local_file_user_password_with_noinput(mocker, tmpdir):
 def test_unzip_protected_local_file_user_password(mocker, tmpdir):
     """A password-protected local file reference can be unzipped."""
     mock_prompt_and_delete = mocker.patch(
-        'cookiecutter.utils2.zipfile.prompt_and_delete',
+        'cookiecutter.utils.zipfile.prompt_and_delete',
         return_value=True,
         autospec=True,
     )
-    mocker.patch(
-        'cookiecutter.utils2.zipfile.read_repo_password', return_value='sekrit'
-    )
+    mocker.patch('cookiecutter.utils.zipfile.read_repo_password', return_value='sekrit')
 
     clone_to_dir = tmpdir.mkdir('clone')
 
@@ -119,12 +117,12 @@ def test_unzip_protected_local_file_user_password(mocker, tmpdir):
 def test_unzip_protected_local_file_user_bad_password(mocker, tmpdir):
     """Error in `unzip()`, if user can't provide a valid password."""
     mocker.patch(
-        'cookiecutter.utils2.zipfile.prompt_and_delete',
+        'cookiecutter.utils.zipfile.prompt_and_delete',
         return_value=True,
         autospec=True,
     )
     mocker.patch(
-        'cookiecutter.utils2.zipfile.read_repo_password',
+        'cookiecutter.utils.zipfile.read_repo_password',
         return_value='not-the-right-password',
     )
 
@@ -141,7 +139,7 @@ def test_unzip_protected_local_file_user_bad_password(mocker, tmpdir):
 def test_empty_zip_file(mocker, tmpdir):
     """In `unzip()`, an empty file raises an error."""
     mocker.patch(
-        'cookiecutter.utils2.zipfile.prompt_and_delete',
+        'cookiecutter.utils.zipfile.prompt_and_delete',
         return_value=True,
         autospec=True,
     )
@@ -157,7 +155,7 @@ def test_empty_zip_file(mocker, tmpdir):
 def test_non_repo_zip_file(mocker, tmpdir):
     """In `unzip()`, a repository must have a top level directory."""
     mocker.patch(
-        'cookiecutter.utils2.zipfile.prompt_and_delete',
+        'cookiecutter.utils.zipfile.prompt_and_delete',
         return_value=True,
         autospec=True,
     )
@@ -173,7 +171,7 @@ def test_non_repo_zip_file(mocker, tmpdir):
 def test_bad_zip_file(mocker, tmpdir):
     """In `unzip()`, a corrupted zip file raises an error."""
     mocker.patch(
-        'cookiecutter.utils2.zipfile.prompt_and_delete',
+        'cookiecutter.utils.zipfile.prompt_and_delete',
         return_value=True,
         autospec=True,
     )
@@ -189,7 +187,7 @@ def test_bad_zip_file(mocker, tmpdir):
 def test_unzip_url(mocker, tmpdir):
     """In `unzip()`, a url will be downloaded and unzipped."""
     mock_prompt_and_delete = mocker.patch(
-        'cookiecutter.utils2.zipfile.prompt_and_delete',
+        'cookiecutter.utils.zipfile.prompt_and_delete',
         return_value=True,
         autospec=True,
     )
@@ -198,7 +196,7 @@ def test_unzip_url(mocker, tmpdir):
     request.iter_content.return_value = mock_download()
 
     mocker.patch(
-        'cookiecutter.utils2.zipfile.requests.get', return_value=request, autospec=True,
+        'cookiecutter.utils.zipfile.requests.get', return_value=request, autospec=True,
     )
 
     clone_to_dir = tmpdir.mkdir('clone')
@@ -216,7 +214,7 @@ def test_unzip_url(mocker, tmpdir):
 def test_unzip_url_existing_cache(mocker, tmpdir):
     """Url should be downloaded and unzipped, old zip file will be removed."""
     mock_prompt_and_delete = mocker.patch(
-        'cookiecutter.utils2.zipfile.prompt_and_delete',
+        'cookiecutter.utils.zipfile.prompt_and_delete',
         return_value=True,
         autospec=True,
     )
@@ -225,7 +223,7 @@ def test_unzip_url_existing_cache(mocker, tmpdir):
     request.iter_content.return_value = mock_download()
 
     mocker.patch(
-        'cookiecutter.utils2.zipfile.requests.get', return_value=request, autospec=True,
+        'cookiecutter.utils.zipfile.requests.get', return_value=request, autospec=True,
     )
 
     clone_to_dir = tmpdir.mkdir('clone')
@@ -250,7 +248,7 @@ def test_unzip_url_existing_cache_no_input(mocker, tmpdir):
     request.iter_content.return_value = mock_download()
 
     mocker.patch(
-        'cookiecutter.utils2.zipfile.requests.get', return_value=request, autospec=True,
+        'cookiecutter.utils.zipfile.requests.get', return_value=request, autospec=True,
     )
 
     clone_to_dir = tmpdir.mkdir('clone')
@@ -272,13 +270,13 @@ def test_unzip_url_existing_cache_no_input(mocker, tmpdir):
 def test_unzip_should_abort_if_no_redownload(mocker, tmpdir):
     """Should exit without cloning anything If no redownload."""
     mocker.patch(
-        'cookiecutter.utils2.zipfile.prompt_and_delete',
+        'cookiecutter.utils.zipfile.prompt_and_delete',
         side_effect=SystemExit,
         autospec=True,
     )
 
     mock_requests_get = mocker.patch(
-        'cookiecutter.utils2.zipfile.requests.get', autospec=True,
+        'cookiecutter.utils.zipfile.requests.get', autospec=True,
     )
 
     clone_to_dir = tmpdir.mkdir('clone')

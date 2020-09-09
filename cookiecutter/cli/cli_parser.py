@@ -17,7 +17,7 @@ from cookiecutter.exceptions import (
     UndefinedVariableInTemplate,
     UnknownExtension,
 )
-from cookiecutter.utils2.log import configure_logger
+from cookiecutter.utils.log import configure_logger
 from cookiecutter.main import cookiecutter
 from cookiecutter.config import get_user_config
 

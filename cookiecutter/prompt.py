@@ -11,7 +11,7 @@ from typing import Dict
 from cookiecutter.environment import StrictEnvironment
 from cookiecutter.exceptions import UndefinedVariableInTemplate
 from cookiecutter.render import render_variable
-from cookiecutter.utils2.context_manager import work_in
+from cookiecutter.utils.context_manager import work_in
 
 
 def read_user_variable(var_name, default_value):

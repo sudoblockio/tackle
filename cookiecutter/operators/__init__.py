@@ -12,7 +12,7 @@ from typing import Dict, Optional, Any
 
 
 import cookiecutter as cc
-from cookiecutter.context_manager import work_in
+from cookiecutter.utils.context_manager import work_in
 
 logger = logging.getLogger(__name__)
 

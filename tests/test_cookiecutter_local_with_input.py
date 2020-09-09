@@ -3,7 +3,7 @@ import os
 
 import pytest
 
-import cookiecutter.utils2.paths
+import cookiecutter.utils.paths
 from cookiecutter import main
 
 
@@ -12,9 +12,9 @@ def remove_additional_dirs(request):
     """Remove special directories which are created during the tests."""
     yield
     if os.path.isdir('fake-project'):
-        cookiecutter.utils2.paths.rmtree('fake-project')
+        cookiecutter.utils.paths.rmtree('fake-project')
     if os.path.isdir('fake-project-input-extra'):
-        cookiecutter.utils2.paths.rmtree('fake-project-input-extra')
+        cookiecutter.utils.paths.rmtree('fake-project-input-extra')
 
 
 @pytest.mark.usefixtures('clean_system', 'remove_additional_dirs')

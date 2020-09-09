@@ -7,7 +7,7 @@ import sys
 import pytest
 from click.testing import CliRunner
 
-from cookiecutter.utils2.paths import rmtree
+from cookiecutter.utils.paths import rmtree
 from cookiecutter.__main__ import main
 from cookiecutter.main import cookiecutter
 

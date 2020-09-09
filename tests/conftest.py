@@ -5,7 +5,7 @@ import shutil
 
 import pytest
 
-import cookiecutter.utils2.paths
+import cookiecutter.utils.paths
 
 
 USER_CONFIG = """
@@ -22,7 +22,7 @@ def backup_dir(original_dir, backup_dir):
 
     # Remove existing backups before backing up. If they exist, they're stale.
     if os.path.isdir(backup_dir):
-        cookiecutter.utils2.paths.rmtree(backup_dir)
+        cookiecutter.utils.paths.rmtree(backup_dir)
 
     shutil.copytree(original_dir, backup_dir)
     return True
@@ -37,18 +37,18 @@ def restore_backup_dir(original_dir, backup_dir, original_dir_found):
         # Delete the created original_dir as long as a backup
         # exists
         if original_dir_is_dir and os.path.isdir(backup_dir):
-            cookiecutter.utils2.paths.rmtree(original_dir)
+            cookiecutter.utils.paths.rmtree(original_dir)
     else:
         # Delete the created original_dir.
         # There's no backup because it never existed
         if original_dir_is_dir:
-            cookiecutter.utils2.paths.rmtree(original_dir)
+            cookiecutter.utils.paths.rmtree(original_dir)
 
     # Restore the user's default original_dir contents
     if os.path.isdir(backup_dir):
         shutil.copytree(backup_dir, original_dir)
     if os.path.isdir(original_dir):
-        cookiecutter.utils2.paths.rmtree(backup_dir)
+        cookiecutter.utils.paths.rmtree(backup_dir)
 
 
 @pytest.fixture(scope='function')

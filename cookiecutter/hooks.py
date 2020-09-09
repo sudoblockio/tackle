@@ -6,7 +6,7 @@ import subprocess
 import sys
 import tempfile
 
-import cookiecutter.utils2.paths
+import cookiecutter.utils.paths
 from cookiecutter.environment import StrictEnvironment
 from cookiecutter.exceptions import FailedHookException
 
@@ -77,7 +77,7 @@ def run_script(script_path, cwd='.'):
     else:
         script_command = [script_path]
 
-    cookiecutter.utils2.paths.make_executable(script_path)
+    cookiecutter.utils.paths.make_executable(script_path)
 
     try:
         proc = subprocess.Popen(script_command, shell=run_thru_shell, cwd=cwd)

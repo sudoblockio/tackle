@@ -5,7 +5,7 @@ import sys
 
 import pytest
 
-import cookiecutter.utils2.paths
+import cookiecutter.utils.paths
 from cookiecutter import generate
 from cookiecutter.exceptions import FailedHookException
 
@@ -25,7 +25,7 @@ def remove_additional_folders(tmpdir):
     ]
     for directory in directories_to_delete:
         if os.path.exists(directory):
-            cookiecutter.utils2.paths.rmtree(directory)
+            cookiecutter.utils.paths.rmtree(directory)
 
 
 @pytest.mark.usefixtures('clean_system', 'remove_additional_folders')

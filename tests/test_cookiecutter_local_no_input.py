@@ -8,7 +8,7 @@ import textwrap
 
 import pytest
 
-import cookiecutter.utils2.paths
+import cookiecutter.utils.paths
 from cookiecutter import main
 
 
@@ -19,15 +19,15 @@ def remove_additional_dirs(monkeypatch, request):
 
     def fin_remove_additional_dirs():
         if os.path.isdir('fake-project'):
-            cookiecutter.utils2.paths.rmtree('fake-project')
+            cookiecutter.utils.paths.rmtree('fake-project')
         if os.path.isdir('fake-project-extra'):
-            cookiecutter.utils2.paths.rmtree('fake-project-extra')
+            cookiecutter.utils.paths.rmtree('fake-project-extra')
         if os.path.isdir('fake-project-templated'):
-            cookiecutter.utils2.paths.rmtree('fake-project-templated')
+            cookiecutter.utils.paths.rmtree('fake-project-templated')
         if os.path.isdir('fake-project-dict'):
-            cookiecutter.utils2.paths.rmtree('fake-project-dict')
+            cookiecutter.utils.paths.rmtree('fake-project-dict')
         if os.path.isdir('fake-tmp'):
-            cookiecutter.utils2.paths.rmtree('fake-tmp')
+            cookiecutter.utils.paths.rmtree('fake-tmp')
 
     request.addfinalizer(fin_remove_additional_dirs)
 
@@ -106,47 +106,46 @@ def test_cookiecutter_dict_values_in_context(monkeypatch):
     with open(os.path.join(project_dir, 'README.md')) as fh:
         contents = fh.read()
 
-    assert (
-        contents
-        == textwrap.dedent(
-            """
-        # README
+    output = textwrap.dedent(
+        """
+    # README
 
 
-        <dl>
-          <dt>Format name:</dt>
-          <dd>Bitmap</dd>
+    <dl>
+      <dt>Format name:</dt>
+      <dd>Bitmap</dd>
 
-          <dt>Extension:</dt>
-          <dd>bmp</dd>
+      <dt>Extension:</dt>
+      <dd>bmp</dd>
 
-          <dt>Applications:</dt>
-          <dd>
-              <ul>
-              <li>Paint</li>
-              <li>GIMP</li>
-              </ul>
-          </dd>
-        </dl>
+      <dt>Applications:</dt>
+      <dd>
+          <ul>
+          <li>Paint</li>
+          <li>GIMP</li>
+          </ul>
+      </dd>
+    </dl>
 
-        <dl>
-          <dt>Format name:</dt>
-          <dd>Portable Network Graphic</dd>
+    <dl>
+      <dt>Format name:</dt>
+      <dd>Portable Network Graphic</dd>
 
-          <dt>Extension:</dt>
-          <dd>png</dd>
+      <dt>Extension:</dt>
+      <dd>png</dd>
 
-          <dt>Applications:</dt>
-          <dd>
-              <ul>
-              <li>GIMP</li>
-              </ul>
-          </dd>
-        </dl>
+      <dt>Applications:</dt>
+      <dd>
+          <ul>
+          <li>GIMP</li>
+          </ul>
+      </dd>
+    </dl>
 
-    """
-        ).lstrip()
-    )
+"""
+    ).lstrip()
+
+    assert contents == output
 
 
 @pytest.mark.usefixtures('clean_system', 'remove_additional_dirs')

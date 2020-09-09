@@ -8,8 +8,8 @@ import logging
 
 from cookiecutter.exceptions import InvalidZipRepository
 from cookiecutter.prompt import read_repo_password
-from cookiecutter.utils2.prompt_delete import prompt_and_delete
-from cookiecutter.utils2.paths import make_sure_path_exists
+from cookiecutter.utils.prompt_delete import prompt_and_delete
+from cookiecutter.utils.paths import make_sure_path_exists
 
 logger = logging.getLogger(__name__)
 

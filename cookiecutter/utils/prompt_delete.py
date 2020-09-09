@@ -4,7 +4,7 @@ import os
 import sys
 
 from cookiecutter.prompt import read_user_yes_no
-from cookiecutter.utils2.paths import rmtree
+from cookiecutter.utils.paths import rmtree
 
 logger = logging.getLogger(__name__)
 
