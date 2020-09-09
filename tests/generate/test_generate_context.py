@@ -15,17 +15,17 @@ def context_data():
     Return ('input_params, expected_context') tuples.
     """
     context = (
-        {'context_file': 'tests/test-generate-context/test.json'},
+        {'context_file': 'tests/generate/test-generate-context/test.json'},
         {'test': {'1': 2, 'some_key': 'some_val'}},
     )
     # context_yaml = (
-    #     {'context_file': 'tests/test-generate-context/test.yaml'},
+    #     {'context_file': 'tests/generate/test-generate-context/test.yaml'},
     #     {'test': {'1': 2, 'some_key': 'some_val'}},
     # )
 
     context_with_default = (
         {
-            'context_file': 'tests/test-generate-context/test.json',
+            'context_file': 'tests/generate/test-generate-context/test.json',
             'default_context': {'1': 3},
         },
         {'test': {'1': 3, 'some_key': 'some_val'}},
@@ -33,7 +33,7 @@ def context_data():
 
     context_with_extra = (
         {
-            'context_file': 'tests/test-generate-context/test.json',
+            'context_file': 'tests/generate/test-generate-context/test.json',
             'extra_context': {'1': 4},
         },
         {'test': {'1': 4, 'some_key': 'some_val'}},
@@ -41,7 +41,7 @@ def context_data():
 
     context_with_default_and_extra = (
         {
-            'context_file': 'tests/test-generate-context/test.json',
+            'context_file': 'tests/generate/test-generate-context/test.json',
             'default_context': {'1': 3},
             'extra_context': {'1': 5},
         },
@@ -66,7 +66,9 @@ def test_generate_context(input_params, expected_context):
 def test_generate_context_with_json_decoding_error():
     """Verify malformed JSON file generates expected error output."""
     with pytest.raises(ContextDecodingException) as excinfo:
-        generate.generate_context('tests/test-generate-context/invalid-syntax.json')
+        generate.generate_context(
+            'tests/generate/test-generate-context/invalid-syntax.json'
+        )
     # original message from json module should be included
     pattern = 'Expecting \'{0,1}:\'{0,1} delimiter: line 1 column (19|20) \\(char 19\\)'
     assert re.search(pattern, str(excinfo.value))
@@ -74,7 +76,9 @@ def test_generate_context_with_json_decoding_error():
     # last part of the file. If we wanted to test the absolute path, we'd have
     # to do some additional work in the test which doesn't seem that needed at
     # this point.
-    path = os.path.sep.join(['tests', 'test-generate-context', 'invalid-syntax.json'])
+    path = os.path.sep.join(
+        ['tests', 'generate', 'test-generate-context', 'invalid-syntax.json']
+    )
     assert path in str(excinfo.value)
 
 
@@ -98,7 +102,7 @@ def test_default_context_replacement_in_generate_context():
     }
 
     generated_context = generate.generate_context(
-        context_file='tests/test-generate-context/choices_template.json',
+        context_file='tests/generate/test-generate-context/choices_template.json',
         default_context={
             'not_in_template': 'foobar',
             'project_name': 'Kivy Project',
@@ -116,7 +120,7 @@ def test_default_context_replacement_in_generate_context():
 def test_generate_context_decodes_non_ascii_chars(monkeypatch):
     """Verify `generate_context` correctly decodes non-ascii chars."""
     monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__))))
-    expected_context = {'non_ascii': OrderedDict([('full_name', u'éèà'),])}
+    expected_context = {'non_ascii': OrderedDict([('full_name', u'éèà')])}
 
     generated_context = generate.generate_context(
         context_file='test-generate-context/non_ascii.json'

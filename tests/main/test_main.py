@@ -20,7 +20,10 @@ def test_replay_dump_template_name(
     """
     monkeypatch.chdir(
         os.path.join(
-            os.path.abspath(os.path.dirname(__file__)), 'fixtures/fake-repo-tmpl'
+            os.path.abspath(os.path.dirname(__file__)),
+            '..',
+            'fixtures',
+            'fake-repo-tmpl',
         )
     )
 
@@ -32,10 +35,7 @@ def test_replay_dump_template_name(
     )
 
     mock_replay_dump.assert_called_once_with(
-        user_config_data['replay_dir'],
-        'fixtures/fake-repo-tmpl',
-        mocker.ANY,
-        'cookiecutter',
+        user_config_data['replay_dir'], 'fake-repo-tmpl', mocker.ANY, 'cookiecutter',
     )
 
 
@@ -51,7 +51,10 @@ def test_replay_load_template_name(
     """
     monkeypatch.chdir(
         os.path.join(
-            os.path.abspath(os.path.dirname(__file__)), 'fixtures/fake-repo-tmpl'
+            os.path.abspath(os.path.dirname(__file__)),
+            '..',
+            'fixtures',
+            'fake-repo-tmpl',
         )
     )
 
@@ -63,7 +66,7 @@ def test_replay_load_template_name(
     )
 
     mock_replay_load.assert_called_once_with(
-        user_config_data['replay_dir'], 'fixtures/fake-repo-tmpl', 'cookiecutter'
+        user_config_data['replay_dir'], 'fake-repo-tmpl', 'cookiecutter'
     )
 
 
@@ -72,7 +75,9 @@ def test_custom_replay_file(monkeypatch, mocker, user_config_file):
     monkeypatch.chdir(
         os.path.join(
             os.path.abspath(
-                os.path.join(os.path.dirname(__file__), 'fixtures/fake-repo-tmpl')
+                os.path.join(
+                    os.path.dirname(__file__), '..', 'fixtures', 'fake-repo-tmpl'
+                )
             )
         )
     )
@@ -89,7 +94,7 @@ def test_custom_replay_file(monkeypatch, mocker, user_config_file):
 
 def test_nuki_embed(monkeypatch, tmpdir):
     """Verify Jinja2 time extension work correctly."""
-    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
+    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
 
     context = cookiecutter(
         'fixtures/fake-repo-tmpl-nuki-embed', no_input=True, output_dir=str(tmpdir)

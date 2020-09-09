@@ -61,7 +61,7 @@ def custom_config():
 @pytest.mark.usefixtures('back_up_rc')
 def test_get_user_config_valid(user_config_path, custom_config):
     """Validate user config correctly parsed if exist and correctly formatted."""
-    shutil.copy('tests/test-config/valid-config.yaml', user_config_path)
+    shutil.copy('tests/config/test-config/valid-config.yaml', user_config_path)
     conf = config.get_user_config()
 
     assert conf == custom_config
@@ -70,7 +70,7 @@ def test_get_user_config_valid(user_config_path, custom_config):
 @pytest.mark.usefixtures('back_up_rc')
 def test_get_user_config_invalid(user_config_path):
     """Validate `InvalidConfiguration` raised when provided user config malformed."""
-    shutil.copy('tests/test-config/invalid-config.yaml', user_config_path)
+    shutil.copy('tests/config/test-config/invalid-config.yaml', user_config_path)
     with pytest.raises(InvalidConfiguration):
         config.get_user_config()
 
@@ -84,7 +84,7 @@ def test_get_user_config_nonexistent():
 @pytest.fixture
 def custom_config_path():
     """Fixture. Return path to custom user config for tests."""
-    return 'tests/test-config/valid-config.yaml'
+    return 'tests/config/test-config/valid-config.yaml'
 
 
 def test_specify_config_path(mocker, custom_config_path, custom_config):
@@ -130,7 +130,7 @@ def test_expand_user_for_directories_in_config(monkeypatch):
 
     monkeypatch.setattr('os.path.expanduser', _expanduser)
 
-    config_file = 'tests/test-config/config-expand-user.yaml'
+    config_file = 'tests/config/test-config/config-expand-user.yaml'
 
     user_config = config.get_user_config(config_file)
     assert user_config['replay_dir'] == 'Users/bob/replay-files'
@@ -141,7 +141,7 @@ def test_expand_vars_for_directories_in_config(monkeypatch):
     """Validate environment variables expanded in user configs."""
     monkeypatch.setenv('COOKIES', 'Users/bob/cookies')
 
-    config_file = 'tests/test-config/config-expand-vars.yaml'
+    config_file = 'tests/config/test-config/config-expand-vars.yaml'
 
     user_config = config.get_user_config(config_file)
     assert user_config['replay_dir'] == 'Users/bob/cookies/replay-files'

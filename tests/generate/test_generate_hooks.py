@@ -17,11 +17,11 @@ def remove_additional_folders(tmpdir):
     """Remove some special folders which are created by the tests."""
     yield
     directories_to_delete = [
-        'tests/test-pyhooks/inputpyhooks',
+        'tests/hooks/test-pyhooks/inputpyhooks',
         'inputpyhooks',
         'inputhooks',
         os.path.join(str(tmpdir), 'test-shellhooks'),
-        'tests/test-hooks',
+        'tests/hooks/test-hooks',
     ]
     for directory in directories_to_delete:
         if os.path.exists(directory):
@@ -33,10 +33,10 @@ def test_ignore_hooks_dirs():
     """Verify hooks directory not created in target location on files generation."""
     generate.generate_files(
         context={'cookiecutter': {'pyhooks': 'pyhooks'}},
-        repo_dir='tests/test-pyhooks/',
-        output_dir='tests/test-pyhooks/',
+        repo_dir='tests/hooks/test-pyhooks/',
+        output_dir='tests/hooks/test-pyhooks/',
     )
-    assert not os.path.exists('tests/test-pyhooks/inputpyhooks/hooks')
+    assert not os.path.exists('tests/hooks/test-pyhooks/inputpyhooks/hooks')
 
 
 @pytest.mark.usefixtures('clean_system', 'remove_additional_folders')
@@ -48,11 +48,11 @@ def test_run_python_hooks():
     """
     generate.generate_files(
         context={'cookiecutter': {'pyhooks': 'pyhooks'}},
-        repo_dir='tests/test-pyhooks/',
-        output_dir='tests/test-pyhooks/',
+        repo_dir='tests/hooks/test-pyhooks/',
+        output_dir='tests/hooks/test-pyhooks/',
     )
-    assert os.path.exists('tests/test-pyhooks/inputpyhooks/python_pre.txt')
-    assert os.path.exists('tests/test-pyhooks/inputpyhooks/python_post.txt')
+    assert os.path.exists('tests/hooks/test-pyhooks/inputpyhooks/python_pre.txt')
+    assert os.path.exists('tests/hooks/test-pyhooks/inputpyhooks/python_post.txt')
 
 
 @pytest.mark.usefixtures('clean_system', 'remove_additional_folders')
@@ -63,7 +63,8 @@ def test_run_python_hooks_cwd():
     created.
     """
     generate.generate_files(
-        context={'cookiecutter': {'pyhooks': 'pyhooks'}}, repo_dir='tests/test-pyhooks/'
+        context={'cookiecutter': {'pyhooks': 'pyhooks'}},
+        repo_dir='tests/hooks/test-pyhooks/',
     )
     assert os.path.exists('inputpyhooks/python_pre.txt')
     assert os.path.exists('inputpyhooks/python_post.txt')
@@ -80,7 +81,7 @@ def test_empty_hooks():
     with pytest.raises(FailedHookException) as excinfo:
         generate.generate_files(
             context={'cookiecutter': {'shellhooks': 'shellhooks'}},
-            repo_dir='tests/test-shellhooks-empty/',
+            repo_dir='tests/hooks/test-shellhooks-empty/',
             overwrite_if_exists=True,
         )
     assert 'shebang' in str(excinfo.value)
@@ -104,7 +105,7 @@ def test_oserror_hooks(mocker):
     with pytest.raises(FailedHookException) as excinfo:
         generate.generate_files(
             context={'cookiecutter': {'shellhooks': 'shellhooks'}},
-            repo_dir='tests/test-shellhooks-empty/',
+            repo_dir='tests/hooks/test-shellhooks-empty/',
             overwrite_if_exists=True,
         )
     assert message in str(excinfo.value)
@@ -113,8 +114,8 @@ def test_oserror_hooks(mocker):
 @pytest.mark.usefixtures('clean_system', 'remove_additional_folders')
 def test_run_failing_hook_removes_output_directory():
     """Verify project directory not created or removed if hook failed."""
-    repo_path = os.path.abspath('tests/test-hooks/')
-    hooks_path = os.path.abspath('tests/test-hooks/hooks')
+    repo_path = os.path.abspath('tests/hooks/test-hooks/')
+    hooks_path = os.path.abspath('tests/hooks/test-hooks/hooks')
 
     hook_dir = os.path.join(repo_path, 'hooks')
     template = os.path.join(repo_path, 'input{{cookiecutter.hooks}}')
@@ -131,7 +132,7 @@ def test_run_failing_hook_removes_output_directory():
     with pytest.raises(FailedHookException) as excinfo:
         generate.generate_files(
             context={'cookiecutter': {'hooks': 'hooks'}},
-            repo_dir='tests/test-hooks/',
+            repo_dir='tests/hooks/test-hooks/',
             overwrite_if_exists=True,
         )
 
@@ -142,8 +143,8 @@ def test_run_failing_hook_removes_output_directory():
 @pytest.mark.usefixtures('clean_system', 'remove_additional_folders')
 def test_run_failing_hook_preserves_existing_output_directory():
     """Verify project directory not removed if exist before hook failed."""
-    repo_path = os.path.abspath('tests/test-hooks/')
-    hooks_path = os.path.abspath('tests/test-hooks/hooks')
+    repo_path = os.path.abspath('tests/hooks/test-hooks/')
+    hooks_path = os.path.abspath('tests/hooks/test-hooks/hooks')
 
     hook_dir = os.path.join(repo_path, 'hooks')
     template = os.path.join(repo_path, 'input{{cookiecutter.hooks}}')
@@ -161,7 +162,7 @@ def test_run_failing_hook_preserves_existing_output_directory():
     with pytest.raises(FailedHookException) as excinfo:
         generate.generate_files(
             context={'cookiecutter': {'hooks': 'hooks'}},
-            repo_dir='tests/test-hooks/',
+            repo_dir='tests/hooks/test-hooks/',
             overwrite_if_exists=True,
         )
 
@@ -178,7 +179,7 @@ def test_run_shell_hooks(tmpdir):
     """
     generate.generate_files(
         context={'cookiecutter': {'shellhooks': 'shellhooks'}},
-        repo_dir='tests/test-shellhooks/',
+        repo_dir='tests/hooks/test-shellhooks/',
         output_dir=os.path.join(str(tmpdir), 'test-shellhooks'),
     )
     shell_pre_file = os.path.join(
@@ -200,7 +201,7 @@ def test_run_shell_hooks_win(tmpdir):
     """
     generate.generate_files(
         context={'cookiecutter': {'shellhooks': 'shellhooks'}},
-        repo_dir='tests/test-shellhooks-win/',
+        repo_dir='tests/hooks/test-shellhooks-win/',
         output_dir=os.path.join(str(tmpdir), 'test-shellhooks-win'),
     )
     shell_pre_file = os.path.join(
@@ -218,7 +219,7 @@ def test_ignore_shell_hooks(tmp_path):
     """Verify *.txt files not created, when accept_hooks=False."""
     generate.generate_files(
         context={"cookiecutter": {"shellhooks": "shellhooks"}},
-        repo_dir="tests/test-shellhooks/",
+        repo_dir="tests/hooks/test-shellhooks/",
         output_dir=tmp_path.joinpath('test-shellhooks'),
         accept_hooks=False,
     )

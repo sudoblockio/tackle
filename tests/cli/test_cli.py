@@ -57,7 +57,7 @@ def test_cli_version(cli_runner, version_cli_flag):
 @pytest.mark.usefixtures('make_fake_project_dir', 'remove_fake_project_dir')
 def test_cli_error_on_existing_output_directory(monkeypatch, cli_runner):
     """Test cli invocation without `overwrite-if-exists` fail if dir exist."""
-    test_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
+    test_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', '..')
     monkeypatch.chdir(test_dir)
 
     result = cli_runner('tests/fixtures/fake-repo-pre/', '--no-input')
@@ -396,7 +396,7 @@ def test_default_user_config(mocker, cli_runner):
 )
 def test_echo_undefined_variable_error(monkeypatch, tmpdir, cli_runner):
     """Cli invocation return error if variable undefined in template."""
-    cwd = os.path.abspath(os.path.dirname(__file__))
+    cwd = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
     monkeypatch.chdir(cwd)
 
     output_dir = str(tmpdir.mkdir('output'))
@@ -431,7 +431,7 @@ def test_echo_undefined_variable_error(monkeypatch, tmpdir, cli_runner):
 def test_echo_unknown_extension_error(tmpdir, cli_runner):
     """Cli return error if extension incorrectly defined in template."""
     output_dir = str(tmpdir.mkdir('output'))
-    template_path = 'tests/test-extensions/unknown/'
+    template_path = 'tests/fixtures/test-extensions/unknown/'
 
     result = cli_runner(
         '--no-input', '--default-config', '--output-dir', output_dir, template_path,

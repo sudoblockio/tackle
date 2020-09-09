@@ -32,7 +32,9 @@ def test_hooks_raises_errors(tmpdir, abort_pre_gen, abort_post_gen):
 
     with pytest.raises(exceptions.FailedHookException) as error:
         generate.generate_files(
-            repo_dir="tests/hooks-abort-render", context=context, output_dir=str(tmpdir)
+            repo_dir="tests/fixtures/hooks-abort-render",
+            context=context,
+            output_dir=str(tmpdir),
         )
         assert error.value.code == 5
     assert not tmpdir.join("foobar").isdir()

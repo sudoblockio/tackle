@@ -16,7 +16,7 @@ from cookiecutter import generate
 @pytest.fixture(scope='function')
 def remove_output_folder(monkeypatch, request):
     """Remove the output folder after test."""
-    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__))))
+    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
     yield
     if os.path.exists('output_folder'):
         cookiecutter.utils.paths.rmtree('output_folder')
@@ -25,11 +25,11 @@ def remove_output_folder(monkeypatch, request):
 @pytest.mark.usefixtures('clean_system', 'remove_output_folder')
 def test_output_folder(monkeypatch):
     """Tests should correctly create content, as output_folder does not yet exist."""
-    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__))))
+    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
     context = generate.generate_context(
-        context_file='test-output-folder/cookiecutter.json'
+        context_file='fixtures/test-output-folder/cookiecutter.json'
     )
-    generate.generate_files(context=context, repo_dir='test-output-folder')
+    generate.generate_files(context=context, repo_dir='fixtures/test-output-folder')
 
     something = """Hi!
 My name is Audrey Greenfeld.
@@ -48,14 +48,14 @@ It is 2014."""
 @pytest.mark.usefixtures('clean_system', 'remove_output_folder')
 def test_exception_when_output_folder_exists(monkeypatch):
     """Tests should raise error as output folder created before `generate_files`."""
-    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__))))
+    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
 
     context = generate.generate_context(
-        context_file='test-output-folder/cookiecutter.json'
+        context_file='fixtures/test-output-folder/cookiecutter.json'
     )
     output_folder = context['cookiecutter']['test_name']
 
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
     with pytest.raises(exceptions.OutputDirExistsException):
-        generate.generate_files(context=context, repo_dir='test-output-folder')
+        generate.generate_files(context=context, repo_dir='fixtures/test-output-folder')

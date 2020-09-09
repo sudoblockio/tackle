@@ -18,7 +18,7 @@ def test_operator_when_false_no_input_no_default():
             'details': {
                 "message": "what foo?",
                 "type": "checkbox",
-                "choices": [{"name": "value 1"}, {"name": "value 2"},],
+                "choices": [{"name": "value 1"}, {"name": "value 2"}],
                 'when': "{{ cookiecutter.project_name != 'Slartibartfast' }}",
             },
         }
@@ -42,7 +42,7 @@ def test_operator_when_true_no_input_no_default():
             'details': {
                 "message": "what foo?",
                 "type": "checkbox",
-                "choices": [{"name": "value 1"}, {"name": "value 2"},],
+                "choices": [{"name": "value 1"}, {"name": "value 2"}],
                 'when': "{{ cookiecutter.project_name == 'Slartibartfast' }}",
             },
         }
@@ -67,7 +67,7 @@ def test_operator_when_true_no_input_with_default():
             'details': {
                 "message": "what fooss?",
                 "type": "checkbox",
-                "choices": [{"name": "value 1"}, {"name": "value 2"},],
+                "choices": [{"name": "value 1"}, {"name": "value 2"}],
                 'when': "{{ cookiecutter.project_name == 'Slartibartfast' }}",
                 'default': 'stuff',
             },
@@ -91,7 +91,7 @@ def test_operator_when_true_no_input_loop():
             'details': {
                 "message": "what details?",
                 "type": "checkbox",
-                "choices": [{"name": "value 1"}, {"name": "value 2"},],
+                "choices": [{"name": "value 1"}, {"name": "value 2"}],
                 'when': "{{ cookiecutter.project_name == 'Slartibartfast' }}",
                 'loop': ['foo', 'bar'],
                 'default': '{{ cookiecutter.item }}',
@@ -148,7 +148,7 @@ def test_prompt_operator_when_true_no_input_loop_item():
             'details': {
                 "message": "what details?",
                 "type": "checkbox",
-                "choices": [{"name": "value 1"}, {"name": "value 2"},],
+                "choices": [{"name": "value 1"}, {"name": "value 2"}],
                 'when': "{{ cookiecutter.project_name == 'Slartibartfast' }}",
                 'loop': ['foo', 'bar'],
                 'default': '{{ cookiecutter.item }}',
@@ -156,7 +156,7 @@ def test_prompt_operator_when_true_no_input_loop_item():
             'things': {
                 "message": "what things?",
                 "type": "checkbox",
-                "choices": [{"name": "value 1"}, {"name": "value 2"},],
+                "choices": [{"name": "value 1"}, {"name": "value 2"}],
                 'when': "{{ 'foo' in cookiecutter.details }}",
                 'default': 'mo tings',
             },
@@ -179,7 +179,7 @@ def test_prompt_operator_when_true_no_input_loop_list():
             'details': {
                 "message": "what details?",
                 "type": "checkbox",
-                "choices": [{"name": "value 1"}, {"name": "value 2"},],
+                "choices": [{"name": "value 1"}, {"name": "value 2"}],
                 'when': "{{ cookiecutter.project_name == 'Slartibartfast' }}",
                 'loop': ['foo', 'bar'],
                 'default': '{{ cookiecutter.item }}',
@@ -187,7 +187,7 @@ def test_prompt_operator_when_true_no_input_loop_list():
             'things': {
                 "message": "what things?",
                 "type": "checkbox",
-                "choices": [{"name": "value 1"}, {"name": "value 2"},],
+                "choices": [{"name": "value 1"}, {"name": "value 2"}],
                 'when': "{{ 'foo' in cookiecutter.details }}",
                 'loop': "{{ cookiecutter.details }}",
                 'default': '{{ cookiecutter.item }}',

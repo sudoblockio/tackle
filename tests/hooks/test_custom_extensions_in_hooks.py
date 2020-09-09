@@ -18,7 +18,7 @@ from cookiecutter import main
 )
 def template(request):
     """Fixture. Allows to split pre and post hooks test directories."""
-    return 'test-extensions/' + request.param
+    return 'fixtures/test-extensions/' + request.param
 
 
 @pytest.fixture
@@ -30,7 +30,7 @@ def output_dir(tmpdir):
 @pytest.fixture(autouse=True)
 def modify_syspath(monkeypatch):
     """Fixture. Make sure that the custom extension can be loaded."""
-    monkeypatch.syspath_prepend('test-extensions/hello_extension')
+    monkeypatch.syspath_prepend('fixtures/test-extensions/hello_extension')
 
 
 def test_hook_with_extension(monkeypatch, template, output_dir):
@@ -39,7 +39,7 @@ def test_hook_with_extension(monkeypatch, template, output_dir):
     Each file in hooks has simple tests inside and will raise error if not
     correctly rendered.
     """
-    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
+    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
 
     context = main.cookiecutter(
         template,

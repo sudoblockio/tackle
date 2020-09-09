@@ -38,7 +38,7 @@ def remove_additional_dirs(monkeypatch, request):
 @pytest.mark.usefixtures('clean_system', 'remove_additional_dirs')
 def test_cookiecutter_no_input_return_project_dir(monkeypatch):
     """Verify `cookiecutter` create project dir on input with or without slash."""
-    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
+    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
 
     context = main.cookiecutter('fixtures/fake-repo-pre', no_input=True)
 
@@ -58,7 +58,7 @@ def test_cookiecutter_no_input_return_project_dir(monkeypatch):
 @pytest.mark.usefixtures('clean_system', 'remove_additional_dirs')
 def test_cookiecutter_no_input_extra_context(monkeypatch):
     """Verify `cookiecutter` accept `extra_context` argument."""
-    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
+    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
     main.cookiecutter(
         'fixtures/fake-repo-pre',
         no_input=True,
@@ -70,7 +70,7 @@ def test_cookiecutter_no_input_extra_context(monkeypatch):
 @pytest.mark.usefixtures('clean_system', 'remove_additional_dirs')
 def test_cookiecutter_templated_context(monkeypatch):
     """Verify Jinja2 templating correctly works in `cookiecutter.json` file."""
-    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
+    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
 
     main.cookiecutter('fixtures/fake-repo-tmpl', no_input=True)
     assert os.path.isdir('fake-project-templated')
@@ -79,7 +79,7 @@ def test_cookiecutter_templated_context(monkeypatch):
 @pytest.mark.usefixtures('clean_system', 'remove_additional_dirs')
 def test_cookiecutter_no_input_return_rendered_file(monkeypatch):
     """Verify Jinja2 templating correctly works in `cookiecutter.json` file."""
-    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
+    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
 
     context = main.cookiecutter('fixtures/fake-repo-pre', no_input=True)
     project_dir = os.path.join(os.path.abspath(os.path.curdir), 'fake-project')
@@ -94,7 +94,7 @@ def test_cookiecutter_no_input_return_rendered_file(monkeypatch):
 @pytest.mark.usefixtures('clean_system', 'remove_additional_dirs')
 def test_cookiecutter_dict_values_in_context(monkeypatch):
     """Verify configured dictionary from `cookiecutter.json` correctly unpacked."""
-    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
+    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
 
     context = main.cookiecutter('fixtures/fake-repo-dict', no_input=True)
     project_dir = os.path.abspath(os.path.curdir)
@@ -152,7 +152,7 @@ def test_cookiecutter_dict_values_in_context(monkeypatch):
 @pytest.mark.usefixtures('clean_system', 'remove_additional_dirs')
 def test_cookiecutter_template_cleanup(monkeypatch, mocker):
     """Verify temporary folder for zip unpacking dropped."""
-    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
+    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
 
     mocker.patch('tempfile.mkdtemp', return_value='fake-tmp', autospec=True)
 

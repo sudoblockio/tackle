@@ -51,7 +51,7 @@ def test_merge_configs():
 
 def test_get_config():
     """Verify valid config opened and rendered correctly."""
-    conf = config.get_config('tests/test-config/valid-config.yaml')
+    conf = config.get_config('tests/config/test-config/valid-config.yaml')
     expected_conf = {
         'cookiecutters_dir': '/home/example/some-path-to-templates',
         'replay_dir': '/home/example/some-path-to-replay-files',
@@ -83,17 +83,15 @@ def test_invalid_config():
     """An invalid config file should raise an `InvalidConfiguration` \
     exception."""
     with pytest.raises(InvalidConfiguration) as exc_info:
-        config.get_config('tests/test-config/invalid-config.yaml')
+        config.get_config('tests/config/test-config/invalid-config.yaml')
 
-    expected_error_msg = (
-        'Unable to parse YAML file tests/test-config/invalid-config.yaml. Error: '
-    )
+    expected_error_msg = 'Unable to parse YAML file tests/config/test-config/invalid-config.yaml. Error:'
     assert expected_error_msg in str(exc_info.value)
 
 
 def test_get_config_with_defaults():
     """A config file that overrides 1 of 3 defaults."""
-    conf = config.get_config('tests/test-config/valid-partial-config.yaml')
+    conf = config.get_config('tests/config/test-config/valid-partial-config.yaml')
     default_cookiecutters_dir = os.path.expanduser('~/.cookiecutters/')
     default_replay_dir = os.path.expanduser('~/.cookiecutter_replay/')
     expected_conf = {

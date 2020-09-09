@@ -44,23 +44,23 @@ def remove_additional_folders():
 #     """
 #     Verify `generate_files` raises when no directories to render exist.
 #
-#     Note: Check `tests/test-generate-files-nontemplated` location to understand.
+# Note: Check `tests/generate/test-generate-files-nontemplated` location to understand.
 #     """
 #     with pytest.raises(exceptions.NonTemplatedInputDirException):
 #         generate.generate_files(
 #             context={'cookiecutter': {'food': 'pizza'}},
-#             repo_dir='tests/test-generate-files-nontemplated',
+#             repo_dir='tests/generate/test-generate-files-nontemplated',
 #         )
 # def test_generate_files_nontemplated_exception(tmp_path):
 #     """
 #     Verify `generate_files` raises when no directories to render exist.
 #
-#     Note: Check `tests/test-generate-files-nontemplated` location to understand.
+# Note: Check `tests/generate/test-generate-files-nontemplated` location to understand.
 #     """
 #     with pytest.raises(exceptions.NonTemplatedInputDirException):
 #         generate.generate_files(
 #             context={'cookiecutter': {'food': 'pizza'}},
-#             repo_dir='tests/test-generate-files-nontemplated',
+#             repo_dir='tests/generate/test-generate-files-nontemplated',
 #             output_dir=tmp_path,
 #         )
 
@@ -69,7 +69,7 @@ def test_generate_files(tmp_path):
     """Verify directory name correctly rendered with unicode containing context."""
     generate.generate_files(
         context={'cookiecutter': {'food': 'pizzä'}},
-        repo_dir='tests/test-generate-files',
+        repo_dir='tests/generate/test-generate-files',
         output_dir=tmp_path,
     )
 
@@ -85,7 +85,7 @@ def test_generate_files_with_linux_newline(tmp_path):
     """Verify new line not removed by templating engine after folder generation."""
     generate.generate_files(
         context={'cookiecutter': {'food': 'pizzä'}},
-        repo_dir='tests/test-generate-files',
+        repo_dir='tests/generate/test-generate-files',
         output_dir=tmp_path,
     )
 
@@ -108,7 +108,7 @@ def test_generate_files_with_jinja2_environment(tmp_path):
                 '_jinja2_env_vars': {'lstrip_blocks': True, 'trim_blocks': True},
             }
         },
-        repo_dir='tests/test-generate-files',
+        repo_dir='tests/generate/test-generate-files',
         output_dir=tmp_path,
     )
 
@@ -124,7 +124,7 @@ def test_generate_files_with_trailing_newline_forced_to_linux_by_context(tmp_pat
     """Verify new line not removed by templating engine after folder generation."""
     generate.generate_files(
         context={'cookiecutter': {'food': 'pizzä', '_new_lines': '\r\n'}},
-        repo_dir='tests/test-generate-files',
+        repo_dir='tests/generate/test-generate-files',
         output_dir=tmp_path,
     )
 
@@ -143,7 +143,7 @@ def test_generate_files_with_windows_newline(tmp_path):
     """Verify windows source line end not changed during files generation."""
     generate.generate_files(
         context={'cookiecutter': {'food': 'pizzä'}},
-        repo_dir='tests/test-generate-files',
+        repo_dir='tests/generate/test-generate-files',
         output_dir=tmp_path,
     )
 
@@ -161,7 +161,7 @@ def test_generate_files_with_windows_newline_forced_to_linux_by_context(tmp_path
     """Verify windows line end changed to linux during files generation."""
     generate.generate_files(
         context={'cookiecutter': {'food': 'pizzä', '_new_lines': '\n'}},
-        repo_dir='tests/test-generate-files',
+        repo_dir='tests/generate/test-generate-files',
         output_dir=tmp_path,
     )
 
@@ -180,7 +180,7 @@ def test_generate_files_binaries(tmp_path):
     """Verify binary files created during directory generation."""
     generate.generate_files(
         context={'cookiecutter': {'binary_test': 'binary_files'}},
-        repo_dir='tests/test-generate-binaries',
+        repo_dir='tests/generate/test-generate-binaries',
         output_dir=tmp_path,
     )
 
@@ -234,7 +234,7 @@ def test_generate_files_permissions(tmp_path):
     """
     generate.generate_files(
         context={'cookiecutter': {'permissions': 'permissions'}},
-        repo_dir='tests/test-generate-files-permissions',
+        repo_dir='tests/generate/test-generate-files-permissions',
         output_dir=tmp_path,
     )
 
@@ -244,6 +244,7 @@ def test_generate_files_permissions(tmp_path):
     # Verify source simple.txt should still be 0o644
     tests_simple_file = Path(
         'tests',
+        'generate',
         'test-generate-files-permissions',
         'input{{cookiecutter.permissions}}',
         'simple.txt',
@@ -260,6 +261,7 @@ def test_generate_files_permissions(tmp_path):
     # Verify source script.sh should still be 0o755
     tests_script_file = Path(
         'tests',
+        'generate',
         'test-generate-files-permissions',
         'input{{cookiecutter.permissions}}',
         'script.sh',
@@ -282,7 +284,7 @@ def test_generate_files_with_overwrite_if_exists_with_skip_if_file_exists(tmp_pa
 
     generate.generate_files(
         context={'cookiecutter': {'food': 'pizzä'}},
-        repo_dir='tests/test-generate-files',
+        repo_dir='tests/generate/test-generate-files',
         overwrite_if_exists=True,
         skip_if_file_exists=True,
         output_dir=tmp_path,
@@ -309,7 +311,7 @@ def test_generate_files_with_skip_if_file_exists(tmp_path):
     with pytest.raises(exceptions.OutputDirExistsException):
         generate.generate_files(
             context={'cookiecutter': {'food': 'pizzä'}},
-            repo_dir='tests/test-generate-files',
+            repo_dir='tests/generate/test-generate-files',
             skip_if_file_exists=True,
             output_dir=tmp_path,
         )
@@ -334,7 +336,7 @@ def test_generate_files_with_overwrite_if_exists(tmp_path):
 
     generate.generate_files(
         context={'cookiecutter': {'food': 'pizzä'}},
-        repo_dir='tests/test-generate-files',
+        repo_dir='tests/generate/test-generate-files',
         overwrite_if_exists=True,
         output_dir=tmp_path,
     )
@@ -462,7 +464,7 @@ def test_raise_undefined_variable_project_dir(monkeypatch, tmpdir):
 
     with pytest.raises(exceptions.UndefinedVariableInTemplate) as err:
         generate.generate_files(
-            repo_dir='undefined-variable/dir-name/',
+            repo_dir='../undefined-variable/dir-name/',
             output_dir=str(output_dir),
             context={'cookiecutter': {'stuff': 'things'}},
         )

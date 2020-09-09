@@ -36,7 +36,7 @@ def test_should_invoke_main(monkeypatch, project_dir):
             sys.executable,
             '-m',
             'cookiecutter.cli.cli_parser',
-            'tests/fixtures/fake-repo-tmpl',
+            'fixtures/fake-repo-tmpl',
             '--no-input',
         ]
     )
@@ -48,7 +48,7 @@ def test_should_invoke_main(monkeypatch, project_dir):
 def test_should_invoke_main_nuki(monkeypatch, project_dir):
     """Should create a project and exit with 0 code on cli invocation."""
     monkeypatch.setenv('PYTHONPATH', '.')
-    test_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)))
+    test_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
     monkeypatch.chdir(test_dir)
 
     exit_code = subprocess.check_call(
@@ -70,7 +70,9 @@ def test_should_invoke_main_nuki_nukis(monkeypatch, project_dir):
     """Should create a project and exit with 0 code on cli invocation."""
     monkeypatch.setenv('PYTHONPATH', '.')
     test_dir = os.path.join(
-        os.path.abspath(os.path.dirname(__file__)), 'fixtures/fake-repo-tmpl-nukis'
+        os.path.abspath(os.path.dirname(__file__)),
+        '..',
+        'fixtures/fake-repo-tmpl-nukis',
     )
     monkeypatch.chdir(test_dir)
 

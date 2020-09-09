@@ -35,7 +35,7 @@ def test_generate_copy_without_render_extensions():
                 ],
             }
         },
-        repo_dir='tests/test-generate-copy-without-render',
+        repo_dir='tests/generate/test-generate-copy-without-render',
     )
 
     dir_contents = os.listdir('test_copy_without_render')
