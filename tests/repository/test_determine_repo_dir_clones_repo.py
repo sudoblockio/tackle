@@ -26,7 +26,7 @@ def test_zipfile_unzip(monkeypatch, mocker, template, is_url, user_config_data):
 
     mock_clone = mocker.patch(
         'cookiecutter.repository.unzip',
-        return_value='tests/fake-repo-tmpl',
+        return_value='tests/fixtures/fake-repo-tmpl',
         autospec=True,
     )
 
@@ -49,7 +49,7 @@ def test_zipfile_unzip(monkeypatch, mocker, template, is_url, user_config_data):
 
     assert os.path.isdir(project_dir)
     assert cleanup
-    assert 'tests/fake-repo-tmpl' == project_dir
+    assert 'tests/fixtures/fake-repo-tmpl' == project_dir
 
 
 @pytest.fixture
@@ -74,7 +74,7 @@ def test_repository_url_should_clone(
 
     mock_clone = mocker.patch(
         'cookiecutter.repository.clone',
-        return_value='tests/fake-repo-tmpl',
+        return_value='tests/fixtures/fake-repo-tmpl',
         autospec=True,
     )
 
@@ -96,14 +96,14 @@ def test_repository_url_should_clone(
     assert os.path.isdir(project_dir)
     assert not cleanup
     assert context_file == 'cookiecutter.json'
-    assert 'tests/fake-repo-tmpl' == project_dir
+    assert 'tests/fixtures/fake-repo-tmpl' == project_dir
 
 
 def test_repository_url_with_no_context_file(mocker, template_url, user_config_data):
     """Verify cloned repository without `cookiecutter.json` file raises error."""
     mocker.patch(
         'cookiecutter.repository.clone',
-        return_value='tests/fake-repo-bad',
+        return_value='tests/fixtures/fake-repo-bad',
         autospec=True,
     )
 
@@ -118,5 +118,5 @@ def test_repository_url_with_no_context_file(mocker, template_url, user_config_d
 
     assert str(err.value) == (
         'A valid repository for "{}" could not be found in the following '
-        'locations:\n{}'.format(template_url, 'tests/fake-repo-bad')
+        'locations:\n{}'.format(template_url, 'tests/fixtures/fake-repo-bad')
     )

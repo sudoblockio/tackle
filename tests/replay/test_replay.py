@@ -37,7 +37,7 @@ def test_main_does_not_invoke_dump_but_load(mocker):
     mock_replay_dump = mocker.patch('cookiecutter.main.dump')
     mock_replay_load = mocker.patch('cookiecutter.main.load')
 
-    main.cookiecutter('tests/fake-repo-tmpl/', replay=True)
+    main.cookiecutter('tests/fixtures/fake-repo-tmpl/', replay=True)
 
     assert not mock_prompt.called
     assert not mock_gen_context.called
@@ -56,7 +56,7 @@ def test_main_does_not_invoke_load_but_dump(monkeypatch, mocker):
     mock_replay_dump = mocker.patch('cookiecutter.main.dump')
     mock_replay_load = mocker.patch('cookiecutter.main.load')
 
-    main.cookiecutter('../fake-repo-tmpl/', replay=False)
+    main.cookiecutter('../fixtures/fake-repo-tmpl/', replay=False)
 
     assert mock_prompt.called
     assert mock_gen_context.called

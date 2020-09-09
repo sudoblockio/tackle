@@ -98,7 +98,7 @@ class TestFindHooks(object):
 
     def test_no_hooks(self):
         """`find_hooks` should return None if the hook could not be found."""
-        with cookiecutter.utils.context_manager.work_in('tests/fake-repo'):
+        with cookiecutter.utils.context_manager.work_in('tests/fixtures/fake-repo'):
             assert None is hooks.find_hook('pre_gen_project')
 
     def test_unknown_hooks_dir(self):

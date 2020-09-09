@@ -23,9 +23,9 @@ def test_cookiecutter_local_with_input(monkeypatch):
     monkeypatch.setattr(
         'cookiecutter.prompt.read_user_variable', lambda var, default: default
     )
-    main.cookiecutter('tests/fake-repo-pre/', no_input=False)
-    assert os.path.isdir('tests/fake-repo-pre/{{cookiecutter.repo_name}}')
-    assert not os.path.isdir('tests/fake-repo-pre/fake-project')
+    main.cookiecutter('tests/fixtures/fake-repo-pre/', no_input=False)
+    assert os.path.isdir('tests/fixtures/fake-repo-pre/{{cookiecutter.repo_name}}')
+    assert not os.path.isdir('tests/fixtures/fake-repo-pre/fake-project')
     assert os.path.isdir('fake-project')
     assert os.path.isfile('fake-project/README.rst')
     assert not os.path.exists('fake-project/json/')
@@ -38,7 +38,7 @@ def test_cookiecutter_input_extra_context(monkeypatch):
         'cookiecutter.prompt.read_user_variable', lambda var, default: default
     )
     main.cookiecutter(
-        'tests/fake-repo-pre',
+        'tests/fixtures/fake-repo-pre',
         no_input=False,
         extra_context={'repo_name': 'fake-project-input-extra'},
     )

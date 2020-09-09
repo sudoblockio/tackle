@@ -6,7 +6,7 @@ import pytest
 from cookiecutter.utils import find
 
 
-@pytest.fixture(params=['fake-repo-pre', 'fake-repo-pre2'])
+@pytest.fixture(params=['fixtures/fake-repo-pre', 'fixtures/fake-repo-pre2'])
 def repo_dir(request):
     """Fixture returning path for `test_find_template` test."""
     return os.path.join('tests', request.param)

@@ -15,11 +15,13 @@ def test_replay_dump_template_name(
     but also later mistaken for replay files of other templates if invoked with
     '.' and '--replay'.
 
-    Change the current working directory temporarily to 'tests/fake-repo-tmpl'
+    Change the current working directory temporarily to 'tests/fixtures/fake-repo-tmpl'
     for this test and call cookiecutter with '.' for the target template.
     """
     monkeypatch.chdir(
-        os.path.join(os.path.abspath(os.path.dirname(__file__)), 'fake-repo-tmpl')
+        os.path.join(
+            os.path.abspath(os.path.dirname(__file__)), 'fixtures/fake-repo-tmpl'
+        )
     )
 
     mock_replay_dump = mocker.patch('cookiecutter.main.dump')
@@ -30,7 +32,10 @@ def test_replay_dump_template_name(
     )
 
     mock_replay_dump.assert_called_once_with(
-        user_config_data['replay_dir'], 'fake-repo-tmpl', mocker.ANY, 'cookiecutter'
+        user_config_data['replay_dir'],
+        'fixtures/fake-repo-tmpl',
+        mocker.ANY,
+        'cookiecutter',
     )
 
 
@@ -41,11 +46,13 @@ def test_replay_load_template_name(
 
     Calls require valid template_name that is not a relative path.
 
-    Change the current working directory temporarily to 'tests/fake-repo-tmpl'
+    Change the current working directory temporarily to 'tests/fixtures/fake-repo-tmpl'
     for this test and call cookiecutter with '.' for the target template.
     """
     monkeypatch.chdir(
-        os.path.join(os.path.abspath(os.path.dirname(__file__)), 'fake-repo-tmpl')
+        os.path.join(
+            os.path.abspath(os.path.dirname(__file__)), 'fixtures/fake-repo-tmpl'
+        )
     )
 
     mock_replay_load = mocker.patch('cookiecutter.main.load')
@@ -56,7 +63,7 @@ def test_replay_load_template_name(
     )
 
     mock_replay_load.assert_called_once_with(
-        user_config_data['replay_dir'], 'fake-repo-tmpl', 'cookiecutter'
+        user_config_data['replay_dir'], 'fixtures/fake-repo-tmpl', 'cookiecutter'
     )
 
 
@@ -64,7 +71,9 @@ def test_custom_replay_file(monkeypatch, mocker, user_config_file):
     """Check that reply.load is called with the custom replay_file."""
     monkeypatch.chdir(
         os.path.join(
-            os.path.abspath(os.path.join(os.path.dirname(__file__), 'fake-repo-tmpl'))
+            os.path.abspath(
+                os.path.join(os.path.dirname(__file__), 'fixtures/fake-repo-tmpl')
+            )
         )
     )
 
@@ -83,7 +92,7 @@ def test_nuki_embed(monkeypatch, tmpdir):
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
 
     context = cookiecutter(
-        'fake-repo-tmpl-nuki-embed', no_input=True, output_dir=str(tmpdir)
+        'fixtures/fake-repo-tmpl-nuki-embed', no_input=True, output_dir=str(tmpdir)
     )
 
     assert 'sterf' in list(context['stuff_nuki'].keys())
