@@ -11,7 +11,7 @@ from typing import Dict
 # from pathlib import Path
 
 from cookiecutter.operators import BaseOperator
-from cookiecutter.environment import StrictEnvironment
+from cookiecutter.render.environment import StrictEnvironment
 
 logger = logging.getLogger(__name__)
 

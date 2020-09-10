@@ -4,10 +4,10 @@ from collections import OrderedDict
 
 import pytest
 
-import cookiecutter.environment
 import cookiecutter.prompt
 import cookiecutter.render
-from cookiecutter import prompt, exceptions, environment
+from cookiecutter import prompt, exceptions
+from cookiecutter.render import environment
 
 
 @pytest.fixture(autouse=True)

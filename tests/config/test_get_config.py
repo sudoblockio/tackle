@@ -85,7 +85,9 @@ def test_invalid_config():
     with pytest.raises(InvalidConfiguration) as exc_info:
         config.get_config('tests/config/test-config/invalid-config.yaml')
 
-    expected_error_msg = 'Unable to parse YAML file tests/config/test-config/invalid-config.yaml. Error:'
+    expected_error_msg = (
+        'Unable to parse YAML file tests/config/test-config/invalid-config.yaml. Error:'
+    )
     assert expected_error_msg in str(exc_info.value)
 
 

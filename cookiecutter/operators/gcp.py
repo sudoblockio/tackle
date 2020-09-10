@@ -96,7 +96,7 @@ class GcpInstanceTypesOperator(BaseOperator):
     type: str = 'gcp_instance_types'
     gcp_project: str
     zone: str
-    instance_families: list
+    instance_families: list = None
 
     def execute(self):
         client = build('compute', 'v1')

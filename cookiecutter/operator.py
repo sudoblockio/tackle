@@ -4,7 +4,7 @@
 from __future__ import print_function
 import inspect
 
-from cookiecutter.environment import StrictEnvironment
+from cookiecutter.render.environment import StrictEnvironment
 from cookiecutter.exceptions import InvalidOperatorType
 from cookiecutter.render import render_variable
 from cookiecutter.operators import *  # noqa

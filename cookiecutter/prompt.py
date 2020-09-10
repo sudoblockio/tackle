@@ -8,7 +8,7 @@ from cookiecutter.operator import parse_operator
 from jinja2.exceptions import UndefinedError
 from typing import Dict
 
-from cookiecutter.environment import StrictEnvironment
+from cookiecutter.render.environment import StrictEnvironment
 from cookiecutter.exceptions import UndefinedVariableInTemplate
 from cookiecutter.render import render_variable
 from cookiecutter.utils.context_manager import work_in

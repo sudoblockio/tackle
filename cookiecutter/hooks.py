@@ -7,7 +7,7 @@ import sys
 import tempfile
 
 import cookiecutter.utils.paths
-from cookiecutter.environment import StrictEnvironment
+from cookiecutter.render.environment import StrictEnvironment
 from cookiecutter.exceptions import FailedHookException
 
 

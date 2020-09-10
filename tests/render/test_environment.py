@@ -1,7 +1,7 @@
 """Collection of tests around loading extensions."""
 import pytest
 
-from cookiecutter.environment import StrictEnvironment
+from cookiecutter.render.environment import StrictEnvironment
 from cookiecutter.exceptions import UnknownExtension
 
 
@@ -19,6 +19,6 @@ def test_env_should_come_with_default_extensions():
     """Verify default extensions loaded with StrictEnvironment."""
     env = StrictEnvironment(keep_trailing_newline=True)
     assert 'jinja2_time.jinja2_time.TimeExtension' in env.extensions
-    assert 'cookiecutter.extensions.JsonifyExtension' in env.extensions
-    assert 'cookiecutter.extensions.RandomStringExtension' in env.extensions
-    assert 'cookiecutter.extensions.SlugifyExtension' in env.extensions
+    assert 'cookiecutter.render.extensions.JsonifyExtension' in env.extensions
+    assert 'cookiecutter.render.extensions.RandomStringExtension' in env.extensions
+    assert 'cookiecutter.render.extensions.SlugifyExtension' in env.extensions
