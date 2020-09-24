@@ -12,8 +12,6 @@ from cookiecutter.operators import BaseOperator
 import logging
 from typing import Dict
 
-# import copy
-
 logger = logging.getLogger(__name__)
 post_gen_operator_list = []
 
@@ -38,10 +36,11 @@ def run_operator(
         ):  # noqa
             logger.debug("Using the %s operator" % operator_dict['type'])
 
-            # Fix operator special keys
-            if 'no_input' in operator_dict:
-                no_input = operator_dict['no_input']
-                operator_dict.pop('no_input')
+            overrides = ['context', 'context_key', 'no_input', 'cc_dict']
+            for override in overrides:
+                if override in operator_dict:
+                    exec(override + " = operator_dict[override]")
+                    operator_dict.pop(override)
 
             operator = o(
                 **operator_dict,
@@ -51,6 +50,7 @@ def run_operator(
                 cc_dict=cc_dict,
                 key=key,
             )
+
             if operator.post_gen_operator:
                 delayed_output = operator
             else:
