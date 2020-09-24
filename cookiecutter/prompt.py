@@ -226,6 +226,7 @@ def prompt_for_config(
     env = StrictEnvironment(context=context)
 
     if not context_key:
+        # Set as first key in context
         context_key = next(iter(context))
 
     if '_template' in context[context_key]:

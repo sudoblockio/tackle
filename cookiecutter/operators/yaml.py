@@ -7,6 +7,7 @@ from __future__ import print_function
 import logging
 import yaml
 import re
+from typing import Union, Dict, List, Any
 
 from cookiecutter.operators import BaseOperator
 from cookiecutter.config import merge_configs
@@ -32,8 +33,6 @@ class YamlOperator(BaseOperator):
     :param mode: The mode that the file should write. Defaults to write 'w'.
         Seee https://docs.python.org/3/library/functions.html#open
     """
-
-    from typing import Union, Dict, List, Any
 
     type: str = 'yaml'
 
