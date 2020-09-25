@@ -6,6 +6,7 @@ library rather than a script.
 """
 import logging
 import os
+import copy
 import json
 from _collections import OrderedDict
 
@@ -16,6 +17,9 @@ from cookiecutter.prompt import prompt_for_config
 from cookiecutter.replay import dump, load
 from cookiecutter.repository import determine_repo_dir
 from cookiecutter.utils.paths import rmtree
+from cookiecutter.run.base_run import Run
+
+from cookiecutter.configs.config_base import get_settings
 
 logger = logging.getLogger(__name__)
 
@@ -33,12 +37,14 @@ def cookiecutter(
     replay=None,
     overwrite_if_exists=False,
     output_dir='.',
-    config_file=None,
-    default_config=False,
     password=None,
     directory=None,
     skip_if_file_exists=False,
     accept_hooks=True,
+    config_file=None,
+    env_file=None,
+    default_config=False,
+    config=None,
 ):
     """
     Run Cookiecutter just as if using it from the command line.
@@ -59,16 +65,24 @@ def cookiecutter(
         ``True`` read from the ``replay_dir``.
         if it exists
     :param output_dir: Where to output the generated project dir into.
-    :param config_file: User configuration file path.
-    :param default_config: Use default values rather than a config file.
     :param password: The password to use when extracting the repository.
     :param directory: Relative path to a cookiecutter template in a repository.
     :param accept_hooks: Accept pre and post hooks if set to `True`.
+    :param config_file: User configuration file path.
+    :param default_config: Use default values rather than a config file.
 
     :return Dictionary of output
     """
     global calling_directory  # Preserve this path for special variable usage
     calling_directory = os.getcwd()
+
+    run = Run(**copy.copy(locals()))
+    settings = get_settings(
+        config_file=config_file,
+        env_file=env_file,
+        config=config,
+        default_config=default_config,
+    )
 
     if replay and ((no_input is not False) or (extra_context is not None)):
         err_msg = (
@@ -91,6 +105,7 @@ def cookiecutter(
         password=password,
         directory=directory,
     )
+    # determine_repo_dir()
 
     template_name = os.path.basename(os.path.abspath(repo_dir))
     if not context_key:
@@ -121,6 +136,7 @@ def cookiecutter(
 
         # prompt the user to manually configure at the command line.pyth
         # except when 'no-input' flag is set
+
         context[context_key] = prompt_for_config(
             context, no_input, context_key, existing_context
         )
