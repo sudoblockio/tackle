@@ -6,6 +6,10 @@ __pycache__/
 # C extensions
 *.so
 
+#!cookiecutter/operators/print.py
+#!cookiecutter/operators/__init__.py
+#cookiecutter/operators/*
+
 # Distribution / packaging
 .Python
 env/
@@ -22,7 +26,6 @@ lib64/
 parts/
 sdist/
 var/
-venv/
 *.egg-info/
 .installed.cfg
 *.egg
