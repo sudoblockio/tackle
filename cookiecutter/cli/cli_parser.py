@@ -203,8 +203,8 @@ def main(
     try:
         cookiecutter(
             template,
-            checkout,
-            no_input,
+            checkout=checkout,
+            no_input=no_input,
             context_file=context_file,
             context_key=context_key,
             extra_context=extra_context,

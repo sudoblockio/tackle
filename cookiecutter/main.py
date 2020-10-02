@@ -11,7 +11,6 @@ import json
 from _collections import OrderedDict
 
 from cookiecutter.config import get_user_config
-from cookiecutter.exceptions import InvalidModeException
 from cookiecutter.generate import generate_context, generate_files
 from cookiecutter.prompt import prompt_for_config
 from cookiecutter.replay import dump, load
@@ -28,17 +27,17 @@ calling_directory = None
 
 def cookiecutter(
     template='.',
-    checkout=None,
     no_input=False,
+    checkout=None,
     context_file=None,
     context_key=None,
+    password=None,
+    directory=None,
     existing_context=None,
     extra_context=None,
     replay=None,
-    overwrite_if_exists=False,
     output_dir='.',
-    password=None,
-    directory=None,
+    overwrite_if_exists=False,
     skip_if_file_exists=False,
     accept_hooks=True,
     config_file=None,
@@ -84,12 +83,12 @@ def cookiecutter(
         default_config=default_config,
     )
 
-    if replay and ((no_input is not False) or (extra_context is not None)):
-        err_msg = (
-            "You can not use both replay and no_input or extra_context "
-            "at the same time."
-        )
-        raise InvalidModeException(err_msg)
+    # if replay and ((no_input is not False) or (extra_context is not None)):
+    #     err_msg = (
+    #         "You can not use both replay and no_input or extra_context "
+    #         "at the same time."
+    #     )
+    #     raise InvalidModeException(err_msg)
 
     config_dict = get_user_config(
         config_file=config_file, default_config=default_config,

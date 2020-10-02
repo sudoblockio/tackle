@@ -99,8 +99,8 @@ def test_cli_replay(mocker, cli_runner):
     assert result.exit_code == 0
     mock_cookiecutter.assert_called_once_with(
         template_path,
-        None,
-        False,
+        chechout=None,
+        no_input=False,
         context_file=None,
         context_key=None,
         replay=True,
@@ -164,8 +164,8 @@ def test_cli_exit_on_noinput_and_replay(mocker, cli_runner):
 
     mock_cookiecutter.assert_called_once_with(
         template_path,
-        None,
-        True,
+        checkout=None,
+        no_input=True,
         context_file=None,
         context_key=None,
         replay=True,
@@ -203,8 +203,8 @@ def test_run_cookiecutter_on_overwrite_if_exists_and_replay(
 
     mock_cookiecutter.assert_called_once_with(
         template_path,
-        None,
-        False,
+        checkout=None,
+        no_input=False,
         context_file=None,
         context_key=None,
         replay=True,
@@ -271,8 +271,8 @@ def test_cli_output_dir(mocker, cli_runner, output_dir_flag, output_dir):
     assert result.exit_code == 0
     mock_cookiecutter.assert_called_once_with(
         template_path,
-        None,
-        False,
+        checkout=None,
+        no_input=False,
         context_file=None,
         context_key=None,
         replay=False,
@@ -317,8 +317,8 @@ def test_user_config(mocker, cli_runner, user_config_path):
     assert result.exit_code == 0
     mock_cookiecutter.assert_called_once_with(
         template_path,
-        None,
-        False,
+        checkout=None,
+        no_input=False,
         context_file=None,
         context_key=None,
         replay=False,
@@ -346,8 +346,8 @@ def test_default_user_config_overwrite(mocker, cli_runner, user_config_path):
     assert result.exit_code == 0
     mock_cookiecutter.assert_called_once_with(
         template_path,
-        None,
-        False,
+        checkout=None,
+        no_input=False,
         context_file=None,
         context_key=None,
         replay=False,
@@ -373,8 +373,8 @@ def test_default_user_config(mocker, cli_runner):
     assert result.exit_code == 0
     mock_cookiecutter.assert_called_once_with(
         template_path,
-        None,
-        False,
+        checkout=None,
+        no_input=False,
         context_file=None,
         context_key=None,
         replay=False,
@@ -600,8 +600,8 @@ def test_cli_accept_hooks(
     assert result.exit_code == 0
     mock_cookiecutter.assert_called_once_with(
         template_path,
-        None,
-        False,
+        checkout=None,
+        no_input=False,
         replay=False,
         context_file=None,
         context_key=None,
