@@ -163,7 +163,7 @@ def parse_context(context, env, cc_dict, context_key, no_input: bool):
                     cc_dict, env, key, raw, no_input, context_key
                 )
                 cc_dict[key] = val
-            elif not isinstance(raw, dict):
+            elif isinstance(raw, str):
                 # We are dealing with a regular variable
                 val = render_variable(env, raw, cc_dict, context_key)
 
@@ -171,37 +171,28 @@ def parse_context(context, env, cc_dict, context_key, no_input: bool):
                     val = read_user_variable(key, val)
 
                 cc_dict[key] = val
+
+            elif isinstance(raw, dict):
+                # dict parsing logic
+                if 'type' not in raw:
+                    val = render_variable(env, raw, cc_dict, context_key)
+                    if not no_input:
+                        val = read_user_dict(key, val)
+                    cc_dict[key] = val
+                else:
+                    cc_dict = parse_operator(
+                        context,
+                        key,
+                        dict(cc_dict),
+                        no_input=no_input,
+                        context_key=context_key,
+                    )
+
         except UndefinedError as err:
             msg = "Unable to render variable '{}'".format(key)
             raise UndefinedVariableInTemplate(msg, err, context)
 
-            # Second pass; handle the dictionaries.
-    for key, raw in context[context_key].items():
-        if key.startswith('_') and not key.startswith('__'):
-            continue
-        # try:
-        if isinstance(raw, dict):
-            # dict parsing logic
-            if 'type' not in raw:
-                val = render_variable(env, raw, cc_dict, context_key)
-                if not no_input:
-                    val = read_user_dict(key, val)
-                cc_dict[key] = val
-            else:
-                cc_dict = parse_operator(
-                    context,
-                    key,
-                    dict(cc_dict),
-                    no_input=no_input,
-                    context_key=context_key,
-                )
-
-        # except UndefinedError as err:
-        #     msg = "Unable to render variable '{}'".format(key)
-        #     raise UndefinedVariableInTemplate(msg, err, context)
-
     return cc_dict
-
 
 def prompt_for_config(
     context: Dict,
