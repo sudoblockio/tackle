@@ -415,6 +415,7 @@ def generate_files(
             for o in post_gen_operator_list:
                 o.execute()
 
+            logger.debug('Resulting project directory created at %s', project_dir)
             return project_dir
     else:
         if accept_hooks:
@@ -428,4 +429,6 @@ def generate_files(
 
         for o in post_gen_operator_list:
             o.execute()
+
+        logger.debug('No project directory was created')
         return None

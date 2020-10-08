@@ -6,17 +6,19 @@ library rather than a script.
 """
 import logging
 import os
-import copy
 import json
 from _collections import OrderedDict
 
-from cookiecutter.config import get_user_config
+# from cookiecutter.config import get_user_config
 from cookiecutter.generate import generate_context, generate_files
 from cookiecutter.prompt import prompt_for_config
 from cookiecutter.replay import dump, load
 from cookiecutter.repository import determine_repo_dir
 from cookiecutter.utils.paths import rmtree
-from cookiecutter.run.base_run import Run
+
+from cookiecutter.exceptions import InvalidModeException
+# from cookiecutter.models.mode import Mode
+
 
 from cookiecutter.configs.config_base import get_settings
 
@@ -36,6 +38,7 @@ def cookiecutter(
     existing_context=None,
     extra_context=None,
     replay=None,
+    # record=None,
     output_dir='.',
     overwrite_if_exists=False,
     skip_if_file_exists=False,
@@ -75,7 +78,6 @@ def cookiecutter(
     global calling_directory  # Preserve this path for special variable usage
     calling_directory = os.getcwd()
 
-    run = Run(**copy.copy(locals()))
     settings = get_settings(
         config_file=config_file,
         env_file=env_file,
@@ -83,21 +85,27 @@ def cookiecutter(
         default_config=default_config,
     )
 
-    # if replay and ((no_input is not False) or (extra_context is not None)):
-    #     err_msg = (
-    #         "You can not use both replay and no_input or extra_context "
-    #         "at the same time."
-    #     )
-    #     raise InvalidModeException(err_msg)
+    # mode = Mode(
+    #     no_input=no_input,
+    #     replay=replay,
+    #     record=record,
+    # )
 
-    config_dict = get_user_config(
-        config_file=config_file, default_config=default_config,
-    )
+    if replay and ((no_input is not False) or (extra_context is not None)):
+        err_msg = (
+            "You can not use both replay and no_input or extra_context "
+            "at the same time."
+        )
+        raise InvalidModeException(err_msg)
+
+    # config_dict = get_user_config(
+    #     config_file=config_file, default_config=default_config,
+    # )
 
     repo_dir, context_file, cleanup = determine_repo_dir(
         template=template,
-        abbreviations=config_dict['abbreviations'],
-        clone_to_dir=config_dict['cookiecutters_dir'],
+        abbreviations=settings.abbreviations,
+        clone_to_dir=settings.cookiecutters_dir,
         checkout=checkout,
         no_input=no_input,
         context_file=context_file,
@@ -112,7 +120,7 @@ def cookiecutter(
 
     if replay:
         if isinstance(replay, bool):
-            context = load(config_dict['replay_dir'], template_name, context_key)
+            context = load(settings.replay_dir, template_name, context_key)
         else:
             path, template_name = os.path.split(os.path.splitext(replay)[0])
             context = load(path, template_name, context_key)
@@ -123,7 +131,7 @@ def cookiecutter(
 
         context = generate_context(
             context_file=context_file_path,
-            default_context=config_dict['default_context'],
+            default_context=settings.default_context,
             extra_context=extra_context,
             context_key=context_key,
         )
@@ -140,10 +148,10 @@ def cookiecutter(
             context, no_input, context_key, existing_context
         )
 
-        dump(config_dict['replay_dir'], template_name, context, context_key)
+        dump(settings.replay_dir, template_name, context, context_key)
 
     # Create project from local context and project template.
-    result = generate_files(
+    generate_files(
         repo_dir=repo_dir,
         context=context,
         overwrite_if_exists=overwrite_if_exists,
@@ -152,11 +160,6 @@ def cookiecutter(
         context_key=context_key,
         accept_hooks=accept_hooks,
     )
-
-    if result:
-        logger.debug('Resulting project directory created at %s', result)
-    else:
-        logger.debug('No project directory was created')
 
     # Cleanup (if required)
     if cleanup:
