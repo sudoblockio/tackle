@@ -9,7 +9,6 @@ import os
 import json
 from _collections import OrderedDict
 
-from cookiecutter.config import get_user_config
 from cookiecutter.generate import generate_context, generate_files
 from cookiecutter.prompt import prompt_for_config
 from cookiecutter.replay import dump, load
@@ -86,11 +85,7 @@ def cookiecutter(
         default_config=default_config,
     )
 
-    mode = Mode(
-        no_input=no_input,
-        replay=replay,
-        record=record,
-    )
+    mode = Mode(no_input=no_input, replay=replay, record=record,)
 
     if replay and ((no_input is not False) or (extra_context is not None)):
         err_msg = (

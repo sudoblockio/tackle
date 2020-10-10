@@ -15,6 +15,7 @@ from cookiecutter.render import render_variable
 from cookiecutter.utils.context_manager import work_in
 from cookiecutter.models.mode import Mode
 
+
 def read_user_variable(var_name, default_value):
     """Prompt user for variable and return the entered value or given default.
 
@@ -196,12 +197,13 @@ def parse_context(context, env, cc_dict, context_key, mode: Mode = Field()):
 
     return cc_dict
 
+
 def prompt_for_config(
     context: Dict,
     # no_input: bool = False,
     context_key: str = None,
     existing_context: Dict = None,
-    mode: Mode = Mode()
+    mode: Mode = Mode(),
 ):
     """
     Prompt user to enter values.

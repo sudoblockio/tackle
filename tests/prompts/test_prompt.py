@@ -13,6 +13,7 @@ from cookiecutter.models.mode import Mode
 no_input_true = Mode(no_input=True)
 no_input_false = Mode(no_input=False)
 
+
 @pytest.fixture(autouse=True)
 def patch_readline_on_win(monkeypatch):
     """Fixture. Overwrite windows end of line to linux standard."""
