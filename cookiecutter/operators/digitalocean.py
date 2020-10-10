@@ -21,7 +21,7 @@ class DigitalOceanRegionsOperator(BaseOperator):
     """
 
     type: str = 'digitalocean_regions'
-    region: str
+    # region: str
 
     def execute(self):
         api_key = os.getenv('DIGITALOCEAN_TOKEN')
