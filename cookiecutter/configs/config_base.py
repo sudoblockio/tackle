@@ -4,7 +4,7 @@ import os
 import logging
 
 from pydantic import BaseSettings
-from typing import Dict, Any
+from typing import Dict, Any, Union
 
 from cookiecutter.utils.reader import read_config_file
 
@@ -27,12 +27,17 @@ def expand_path(path):
 
 
 class Settings(BaseSettings):
+    """Base settings for run."""
+
     cookiecutters_dir: str = '~/.cookiecutters/'
     replay_dir: str = '~/.cookiecutter_replay/'
     abbreviations: Dict = {}
     default_context: Dict = OrderedDict([])
 
     config_path: str = None
+
+    extra_providers: Union[list, str] = None
+    extra_provider_dirs: Union[list, str] = None
 
     class Config:
         env_prefix = 'TACKLE_'
@@ -44,6 +49,9 @@ class Settings(BaseSettings):
 
         self.cookiecutters_dir = expand_path(self.cookiecutters_dir)
         self.replay_dir = expand_path(self.replay_dir)
+
+    def init(self):
+        pass
 
 
 def get_settings(
