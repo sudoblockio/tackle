@@ -8,7 +8,10 @@ import cookiecutter.prompt
 import cookiecutter.render
 from cookiecutter import prompt, exceptions
 from cookiecutter.render import environment
+from cookiecutter.models.mode import Mode
 
+no_input_true = Mode(no_input=True)
+no_input_false = Mode(no_input=False)
 
 @pytest.fixture(autouse=True)
 def patch_readline_on_win(monkeypatch):
@@ -115,7 +118,7 @@ class TestPrompt(object):
             }
         }
 
-        cookiecutter_dict = prompt.prompt_for_config(context, no_input=True)
+        cookiecutter_dict = prompt.prompt_for_config(context, mode=no_input_true)
         assert cookiecutter_dict == {
             'project_name': 'Slartibartfast',
             'details': {'Slartibartfast': 'Slartibartfast'},
@@ -149,7 +152,7 @@ class TestPrompt(object):
             }
         }
 
-        cookiecutter_dict = prompt.prompt_for_config(context, no_input=True)
+        cookiecutter_dict = prompt.prompt_for_config(context, mode=no_input_true)
         assert cookiecutter_dict == {
             'project_name': "Slartibartfast",
             'details': {
@@ -225,7 +228,7 @@ class TestPrompt(object):
                 ]
             )
         }
-        cookiecutter_dict = prompt.prompt_for_config(context, no_input=True)
+        cookiecutter_dict = prompt.prompt_for_config(context, mode=no_input_true)
         assert cookiecutter_dict == OrderedDict(
             [
                 ('foo', 'Hello world'),
@@ -254,7 +257,7 @@ class TestPrompt(object):
                 '_skip_nested': True,
             }
         }
-        cookiecutter_dict = prompt.prompt_for_config(context, no_input=True)
+        cookiecutter_dict = prompt.prompt_for_config(context, mode=no_input_true)
         assert cookiecutter_dict == context['cookiecutter']
 
 
@@ -406,7 +409,7 @@ class TestPromptChoiceForConfig(object):
 def test_undefined_variable(context):
     """Verify `prompt.prompt_for_config` raises correct error."""
     with pytest.raises(exceptions.UndefinedVariableInTemplate) as err:
-        prompt.prompt_for_config(context, no_input=True)
+        prompt.prompt_for_config(context, mode=no_input_true)
 
     error = err.value
     assert error.message == "Unable to render variable 'foo'"

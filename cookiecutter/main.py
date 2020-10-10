@@ -9,7 +9,7 @@ import os
 import json
 from _collections import OrderedDict
 
-# from cookiecutter.config import get_user_config
+from cookiecutter.config import get_user_config
 from cookiecutter.generate import generate_context, generate_files
 from cookiecutter.prompt import prompt_for_config
 from cookiecutter.replay import dump, load
@@ -17,7 +17,8 @@ from cookiecutter.repository import determine_repo_dir
 from cookiecutter.utils.paths import rmtree
 
 from cookiecutter.exceptions import InvalidModeException
-# from cookiecutter.models.mode import Mode
+
+from cookiecutter.models.mode import Mode
 
 
 from cookiecutter.configs.config_base import get_settings
@@ -38,7 +39,7 @@ def cookiecutter(
     existing_context=None,
     extra_context=None,
     replay=None,
-    # record=None,
+    record=None,
     output_dir='.',
     overwrite_if_exists=False,
     skip_if_file_exists=False,
@@ -85,11 +86,11 @@ def cookiecutter(
         default_config=default_config,
     )
 
-    # mode = Mode(
-    #     no_input=no_input,
-    #     replay=replay,
-    #     record=record,
-    # )
+    mode = Mode(
+        no_input=no_input,
+        replay=replay,
+        record=record,
+    )
 
     if replay and ((no_input is not False) or (extra_context is not None)):
         err_msg = (
@@ -97,10 +98,6 @@ def cookiecutter(
             "at the same time."
         )
         raise InvalidModeException(err_msg)
-
-    # config_dict = get_user_config(
-    #     config_file=config_file, default_config=default_config,
-    # )
 
     repo_dir, context_file, cleanup = determine_repo_dir(
         template=template,
@@ -112,7 +109,6 @@ def cookiecutter(
         password=password,
         directory=directory,
     )
-    # determine_repo_dir()
 
     template_name = os.path.basename(os.path.abspath(repo_dir))
     if not context_key:
@@ -143,9 +139,8 @@ def cookiecutter(
 
         # prompt the user to manually configure at the command line.pyth
         # except when 'no-input' flag is set
-
         context[context_key] = prompt_for_config(
-            context, no_input, context_key, existing_context
+            context, context_key, existing_context, mode
         )
 
         dump(settings.replay_dir, template_name, context, context_key)

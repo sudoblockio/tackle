@@ -5,7 +5,7 @@
 # import pytest
 import cookiecutter.operator
 from cookiecutter import prompt
-
+from cookiecutter.models.mode import Mode
 
 # Only tests for the basic logic of the parsing of the operator calls
 
@@ -132,7 +132,7 @@ def test_prompt_operator_when_true_no_input_loop():
         }
     }
 
-    out_dict = prompt.prompt_for_config(context, no_input=True)
+    out_dict = prompt.prompt_for_config(context, mode=Mode(no_input=True))
     assert out_dict == {
         'project_name': 'Slartibartfast',
         'details': ['stuff', 'stuff'],
@@ -163,7 +163,7 @@ def test_prompt_operator_when_true_no_input_loop_item():
         }
     }
 
-    out_dict = prompt.prompt_for_config(context, no_input=True)
+    out_dict = prompt.prompt_for_config(context, mode=Mode(no_input=True))
     assert out_dict == {
         'project_name': 'Slartibartfast',
         'details': ['foo', 'bar'],
@@ -195,7 +195,7 @@ def test_prompt_operator_when_true_no_input_loop_list():
         }
     }
 
-    out_dict = prompt.prompt_for_config(context, no_input=True)
+    out_dict = prompt.prompt_for_config(context, mode=Mode(no_input=True))
     assert out_dict == {
         'project_name': 'Slartibartfast',
         'details': ['foo', 'bar'],
