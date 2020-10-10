@@ -9,13 +9,18 @@ import os
 import json
 from _collections import OrderedDict
 
-from cookiecutter.config import get_user_config
-from cookiecutter.exceptions import InvalidModeException
 from cookiecutter.generate import generate_context, generate_files
 from cookiecutter.prompt import prompt_for_config
 from cookiecutter.replay import dump, load
 from cookiecutter.repository import determine_repo_dir
 from cookiecutter.utils.paths import rmtree
+
+from cookiecutter.exceptions import InvalidModeException
+
+from cookiecutter.models.mode import Mode
+
+
+from cookiecutter.configs.config_base import get_settings
 
 logger = logging.getLogger(__name__)
 
@@ -24,21 +29,24 @@ calling_directory = None
 
 def cookiecutter(
     template='.',
-    checkout=None,
     no_input=False,
+    checkout=None,
     context_file=None,
     context_key=None,
+    password=None,
+    directory=None,
     existing_context=None,
     extra_context=None,
     replay=None,
-    overwrite_if_exists=False,
+    record=None,
     output_dir='.',
-    config_file=None,
-    default_config=False,
-    password=None,
-    directory=None,
+    overwrite_if_exists=False,
     skip_if_file_exists=False,
     accept_hooks=True,
+    config_file=None,
+    env_file=None,
+    default_config=False,
+    config=None,
 ):
     """
     Run Cookiecutter just as if using it from the command line.
@@ -59,16 +67,25 @@ def cookiecutter(
         ``True`` read from the ``replay_dir``.
         if it exists
     :param output_dir: Where to output the generated project dir into.
-    :param config_file: User configuration file path.
-    :param default_config: Use default values rather than a config file.
     :param password: The password to use when extracting the repository.
     :param directory: Relative path to a cookiecutter template in a repository.
     :param accept_hooks: Accept pre and post hooks if set to `True`.
+    :param config_file: User configuration file path.
+    :param default_config: Use default values rather than a config file.
 
     :return Dictionary of output
     """
     global calling_directory  # Preserve this path for special variable usage
     calling_directory = os.getcwd()
+
+    settings = get_settings(
+        config_file=config_file,
+        env_file=env_file,
+        config=config,
+        default_config=default_config,
+    )
+
+    mode = Mode(no_input=no_input, replay=replay, record=record,)
 
     if replay and ((no_input is not False) or (extra_context is not None)):
         err_msg = (
@@ -77,14 +94,10 @@ def cookiecutter(
         )
         raise InvalidModeException(err_msg)
 
-    config_dict = get_user_config(
-        config_file=config_file, default_config=default_config,
-    )
-
     repo_dir, context_file, cleanup = determine_repo_dir(
         template=template,
-        abbreviations=config_dict['abbreviations'],
-        clone_to_dir=config_dict['cookiecutters_dir'],
+        abbreviations=settings.abbreviations,
+        clone_to_dir=settings.cookiecutters_dir,
         checkout=checkout,
         no_input=no_input,
         context_file=context_file,
@@ -98,7 +111,7 @@ def cookiecutter(
 
     if replay:
         if isinstance(replay, bool):
-            context = load(config_dict['replay_dir'], template_name, context_key)
+            context = load(settings.replay_dir, template_name, context_key)
         else:
             path, template_name = os.path.split(os.path.splitext(replay)[0])
             context = load(path, template_name, context_key)
@@ -109,7 +122,7 @@ def cookiecutter(
 
         context = generate_context(
             context_file=context_file_path,
-            default_context=config_dict['default_context'],
+            default_context=settings.default_context,
             extra_context=extra_context,
             context_key=context_key,
         )
@@ -122,13 +135,13 @@ def cookiecutter(
         # prompt the user to manually configure at the command line.pyth
         # except when 'no-input' flag is set
         context[context_key] = prompt_for_config(
-            context, no_input, context_key, existing_context
+            context, context_key, existing_context, mode
         )
 
-        dump(config_dict['replay_dir'], template_name, context, context_key)
+        dump(settings.replay_dir, template_name, context, context_key)
 
     # Create project from local context and project template.
-    result = generate_files(
+    generate_files(
         repo_dir=repo_dir,
         context=context,
         overwrite_if_exists=overwrite_if_exists,
@@ -137,11 +150,6 @@ def cookiecutter(
         context_key=context_key,
         accept_hooks=accept_hooks,
     )
-
-    if result:
-        logger.debug('Resulting project directory created at %s', result)
-    else:
-        logger.debug('No project directory was created')
 
     # Cleanup (if required)
     if cleanup:

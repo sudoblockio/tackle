@@ -19,7 +19,7 @@ def test_get_replay_file_name(replay_file_name):
     'invalid_kwargs',
     (
         {'no_input': True},
-        {'extra_context': {}},
+        {'extra_context': {'stuff': 'thing'}},
         {'no_input': True, 'extra_context': {}},
     ),
 )

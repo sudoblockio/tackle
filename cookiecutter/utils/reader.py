@@ -10,9 +10,10 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def read_config_file(file):
+def read_config_file(file, file_extension=None):
     """Read files into objects."""
-    file_extension = file.split('.')[-1]
+    if not file_extension:
+        file_extension = file.split('.')[-1]
 
     if not os.path.exists(file):
         raise FileNotFoundError

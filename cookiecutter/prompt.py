@@ -7,11 +7,13 @@ import click
 from cookiecutter.operator import parse_operator
 from jinja2.exceptions import UndefinedError
 from typing import Dict
+from pydantic import Field
 
 from cookiecutter.render.environment import StrictEnvironment
 from cookiecutter.exceptions import UndefinedVariableInTemplate
 from cookiecutter.render import render_variable
 from cookiecutter.utils.context_manager import work_in
+from cookiecutter.models.mode import Mode
 
 
 def read_user_variable(var_name, default_value):
@@ -138,7 +140,7 @@ def prompt_choice_for_config(cc_dict, env, key, options, no_input, context_key):
     return read_user_choice(key, rendered_options)
 
 
-def parse_context(context, env, cc_dict, context_key, no_input: bool):
+def parse_context(context, env, cc_dict, context_key, mode: Mode = Field()):
     """Parse the context and iterate over values.
 
     :param dict context: Source for field names and sample values.
@@ -148,6 +150,7 @@ def parse_context(context, env, cc_dict, context_key, no_input: bool):
     :param existing_context: A dictionary of values to use during rendering.
     :return: cc_dict
     """
+    no_input = mode.no_input
     for key, raw in context[context_key].items():
         if key.startswith(u'_') and not key.startswith('__'):
             cc_dict[key] = raw
@@ -163,7 +166,7 @@ def parse_context(context, env, cc_dict, context_key, no_input: bool):
                     cc_dict, env, key, raw, no_input, context_key
                 )
                 cc_dict[key] = val
-            elif not isinstance(raw, dict):
+            elif isinstance(raw, str):
                 # We are dealing with a regular variable
                 val = render_variable(env, raw, cc_dict, context_key)
 
@@ -171,43 +174,36 @@ def parse_context(context, env, cc_dict, context_key, no_input: bool):
                     val = read_user_variable(key, val)
 
                 cc_dict[key] = val
+
+            elif isinstance(raw, dict):
+                # dict parsing logic
+                if 'type' not in raw:
+                    val = render_variable(env, raw, cc_dict, context_key)
+                    if not no_input:
+                        val = read_user_dict(key, val)
+                    cc_dict[key] = val
+                else:
+                    cc_dict = parse_operator(
+                        context,
+                        key,
+                        dict(cc_dict),
+                        no_input=no_input,
+                        context_key=context_key,
+                    )
+
         except UndefinedError as err:
             msg = "Unable to render variable '{}'".format(key)
             raise UndefinedVariableInTemplate(msg, err, context)
-
-            # Second pass; handle the dictionaries.
-    for key, raw in context[context_key].items():
-        if key.startswith('_') and not key.startswith('__'):
-            continue
-        # try:
-        if isinstance(raw, dict):
-            # dict parsing logic
-            if 'type' not in raw:
-                val = render_variable(env, raw, cc_dict, context_key)
-                if not no_input:
-                    val = read_user_dict(key, val)
-                cc_dict[key] = val
-            else:
-                cc_dict = parse_operator(
-                    context,
-                    key,
-                    dict(cc_dict),
-                    no_input=no_input,
-                    context_key=context_key,
-                )
-
-        # except UndefinedError as err:
-        #     msg = "Unable to render variable '{}'".format(key)
-        #     raise UndefinedVariableInTemplate(msg, err, context)
 
     return cc_dict
 
 
 def prompt_for_config(
     context: Dict,
-    no_input: bool = False,
+    # no_input: bool = False,
     context_key: str = None,
     existing_context: Dict = None,
+    mode: Mode = Mode(),
 ):
     """
     Prompt user to enter values.
@@ -232,7 +228,7 @@ def prompt_for_config(
     if '_template' in context[context_key]:
         # Normal case where '_template' is set in the context in `main`
         with work_in(context[context_key]['_template']):
-            return parse_context(context, env, cc_dict, context_key, no_input)
+            return parse_context(context, env, cc_dict, context_key, mode)
     else:
         # Case where prompt is being called directly as is the case with an operator
-        return parse_context(context, env, cc_dict, context_key, no_input)
+        return parse_context(context, env, cc_dict, context_key, mode)
