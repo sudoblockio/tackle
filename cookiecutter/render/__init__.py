@@ -4,7 +4,7 @@ import re
 
 import six
 
-import cookiecutter as cc
+# import cookiecutter as cc
 from cookiecutter.render.special_vars import get_vars
 
 
@@ -46,20 +46,20 @@ def render_variable(env, raw, cc_dict, context_key):
     render_context.update(special_variables)
     rendered_template = template.render(render_context)
 
-    if cc.repository.cookiecutter_gen == 'nukikata':  # noqa
-        # Nukikata evaluates dicts, lists, and bools as literals where as cookiecutter
-        # renders them to string
+    # if cc.repository.cookiecutter_gen == 'nukikata':  # noqa
+    # Nukikata evaluates dicts, lists, and bools as literals where as cookiecutter
+    # renders them to string
 
-        REGEX = [
-            r'^\[.*\]$',  # List
-            r'^\{.*\}$',  # Dict
-            r'^True$|^False$',  # Boolean
-            r'^\d+$',  # Integer
-            r'^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$',  # Float
-        ]
-        for r in REGEX:
-            if bool(re.search(r, rendered_template)):
-                """If variable looks like list, return literal list"""
-                return ast.literal_eval(rendered_template)
+    REGEX = [
+        r'^\[.*\]$',  # List
+        r'^\{.*\}$',  # Dict
+        r'^True$|^False$',  # Boolean
+        r'^\d+$',  # Integer
+        r'^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$',  # Float
+    ]
+    for r in REGEX:
+        if bool(re.search(r, rendered_template)):
+            """If variable looks like list, return literal list"""
+            return ast.literal_eval(rendered_template)
 
     return rendered_template

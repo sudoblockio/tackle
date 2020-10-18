@@ -75,8 +75,8 @@ def cookiecutter(
 
     :return Dictionary of output
     """
-    global calling_directory  # Preserve this path for special variable usage
-    calling_directory = os.getcwd()
+    # global calling_directory  # Preserve this path for special variable usage
+    # calling_directory = os.getcwd()
 
     settings = get_settings(
         config_file=config_file,

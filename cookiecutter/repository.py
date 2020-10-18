@@ -17,20 +17,6 @@ REPO_REGEX = re.compile(
     re.VERBOSE,
 )
 
-valid_context_files = [
-    'nuki.json',
-    'nuki.yaml',
-    'nuki.yml',
-    'nuki.hcl',
-    'nukikata.json',
-    'nukikata.yaml',
-    'nukikata.yml',
-    'nukikata.hcl',
-    'cookiecutter.json',
-    'cookiecutter.yaml',
-    'cookiecutter.yml',
-    'cookiecutter.hcl',
-]
 
 cookiecutter_gen = None
 
@@ -63,35 +49,86 @@ def expand_abbreviations(template, abbreviations):
     return template
 
 
-def repository_has_cookiecutter_json(repo_directory, context_file=None):
+# valid_context_files = [
+#     'nuki.json',
+#     'nuki.yaml',
+#     'nuki.yml',
+#     'nuki.hcl',
+#     'nukikata.json',
+#     'nukikata.yaml',
+#     'nukikata.yml',
+#     'nukikata.hcl',
+#     'tackle.yaml',
+#     'tackle.yml',
+#     'tackle.json',
+#     'tackle.hcl',
+#     'cookiecutter.json',
+#     'cookiecutter.yaml',
+#     'cookiecutter.yml',
+#     'cookiecutter.hcl',
+# ]
+
+CONTEXT_FILE_DICT = {
+    'cookiecutter': [
+        'cookiecutter.json',
+        'cookiecutter.yaml',
+        'cookiecutter.yml',
+        'cookiecutter.hcl',
+    ],
+    'tackle': [
+        'nuki.json',
+        'nuki.yaml',
+        'nuki.yml',
+        'nuki.hcl',
+        'nukikata.json',
+        'nukikata.yaml',
+        'nukikata.yml',
+        'nukikata.hcl',
+        'tackle.yaml',
+        'tackle.yml',
+        'tackle.json',
+        'tackle.hcl',
+    ],
+}
+
+ALL_VALID_CONTEXT_FILES = (
+    CONTEXT_FILE_DICT['cookiecutter'] + CONTEXT_FILE_DICT['tackle']
+)
+
+
+def determine_tackle_generation(context_file: str) -> str:
+    """Determine the tackle generation."""
+    if context_file in CONTEXT_FILE_DICT['cookiecutter']:
+        return 'cookiecutter'
+    elif context_file in CONTEXT_FILE_DICT['tackle']:
+        return 'tackle'
+
+
+def repository_has_tackle_file(repo_directory, context_file=None):
     """Determine if `repo_directory` contains a `cookiecutter.json` file.
 
     :param repo_directory: The candidate repository directory.
     :param context_file:
-    :return: True if the `repo_directory` is valid, else False.
+    :return: The path to the context file and
     """
-    global cookiecutter_gen
     repo_directory_exists = os.path.isdir(repo_directory)
     if context_file:
-        context_file_exists = os.path.isfile(
-            os.path.join(os.path.abspath(repo_directory), context_file)
-        )
-        if context_file_exists:
-            # The supplied context file exists
-            cookiecutter_gen = 'nukikata'
+        # The supplied context file exists
+        context_file = os.path.join(os.path.abspath(repo_directory), context_file)
+        if os.path.isfile(context_file):
             return context_file
+        else:
+            raise FileNotFoundError(
+                f"Can't find supplied context_file at {context_file}"
+            )
 
     if repo_directory_exists:
         # Check for valid context files as default
-        for f in valid_context_files:
+        for f in ALL_VALID_CONTEXT_FILES:
             if os.path.isfile(os.path.join(repo_directory, f)):
-                if f.startswith('cookiecutter'):
-                    cookiecutter_gen = 'cookiecutter'
-                else:
-                    cookiecutter_gen = 'nukikata'
                 return f
     else:
-        return False
+        return None
 
 
 def determine_repo_dir(
@@ -160,7 +197,7 @@ def determine_repo_dir(
                 raise ContextFileNotFound(
                     'The context file "{}" could not be found'.format(context_file)
                 )
-        context_file = repository_has_cookiecutter_json(repo_candidate, context_file)
+        context_file = repository_has_tackle_file(repo_candidate, context_file)
         if not context_file:
             # Means that no valid context file has been found or provided
             continue

@@ -5,7 +5,7 @@ import platform
 
 import distro
 
-import cookiecutter as cc
+# import cookiecutter as cc
 
 
 def get_vars(context_key=None, cc_dict=None):
@@ -20,8 +20,8 @@ def get_vars(context_key=None, cc_dict=None):
         'version': platform.version(),
         'processor': platform.processor(),
         'architecture': platform.architecture(),
-        'calling_directory': cc.main.calling_directory,  # noqa
-        'cookiecutter_gen': cc.repository.cookiecutter_gen,  # noqa
+        # 'calling_directory': cc.main.calling_directory,  # noqa
+        # 'cookiecutter_gen': cc.repository.cookiecutter_gen,  # noqa
     }
 
     if platform.system() == 'Linux':
