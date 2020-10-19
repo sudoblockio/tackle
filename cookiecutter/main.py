@@ -9,7 +9,9 @@ import os
 import json
 from _collections import OrderedDict
 
-from cookiecutter.generate import generate_context, generate_files
+from cookiecutter.generate import generate_files, generate_context
+
+# from cookiecutter.context import
 from cookiecutter.prompt import prompt_for_config
 from cookiecutter.replay import dump, load
 from cookiecutter.repository import determine_repo_dir
@@ -108,6 +110,19 @@ def cookiecutter(
     template_name = os.path.basename(os.path.abspath(repo_dir))
     if not context_key:
         context_key = os.path.basename(context_file).split('.')[0]
+
+    # from cookiecutter.models.context import Context
+    # context = Context(
+    #     context_file=context_file_path,
+    #     default_context=settings.default_context,
+    #     extra_context=extra_context,
+    #     context_key=context_key,
+    # )
+
+    # context_dict = generate_context(
+    #     template_name,
+    #
+    # )
 
     if replay:
         if isinstance(replay, bool):

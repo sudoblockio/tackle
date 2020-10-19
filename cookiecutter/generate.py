@@ -3,7 +3,6 @@ import fnmatch
 import logging
 import os
 import shutil
-from collections import OrderedDict
 
 from binaryornot.check import is_binary
 from jinja2 import FileSystemLoader
@@ -11,7 +10,6 @@ from jinja2.exceptions import TemplateSyntaxError, UndefinedError
 
 from cookiecutter.render.environment import StrictEnvironment
 from cookiecutter.exceptions import (
-    ContextDecodingException,
     FailedHookException,
     NonTemplatedInputDirException,
     OutputDirExistsException,
@@ -19,34 +17,17 @@ from cookiecutter.exceptions import (
 )
 from cookiecutter.utils.find import find_template
 from cookiecutter.hooks import run_hook
-from cookiecutter.utils.reader import read_config_file
 
 from cookiecutter.operator import post_gen_operator_list
 from cookiecutter.utils.paths import rmtree, make_sure_path_exists
 from cookiecutter.utils.context_manager import work_in
 
+from collections import OrderedDict
+
+from cookiecutter.exceptions import ContextDecodingException
+from cookiecutter.utils.reader import read_config_file
+
 logger = logging.getLogger(__name__)
-
-
-def is_copy_only_path(path, context, context_key='cookiecutter'):
-    """Check whether the given `path` should only be copied and not rendered.
-
-    Returns True if `path` matches a pattern in the given `context` dict,
-    otherwise False.
-
-    :param path: A file-system path referring to a file or dir that
-        should be rendered or just copied.
-    :param context: cookiecutter context.
-    """
-    try:
-        for dont_render in context[context_key]['_copy_without_render']:
-            if fnmatch.fnmatch(path, dont_render):
-                return True
-    except KeyError:
-        return False
-
-    return False
-
 
 def apply_overwrites_to_context(context, overwrite_context):
     """Modify the given context in place based on the overwrite_context."""
@@ -118,6 +99,26 @@ def generate_context(
 
     logger.debug('Context generated is %s', context)
     return context
+
+
+def is_copy_only_path(path, context, context_key='cookiecutter'):
+    """Check whether the given `path` should only be copied and not rendered.
+
+    Returns True if `path` matches a pattern in the given `context` dict,
+    otherwise False.
+
+    :param path: A file-system path referring to a file or dir that
+        should be rendered or just copied.
+    :param context: cookiecutter context.
+    """
+    try:
+        for dont_render in context[context_key]['_copy_without_render']:
+            if fnmatch.fnmatch(path, dont_render):
+                return True
+    except KeyError:
+        return False
+
+    return False
 
 
 def generate_file(
