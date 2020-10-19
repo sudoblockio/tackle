@@ -30,7 +30,7 @@ def output_dir(tmpdir):
 @pytest.fixture(autouse=True)
 def modify_syspath(monkeypatch):
     """Fixture. Make sure that the custom extension can be loaded."""
-    monkeypatch.syspath_prepend('fixtures/test-extensions/hello_extension')
+    monkeypatch.syspath_prepend('legacy/fixtures/test-extensions/hello_extension')
 
 
 def test_hook_with_extension(monkeypatch, template, output_dir):

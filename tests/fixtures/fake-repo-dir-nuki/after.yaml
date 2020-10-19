@@ -1,5 +1,5 @@
-_output_dir: /home/rob/PycharmProjects/terrace/nukikata/tests/fixtures/fake-repo-dir-nuki
-_template: /home/rob/PycharmProjects/terrace/nukikata/tests/fixtures/fake-repo-dir-nuki
+_output_dir: /home/rob/PycharmProjects/terrace/nukikata/tests/legacy/fixtures/fake-repo-dir-nuki
+_template: /home/rob/PycharmProjects/terrace/nukikata/tests/legacy/fixtures/fake-repo-dir-nuki
 foo: bar
 friends:
 - cats

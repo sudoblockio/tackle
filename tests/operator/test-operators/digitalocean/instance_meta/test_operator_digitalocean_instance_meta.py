@@ -6,7 +6,7 @@ import os
 from cookiecutter.main import cookiecutter
 
 
-def test_operator_gcp_instance_meta(monkeypatch, tmpdir):
+def test_operator_do_instance_meta(monkeypatch, tmpdir):
     """Verify Jinja2 time extension work correctly."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
 
@@ -15,7 +15,7 @@ def test_operator_gcp_instance_meta(monkeypatch, tmpdir):
     assert len(context['instance_types']) > 1
 
 
-def test_operator_gcp_instance_meta_instance_family(monkeypatch, tmpdir):
+def test_operator_do_instance_meta_instance_family(monkeypatch, tmpdir):
     """Verify Jinja2 time extension work correctly."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
 

@@ -21,7 +21,9 @@ def test_jinja2_time_extension(monkeypatch, tmpdir):
     monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
 
     context = cookiecutter(
-        'fixtures/test-extensions/default/', no_input=True, output_dir=str(tmpdir)
+        'legacy/fixtures/test-extensions/default/',
+        no_input=True,
+        output_dir=str(tmpdir),
     )
 
     assert type(context) == dict
@@ -50,7 +52,9 @@ def test_jinja2_slugify_extension(monkeypatch, tmpdir):
     monkeypatch.chdir(cwd)
 
     context = cookiecutter(
-        'fixtures/test-extensions/default/', no_input=True, output_dir=str(tmpdir)
+        'legacy/fixtures/test-extensions/default/',
+        no_input=True,
+        output_dir=str(tmpdir),
     )
 
     assert os.listdir(tmpdir)[0] == "it-s-slugified-foobar"

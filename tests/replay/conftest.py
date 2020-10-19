@@ -18,7 +18,7 @@ def context():
 @pytest.fixture
 def replay_test_dir():
     """Fixture to test directory."""
-    return 'tests/fixtures/test-replay/'
+    return 'tests/legacy/fixtures/test-replay/'
 
 
 @pytest.fixture

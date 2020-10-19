@@ -13,14 +13,14 @@ def test_finds_local_repo(monkeypatch, tmpdir):
     monkeypatch.chdir(test_dir)
 
     project_dir, context_file, cleanup = repository.determine_repo_dir(
-        'tests/fixtures/fake-repo',
+        'tests/legacy/fixtures/fake-repo',
         abbreviations={},
         clone_to_dir=str(tmpdir),
         checkout=None,
         no_input=True,
     )
 
-    assert 'tests/fixtures/fake-repo' == project_dir
+    assert 'tests/legacy/fixtures/fake-repo' == project_dir
     assert context_file == 'cookiecutter.json'
     assert not cleanup
 
@@ -28,7 +28,7 @@ def test_finds_local_repo(monkeypatch, tmpdir):
 def test_local_repo_with_no_context_raises(tmpdir):
     """A local repository without a cookiecutter.json should raise a \
     `RepositoryNotFound` exception."""
-    template_path = os.path.join('tests', 'fixtures/fake-repo-bad')
+    template_path = os.path.join('tests', 'legacy', 'fixtures', 'fake-repo-bad')
     with pytest.raises(exceptions.RepositoryNotFound) as err:
         repository.determine_repo_dir(
             template_path,
@@ -42,7 +42,9 @@ def test_local_repo_with_no_context_raises(tmpdir):
         'A valid repository for "{}" could not be found in the following '
         'locations:\n{}'.format(
             template_path,
-            '\n'.join([template_path, str(tmpdir / 'tests/fixtures/fake-repo-bad')]),
+            '\n'.join(
+                [template_path, str(tmpdir / 'tests/legacy/fixtures/fake-repo-bad')]
+            ),
         )
     )
 

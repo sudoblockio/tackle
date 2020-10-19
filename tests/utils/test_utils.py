@@ -237,8 +237,8 @@ def test_prompt_should_not_ask_if_no_input_and_rm_repo_file(mocker, tmp_path):
     'valid_config_file',
     (
         [
-            'tests/fixtures/valid/nuki-input/nuki.yml',
-            'tests/fixtures/valid/yaml-input/cookiecutter.yaml',
+            'tests/legacy/fixtures/valid/nuki-input/nuki.yml',
+            'tests/legacy/fixtures/valid/yaml-input/cookiecutter.yaml',
         ]
     ),
 )

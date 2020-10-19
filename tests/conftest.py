@@ -170,7 +170,7 @@ def user_config_file(user_dir, user_config_data):
     :param user_config_data: Dict of config values
     :returns: String of path to config file
     """
-    config_file = user_dir.join('config')
+    config_file = user_dir.join('config.yaml')
 
     config_text = USER_CONFIG.format(**user_config_data)
     config_file.write(config_text)

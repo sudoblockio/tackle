@@ -36,7 +36,7 @@ def test_should_invoke_main(monkeypatch, project_dir):
             sys.executable,
             '-m',
             'cookiecutter.cli.cli_parser',
-            'fixtures/fake-repo-tmpl',
+            'legacy/fixtures/fake-repo-tmpl',
             '--no-input',
         ]
     )

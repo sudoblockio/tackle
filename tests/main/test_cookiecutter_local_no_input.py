@@ -40,11 +40,11 @@ def test_cookiecutter_no_input_return_project_dir(monkeypatch):
     """Verify `cookiecutter` create project dir on input with or without slash."""
     monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
 
-    context = main.cookiecutter('fixtures/fake-repo-pre', no_input=True)
+    context = main.cookiecutter('legacy/fixtures/fake-repo-pre', no_input=True)
 
     assert type(context) == dict
-    assert os.path.isdir('fixtures/fake-repo-pre/{{cookiecutter.repo_name}}')
-    assert not os.path.isdir('fixtures/fake-repo-pre/fake-project')
+    assert os.path.isdir('legacy/fixtures/fake-repo-pre/{{cookiecutter.repo_name}}')
+    assert not os.path.isdir('legacy/fixtures/fake-repo-pre/fake-project')
 
     # project_dir = os.path.join(os.path.abspath(os.path.curdir), 'fake-project')
     # x = os.listdir(project_dir)
@@ -60,7 +60,7 @@ def test_cookiecutter_no_input_extra_context(monkeypatch):
     """Verify `cookiecutter` accept `extra_context` argument."""
     monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
     main.cookiecutter(
-        'fixtures/fake-repo-pre',
+        'legacy/fixtures/fake-repo-pre',
         no_input=True,
         extra_context={'repo_name': 'fake-project-extra'},
     )
@@ -72,7 +72,7 @@ def test_cookiecutter_templated_context(monkeypatch):
     """Verify Jinja2 templating correctly works in `cookiecutter.json` file."""
     monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
 
-    main.cookiecutter('fixtures/fake-repo-tmpl', no_input=True)
+    main.cookiecutter('legacy/fixtures/fake-repo-tmpl', no_input=True)
     assert os.path.isdir('fake-project-templated')
 
 
@@ -81,7 +81,7 @@ def test_cookiecutter_no_input_return_rendered_file(monkeypatch):
     """Verify Jinja2 templating correctly works in `cookiecutter.json` file."""
     monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
 
-    context = main.cookiecutter('fixtures/fake-repo-pre', no_input=True)
+    context = main.cookiecutter('legacy/fixtures/fake-repo-pre', no_input=True)
     project_dir = os.path.join(os.path.abspath(os.path.curdir), 'fake-project')
 
     assert type(context) == dict
@@ -96,7 +96,7 @@ def test_cookiecutter_dict_values_in_context(monkeypatch):
     """Verify configured dictionary from `cookiecutter.json` correctly unpacked."""
     monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
 
-    context = main.cookiecutter('fixtures/fake-repo-dict', no_input=True)
+    context = main.cookiecutter('legacy/fixtures/fake-repo-dict', no_input=True)
     project_dir = os.path.abspath(os.path.curdir)
 
     assert 'fake-project-dict' in os.listdir(project_dir)

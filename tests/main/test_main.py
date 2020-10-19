@@ -15,13 +15,14 @@ def test_replay_dump_template_name(
     but also later mistaken for replay files of other templates if invoked with
     '.' and '--replay'.
 
-    Change the current working directory temporarily to 'tests/fixtures/fake-repo-tmpl'
+    Change the current working directory temporarily to 'tests/legacy/fixtures/fake-repo-tmpl'
     for this test and call cookiecutter with '.' for the target template.
     """
     monkeypatch.chdir(
         os.path.join(
             os.path.abspath(os.path.dirname(__file__)),
             '..',
+            'legacy',
             'fixtures',
             'fake-repo-tmpl',
         )
@@ -46,7 +47,7 @@ def test_replay_dump_template_name(
 #
 #     Calls require valid template_name that is not a relative path.
 #
-#     Change the current working directory temporarily to 'tests/fixtures/fake-repo-tmpl'
+#     Change the current working directory temporarily to 'tests/legacy/fixtures/fake-repo-tmpl'
 #     for this test and call cookiecutter with '.' for the target template.
 #     """
 #     monkeypatch.chdir(
@@ -73,11 +74,9 @@ def test_replay_dump_template_name(
 def test_custom_replay_file(monkeypatch, mocker, user_config_file):
     """Check that reply.load is called with the custom replay_file."""
     monkeypatch.chdir(
-        os.path.join(
-            os.path.abspath(
-                os.path.join(
-                    os.path.dirname(__file__), '..', 'fixtures', 'fake-repo-tmpl'
-                )
+        os.path.abspath(
+            os.path.join(
+                os.path.dirname(__file__), '..', 'legacy', 'fixtures', 'fake-repo-tmpl'
             )
         )
     )

@@ -51,7 +51,7 @@ def test_cli_version(cli_runner, version_cli_flag):
     """Verify correct version output by `cookiecutter` on cli invocation."""
     result = cli_runner(version_cli_flag)
     assert result.exit_code == 0
-    assert result.output.startswith('Cookiecutter')
+    assert result.output.startswith('Tackle')
 
 
 @pytest.mark.usefixtures('make_fake_project_dir', 'remove_fake_project_dir')
@@ -60,7 +60,7 @@ def test_cli_error_on_existing_output_directory(monkeypatch, cli_runner):
     test_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', '..')
     monkeypatch.chdir(test_dir)
 
-    result = cli_runner('tests/fixtures/fake-repo-pre/', '--no-input')
+    result = cli_runner('tests/legacy/fixtures/fake-repo-pre/', '--no-input')
     assert result.exit_code != 0
     result_output = result.output.split('\n')[-2]
     expected_error_msg = 'Error: "fake-project" directory already exists'
@@ -71,7 +71,7 @@ def test_cli_error_on_existing_output_directory(monkeypatch, cli_runner):
 @pytest.mark.usefixtures('remove_fake_project_dir')
 def test_cli(cli_runner):
     """Test cli invocation work without flags if directory not exist."""
-    result = cli_runner('tests/fixtures/fake-repo-pre/', '--no-input')
+    result = cli_runner('tests/legacy/fixtures/fake-repo-pre/', '--no-input')
     assert result.exit_code == 0
     assert os.path.isdir('fake-project')
     with open(os.path.join('fake-project', 'README.rst')) as f:
@@ -81,7 +81,7 @@ def test_cli(cli_runner):
 @pytest.mark.usefixtures('remove_fake_project_dir')
 def test_cli_verbose(cli_runner):
     """Test cli invocation display log if called with `verbose` flag."""
-    result = cli_runner('tests/fixtures/fake-repo-pre/', '--no-input', '-v')
+    result = cli_runner('tests/legacy/fixtures/fake-repo-pre/', '--no-input', '-v')
     assert result.exit_code == 0
     assert os.path.isdir('fake-project')
     with open(os.path.join('fake-project', 'README.rst')) as f:
@@ -94,7 +94,7 @@ def test_cli_replay(mocker, cli_runner):
     # mock_cookiecutter = mocker.patch('cookiecutter.cli.cli_parser.cookiecutter')
     mocker.patch('cookiecutter.cli.cli_parser.cookiecutter')
 
-    template_path = 'tests/fixtures/fake-repo-pre/'
+    template_path = 'tests/legacy/fixtures/fake-repo-pre/'
     result = cli_runner(template_path, '--replay', '-v')
 
     assert result.exit_code == 0
@@ -123,7 +123,7 @@ def test_cli_replay_file(mocker, cli_runner):
     # mock_cookiecutter = mocker.patch('cookiecutter.cli.cli_parser.cookiecutter')
     mocker.patch('cookiecutter.cli.cli_parser.cookiecutter')
 
-    template_path = 'tests/fixtures/fake-repo-pre/'
+    template_path = 'tests/legacy/fixtures/fake-repo-pre/'
     result = cli_runner(template_path, '--replay-file', '~/custom-replay-file', '-v')
 
     assert result.exit_code == 0
@@ -153,7 +153,7 @@ def test_cli_exit_on_noinput_and_replay(mocker, cli_runner):
         'cookiecutter.cli.cli_parser.cookiecutter', side_effect=cookiecutter
     )
 
-    template_path = 'tests/fixtures/fake-repo-pre/'
+    template_path = 'tests/legacy/fixtures/fake-repo-pre/'
     result = cli_runner(template_path, '--no-input', '--replay', '-v')
 
     assert result.exit_code == 1
@@ -198,7 +198,7 @@ def test_run_cookiecutter_on_overwrite_if_exists_and_replay(
         'cookiecutter.cli.cli_parser.cookiecutter', side_effect=cookiecutter
     )
 
-    template_path = 'tests/fixtures/fake-repo-pre/'
+    template_path = 'tests/legacy/fixtures/fake-repo-pre/'
     result = cli_runner(template_path, '--replay', '-v', overwrite_cli_flag)
 
     assert result.exit_code == 0
@@ -231,7 +231,7 @@ def test_cli_overwrite_if_exists_when_output_dir_does_not_exist(
     Case when output dir not exist.
     """
     result = cli_runner(
-        'tests/fixtures/fake-repo-pre/', '--no-input', overwrite_cli_flag
+        'tests/legacy/fixtures/fake-repo-pre/', '--no-input', overwrite_cli_flag
     )
 
     assert result.exit_code == 0
@@ -245,7 +245,7 @@ def test_cli_overwrite_if_exists_when_output_dir_exists(cli_runner, overwrite_cl
     Case when output dir already exist.
     """
     result = cli_runner(
-        'tests/fixtures/fake-repo-pre/', '--no-input', overwrite_cli_flag
+        'tests/legacy/fixtures/fake-repo-pre/', '--no-input', overwrite_cli_flag
     )
     assert result.exit_code == 0
     assert os.path.isdir('fake-project')
@@ -267,7 +267,7 @@ def test_cli_output_dir(mocker, cli_runner, output_dir_flag, output_dir):
     """Test cli invocation with `output-dir` flag changes output directory."""
     mock_cookiecutter = mocker.patch('cookiecutter.cli.cli_parser.cookiecutter')
 
-    template_path = 'tests/fixtures/fake-repo-pre/'
+    template_path = 'tests/legacy/fixtures/fake-repo-pre/'
     result = cli_runner(template_path, output_dir_flag, output_dir)
 
     assert result.exit_code == 0
@@ -313,7 +313,7 @@ def test_user_config(mocker, cli_runner, user_config_path):
     """Test cli invocation works with `config-file` option."""
     mock_cookiecutter = mocker.patch('cookiecutter.cli.cli_parser.cookiecutter')
 
-    template_path = 'tests/fixtures/fake-repo-pre/'
+    template_path = 'tests/legacy/fixtures/fake-repo-pre/'
     result = cli_runner(template_path, '--config-file', user_config_path)
 
     assert result.exit_code == 0
@@ -340,7 +340,7 @@ def test_default_user_config_overwrite(mocker, cli_runner, user_config_path):
     """Test cli invocation ignores `config-file` if `default-config` passed."""
     mock_cookiecutter = mocker.patch('cookiecutter.cli.cli_parser.cookiecutter')
 
-    template_path = 'tests/fixtures/fake-repo-pre/'
+    template_path = 'tests/legacy/fixtures/fake-repo-pre/'
     result = cli_runner(
         template_path, '--config-file', user_config_path, '--default-config',
     )
@@ -369,7 +369,7 @@ def test_default_user_config(mocker, cli_runner):
     """Test cli invocation accepts `default-config` flag correctly."""
     mock_cookiecutter = mocker.patch('cookiecutter.cli.cli_parser.cookiecutter')
 
-    template_path = 'tests/fixtures/fake-repo-pre/'
+    template_path = 'tests/legacy/fixtures/fake-repo-pre/'
     result = cli_runner(template_path, '--default-config')
 
     assert result.exit_code == 0
@@ -433,7 +433,7 @@ def test_echo_undefined_variable_error(monkeypatch, tmpdir, cli_runner):
 def test_echo_unknown_extension_error(tmpdir, cli_runner):
     """Cli return error if extension incorrectly defined in template."""
     output_dir = str(tmpdir.mkdir('output'))
-    template_path = 'tests/fixtures/test-extensions/unknown/'
+    template_path = 'tests/legacy/fixtures/test-extensions/unknown/'
 
     result = cli_runner(
         '--no-input', '--default-config', '--output-dir', output_dir, template_path,
@@ -448,7 +448,10 @@ def test_echo_unknown_extension_error(tmpdir, cli_runner):
 def test_cli_extra_context(cli_runner):
     """Cli invocation replace content if called with replacement pairs."""
     result = cli_runner(
-        'tests/fixtures/fake-repo-pre/', '--no-input', '-v', 'project_name=Awesomez',
+        'tests/legacy/fixtures/fake-repo-pre/',
+        '--no-input',
+        '-v',
+        'project_name=Awesomez',
     )
     assert result.exit_code == 0
     assert os.path.isdir('fake-project')
@@ -460,7 +463,7 @@ def test_cli_extra_context(cli_runner):
 def test_cli_extra_context_invalid_format(cli_runner):
     """Cli invocation raise error if called with unknown argument."""
     result = cli_runner(
-        'tests/fixtures/fake-repo-pre/',
+        'tests/legacy/fixtures/fake-repo-pre/',
         '--no-input',
         '-v',
         'ExtraContextWithNoEqualsSoInvalid',
@@ -485,7 +488,10 @@ def test_debug_file_non_verbose(cli_runner, debug_file):
     assert not debug_file.exists()
 
     result = cli_runner(
-        '--no-input', '--debug-file', str(debug_file), 'tests/fixtures/fake-repo-pre/',
+        '--no-input',
+        '--debug-file',
+        str(debug_file),
+        'tests/legacy/fixtures/fake-repo-pre/',
     )
     assert result.exit_code == 0
 
@@ -493,7 +499,7 @@ def test_debug_file_non_verbose(cli_runner, debug_file):
 
     context_log = (
         "DEBUG cookiecutter.main: context_file is "
-        "tests/fixtures/fake-repo-pre/cookiecutter.json"
+        "tests/legacy/fixtures/fake-repo-pre/cookiecutter.json"
     )
     assert context_log in debug_file.readlines(cr=False)
     assert context_log not in result.output
@@ -512,7 +518,7 @@ def test_debug_file_verbose(cli_runner, debug_file):
         '--no-input',
         '--debug-file',
         str(debug_file),
-        'tests/fixtures/fake-repo-pre/',
+        'tests/legacy/fixtures/fake-repo-pre/',
     )
     assert result.exit_code == 0
 
@@ -520,7 +526,7 @@ def test_debug_file_verbose(cli_runner, debug_file):
 
     context_log = (
         "DEBUG cookiecutter.main: context_file is "
-        "tests/fixtures/fake-repo-pre/cookiecutter.json"
+        "tests/legacy/fixtures/fake-repo-pre/cookiecutter.json"
     )
     assert context_log in debug_file.readlines(cr=False)
     assert context_log in result.output
@@ -563,7 +569,10 @@ def test_debug_list_installed_templates_failure(
 def test_directory_repo(cli_runner):
     """Test cli invocation works with `directory` option."""
     result = cli_runner(
-        'tests/fixtures/fake-repo-dir/', '--no-input', '-v', '--directory=my-dir',
+        'tests/legacy/fixtures/fake-repo-dir/',
+        '--no-input',
+        '-v',
+        '--directory=my-dir',
     )
     assert result.exit_code == 0
     assert os.path.isdir("fake-project")
@@ -594,7 +603,7 @@ def test_cli_accept_hooks(
     """Test cli invocation works with `accept-hooks` option."""
     mock_cookiecutter = mocker.patch("cookiecutter.cli.cli_parser.cookiecutter")
 
-    template_path = "tests/fixtures/fake-repo-pre/"
+    template_path = "tests/legacy/fixtures/fake-repo-pre/"
     result = cli_runner(
         template_path, output_dir_flag, output_dir, accept_hooks_arg, input=user_input
     )
