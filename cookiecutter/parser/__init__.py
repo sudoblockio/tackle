@@ -13,14 +13,10 @@ if TYPE_CHECKING:
     from cookiecutter.models import Context, Mode, Source
     from cookiecutter.configs import Settings
 
-# from cookiecutter.model import Context, Mode, Source
-# from cookiecutter.configs.config_base import Settings
-
-
 logger = logging.getLogger(__name__)
 
 
-def get_output(
+def get_context(
     c: 'Context', s: 'Source', m: 'Mode', settings: 'Settings'
 ) -> OrderedDict:
     """Get output dict and entrypoint into broader parsing of context."""
