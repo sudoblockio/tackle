@@ -1,7 +1,14 @@
+# -*- coding: utf-8 -*-
+
+"""Generate the context based on overwrites and existing contexts."""
+import os
+import logging
 from collections import OrderedDict
 
 from cookiecutter.exceptions import ContextDecodingException
 from cookiecutter.utils.reader import read_config_file
+
+logger = logging.getLogger(__name__)
 
 
 def apply_overwrites_to_context(context, overwrite_context):

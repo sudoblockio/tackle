@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Utility functions for handling and fetching repo archives in zip format."""
 import os
 import tempfile
@@ -5,13 +7,23 @@ from zipfile import BadZipFile, ZipFile
 
 import requests
 import logging
+from PyInquirer import prompt
 
 from cookiecutter.exceptions import InvalidZipRepository
-from cookiecutter.prompt import read_repo_password
 from cookiecutter.utils.prompt_delete import prompt_and_delete
 from cookiecutter.utils.paths import make_sure_path_exists
 
 logger = logging.getLogger(__name__)
+
+
+def read_repo_password(question):
+    """Read the password."""
+    question = {
+        'type': 'password',
+        'name': 'tmp',
+        'message': question,
+    }
+    return prompt([question])['tmp']
 
 
 def unzip(zip_uri, is_url, clone_to_dir='.', no_input=False, password=None):

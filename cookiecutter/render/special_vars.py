@@ -5,23 +5,23 @@ import platform
 
 import distro
 
-# import cookiecutter as cc
+# from cookiecutter.model import Context
 
 
-def get_vars(context_key=None, cc_dict=None):
+def get_vars(c):
     """Get special variables."""
     vars = {
         'cwd': os.getcwd(),
-        'key': context_key,
-        'this': cc_dict,
+        'key': c.context_key,
+        'this': c.output_dict,
         'system': platform.system(),
         'platform': platform.platform(),
         'release': platform.release(),
         'version': platform.version(),
         'processor': platform.processor(),
         'architecture': platform.architecture(),
-        # 'calling_directory': cc.main.calling_directory,  # noqa
-        # 'cookiecutter_gen': cc.repository.cookiecutter_gen,  # noqa
+        'calling_directory': c.calling_directory,
+        'tackle_gen': c.tackle_gen,
     }
 
     if platform.system() == 'Linux':

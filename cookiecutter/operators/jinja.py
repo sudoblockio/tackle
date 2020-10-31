@@ -31,7 +31,7 @@ class JinjaOperator(BaseOperator):
     template_path: str
     output_path: str
     context: Dict = {}
-    extra_context: Dict = None
+    extra_context: Dict = {}
 
     def execute(self):
         env = StrictEnvironment(context=self.context)

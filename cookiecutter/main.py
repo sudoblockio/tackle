@@ -5,28 +5,19 @@ The code in this module is also a good example of how to use Cookiecutter as a
 library rather than a script.
 """
 import logging
-import os
 import json
 from _collections import OrderedDict
 
-from cookiecutter.generate import generate_files, generate_context
-
-# from cookiecutter.context import
-from cookiecutter.prompt import prompt_for_config
-from cookiecutter.replay import dump, load
-from cookiecutter.repository import determine_repo_dir
+# from cookiecutter.generate import generate_files, generate_context
+from cookiecutter.generate import generate_files
 from cookiecutter.utils.paths import rmtree
-
 from cookiecutter.exceptions import InvalidModeException
-
-from cookiecutter.models.mode import Mode
-
-
 from cookiecutter.configs.config_base import get_settings
+from cookiecutter.models import Context, Mode, Output, Source
+from cookiecutter.repository import update_source
+from cookiecutter.parser import get_output
 
 logger = logging.getLogger(__name__)
-
-calling_directory = None
 
 
 def cookiecutter(
@@ -77,9 +68,6 @@ def cookiecutter(
 
     :return Dictionary of output
     """
-    # global calling_directory  # Preserve this path for special variable usage
-    # calling_directory = os.getcwd()
-
     settings = get_settings(
         config_file=config_file,
         env_file=env_file,
@@ -87,7 +75,7 @@ def cookiecutter(
         default_config=default_config,
     )
 
-    mode = Mode(no_input=no_input, replay=replay, record=record,)
+    mode = Mode(no_input=no_input, replay=replay, record=record)
 
     if replay and ((no_input is not False) or (extra_context is not None)):
         err_msg = (
@@ -96,10 +84,8 @@ def cookiecutter(
         )
         raise InvalidModeException(err_msg)
 
-    repo_dir, context_file, cleanup = determine_repo_dir(
+    source = Source(
         template=template,
-        abbreviations=settings.abbreviations,
-        clone_to_dir=settings.cookiecutters_dir,
         checkout=checkout,
         no_input=no_input,
         context_file=context_file,
@@ -107,70 +93,92 @@ def cookiecutter(
         directory=directory,
     )
 
-    template_name = os.path.basename(os.path.abspath(repo_dir))
-    if not context_key:
-        context_key = os.path.basename(context_file).split('.')[0]
+    source = update_source(source=source, settings=settings, mode=mode,)
 
-    # from cookiecutter.models.context import Context
-    # context = Context(
-    #     context_file=context_file_path,
-    #     default_context=settings.default_context,
-    #     extra_context=extra_context,
-    #     context_key=context_key,
+    # repo_dir, context_file, cleanup = determine_repo_dir(
+    #     template=template,
+    #     abbreviations=settings.abbreviations,
+    #     clone_to_dir=settings.cookiecutters_dir,
+    #     checkout=checkout,
+    #     no_input=no_input,
+    #     context_file=context_file,
+    #     password=password,
+    #     directory=directory,
     # )
 
-    # context_dict = generate_context(
-    #     template_name,
+    # template_name = os.path.basename(os.path.abspath(repo_dir))
+    # if not context_key:
+    #     context_key = os.path.basename(context_file).split('.')[0]
+
+    context = Context(
+        context_file=context_file,
+        default_context=settings.default_context,
+        extra_context=extra_context,
+        existing_context=existing_context,
+        context_key=context_key,
+        tackle_gen=source.tackle_gen,
+    )
+    get_output(
+        c=context, s=source, m=mode, settings=settings,
+    )
+
+    # if replay:
+    #     if isinstance(replay, bool):
+    #         context = load(settings.replay_dir, template_name, context_key)
+    #     else:
+    #         path, template_name = os.path.split(os.path.splitext(replay)[0])
+    #         context = load(path, template_name, context_key)
     #
-    # )
-
-    if replay:
-        if isinstance(replay, bool):
-            context = load(settings.replay_dir, template_name, context_key)
-        else:
-            path, template_name = os.path.split(os.path.splitext(replay)[0])
-            context = load(path, template_name, context_key)
-
-    else:
-        context_file_path = os.path.join(repo_dir, context_file)
-        logger.debug('context_file is %s', context_file_path)
-
-        context = generate_context(
-            context_file=context_file_path,
-            default_context=settings.default_context,
-            extra_context=extra_context,
-            context_key=context_key,
-        )
-
-        # include template dir or url in the context dict
-        context[context_key]['_template'] = repo_dir
-        # include output+dir in the context dict
-        context[context_key]['_output_dir'] = os.path.abspath(output_dir)
-
-        # prompt the user to manually configure at the command line.pyth
-        # except when 'no-input' flag is set
-        context[context_key] = prompt_for_config(
-            context, context_key, existing_context, mode
-        )
-
-        dump(settings.replay_dir, template_name, context, context_key)
+    # else:
+    #     context_file_path = os.path.join(repo_dir, context_file)
+    #     logger.debug('context_file is %s', context_file_path)
+    #
+    #     context = generate_context(
+    #         context_file=context_file_path,
+    #         default_context=settings.default_context,
+    #         extra_context=extra_context,
+    #         context_key=context_key,
+    #     )
+    #
+    #     # include template dir or url in the context dict
+    #     context[context_key]['_template'] = repo_dir
+    #     # include output+dir in the context dict
+    #     context[context_key]['_output_dir'] = os.path.abspath(output_dir)
+    #
+    #     # prompt the user to manually configure at the command line.pyth
+    #     # except when 'no-input' flag is set
+    #     context[context_key] = prompt_for_config(
+    #         context, context_key, existing_context, mode
+    #     )
+    #
+    #     dump(settings.replay_dir, template_name, context, context_key)
 
     # Create project from local context and project template.
-    generate_files(
-        repo_dir=repo_dir,
-        context=context,
+    # generate_files(
+    #     repo_dir=source.repo_dir,
+    #     context=context.output_dict,
+    #     overwrite_if_exists=overwrite_if_exists,
+    #     skip_if_file_exists=skip_if_file_exists,
+    #     output_dir=output_dir,
+    #     context_key=context.context_key,
+    #     accept_hooks=accept_hooks,
+    # )
+    output = Output(
+        output_dir=output_dir,
         overwrite_if_exists=overwrite_if_exists,
         skip_if_file_exists=skip_if_file_exists,
-        output_dir=output_dir,
-        context_key=context_key,
         accept_hooks=accept_hooks,
     )
 
+    generate_files(
+        o=output, c=context, s=source, m=mode, settings=settings,
+    )
+
     # Cleanup (if required)
-    if cleanup:
-        rmtree(repo_dir)
+    if source.cleanup:
+        rmtree(source.repo_dir)
 
     if isinstance(context, OrderedDict):
         context = json.loads(json.dumps(context))
 
-    return context[context_key]
+    return context.output_dict

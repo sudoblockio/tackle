@@ -2,11 +2,23 @@
 import logging
 import os
 import sys
+from PyInquirer import prompt
 
-from cookiecutter.prompt import read_user_yes_no
 from cookiecutter.utils.paths import rmtree
 
 logger = logging.getLogger(__name__)
+
+
+def read_user_yes_no(question, default_value):
+    """Ask user yes or no for generic question."""
+    question = {
+        'type': 'list',
+        'name': 'tmp',
+        'message': question,
+        'default': default_value,
+        'choices': ['yes', 'no'],
+    }
+    return prompt([question])['tmp']
 
 
 def prompt_and_delete(path, no_input=False):
