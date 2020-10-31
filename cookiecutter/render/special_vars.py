@@ -5,10 +5,13 @@ import platform
 
 import distro
 
-# from cookiecutter.model import Context
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from cookiecutter.models import Context
 
 
-def get_vars(c):
+def get_vars(c: 'Context'):
     """Get special variables."""
     vars = {
         'cwd': os.getcwd(),

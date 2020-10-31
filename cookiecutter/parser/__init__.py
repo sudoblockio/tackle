@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Context related items."""
 import os
 import logging
