@@ -8,14 +8,12 @@ import logging
 import json
 from _collections import OrderedDict
 
-# from cookiecutter.generate import generate_files, generate_context
 from cookiecutter.generate import generate_files
 from cookiecutter.utils.paths import rmtree
-from cookiecutter.exceptions import InvalidModeException
 from cookiecutter.configs.config_base import get_settings
 from cookiecutter.models import Context, Mode, Output, Source
 from cookiecutter.repository import update_source
-from cookiecutter.parser import get_context
+from cookiecutter.parser import update_context
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +30,7 @@ def cookiecutter(
     extra_context=None,
     replay=None,
     record=None,
+    rerun=None,
     output_dir='.',
     overwrite_if_exists=False,
     skip_if_file_exists=False,
@@ -40,6 +39,7 @@ def cookiecutter(
     env_file=None,
     default_config=False,
     config=None,
+    calling_directory=None,
 ):
     """
     Run Cookiecutter just as if using it from the command line.
@@ -75,14 +75,7 @@ def cookiecutter(
         default_config=default_config,
     )
 
-    mode = Mode(no_input=no_input, replay=replay, record=record)
-
-    if replay and ((no_input is not False) or (extra_context is not None)):
-        err_msg = (
-            "You can not use both replay and no_input or extra_context "
-            "at the same time."
-        )
-        raise InvalidModeException(err_msg)
+    mode = Mode(no_input=no_input, replay=replay, record=record, rerun=rerun)
 
     source = Source(
         template=template,
@@ -92,8 +85,7 @@ def cookiecutter(
         password=password,
         directory=directory,
     )
-
-    source = update_source(source=source, settings=settings, mode=mode)
+    update_source(source=source, settings=settings, mode=mode)
 
     context = Context(
         context_file=context_file,
@@ -102,8 +94,9 @@ def cookiecutter(
         existing_context=existing_context,
         context_key=context_key,
         tackle_gen=source.tackle_gen,
+        calling_directory=calling_directory,
     )
-    get_context(c=context, s=source, m=mode, settings=settings)
+    update_context(c=context, s=source, m=mode, settings=settings)
 
     output = Output(
         output_dir=output_dir,
@@ -111,7 +104,6 @@ def cookiecutter(
         skip_if_file_exists=skip_if_file_exists,
         accept_hooks=accept_hooks,
     )
-
     generate_files(o=output, c=context, s=source, m=mode, settings=settings)
 
     # Cleanup (if required)
