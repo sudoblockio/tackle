@@ -1,7 +1,6 @@
 """Models for the whole project."""
 from pydantic import BaseModel, SecretStr
 from typing import Dict, Any, Union, Type, List
-from cookiecutter.exceptions import InvalidModeException
 from cookiecutter.render.environment import StrictEnvironment
 
 from collections import OrderedDict
@@ -20,7 +19,7 @@ class Context(BaseModel):
     """The main object that is being modifed by parsing."""
 
     context_file: str = None
-    context_key: str = None  # os.path.basename(context_file).split('.')[0]
+    context_key: str = None
     key: str = None
 
     existing_context: Dict = None
@@ -33,11 +32,8 @@ class Context(BaseModel):
 
     env: Type[StrictEnvironment] = None
 
-    calling_directory = os.path.abspath(os.getcwd())
+    calling_directory: str = None
     tackle_gen: str = None
-
-    def __init__(self, **data: Any):
-        super().__init__(**data)
 
 
 class Mode(BaseModel):
@@ -46,7 +42,7 @@ class Mode(BaseModel):
     no_input: bool = False
     replay: Union[bool, str] = None
     record: Union[bool, str] = None
-    rerun: bool = None
+    rerun: Union[bool, str] = None
     overwrite_if_exists: bool = False
     skip_if_file_exists: bool = False
     accept_hooks: bool = True
@@ -54,15 +50,6 @@ class Mode(BaseModel):
 
     class Config:
         allow_mutation = False
-
-    def __init__(self, **data: Any):
-        super().__init__(**data)
-        if self.replay and self.no_input:
-            err_msg = (
-                "You can not use both replay and no_input or extra_context "
-                "at the same time."
-            )
-            raise InvalidModeException(err_msg)
 
 
 class Source(BaseModel):

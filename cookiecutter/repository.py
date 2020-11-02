@@ -85,8 +85,10 @@ def determine_tackle_generation(context_file: str) -> str:
     """Determine the tackle generation."""
     if context_file in CONTEXT_FILE_DICT['cookiecutter']:
         return 'cookiecutter'
-    elif context_file in CONTEXT_FILE_DICT['tackle']:
+    else:
         return 'tackle'
+    # elif context_file in CONTEXT_FILE_DICT['tackle']:
+    #     return 'tackle'
 
 
 def repository_has_tackle_file(repo_directory: str, context_file=None):
