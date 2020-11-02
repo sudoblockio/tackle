@@ -1,4 +1,4 @@
-"""Main `cookiecutter` CLI."""
+"""Main `tackle` CLI."""
 import collections
 import json
 import os
@@ -110,6 +110,28 @@ def list_installed_templates(default_config, passed_config_file):
     help='Use this file for replay instead of the default.',
 )
 @click.option(
+    '--record',
+    is_flag=True,
+    help='Record the inputs to a local file "<template name>.rerun.yml".',
+)
+@click.option(
+    '--record-file',
+    type=click.Path(),
+    default=None,
+    help='Record the inputs to a local file "<record file>.yml".',
+)
+@click.option(
+    '--rerun',
+    is_flag=True,
+    help='Reruns the inputs from a local file "<template name>.rerun.yml".',
+)
+@click.option(
+    '--rerun-file',
+    type=click.Path(),
+    default=None,
+    help='Reruns the inputs from a local file "<record file>.yml".',
+)
+@click.option(
     '-f',
     '--overwrite-if-exists',
     is_flag=True,
@@ -159,25 +181,24 @@ def main(
     context_key,
     no_input,
     checkout,
+    directory,
     verbose,
     replay,
+    replay_file,
+    record,
+    record_file,
+    rerun,
+    rerun_file,
     overwrite_if_exists,
+    skip_if_file_exists,
     output_dir,
     config_file,
     default_config,
     debug_file,
-    directory,
-    skip_if_file_exists,
     accept_hooks,
-    replay_file,
     list_installed,
 ):
-    """Create a project from a Cookiecutter project template (TEMPLATE).
-
-    Cookiecutter is free and open source software, developed and managed by
-    volunteers. If you would like to help out or fund the project, please get
-    in touch at https://github.com/cookiecutter/cookiecutter.
-    """
+    """Create a project from a Tackle modules or Cookiecutter templates."""
     # Commands that should work without arguments
     if list_installed:
         list_installed_templates(default_config, config_file)
@@ -199,6 +220,10 @@ def main(
 
     if replay_file:
         replay = replay_file
+    if record_file:
+        record = record_file
+    if rerun_file:
+        rerun = rerun_file
 
     try:
         cookiecutter(
@@ -209,6 +234,8 @@ def main(
             context_key=context_key,
             extra_context=extra_context,
             replay=replay,
+            record=record,
+            rerun=rerun,
             overwrite_if_exists=overwrite_if_exists,
             output_dir=output_dir,
             config_file=config_file,
@@ -217,6 +244,7 @@ def main(
             directory=directory,
             skip_if_file_exists=skip_if_file_exists,
             accept_hooks=_accept_hooks,
+            calling_directory=os.path.curdir,
         )
     except (
         OutputDirExistsException,
