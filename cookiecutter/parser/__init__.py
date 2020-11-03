@@ -21,15 +21,6 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def _evaluate_rerun(rerun_path, m: 'Mode'):
-    if os.path.exists(rerun_path):
-        with open(rerun_path, 'r') as f:
-            return yaml.safe_load(f)
-    else:
-        print('No rerun file, will create record and use next time.')
-        m.record = True  # noqa
-
-
 def update_context(
     c: 'Context', s: 'Source', m: 'Mode', settings: 'Settings'
 ) -> OrderedDict:
@@ -40,11 +31,11 @@ def update_context(
     if m.replay:
         if isinstance(m.replay, bool):
             c.output_dict = load(settings.replay_dir, s.template_name, c.context_key)
-            return
+            return  # noqa
         else:
             path, template_name = os.path.split(os.path.splitext(m.replay)[0])
             c.output_dict = load(path, template_name, c.context_key)
-            return
+            return  # noqa
 
     elif m.rerun:
         if isinstance(m.rerun, bool):
@@ -60,21 +51,11 @@ def update_context(
         context_file_path = os.path.join(s.repo_dir, s.context_file)
         logger.debug('context_file is %s', context_file_path)
 
-        c.input_dict = generate_context(
-            context_file=context_file_path,
-            default_context=settings.default_context,
-            extra_context=c.extra_context,
-            context_key=c.context_key,
-        )
-
-        # include template dir or url in the context dict
-        c.input_dict[c.context_key]['_template'] = s.repo_dir
-        # include output+dir in the context dict
-        c.input_dict[c.context_key]['_output_dir'] = os.path.abspath(m.output_dir)
+        c.input_dict = generate_context(c=c, s=s, settings=settings)
 
         # prompt the user to manually configure at the command line.pyth
         # except when 'no-input' flag is set
-        c = prep_context(c=c, mode=m, settings=settings)
+        prep_context(c=c, mode=m, settings=settings)
 
         if m.record:
             if isinstance(m.record, bool):
@@ -99,6 +80,15 @@ def _output_record(c: 'Context', m: 'Mode', s: 'Settings'):
         dump(s.replay_dir, s.template_name, c.output_dict, c.context_key)
 
 
+def _evaluate_rerun(rerun_path, m: 'Mode'):
+    if os.path.exists(rerun_path):
+        with open(rerun_path, 'r') as f:
+            return yaml.safe_load(f)
+    else:
+        print('No rerun file, will create record and use next time.')
+        m.record = True  # noqa
+
+
 def _enrich_context(c: 'Context', s: 'Source'):
     if not c.context_key:
         c.context_key = os.path.basename(s.context_file).split('.')[0]
@@ -108,7 +98,7 @@ def _enrich_context(c: 'Context', s: 'Source'):
 
 
 def _validate_context(c: 'Context', m: 'Mode'):
-    if m.replay and c.extra_context is not None:
+    if m.replay and c.override_inputs is not None:
         err_msg = "You can not use both replay and extra_context at the same time."
         raise InvalidModeException(err_msg)
     if m.replay and m.rerun:

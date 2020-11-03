@@ -5,20 +5,26 @@ import os
 import logging
 from collections import OrderedDict
 
-from cookiecutter.exceptions import ContextDecodingException
 from cookiecutter.utils.reader import read_config_file
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from cookiecutter.models import Context, Source
+    from cookiecutter.configs import Settings
+
 
 logger = logging.getLogger(__name__)
 
 
-def apply_overwrites_to_context(context, overwrite_context):
+def apply_overwrites_to_context(input, overwrite_dict):
     """Modify the given context in place based on the overwrite_context."""
-    for variable, overwrite in overwrite_context.items():
-        if variable not in context:
+    for variable, overwrite in overwrite_dict.items():
+        if variable not in input:
             # Do not include variables which are not used in the template
             continue
 
-        context_value = context[variable]
+        context_value = input[variable]
 
         if isinstance(context_value, list):
             # We are dealing with a choice variable
@@ -30,15 +36,10 @@ def apply_overwrites_to_context(context, overwrite_context):
                 context_value.insert(0, overwrite)
         else:
             # Simply overwrite the value for this variable
-            context[variable] = overwrite
+            input[variable] = overwrite
 
 
-def generate_context(
-    context_file='cookiecutter.json',
-    default_context=None,
-    context_key=None,
-    extra_context=None,
-):
+def generate_context(c: 'Context', s: 'Source', settings: 'Settings'):
     """Generate the context for a Cookiecutter project template.
 
     Loads the JSON file as a Python object, with key being the JSON filename.
@@ -48,36 +49,26 @@ def generate_context(
     :param default_context: Dictionary containing config to take into account.
     :param extra_context: Dictionary containing configuration overrides
     """
-    context = OrderedDict([])
+    c.input_dict = OrderedDict([])
 
-    try:
-        obj = read_config_file(context_file)
-
-    except ValueError as e:
-        # JSON decoding error.  Let's throw a new exception that is more
-        # friendly for the developer or user.
-        full_fpath = os.path.abspath(context_file)
-        json_exc_message = str(e)
-        our_exc_message = (
-            'JSON decoding error while loading "{0}".  Decoding'
-            ' error details: "{1}"'.format(full_fpath, json_exc_message)
-        )
-        raise ContextDecodingException(our_exc_message)
+    obj = read_config_file(s.context_file)
 
     # Add the Python object to the context dictionary
-    if not context_key:
-        file_name = os.path.split(context_file)[1]
+    if not c.context_key:
+        file_name = os.path.split(c.context_file)[1]
         file_stem = file_name.split('.')[0]
-        context[file_stem] = obj
+        c.input_dict[file_stem] = obj
     else:
-        context[context_key] = obj
+        c.input_dict[c.context_key] = obj
 
     # Overwrite context variable defaults with the default context from the
     # user's global config, if available
-    if default_context:
-        apply_overwrites_to_context(obj, default_context)
-    if extra_context:
-        apply_overwrites_to_context(obj, extra_context)
+    if settings.default_context:
+        apply_overwrites_to_context(obj, settings.default_context)
+    if c.override_inputs:
+        apply_overwrites_to_context(obj, c.override_inputs)
 
-    logger.debug('Context generated is %s', context)
-    return context
+    # include template dir or url in the context dict
+    c.input_dict[c.context_key]['_template'] = s.repo_dir
+
+    logger.debug('Context generated is %s', c.input_dict)
