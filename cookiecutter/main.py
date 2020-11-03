@@ -27,7 +27,7 @@ def cookiecutter(
     password=None,
     directory=None,
     existing_context=None,
-    extra_context=None,
+    override_inputs=None,
     replay=None,
     record=None,
     rerun=None,
@@ -54,7 +54,7 @@ def cookiecutter(
         of the context file minus the file extension.
     :param existing_context: An additional dictionary to use in rendering
         additional prompts.
-    :param extra_context: A dictionary of context that overrides default
+    :param override_inputs: A dictionary of context that overrides default
         and user configuration.
     :param replay: Do not prompt for input, instead read from saved json. If
         ``True`` read from the ``replay_dir``.
@@ -90,7 +90,7 @@ def cookiecutter(
     context = Context(
         context_file=context_file,
         default_context=settings.default_context,
-        extra_context=extra_context,
+        override_inputs=override_inputs,
         existing_context=existing_context,
         context_key=context_key,
         tackle_gen=source.tackle_gen,

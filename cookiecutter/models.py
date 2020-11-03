@@ -23,7 +23,7 @@ class Context(BaseModel):
     key: str = None
 
     existing_context: Dict = None
-    extra_context: Dict = None
+    override_inputs: Dict = None
     input_dict: OrderedDict = None
     output_dict: OrderedDict = None
     hook_dict: OrderedDict = None

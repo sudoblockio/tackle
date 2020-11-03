@@ -30,8 +30,8 @@ def version_msg():
     return message.format(location, python_version)
 
 
-def validate_extra_context(ctx, param, value):
-    """Validate extra context."""
+def validate_override_inputs(ctx, param, value):
+    """Validate override inputs."""
     for s in value:
         if '=' not in s:
             raise click.BadParameter(
@@ -70,7 +70,7 @@ def list_installed_templates(default_config, passed_config_file):
 @click.command(context_settings=dict(help_option_names=['-h', '--help']))
 @click.version_option(__version__, '-V', '--version', message=version_msg())
 @click.argument('template', required=False)
-@click.argument('extra_context', nargs=-1, callback=validate_extra_context)
+@click.argument('override_inputs', nargs=-1, callback=validate_override_inputs)
 @click.option(
     u'--context-file',
     # type=click.Path(),
@@ -176,7 +176,7 @@ def list_installed_templates(default_config, passed_config_file):
 )
 def main(
     template,
-    extra_context,
+    override_inputs,
     context_file,
     context_key,
     no_input,
@@ -232,7 +232,7 @@ def main(
             no_input=no_input,
             context_file=context_file,
             context_key=context_key,
-            extra_context=extra_context,
+            override_inputs=override_inputs,
             replay=replay,
             record=record,
             rerun=rerun,
