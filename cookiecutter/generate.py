@@ -50,16 +50,6 @@ def is_copy_only_path(path, context, context_key='cookiecutter'):
     return False
 
 
-# def generate_file(
-#         project_dir,
-#         infile,
-#         context,
-#         env,
-#         skip_if_file_exists=False,
-#         context_key='cookiecutter',
-# ):
-
-
 def generate_file(project_dir, c: 'Context', o: 'Output'):
     """Render filename of infile as name of outfile, handle infile correctly.
 
@@ -141,8 +131,6 @@ def generate_file(project_dir, c: 'Context', o: 'Output'):
     # Apply file permissions to output file
     shutil.copymode(o.infile, outfile)
 
-    # dirname, context, output_dir, environment, overwrite_if_exists=False
-
 
 def render_and_create_dir(dirname, c: 'Context', o: 'Output'):
     """Render name of a directory, create the directory, return its path."""
@@ -210,17 +198,6 @@ def _run_hook_from_repo_dir(
             raise
 
 
-# def generate_files(
-# repo_dir,
-# context=None,
-# output_dir='.',
-# overwrite_if_exists=False,
-# skip_if_file_exists=False,
-# context_key=None,
-# accept_hooks=True,
-# )
-
-
 def generate_files(
     o: 'Output', c: 'Context', s: 'Source', m: 'Mode', settings: 'Settings',
 ):
@@ -233,9 +210,6 @@ def generate_files(
         if it exists.
     :param accept_hooks: Accept pre and post hooks if set to `True`.
     """
-    # if not context_key:
-    #     context_key = next(iter(context))
-
     template_dir = find_template(s.repo_dir, c.context_key)
     if template_dir:
         envvars = c.input_dict.get(c.context_key, {}).get('_jinja2_env_vars', {})
