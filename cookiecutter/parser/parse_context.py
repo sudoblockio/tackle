@@ -47,7 +47,7 @@ def parse_context(c: 'Context', m: 'Mode', s: 'Settings'):
             continue
 
         if key in c.overwrite_inputs:
-            c.output_dict[key] = c.override_inputs[key]
+            c.output_dict[key] = c.overwrite_inputs[key]
             continue
 
         try:

@@ -55,8 +55,7 @@ def update_context(
 
     generate_context(c=c, s=s, settings=settings)
 
-    # prompt the user to manually configure at the command line.pyth
-    # except when 'no-input' flag is set
+    # Main entrypoint to parse the input.
     prep_context(c=c, mode=m, settings=settings)
 
     if m.record:

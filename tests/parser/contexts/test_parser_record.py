@@ -15,7 +15,6 @@ def test_parser_contexts_overwrite_inputs(tmpdir, change_dir):
         no_input=True,
         output_dir=str(tmpdir),
         overwrite_inputs=overwrite_inputs,
-        record=True,
         context_file='tackle.yaml',
     )
     assert o['stuff'] == 'dingdongs'
