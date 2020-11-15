@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def apply_overwrites_to_context(input, overwrite_dict):
+def apply_overwrites_to_inputs(input, overwrite_dict):
     """Modify the given context in place based on the overwrite_context."""
     for variable, overwrite in overwrite_dict.items():
         if variable not in input:
@@ -64,9 +64,15 @@ def generate_context(c: 'Context', s: 'Source', settings: 'Settings'):
     # Overwrite context variable defaults with the default context from the
     # user's global config, if available
     if settings.default_context:
-        apply_overwrites_to_context(obj, settings.default_context)
-    if c.override_inputs:
-        apply_overwrites_to_context(obj, c.override_inputs)
+        apply_overwrites_to_inputs(obj, settings.default_context)
+
+    if c.overwrite_inputs:
+        apply_overwrites_to_inputs(obj, c.overwrite_inputs)
+    else:
+        c.overwrite_inputs = OrderedDict()
+
+    if not c.override_inputs:
+        c.override_inputs = OrderedDict()
 
     # include template dir or url in the context dict
     c.input_dict[c.context_key]['_template'] = s.repo_dir

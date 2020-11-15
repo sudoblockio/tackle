@@ -71,16 +71,26 @@ def list_installed_templates(default_config, passed_config_file):
 @click.version_option(__version__, '-V', '--version', message=version_msg())
 @click.argument('template', required=False)
 @click.option(
-    u'--overwrite-inputs',
-    callback=validate_overwrite_inputs,
-    default=None,
-    help=u'Overwrite the inputs with a dictionary.',
-)
-@click.option(
     u'--context-file',
     # type=click.Path(),
     default=None,
     help=u'The input context file to parse - overrides default cookiecutter.json',
+)
+@click.option(
+    u'--overwrite-inputs',
+    callback=validate_overwrite_inputs,
+    default={},
+    help=u'Overwrite the inputs with a dictionary.',
+)
+@click.option(
+    u'--override-inputs',
+    default=None,
+    help=u'Override the inputs. Anything included will not be prompted.',
+)
+@click.option(
+    u'--existing-context',
+    default=None,
+    help=u'An existing context to render the input context file.',
 )
 @click.option(
     u'--context-key',
@@ -181,9 +191,11 @@ def list_installed_templates(default_config, passed_config_file):
 )
 def main(
     template,
-    overwrite_inputs,
     context_file,
     context_key,
+    overwrite_inputs,
+    override_inputs,
+    existing_context,
     no_input,
     checkout,
     directory,
@@ -238,6 +250,8 @@ def main(
             context_file=context_file,
             context_key=context_key,
             overwrite_inputs=overwrite_inputs,
+            override_inputs=override_inputs,
+            existing_context=existing_context,
             replay=replay,
             record=record,
             rerun=rerun,

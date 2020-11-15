@@ -1,0 +1,15 @@
+stuff: things
+foo:
+- bar
+- bax
+- bin
+blah: []
+bing:
+- bar
+- bax
+- bin
+bing2:
+- bar
+- bax
+- bin
+_template: /home/rob/PycharmProjects/terrace/nukikata/tests/parser/rerun

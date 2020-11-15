@@ -27,6 +27,7 @@ def cookiecutter(
     password=None,
     directory=None,
     existing_context=None,
+    overwrite_inputs=None,
     override_inputs=None,
     replay=None,
     record=None,
@@ -90,6 +91,7 @@ def cookiecutter(
     context = Context(
         context_file=context_file,
         default_context=settings.default_context,
+        overwrite_inputs=overwrite_inputs,
         override_inputs=override_inputs,
         existing_context=existing_context,
         context_key=context_key,

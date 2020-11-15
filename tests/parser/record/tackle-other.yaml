@@ -1,0 +1,14 @@
+stuff: things
+foo:
+  - bar
+  - bax
+  - bin
+
+blah:
+  type: select
+  choices:
+    - stuff
+    - things
+    - foo
+
+bing: "{{ foo }}"

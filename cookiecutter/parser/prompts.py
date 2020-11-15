@@ -92,6 +92,9 @@ def prompt_list(c: 'Context', m: 'Mode', raw):
     elif m.no_input and c.tackle_gen == 'tackle':
         return rendered_options
 
+    if m.rerun and c.key in c.override_inputs:
+        return c.override_inputs[c.key]
+
     question = {
         'type': 'list',
         'name': 'tmp',
@@ -106,6 +109,10 @@ def prompt_str(c: 'Context', m: 'Mode', raw):
     val = render_variable(c, raw)
     if m.no_input:
         return val
+
+    if m.rerun and c.key in c.override_inputs:
+        return c.override_inputs[c.key]
+
     else:
         question = {
             'type': 'input',
@@ -114,5 +121,3 @@ def prompt_str(c: 'Context', m: 'Mode', raw):
             'default': val,
         }
         return prompt([question])['tmp']
-
-    pass

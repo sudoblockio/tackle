@@ -31,6 +31,9 @@ class Settings(BaseSettings):
 
     cookiecutters_dir: str = '~/.cookiecutters/'
     replay_dir: str = '~/.cookiecutter_replay/'
+
+    rerun_file_suffix: str = 'rerun.yml'
+
     abbreviations: Dict = {}
     default_context: Dict = OrderedDict([])
 
@@ -38,6 +41,8 @@ class Settings(BaseSettings):
 
     extra_providers: Union[list, str] = None
     extra_provider_dirs: Union[list, str] = None
+
+    dump_output: str = 'yaml'
 
     class Config:
         env_prefix = 'TACKLE_'

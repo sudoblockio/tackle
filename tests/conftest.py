@@ -2,6 +2,7 @@
 import logging
 import os
 import shutil
+import oyaml as yaml
 
 import pytest
 
@@ -183,18 +184,42 @@ def disable_poyo_logging():
     logging.getLogger('poyo').setLevel(logging.WARNING)
 
 
-# def clean_items(items):
-#     print(items)
-#     # for f in items:
-#     #     if os.path.isfile(f):
-#     #         os.remove(f)
-#     #     elif os.path.isdir(f):
-#     #         os.rmdir(f)
-#
-#
-# @pytest.fixture(autouse=True)
-# def clean_operator(items):
-#     clean_items(items)
-#     yield
-#     # clean_items(items)
-#     pass
+def remove_from_dir(param):
+    """Remove file(s) if exist."""
+    if isinstance(param, str):
+        if os.path.exists(param):
+            os.remove(param)
+
+    elif isinstance(param, tuple):
+        for i in param:
+            if os.path.exists(i):
+                os.remove(i)
+
+
+@pytest.fixture(scope='function')
+def clean_output(request):
+    """Take input of string or tuple and removes the files from dir."""
+    remove_from_dir(request.param)
+    yield request.param
+    remove_from_dir(request.param)
+
+
+@pytest.fixture(scope='function')
+def change_dir(monkeypatch):
+    """Change to the current directory."""
+    monkeypatch.chdir(os.path.abspath(os.path.curdir))
+
+
+@pytest.fixture(scope='function')
+def load_yaml(request):
+    """Return dict in yaml input(s) either str or tuple."""
+    if isinstance(request.param, str):
+        with open(request.param) as f:
+            return yaml.load(f)
+
+    if isinstance(request.param, tuple):
+        output = []
+        for i in request.param:
+            with open(i) as f:
+                output.append(yaml.load(f))
+        return output

@@ -34,11 +34,20 @@ def parse_context(c: 'Context', m: 'Mode', s: 'Settings'):
     """
     for key, raw in c.input_dict[c.context_key].items():
         c.key = key
+        # c.raw = raw
+        if m.rerun and c.key in c.override_inputs:
+            # If there is a rerun dictionary then insert it in output and proceed.
+            c.output_dict[key] = c.override_inputs[key]
+            continue
         if key.startswith(u'_') and not key.startswith('__'):
             c.output_dict[key] = raw
             continue
         elif key.startswith('__'):
             c.output_dict[key] = render_variable(c, raw)
+            continue
+
+        if key in c.overwrite_inputs:
+            c.output_dict[key] = c.override_inputs[key]
             continue
 
         try:
@@ -48,12 +57,6 @@ def parse_context(c: 'Context', m: 'Mode', s: 'Settings'):
             elif isinstance(raw, str):
                 # We are dealing with a regular variable
                 c.output_dict[key] = prompt_str(c, m, raw)
-                # val = render_variable(c, raw)
-                #
-                # if not no_input:
-                #     val = prompt_str(c, m, raw)
-                #
-                # c.output_dict[key] = val
 
             elif isinstance(raw, dict):
                 # dict parsing logic
@@ -66,6 +69,10 @@ def parse_context(c: 'Context', m: 'Mode', s: 'Settings'):
                     parse_hook(c, m, s)
 
         except UndefinedError as err:
+            if m.record or m.rerun:
+                # Dump the output context
+                pass
+
             msg = "Unable to render variable '{}'".format(key)
             raise UndefinedVariableInTemplate(msg, err, c.input_dict)
 
