@@ -41,8 +41,6 @@ class Settings(BaseSettings):
     config_path: str = None
 
     extra_providers: list = None
-    extra_provider_dirs: list = None
-
     dump_output: str = 'yaml'
 
     class Config:
@@ -135,6 +133,7 @@ class Source(BaseModel):
 
 class Provider(BaseModel):
     """Base provider."""
+
     path: str = None
     path_hooks: str = None
     name: str = None
@@ -146,6 +145,7 @@ class Provider(BaseModel):
 
 class Providers(BaseModel):
     """Collection of providers."""
+
     providers: List[Provider] = []
     provider_paths: list = []
     settings_providers: List[Provider] = []

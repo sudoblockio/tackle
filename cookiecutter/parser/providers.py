@@ -4,12 +4,14 @@ import importlib.util
 from cookiecutter.providers import native_providers
 
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
-    from cookiecutter.models import Context, Source, Providers, Provider, Mode
-    from cookiecutter.configs import Settings
+    from cookiecutter.models import Context, Source, Providers, Provider, Mode, Settings
 
 
-def get_providers(p: 'Providers', c: 'Context', s: 'Source', settings: 'Settings', mode: 'Mode') -> Providers():
+def get_providers(
+    p: 'Providers', c: 'Context', s: 'Source', settings: 'Settings', mode: 'Mode'
+) -> Providers():
     """Update the source with providers and hooks.
 
     1. Check if the settings provider has been updated
@@ -33,7 +35,9 @@ def get_providers(p: 'Providers', c: 'Context', s: 'Source', settings: 'Settings
         append_provider_dicts(c.input_dict['__providers'], p)
 
 
-def append_provider_dicts(input_providers, p: 'Providers', settings: 'Settings', mode: 'Mode'):
+def append_provider_dicts(
+    input_providers, p: 'Providers', settings: 'Settings', mode: 'Mode'
+):
     """Update the provider list with a new provider."""
     if isinstance(input_providers, str):
         input_providers = [input_providers]
@@ -92,7 +96,6 @@ def get_provider_hook_types():
 def import_module_from_path(mod, path):
     """"""
 
-
     spec = importlib.util.spec_from_file_location(mod, path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
@@ -110,6 +113,7 @@ def fix_provider_path(provider):
 
 def parse_git_src_str(git_repo: str):
     import re
+
     if re.compile(r"(git@[\w\.]+)").match(git_repo):
         # Check if ssh based
         git_repo = re.sub('.git', '', git_repo)
@@ -124,8 +128,9 @@ def parse_git_src_str(git_repo: str):
         return git_parts
 
 
-def get_path_from_src(provider: 'Provider', settings: 'Settings', mode: 'mode'):
+def get_path_from_src(provider: 'Provider', settings: 'Settings', mode: 'Mode'):
     from cookiecutter.repository import is_git_repo
+
     if is_git_repo(provider.src):
         git_parts = parse_git_src_str(provider.src)
     else:
@@ -140,6 +145,3 @@ def get_path_from_src(provider: 'Provider', settings: 'Settings', mode: 'mode'):
     # if not os.path.exists(os.path.join(settings.tackle_dir, 'providers', git_parts[0], git_parts[1], git_parts[2])):
     #     clone_provider()
     # pass
-
-
-

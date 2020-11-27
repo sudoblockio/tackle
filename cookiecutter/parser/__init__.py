@@ -8,6 +8,7 @@ from collections import OrderedDict
 
 from cookiecutter.parser.context import prep_context
 from cookiecutter.parser.replay import load, dump
+
 # from cookiecutter.parser.prepare import prepare_context
 from cookiecutter.exceptions import InvalidModeException
 from pathlib import Path
@@ -15,8 +16,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from cookiecutter.models import Context, Mode, Source
-    from cookiecutter.configs import Settings
+    from cookiecutter.models import Context, Mode, Source, Settings
 
 logger = logging.getLogger(__name__)
 

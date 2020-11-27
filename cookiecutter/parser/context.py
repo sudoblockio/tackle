@@ -14,6 +14,7 @@ from cookiecutter.parser.prompts import prompt_list, prompt_str, read_user_dict
 from cookiecutter.parser.hooks import parse_hook
 
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from cookiecutter.models import Context, Mode, Source, Settings
 
@@ -64,6 +65,7 @@ def parse_context(c: 'Context', m: 'Mode', s: 'Source'):
                         val = read_user_dict(key, val)
                     c.output_dict[key] = val
                 else:
+                    # Main entrypoint into hook parsing logic
                     parse_hook(c, m, s)
 
         except UndefinedError as err:
@@ -77,9 +79,7 @@ def parse_context(c: 'Context', m: 'Mode', s: 'Source'):
     return c
 
 
-def prep_context(
-    c: 'Context', m: 'Mode', s: 'Source', settings: 'Settings'
-):
+def prep_context(c: 'Context', m: 'Mode', s: 'Source', settings: 'Settings'):
     """
     Prompt user to enter values.
 
@@ -137,10 +137,10 @@ def prep_context(
     if '_template' in c.input_dict[c.context_key]:
         # Normal case where '_template' is set in the context in `main`
         with work_in(c.input_dict[c.context_key]['_template']):
-            return parse_context(c, m, settings)
+            return parse_context(c, m, s)
     else:
         # Case where prompt is being called directly as is the case with an operator
-        return parse_context(c, m, settings)
+        return parse_context(c, m, s)
 
 
 if __name__ == '__main__':

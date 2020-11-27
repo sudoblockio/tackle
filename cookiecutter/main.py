@@ -10,7 +10,7 @@ from _collections import OrderedDict
 
 from cookiecutter.generate import generate_files
 from cookiecutter.utils.paths import rmtree
-from cookiecutter.configs.config_base import get_settings
+from cookiecutter.parser.settings import get_settings
 from cookiecutter.models import Context, Mode, Output, Source
 from cookiecutter.repository import update_source
 from cookiecutter.parser import update_context
