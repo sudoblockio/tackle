@@ -7,7 +7,7 @@ import logging
 from collections import OrderedDict
 
 from cookiecutter.parser.context import prep_context
-from cookiecutter.parser.replay import load, dump
+from cookiecutter.utils.files import load, dump
 
 # from cookiecutter.parser.prepare import prepare_context
 from cookiecutter.exceptions import InvalidModeException
