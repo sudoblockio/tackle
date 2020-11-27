@@ -48,3 +48,18 @@ def make_executable(script_path):
     """
     status = os.stat(script_path)
     os.chmod(script_path, status.st_mode | stat.S_IEXEC)
+
+
+def expand_paths(paths: list) -> list:
+    """Expand a list of paths."""
+    output = []
+    for i in paths:
+        output.append(os.path.abspath(os.path.expanduser(os.path.expandvars(i))))
+    return output
+
+
+def expand_path(path: str) -> str:
+    """Expand both environment variables and user home in the given path."""
+    path = os.path.expandvars(path)
+    path = os.path.expanduser(path)
+    return path

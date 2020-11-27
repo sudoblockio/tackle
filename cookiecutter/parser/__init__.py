@@ -6,9 +6,9 @@ import yaml
 import logging
 from collections import OrderedDict
 
-from cookiecutter.parser.parse_context import prep_context
+from cookiecutter.parser.context import prep_context
 from cookiecutter.parser.replay import load, dump
-from cookiecutter.parser.generate import generate_context
+# from cookiecutter.parser.prepare import prepare_context
 from cookiecutter.exceptions import InvalidModeException
 from pathlib import Path
 
@@ -53,10 +53,11 @@ def update_context(
     context_file_path = os.path.join(s.repo_dir, s.context_file)
     logger.debug('context_file is %s', context_file_path)
 
-    generate_context(c=c, s=s, settings=settings)
+    # prepare_context(c=c, s=s, settings=settings)
+    # update_providers(c=c, s=s, settings=settings)
 
     # Main entrypoint to parse the input.
-    prep_context(c=c, mode=m, settings=settings)
+    prep_context(c=c, m=m, s=s, settings=settings)
 
     if m.record:
         _output_record(c=c, m=m, settings=settings)

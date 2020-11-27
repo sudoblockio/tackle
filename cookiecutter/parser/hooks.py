@@ -14,29 +14,22 @@ from cookiecutter.operators import BaseOperator
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from cookiecutter.models import Mode, Context
-    from cookiecutter.configs import Settings
+    from cookiecutter.models import Mode, Context, Source
 
 
 logger = logging.getLogger(__name__)
 post_gen_operator_list = []
 
-# hook_dict: Dict,
-# context: Dict,
-# no_input: bool,
-# context_key: Dict,
-# cc_dict: Dict,
-# key: str,
 
-
-def run_operator(
-    c: 'Context', m: 'Mode',
-):
+def run_operator(c: 'Context', m: 'Mode', s: 'Source'):
     """Run operator."""
     if c.input_dict is None:
         c.input_dict = {}
     operator_output = None
     delayed_output = None
+
+    # hook_list = s.hook_list
+
     operator_list = BaseOperator.__subclasses__()
 
     for o in operator_list:
@@ -77,7 +70,7 @@ def run_operator(
 
 
 def parse_hook(
-    c: 'Context', m: 'Mode', s: 'Settings', append_key: bool = False,
+    c: 'Context', m: 'Mode', s: 'Source', append_key: bool = False,
 ):
     """Parse input dict for loop and when logic and calls hooks.
 
@@ -114,13 +107,10 @@ def parse_hook(
 
         # Run the operator
         if c.hook_dict['merge'] if 'merge' in c.hook_dict else False:
-            to_merge, post_gen_hook = run_operator(c, m)
+            to_merge, post_gen_hook = run_operator(c, m, s)
             c.output_dict.update(to_merge)
         else:
-            c.output_dict[c.key], post_gen_hook = run_operator(c, m)
-
-            #     hook_dict, context, no_input, context_key, cc_dict, key
-            # )
+            c.output_dict[c.key], post_gen_hook = run_operator(c, m, s)
         if post_gen_hook:
             c.post_gen_hooks.append(post_gen_hook)
 

@@ -9,24 +9,38 @@ from cookiecutter.utils.zipfile import unzip
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from cookiecutter.models import Mode, Source
-    from cookiecutter.configs import Settings
+    from cookiecutter.models import Mode, Source, Settings
+
+    # from cookiecutter.configs import
 
 
-REPO_REGEX = re.compile(
-    r"""
-# something like git:// ssh:// file:// etc.
-((((git|hg)\+)?(git|ssh|file|https?):(//)?)
- |                                      # or
- (\w+@[\w\.]+)                          # something like user@...
-)
-""",
-    re.VERBOSE,
-)
+def is_git_repo(value):
+    """Return True if value is a git repo."""
+    GIT_REPO_REGEX = re.compile(
+        r"""
+    # something like git:// ssh:// file:// etc.
+    (((git\+)?(https?):(//)?)
+     |                                      # or
+     (git@[\w\.]+)                          # something like git@...
+    )
+    """,
+        re.VERBOSE,
+    )
+    return bool(GIT_REPO_REGEX.match(value))
 
 
 def is_repo_url(value):
     """Return True if value is a repository URL."""
+    REPO_REGEX = re.compile(
+        r"""
+    # something like git:// ssh:// file:// etc.
+    ((((git|hg)\+)?(git|ssh|file|https?):(//)?)
+     |                                      # or
+     (\w+@[\w\.]+)                          # something like user@...
+    )
+    """,
+        re.VERBOSE,
+    )
     return bool(REPO_REGEX.match(value))
 
 

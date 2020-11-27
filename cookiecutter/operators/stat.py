@@ -9,7 +9,7 @@ import re
 from typing import Union, List, Dict
 
 from cookiecutter.operators import BaseOperator
-from cookiecutter.config import merge_configs
+from cookiecutter.utils import merge_configs
 
 logger = logging.getLogger(__name__)
 

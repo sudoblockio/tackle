@@ -8,7 +8,7 @@ import logging
 from typing import Union, Dict, List
 
 from cookiecutter.operators import BaseOperator
-from cookiecutter.config import merge_configs
+from cookiecutter.utils import merge_configs
 
 logger = logging.getLogger(__name__)
 

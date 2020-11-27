@@ -52,3 +52,25 @@ def read_config_file(file, file_extension=None):
             ' error details: "{1}"'.format(file, str(e))
         )
         raise ContextDecodingException(our_exc_message)
+
+
+def apply_overwrites_to_inputs(input, overwrite_dict):
+    """Modify the given context in place based on the overwrite_context."""
+    for variable, overwrite in overwrite_dict.items():
+        if variable not in input:
+            # Do not include variables which are not used in the template
+            continue
+
+        context_value = input[variable]
+
+        if isinstance(context_value, list):
+            # We are dealing with a choice variable
+            if overwrite in context_value:
+                # This overwrite is actually valid for the given context
+                # Let's set it as default (by definition first item in list)
+                # see ``cookiecutter.prompt.prompt_choice_for_config``
+                context_value.remove(overwrite)
+                context_value.insert(0, overwrite)
+        else:
+            # Simply overwrite the value for this variable
+            input[variable] = overwrite
