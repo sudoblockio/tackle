@@ -10,13 +10,13 @@ from typing import Dict
 
 # from pathlib import Path
 
-from cookiecutter.operators import BaseOperator
+from cookiecutter.models import BaseHook
 from cookiecutter.render.environment import StrictEnvironment
 
 logger = logging.getLogger(__name__)
 
 
-class JinjaOperator(BaseOperator):
+class JinjaOperator(BaseHook):
     """
     Operator for jinja templates.
 

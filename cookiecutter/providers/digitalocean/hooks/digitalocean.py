@@ -9,12 +9,12 @@ import os
 from dopy.manager import DoManager
 from typing import List
 
-from cookiecutter.operators import BaseOperator
+from cookiecutter.models import BaseHook
 
 logger = logging.getLogger(__name__)
 
 
-class DigitalOceanRegionsOperator(BaseOperator):
+class DigitalOceanRegionsOperator(BaseHook):
     """Operator retrieving DigitalOcean regions.
 
     :return: List of regions
@@ -32,7 +32,7 @@ class DigitalOceanRegionsOperator(BaseOperator):
         return regions
 
 
-class DigitalOceanInstanceTypesOperator(BaseOperator):
+class DigitalOceanInstanceTypesOperator(BaseHook):
     """
     Operator retrieving the available instance types in a region.
 

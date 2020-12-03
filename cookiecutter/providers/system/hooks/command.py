@@ -17,7 +17,7 @@ import click
 from itertools import chain
 from select import select
 
-from cookiecutter.operators import BaseOperator
+from cookiecutter.models import BaseHook
 
 if os.name != 'nt':
     # Don't import on windows as pty is not available there
@@ -29,7 +29,7 @@ if os.name != 'nt':
 logger = logging.getLogger(__name__)
 
 
-class CommandOperator(BaseOperator):
+class CommandOperator(BaseHook):
     """
     `command` operator for system calls.
 
@@ -56,7 +56,7 @@ class CommandOperator(BaseOperator):
         return output.decode("utf-8")
 
 
-class ShellOperator(BaseOperator):
+class ShellOperator(BaseHook):
     """
     `shell` operator for system calls.
 

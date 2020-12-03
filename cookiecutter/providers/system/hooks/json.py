@@ -8,12 +8,12 @@ import logging
 import json
 from typing import Dict
 
-from cookiecutter.operators import BaseOperator
+from cookiecutter.models import BaseHook
 
 logger = logging.getLogger(__name__)
 
 
-class JsonOperator(BaseOperator):
+class JsonOperator(BaseHook):
     """
     Operator for json.
 

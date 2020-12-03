@@ -9,13 +9,13 @@ import yaml
 import re
 from typing import Union, Dict, List, Any
 
-from cookiecutter.operators import BaseOperator
+from cookiecutter.models import BaseHook
 from cookiecutter.utils import merge_configs
 
 logger = logging.getLogger(__name__)
 
 
-class YamlOperator(BaseOperator):
+class YamlOperator(BaseHook):
     """
     Operator for yaml.
 

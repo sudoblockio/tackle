@@ -8,12 +8,12 @@ import logging
 import boto3
 from typing import List
 
-from cookiecutter.operators import BaseOperator
+from cookiecutter.models import BaseHook
 
 logger = logging.getLogger(__name__)
 
 
-class AwsRegionsOperator(BaseOperator):
+class AwsRegionsOperator(BaseHook):
     """Operator retrieving AWS regions.
 
     :return: List of regions
@@ -30,7 +30,7 @@ class AwsRegionsOperator(BaseOperator):
         return regions
 
 
-class AwsAzsOperator(BaseOperator):
+class AwsAzsOperator(BaseHook):
     """
     Operator for retrieving the availability zones in a given region.
 
@@ -74,7 +74,7 @@ class AwsAzsOperator(BaseOperator):
         return availability_zones
 
 
-class AwsEc2TypesOperator(BaseOperator):
+class AwsEc2TypesOperator(BaseHook):
     """
     Operator retrieving the available instance types in a region.
 

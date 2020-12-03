@@ -9,14 +9,14 @@ import logging
 from typing import Dict, List, Any
 from pydantic import SecretStr
 
-from cookiecutter.operators import BaseOperator
+from cookiecutter.models import BaseHook
 
 logger = logging.getLogger(__name__)
 
 
-class NukikataOperator(BaseOperator):
+class NukikataOperator(BaseHook):
     """
-    Operator for calling external cookiecutters.
+    Operator for calling external tackle / cookiecutters.
 
     :param template: A directory containing a project template,
         or a URL to a git repository.
@@ -41,7 +41,7 @@ class NukikataOperator(BaseOperator):
     :return: Dictionary of output
     """
 
-    type: str = 'nukikata'
+    type: str = 'tackle'
 
     template: Any = '.'
     templates: List[Any] = None
@@ -65,27 +65,27 @@ class NukikataOperator(BaseOperator):
 
         #  Run all the loops
         if not self.templates and not self.directories and not self.context_files:
-            return self._run_nukikata()
+            return self._run_tackle()
 
         output = {}
         if self.templates:
             for i in self.templates:
                 self.template = i
-                output.update({i: self._run_nukikata()})
+                output.update({i: self._run_tackle()})
 
         if self.directories:
             for i in self.directories:
                 self.directory = i
-                output.update({i: self._run_nukikata()})
+                output.update({i: self._run_tackle()})
 
         if self.context_files:
             for i in self.context_files:
                 self.context_file = i
-                output.update({i: self._run_nukikata()})
+                output.update({i: self._run_tackle()})
 
         return output
 
-    def _run_nukikata(self):
+    def _run_tackle(self):
         output_context = cc.main.cookiecutter(
             template=self.template,
             checkout=self.checkout,

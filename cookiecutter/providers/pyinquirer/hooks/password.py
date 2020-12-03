@@ -8,12 +8,12 @@ import logging
 from PyInquirer import prompt
 from typing import Any
 
-from cookiecutter.operators import BaseOperator
+from cookiecutter.models import BaseHook
 
 logger = logging.getLogger(__name__)
 
 
-class InquirerPasswordOperator(BaseOperator):
+class InquirerPasswordOperator(BaseHook):
     """
     Operator for PyInquirer `password` type prompts.
 

@@ -329,7 +329,7 @@ def generate_files(
             )
 
             for o in c.post_gen_hooks:
-                o.execute()
+                o.execute
 
             logger.debug('Resulting project directory created at %s', project_dir)
             return project_dir
@@ -344,7 +344,7 @@ def generate_files(
             )
 
         for o in c.post_gen_hooks:
-            o.execute()
+            o.execute
 
         logger.debug('No project directory was created')
         return None

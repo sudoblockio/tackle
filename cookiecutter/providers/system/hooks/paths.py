@@ -8,12 +8,12 @@ from typing import Any
 import logging
 import os
 
-from cookiecutter.operators import BaseOperator
+from cookiecutter.models import BaseHook
 
 logger = logging.getLogger(__name__)
 
 
-class PathExistsListOperator(BaseOperator):
+class PathExistsListOperator(BaseHook):
     """Operator for os package 'path_exists' operator.
 
     :param path: The path to file or directory
@@ -27,7 +27,7 @@ class PathExistsListOperator(BaseOperator):
         return os.path.exists(self.path)
 
 
-class PathIsdirListOperator(BaseOperator):
+class PathIsdirListOperator(BaseHook):
     """
     Operator for os package 'path_exists' operator.
 
@@ -43,7 +43,7 @@ class PathIsdirListOperator(BaseOperator):
         return os.path.isdir(self.path)
 
 
-class PathRelativeOperator(BaseOperator):
+class PathRelativeOperator(BaseHook):
     """
     Operator to find the absolute path to a file or directory in parent directories.
 

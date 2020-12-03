@@ -8,12 +8,12 @@ import logging
 from PyInquirer import prompt
 from typing import Union, List, Any, Dict
 
-from cookiecutter.operators import BaseOperator
+from cookiecutter.models import BaseHook
 
 logger = logging.getLogger(__name__)
 
 
-class InquirerCheckboxOperator(BaseOperator):
+class InquirerCheckboxOperator(BaseHook):
     """
     Operator for PyInquirer type prompts.
 

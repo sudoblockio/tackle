@@ -8,12 +8,12 @@ import logging
 from pprint import pprint
 from typing import Union, Dict, List
 
-from cookiecutter.operators import BaseOperator
+from cookiecutter.models import BaseHook
 
 logger = logging.getLogger(__name__)
 
 
-class PrintOperator(BaseOperator):
+class PrintOperator(BaseHook):
     """
     Operator for printing an input and returning the output.
 
@@ -30,7 +30,7 @@ class PrintOperator(BaseOperator):
         return self.statement or self.out
 
 
-class PprintOperator(BaseOperator):
+class PprintOperator(BaseHook):
     """
     Operator for pretty printing an input and returning the output.
 

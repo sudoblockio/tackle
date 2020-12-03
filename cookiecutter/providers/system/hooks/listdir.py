@@ -8,12 +8,12 @@ from typing import Union, List
 import os
 import logging
 
-from cookiecutter.operators import BaseOperator
+from cookiecutter.models import BaseHook
 
 logger = logging.getLogger(__name__)
 
 
-class ListdirOperator(BaseOperator):
+class ListdirOperator(BaseHook):
     """
     Operator for `listdir`. Lists the contents of a directory.
 

@@ -13,12 +13,12 @@ from azure.common.credentials import ServicePrincipalCredentials
 import azure.mgmt.compute as compute
 import azure.mgmt.subscription as sub
 
-from cookiecutter.operators import BaseOperator
+from cookiecutter.models import BaseHook
 
 logger = logging.getLogger(__name__)
 
 
-class AzureRegionsOperator(BaseOperator):
+class AzureRegionsOperator(BaseHook):
     """Operator retrieving Azure regions.
 
     :return: List of regions
@@ -44,7 +44,7 @@ class AzureRegionsOperator(BaseOperator):
         return regions
 
 
-class AzureVMTypesOperator(BaseOperator):
+class AzureVMTypesOperator(BaseHook):
     """
     Operator retrieving the available instance types in a region.
 

@@ -7,12 +7,12 @@ from __future__ import print_function
 import logging
 from typing import Union, List
 
-from cookiecutter.operators import BaseOperator
+from cookiecutter.models import BaseHook
 
 logger = logging.getLogger(__name__)
 
 
-class SplitOperator(BaseOperator):
+class SplitOperator(BaseHook):
     """
     Operator for PyInquirer type prompts.
 
@@ -37,7 +37,7 @@ class SplitOperator(BaseOperator):
             return output
 
 
-class JoinOperator(BaseOperator):
+class JoinOperator(BaseHook):
     """
     Operator for PyInquirer type prompts.
 

@@ -12,12 +12,12 @@ from PyInquirer import prompt
 from pydantic import FilePath
 
 from cookiecutter.exceptions import EscapeOperatorException
-from cookiecutter.operators import BaseOperator
+from cookiecutter.models import BaseHook
 
 logger = logging.getLogger(__name__)
 
 
-class TerraformVariablesOperator(BaseOperator):
+class TerraformVariablesOperator(BaseHook):
     """
     Operator that reads an input hcl file and prompts user to fill in.
 

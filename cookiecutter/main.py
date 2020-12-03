@@ -41,6 +41,7 @@ def cookiecutter(
     default_config=False,
     config=None,
     calling_directory=None,
+    providers=None,
 ):
     """
     Run Cookiecutter just as if using it from the command line.
@@ -98,7 +99,7 @@ def cookiecutter(
         tackle_gen=source.tackle_gen,
         calling_directory=calling_directory,
     )
-    update_context(c=context, s=source, m=mode, settings=settings)
+    update_context(c=context, s=source, m=mode, settings=settings, providers=providers)
 
     output = Output(
         output_dir=output_dir,

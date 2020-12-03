@@ -7,13 +7,13 @@ from __future__ import print_function
 import logging
 from typing import Union, Dict, List
 
-from cookiecutter.operators import BaseOperator
+from cookiecutter.models import BaseHook
 from cookiecutter.utils import merge_configs
 
 logger = logging.getLogger(__name__)
 
 
-class DictUpdateOperator(BaseOperator):
+class DictUpdateOperator(BaseHook):
     """
     Operator for updating dict objects with items.
 
@@ -37,7 +37,7 @@ class DictUpdateOperator(BaseOperator):
         return self.src
 
 
-class DictMergeOperator(BaseOperator):
+class DictMergeOperator(BaseHook):
     """
     Operator for recursively merging dict objects with input maps.
 
@@ -59,7 +59,7 @@ class DictMergeOperator(BaseOperator):
             return merge_configs(self.src, self.input)
 
 
-class DictPopOperator(BaseOperator):
+class DictPopOperator(BaseHook):
     """
     Operator for recursively merging dict objects with input maps.
 

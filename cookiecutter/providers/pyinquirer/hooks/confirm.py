@@ -8,12 +8,12 @@ import logging
 from PyInquirer import prompt
 from typing import Any
 
-from cookiecutter.operators import BaseOperator
+from cookiecutter.models import BaseHook
 
 logger = logging.getLogger(__name__)
 
 
-class InquirerConfirmOperator(BaseOperator):
+class InquirerConfirmOperator(BaseHook):
     """
     Operator for PyInquirer `confirm` type prompts.
 

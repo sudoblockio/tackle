@@ -11,7 +11,7 @@ import shutil
 from distutils.dir_util import copy_tree
 from typing import List, Union, Any
 
-from cookiecutter.operators import BaseOperator
+from cookiecutter.models import BaseHook
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +26,7 @@ def create_directory_tree(src, dst):
         raise NotImplementedError
 
 
-class CopyOperator(BaseOperator):
+class CopyOperator(BaseHook):
     """
     Operator for updating dict objects with items.
 
@@ -71,7 +71,7 @@ class CopyOperator(BaseOperator):
             shutil.copyfile(source, dest)
 
 
-class MoveOperator(BaseOperator):
+class MoveOperator(BaseHook):
     """
     Operator for updating dict objects with items.
 

@@ -1,0 +1,2 @@
+azure-mgmt-compute>=13.0.0
+azure-mgmt-subscription>=0.6.0

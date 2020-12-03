@@ -7,13 +7,13 @@ from __future__ import print_function
 import logging
 from typing import Dict
 
-from cookiecutter.operators import BaseOperator
+from cookiecutter.models import BaseHook
 import cookiecutter as cc
 
 logger = logging.getLogger(__name__)
 
 
-class BlockOperator(BaseOperator):
+class BlockOperator(BaseHook):
     """
     Operator for blocks of operators.
 

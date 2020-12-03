@@ -7,12 +7,12 @@ from __future__ import print_function
 import logging
 from typing import List, Union
 
-from cookiecutter.operators import BaseOperator
+from cookiecutter.models import BaseHook
 
 logger = logging.getLogger(__name__)
 
 
-class ListAppendOperator(BaseOperator):
+class ListAppendOperator(BaseHook):
     """
     Operator for updating dict objects with items.
 

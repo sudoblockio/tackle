@@ -9,12 +9,12 @@ import random
 import string
 import logging
 
-from cookiecutter.operators import BaseOperator
+from cookiecutter.models import BaseHook
 
 logger = logging.getLogger(__name__)
 
 
-class RandomHexOperator(BaseOperator):
+class RandomHexOperator(BaseHook):
     """
     Operator for `random_hex`. Lists the contents of a directory.
 
@@ -31,7 +31,7 @@ class RandomHexOperator(BaseOperator):
         )
 
 
-class RandomStringOperator(BaseOperator):
+class RandomStringOperator(BaseHook):
     """
     Operator for `random_string`. Lists the contents of a directory.
 

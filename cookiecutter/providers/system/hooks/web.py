@@ -8,12 +8,12 @@ import logging
 import webbrowser
 from pydantic import AnyUrl
 
-from cookiecutter.operators import BaseOperator
+from cookiecutter.models import BaseHook
 
 logger = logging.getLogger(__name__)
 
 
-class WebBrowserOperator(BaseOperator):
+class WebBrowserOperator(BaseHook):
     """
     Operator for registering a variable based on an input. Useful with rendering.
 

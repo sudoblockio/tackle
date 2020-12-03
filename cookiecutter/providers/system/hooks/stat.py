@@ -8,13 +8,13 @@ import logging
 import re
 from typing import Union, List, Dict
 
-from cookiecutter.operators import BaseOperator
+from cookiecutter.models import BaseHook
 from cookiecutter.utils import merge_configs
 
 logger = logging.getLogger(__name__)
 
 
-class StatOperator(BaseOperator):
+class StatOperator(BaseHook):
     """
     Operator for registering a variable based on an input. Useful with rendering.
 

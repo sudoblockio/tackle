@@ -7,12 +7,12 @@ from __future__ import print_function
 import logging
 from googleapiclient.discovery import build
 
-from cookiecutter.operators import BaseOperator
+from cookiecutter.models import BaseHook
 
 logger = logging.getLogger(__name__)
 
 
-class GcpRegionsOperator(BaseOperator):
+class GcpRegionsOperator(BaseHook):
     """Operator retrieving GCP regions.
 
     :param gcp_project: String for project name in GCP to use.
@@ -27,15 +27,13 @@ class GcpRegionsOperator(BaseOperator):
 
         regions = [
             item['name']
-            for item in client.regions()
-            .list(project=self.gcp_project)
-            .execute['items']
+            for item in client.regions().list(project=self.gcp_project).execute['items']
         ]
 
         return regions
 
 
-class GcpAzsOperator(BaseOperator):
+class GcpAzsOperator(BaseHook):
     """
     Operator for retrieving the availability zones in a given region.
 
@@ -84,7 +82,7 @@ class GcpAzsOperator(BaseOperator):
         return availability_zones
 
 
-class GcpInstanceTypesOperator(BaseOperator):
+class GcpInstanceTypesOperator(BaseHook):
     """
     Operator retrieving the available instance types in a zone.
 
