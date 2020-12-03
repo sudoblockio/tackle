@@ -29,7 +29,7 @@ class GcpRegionsOperator(BaseOperator):
             item['name']
             for item in client.regions()
             .list(project=self.gcp_project)
-            .execute()['items']
+            .execute['items']
         ]
 
         return regions
@@ -78,7 +78,7 @@ class GcpAzsOperator(BaseOperator):
                 project=project,
                 filter="region=" + region_uri_stub + region + "\" AND status=\"UP\"",
             )
-            .execute()['items']
+            .execute['items']
         ]
         availability_zones.sort()
         return availability_zones
@@ -106,7 +106,7 @@ class GcpInstanceTypesOperator(BaseOperator):
                 item['name']
                 for item in client.machineTypes()
                 .list(project=self.gcp_project, zone=self.zone,)
-                .execute()['items']
+                .execute['items']
             ]
 
         else:
@@ -122,7 +122,7 @@ class GcpInstanceTypesOperator(BaseOperator):
                 item['name']
                 for item in client.machineTypes()
                 .list(project=self.gcp_project, zone=self.zone, filter=query,)
-                .execute()['items']
+                .execute['items']
             ]
 
         instances.sort()

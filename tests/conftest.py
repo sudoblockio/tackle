@@ -212,7 +212,7 @@ def change_dir(monkeypatch):
 
 @pytest.fixture(scope='function')
 def load_yaml(request):
-    """Return dict in yaml input(s) either str or tuple."""
+    """Return dict of yaml input(s) either str or tuple."""
     if isinstance(request.param, str):
         with open(request.param) as f:
             return yaml.load(f)
@@ -223,3 +223,10 @@ def load_yaml(request):
             with open(i) as f:
                 output.append(yaml.load(f))
         return output
+
+
+@pytest.fixture(scope='function')
+def inputs(request):
+    if isinstance(request.param, tuple):
+        for i in request.param:
+            yield i
