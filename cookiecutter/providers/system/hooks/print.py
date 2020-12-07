@@ -42,6 +42,7 @@ class PprintOperator(BaseHook):
     out: Union[Dict, List, str] = None
 
     def execute(self):
+
         pprint(self.statement)
         pprint(self.out)
         return self.statement or self.out

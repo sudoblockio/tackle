@@ -81,3 +81,25 @@ class DictPopOperator(BaseHook):
         else:
             self.src.pop(self.item)
             return self.src
+
+class DictKeysOperator(BaseHook):
+    """
+    Operator for returning the keys of a dict.
+
+    :param src: The input dict or list of dicts return the keys for
+    :return: List of keys or list of list of keys if input is list
+    """
+
+    type: str = 'dict_keys'
+
+    src: Union[Dict, List[Dict]]
+
+    def execute(self):
+        if isinstance(self.src, list):
+            keys = []
+            for i in self.src:
+                keys.append(i.keys())
+            return keys
+        else:
+            return self.src.keys()
+

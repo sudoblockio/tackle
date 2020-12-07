@@ -14,7 +14,7 @@ from cookiecutter.models import BaseHook
 logger = logging.getLogger(__name__)
 
 
-class NukikataOperator(BaseHook):
+class TackleOperator(BaseHook):
     """
     Operator for calling external tackle / cookiecutters.
 
@@ -24,7 +24,7 @@ class NukikataOperator(BaseHook):
         or a URL to a git repository.
     :param checkout: The branch, tag or commit ID to checkout after clone.
     :param no_input: Prompt the user at command line for manual configuration?
-    :param extra_context: A dictionary of context that overrides default
+    :param override_inputs: A dictionary of context that overrides default
         and user configuration.
     :param existing_context: An additional dictionary to use in rendering
         additional prompts.
@@ -49,8 +49,8 @@ class NukikataOperator(BaseHook):
     no_input: bool = False
     context_file: str = None
     context_files: List = None
+    overwrite_inputs: Dict = None
     existing_context: Dict = None
-    extra_context: Dict = None
     replay: bool = None
     overwrite_if_exists: bool = False
     output_dir: str = '.'
@@ -92,8 +92,8 @@ class NukikataOperator(BaseHook):
             no_input=self.no_input,
             context_file=self.context_file,
             context_key=self.context_key,
+            overwrite_inputs=self.overwrite_inputs,
             existing_context=self.existing_context,
-            extra_context=self.extra_context,
             replay=self.replay,
             overwrite_if_exists=self.overwrite_if_exists,
             output_dir=self.output_dir,
