@@ -13,7 +13,16 @@ def test_operator_command(monkeypatch, tmpdir):
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
 
     context = cookiecutter('.', no_input=True, output_dir=str(tmpdir))
+    print(context)
+    assert context
 
+
+def test_provider_tackle_local(monkeypatch, tmpdir):
+    """Verify the operator call works successfully."""
+    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
+
+    context = cookiecutter('.', context_file='local.yaml', no_input=True, output_dir=str(tmpdir))
+    print(context)
     assert context
 
 

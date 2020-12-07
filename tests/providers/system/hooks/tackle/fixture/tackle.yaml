@@ -1,7 +1,7 @@
 foo:
   type: stat
   input: bar
-  when: "{{ nuki.foo is defined }}"
+  when: "{{ foo is defined }}"
 
 read_stuff:
   type: yaml
