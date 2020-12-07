@@ -3,11 +3,11 @@ from collections import OrderedDict
 import os
 from enum import Enum
 from pydantic import BaseModel, SecretStr, BaseSettings
-from typing import Dict, Any, Union, Type, List
+from typing import Dict, Any, Union, Type, List, Optional
 
 from cookiecutter.render.environment import StrictEnvironment
 from cookiecutter.utils.paths import expand_path
-
+from cookiecutter.utils.context_manager import work_in
 
 USER_CONFIG_PATH = os.path.expanduser('~/.cookiecutterrc')
 
@@ -16,13 +16,6 @@ DEFAULT_ABBREVIATIONS: Dict = {
     'gl': 'https://gitlab.com/{0}.git',
     'bb': 'https://bitbucket.org/{0}',
 }
-
-
-# def expand_path(path):
-#     """Expand both environment variables and user home in the given path."""
-#     path = os.path.expandvars(path)
-#     path = os.path.expanduser(path)
-#     return path
 
 
 class Settings(BaseSettings):
@@ -64,31 +57,6 @@ class TackleGen(str, Enum):
 
     cookiecutter = 'cookiecutter'
     tackle = 'tackle'
-
-
-class Context(BaseModel):
-    """The main object that is being modified by parsing."""
-
-    context_file: str = None
-    context_key: str = None
-    key: str = None
-
-    input_dict: OrderedDict = None
-    output_dict: OrderedDict = None
-
-    existing_context: Dict = None
-    overwrite_inputs: Dict = None
-    override_inputs: Dict = None
-
-    hook_dict: OrderedDict = None
-    post_gen_hooks: List[Any] = []
-
-    env: Type[StrictEnvironment] = None
-
-    calling_directory: str = None
-    tackle_gen: str = None
-
-    # providers: Field[Providers]
 
 
 class Mode(BaseModel):
@@ -135,31 +103,79 @@ class Provider(BaseModel):
     """Base provider."""
 
     path: str = None
-    path_hooks: str = None
-    name: str = None
+    hooks_path: str = None
+    hook_types: list = []
+    hook_modules: list = []
+
+    name: str = None  # defaults to os.path.basename(path)
+
     src: str = None
     version: str = None
-    hook_types: list = []
     requirements: list = []
 
 
-class Providers(BaseModel):
-    """Collection of providers."""
+class Context(BaseModel):
+    """The main object that is being modified by parsing."""
+
+    context_file: str = None
+    context_key: str = None
+    key: str = None
+
+    input_dict: OrderedDict = None
+    output_dict: OrderedDict = None
+
+    existing_context: Dict = None
+    overwrite_inputs: Dict = {}
+    override_inputs: Dict = None
+
+    hook_dict: OrderedDict = None
+    post_gen_hooks: List[Any] = []
+
+    env: Type[StrictEnvironment] = None
+    # env: StrictEnvironment = None
+
+    calling_directory: str = None
+    tackle_gen: str = None
 
     providers: List[Provider] = []
-    provider_paths: list = []
-    settings_providers: List[Provider] = []
-    all_hook_types: list = []
+    imported_hook_types: List[str] = []
 
-    def __init__(self, **data: Any):
-        super().__init__(**data)
-        # Initialize the native providers
-        for i in [
-            os.path.abspath(n)
-            for n in os.listdir(os.path.join(os.path.dirname(__file__), 'providers'))
-            if os.path.isdir(os.path.join(os.path.dirname(__file__), 'providers', n))
-        ]:
-            self.provider_paths.append(i)
+
+class BaseHook(Context, Mode):
+    """Base hook mixin class."""
+
+    #     context: Dict = None
+    #     context_key: str = None
+    #     no_input: bool
+    #     cc_dict: Dict = None
+    #     env: Any = None
+    #     key: str = None
+
+    chdir: Optional[str] = None
+    post_gen_operator: Optional[bool] = False
+    confirm: Optional[str] = False
+
+    class Config:
+        arbitrary_types_allowed = True
+
+    def execute(self) -> Any:
+        """Abstract method."""
+        raise NotImplementedError()
+
+    def call(self) -> Any:
+        """
+        Call main entrypoint to calling operator.
+
+        Handles `chdir` method.
+        """
+        if self.chdir and os.path.isdir(
+            os.path.abspath(os.path.expanduser(self.chdir))
+        ):
+            # Use contextlib to switch dirs and come back out
+            with work_in(os.path.abspath(os.path.expanduser(self.chdir))):
+                return self.execute()
+        else:
+            return self.execute()
 
 
 class Output(BaseModel):
