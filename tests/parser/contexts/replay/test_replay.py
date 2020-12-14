@@ -3,7 +3,8 @@ import os
 
 import pytest
 
-from cookiecutter import main, replay
+from cookiecutter import main
+from cookiecutter.parser import replay
 from cookiecutter import exceptions
 
 
