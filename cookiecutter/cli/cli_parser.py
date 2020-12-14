@@ -3,6 +3,8 @@ import collections
 import json
 import os
 import sys
+import re
+import ast
 
 import click
 
@@ -19,7 +21,7 @@ from cookiecutter.exceptions import (
 )
 from cookiecutter.utils.log import configure_logger
 from cookiecutter.main import cookiecutter
-from cookiecutter.config import get_user_config
+from cookiecutter.parser.settings import get_settings
 
 
 def version_msg():
@@ -44,10 +46,19 @@ def validate_overwrite_inputs(ctx, param, value):
     return collections.OrderedDict(s.split('=', 1) for s in value) or None
 
 
+def input_string_to_dict(ctx, param, value):
+    """Call back to convert str to dict."""
+    pattern = r'^\{.*\}$'
+    if bool(re.search(pattern, value)):
+        return ast.literal_eval(value)
+
+
 def list_installed_templates(default_config, passed_config_file):
     """List installed (locally cloned) templates. Use cookiecutter --list-installed."""
-    config = get_user_config(passed_config_file, default_config)
-    cookiecutter_folder = config.get('cookiecutters_dir')
+    # config = get_user_config(passed_config_file, default_config)
+    # cookiecutter_folder = config.get('cookiecutters_dir')
+    config = get_settings()
+    cookiecutter_folder = config.cookiecutters_dir
     if not os.path.exists(cookiecutter_folder):
         click.echo(
             'Error: Cannot list installed templates. Folder does not exist: '
@@ -78,7 +89,8 @@ def list_installed_templates(default_config, passed_config_file):
 )
 @click.option(
     u'--overwrite-inputs',
-    callback=validate_overwrite_inputs,
+    # callback=validate_overwrite_inputs,
+    callback=input_string_to_dict,
     default={},
     help=u'Overwrite the inputs with a dictionary.',
 )
