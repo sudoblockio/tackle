@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Operator plugin that inherits a base class and is made available through `type`."""
+"""Password hook."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -13,9 +13,9 @@ from cookiecutter.models import BaseHook
 logger = logging.getLogger(__name__)
 
 
-class InquirerPasswordOperator(BaseHook):
+class InquirerPasswordHook(BaseHook):
     """
-    Operator for PyInquirer `password` type prompts.
+    Hook for PyInquirer `password` type prompts.
 
     :param message: String message to show when prompting.
     :param choices: A list of strings or list of k/v pairs per above description

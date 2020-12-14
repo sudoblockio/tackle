@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Operator plugin that inherits a base class and is made available through `type`."""
+"""Tackle hooks."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -14,9 +14,9 @@ from cookiecutter.models import BaseHook
 logger = logging.getLogger(__name__)
 
 
-class TackleOperator(BaseHook):
+class TackleHook(BaseHook):
     """
-    Operator for calling external tackle / cookiecutters.
+    Hook  for calling external tackle / cookiecutters.
 
     :param template: A directory containing a project template,
         or a URL to a git repository.
@@ -46,12 +46,12 @@ class TackleOperator(BaseHook):
     template: Any = '.'
     templates: List[Any] = None
     checkout: str = None
-    no_input: bool = False
-    context_file: str = None
+    # no_input: bool = False
+    # context_file: str = None
     context_files: List = None
-    overwrite_inputs: Dict = None
-    existing_context: Dict = None
-    replay: bool = None
+    # overwrite_inputs: Dict = None
+    # existing_context: Dict = None
+    # replay: bool = None
     overwrite_if_exists: bool = False
     output_dir: str = '.'
     config_file: str = None
@@ -86,6 +86,14 @@ class TackleOperator(BaseHook):
         return output
 
     def _run_tackle(self):
+
+        # Populate defaults.
+        # Default because passing the render context from tackle to tackle is super common.
+        if 'existing_context' in self.hook_dict:
+            existing_context = self.existing_context
+        else:
+            existing_context = self.output_dict
+
         output_context = cc.main.cookiecutter(
             template=self.template,
             checkout=self.checkout,
@@ -93,7 +101,7 @@ class TackleOperator(BaseHook):
             context_file=self.context_file,
             context_key=self.context_key,
             overwrite_inputs=self.overwrite_inputs,
-            existing_context=self.existing_context,
+            existing_context=existing_context,
             replay=self.replay,
             overwrite_if_exists=self.overwrite_if_exists,
             output_dir=self.output_dir,

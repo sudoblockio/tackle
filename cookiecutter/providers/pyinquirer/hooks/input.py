@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Operator plugin that inherits a base class and is made available through `type`."""
+"""Input hook."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -13,10 +13,11 @@ from cookiecutter.models import BaseHook
 logger = logging.getLogger(__name__)
 
 
-class InquirerInputOperator(BaseHook):
+class InquirerInputHook(BaseHook):
     """
-    Operator for PyInquirer 'input' type prompts.
+    Hook for PyInquirer 'input' type prompts.
 
+    Example: https://github.com/CITGuru/PyInquirer/blob/master/examples/input.py
     :param message: String message to show when prompting.
     :param choices: A list of strings or list of k/v pairs per above description
     :param name: A key to insert the output value to. If not provided defaults to

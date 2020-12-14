@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""AWS Operators."""
+"""AWS hooks."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -13,8 +13,8 @@ from cookiecutter.models import BaseHook
 logger = logging.getLogger(__name__)
 
 
-class AwsRegionsOperator(BaseHook):
-    """Operator retrieving AWS regions.
+class AwsRegionsHook(BaseHook):
+    """Hook retrieving AWS regions.
 
     :return: List of regions
     """
@@ -30,9 +30,9 @@ class AwsRegionsOperator(BaseHook):
         return regions
 
 
-class AwsAzsOperator(BaseHook):
+class AwsAzsHook(BaseHook):
     """
-    Operator for retrieving the availability zones in a given region.
+    Hook for retrieving the availability zones in a given region.
 
     :param region: A region to search in
     :param regions: A list of regions to search in
@@ -74,9 +74,9 @@ class AwsAzsOperator(BaseHook):
         return availability_zones
 
 
-class AwsEc2TypesOperator(BaseHook):
+class AwsEc2TypesHook(BaseHook):
     """
-    Operator retrieving the available instance types in a region.
+    Hook retrieving the available instance types in a region.
 
     :param region: [Required] The region to determine the instances in
     :param instance_families: A list of instance families, ie ['c5', 'm5']

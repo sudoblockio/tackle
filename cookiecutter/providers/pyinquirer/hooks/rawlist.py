@@ -1,6 +1,6 @@
 # # -*- coding: utf-8 -*-
 
-"""Operator plugin that inherits a base class and is made available through `type`."""
+"""Raw list hook."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -13,10 +13,11 @@ from cookiecutter.models import BaseHook
 logger = logging.getLogger(__name__)
 
 
-class InquirerRawListOperator(BaseHook):
+class InquirerRawListHook(BaseHook):
     """
-    Operator for PyInquirer 'rawlist' type prompts.
+    Hook for PyInquirer 'rawlist' type prompts.
 
+    Example: https://github.com/CITGuru/PyInquirer/blob/master/examples/rawlist.py
     :param message: String message to show when prompting.
     :param choices: A list of strings or list of k/v pairs per above description
     :param name: A key to insert the output value to. If not provided defaults to

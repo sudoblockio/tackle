@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Azure Operators."""
+"""Azure hooks."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -18,8 +18,8 @@ from cookiecutter.models import BaseHook
 logger = logging.getLogger(__name__)
 
 
-class AzureRegionsOperator(BaseHook):
-    """Operator retrieving Azure regions.
+class AzureRegionsHook(BaseHook):
+    """Hook retrieving Azure regions.
 
     :return: List of regions
     """
@@ -44,9 +44,9 @@ class AzureRegionsOperator(BaseHook):
         return regions
 
 
-class AzureVMTypesOperator(BaseHook):
+class AzureVMTypesHook(BaseHook):
     """
-    Operator retrieving the available instance types in a region.
+    Hook retrieving the available instance types in a region.
 
     :param region: [Required] The region to determine the instances in
     :param instance_families: A list of instance families, ie ['A', 'D']

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""DigitalOcean Operators."""
+"""DigitalOcean hooks."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -14,8 +14,8 @@ from cookiecutter.models import BaseHook
 logger = logging.getLogger(__name__)
 
 
-class DigitalOceanRegionsOperator(BaseHook):
-    """Operator retrieving DigitalOcean regions.
+class DigitalOceanRegionsHook(BaseHook):
+    """Hook retrieving DigitalOcean regions.
 
     :return: List of regions
     """
@@ -32,9 +32,9 @@ class DigitalOceanRegionsOperator(BaseHook):
         return regions
 
 
-class DigitalOceanInstanceTypesOperator(BaseHook):
+class DigitalOceanInstanceTypesHook(BaseHook):
     """
-    Operator retrieving the available instance types in a region.
+    Hook retrieving the available instance types in a region.
 
     :param region: [Required] The region to determine the instances in
     :param instance_families: A list of instance families, ie ['g', 'm']

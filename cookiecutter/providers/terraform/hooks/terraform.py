@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Operator plugin that inherits a base class and is made available through `type`."""
+"""Terraform hooks."""
 from __future__ import print_function
 from __future__ import unicode_literals
 
@@ -11,15 +11,15 @@ import hcl
 from PyInquirer import prompt
 from pydantic import FilePath
 
-from cookiecutter.exceptions import EscapeOperatorException
+from cookiecutter.exceptions import EscapeHookException
 from cookiecutter.models import BaseHook
 
 logger = logging.getLogger(__name__)
 
 
-class TerraformVariablesOperator(BaseHook):
+class TerraformVariablesHook(BaseHook):
     """
-    Operator that reads an input hcl file and prompts user to fill in.
+    Hook that reads an input hcl file and prompts user to fill in.
 
     Typically this is used with a `variables.tf` file.
 
@@ -109,6 +109,6 @@ class TerraformVariablesOperator(BaseHook):
         answer = prompt([question])['tmp']
         if not isinstance(var_type, dict):
             if answer == {}:
-                raise EscapeOperatorException("Process has been cancelled by user.")
+                raise EscapeHookException("Process has been cancelled by user.")
         output.update({v: answer})
         return output

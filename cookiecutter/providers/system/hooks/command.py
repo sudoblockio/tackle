@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Operator plugin that inherits a base class and is made available through `type`."""
+"""Command hook."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -29,12 +29,12 @@ if os.name != 'nt':
 logger = logging.getLogger(__name__)
 
 
-class CommandOperator(BaseHook):
+class CommandHook(BaseHook):
     """
-    `command` operator for system calls.
+    `command` hook for system calls.
 
     Hides streaming output. To view streaming output of command use the `shell`
-    operator.
+    hook.
 
     :param command: The command to run on the host
     :return: String output of command
@@ -56,9 +56,9 @@ class CommandOperator(BaseHook):
         return output.decode("utf-8")
 
 
-class ShellOperator(BaseHook):
+class ShellHook(BaseHook):
     """
-    `shell` operator for system calls.
+    `shell` hook for system calls.
 
     Streams the output of the process.
 

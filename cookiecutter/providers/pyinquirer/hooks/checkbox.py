@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Operator plugin that inherits a base class and is made available through `type`."""
+"""Checkbox hook."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -13,9 +13,9 @@ from cookiecutter.models import BaseHook
 logger = logging.getLogger(__name__)
 
 
-class InquirerCheckboxOperator(BaseHook):
+class InquirerCheckboxHook(BaseHook):
     """
-    Operator for PyInquirer type prompts.
+    Hook for PyInquirer type prompts.
 
     Takes in three forms of `choices` inputs.
     1. list of string
@@ -60,7 +60,7 @@ class InquirerCheckboxOperator(BaseHook):
                 return answer
 
         elif choices_type == dict:
-            # This is the normal input to the operator ie
+            # This is the normal input to the Hook ie
             # choices = ['name': 'stuff', 'name': 'things']
             keys = list(list(i.keys())[0] for i in self.choices)
             num_keys = list(dict.fromkeys(keys))

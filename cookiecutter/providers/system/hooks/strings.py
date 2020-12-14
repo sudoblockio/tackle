@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Operator plugin that inherits a base class and is made available through `type`."""
+"""String hooks."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -12,9 +12,9 @@ from cookiecutter.models import BaseHook
 logger = logging.getLogger(__name__)
 
 
-class SplitOperator(BaseHook):
+class SplitHook(BaseHook):
     """
-    Operator for PyInquirer type prompts.
+    Hook  for PyInquirer type prompts.
 
     :param input: A list of string to split or just a string
     :param separator: String separator
@@ -37,9 +37,9 @@ class SplitOperator(BaseHook):
             return output
 
 
-class JoinOperator(BaseHook):
+class JoinHook(BaseHook):
     """
-    Operator for PyInquirer type prompts.
+    Hook  for PyInquirer type prompts.
 
     :param input: A list of string to join
     :param separator: String separator

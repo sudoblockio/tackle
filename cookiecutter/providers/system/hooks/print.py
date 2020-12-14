@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Operator plugin that inherits a base class and is made available through `type`."""
+"""Print hooks."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -13,9 +13,9 @@ from cookiecutter.models import BaseHook
 logger = logging.getLogger(__name__)
 
 
-class PrintOperator(BaseHook):
+class PrintHook(BaseHook):
     """
-    Operator for printing an input and returning the output.
+    Hook  for printing an input and returning the output.
 
     :param statement: The thing to print
     """
@@ -25,14 +25,16 @@ class PrintOperator(BaseHook):
     out: Union[Dict, List, str] = None
 
     def execute(self):
-        print(self.statement)
-        print(self.out)
+        if self.statement:
+            print(self.statement)
+        if self.out:
+            print(self.out)
         return self.statement or self.out
 
 
-class PprintOperator(BaseHook):
+class PprintHook(BaseHook):
     """
-    Operator for pretty printing an input and returning the output.
+    Hook  for pretty printing an input and returning the output.
 
     :param statement: The thing to print
     """
@@ -42,7 +44,8 @@ class PprintOperator(BaseHook):
     out: Union[Dict, List, str] = None
 
     def execute(self):
-
-        pprint(self.statement)
-        pprint(self.out)
+        if self.statement:
+            pprint(self.statement)
+        if self.out:
+            pprint(self.out)
         return self.statement or self.out

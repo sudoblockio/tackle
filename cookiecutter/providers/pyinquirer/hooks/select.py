@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 
-"""Operator plugin that inherits a base class and is made available through `type`."""
+"""Select hook."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
 import logging
 from PyInquirer import prompt
-from typing import Any
+from typing import Any, List, Union, Dict
 
 from cookiecutter.models import BaseHook
 
 logger = logging.getLogger(__name__)
 
 
-class InquirerListOperator(BaseHook):
+class InquirerListHook(BaseHook):
     """
-    Operator for PyInquirer 'list' type prompts.
+    Hook for PyInquirer 'list' type prompts.
 
     Takes in two forms of `choices` inputs.
     1. list of string
@@ -28,8 +28,6 @@ class InquirerListOperator(BaseHook):
     :param index: Boolean to return the index instead of the answer
     :return: String for answer
     """
-
-    from typing import List, Union, Dict
 
     type: str = 'select'
 

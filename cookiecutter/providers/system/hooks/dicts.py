@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Operator plugin that inherits a base class and is made available through `type`."""
+"""Dict hooks."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -13,9 +13,9 @@ from cookiecutter.utils import merge_configs
 logger = logging.getLogger(__name__)
 
 
-class DictUpdateOperator(BaseHook):
+class DictUpdateHook(BaseHook):
     """
-    Operator for updating dict objects with items.
+    Hook  for updating dict objects with items.
 
     :param src: The input dict to update
     :param input: A dict or list of dicts to update the input `src`
@@ -37,9 +37,9 @@ class DictUpdateOperator(BaseHook):
         return self.src
 
 
-class DictMergeOperator(BaseHook):
+class DictMergeHook(BaseHook):
     """
-    Operator for recursively merging dict objects with input maps.
+    Hook  for recursively merging dict objects with input maps.
 
     :param src: The input dict to update
     :param input: A dict or list of dicts to update the input `dict`
@@ -59,9 +59,9 @@ class DictMergeOperator(BaseHook):
             return merge_configs(self.src, self.input)
 
 
-class DictPopOperator(BaseHook):
+class DictPopHook(BaseHook):
     """
-    Operator for recursively merging dict objects with input maps.
+    Hook  for recursively merging dict objects with input maps.
 
     :param src: The input dict to update
     :param item: A list or string of items to remove from a dictionary or list
@@ -82,9 +82,10 @@ class DictPopOperator(BaseHook):
             self.src.pop(self.item)
             return self.src
 
-class DictKeysOperator(BaseHook):
+
+class DictKeysHook(BaseHook):
     """
-    Operator for returning the keys of a dict.
+    Hook  for returning the keys of a dict.
 
     :param src: The input dict or list of dicts return the keys for
     :return: List of keys or list of list of keys if input is list
@@ -102,4 +103,3 @@ class DictKeysOperator(BaseHook):
             return keys
         else:
             return self.src.keys()
-

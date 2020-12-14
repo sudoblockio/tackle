@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""GCP Operators."""
+"""GCP hooks."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -12,8 +12,8 @@ from cookiecutter.models import BaseHook
 logger = logging.getLogger(__name__)
 
 
-class GcpRegionsOperator(BaseHook):
-    """Operator retrieving GCP regions.
+class GcpRegionsHook(BaseHook):
+    """Hook retrieving GCP regions.
 
     :param gcp_project: String for project name in GCP to use.
     :return: List of regions
@@ -33,9 +33,9 @@ class GcpRegionsOperator(BaseHook):
         return regions
 
 
-class GcpAzsOperator(BaseHook):
+class GcpAzsHook(BaseHook):
     """
-    Operator for retrieving the availability zones in a given region.
+    Hook for retrieving the availability zones in a given region.
 
     :param gcp_project: String for project to deploy into
     :param region: A region to search in
@@ -82,9 +82,9 @@ class GcpAzsOperator(BaseHook):
         return availability_zones
 
 
-class GcpInstanceTypesOperator(BaseHook):
+class GcpInstanceTypesHook(BaseHook):
     """
-    Operator retrieving the available instance types in a zone.
+    Hook retrieving the available instance types in a zone.
 
     :param region: [Required] The zone to determine the instances in
     :param instance_families: A list of instance families, ie ['n1', 'e2']

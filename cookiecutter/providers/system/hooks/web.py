@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Operator plugin that inherits a base class and is made available through `type`."""
+"""Web hooks."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -13,9 +13,9 @@ from cookiecutter.models import BaseHook
 logger = logging.getLogger(__name__)
 
 
-class WebBrowserOperator(BaseHook):
+class WebBrowserHook(BaseHook):
     """
-    Operator for registering a variable based on an input. Useful with rendering.
+    Hook  for registering a variable based on an input. Useful with rendering.
 
     :param url: String url to open in browser.
     :return: None

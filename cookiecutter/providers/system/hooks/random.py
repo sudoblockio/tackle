@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Operator plugin that inherits a base class and is made available through `type`."""
+"""Random number / string hooks."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -14,9 +14,9 @@ from cookiecutter.models import BaseHook
 logger = logging.getLogger(__name__)
 
 
-class RandomHexOperator(BaseHook):
+class RandomHexHook(BaseHook):
     """
-    Operator for `random_hex`. Lists the contents of a directory.
+    Hook  for `random_hex`. Lists the contents of a directory.
 
     :param length: Number for number of digits - default 8
     :return: String
@@ -31,9 +31,9 @@ class RandomHexOperator(BaseHook):
         )
 
 
-class RandomStringOperator(BaseHook):
+class RandomStringHook(BaseHook):
     """
-    Operator for `random_string`. Lists the contents of a directory.
+    Hook  for `random_string`. Lists the contents of a directory.
 
     :param case: String, either upper or lower, defaults to lower
     :param length: Number for number of digits - default 8

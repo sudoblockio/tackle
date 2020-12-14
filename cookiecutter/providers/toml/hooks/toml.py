@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Operator plugin that inherits a base class and is made available through `type`."""
+"""Hook plugin that inherits a base class and is made available through `type`."""
 from __future__ import print_function
 from __future__ import unicode_literals
 
@@ -15,9 +15,9 @@ from cookiecutter.utils import merge_configs
 logger = logging.getLogger(__name__)
 
 
-class TomlOperator(BaseHook):
+class TomlHook(BaseHook):
     """
-    Operator for toml.
+    Hook for toml.
 
     :param path: The file path to put read or write to
     :param contents: Supplied dictionary or list to write.
@@ -106,7 +106,7 @@ class TomlOperator(BaseHook):
 
         if self.append_items:
             if isinstance(self.append_items, str) or isinstance(
-                    self.append_items, dict
+                self.append_items, dict
             ):
                 self._append_each_item(self.append_items)
             elif isinstance(self.append_items, list):

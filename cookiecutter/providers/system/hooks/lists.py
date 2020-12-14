@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Operator plugin that inherits a base class and is made available through `type`."""
+"""Lists hook."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -12,9 +12,9 @@ from cookiecutter.models import BaseHook
 logger = logging.getLogger(__name__)
 
 
-class ListAppendOperator(BaseHook):
+class ListAppendHook(BaseHook):
     """
-    Operator for updating dict objects with items.
+    Hook  for updating dict objects with items.
 
     :param input: A list append to
     :param item: A list or string to append to `input` list

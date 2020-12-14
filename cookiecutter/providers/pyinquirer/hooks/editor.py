@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Operator plugin that inherits a base class and is made available through `type`."""
+"""."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -13,9 +13,9 @@ from cookiecutter.models import BaseHook
 logger = logging.getLogger(__name__)
 
 
-class InquirerEditorOperator(BaseHook):
+class InquirerEditorHook(BaseHook):
     """
-    Operator for PyInquirer `editor` type prompts.
+    Hook for PyInquirer `editor` type prompts.
 
     https://github.com/CITGuru/PyInquirer/blob/master/examples/expand.py
 

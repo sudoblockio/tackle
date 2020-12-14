@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Operator plugin that inherits a base class and is made available through `type`."""
+"""YAML hook."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -15,9 +15,9 @@ from cookiecutter.utils import merge_configs
 logger = logging.getLogger(__name__)
 
 
-class YamlOperator(BaseHook):
+class YamlHook(BaseHook):
     """
-    Operator for yaml.
+    Hook  for yaml.
 
     :param path: The file path to put read or write to
     :param contents: Supplied dictionary or list to write.

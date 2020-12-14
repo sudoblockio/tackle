@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Operator plugin that inherits a base class and is made available through `type`."""
+"""Block hook."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -13,11 +13,11 @@ import cookiecutter as cc
 logger = logging.getLogger(__name__)
 
 
-class BlockOperator(BaseHook):
+class BlockHook(BaseHook):
     """
-    Operator for blocks of operators.
+    Hook  for blocks of hooks.
 
-    This is a special case where the operators input variables are not rendered
+    This is a special case where the hooks input variables are not rendered
     until it is later executed.
 
     :param items: Map of inputs

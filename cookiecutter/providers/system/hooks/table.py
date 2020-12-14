@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Operator plugin that inherits a base class and is made available through `type`."""
+"""Table hook."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -14,9 +14,9 @@ from cookiecutter.models import BaseHook
 logger = logging.getLogger(__name__)
 
 
-class TableOperator(BaseHook):
+class TableHook(BaseHook):
     """
-    Operator for creating tables with rich - github.com/willmcgugan/rich.
+    Hook  for creating tables with rich - github.com/willmcgugan/rich.
 
     :param column_names: List of column names
     :param contents: List of lists to put into columns / rows

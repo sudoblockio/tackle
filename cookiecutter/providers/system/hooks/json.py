@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Operator plugin that inherits a base class and is made available through `type`."""
+"""JSON hooks."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -13,11 +13,11 @@ from cookiecutter.models import BaseHook
 logger = logging.getLogger(__name__)
 
 
-class JsonOperator(BaseHook):
+class JsonHook(BaseHook):
     """
-    Operator for json.
+    Hook  for json.
 
-    If no `contents` is provided, the operator reads from path. Otherwise it writes
+    If no `contents` is provided, the hook reads from path. Otherwise it writes
     the `contents`.
 
     :param contents: A dict to write

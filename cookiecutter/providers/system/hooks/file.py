@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Operator plugin that inherits a base class and is made available through `type`."""
+"""File hooks."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -26,9 +26,9 @@ def create_directory_tree(src, dst):
         raise NotImplementedError
 
 
-class CopyOperator(BaseHook):
+class CopyHook(BaseHook):
     """
-    Operator for updating dict objects with items.
+    Hook  for updating dict objects with items.
 
     :param src: String or list of sources, either a directories or files
     :param dst: String for path to copy to
@@ -71,9 +71,9 @@ class CopyOperator(BaseHook):
             shutil.copyfile(source, dest)
 
 
-class MoveOperator(BaseHook):
+class MoveHook(BaseHook):
     """
-    Operator for updating dict objects with items.
+    Hook  for updating dict objects with items.
 
     :param src: String or list of sources, either directories or files
     :param dst: String for path to copy to

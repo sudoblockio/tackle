@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Operator plugin that inherits a base class and is made available through `type`."""
+"""List directory hook."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -13,9 +13,9 @@ from cookiecutter.models import BaseHook
 logger = logging.getLogger(__name__)
 
 
-class ListdirOperator(BaseHook):
+class ListdirHook(BaseHook):
     """
-    Operator for `listdir`. Lists the contents of a directory.
+    Hook  for `listdir`. Lists the contents of a directory.
 
     :param path: String or list to directories to list
     :param sort: Boolean to sort the output

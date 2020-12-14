@@ -1,6 +1,6 @@
 # # -*- coding: utf-8 -*-
 
-"""Operator plugin that inherits a base class and is made available through `type`."""
+"""Path hooks."""
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -13,8 +13,8 @@ from cookiecutter.models import BaseHook
 logger = logging.getLogger(__name__)
 
 
-class PathExistsListOperator(BaseHook):
-    """Operator for os package 'path_exists' operator.
+class PathExistsListHook(BaseHook):
+    """Hook  for os package 'path_exists' hook.
 
     :param path: The path to file or directory
     :return: boolean:
@@ -27,9 +27,9 @@ class PathExistsListOperator(BaseHook):
         return os.path.exists(self.path)
 
 
-class PathIsdirListOperator(BaseHook):
+class PathIsdirListHook(BaseHook):
     """
-    Operator for os package 'path_exists' operator.
+    Hook  for os package 'path_exists' hook.
 
     :param path: The path to file or directory
     :return: boolean:
@@ -43,9 +43,9 @@ class PathIsdirListOperator(BaseHook):
         return os.path.isdir(self.path)
 
 
-class PathRelativeOperator(BaseHook):
+class PathRelativeHook(BaseHook):
     """
-    Operator to find the absolute path to a file or directory in parent directories.
+    Hook  to find the absolute path to a file or directory in parent directories.
 
     :param target: The name of the file to find the absolute path to
     :param starting_dir: The starting directory to search from. Defaults to current
