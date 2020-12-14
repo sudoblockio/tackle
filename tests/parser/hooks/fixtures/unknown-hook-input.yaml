@@ -1,0 +1,4 @@
+
+print:
+  type: print
+  foo: bar

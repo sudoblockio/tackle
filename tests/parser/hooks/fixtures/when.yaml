@@ -1,6 +1,38 @@
 _true: true
 _false: false
 
+blah:
+  type: stat
+  input: blah
+  when: "{{ _true }}"
+
+things: stuff
+
+foo:
+  type: stat
+  input: blah
+  when: "{{ things != 'stuff' }}"
+
+bar:
+  type: stat
+  input: blah
+  when: "{{ things == 'stuff' }}"
+
+bing:
+  type: stat
+  input: blah
+  confirm: "{{ _true }}"
+  when: "{{ things == 'stuff' }}"
+
+bings:
+  type: stat
+  input: blah
+  confirm: "{{ _true }}"
+  when:
+    - "{{ things == 'stuff' }}"
+    - "{{ _true }}"
+
+
 is_true:
   type: stat
   input: this

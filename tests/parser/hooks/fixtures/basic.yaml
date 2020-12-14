@@ -1,0 +1,15 @@
+#trues: true
+
+blah:
+  type: stat
+  input:
+    - blah
+    - foo
+    - bar
+    - things
+
+things:
+  type: stat
+  input: "{{ item }}"
+  loop: "{{ blah }}"
+  

@@ -1,0 +1,9 @@
+
+print:
+  type: random_hex
+  length:
+    - lists
+    - are
+    - not
+    - accepted
+    - inputs

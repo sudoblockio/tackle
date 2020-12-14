@@ -1,12 +1,12 @@
 
-a_list_of_strings:
+list_str:
   type: stat
   input:
     - cats
     - dogs
     - chickens
 
-a_list_of_dicts:
+list_dict:
   type: stat
   input:
     - cats: scratch
@@ -19,18 +19,18 @@ a_list_of_dicts:
 a_list_of_strings_tackle:
   type: tackle
   context_file: list_of_strings.yaml
-  loop: "{{ a_list_of_strings }}"
-  existing_context: "{{ tackle }}"
-  no_input: true
-  chdir: tackles
-
-a_list_of_dicts_tackle:
-  type: tackle
-  context_file: list_of_dicts.yaml
-  loop: "{{ a_list_of_dicts }}"
-  existing_context: "{{ loops }}"
+  loop: "{{ list_str }}"
+  existing_context: "{{ loops }}"  ## This is no longer needed
   no_input: true
   chdir: loops
+
+#list_dict_tackle:
+#  type: tackle
+#  context_file: list_of_dicts.yaml
+#  loop: "{{ list_dict }}"
+#  existing_context: "{{ loops }}"
+#  no_input: true
+#  chdir: loops
 
 after:
   type: pprint
