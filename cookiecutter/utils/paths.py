@@ -8,6 +8,16 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+def listdir_absolute(directory, skip_paths=None):
+    """Return and iterator of the absolute path."""
+    if skip_paths is None:
+        skip_paths = []
+    for dirpath, _, filenames in os.walk(directory):
+        for f in filenames:
+            if f not in skip_paths:
+                yield os.path.abspath(os.path.join(dirpath, f))
+
+
 def force_delete(func, path, exc_info):
     """Error handler for `shutil.rmtree()` equivalent to `rm -rf`.
 

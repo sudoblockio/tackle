@@ -72,9 +72,6 @@ class Mode(BaseModel):
     accept_hooks: bool = True
     output_dir: str = '.'
 
-    # class Config:
-    #     allow_mutation = False
-
 
 class Source(BaseModel):
     """Source attributes model."""
@@ -143,13 +140,6 @@ class Context(BaseModel):
 
 class BaseHook(Context, Mode):
     """Base hook mixin class."""
-
-    #     context: Dict = None
-    #     context_key: str = None
-    #     no_input: bool
-    #     cc_dict: Dict = None
-    #     env: Any = None
-    #     key: str = None
 
     chdir: Optional[str] = None
     post_gen_operator: Optional[bool] = False
