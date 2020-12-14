@@ -1,0 +1,11 @@
+__providers:
+  - test-provider
+  - test-provider-2
+
+stuff:
+  type: thing
+  stuff: bar
+
+things:
+  type: stuff
+  thing: bar

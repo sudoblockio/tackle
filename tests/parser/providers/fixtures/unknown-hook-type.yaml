@@ -1,0 +1,4 @@
+
+print:
+  type: foobar
+  foo: bar
