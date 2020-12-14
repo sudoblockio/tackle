@@ -90,7 +90,7 @@ def cookiecutter(
     update_source(source=source, settings=settings, mode=mode)
 
     context = Context(
-        context_file=context_file,
+        # context_file=context_file,
         default_context=settings.default_context,
         overwrite_inputs=overwrite_inputs,
         override_inputs=override_inputs,
@@ -99,7 +99,13 @@ def cookiecutter(
         tackle_gen=source.tackle_gen,
         calling_directory=calling_directory,
     )
-    update_context(c=context, s=source, m=mode, settings=settings, providers=providers)
+    update_context(
+        context=context,
+        source=source,
+        mode=mode,
+        settings=settings,
+        providers=providers,
+    )
 
     output = Output(
         output_dir=output_dir,
