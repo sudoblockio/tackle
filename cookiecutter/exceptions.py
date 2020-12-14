@@ -187,3 +187,19 @@ class EscapeOperatorException(CookiecutterException):
     Raised when the specified cookiecutter repository isn't a valid
     Zip archive.
     """
+
+
+class HookCallException(CookiecutterException):
+    """
+    Exception for when a unknown field in a hook.
+
+    Raised when field has been provided not declared in the hook type.
+    """
+
+
+class UnknownHookTypeException(CookiecutterException):
+    """
+    Exception for unknown hook type.
+
+    Raised when a hook type is not available from the providers.
+    """
