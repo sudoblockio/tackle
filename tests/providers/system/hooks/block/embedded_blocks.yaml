@@ -16,7 +16,7 @@ blocker:
 
     things:
       type: print
-      statement: "{{ embedded_blocks.stuff }}"
+      statement: "{{ stuff }}"
 
     friend: dog
 
@@ -26,13 +26,8 @@ blocker:
         my_dog:
           type: stat
           input: Penny
-          when: "{{ embedded_blocks.friend == 'dog' }}"
+          when: "{{ friend == 'dog' }}"
 
     foo:
       type: print
       statement: bar
-
-#yaml:
-#  type: yaml
-#  contents: "{{ nuki }}"
-#  path: output.yaml

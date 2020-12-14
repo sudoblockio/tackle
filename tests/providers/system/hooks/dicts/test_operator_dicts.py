@@ -11,8 +11,8 @@ def _clean_outputs():
         os.remove(f)
 
 
-def test_operator_dicts(monkeypatch, tmpdir):
-    """Verify the operator call works successfully."""
+def test_provider_system_hook_dicts(change_dir):
+    """Verify the hook call works properly."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
     _clean_outputs()
     # output = cookiecutter(

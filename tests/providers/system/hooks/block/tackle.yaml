@@ -9,9 +9,6 @@ blocker:
       statement: here
     things:
       type: print
-      statement: "{{ nuki.stuff }}"
-      when: "{{ nuki.stuff == 'here' }}"
+      statement: "{{ stuff }}"
+      when: "{{ stuff == 'here' }}"
 
-#yaml:
-#  type: pprint
-#  statement: "{{ nuki }}"

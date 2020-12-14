@@ -1,0 +1,9 @@
+{
+  "stuff": "things",
+  "foo": "bar",
+  "blah": "stuff",
+  "bing": "bar",
+  "bing2": "bar",
+  "_template": "/home/rob/PycharmProjects/terrace/nukikata/tests/hooks/fixtures/initial",
+  "_output_dir": "/home/rob/PycharmProjects/terrace/nukikata/tests/hooks/fixtures/initial"
+}

@@ -16,8 +16,8 @@ def clean_files():
             shutil.rmtree(f)
 
 
-def test_operator_file(monkeypatch, tmpdir):
-    """Verify the operator call works successfully."""
+def test_provider_system_hook_file(change_dir):
+    """Verify the hook call works properly."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
     clean_files()
 

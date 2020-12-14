@@ -1,8 +1,2 @@
-stuff: things
-
 azs:
   type: aws_regions
-
-print:
-  type: print
-  statement: "{{ nuki.azs }}"

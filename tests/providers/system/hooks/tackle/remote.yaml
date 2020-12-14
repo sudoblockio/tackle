@@ -1,5 +1,5 @@
 shell:
-  type: nukikata
-  template: https://github.com/insight-w3f/terraform-polkadot-aws-network
+  type: tackle
+  template: https://github.com/robcxyz/tackle-remote-fixture
   checkout: nuki-init
-#  chdir: ~/.cookiecutters/nukikata-installs
+

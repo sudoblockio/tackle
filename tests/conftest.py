@@ -8,7 +8,6 @@ import pytest
 
 import cookiecutter.utils.paths
 
-
 USER_CONFIG = """
 cookiecutters_dir: "{cookiecutters_dir}"
 replay_dir: "{replay_dir}"
@@ -211,6 +210,12 @@ def change_dir(monkeypatch):
 
 
 @pytest.fixture(scope='function')
+def change_dir_fixture(monkeypatch):
+    """Change to the current directory."""
+    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.curdir), 'fixtures'))
+
+
+@pytest.fixture(scope='function')
 def load_yaml(request):
     """Return dict of yaml input(s) either str or tuple."""
     if isinstance(request.param, str):
@@ -230,3 +235,19 @@ def inputs(request):
     if isinstance(request.param, tuple):
         for i in request.param:
             yield i
+
+
+from click.testing import CliRunner
+from cookiecutter.__main__ import main
+
+
+@pytest.fixture(scope='session')
+def cli_runner():
+    """Fixture that returns a helper function to run the cookiecutter cli."""
+    runner = CliRunner()
+
+    def cli_main(*cli_args, **cli_kwargs):
+        """Run cookiecutter cli main with the given args."""
+        return runner.invoke(main, cli_args, **cli_kwargs)
+
+    return cli_main

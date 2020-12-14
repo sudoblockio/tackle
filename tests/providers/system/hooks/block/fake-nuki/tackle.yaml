@@ -8,7 +8,7 @@ blocker:
       statement: here
     things:
       type: print
-      statement: "{{ nuki.stuff }}"
+      statement: "{{ stuff }}"
 
 #yaml:
 #  type: pprint

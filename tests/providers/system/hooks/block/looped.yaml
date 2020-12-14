@@ -6,25 +6,25 @@ alist:
 
 blocker:
   type: block
-  loop: "{{ looped.alist }}"
+  loop: "{{ alist }}"
   items:
     nuki1:
-      type: nukikata
+      type: tackle
       template: .
-      chdir: fake-nuki
+      chdir: fake-tackle
 
     print:
       type: print
-      statement: "{{ looped.nuki1 }}"
+      statement: "{{ nuki1 }}"
 
 blocker2:
   type: block
-  loop: "{{ looped.alist }}"
+  loop: "{{ alist }}"
   items:
     thing: false
     print:
       type: print
-      when: "{{ looped.thing }}"
+      when: "{{ thing }}"
       statement: this
 
 output:

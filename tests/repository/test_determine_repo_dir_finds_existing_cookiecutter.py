@@ -25,22 +25,24 @@ def cloned_cookiecutter_path(user_config_data, template):
     return cloned_template_path
 
 
-def test_should_find_existing_cookiecutter(
-    template, user_config_data, cloned_cookiecutter_path
+def test_should_return_existing_cookiecutter(
+    template, cloned_cookiecutter_path, mode, source, settings
 ):
     """
     Should find folder created by `cloned_cookiecutter_path` and return it.
 
     This folder is considered like previously cloned project directory.
     """
-    project_dir, context_file, cleanup = repository.determine_repo_dir(
-        template=template,
-        abbreviations={},
-        clone_to_dir=user_config_data['cookiecutters_dir'],
-        checkout=None,
-        no_input=True,
+    mode.no_input = True
+
+    project_dir, context_file, cleanup = repository.update_source(
+        source, settings, mode
     )
 
     assert cloned_cookiecutter_path == project_dir
     assert context_file == 'cookiecutter.json'
     assert not cleanup
+
+
+def test_sturf(context):
+    print(context)

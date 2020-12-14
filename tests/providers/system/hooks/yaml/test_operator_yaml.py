@@ -14,8 +14,8 @@ def _clean_outputs():
         os.remove(f)
 
 
-def test_operator_yaml(monkeypatch, tmpdir):
-    """Verify the operator call works successfully."""
+def test_provider_system_hook_yaml(change_dir):
+    """Verify the hook call works properly."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
     _clean_outputs()
 
@@ -62,8 +62,8 @@ def test_operator_yaml(monkeypatch, tmpdir):
     assert 'stuff' not in output['things']
 
 
-def test_operator_yaml_update_in_place(monkeypatch, tmpdir):
-    """Verify the operator call works successfully."""
+def test_provider_system_hook_yaml_update_in_place(change_dir):
+    """Verify the hook call works properly."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
     _clean_outputs()
 
@@ -78,8 +78,8 @@ def test_operator_yaml_update_in_place(monkeypatch, tmpdir):
     _clean_outputs()
 
 
-def test_operator_yaml_merge_in_place(monkeypatch, tmpdir):
-    """Verify the operator call works successfully."""
+def test_provider_system_hook_yaml_merge_in_place(change_dir):
+    """Verify the hook call works properly."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
     _clean_outputs()
 
@@ -94,8 +94,8 @@ def test_operator_yaml_merge_in_place(monkeypatch, tmpdir):
     _clean_outputs()
 
 
-def test_operator_yaml_append(monkeypatch, tmpdir):
-    """Verify the operator call works successfully."""
+def test_provider_system_hook_yaml_append(change_dir):
+    """Verify the hook call works properly."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
 
     _clean_outputs()

@@ -3,9 +3,9 @@
 """Tests dict input objects for `cookiecutter.prompt` module."""
 
 # import pytest
-import cookiecutter.operator
-from cookiecutter import prompt
-from cookiecutter.models.mode import Mode
+import cookiecutter.parser.hooks
+from cookiecutter.parser import prompts
+from cookiecutter.models import Mode
 
 # Only tests for the basic logic of the parsing of the operator calls
 

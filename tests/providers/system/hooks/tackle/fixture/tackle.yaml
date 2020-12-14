@@ -1,7 +1,7 @@
 foo:
   type: stat
   input: bar
-  when: "{{ foo is defined }}"
+  when: "{{ foo is not defined }}"
 
 read_stuff:
   type: yaml

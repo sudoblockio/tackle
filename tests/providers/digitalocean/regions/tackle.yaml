@@ -5,4 +5,4 @@ azs:
 
 print:
   type: print
-  statement: "{{ nuki.azs }}"
+  statement: "{{ azs }}"

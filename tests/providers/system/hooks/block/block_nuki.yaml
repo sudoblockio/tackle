@@ -1,5 +1,3 @@
-stuff: things
-
 nuki_block:
   type: block
   merge: true
@@ -12,14 +10,14 @@ nuki_block:
     friend: dog
 
     beer:
-      type: nukikata
+      type: tackle
       template: .
       chdir: fake-nuki
       existing_context: "{{ block_nuki }}"
 
     things:
       type: print
-      statement: "{{ block_nuki.stuff }}"
+      statement: "{{ stuff }}"
 
 
     test_block:
@@ -28,13 +26,8 @@ nuki_block:
         my_dog:
           type: stat
           input: Penny
-          when: "{{ block_nuki.friend == 'dog' }}"
+          when: "{{ friend == 'dog' }}"
 
     foo:
       type: print
       statement: bar
-
-#yaml:
-#  type: yaml
-#  contents: "{{ nuki }}"
-#  path: output.yaml

@@ -1,7 +1,7 @@
 """Collection of tests around common path and url shorthands."""
 import pytest
 
-from cookiecutter.config import BUILTIN_ABBREVIATIONS
+from cookiecutter.models import BUILTIN_ABBREVIATIONS
 from cookiecutter.repository import expand_abbreviations
 
 

@@ -46,3 +46,8 @@ def test_parser_record_str_input_and_different_input(tmpdir, change_dir, clean_o
 
     assert 'stuff' in o2
     assert 'stuff' in record_output
+
+
+def test_parser_record_cli(tmpdir, change_dir, cli_runner):
+    result = cli_runner('.', '--no-input')
+    print()

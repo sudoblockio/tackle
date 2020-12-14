@@ -4,11 +4,11 @@ from collections import OrderedDict
 
 import pytest
 
-import cookiecutter.prompt
+import cookiecutter.parser.prompts
 import cookiecutter.render
-from cookiecutter import prompt, exceptions
+from cookiecutter import exceptions
 from cookiecutter.render import environment
-from cookiecutter.models.mode import Mode
+from cookiecutter.models import Mode
 
 no_input_true = Mode(no_input=True)
 no_input_false = Mode(no_input=False)

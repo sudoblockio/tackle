@@ -12,4 +12,3 @@ things:
   type: stat
   input: "{{ item }}"
   loop: "{{ blah }}"
-  

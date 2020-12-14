@@ -6,9 +6,8 @@ import os
 from cookiecutter.main import cookiecutter
 
 
-def test_operator_jinja(monkeypatch, tmpdir):
-    """Verify the operator call works successfully."""
-    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
+def test_provider_system_hook_jinja(change_dir):
+    """Verify the hook call works properly."""
     if os.path.exists('things.py'):
         os.remove('things.py')
 
