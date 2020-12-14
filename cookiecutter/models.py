@@ -2,7 +2,8 @@
 from collections import OrderedDict
 import os
 from enum import Enum
-from pydantic import BaseModel, SecretStr, BaseSettings
+
+from pydantic import BaseModel, SecretStr, BaseSettings, Extra
 from typing import Dict, Any, Union, Type, List, Optional
 
 from cookiecutter.render.environment import StrictEnvironment
@@ -125,14 +126,13 @@ class Context(BaseModel):
     output_dict: OrderedDict = None
 
     existing_context: Dict = None
-    overwrite_inputs: Dict = {}
+    overwrite_inputs: Dict = None
     override_inputs: Dict = None
 
     hook_dict: OrderedDict = None
     post_gen_hooks: List[Any] = []
 
     env: Type[StrictEnvironment] = None
-    # env: StrictEnvironment = None
 
     calling_directory: str = None
     tackle_gen: str = None
@@ -157,6 +157,7 @@ class BaseHook(Context, Mode):
 
     class Config:
         arbitrary_types_allowed = True
+        extra = Extra.forbid
 
     def execute(self) -> Any:
         """Abstract method."""
