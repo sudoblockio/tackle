@@ -12,6 +12,7 @@ from cookiecutter.render.environment import StrictEnvironment
 from cookiecutter.exceptions import UndefinedVariableInTemplate
 from cookiecutter.parser.prompts import prompt_list, prompt_str, read_user_dict
 from cookiecutter.parser.hooks import parse_hook
+from cookiecutter.parser.providers import get_providers
 
 from typing import TYPE_CHECKING
 
@@ -21,7 +22,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def parse_context(c: 'Context', m: 'Mode', s: 'Source'):
+def parse_context(context: 'Context', mode: 'Mode', source: 'Source'):
     """Parse the context and iterate over values.
 
     :param dict context: Source for field names and sample values.
@@ -31,55 +32,60 @@ def parse_context(c: 'Context', m: 'Mode', s: 'Source'):
     :param existing_context: A dictionary of values to use during rendering.
     :return: cc_dict
     """
-    for key, raw in c.input_dict[c.context_key].items():
-        c.key = key
-        # c.raw = raw
-        if m.rerun and c.key in c.override_inputs:
+    for key, raw in context.input_dict[context.context_key].items():
+        context.key = key
+        # context.raw = raw
+        if mode.rerun and context.key in context.override_inputs:
             # If there is a rerun dictionary then insert it in output and proceed.
-            c.output_dict[key] = c.override_inputs[key]
+            context.output_dict[key] = context.override_inputs[key]
             continue
         if key.startswith(u'_') and not key.startswith('__'):
-            c.output_dict[key] = raw
+            context.output_dict[key] = raw
             continue
         elif key.startswith('__'):
-            c.output_dict[key] = render_variable(c, raw)
+            context.output_dict[key] = render_variable(context, raw)
             continue
 
-        if key in c.overwrite_inputs:
-            c.output_dict[key] = c.overwrite_inputs[key]
+        if key in context.overwrite_inputs:
+            context.output_dict[key] = context.overwrite_inputs[key]
             continue
 
         try:
+            if isinstance(raw, bool):
+                # Simply set the variable - perhaps later make this a choice
+                context.output_dict[key] = raw
             if isinstance(raw, list):
                 # We are dealing with a choice variable
-                c.output_dict[key] = prompt_list(c, m, raw)
+                context.output_dict[key] = prompt_list(context, mode, raw)
             elif isinstance(raw, str):
                 # We are dealing with a regular variable
-                c.output_dict[key] = prompt_str(c, m, raw)
+                context.output_dict[key] = prompt_str(context, mode, raw)
 
             elif isinstance(raw, dict):
                 # dict parsing logic
                 if 'type' not in raw:
-                    val = render_variable(c, raw)
-                    if not m.no_input:
+                    val = render_variable(context, raw)
+                    if not mode.no_input:
                         val = read_user_dict(key, val)
-                    c.output_dict[key] = val
+                    context.output_dict[key] = val
                 else:
                     # Main entrypoint into hook parsing logic
-                    parse_hook(c, m, s)
+                    parse_hook(context, mode, source)
 
         except UndefinedError as err:
-            if m.record or m.rerun:
+            if mode.record or mode.rerun:
                 # Dump the output context
                 pass
 
             msg = "Unable to render variable '{}'".format(key)
-            raise UndefinedVariableInTemplate(msg, err, c.input_dict)
+            raise UndefinedVariableInTemplate(msg, err, context.input_dict)
 
-    return c
+    return context
 
 
-def prep_context(c: 'Context', m: 'Mode', s: 'Source', settings: 'Settings'):
+def prep_context(
+    context: 'Context', mode: 'Mode', source: 'Source', settings: 'Settings'
+):
     """
     Prompt user to enter values.
 
@@ -90,57 +96,56 @@ def prep_context(c: 'Context', m: 'Mode', s: 'Source', settings: 'Settings'):
     :param context_key: The key to insert all the outputs under in the context dict.
     :param existing_context: A dictionary of values to use during rendering.
     """
-    c.input_dict = OrderedDict([])
-    obj = read_config_file(s.context_file)
+    context.input_dict = OrderedDict([])
+    obj = read_config_file(source.context_file)
 
     # Add the Python object to the context dictionary
-    if not c.context_key:
-        file_name = os.path.split(c.context_file)[1]
+    if not context.context_key:
+        file_name = os.path.split(source.context_file)[1]
         file_stem = file_name.split('.')[0]
-        c.input_dict[file_stem] = obj
+        context.input_dict[file_stem] = obj
     else:
-        c.input_dict[c.context_key] = obj
+        context.input_dict[context.context_key] = obj
 
     # Overwrite context variable defaults with the default context from the
     # user's global config, if available
     if settings.default_context:
         apply_overwrites_to_inputs(obj, settings.default_context)
 
-    if c.overwrite_inputs:
-        apply_overwrites_to_inputs(obj, c.overwrite_inputs)
+    if context.overwrite_inputs:
+        apply_overwrites_to_inputs(obj, context.overwrite_inputs)
     else:
-        c.overwrite_inputs = OrderedDict()
+        context.overwrite_inputs = OrderedDict()
 
-    if not c.override_inputs:
-        c.override_inputs = OrderedDict()
+    if not context.override_inputs:
+        context.override_inputs = OrderedDict()
 
     # include template dir or url in the context dict
-    c.input_dict[c.context_key]['_template'] = s.repo_dir
+    context.input_dict[context.context_key]['_template'] = source.repo_dir
 
-    logger.debug('Context generated is %s', c.input_dict)
+    logger.debug('Context generated is %s', context.input_dict)
 
-    if not c.existing_context:
-        c.output_dict = OrderedDict([])
+    if not context.existing_context:
+        context.output_dict = OrderedDict([])
     else:
-        c.output_dict = OrderedDict(c.existing_context)
+        context.output_dict = OrderedDict(context.existing_context)
 
-    c.env = StrictEnvironment(context=c.input_dict)
+    context.env = StrictEnvironment(context=context.input_dict)
 
     # Entrypoint into
-    # from cookiecutter.parser.parse_provider import get_providers
-    # c.providers = get_providers(c)
+    get_providers(context, source, settings, mode)
 
-    if not c.context_key:
+    if not context.context_key:
         # Set as first key in context
-        c.context_key = next(iter(c.input_dict))
+        context.context_key = next(iter(context.input_dict))
 
-    if '_template' in c.input_dict[c.context_key]:
+    if '_template' in context.input_dict[context.context_key]:
         # Normal case where '_template' is set in the context in `main`
-        with work_in(c.input_dict[c.context_key]['_template']):
-            return parse_context(c, m, s)
+        with work_in(context.input_dict[context.context_key]['_template']):
+            return parse_context(context, mode, source)
     else:
         # Case where prompt is being called directly as is the case with an operator
-        return parse_context(c, m, s)
+        return parse_context(context, mode, source)
 
 
 if __name__ == '__main__':
