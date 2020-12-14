@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-"""cookiecutter distutils configuration."""
+"""Tackle distutils configuration."""
 import sys
 import os
 import re
 from collections import defaultdict
-from cookiecutter import __version__
+from tackle import __version__
 
 from setuptools import setup, find_packages
 
@@ -23,7 +23,7 @@ DEV_REQUIREMENTS = [
 
 def get_provider_requirements():
     """Get the provider requirements from each provider to allow extra requirements."""
-    providers_dir = os.path.join(os.path.dirname(__file__), 'cookiecutter', 'providers')
+    providers_dir = os.path.join(os.path.dirname(__file__), 'tackle', 'providers')
     providers = os.listdir(providers_dir)
     provider_requirements = defaultdict(set)
     for p in providers:
@@ -84,10 +84,9 @@ setup(
     author='Rob Cannon',
     author_email='robc.io.opensource@gmail.com',
     url='https://github.com/insight-infrastructure/tackle-box',
-    # packages=['cookiecutter'],
     packages=find_packages(exclude=['tests*', 'logo*', 'docs*', '.github*']),
-    package_dir={'cookiecutter': 'cookiecutter'},
-    entry_points={'console_scripts': ['tackle = cookiecutter.__main__:main']},
+    package_dir={'tackle': 'tackle'},
+    entry_points={'console_scripts': ['tackle = tackle.__main__:main']},
     extras_require=get_provider_requirements(),
     include_package_data=True,
     python_requires='>=3.6',
@@ -112,6 +111,7 @@ setup(
     ],
     keywords=[
         "cookiecutter",
+        "tackle",
         "Python",
         "projects",
         "project templates",

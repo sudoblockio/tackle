@@ -9,9 +9,9 @@ from pathlib import Path
 import pytest
 from binaryornot.check import is_binary
 
-import cookiecutter.utils.paths
-from cookiecutter import exceptions
-from cookiecutter import generate
+import tackle.utils.paths
+from tackle import exceptions
+from tackle import generate
 
 
 @pytest.mark.parametrize('invalid_dirname', ['', '{foo}', '{{foo', 'bar}}'])
@@ -26,15 +26,15 @@ def remove_additional_folders():
     """Remove some special folders which are created by the tests."""
     yield
     if os.path.exists('inputpizzä'):
-        cookiecutter.utils.paths.rmtree('inputpizzä')
+        tackle.utils.paths.rmtree('inputpizzä')
     if os.path.exists('inputgreen'):
-        cookiecutter.utils.paths.rmtree('inputgreen')
+        tackle.utils.paths.rmtree('inputgreen')
     if os.path.exists('inputbinary_files'):
-        cookiecutter.utils.paths.rmtree('inputbinary_files')
+        tackle.utils.paths.rmtree('inputbinary_files')
     if os.path.exists('tests/custom_output_dir'):
-        cookiecutter.utils.paths.rmtree('tests/custom_output_dir')
+        tackle.utils.paths.rmtree('tests/custom_output_dir')
     if os.path.exists('inputpermissions'):
-        cookiecutter.utils.paths.rmtree('inputpermissions')
+        tackle.utils.paths.rmtree('inputpermissions')
 
 
 # Removed because now we don't want to force actual rendering now that we have more

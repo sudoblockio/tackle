@@ -1,7 +1,7 @@
 """Tests for cookiecutter's output directory customization feature."""
 import pytest
 
-from cookiecutter import main
+from tackle import main
 
 
 @pytest.fixture
@@ -61,7 +61,7 @@ def test_api_invocation(mocker, template, output_dir, context):
     """Verify output dir location is correctly passed."""
     mock_gen_files = mocker.patch('cookiecutter.main.generate_files')
 
-    main.cookiecutter(template, output_dir=output_dir)
+    main.tackle(template, output_dir=output_dir)
 
     mock_gen_files.assert_called_once_with(
         repo_dir=template,
@@ -78,7 +78,7 @@ def test_default_output_dir(mocker, template, context):
     """Verify default output dir is current working folder."""
     mock_gen_files = mocker.patch('cookiecutter.main.generate_files')
 
-    main.cookiecutter(template)
+    main.tackle(template)
 
     mock_gen_files.assert_called_once_with(
         repo_dir=template,

@@ -3,7 +3,7 @@
 """Tests dict input objects for `cookiecutter.operator.block` module."""
 import os
 import shutil
-from cookiecutter.main import cookiecutter
+from tackle.main import tackle
 
 
 def clean_files():
@@ -18,10 +18,9 @@ def clean_files():
 
 def test_provider_system_hook_file(change_dir):
     """Verify the hook call works properly."""
-    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
     clean_files()
 
-    cookiecutter('.', no_input=True, output_dir=str(tmpdir))
+    tackle('.', no_input=True)
 
     assert 'thing.yaml' in os.listdir()
     assert 'stuff' in os.listdir()

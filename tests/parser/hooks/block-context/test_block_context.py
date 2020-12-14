@@ -4,7 +4,7 @@
 
 import os
 import yaml
-from cookiecutter.main import cookiecutter
+from tackle.main import tackle
 
 
 def test_block_context(monkeypatch, tmpdir):
@@ -18,7 +18,7 @@ def test_block_context(monkeypatch, tmpdir):
         os.remove(inner_yaml)
 
     # context = cookiecutter('.', no_input=True, output_dir=str(tmpdir))
-    context = cookiecutter('.', output_dir=str(tmpdir))
+    context = tackle('.', output_dir=str(tmpdir))
 
     assert context['foo'] == 'bar'
     with open(inner_yaml) as f:

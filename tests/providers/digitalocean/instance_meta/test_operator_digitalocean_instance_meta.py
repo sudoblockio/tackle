@@ -3,14 +3,14 @@
 """Tests dict input objects for `cookiecutter.operator.gcp.instance_meta` module."""
 
 import os
-from cookiecutter.main import cookiecutter
+from tackle.main import tackle
 
 
 def test_operator_do_instance_meta(monkeypatch, tmpdir):
     """Verify Jinja2 time extension work correctly."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
 
-    context = cookiecutter('.', no_input=True, output_dir=str(tmpdir))
+    context = tackle('.', no_input=True, output_dir=str(tmpdir))
 
     assert len(context['instance_types']) > 1
 
@@ -19,7 +19,7 @@ def test_operator_do_instance_meta_instance_family(monkeypatch, tmpdir):
     """Verify Jinja2 time extension work correctly."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
 
-    context = cookiecutter(
+    context = tackle(
         '.', context_file='instance_family.yaml', no_input=True, output_dir=str(tmpdir),
     )
 

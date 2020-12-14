@@ -1,8 +1,8 @@
 """Tests for `cookiecutter.prompt` module."""
 
 import inspect
-from cookiecutter.operators import *  # noqa
-from cookiecutter.operators import BaseOperator
+from tackle.operators import *  # noqa
+from tackle.operators import BaseOperator
 
 
 def test_no_duplicate_named_operators():

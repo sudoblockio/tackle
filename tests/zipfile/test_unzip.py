@@ -3,8 +3,8 @@ import tempfile
 
 import pytest
 
-from cookiecutter.utils import zipfile
-from cookiecutter.exceptions import InvalidZipRepository
+from tackle.utils import zipfile
+from tackle.exceptions import InvalidZipRepository
 
 
 def mock_download():

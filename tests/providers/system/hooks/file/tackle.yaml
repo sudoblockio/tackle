@@ -1,0 +1,24 @@
+copy_file:
+  type: copy
+  src: tackle.yaml
+  dst: thing.yaml
+
+copy_file2:
+  type: copy
+  src: tackle.yaml
+  dst: thing2.yaml
+
+copy_files:
+  type: copy
+  src:
+    - tackle.yaml
+    - thing.yaml
+    - thing2.yaml
+  dst: stuff/things
+
+move_files:
+  type: move
+  src:
+    - stuff/things/tackle.yaml
+    - stuff/things/thing.yaml
+  dst: stuff

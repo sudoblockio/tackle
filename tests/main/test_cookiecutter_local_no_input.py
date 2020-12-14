@@ -8,8 +8,8 @@ import textwrap
 
 import pytest
 
-import cookiecutter.utils.paths
-from cookiecutter import main
+import tackle.utils.paths
+from tackle import main
 
 
 @pytest.fixture(scope='function')
@@ -19,15 +19,15 @@ def remove_additional_dirs(monkeypatch, request):
 
     def fin_remove_additional_dirs():
         if os.path.isdir('fake-project'):
-            cookiecutter.utils.paths.rmtree('fake-project')
+            tackle.utils.paths.rmtree('fake-project')
         if os.path.isdir('fake-project-extra'):
-            cookiecutter.utils.paths.rmtree('fake-project-extra')
+            tackle.utils.paths.rmtree('fake-project-extra')
         if os.path.isdir('fake-project-templated'):
-            cookiecutter.utils.paths.rmtree('fake-project-templated')
+            tackle.utils.paths.rmtree('fake-project-templated')
         if os.path.isdir('fake-project-dict'):
-            cookiecutter.utils.paths.rmtree('fake-project-dict')
+            tackle.utils.paths.rmtree('fake-project-dict')
         if os.path.isdir('fake-tmp'):
-            cookiecutter.utils.paths.rmtree('fake-tmp')
+            tackle.utils.paths.rmtree('fake-tmp')
 
     request.addfinalizer(fin_remove_additional_dirs)
 
@@ -40,7 +40,7 @@ def test_cookiecutter_no_input_return_project_dir(monkeypatch):
     """Verify `cookiecutter` create project dir on input with or without slash."""
     monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
 
-    context = main.cookiecutter('legacy/fixtures/fake-repo-pre', no_input=True)
+    context = main.tackle('legacy/fixtures/fake-repo-pre', no_input=True)
 
     assert type(context) == dict
     assert os.path.isdir('legacy/fixtures/fake-repo-pre/{{cookiecutter.repo_name}}')
@@ -59,7 +59,7 @@ def test_cookiecutter_no_input_return_project_dir(monkeypatch):
 def test_cookiecutter_no_input_extra_context(monkeypatch):
     """Verify `cookiecutter` accept `extra_context` argument."""
     monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
-    main.cookiecutter(
+    main.tackle(
         'legacy/fixtures/fake-repo-pre',
         no_input=True,
         extra_context={'repo_name': 'fake-project-extra'},
@@ -72,7 +72,7 @@ def test_cookiecutter_templated_context(monkeypatch):
     """Verify Jinja2 templating correctly works in `cookiecutter.json` file."""
     monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
 
-    main.cookiecutter('legacy/fixtures/fake-repo-tmpl', no_input=True)
+    main.tackle('legacy/fixtures/fake-repo-tmpl', no_input=True)
     assert os.path.isdir('fake-project-templated')
 
 
@@ -81,7 +81,7 @@ def test_cookiecutter_no_input_return_rendered_file(monkeypatch):
     """Verify Jinja2 templating correctly works in `cookiecutter.json` file."""
     monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
 
-    context = main.cookiecutter('legacy/fixtures/fake-repo-pre', no_input=True)
+    context = main.tackle('legacy/fixtures/fake-repo-pre', no_input=True)
     project_dir = os.path.join(os.path.abspath(os.path.curdir), 'fake-project')
 
     assert type(context) == dict
@@ -96,7 +96,7 @@ def test_cookiecutter_dict_values_in_context(monkeypatch):
     """Verify configured dictionary from `cookiecutter.json` correctly unpacked."""
     monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
 
-    context = main.cookiecutter('legacy/fixtures/fake-repo-dict', no_input=True)
+    context = main.tackle('legacy/fixtures/fake-repo-dict', no_input=True)
     project_dir = os.path.abspath(os.path.curdir)
 
     assert 'fake-project-dict' in os.listdir(project_dir)
@@ -162,7 +162,7 @@ def test_cookiecutter_template_cleanup(monkeypatch, mocker):
         autospec=True,
     )
 
-    main.cookiecutter('files/fake-repo-tmpl.zip', no_input=True)
+    main.tackle('files/fake-repo-tmpl.zip', no_input=True)
     assert os.path.isdir('fake-project-templated')
 
     # The tmp directory will still exist, but the

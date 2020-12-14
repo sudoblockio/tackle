@@ -3,8 +3,8 @@ import os
 
 import pytest
 
-from cookiecutter import exceptions
-from cookiecutter import repository
+from tackle import exceptions
+from tackle import repository
 
 
 @pytest.fixture

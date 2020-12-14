@@ -4,7 +4,7 @@
 
 import os
 import yaml
-from cookiecutter.main import cookiecutter
+from tackle.main import tackle
 
 
 def test_embedded_context(monkeypatch, tmpdir):
@@ -17,7 +17,7 @@ def test_embedded_context(monkeypatch, tmpdir):
     if os.path.exists(inner_yaml):
         os.remove(inner_yaml)
 
-    context = cookiecutter('.', no_input=True, output_dir=str(tmpdir))
+    context = tackle('.', no_input=True, output_dir=str(tmpdir))
 
     assert context['stuff_nuki']['foo'] == 'bar'
     with open(inner_yaml) as f:

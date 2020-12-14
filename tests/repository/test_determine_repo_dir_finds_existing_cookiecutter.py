@@ -3,7 +3,7 @@ import os
 
 import pytest
 
-from cookiecutter import repository
+from tackle import repository
 
 
 @pytest.fixture

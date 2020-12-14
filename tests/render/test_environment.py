@@ -1,8 +1,8 @@
 """Collection of tests around loading extensions."""
 import pytest
 
-from cookiecutter.render.environment import StrictEnvironment
-from cookiecutter.exceptions import UnknownExtension
+from tackle.render.environment import StrictEnvironment
+from tackle.exceptions import UnknownExtension
 
 
 def test_env_should_raise_for_unknown_extension():

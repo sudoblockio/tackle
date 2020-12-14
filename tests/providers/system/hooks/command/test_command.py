@@ -3,7 +3,7 @@
 """Tests dict input objects for `cookiecutter.prompt` module."""
 import os
 
-from cookiecutter.main import cookiecutter
+from tackle.main import tackle
 
 
 def test_provider_system_hook_command(change_dir):
@@ -14,7 +14,7 @@ def test_provider_system_hook_command(change_dir):
     else:
         monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
 
-        context = cookiecutter('.', no_input=True, output_dir=str(tmpdir))
+        context = tackle('.', no_input=True, output_dir=str(tmpdir))
 
         assert 'nuki.yaml' in context['shell']
         assert 'nuki.yaml' in context['cmd']
@@ -28,7 +28,7 @@ def test_provider_system_hook_command_multi_line(change_dir):
     else:
         monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
 
-        context = cookiecutter(
+        context = tackle(
             '.',
             context_file='multi-line-cmd.yaml',
             no_input=True,

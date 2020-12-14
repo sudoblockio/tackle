@@ -9,7 +9,7 @@ import os
 
 import pytest
 
-from cookiecutter import main
+from tackle import main
 
 
 @pytest.fixture(
@@ -41,7 +41,7 @@ def test_hook_with_extension(monkeypatch, template, output_dir):
     """
     monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
 
-    context = main.cookiecutter(
+    context = main.tackle(
         template,
         no_input=True,
         output_dir=output_dir,

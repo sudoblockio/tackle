@@ -3,8 +3,8 @@ import os
 
 import pytest
 
-import cookiecutter.utils.paths
-from cookiecutter import main
+import tackle.utils.paths
+from tackle import main
 
 
 @pytest.fixture(scope='function')
@@ -12,9 +12,9 @@ def remove_additional_dirs(request):
     """Remove special directories which are created during the tests."""
     yield
     if os.path.isdir('fake-project'):
-        cookiecutter.utils.paths.rmtree('fake-project')
+        tackle.utils.paths.rmtree('fake-project')
     if os.path.isdir('fake-project-input-extra'):
-        cookiecutter.utils.paths.rmtree('fake-project-input-extra')
+        tackle.utils.paths.rmtree('fake-project-input-extra')
 
 
 @pytest.mark.usefixtures('clean_system', 'remove_additional_dirs')
@@ -23,7 +23,7 @@ def test_cookiecutter_local_with_input(monkeypatch):
     monkeypatch.setattr(
         'cookiecutter.prompt.read_user_variable', lambda var, default: default
     )
-    main.cookiecutter('tests/legacy/fixtures/fake-repo-pre/', no_input=False)
+    main.tackle('tests/legacy/fixtures/fake-repo-pre/', no_input=False)
     assert os.path.isdir(
         'tests/legacy/fixtures/fake-repo-pre/{{cookiecutter.repo_name}}'
     )
@@ -39,7 +39,7 @@ def test_cookiecutter_input_extra_context(monkeypatch):
     monkeypatch.setattr(
         'cookiecutter.prompt.read_user_variable', lambda var, default: default
     )
-    main.cookiecutter(
+    main.tackle(
         'tests/legacy/fixtures/fake-repo-pre',
         no_input=False,
         extra_context={'repo_name': 'fake-project-input-extra'},

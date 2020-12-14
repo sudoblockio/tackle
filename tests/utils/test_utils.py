@@ -5,10 +5,10 @@ from pathlib import Path
 
 import pytest
 
-import cookiecutter.utils.context_manager
-import cookiecutter.utils.paths
-import cookiecutter.utils.reader
-import cookiecutter
+import tackle.utils.context_manager
+import tackle.utils.paths
+import tackle.utils.reader
+import tackle
 
 
 def make_readonly(path):
@@ -27,7 +27,7 @@ def test_rmtree(tmp_path):
         f.write("Test data")
     make_readonly(Path(tmp_path, 'bar'))
 
-    cookiecutter.utils.paths.rmtree(tmp_path)
+    tackle.utils.paths.rmtree(tmp_path)
 
     assert not Path(tmp_path).exists()
 
@@ -45,8 +45,8 @@ def test_make_sure_path_exists(tmp_path):
     existing_directory = tmp_path
     directory_to_create = Path(tmp_path, "not_yet_created")
 
-    assert cookiecutter.utils.paths.make_sure_path_exists(existing_directory)
-    assert cookiecutter.utils.paths.make_sure_path_exists(directory_to_create)
+    assert tackle.utils.paths.make_sure_path_exists(existing_directory)
+    assert tackle.utils.paths.make_sure_path_exists(directory_to_create)
 
     # Ensure by base system methods.
     assert existing_directory.is_dir()
@@ -68,7 +68,7 @@ def test_make_sure_path_exists_correctly_handle_os_error(mocker):
     mocker.patch("os.makedirs", raiser)
     uncreatable_directory = Path('protected_path')
 
-    assert not cookiecutter.utils.paths.make_sure_path_exists(uncreatable_directory)
+    assert not tackle.utils.paths.make_sure_path_exists(uncreatable_directory)
 
 
 @pytest.mark.skipif(
@@ -83,7 +83,7 @@ def test_work_in(tmp_path):
     assert ch_to != Path.cwd()
 
     # Under context manager we should work in tmp_path.
-    with cookiecutter.utils.context_manager.work_in(ch_to):
+    with tackle.utils.context_manager.work_in(ch_to):
         assert ch_to == Path.cwd()
 
     # Make sure we return to the correct folder
@@ -99,7 +99,7 @@ def test_prompt_should_ask_and_rm_repo_dir(mocker, tmp_path):
     repo_dir = Path(tmp_path, 'repo')
     repo_dir.mkdir()
 
-    deleted = cookiecutter.utils.prompt_delete.prompt_and_delete(str(repo_dir))
+    deleted = tackle.utils.prompt_delete.prompt_and_delete(str(repo_dir))
 
     assert mock_read_user.called
     assert not repo_dir.exists()
@@ -116,7 +116,7 @@ def test_prompt_should_ask_and_exit_on_user_no_answer(mocker, tmp_path):
     repo_dir = Path(tmp_path, 'repo')
     repo_dir.mkdir()
 
-    deleted = cookiecutter.utils.prompt_delete.prompt_and_delete(str(repo_dir))
+    deleted = tackle.utils.prompt_delete.prompt_and_delete(str(repo_dir))
 
     assert mock_read_user.called
     assert repo_dir.exists()
@@ -136,7 +136,7 @@ def test_prompt_should_ask_and_rm_repo_file(mocker, tmp_path):
     repo_file = tmp_path.joinpath('repo.zip')
     repo_file.write_text('this is zipfile content')
 
-    deleted = cookiecutter.utils.prompt_delete.prompt_and_delete(str(repo_file))
+    deleted = tackle.utils.prompt_delete.prompt_and_delete(str(repo_file))
 
     assert mock_read_user.called
     assert not repo_file.exists()
@@ -155,7 +155,7 @@ def test_prompt_should_ask_and_keep_repo_on_no_reuse(mocker, tmp_path):
     repo_dir.mkdir()
 
     with pytest.raises(SystemExit):
-        cookiecutter.utils.prompt_delete.prompt_and_delete(str(repo_dir))
+        tackle.utils.prompt_delete.prompt_and_delete(str(repo_dir))
 
     assert mock_read_user.called
     assert repo_dir.exists()
@@ -179,7 +179,7 @@ def test_prompt_should_ask_and_keep_repo_on_reuse(mocker, tmp_path):
     repo_dir = Path(tmp_path, 'repo')
     repo_dir.mkdir()
 
-    deleted = cookiecutter.utils.prompt_delete.prompt_and_delete(str(repo_dir))
+    deleted = tackle.utils.prompt_delete.prompt_and_delete(str(repo_dir))
 
     assert mock_read_user.called
     assert repo_dir.exists()
@@ -200,9 +200,7 @@ def test_prompt_should_not_ask_if_no_input_and_rm_repo_dir(mocker, tmp_path):
     repo_dir = Path(tmp_path, 'repo')
     repo_dir.mkdir()
 
-    deleted = cookiecutter.utils.prompt_delete.prompt_and_delete(
-        str(repo_dir), no_input=True
-    )
+    deleted = tackle.utils.prompt_delete.prompt_and_delete(str(repo_dir), no_input=True)
 
     assert not mock_read_user.called
     assert not repo_dir.exists()
@@ -224,7 +222,7 @@ def test_prompt_should_not_ask_if_no_input_and_rm_repo_file(mocker, tmp_path):
     repo_file = tmp_path.joinpath('repo.zip')
     repo_file.write_text('this is zipfile content')
 
-    deleted = cookiecutter.utils.prompt_delete.prompt_and_delete(
+    deleted = tackle.utils.prompt_delete.prompt_and_delete(
         str(repo_file), no_input=True
     )
 
@@ -244,5 +242,5 @@ def test_prompt_should_not_ask_if_no_input_and_rm_repo_file(mocker, tmp_path):
 )
 def test_valid_read_config_file(valid_config_file):
     """Validate generic reader works properly."""
-    output = cookiecutter.utils.reader.read_config_file(valid_config_file)
+    output = tackle.utils.reader.read_config_file(valid_config_file)
     assert output == {'project_slug': 'best_eva', 'stuff': 'things'}

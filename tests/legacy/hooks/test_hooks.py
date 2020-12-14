@@ -6,9 +6,9 @@ import textwrap
 
 import pytest
 
-import cookiecutter.utils.context_manager
-import cookiecutter.utils.paths
-from cookiecutter import hooks, exceptions
+import tackle.utils.context_manager
+import tackle.utils.paths
+from tackle import hooks, exceptions
 
 
 def make_test_repo(name, multiple_hooks=False):
@@ -83,11 +83,11 @@ class TestFindHooks(object):
 
     def teardown_method(self, method):
         """Find hooks related tests teardown fixture."""
-        cookiecutter.utils.paths.rmtree(self.repo_path)
+        tackle.utils.paths.rmtree(self.repo_path)
 
     def test_find_hook(self):
         """Finds the specified hook."""
-        with cookiecutter.utils.context_manager.work_in(self.repo_path):
+        with tackle.utils.context_manager.work_in(self.repo_path):
             expected_pre = os.path.abspath('hooks/pre_gen_project.py')
             actual_hook_path = hooks.find_hook('pre_gen_project')
             assert expected_pre == actual_hook_path[0]
@@ -98,19 +98,17 @@ class TestFindHooks(object):
 
     def test_no_hooks(self):
         """`find_hooks` should return None if the hook could not be found."""
-        with cookiecutter.utils.context_manager.work_in(
-            'tests/legacy/fixtures/fake-repo'
-        ):
+        with tackle.utils.context_manager.work_in('tests/legacy/fixtures/fake-repo'):
             assert None is hooks.find_hook('pre_gen_project')
 
     def test_unknown_hooks_dir(self):
         """`find_hooks` should return None if hook directory not found."""
-        with cookiecutter.utils.context_manager.work_in(self.repo_path):
+        with tackle.utils.context_manager.work_in(self.repo_path):
             assert hooks.find_hook('pre_gen_project', hooks_dir='hooks_dir') is None
 
     def test_hook_not_found(self):
         """`find_hooks` should return None if the hook could not be found."""
-        with cookiecutter.utils.context_manager.work_in(self.repo_path):
+        with tackle.utils.context_manager.work_in(self.repo_path):
             assert hooks.find_hook('unknown_hook') is None
 
 
@@ -126,7 +124,7 @@ class TestExternalHooks(object):
 
     def teardown_method(self, method):
         """External hooks related tests teardown fixture."""
-        cookiecutter.utils.paths.rmtree(self.repo_path)
+        tackle.utils.paths.rmtree(self.repo_path)
 
         if os.path.exists('python_pre.txt'):
             os.remove('python_pre.txt')
@@ -186,7 +184,7 @@ class TestExternalHooks(object):
         """Execute hook from specified template in specified output \
         directory."""
         tests_dir = os.path.join(self.repo_path, 'input{{hooks}}')
-        with cookiecutter.utils.context_manager.work_in(self.repo_path):
+        with tackle.utils.context_manager.work_in(self.repo_path):
             hooks.run_hook('pre_gen_project', tests_dir, {})
             assert os.path.isfile(os.path.join(tests_dir, 'python_pre.txt'))
             assert os.path.isfile(os.path.join(tests_dir, 'shell_pre.txt'))
@@ -203,7 +201,7 @@ class TestExternalHooks(object):
             f.write("#!/usr/bin/env python\n")
             f.write("import sys; sys.exit(1)\n")
 
-        with cookiecutter.utils.context_manager.work_in(self.repo_path):
+        with tackle.utils.context_manager.work_in(self.repo_path):
             with pytest.raises(exceptions.FailedHookException) as excinfo:
                 hooks.run_hook('pre_gen_project', tests_dir, {})
             assert 'Hook script failed' in str(excinfo.value)

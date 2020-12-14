@@ -3,8 +3,8 @@ import os
 
 import pytest
 
-from cookiecutter import config
-from cookiecutter.exceptions import ConfigDoesNotExistException, InvalidConfiguration
+from tackle import config
+from tackle.exceptions import ConfigDoesNotExistException, InvalidConfiguration
 
 
 def test_merge_configs():

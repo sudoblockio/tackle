@@ -3,7 +3,7 @@
 """Tests dict input objects for `cookiecutter.operator.list` module."""
 
 import os
-from cookiecutter.main import cookiecutter
+from tackle.main import tackle
 
 
 def test_operator_select(monkeypatch, tmpdir):
@@ -11,25 +11,25 @@ def test_operator_select(monkeypatch, tmpdir):
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
 
     # TODO: Need to properly test this with pty. Tests don't cover now
-    output = cookiecutter(
+    output = tackle(
         '.', context_file='dict_ok.yaml', no_input=True, output_dir=str(tmpdir)
     )
 
     assert output
 
-    output = cookiecutter(
+    output = tackle(
         '.', context_file='string_index.yaml', no_input=True, output_dir=str(tmpdir)
     )
 
     assert output
 
-    output = cookiecutter(
+    output = tackle(
         '.', context_file='dict_index.yaml', no_input=True, output_dir=str(tmpdir)
     )
 
     assert output
 
-    output = cookiecutter(
+    output = tackle(
         '.', context_file='list_ok.yaml', no_input=True, output_dir=str(tmpdir)
     )
     assert output

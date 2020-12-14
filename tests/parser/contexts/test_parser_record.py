@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """Tests dict input objects for `cookiecutter.operator.lists` module."""
-from cookiecutter.main import cookiecutter
+from tackle.main import tackle
 
 
 # import pytest
@@ -10,7 +10,7 @@ def test_parser_contexts_overwrite_inputs(tmpdir, change_dir):
     """Verify the hook call works successfully."""
     overwrite_inputs = {'stuff': 'dingdongs'}
 
-    o = cookiecutter(
+    o = tackle(
         '.',
         no_input=True,
         output_dir=str(tmpdir),

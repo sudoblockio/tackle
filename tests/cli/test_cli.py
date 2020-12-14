@@ -7,9 +7,9 @@ import sys
 import pytest
 from click.testing import CliRunner
 
-from cookiecutter.utils.paths import rmtree
-from cookiecutter.__main__ import main
-from cookiecutter.main import cookiecutter
+from tackle.utils.paths import rmtree
+from tackle.__main__ import main
+from tackle.main import tackle
 
 
 # @pytest.fixture(scope='session')
@@ -150,7 +150,7 @@ def test_cli_replay_file(mocker, cli_runner):
 def test_cli_exit_on_noinput_and_replay(mocker, cli_runner):
     """Test cli invocation fail if both `no-input` and `replay` flags passed."""
     mock_cookiecutter = mocker.patch(
-        'cookiecutter.cli.cli_parser.cookiecutter', side_effect=cookiecutter
+        'cookiecutter.cli.cli_parser.cookiecutter', side_effect=tackle
     )
 
     template_path = 'tests/legacy/fixtures/fake-repo-pre/'
@@ -195,7 +195,7 @@ def test_run_cookiecutter_on_overwrite_if_exists_and_replay(
 ):
     """Test cli invocation with `overwrite-if-exists` and `replay` flags."""
     mock_cookiecutter = mocker.patch(
-        'cookiecutter.cli.cli_parser.cookiecutter', side_effect=cookiecutter
+        'cookiecutter.cli.cli_parser.cookiecutter', side_effect=tackle
     )
 
     template_path = 'tests/legacy/fixtures/fake-repo-pre/'

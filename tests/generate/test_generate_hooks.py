@@ -5,9 +5,9 @@ import sys
 
 import pytest
 
-import cookiecutter.utils.paths
-from cookiecutter import generate
-from cookiecutter.exceptions import FailedHookException
+import tackle.utils.paths
+from tackle import generate
+from tackle.exceptions import FailedHookException
 
 WINDOWS = sys.platform.startswith('win')
 
@@ -25,7 +25,7 @@ def remove_additional_folders(tmpdir):
     ]
     for directory in directories_to_delete:
         if os.path.exists(directory):
-            cookiecutter.utils.paths.rmtree(directory)
+            tackle.utils.paths.rmtree(directory)
 
 
 @pytest.mark.usefixtures('clean_system', 'remove_additional_folders')

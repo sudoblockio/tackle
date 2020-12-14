@@ -3,9 +3,9 @@
 """Tests dict input objects for `cookiecutter.prompt` module."""
 
 # import pytest
-import cookiecutter.parser.hooks
-from cookiecutter.parser import prompts
-from cookiecutter.models import Mode
+import tackle.parser.hooks
+from tackle.parser import prompts
+from tackle.models import Mode
 
 # Only tests for the basic logic of the parsing of the operator calls
 
@@ -28,7 +28,7 @@ def test_operator_when_false_no_input_no_default():
         'project_name': "Slartibartfast",
     }
 
-    out_dict = cookiecutter.operator.parse_operator(
+    out_dict = tackle.operator.parse_operator(
         context, 'details', cookiecutter_dict, no_input=True
     )
     assert out_dict == cookiecutter_dict
@@ -52,7 +52,7 @@ def test_operator_when_true_no_input_no_default():
         'project_name': "Slartibartfast",
     }
 
-    out_dict = cookiecutter.operator.parse_operator(
+    out_dict = tackle.operator.parse_operator(
         context, 'details', cookiecutter_dict, no_input=True
     )
     assert out_dict == cookiecutter_dict
@@ -78,7 +78,7 @@ def test_operator_when_true_no_input_with_default():
         'project_name': "Slartibartfast",
     }
 
-    out_dict = cookiecutter.operator.parse_operator(
+    out_dict = tackle.operator.parse_operator(
         context, 'details', cookiecutter_dict, no_input=True
     )
     assert out_dict == {'project_name': 'Slartibartfast', 'details': 'stuff'}
@@ -103,7 +103,7 @@ def test_operator_when_true_no_input_loop():
         'project_name': "Slartibartfast",
     }
 
-    out_dict = cookiecutter.operator.parse_operator(
+    out_dict = tackle.operator.parse_operator(
         context, 'details', cookiecutter_dict, no_input=True
     )
     assert out_dict == {'project_name': 'Slartibartfast', 'details': ['foo', 'bar']}

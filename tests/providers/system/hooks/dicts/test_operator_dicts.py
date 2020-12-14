@@ -2,7 +2,7 @@
 
 """Tests dict input objects for `cookiecutter.operator.block` module."""
 import os
-from cookiecutter.main import cookiecutter
+from tackle.main import tackle
 
 
 def _clean_outputs():
@@ -13,7 +13,6 @@ def _clean_outputs():
 
 def test_provider_system_hook_dicts(change_dir):
     """Verify the hook call works properly."""
-    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
     _clean_outputs()
     # output = cookiecutter(
     #     '.', context_file='merge.yaml', no_input=True, output_dir=str(tmpdir)
@@ -25,9 +24,7 @@ def test_provider_system_hook_dicts(change_dir):
     # )
     # assert output
 
-    output = cookiecutter(
-        '.', context_file='pop.yaml', no_input=True, output_dir=str(tmpdir)
-    )
+    output = tackle('.', context_file='pop.yaml', no_input=True)
     assert 'stuff' not in output['pop_map']
     assert 'things' not in output['pop_maps']
     _clean_outputs()

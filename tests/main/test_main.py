@@ -1,7 +1,7 @@
 """Collection of tests around cookiecutter's replay feature."""
 
 import os
-from cookiecutter.main import cookiecutter
+from tackle.main import tackle
 
 
 def test_replay_dump_template_name(
@@ -31,7 +31,7 @@ def test_replay_dump_template_name(
     mock_replay_dump = mocker.patch('cookiecutter.main.dump')
     mocker.patch('cookiecutter.main.generate_files')
 
-    cookiecutter(
+    tackle(
         '.', no_input=True, replay=False, config_file=user_config_file,
     )
 
@@ -84,7 +84,7 @@ def test_custom_replay_file(monkeypatch, mocker, user_config_file):
     mock_replay_load = mocker.patch('cookiecutter.main.load')
     mocker.patch('cookiecutter.main.generate_files')
 
-    cookiecutter(
+    tackle(
         '.', replay='./custom-replay-file', config_file=user_config_file,
     )
 
@@ -95,7 +95,7 @@ def test_nuki_embed(monkeypatch, tmpdir):
     """Verify Jinja2 time extension work correctly."""
     monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
 
-    context = cookiecutter(
+    context = tackle(
         'fixtures/fake-repo-tmpl-nuki-embed', no_input=True, output_dir=str(tmpdir)
     )
 

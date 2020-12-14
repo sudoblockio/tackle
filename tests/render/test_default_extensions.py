@@ -4,7 +4,7 @@ import os
 import freezegun
 import pytest
 
-from cookiecutter.main import cookiecutter
+from tackle.main import tackle
 
 
 @pytest.fixture(autouse=True)
@@ -20,7 +20,7 @@ def test_jinja2_time_extension(monkeypatch, tmpdir):
     """Verify Jinja2 time extension work correctly."""
     monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
 
-    context = cookiecutter(
+    context = tackle(
         'legacy/fixtures/test-extensions/default/',
         no_input=True,
         output_dir=str(tmpdir),
@@ -51,7 +51,7 @@ def test_jinja2_slugify_extension(monkeypatch, tmpdir):
     cwd = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
     monkeypatch.chdir(cwd)
 
-    context = cookiecutter(
+    context = tackle(
         'legacy/fixtures/test-extensions/default/',
         no_input=True,
         output_dir=str(tmpdir),

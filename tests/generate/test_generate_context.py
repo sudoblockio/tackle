@@ -5,9 +5,9 @@ from collections import OrderedDict
 
 import pytest
 
-import cookiecutter
-from cookiecutter import generate
-from cookiecutter.exceptions import ContextDecodingException
+import tackle
+from tackle import generate
+from tackle.exceptions import ContextDecodingException
 
 
 def context_data():
@@ -60,14 +60,14 @@ def context_data():
 @pytest.mark.parametrize('input_params, expected_context', context_data())
 def test_generate_context(input_params, expected_context):
     """Verify input contexts combinations result in expected content on output."""
-    assert cookiecutter.generate.generate_context(**input_params) == expected_context
+    assert tackle.generate.generate_context(**input_params) == expected_context
 
 
 @pytest.mark.usefixtures('clean_system')
 def test_generate_context_with_json_decoding_error():
     """Verify malformed JSON file generates expected error output."""
     with pytest.raises(ContextDecodingException) as excinfo:
-        cookiecutter.generate.generate_context(
+        tackle.generate.generate_context(
             'tests/generate/test-generate-context/invalid-syntax.json'
         )
     # original message from json module should be included
@@ -102,7 +102,7 @@ def test_default_context_replacement_in_generate_context():
         )
     }
 
-    generated_context = cookiecutter.generate.generate_context(
+    generated_context = tackle.generate.generate_context(
         context_file='tests/generate/test-generate-context/choices_template.json',
         default_context={
             'not_in_template': 'foobar',
@@ -123,7 +123,7 @@ def test_generate_context_decodes_non_ascii_chars(monkeypatch):
     monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__))))
     expected_context = {'non_ascii': OrderedDict([('full_name', u'éèà')])}
 
-    generated_context = cookiecutter.generate.generate_context(
+    generated_context = tackle.generate.generate_context(
         context_file='test-generate-context/non_ascii.json'
     )
 

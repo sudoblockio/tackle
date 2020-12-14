@@ -4,7 +4,7 @@ import os
 
 import pytest
 
-from cookiecutter.parser import replay
+from tackle.parser import replay
 
 
 @pytest.fixture

@@ -3,9 +3,9 @@ import os
 
 import pytest
 
-from cookiecutter import main
-from cookiecutter.parser import replay
-from cookiecutter import exceptions
+from tackle import main
+from tackle.parser import replay
+from tackle import exceptions
 
 
 @pytest.mark.parametrize("replay_file_name", ['bar', 'bar.json'])
@@ -27,7 +27,7 @@ def test_get_replay_file_name(replay_file_name):
 def test_raise_on_invalid_mode(invalid_kwargs):
     """Test `cookiecutter` raise exception on unacceptable `replay` request."""
     with pytest.raises(exceptions.InvalidModeException):
-        main.cookiecutter('foo', replay=True, **invalid_kwargs)
+        main.tackle('foo', replay=True, **invalid_kwargs)
 
 
 def test_main_does_not_invoke_dump_but_load(monkeypatch, mocker):
@@ -39,7 +39,7 @@ def test_main_does_not_invoke_dump_but_load(monkeypatch, mocker):
     mock_replay_dump = mocker.patch('cookiecutter.main.dump')
     mock_replay_load = mocker.patch('cookiecutter.main.load')
 
-    main.cookiecutter('../legacy/fixtures/fake-repo-tmpl/', replay=True)
+    main.tackle('../legacy/fixtures/fake-repo-tmpl/', replay=True)
 
     assert not mock_prompt.called
     assert not mock_gen_context.called
@@ -58,7 +58,7 @@ def test_main_does_not_invoke_load_but_dump(monkeypatch, mocker):
     mock_replay_dump = mocker.patch('cookiecutter.main.dump')
     mock_replay_load = mocker.patch('cookiecutter.main.load')
 
-    main.cookiecutter('../legacy/fixtures/fake-repo-tmpl/', replay=False)
+    main.tackle('../legacy/fixtures/fake-repo-tmpl/', replay=False)
 
     assert mock_prompt.called
     assert mock_gen_context.called

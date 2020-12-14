@@ -5,7 +5,7 @@
 import os
 import yaml
 
-from cookiecutter.main import cookiecutter
+from tackle.main import tackle
 
 
 def _clean_outputs():
@@ -16,11 +16,10 @@ def _clean_outputs():
 
 def test_provider_system_hook_yaml(change_dir):
     """Verify the hook call works properly."""
-    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
     _clean_outputs()
 
-    cookiecutter(
-        '.', context_file='update.yaml', no_input=True, output_dir=str(tmpdir),
+    tackle(
+        '.', context_file='update.yaml', no_input=True,
     )
 
     with open('output.yaml', 'r') as f:
@@ -28,9 +27,7 @@ def test_provider_system_hook_yaml(change_dir):
 
     assert output['stuff'] == {'things': {'cats': 'scratch'}}
 
-    cookiecutter(
-        '.', context_file='remove_str.yaml', no_input=True, output_dir=str(tmpdir)
-    )
+    tackle('.', context_file='remove_str.yaml', no_input=True)
 
     with open('output.yaml', 'r') as f:
         output = yaml.load(f)
@@ -39,9 +36,7 @@ def test_provider_system_hook_yaml(change_dir):
 
     _clean_outputs()
 
-    cookiecutter(
-        '.', context_file='remove_list.yaml', no_input=True, output_dir=str(tmpdir)
-    )
+    tackle('.', context_file='remove_list.yaml', no_input=True)
 
     with open('output.yaml', 'r') as f:
         output = yaml.load(f)
@@ -49,26 +44,21 @@ def test_provider_system_hook_yaml(change_dir):
     _clean_outputs()
     assert output == ['stuff', 'things']
 
-    read = cookiecutter(
-        '.', context_file='read.yaml', no_input=True, output_dir=str(tmpdir)
-    )
+    read = tackle('.', context_file='read.yaml', no_input=True)
 
     assert read['stuff'] == 'things'
 
-    output = cookiecutter(
-        '.', context_file='filter.yaml', no_input=True, output_dir=str(tmpdir)
-    )
+    output = tackle('.', context_file='filter.yaml', no_input=True)
 
     assert 'stuff' not in output['things']
 
 
 def test_provider_system_hook_yaml_update_in_place(change_dir):
     """Verify the hook call works properly."""
-    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
     _clean_outputs()
 
-    cookiecutter(
-        '.', context_file='update_in_place.yaml', no_input=True, output_dir=str(tmpdir),
+    tackle(
+        '.', context_file='update_in_place.yaml', no_input=True,
     )
 
     with open('output_update_in_place.yaml', 'r') as f:
@@ -80,11 +70,10 @@ def test_provider_system_hook_yaml_update_in_place(change_dir):
 
 def test_provider_system_hook_yaml_merge_in_place(change_dir):
     """Verify the hook call works properly."""
-    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
     _clean_outputs()
 
-    cookiecutter(
-        '.', context_file='merge_in_place.yaml', no_input=True, output_dir=str(tmpdir),
+    tackle(
+        '.', context_file='merge_in_place.yaml', no_input=True,
     )
 
     with open('output_merge_in_place.yaml', 'r') as f:
@@ -96,11 +85,7 @@ def test_provider_system_hook_yaml_merge_in_place(change_dir):
 
 def test_provider_system_hook_yaml_append(change_dir):
     """Verify the hook call works properly."""
-    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
-
     _clean_outputs()
-    output = cookiecutter(
-        '.', context_file='append.yaml', no_input=True, output_dir=str(tmpdir),
-    )
+    output = tackle('.', context_file='append.yaml', no_input=True,)
     _clean_outputs()
     assert output['append_dict'] == {'things': ['dogs', 'cats', 'bar', 'baz']}

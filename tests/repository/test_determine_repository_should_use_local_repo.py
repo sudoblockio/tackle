@@ -4,7 +4,7 @@ import os
 
 import pytest
 
-from cookiecutter import repository, exceptions
+from tackle import repository, exceptions
 
 
 def test_finds_local_repo(monkeypatch, tmpdir):

@@ -1,7 +1,7 @@
 """Tests for `repository_has_cookiecutter_json` function."""
 import pytest
 
-from cookiecutter.repository import repository_has_tackle_file
+from tackle.repository import repository_has_tackle_file
 
 
 def test_valid_repository():

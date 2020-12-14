@@ -4,8 +4,8 @@ import shutil
 
 import pytest
 
-from cookiecutter import config
-from cookiecutter.exceptions import InvalidConfiguration
+from tackle import config
+from tackle.exceptions import InvalidConfiguration
 
 
 @pytest.fixture(scope='module')

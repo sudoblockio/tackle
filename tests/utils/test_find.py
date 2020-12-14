@@ -3,7 +3,7 @@ import os
 
 import pytest
 
-from cookiecutter.utils import find
+from tackle.utils import find
 
 
 @pytest.fixture(

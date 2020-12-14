@@ -1,7 +1,7 @@
 """Collection of tests around repository type identification."""
 import pytest
 
-from cookiecutter import exceptions, vcs
+from tackle import exceptions, vcs
 
 
 @pytest.mark.parametrize(

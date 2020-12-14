@@ -1,8 +1,8 @@
 """Collection of tests around common path and url shorthands."""
 import pytest
 
-from cookiecutter.models import BUILTIN_ABBREVIATIONS
-from cookiecutter.repository import expand_abbreviations
+from tackle.models import BUILTIN_ABBREVIATIONS
+from tackle.repository import expand_abbreviations
 
 
 @pytest.mark.parametrize(

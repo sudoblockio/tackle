@@ -28,7 +28,7 @@ Note: If you experience installation errors try `pip3 install nukikata --no-bina
 
 ## Features
 
-All cookiecutter features are supported in addition to loops, conditionals, and plugins. These features are only available to supplied dictionary objects with a `type` key to trigger the associated [hook](cookiecutter/operators). Loops and conditionals are triggered by rendering [jinja](https://github.com/pallets/jinja) expressions per the example below. Other cookiecutters can be called from a single nukikata to knit together modularized components.
+All cookiecutter features are supported in addition to loops, conditionals, and plugins. These features are only available to supplied dictionary objects with a `type` key to trigger the associated [hook](tackle/operators). Loops and conditionals are triggered by rendering [jinja](https://github.com/pallets/jinja) expressions per the example below. Other cookiecutters can be called from a single nukikata to knit together modularized components.
 
 `nuki.yaml`
 ```yaml
@@ -78,7 +78,7 @@ Here the jinja default context key goes to the name of file - ie `{{ nuki.<> }}`
 
 Prompts are enhanced by extending the functionality from [PyInquirer](https://github.com/CITGuru/PyInquirer) as a set of hooks as noted by the types `input`, `list`, and `checkbox`. Writing new hooks is super simple as seen in the `print` hook:
 
-[`cookiecuttuer/operators/print.py`](cookiecutter/operators/print.py)
+[`cookiecuttuer/operators/print.py`](tackle/operators/print.py)
 
 ```python
 class PrintOperator(BaseOperator):

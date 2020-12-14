@@ -2,7 +2,7 @@
 import click
 import pytest
 
-from cookiecutter.parser.prompts import read_user_choice
+from tackle.parser.prompts import read_user_choice
 
 OPTIONS = ['hello', 'world', 'foo', 'bar']
 

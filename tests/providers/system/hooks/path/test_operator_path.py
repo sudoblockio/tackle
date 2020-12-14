@@ -2,14 +2,12 @@
 
 """Tests dict input objects for `cookiecutter.operator.block` module."""
 import os
-from cookiecutter.main import cookiecutter
+from tackle.main import tackle
 
 
 def test_provider_system_hook_path(change_dir):
     """Verify the hook call works properly."""
-    monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
-
-    context = cookiecutter('.', no_input=True, output_dir=str(tmpdir))
+    context = tackle('.', no_input=True, context_file='nuki.yaml')
 
     assert context['path_isdir']
 

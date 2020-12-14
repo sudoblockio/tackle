@@ -3,8 +3,8 @@ import os
 
 import pytest
 
-import cookiecutter.utils.paths
-from cookiecutter import generate
+import tackle.utils.paths
+from tackle import generate
 
 
 @pytest.fixture
@@ -12,7 +12,7 @@ def remove_test_dir():
     """Fixture. Remove the folder that is created by the test."""
     yield
     if os.path.exists('test_copy_without_render'):
-        cookiecutter.utils.paths.rmtree('test_copy_without_render')
+        tackle.utils.paths.rmtree('test_copy_without_render')
 
 
 @pytest.mark.usefixtures('clean_system', 'remove_test_dir')

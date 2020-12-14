@@ -1,4 +1,4 @@
-from cookiecutter.models import BaseHook
+from tackle.models import BaseHook
 
 
 class ThingHook(BaseHook):

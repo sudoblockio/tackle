@@ -4,11 +4,11 @@ from collections import OrderedDict
 
 import pytest
 
-import cookiecutter.parser.prompts
-import cookiecutter.render
-from cookiecutter import exceptions
-from cookiecutter.render import environment
-from cookiecutter.models import Mode
+import tackle.parser.prompts
+import tackle.render
+from tackle import exceptions
+from tackle.render import environment
+from tackle.models import Mode
 
 no_input_true = Mode(no_input=True)
 no_input_false = Mode(no_input=False)
@@ -42,7 +42,7 @@ class TestRenderVariable:
         )
         context = {'project': 'foobar'}
 
-        result = cookiecutter.render.render_variable(
+        result = tackle.render.render_variable(
             env, raw_var, context, context_key='cookiecutter'
         )
         assert result == rendered_var
@@ -71,7 +71,7 @@ class TestRenderVariable:
         env = environment.StrictEnvironment()
         context = {'project': 'foobar'}
 
-        result = cookiecutter.render.render_variable(
+        result = tackle.render.render_variable(
             env, raw_var, context, context_key='cookiecutter'
         )
         assert result == rendered_var
