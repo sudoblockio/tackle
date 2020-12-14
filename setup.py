@@ -1,62 +1,18 @@
 #!/usr/bin/env python
 """cookiecutter distutils configuration."""
 import sys
+import os
+import re
+from collections import defaultdict
+from cookiecutter import __version__
 
-from setuptools import setup, Command, find_packages
-from textwrap import wrap
-from typing import List
+from setuptools import setup, find_packages
 
-version = "2.0.0.3"
 
 with open('README.md', encoding='utf-8') as readme_file:
     readme = readme_file.read()
 
-
-class ListExtras(Command):
-    """
-    List all available extras.
-
-    Registered as cmdclass in setup() so it can be called with
-    ``python setup.py list_extras``.
-
-    :param Command:
-    """
-
-    description = "List available extras"
-    user_options = []  # type: List[str]
-
-    def initialize_options(self):
-        """Set default values for options."""
-
-    def finalize_options(self):
-        """Set final values for options."""
-
-    # noinspection PyMethodMayBeStatic
-    def run(self):
-        """List extras."""
-        print("\n".join(wrap(", ".join(EXTRAS_REQUIREMENTS.keys()), 100)))
-
-
-amazon = [
-    'boto3>=1.14.0',
-]
-
-azure = [
-    'azure-mgmt-compute>=13.0.0',
-    'azure-mgmt-subscription>=0.6.0',
-]
-
-digitalocean = [
-    'dopy>=0.3.7',
-]
-
-google = [
-    'google-api-python-client>=1.9',
-]
-
-vault = []
-
-devel = [
+DEV_REQUIREMENTS = [
     'pytest',
     'pytest-cov',
     'pytest-mock',
@@ -64,69 +20,35 @@ devel = [
     'ptyprocess',
 ]
 
-PROVIDERS_REQUIREMENTS = {
-    'amazon': amazon,
-    'google': google,
-    'digitalocean': digitalocean,
-}
 
-EXTRAS_REQUIREMENTS = {
-    # 'all': all,
-}
+def get_provider_requirements():
+    """Get the provider requirements from each provider to allow extra requirements."""
+    providers_dir = os.path.join(os.path.dirname(__file__), 'cookiecutter', 'providers')
+    providers = os.listdir(providers_dir)
+    provider_requirements = defaultdict(set)
+    for p in providers:
+        if p == '__init__.py':
+            continue
+        reqs_file = os.path.join(providers_dir, p, 'requirements.txt')
+        if os.path.isfile(reqs_file):
+            with open(reqs_file) as fp:
+                for k in fp:
+                    if k.strip() and not k.startswith('#'):
+                        tags = set()
+                        if ':' in k:
+                            k, v = k.split(':')
+                            tags.update(vv.strip() for vv in v.split(','))
+                        tags.add(re.split('[<=>]', k)[0])
 
-# Make devel_all contain all providers + extras + unique
-devel_all = list(
-    set(
-        devel
-        + [req for req_list in EXTRAS_REQUIREMENTS.values() for req in req_list]
-        + [req for req_list in PROVIDERS_REQUIREMENTS.values() for req in req_list]
+                        for _ in tags:
+                            provider_requirements[p].add(k)
+
+    provider_requirements['dev'] = set(DEV_REQUIREMENTS)
+    provider_requirements['all'] = set(
+        vv for v in provider_requirements.values() for vv in v
     )
-)
+    return provider_requirements
 
-PACKAGES_EXCLUDED_FOR_ALL = []
-
-# Those packages are excluded because they break tests (downgrading mock) and they are
-# not needed to run our test suite.
-PACKAGES_EXCLUDED_FOR_CI = [
-    'apache-beam',
-]
-
-
-def is_package_excluded(package: str, exclusion_list: List[str]):
-    """
-    Checks if package should be excluded.
-
-    :param package: package name (beginning of it)
-    :param exclusion_list: list of excluded packages
-    :return: true if package should be excluded
-    """
-    return any(
-        [package.startswith(excluded_package) for excluded_package in exclusion_list]
-    )
-
-
-devel_all = [
-    package
-    for package in devel_all
-    if not is_package_excluded(
-        package=package, exclusion_list=PACKAGES_EXCLUDED_FOR_ALL
-    )
-]
-
-devel_ci = [
-    package
-    for package in devel_all
-    if not is_package_excluded(
-        package=package,
-        exclusion_list=PACKAGES_EXCLUDED_FOR_CI + PACKAGES_EXCLUDED_FOR_ALL,
-    )
-]
-
-EXTRAS_REQUIREMENTS.update(
-    {'all': devel_all, 'devel_ci': devel_ci,}
-)
-
-EXTRAS_REQUIREMENTS.update(PROVIDERS_REQUIREMENTS)
 
 INSTALL_REQUIREMENTS = [
     'binaryornot>=0.4.4',
@@ -136,18 +58,12 @@ INSTALL_REQUIREMENTS = [
     'jinja2-time>=0.2.0',
     'python-slugify>=4.0.0',
     'requests>=2.23.0',
-    'MarkupSafe<2.0.0',
     'PyInquirer>=1.0.3',
     'PyYAML>=5.3',
-    # 'ruamel.yaml>=0.16.0',
-    'boto3>=1.14.0',
-    'google-api-python-client>=1.9',
-    'azure-mgmt-compute>=13.0.0',
-    'azure-mgmt-subscription>=0.6.0',
+    'oyaml>=v1.0',
     'pyhcl>=0.4.4',
     'distro>=1.5.0',
     'rich>=3.3.0',
-    'dopy>=0.3.7',
     'pydantic>=1.6.0',
 ]
 
@@ -156,23 +72,23 @@ if sys.argv[-1] == 'readme':
     sys.exit()
 
 setup(
-    name='nukikata',
-    version=version,
+    name='tackle-box',
+    version=__version__,
     description=(
-        'Fork of cookiecutter - https://github.com/cookiecutter/cookiecutter '
-        'The most popular command-line utility to create projects from project '
-        'templates, e.g. creating a Python package project from a '
-        'Python package project template.'
+        'Plugins based DSL for creating workflows and generating code. '
+        'Works with cookiecutter templates and extends them with conditional '
+        'actions and custom actions that can be used modularly across repos.'
     ),
     long_description=readme,
     long_description_content_type='text/markdown',
-    author='Fork by Rob Cannon',
-    author_email='rob.cannon@insightinfrastructure.com',
-    url='https://github.com/insight-infrastructure/nukikata',
+    author='Rob Cannon',
+    author_email='robc.io.opensource@gmail.com',
+    url='https://github.com/insight-infrastructure/tackle-box',
     # packages=['cookiecutter'],
     packages=find_packages(exclude=['tests*', 'logo*', 'docs*', '.github*']),
     package_dir={'cookiecutter': 'cookiecutter'},
-    entry_points={'console_scripts': ['nuki = cookiecutter.__main__:main']},
+    entry_points={'console_scripts': ['tackle = cookiecutter.__main__:main']},
+    extras_require=get_provider_requirements(),
     include_package_data=True,
     python_requires='>=3.6',
     install_requires=INSTALL_REQUIREMENTS,

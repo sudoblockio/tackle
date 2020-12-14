@@ -4,7 +4,7 @@ include HISTORY.md
 include LICENSE
 include README.md
 
-include cookiecutter/operators/*
+recursive-include cookiecutter/providers *
 
 recursive-include tests *
 recursive-exclude * __pycache__
