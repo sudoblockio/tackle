@@ -1,5 +1,0 @@
-default_context:
-  list: cats
-  checkbox:
-    - dogs
-    - cats

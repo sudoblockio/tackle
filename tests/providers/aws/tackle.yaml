@@ -7,4 +7,4 @@ instance_types:
 instance:
   type: select
   message: What do you want?
-  choices: "{{ nuki.instance_types }}"
+  choices: "{{ instance_types }}"

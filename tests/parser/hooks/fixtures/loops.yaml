@@ -16,22 +16,22 @@ a_list_of_dicts:
     - chickens: yum
       things: stuff
 
-a_list_of_strings_nuki:
-  type: nukikata
+a_list_of_strings_tackle:
+  type: tackle
   context_file: list_of_strings.yaml
-  loop: "{{ nuki.a_list_of_strings }}"
-  existing_context: "{{ nuki }}"
+  loop: "{{ a_list_of_strings }}"
+  existing_context: "{{ tackle }}"
   no_input: true
-  chdir: nukis
+  chdir: tackles
 
-a_list_of_dicts_nuki:
-  type: nukikata
+a_list_of_dicts_tackle:
+  type: tackle
   context_file: list_of_dicts.yaml
-  loop: "{{ nuki.a_list_of_dicts }}"
-  existing_context: "{{ nuki }}"
+  loop: "{{ a_list_of_dicts }}"
+  existing_context: "{{ loops }}"
   no_input: true
-  chdir: nukis
+  chdir: loops
 
 after:
   type: pprint
-  statement: "{{ nuki }}"
+  statement: "{{ loops }}"

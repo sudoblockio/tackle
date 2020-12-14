@@ -1,8 +1,6 @@
-stuff: things
-
 azs:
   type: azure_regions
 
 print:
   type: print
-  statement: "{{ nuki.azs }}"
+  statement: "{{ azs }}"
