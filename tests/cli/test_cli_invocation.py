@@ -1,5 +1,3 @@
-
-
 """
 test_cookiecutter_invocation.
 
@@ -8,7 +6,6 @@ using the entry point set up for the package.
 """
 
 
-from tackle.main import tackle
 import os
 import subprocess
 import sys
@@ -22,17 +19,10 @@ FAKE_REPO = 'fake-repo-pre'
 def test_should_invoke_main(project_dir, change_dir_main_fixtures):
     """Should create a project and exit with 0 code on cli invocation."""
     exit_code = subprocess.check_call(
-        [
-            sys.executable,
-            '-m',
-            'tackle.cli.cli_parser',
-            'fake-repo-tmpl',
-            '--no-input',
-        ]
+        [sys.executable, '-m', 'tackle.cli.cli_parser', 'fake-repo-tmpl', '--no-input']
     )
     assert exit_code == 0
     assert os.path.isdir(project_dir)
-
 
 
 @pytest.fixture
@@ -53,7 +43,9 @@ def output_dir_flag(request):
     return request.param
 
 
-def test_cli_output_dir(mocker, cli_runner, output_dir_flag, output_dir, change_dir_main_fixtures):
+def test_cli_output_dir(
+    mocker, cli_runner, output_dir_flag, output_dir, change_dir_main_fixtures
+):
     """Test cli invocation with `output-dir` flag changes output directory."""
     mock = mocker.patch('tackle.cli.cli_parser.tackle')
 
@@ -63,8 +55,9 @@ def test_cli_output_dir(mocker, cli_runner, output_dir_flag, output_dir, change_
     assert mock.call_count == 1
 
 
-
-def test_default_user_config_overwrite(mocker, cli_runner, user_config_path, change_dir_main_fixtures):
+def test_default_user_config_overwrite(
+    mocker, cli_runner, user_config_path, change_dir_main_fixtures
+):
     """Test cli invocation ignores `config-file` if `default-config` passed."""
     mock = mocker.patch('tackle.cli.cli_parser.tackle')
 
@@ -157,14 +150,14 @@ cli_accept_hook_arg_testdata = [
     "accept_hooks_arg,user_input,expected", cli_accept_hook_arg_testdata
 )
 def test_cli_accept_hooks(
-        mocker,
-        cli_runner,
-        output_dir_flag,
-        output_dir,
-        accept_hooks_arg,
-        user_input,
-        expected,
-        change_dir_main_fixtures,
+    mocker,
+    cli_runner,
+    output_dir_flag,
+    output_dir,
+    accept_hooks_arg,
+    user_input,
+    expected,
+    change_dir_main_fixtures,
 ):
     """Test cli invocation works with `accept-hooks` option."""
     mock = mocker.patch('tackle.cli.cli_parser.tackle')
@@ -194,9 +187,8 @@ def test_cli_accept_hooks(
     # )
 
 
-
 def test_run_cookiecutter_on_overwrite_if_exists_and_replay(
-        mocker, cli_runner, overwrite_cli_flag, change_dir_main_fixtures
+    mocker, cli_runner, overwrite_cli_flag, change_dir_main_fixtures
 ):
     """Test cli invocation with `overwrite-if-exists` and `replay` flags."""
     mock = mocker.patch('tackle.cli.cli_parser.tackle')
