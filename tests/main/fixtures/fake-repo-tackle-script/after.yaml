@@ -1,0 +1,9 @@
+foo: bar
+friends:
+- cats
+- dogs
+print: "\n\n    cats\n    hats\n    \n\n\n    dogs\n    bags\n    \n"
+stuff:
+- hats
+- bags
+- computers

@@ -1,0 +1,29 @@
+---
+foo: bar
+
+
+friends:
+  type: stat
+  input:
+    - cats
+    - dogs
+
+stuff:
+  type: stat
+  input:
+    - hats
+    - bags
+    - computers
+
+print:
+  type: print
+  statement: |
+    {% for item in nuki.friends %}
+        {{ item }}
+        {{ nuki.stuff[loop.index0] }}
+    {% endfor %}
+
+after:
+  type: yaml
+  path: after.yaml
+  contents: "{{ tackle }}"
