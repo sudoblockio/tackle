@@ -9,7 +9,7 @@ from tackle.exceptions import InvalidZipRepository
 
 def mock_download():
     """Fake download function."""
-    with open('tests/files/fake-repo-tmpl.zip', 'rb') as zf:
+    with open('tests/fixtures/files/fake-repo-tmpl.zip', 'rb') as zf:
         chunk = zf.read(1024)
         while chunk:
             yield chunk
@@ -27,7 +27,7 @@ def test_unzip_local_file(mocker, tmpdir):
     clone_to_dir = tmpdir.mkdir('clone')
 
     output_dir = zipfile.unzip(
-        'tests/files/fake-repo-tmpl.zip', is_url=False, clone_to_dir=str(clone_to_dir)
+        'tests/fixtures/files/fake-repo-tmpl.zip', is_url=False, clone_to_dir=str(clone_to_dir)
     )
 
     assert output_dir.startswith(tempfile.gettempdir())
@@ -45,7 +45,7 @@ def test_unzip_protected_local_file_environment_password(mocker, tmpdir):
     clone_to_dir = tmpdir.mkdir('clone')
 
     output_dir = zipfile.unzip(
-        'tests/files/protected-fake-repo-tmpl.zip',
+        'tests/fixtures/files/protected-fake-repo-tmpl.zip',
         is_url=False,
         clone_to_dir=str(clone_to_dir),
         password='sekrit',
@@ -67,7 +67,7 @@ def test_unzip_protected_local_file_bad_environment_password(mocker, tmpdir):
 
     with pytest.raises(InvalidZipRepository):
         zipfile.unzip(
-            'tests/files/protected-fake-repo-tmpl.zip',
+            'tests/fixtures/files/protected-fake-repo-tmpl.zip',
             is_url=False,
             clone_to_dir=str(clone_to_dir),
             password='not-the-right-password',
@@ -86,7 +86,7 @@ def test_unzip_protected_local_file_user_password_with_noinput(mocker, tmpdir):
 
     with pytest.raises(InvalidZipRepository):
         zipfile.unzip(
-            'tests/files/protected-fake-repo-tmpl.zip',
+            'tests/fixtures/files/protected-fake-repo-tmpl.zip',
             is_url=False,
             clone_to_dir=str(clone_to_dir),
             no_input=True,
@@ -105,7 +105,7 @@ def test_unzip_protected_local_file_user_password(mocker, tmpdir):
     clone_to_dir = tmpdir.mkdir('clone')
 
     output_dir = zipfile.unzip(
-        'tests/files/protected-fake-repo-tmpl.zip',
+        'tests/fixtures/files/protected-fake-repo-tmpl.zip',
         is_url=False,
         clone_to_dir=str(clone_to_dir),
     )
@@ -130,7 +130,7 @@ def test_unzip_protected_local_file_user_bad_password(mocker, tmpdir):
 
     with pytest.raises(InvalidZipRepository):
         zipfile.unzip(
-            'tests/files/protected-fake-repo-tmpl.zip',
+            'tests/fixtures/files/protected-fake-repo-tmpl.zip',
             is_url=False,
             clone_to_dir=str(clone_to_dir),
         )
@@ -148,7 +148,7 @@ def test_empty_zip_file(mocker, tmpdir):
 
     with pytest.raises(InvalidZipRepository):
         zipfile.unzip(
-            'tests/files/empty.zip', is_url=False, clone_to_dir=str(clone_to_dir)
+            'tests/fixtures/files/empty.zip', is_url=False, clone_to_dir=str(clone_to_dir)
         )
 
 
@@ -164,7 +164,7 @@ def test_non_repo_zip_file(mocker, tmpdir):
 
     with pytest.raises(InvalidZipRepository):
         zipfile.unzip(
-            'tests/files/not-a-repo.zip', is_url=False, clone_to_dir=str(clone_to_dir)
+            'tests/fixtures/files/not-a-repo.zip', is_url=False, clone_to_dir=str(clone_to_dir)
         )
 
 
@@ -180,7 +180,7 @@ def test_bad_zip_file(mocker, tmpdir):
 
     with pytest.raises(InvalidZipRepository):
         zipfile.unzip(
-            'tests/files/bad-zip-file.zip', is_url=False, clone_to_dir=str(clone_to_dir)
+            'tests/fixtures/files/bad-zip-file.zip', is_url=False, clone_to_dir=str(clone_to_dir)
         )
 
 

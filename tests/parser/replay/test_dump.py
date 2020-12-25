@@ -4,7 +4,7 @@ import os
 
 import pytest
 
-from tackle.parser import replay
+from tackle.utils import replay
 
 
 @pytest.fixture

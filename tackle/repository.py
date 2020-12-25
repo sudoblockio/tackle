@@ -3,7 +3,7 @@ import os
 import re
 
 from tackle.exceptions import RepositoryNotFound, ContextFileNotFound
-from tackle.vcs import clone
+from tackle.utils.vcs import clone
 from tackle.utils.zipfile import unzip
 
 from typing import TYPE_CHECKING
@@ -153,7 +153,7 @@ def update_source(source: 'Source', settings: 'Settings', mode: 'Mode',) -> 'Sou
         unzipped_dir = unzip(
             zip_uri=source.template,
             is_url=is_repo_url(source.template),
-            clone_to_dir=settings.cookiecutters_dir,
+            clone_to_dir=settings.tackle_dir,
             no_input=mode.no_input,
             password=source.password,
         )
@@ -163,7 +163,7 @@ def update_source(source: 'Source', settings: 'Settings', mode: 'Mode',) -> 'Sou
         cloned_repo = clone(
             repo_url=source.template,
             checkout=source.checkout,
-            clone_to_dir=settings.cookiecutters_dir,
+            clone_to_dir=settings.tackle_dir,
             no_input=mode.no_input,
         )
         repository_candidates = [cloned_repo]
@@ -171,7 +171,7 @@ def update_source(source: 'Source', settings: 'Settings', mode: 'Mode',) -> 'Sou
     else:
         repository_candidates = [
             source.template,
-            os.path.join(settings.cookiecutters_dir, source.template),
+            os.path.join(settings.tackle_dir, source.template),
         ]
         source.cleanup = False
 
