@@ -75,7 +75,7 @@ def make_test_repo(name, multiple_hooks=False):
 class TestFindHooks(object):
     """Class to unite find hooks related tests in one place."""
 
-    repo_path = 'tests/test-hooks'
+    repo_path = 'test-hooks'
 
     def setup_method(self, method):
         """Find hooks related tests setup fixture."""
@@ -96,9 +96,9 @@ class TestFindHooks(object):
             actual_hook_path = hooks.find_hook('post_gen_project')
             assert expected_post == actual_hook_path[0]
 
-    def test_no_hooks(self):
+    def test_no_hooks(self, change_dir_main_fixtures):
         """`find_hooks` should return None if the hook could not be found."""
-        with tackle.utils.context_manager.work_in('tests/legacy/fixtures/fake-repo'):
+        with tackle.utils.context_manager.work_in('fake-repo'):
             assert None is hooks.find_hook('pre_gen_project')
 
     def test_unknown_hooks_dir(self):
@@ -115,8 +115,8 @@ class TestFindHooks(object):
 class TestExternalHooks(object):
     """Class to unite tests for hooks with different project paths."""
 
-    repo_path = os.path.abspath('tests/test-hooks/')
-    hooks_path = os.path.abspath('tests/test-hooks/hooks')
+    repo_path = os.path.abspath('test-hooks/')
+    hooks_path = os.path.abspath('test-hooks/hooks')
 
     def setup_method(self, method):
         """External hooks related tests setup fixture."""
@@ -132,6 +132,8 @@ class TestExternalHooks(object):
             os.remove('shell_post.txt')
         if os.path.exists('shell_pre.txt'):
             os.remove('shell_pre.txt')
+        if os.path.exists('context_post.txt'):
+            os.remove('context_post.txt')
         if os.path.exists('tests/shell_post.txt'):
             os.remove('tests/shell_post.txt')
         if os.path.exists('tests/test-hooks/input{{hooks}}/python_pre.txt'):
@@ -148,9 +150,8 @@ class TestExternalHooks(object):
 
     def test_run_script_cwd(self):
         """Change directory before running hook."""
-        hooks.run_script(os.path.join(self.hooks_path, self.post_hook), 'tests')
-        assert os.path.isfile('tests/shell_post.txt')
-        assert 'tests' not in os.getcwd()
+        hooks.run_script(os.path.join(self.hooks_path, self.post_hook))
+        assert os.path.isfile('shell_post.txt')
 
     def test_run_script_with_context(self):
         """Execute a hook script, passing a context."""
@@ -174,11 +175,11 @@ class TestExternalHooks(object):
 
         hooks.run_script_with_context(
             os.path.join(self.hooks_path, self.post_hook),
-            'tests',
+            '.',
             {'cookiecutter': {'file': 'context_post.txt'}},
         )
-        assert os.path.isfile('tests/context_post.txt')
-        assert 'tests' not in os.getcwd()
+        assert os.path.isfile('context_post.txt')
+        # assert 'tests' not in os.getcwd()
 
     def test_run_hook(self):
         """Execute hook from specified template in specified output \

@@ -8,6 +8,7 @@ import codecs
 import os
 
 import pytest
+from _collections import OrderedDict
 
 from tackle import main
 
@@ -18,7 +19,7 @@ from tackle import main
 )
 def template(request):
     """Fixture. Allows to split pre and post hooks test directories."""
-    return 'fixtures/test-extensions/' + request.param
+    return 'test-extensions/' + request.param
 
 
 @pytest.fixture
@@ -30,22 +31,20 @@ def output_dir(tmpdir):
 @pytest.fixture(autouse=True)
 def modify_syspath(monkeypatch):
     """Fixture. Make sure that the custom extension can be loaded."""
-    monkeypatch.syspath_prepend('legacy/fixtures/test-extensions/hello_extension')
+    monkeypatch.syspath_prepend('test-extensions/hello_extension')
 
 
-def test_hook_with_extension(monkeypatch, template, output_dir):
+def test_hook_with_extension(change_dir_main_fixtures, template, output_dir):
     """Verify custom Jinja2 extension correctly work in hooks and file rendering.
 
     Each file in hooks has simple tests inside and will raise error if not
     correctly rendered.
     """
-    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
-
     context = main.tackle(
         template,
         no_input=True,
         output_dir=output_dir,
-        extra_context={'project_slug': 'foobar', 'name': 'Cookiemonster'},
+        overwrite_inputs={'project_slug': 'foobar', 'name': 'Cookiemonster'},
     )
 
     readme_file = os.path.join(os.path.join(output_dir, 'foobar', 'README.rst'))
@@ -53,4 +52,4 @@ def test_hook_with_extension(monkeypatch, template, output_dir):
         readme = f.read().strip()
     assert readme == 'Hello Cookiemonster!'
 
-    assert type(context) == dict
+    assert type(context) == OrderedDict
