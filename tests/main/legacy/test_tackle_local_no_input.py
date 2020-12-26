@@ -5,7 +5,7 @@ verify result with different settings in `cookiecutter.json`.
 """
 import os
 import textwrap
-
+from _collections import OrderedDict
 import pytest
 
 import tackle.utils.paths
@@ -36,15 +36,13 @@ def remove_additional_dirs(monkeypatch, request):
 # @pytest.mark.parametrize('path', ['fixtures/fake-repo-pre/',
 # 'fixtures/fake-repo-pre'])
 @pytest.mark.usefixtures('clean_system', 'remove_additional_dirs')
-def test_cookiecutter_no_input_return_project_dir(monkeypatch):
+def test_cookiecutter_no_input_return_project_dir(change_dir_main_fixtures):
     """Verify `cookiecutter` create project dir on input with or without slash."""
-    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
+    context = main.tackle('fake-repo-pre', no_input=True)
 
-    context = main.tackle('legacy/fixtures/fake-repo-pre', no_input=True)
-
-    assert type(context) == dict
-    assert os.path.isdir('legacy/fixtures/fake-repo-pre/{{cookiecutter.repo_name}}')
-    assert not os.path.isdir('legacy/fixtures/fake-repo-pre/fake-project')
+    assert type(context) == OrderedDict
+    assert os.path.isdir('fake-repo-pre/{{cookiecutter.repo_name}}')
+    assert not os.path.isdir('fake-repo-pre/fake-project')
 
     # project_dir = os.path.join(os.path.abspath(os.path.curdir), 'fake-project')
     # x = os.listdir(project_dir)
@@ -56,35 +54,30 @@ def test_cookiecutter_no_input_return_project_dir(monkeypatch):
 
 
 @pytest.mark.usefixtures('clean_system', 'remove_additional_dirs')
-def test_cookiecutter_no_input_extra_context(monkeypatch):
+def test_cookiecutter_no_input_extra_context(change_dir_main_fixtures):
     """Verify `cookiecutter` accept `extra_context` argument."""
-    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
     main.tackle(
-        'legacy/fixtures/fake-repo-pre',
+        'fake-repo-pre',
         no_input=True,
-        extra_context={'repo_name': 'fake-project-extra'},
+        overwrite_inputs={'repo_name': 'fake-project-extra'},
     )
     assert os.path.isdir('fake-project-extra')
 
 
 @pytest.mark.usefixtures('clean_system', 'remove_additional_dirs')
-def test_cookiecutter_templated_context(monkeypatch):
+def test_cookiecutter_templated_context(change_dir_main_fixtures):
     """Verify Jinja2 templating correctly works in `cookiecutter.json` file."""
-    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
-
-    main.tackle('legacy/fixtures/fake-repo-tmpl', no_input=True)
+    main.tackle('fake-repo-tmpl', no_input=True)
     assert os.path.isdir('fake-project-templated')
 
 
 @pytest.mark.usefixtures('clean_system', 'remove_additional_dirs')
-def test_cookiecutter_no_input_return_rendered_file(monkeypatch):
+def test_cookiecutter_no_input_return_rendered_file(change_dir_main_fixtures):
     """Verify Jinja2 templating correctly works in `cookiecutter.json` file."""
-    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
-
-    context = main.tackle('legacy/fixtures/fake-repo-pre', no_input=True)
+    context = main.tackle('fake-repo-pre', no_input=True)
     project_dir = os.path.join(os.path.abspath(os.path.curdir), 'fake-project')
 
-    assert type(context) == dict
+    assert type(context) == OrderedDict
     assert project_dir == os.path.abspath('fake-project')
     with open(os.path.join(project_dir, 'README.rst')) as fh:
         contents = fh.read()
@@ -92,15 +85,13 @@ def test_cookiecutter_no_input_return_rendered_file(monkeypatch):
 
 
 @pytest.mark.usefixtures('clean_system', 'remove_additional_dirs')
-def test_cookiecutter_dict_values_in_context(monkeypatch):
+def test_cookiecutter_dict_values_in_context(change_dir_main_fixtures):
     """Verify configured dictionary from `cookiecutter.json` correctly unpacked."""
-    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
-
-    context = main.tackle('legacy/fixtures/fake-repo-dict', no_input=True)
+    context = main.tackle('fake-repo-dict', no_input=True)
     project_dir = os.path.abspath(os.path.curdir)
 
     assert 'fake-project-dict' in os.listdir(project_dir)
-    assert type(context) == dict
+    assert type(context) == OrderedDict
 
     project_dir = os.path.join(project_dir, 'fake-project-dict')
 
@@ -150,16 +141,12 @@ def test_cookiecutter_dict_values_in_context(monkeypatch):
 
 
 @pytest.mark.usefixtures('clean_system', 'remove_additional_dirs')
-def test_cookiecutter_template_cleanup(monkeypatch, mocker):
+def test_cookiecutter_template_cleanup(change_dir_main_fixtures, mocker):
     """Verify temporary folder for zip unpacking dropped."""
-    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
-
     mocker.patch('tempfile.mkdtemp', return_value='fake-tmp', autospec=True)
 
     mocker.patch(
-        'cookiecutter.utils.prompt_delete.prompt_and_delete',
-        return_value=True,
-        autospec=True,
+        'tackle.utils.prompts.prompt_and_delete', return_value=True, autospec=True,
     )
 
     main.tackle('files/fake-repo-tmpl.zip', no_input=True)

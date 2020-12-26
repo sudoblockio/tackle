@@ -26,6 +26,8 @@ def _delete_dirs(tmpdir):
     for directory in directories_to_delete:
         if os.path.exists(directory):
             tackle.utils.paths.rmtree(directory)
+    if os.path.exists('shell_post.txt'):
+        os.remove('shell_post.txt')
 
 
 @pytest.fixture(scope='function')

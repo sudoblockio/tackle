@@ -8,30 +8,24 @@ import os
 
 import pytest
 
-import tackle.utils.paths
+from tackle.utils import paths
 from tackle import exceptions
 from tackle import generate
+from tackle.main import tackle
 
 
 @pytest.fixture(scope='function')
-def remove_output_folder(monkeypatch, request):
+def remove_output_folder(change_dir_main_fixtures, request):
     """Remove the output folder after test."""
-    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
     yield
     if os.path.exists('output_folder'):
-        tackle.utils.paths.rmtree('output_folder')
+        paths.rmtree('output_folder')
 
 
 @pytest.mark.usefixtures('clean_system', 'remove_output_folder')
-def test_output_folder(monkeypatch):
+def test_output_folder(change_dir_main_fixtures):
     """Tests should correctly create content, as output_folder does not yet exist."""
-    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
-    context = tackle.generate.generate_context(
-        context_file='legacy/fixtures/test-output-folder/cookiecutter.json'
-    )
-    generate.generate_files(
-        context=context, repo_dir='legacy/fixtures/test-output-folder'
-    )
+    tackle('test-output-folder', no_input=True)
 
     something = """Hi!
 My name is Audrey Greenfeld.
@@ -48,18 +42,9 @@ It is 2014."""
 
 
 @pytest.mark.usefixtures('clean_system', 'remove_output_folder')
-def test_exception_when_output_folder_exists(monkeypatch):
+def test_exception_when_output_folder_exists(change_dir_main_fixtures):
     """Tests should raise error as output folder created before `generate_files`."""
-    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
-
-    context = tackle.generate.generate_context(
-        context_file='legacy/fixtures/test-output-folder/cookiecutter.json'
-    )
-    output_folder = context['cookiecutter']['test_name']
-
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
+    if not os.path.exists('output_folder'):
+        os.makedirs('output_folder')
     with pytest.raises(exceptions.OutputDirExistsException):
-        generate.generate_files(
-            context=context, repo_dir='legacy/fixtures/test-output-folder'
-        )
+        tackle('test-output-folder', no_input=True)

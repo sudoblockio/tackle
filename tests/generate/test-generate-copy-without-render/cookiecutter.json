@@ -1,0 +1,10 @@
+{
+  "repo_name": "test_copy_without_render",
+  "render_test": "I have been rendered!",
+  "_copy_without_render": [
+    "*not-rendered",
+    "rendered/not_rendered.yml",
+    "*.txt",
+    "{{cookiecutter.repo_name}}-rendered/README.md"
+    ]
+}
