@@ -12,3 +12,5 @@ def test_special_variables(change_dir, tmpdir):
     output = tackle('test-special-variables', no_input=True, output_dir=str(tmpdir))
 
     assert output['calling_directory'] == os.path.dirname(__file__)
+    assert os.path.basename(output['cwd']) == 'test-special-variables'
+    assert len(output) > 12

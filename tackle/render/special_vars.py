@@ -11,22 +11,22 @@ if TYPE_CHECKING:
     from tackle.models import Context
 
 
-def get_vars(c: 'Context'):
+def get_vars(context: 'Context'):
     """Get special variables."""
     vars = {
         'cwd': os.getcwd(),
-        'key': c.context_key,
-        'this': c.output_dict,
         'system': platform.system(),
         'platform': platform.platform(),
         'release': platform.release(),
         'version': platform.version(),
         'processor': platform.processor(),
         'architecture': platform.architecture(),
-        'calling_directory': c.calling_directory,
-        'tackle_gen': c.tackle_gen,
+        'calling_directory': context.calling_directory,
+        'key': context.context_key,
+        'tackle_gen': context.tackle_gen,
+        'this': context.output_dict,
+        'output': context.output_dict,
     }
-
     if platform.system() == 'Linux':
         linux_id_name, linux_version, linux_codename = distro.linux_distribution(
             full_distribution_name=False

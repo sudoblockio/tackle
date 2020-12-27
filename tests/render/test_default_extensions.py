@@ -1,6 +1,7 @@
 """Verify Jinja2 filters/extensions are available from pre-gen/post-gen hooks."""
 import os
 
+from _collections import OrderedDict
 import freezegun
 import pytest
 
@@ -16,17 +17,10 @@ def freeze():
     freezer.stop()
 
 
-def test_jinja2_time_extension(monkeypatch, tmpdir):
+def test_jinja2_time_extension(change_dir_main_fixtures, tmpdir):
     """Verify Jinja2 time extension work correctly."""
-    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
-
-    context = tackle(
-        'legacy/fixtures/test-extensions/default/',
-        no_input=True,
-        output_dir=str(tmpdir),
-    )
-
-    assert type(context) == dict
+    context = tackle('test-extensions/default/', no_input=True, output_dir=str(tmpdir))
+    assert type(context) == OrderedDict
 
     changelog_file = os.path.join(tmpdir, os.listdir(tmpdir)[0], 'HISTORY.rst')
     assert os.path.isfile(changelog_file)
@@ -46,16 +40,9 @@ def test_jinja2_time_extension(monkeypatch, tmpdir):
     assert expected_lines == changelog_lines
 
 
-def test_jinja2_slugify_extension(monkeypatch, tmpdir):
+def test_jinja2_slugify_extension(change_dir_main_fixtures, tmpdir):
     """Verify Jinja2 slugify extension work correctly."""
-    cwd = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
-    monkeypatch.chdir(cwd)
-
-    context = tackle(
-        'legacy/fixtures/test-extensions/default/',
-        no_input=True,
-        output_dir=str(tmpdir),
-    )
+    context = tackle('test-extensions/default/', no_input=True, output_dir=str(tmpdir))
 
     assert os.listdir(tmpdir)[0] == "it-s-slugified-foobar"
     # assert context == OrderedDict(
