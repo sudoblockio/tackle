@@ -6,10 +6,11 @@ from tackle.models import Settings
 
 from tackle.utils.paths import expand_path
 from tackle.utils.reader import read_config_file
+from tackle.exceptions import ConfigDoesNotExistException
 
 logger = logging.getLogger(__name__)
 
-USER_CONFIG_PATH = os.path.expanduser('~/.cookiecutterrc')
+USER_CONFIG_PATH = os.path.expanduser('~/.tacklerc')
 
 
 def get_settings(
@@ -27,7 +28,7 @@ def get_settings(
     If a path to a ``config_file`` is given, that is different from the default
     location, load the user config from that.
 
-    Otherwise look up the config file path in the ``COOKIECUTTER_CONFIG``
+    Otherwise look up the config file path in the ``TACKLE_CONFIG``
     environment variable. If set, load the config from this path. This will
     raise an error if the specified path is not valid.
 
@@ -45,12 +46,16 @@ def get_settings(
     # Load the given config file
     if config_file and config_file is not USER_CONFIG_PATH:
         logger.debug("Loading custom config from %s.", config_file)
-        config_file_dict = read_config_file(config_file)
-        return Settings(**config_file_dict, _env_file=env_file)
-
+        if os.path.isfile(config_file):
+            config_file_dict = read_config_file(config_file)
+            return Settings(**config_file_dict, _env_file=env_file)
+        else:
+            raise ConfigDoesNotExistException(
+                f'Config file {config_file} does not exist.'
+            )
     try:
         # Does the user set up a config environment variable?
-        env_config_file = os.environ['COOKIECUTTER_CONFIG']
+        env_config_file = os.environ['TACKLE_CONFIG']
     except KeyError:
         # Load an optional user config if it exists
         # otherwise return the defaults

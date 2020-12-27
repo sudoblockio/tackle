@@ -1,10 +1,12 @@
 """Collection of tests around loading cookiecutter config."""
+import pytest
 import os
 
-import pytest
+from yaml.scanner import ScannerError
 
-from tackle import config
-from tackle.exceptions import ConfigDoesNotExistException, InvalidConfiguration
+from tackle import utils
+from tackle.exceptions import ConfigDoesNotExistException
+from tackle.parser.settings import get_settings
 
 
 def test_merge_configs():
@@ -46,14 +48,14 @@ def test_merge_configs():
         },
     }
 
-    assert config.merge_configs(default, user_config) == expected_config
+    assert utils.merge_configs(default, user_config) == expected_config
 
 
-def test_get_config():
+def test_get_config(change_dir):
     """Verify valid config opened and rendered correctly."""
-    conf = config.get_config('tests/config/test-config/valid-config.yaml')
+    conf = get_settings(config_file='test-config/valid-config.yaml')
     expected_conf = {
-        'cookiecutters_dir': '/home/example/some-path-to-templates',
+        'tackle_dir': '/home/example/some-path-to-templates',
         'replay_dir': '/home/example/some-path-to-replay-files',
         'default_context': {
             'full_name': 'Firstname Lastname',
@@ -67,7 +69,9 @@ def test_get_config():
             'helloworld': 'https://github.com/hackebrot/helloworld',
         },
     }
-    assert conf == expected_conf
+    assert conf.dict()['abbreviations'] == expected_conf['abbreviations']
+    assert conf.dict()['default_context'] == expected_conf['default_context']
+    assert conf.dict()['replay_dir'] == expected_conf['replay_dir']
 
 
 def test_get_config_does_not_exist():
@@ -75,29 +79,25 @@ def test_get_config_does_not_exist():
     attempting to get a non-existent config file."""
     expected_error_msg = 'Config file tests/not-exist.yaml does not exist.'
     with pytest.raises(ConfigDoesNotExistException) as exc_info:
-        config.get_config('tests/not-exist.yaml')
+        get_settings('tests/not-exist.yaml')
     assert str(exc_info.value) == expected_error_msg
 
 
-def test_invalid_config():
+#
+def test_invalid_config(change_dir):
     """An invalid config file should raise an `InvalidConfiguration` \
     exception."""
-    with pytest.raises(InvalidConfiguration) as exc_info:
-        config.get_config('tests/config/test-config/invalid-config.yaml')
-
-    expected_error_msg = (
-        'Unable to parse YAML file tests/config/test-config/invalid-config.yaml. Error:'
-    )
-    assert expected_error_msg in str(exc_info.value)
+    with pytest.raises(ScannerError):
+        get_settings('test-config/invalid-config.yaml')
 
 
-def test_get_config_with_defaults():
+def test_get_config_with_defaults(change_dir):
     """A config file that overrides 1 of 3 defaults."""
-    conf = config.get_config('tests/config/test-config/valid-partial-config.yaml')
-    default_cookiecutters_dir = os.path.expanduser('~/.cookiecutters/')
-    default_replay_dir = os.path.expanduser('~/.cookiecutter_replay/')
+    conf = get_settings('test-config/valid-partial-config.yaml')
+    default_cookiecutters_dir = os.path.expanduser('~/.tackle/')
+    default_replay_dir = os.path.expanduser('~/.tackle/replay')
     expected_conf = {
-        'cookiecutters_dir': default_cookiecutters_dir,
+        'tackle_dir': default_cookiecutters_dir,
         'replay_dir': default_replay_dir,
         'default_context': {
             'full_name': 'Firstname Lastname',
@@ -110,4 +110,6 @@ def test_get_config_with_defaults():
             'bb': 'https://bitbucket.org/{0}',
         },
     }
-    assert conf == expected_conf
+    assert conf.dict()['default_context'] == expected_conf['default_context']
+    assert conf.dict()['abbreviations'] == expected_conf['abbreviations']
+    assert conf.dict()['replay_dir'] == expected_conf['replay_dir']

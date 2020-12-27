@@ -4,14 +4,15 @@ import shutil
 
 import pytest
 
-from tackle import config
-from tackle.exceptions import InvalidConfiguration
+from yaml.scanner import ScannerError
+from tackle import models
+from tackle.parser.settings import get_settings
 
 
 @pytest.fixture(scope='module')
 def user_config_path():
     """Fixture. Return user config path for current user."""
-    return os.path.expanduser('~/.cookiecutterrc')
+    return os.path.expanduser('~/.tacklerc')
 
 
 @pytest.fixture(scope='function')
@@ -19,20 +20,20 @@ def back_up_rc(user_config_path):
     """
     Back up an existing cookiecutter rc and restore it after the test.
 
-    If ~/.cookiecutterrc is pre-existing, move it to a temp location
+    If ~/.tacklerc is pre-existing, move it to a temp location
     """
-    user_config_path_backup = os.path.expanduser('~/.cookiecutterrc.backup')
+    user_config_path_backup = os.path.expanduser('~/.tacklerc.backup')
 
     if os.path.exists(user_config_path):
         shutil.copy(user_config_path, user_config_path_backup)
         os.remove(user_config_path)
 
     yield
-    # Remove the ~/.cookiecutterrc that has been created in the test.
+    # Remove the ~/.tacklerc that has been created in the test.
     if os.path.exists(user_config_path):
         os.remove(user_config_path)
 
-    # If it existed, restore the original ~/.cookiecutterrc.
+    # If it existed, restore the original ~/.tacklerc.
     if os.path.exists(user_config_path_backup):
         shutil.copy(user_config_path_backup, user_config_path)
         os.remove(user_config_path_backup)
@@ -47,7 +48,7 @@ def custom_config():
             'email': 'firstname.lastname@gmail.com',
             'github_username': 'example',
         },
-        'cookiecutters_dir': '/home/example/some-path-to-templates',
+        'tackle_dir': '/home/example/some-path-to-templates',
         'replay_dir': '/home/example/some-path-to-replay-files',
         'abbreviations': {
             'gh': 'https://github.com/{0}.git',
@@ -59,70 +60,66 @@ def custom_config():
 
 
 @pytest.mark.usefixtures('back_up_rc')
-def test_get_user_config_valid(user_config_path, custom_config):
+def test_get_user_config_valid(user_config_path, custom_config, change_dir):
     """Validate user config correctly parsed if exist and correctly formatted."""
-    shutil.copy('tests/config/test-config/valid-config.yaml', user_config_path)
-    conf = config.get_user_config()
+    shutil.copy('test-config/valid-config.yaml', user_config_path)
+    conf = get_settings()
 
-    assert conf == custom_config
+    assert conf.dict()['abbreviations'] == custom_config['abbreviations']
 
 
 @pytest.mark.usefixtures('back_up_rc')
-def test_get_user_config_invalid(user_config_path):
+def test_get_user_config_invalid(user_config_path, change_dir):
     """Validate `InvalidConfiguration` raised when provided user config malformed."""
-    shutil.copy('tests/config/test-config/invalid-config.yaml', user_config_path)
-    with pytest.raises(InvalidConfiguration):
-        config.get_user_config()
+    shutil.copy('test-config/invalid-config.yaml', user_config_path)
+    with pytest.raises(ScannerError):
+        get_settings()
 
 
-@pytest.mark.usefixtures('back_up_rc')
-def test_get_user_config_nonexistent():
-    """Validate default app config returned, if user does not have own config."""
-    assert config.get_user_config() == config.DEFAULT_CONFIG
+# @pytest.mark.usefixtures('back_up_rc')
+# def test_get_user_config_nonexistent():
+#     """Validate default app config returned, if user does not have own config."""
+#     assert get_settings() == get_settings().DEFAULT_CONFIG
 
 
 @pytest.fixture
 def custom_config_path():
     """Fixture. Return path to custom user config for tests."""
-    return 'tests/config/test-config/valid-config.yaml'
+    return 'test-config/valid-config.yaml'
 
 
-def test_specify_config_path(mocker, custom_config_path, custom_config):
+def test_specify_config_path(custom_config_path, custom_config):
     """Validate provided custom config path should be respected and parsed."""
-    spy_get_config = mocker.spy(config, 'get_config')
-
-    user_config = config.get_user_config(custom_config_path)
-    spy_get_config.assert_called_once_with(custom_config_path)
-
-    assert user_config == custom_config
+    user_config = get_settings(custom_config_path)
+    assert user_config.dict()['tackle_dir'] == custom_config['tackle_dir']
 
 
 def test_default_config_path(user_config_path):
     """Validate app configuration. User config path should match default path."""
-    assert config.USER_CONFIG_PATH == user_config_path
+    assert models.USER_CONFIG_PATH == user_config_path
 
 
 def test_default_config_from_env_variable(
     monkeypatch, custom_config_path, custom_config
 ):
     """Validate app configuration. User config path should be parsed from sys env."""
-    monkeypatch.setenv('COOKIECUTTER_CONFIG', custom_config_path)
+    monkeypatch.setenv('TACKLE_CONFIG', custom_config_path)
 
-    user_config = config.get_user_config()
-    assert user_config == custom_config
+    user_config = get_settings()
+    assert user_config.dict()['tackle_dir'] == custom_config['tackle_dir']
+    assert user_config.dict()['abbreviations'] == custom_config['abbreviations']
+    assert user_config.dict()['replay_dir'] == custom_config['replay_dir']
 
 
-def test_force_default_config(mocker, custom_config_path):
+def test_force_default_config(custom_config_path, custom_config, change_dir):
     """Validate `default_config=True` should ignore provided custom user config."""
-    spy_get_config = mocker.spy(config, 'get_config')
-
-    user_config = config.get_user_config(custom_config_path, default_config=True)
-
-    assert user_config == config.DEFAULT_CONFIG
-    assert not spy_get_config.called
+    user_config = get_settings(custom_config_path, default_config=True)
+    assert user_config.dict()['tackle_dir'] != custom_config['tackle_dir']
+    assert user_config.dict()['abbreviations'] != custom_config['abbreviations']
+    assert user_config.dict()['replay_dir'] != custom_config['replay_dir']
 
 
-def test_expand_user_for_directories_in_config(monkeypatch):
+def test_expand_user_for_directories_in_config(monkeypatch, change_dir):
     """Validate user pointers expanded in user configs."""
 
     def _expanduser(path):
@@ -130,19 +127,19 @@ def test_expand_user_for_directories_in_config(monkeypatch):
 
     monkeypatch.setattr('os.path.expanduser', _expanduser)
 
-    config_file = 'tests/config/test-config/config-expand-user.yaml'
+    config_file = 'test-config/config-expand-user.yaml'
 
-    user_config = config.get_user_config(config_file)
-    assert user_config['replay_dir'] == 'Users/bob/replay-files'
-    assert user_config['cookiecutters_dir'] == 'Users/bob/templates'
+    user_config = get_settings(config_file)
+    assert user_config.replay_dir == 'Users/bob/replay-files'
+    assert user_config.tackle_dir == 'Users/bob/templates'
 
 
-def test_expand_vars_for_directories_in_config(monkeypatch):
+def test_expand_vars_for_directories_in_config(monkeypatch, change_dir):
     """Validate environment variables expanded in user configs."""
     monkeypatch.setenv('COOKIES', 'Users/bob/cookies')
 
-    config_file = 'tests/config/test-config/config-expand-vars.yaml'
+    config_file = 'test-config/config-expand-vars.yaml'
 
-    user_config = config.get_user_config(config_file)
-    assert user_config['replay_dir'] == 'Users/bob/cookies/replay-files'
-    assert user_config['cookiecutters_dir'] == 'Users/bob/cookies/templates'
+    user_config = get_settings(config_file)
+    assert user_config.replay_dir == 'Users/bob/cookies/replay-files'
+    assert user_config.tackle_dir == 'Users/bob/cookies/templates'
