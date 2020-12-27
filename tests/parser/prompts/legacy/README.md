@@ -1,0 +1,1 @@
+Removing these tests as prompts are now done through PyInquirer which is a whole different can of worms.
