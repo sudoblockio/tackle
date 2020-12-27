@@ -1,0 +1,25 @@
+# -*- coding: utf-8 -*-
+
+"""Tests dict input objects for `cookiecutter.operator.checkbox` module."""
+from tackle.main import tackle
+
+
+# TODO: Need to properly test this with pty. Tests don't cover now
+def test_operator_checkbox_dict_ok(change_dir):
+    """Verify the operator call works successfully."""
+    context_dict_ok = tackle('.', context_file='dict_ok.yaml', no_input=True)
+    assert context_dict_ok
+
+
+def test_operator_checkbox_dict_index(change_dir):
+    """Verify the operator call works successfully."""
+    context_string_ok = tackle('.', context_file='dict_index.yaml', no_input=True)
+
+    assert context_string_ok
+
+
+def test_operator_checkbox_string_ok(change_dir):
+    """Verify the operator call works successfully."""
+    context_dict_ok = tackle('.', context_file='string_ok.yaml', no_input=True)
+
+    assert context_dict_ok

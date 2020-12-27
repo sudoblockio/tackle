@@ -1,0 +1,12 @@
+input:
+  type: var
+  input:
+    foo: bar
+    baz:
+      - bing
+      - ding
+
+write:
+  type: toml
+  path: writing.toml
+  contents: "{{ input }}"

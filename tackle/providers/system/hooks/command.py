@@ -45,9 +45,7 @@ class CommandHook(BaseHook):
     command: str
 
     def execute(self):
-        p = subprocess.Popen(
-            self.command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-        )
+        p = subprocess.Popen(self.command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         output, err = p.communicate()
 
         if err:

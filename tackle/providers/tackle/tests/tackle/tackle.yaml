@@ -1,0 +1,14 @@
+shell:
+  type: tackle
+  template: https://github.com/insight-infrastructure/tackle-box
+  directory: tackle/providers/tackle/tests
+  existing_context:
+    foo: bing
+
+#this:
+#  type: tackle
+#  template: https://github.com/insight-w3f/terraform-polkadot-aws-network
+#  checkout: nuki-init
+#  existing_context:
+#    region: us-east-1
+#  chdir: ~/.cookiecutters/nukikata-installs

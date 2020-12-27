@@ -1,0 +1,11 @@
+shell:
+  type: command
+  command: |
+    ls
+    echo stuff
+
+#cmd:
+#  type: command
+#  command: |
+#    wget https://releases.hashicorp.com/terraform/0.12.23/terraform_0.12.23_linux_amd64.zip -O /tmp/terraform.zip
+#    unzip -o /tmp/terraform.zip -d /tmp/

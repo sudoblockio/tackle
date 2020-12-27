@@ -1,8 +1,0 @@
-stuff: things
-
-instance_types:
-  type: digitalocean_instance_types
-  region: nyc1
-  instance_families:
-    - g
-    - s

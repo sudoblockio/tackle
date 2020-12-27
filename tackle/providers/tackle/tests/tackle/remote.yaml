@@ -1,0 +1,6 @@
+shell:
+  type: tackle
+#  template: https://github.com/robcxyz/tackle-remote-fixture
+  template: https://github.com/pydanny/cookiecutter-djangopackage
+  checkout: develop
+

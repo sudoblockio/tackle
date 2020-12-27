@@ -81,7 +81,7 @@ class TomlHook(BaseHook):
             # mode = self.mode or 'r'
             # with open(self.path, mode) as f:
             #     self.contents = toml.loads(f)
-            self.contents = toml.loads(self.path)
+            self.contents = toml.load(self.path)
 
     def _modify_dicts(self):
         if self.remove:

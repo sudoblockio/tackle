@@ -8,7 +8,7 @@ import logging
 from typing import Dict
 
 from tackle.models import BaseHook
-import tackle as cc
+import tackle as tkl
 
 logger = logging.getLogger(__name__)
 
@@ -27,9 +27,9 @@ class BlockHook(BaseHook):
     items: Dict
 
     def execute(self):
-        return cc.prompt.prompt_for_config(
+        return tkl.parser.prep_context.prompt_for_config(
             context={self.context_key: self.items},
             no_input=self.no_input,
             context_key=self.context_key,
-            existing_context=self.cc_dict,
+            existing_context=self.input_dict,
         )

@@ -35,6 +35,7 @@ class InquirerCheckboxHook(BaseHook):
     index: bool = False
     default: Any = None
     choices: Union[List[str], List[Dict]]
+    checked: bool = False
     name: str = 'tmp'
     message: str = None
 
@@ -96,6 +97,7 @@ class InquirerCheckboxHook(BaseHook):
             'name': self.name,
             'message': self.message,
             'choices': self.choices,
+            'checked': self.checked,
         }
         if self.default:
             question.update({'default': self.default})

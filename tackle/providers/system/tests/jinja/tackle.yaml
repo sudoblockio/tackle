@@ -1,0 +1,7 @@
+foo: bar
+
+jinja:
+  type: jinja
+  template_path: templates/things.py.j2
+  output_path: things.py
+  extra_context: "{{ tackle }}"

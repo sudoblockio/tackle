@@ -49,11 +49,11 @@ def find_hook(hook_name, hooks_dir='hooks'):
     :param hooks_dir: The hook directory in the template
     :return: The absolute path to the hook script or None
     """
-    logger.debug('hooks_dir is %s', os.path.abspath(hooks_dir))
-
     if not os.path.isdir(hooks_dir):
         logger.debug('No hooks/dir in template_dir')
         return None
+
+    logger.debug('hooks_dir is %s', os.path.abspath(hooks_dir))
 
     scripts = []
     for hook_file in os.listdir(hooks_dir):

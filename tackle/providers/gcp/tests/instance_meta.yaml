@@ -1,0 +1,4 @@
+instance_types:
+  type: gcp_instance_types
+  zone: us-east1-a
+  gcp_project: nukikata-ci

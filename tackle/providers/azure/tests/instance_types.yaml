@@ -1,0 +1,3 @@
+instance_types:
+  type: azure_vm_types
+  region: eastus

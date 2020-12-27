@@ -1,0 +1,18 @@
+_list:
+  - stuff
+  - things
+  - foo
+  - bar
+
+appended_list:
+  type: append
+  input: "{{ _list }}"
+  item: donkey
+
+
+appended_lists:
+  type: append
+  input: "{{ _list }}"
+  item:
+    - donkey
+    - chickens

@@ -103,7 +103,7 @@ class YamlHook(BaseHook):
 
         if self.append_items:
             if isinstance(self.append_items, str) or isinstance(
-                self.append_items, dict
+                    self.append_items, dict
             ):
                 self._append_each_item(self.append_items)
             elif isinstance(self.append_items, list):

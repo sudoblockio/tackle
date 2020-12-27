@@ -1,5 +1,0 @@
-shell:
-  type: tackle
-  template: https://github.com/robcxyz/tackle-remote-fixture
-  checkout: nuki-init
-

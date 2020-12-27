@@ -39,14 +39,14 @@ class JinjaHook(BaseHook):
         env.loader = FileSystemLoader(self.file_system_loader)
         template = env.get_template(self.template_path)
 
-        jinja_context = self.context
+        jinja_context = dict(self.output_dict)
 
         if self.extra_context:
             jinja_context.update(self.extra_context)
 
         try:
             output_from_parsed_template = template.render(
-                **{self.context_key: jinja_context}
+                **{self.context_key: jinja_context}, **jinja_context
             )
         except UndefinedError as err:
             msg = f"The Jinja hook for '{self.key}' failed to render"

@@ -33,8 +33,7 @@ class DigitalOceanRegionsHook(BaseHook):
 
 
 class DigitalOceanInstanceTypesHook(BaseHook):
-    """
-    Hook retrieving the available instance types in a region.
+    """Hook retrieving the available instance types in a region.
 
     :param region: [Required] The region to determine the instances in
     :param instance_families: A list of instance families, ie ['g', 'm']

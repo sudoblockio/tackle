@@ -1,0 +1,6 @@
+azs:
+  type: gcp_azs
+  gcp_project: nukikata-ci
+  regions:
+    - us-east1
+    - us-west2
