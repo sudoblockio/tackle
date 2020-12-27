@@ -7,7 +7,7 @@ from tackle.main import tackle
 
 def test_provider_system_hook_path(change_dir):
     """Verify the hook call works properly."""
-    context = tackle('.', no_input=True, context_file='nuki.yaml')
+    context = tackle('.', no_input=True, context_file='tackle.yaml')
 
     assert context['path_isdir']
 

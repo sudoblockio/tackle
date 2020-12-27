@@ -19,4 +19,4 @@ find_in_parent_file:
 find_in_parent_fallback:
   type: find_in_parent
   target: something-not-right
-  fallback: "{{ nuki.find_in_parent_dir }}"
+  fallback: "{{ find_in_parent_dir }}"

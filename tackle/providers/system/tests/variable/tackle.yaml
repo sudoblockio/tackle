@@ -29,25 +29,25 @@ a_map:
 
 map_update:
   type: stat
-  input: "{{ nuki.a_map }}"
+  input: "{{ a_map }}"
   update:
     stuff:
       dogs: cats
 
 map_merge:
   type: stat
-  input: "{{ nuki.a_map }}"
+  input: "{{ a_map }}"
   merge_dict:
     stuff:
       dogs: cats
 
 loop_merge:
   type: stat
-  input: "{{ nuki.a_map }}"
-  loop: "{{ nuki.a_list }}"
+  input: "{{ a_map }}"
+  loop: "{{ a_list }}"
   merge_dict:
     stuff:
-      "{{ nuki.item }}": "{{ nuki.index }}"
+      "{{ item }}": "{{ index }}"
 
 boolean:
   type: stat
@@ -56,14 +56,14 @@ boolean:
 #print:
 #  type: pprint
 #  statement: |
-#    {% for i in nuki.a_list %}{{i}}:
+#    {% for i in a_list %}{{i}}:
 #      animals: "{{ loop.index }}"
 #    {% endfor %}
 
 #jinja_merge:
 #  type: stat
-#  input: "{{ nuki.a_map }}"
+#  input: "{{ a_map }}"
 #  merge_dict: |
-#    {% for i in nuki.a_list %}{{i}}:
+#    {% for i in a_list %}{{i}}:
 #      animals: "{{ loop.index }}"
 #    {% endfor %}
