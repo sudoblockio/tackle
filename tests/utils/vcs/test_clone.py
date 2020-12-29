@@ -4,7 +4,8 @@ import subprocess
 
 import pytest
 
-from tackle import exceptions, vcs
+from tackle import exceptions
+from tackle.utils import vcs
 
 
 @pytest.fixture
@@ -17,7 +18,7 @@ def clone_dir(tmpdir):
 def test_clone_should_raise_if_vcs_not_installed(mocker, clone_dir):
     """In `clone()`, a `VCSNotInstalled` exception should be raised if no VCS \
     is installed."""
-    mocker.patch('cookiecutter.vcs.is_vcs_installed', autospec=True, return_value=False)
+    mocker.patch('tackle.utils.vcs.is_vcs_installed', autospec=True, return_value=False)
 
     repo_url = 'https://github.com/pytest-dev/cookiecutter-pytest-plugin.git'
 
@@ -28,10 +29,10 @@ def test_clone_should_raise_if_vcs_not_installed(mocker, clone_dir):
 def test_clone_should_rstrip_trailing_slash_in_repo_url(mocker, clone_dir):
     """In `clone()`, repo URL's trailing slash should be stripped if one is \
     present."""
-    mocker.patch('cookiecutter.vcs.is_vcs_installed', autospec=True, return_value=True)
+    mocker.patch('tackle.utils.vcs.is_vcs_installed', autospec=True, return_value=True)
 
     mock_subprocess = mocker.patch(
-        'cookiecutter.vcs.subprocess.check_output', autospec=True,
+        'tackle.utils.vcs.subprocess.check_output', autospec=True,
     )
 
     vcs.clone('https://github.com/foo/bar/', clone_to_dir=clone_dir, no_input=True)
@@ -46,12 +47,12 @@ def test_clone_should_rstrip_trailing_slash_in_repo_url(mocker, clone_dir):
 def test_clone_should_abort_if_user_does_not_want_to_reclone(mocker, tmpdir):
     """In `clone()`, if user doesn't want to reclone, Cookiecutter should exit \
     without cloning anything."""
-    mocker.patch('cookiecutter.vcs.is_vcs_installed', autospec=True, return_value=True)
+    mocker.patch('tackle.utils.vcs.is_vcs_installed', autospec=True, return_value=True)
     mocker.patch(
-        'cookiecutter.vcs.prompt_and_delete', side_effect=SystemExit, autospec=True
+        'tackle.utils.vcs.prompt_and_delete', side_effect=SystemExit, autospec=True
     )
     mock_subprocess = mocker.patch(
-        'cookiecutter.vcs.subprocess.check_output', autospec=True,
+        'tackle.utils.vcs.subprocess.check_output', autospec=True,
     )
 
     clone_to_dir = tmpdir.mkdir('clone')
@@ -86,10 +87,10 @@ def test_clone_should_invoke_vcs_command(
     * In the correct dir
     * With the correct args.
     """
-    mocker.patch('cookiecutter.vcs.is_vcs_installed', autospec=True, return_value=True)
+    mocker.patch('tackle.utils.vcs.is_vcs_installed', autospec=True, return_value=True)
 
     mock_subprocess = mocker.patch(
-        'cookiecutter.vcs.subprocess.check_output', autospec=True,
+        'tackle.utils.vcs.subprocess.check_output', autospec=True,
     )
     expected_repo_dir = os.path.normpath(os.path.join(clone_dir, repo_name))
 
@@ -125,7 +126,7 @@ def test_clone_handles_repo_typo(mocker, clone_dir, error_message):
     # because of a Python 3.4 unittest.mock regression
     # http://bugs.python.org/issue23661
     mocker.patch(
-        'cookiecutter.vcs.subprocess.check_output',
+        'tackle.utils.vcs.subprocess.check_output',
         autospec=True,
         side_effect=[subprocess.CalledProcessError(-1, 'cmd', output=error_message)],
     )
@@ -152,7 +153,7 @@ def test_clone_handles_branch_typo(mocker, clone_dir, error_message):
     """In `clone()`, branch not found errors should raise an \
     appropriate exception."""
     mocker.patch(
-        'cookiecutter.vcs.subprocess.check_output',
+        'tackle.utils.vcs.subprocess.check_output',
         autospec=True,
         side_effect=[subprocess.CalledProcessError(-1, 'cmd', output=error_message)],
     )
@@ -175,7 +176,7 @@ def test_clone_handles_branch_typo(mocker, clone_dir, error_message):
 def test_clone_unknown_subprocess_error(mocker, clone_dir):
     """In `clone()`, unknown subprocess errors should be raised."""
     mocker.patch(
-        'cookiecutter.vcs.subprocess.check_output',
+        'tackle.utils.vcs.subprocess.check_output',
         autospec=True,
         side_effect=[
             subprocess.CalledProcessError(

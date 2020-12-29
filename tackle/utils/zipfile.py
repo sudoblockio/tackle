@@ -29,12 +29,12 @@ def read_repo_password(question):
 def unzip(zip_uri, is_url, clone_to_dir='.', no_input=False, password=None):
     """Download and unpack a zipfile at a given URI.
 
-    This will download the zipfile to the cookiecutter repository,
+    This will download the zipfile to the tackle repository,
     and unpack into a temporary directory.
 
     :param zip_uri: The URI for the zipfile.
     :param is_url: Is the zip URI a URL or a file?
-    :param clone_to_dir: The cookiecutter repository directory
+    :param clone_to_dir: The tackle repository directory
         to put the archive into.
     :param no_input: Suppress any prompts
     :param password: The password to use when unpacking the repository.

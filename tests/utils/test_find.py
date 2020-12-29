@@ -3,20 +3,18 @@ import os
 
 import pytest
 
-from tackle.utils import find
+import tackle.generate
 
 
-@pytest.fixture(
-    params=['legacy/fixtures/fake-repo-pre', 'legacy/fixtures/fake-repo-pre2']
-)
+@pytest.fixture(params=['fake-repo-pre', 'fake-repo-tmpl'])
 def repo_dir(request):
     """Fixture returning path for `test_find_template` test."""
-    return os.path.join('tests', request.param)
+    return request.param
 
 
-def test_find_template(repo_dir):
+def test_find_template(repo_dir, change_dir_main_fixtures):
     """Verify correctness of `find.find_template` path detection."""
-    template = find.find_template(repo_dir=repo_dir)
+    template = tackle.generate.find_template(repo_dir=repo_dir)
 
     test_dir = os.path.join(repo_dir, '{{cookiecutter.repo_name}}')
     assert template == test_dir

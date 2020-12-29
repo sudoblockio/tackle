@@ -8,7 +8,6 @@ from tackle.exceptions import ContextDecodingException
 import hcl
 import yaml
 import logging
-
 logger = logging.getLogger(__name__)
 
 
@@ -68,7 +67,6 @@ def apply_overwrites_to_inputs(input, overwrite_dict):
             if overwrite in context_value:
                 # This overwrite is actually valid for the given context
                 # Let's set it as default (by definition first item in list)
-                # see ``cookiecutter.prompt.prompt_choice_for_config``
                 context_value.remove(overwrite)
                 context_value.insert(0, overwrite)
         else:

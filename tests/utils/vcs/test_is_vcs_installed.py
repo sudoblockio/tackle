@@ -1,7 +1,7 @@
 """Collection of tests around VCS detection."""
 import pytest
 
-from tackle import vcs
+from tackle.utils import vcs
 
 
 @pytest.mark.parametrize(
@@ -10,5 +10,5 @@ from tackle import vcs
 )
 def test_is_vcs_installed(mocker, which_return, result):
     """Verify `is_vcs_installed` function correctly handles `which` answer."""
-    mocker.patch('cookiecutter.vcs.which', autospec=True, return_value=which_return)
+    mocker.patch('tackle.utils.vcs.which', autospec=True, return_value=which_return)
     assert vcs.is_vcs_installed('git') == result

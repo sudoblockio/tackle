@@ -17,17 +17,17 @@ LOG_FORMATS = {
 
 
 def configure_logger(stream_level='DEBUG', debug_file=None):
-    """Configure logging for cookiecutter.
+    """Configure logging for tackle.
 
     Set up logging to stdout with given level. If ``debug_file`` is given set
     up logging to file with DEBUG level.
     """
-    # Set up 'cookiecutter' logger
-    logger = logging.getLogger('cookiecutter')
+    # Set up 'tackle' logger
+    logger = logging.getLogger('tackle')
     logger.setLevel(logging.DEBUG)
 
     # Remove all attached handlers, in case there was
-    # a logger with using the name 'cookiecutter'
+    # a logger with using the name 'tackle'
     del logger.handlers[:]
 
     # Create a file handler if a log file is provided

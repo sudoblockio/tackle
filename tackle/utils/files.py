@@ -35,9 +35,6 @@ def dump(output_dir, output_name, output_dict, s: 'Settings'):
 
 def load(replay_dir, template_name, context_key):
     """Read json data from file."""
-    if not isinstance(template_name, str):
-        raise TypeError('Template name is required to be of type str')
-
     replay_file = get_file_name(replay_dir, template_name)
 
     with open(replay_file, 'r') as infile:

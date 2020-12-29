@@ -1,7 +1,8 @@
 """Collection of tests around repository type identification."""
 import pytest
 
-from tackle import exceptions, vcs
+from tackle import exceptions
+from tackle.utils import vcs
 
 
 @pytest.mark.parametrize(
