@@ -37,13 +37,13 @@ def temporary_uninstall(package='boto3'):
 
 
 def test_parser_provider_import_installs_requirements(
-    change_dir_fixture, temporary_uninstall
+    change_curdir_fixtures, temporary_uninstall
 ):
     """Validate that if a package is missing, that it will be installed and usable."""
     tackle('.', context_file='regions.yaml')
 
 
-def test_parser_hooks_raises_error_on_unknown_hook_type(change_dir_fixture):
+def test_parser_hooks_raises_error_on_unknown_hook_type(change_curdir_fixtures):
     """Verify raising error.
 
     Verify that the hook parser raises the right error when the hook type is
@@ -55,7 +55,7 @@ def test_parser_hooks_raises_error_on_unknown_hook_type(change_dir_fixture):
         tackle('.', context_file='unknown-hook-type.yaml')
 
 
-def test_parser_provider_hook_add(change_dir_fixture):
+def test_parser_provider_hook_add(change_curdir_fixtures):
     """Validate adding providers.
 
     Validate that you can give a `__provider` key to point to
@@ -65,7 +65,7 @@ def test_parser_provider_hook_add(change_dir_fixture):
     assert o['things'] == 'bar'
 
 
-def test_parser_provider_hook_add_list(change_dir_fixture):
+def test_parser_provider_hook_add_list(change_curdir_fixtures):
     """Validate adding providers.
 
     Validate that you can give multiple `__provider` keys to point to

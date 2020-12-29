@@ -1,7 +1,7 @@
 from tackle.models import BaseHook
 
 
-class StuffHook(BaseHook):
+class ThingHook(BaseHook):
     """Do stuff and things."""
 
     type: str = 'stuff'

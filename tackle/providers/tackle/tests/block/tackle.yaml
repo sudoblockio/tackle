@@ -11,4 +11,3 @@ blocker:
       type: print
       statement: "{{ stuff }}"
       when: "{{ stuff == 'here' }}"
-

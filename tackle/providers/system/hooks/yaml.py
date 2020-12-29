@@ -35,9 +35,10 @@ class YamlHook(BaseHook):
     """
 
     type: str = 'yaml'
+    from _collections import OrderedDict
 
     remove: Union[List, str] = None
-    contents: Union[Dict, List] = None
+    contents: Union[Dict, OrderedDict, List] = None
     update: Dict = None
     filter: List = None
     path: str

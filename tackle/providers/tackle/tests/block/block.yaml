@@ -13,7 +13,7 @@ nuki_block:
       type: tackle
       template: .
       chdir: fake-nuki
-      existing_context: "{{ block_nuki }}"
+      existing_context: "{{ this }}"
 
     things:
       type: print

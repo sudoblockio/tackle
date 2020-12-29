@@ -112,4 +112,4 @@ class TackleHook(BaseHook):
             skip_if_file_exists=self.skip_if_file_exists,
         )
 
-        return output_context
+        return dict(output_context)
