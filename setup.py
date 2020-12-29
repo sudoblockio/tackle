@@ -75,15 +75,15 @@ setup(
     name='tackle-box',
     version=__version__,
     description=(
-        'Plugins based DSL for creating workflows and generating code. '
-        'Works with cookiecutter templates and extends them with conditional '
-        'actions and custom actions that can be used modularly across repos.'
+        'Declarative DSL for creating workflows and generating code. '
+        'Extends cookiecutter templates with modules, loops, conditionals, '
+        'and plugins to perform a wide array of actions.'
     ),
     long_description=readme,
     long_description_content_type='text/markdown',
     author='Rob Cannon',
     author_email='robc.io.opensource@gmail.com',
-    url='https://github.com/insight-infrastructure/tackle-box',
+    url='https://github.com/robcxyz/tackle-box',
     packages=find_packages(exclude=['tests*', 'logo*', 'docs*', '.github*']),
     package_dir={'tackle': 'tackle'},
     entry_points={'console_scripts': ['tackle = tackle.__main__:main']},
