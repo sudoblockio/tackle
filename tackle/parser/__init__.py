@@ -82,7 +82,12 @@ def _output_record(context: 'Context', mode: 'Mode', settings: 'Settings'):
         if os.path.exists(Path(mode.record).parent):
             dump(os.curdir, mode.record, context.output_dict, settings.dump_output)
         else:
-            dump(context.calling_directory, mode.record, context.output_dict, settings.dump_output)
+            dump(
+                context.calling_directory,
+                mode.record,
+                context.output_dict,
+                settings.dump_output,
+            )
 
 
 def _evaluate_rerun(rerun_path, mode: 'Mode'):

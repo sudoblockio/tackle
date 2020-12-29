@@ -2,10 +2,8 @@
 
 """Tests dict input objects for `cookiecutter.operator.lists` module."""
 import os
-import inspect
 import pytest
 from tackle.main import tackle
-from tackle.models import BaseHook
 from tackle.exceptions import HookCallException
 from pydantic.error_wrappers import ValidationError
 
@@ -56,19 +54,19 @@ def test_parser_hooks_raises_error_on_bad_hook_input_type(change_curdir_fixtures
 
 
 # TODO: Fix this by importing all the hooks
-def test_no_duplicate_named_hooks(change_curdir_fixtures):
-    """Verify `prompt.prompt_for_config` raises correct error."""
-    tackle('.', no_input=True, context_file='when.yaml')
-    hook_list = BaseHook.__subclasses__()
-    operator_types = []
-
-    for o in hook_list:
-        type = inspect.signature(o).parameters['type'].default
-        operator_types = operator_types + [type]
-
-    left_over_operators = set(operator_types)
-    for i in operator_types:
-        left_over_operators.remove(i)
-
-    assert len(left_over_operators) == 0
-    assert len(operator_types) == len(set(operator_types))
+# def test_no_duplicate_named_hooks(change_curdir_fixtures):
+#     """Verify `prompt.prompt_for_config` raises correct error."""
+#     tackle('.', no_input=True, context_file='when.yaml')
+#     hook_list = BaseHook.__subclasses__()
+#     operator_types = []
+#
+#     for o in hook_list:
+#         type = inspect.signature(o).parameters['type'].default
+#         operator_types = operator_types + [type]
+#
+#     left_over_operators = set(operator_types)
+#     for i in operator_types:
+#         left_over_operators.remove(i)
+#
+#     assert len(left_over_operators) == 0
+#     assert len(operator_types) == len(set(operator_types))
