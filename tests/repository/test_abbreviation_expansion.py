@@ -1,7 +1,7 @@
 """Collection of tests around common path and url shorthands."""
 import pytest
 
-from tackle.models import BUILTIN_ABBREVIATIONS
+from tackle.models import DEFAULT_ABBREVIATIONS
 from tackle.repository import expand_abbreviations
 
 
@@ -15,17 +15,17 @@ from tackle.repository import expand_abbreviations
         ('xx:a', {'xx': '<>'}, '<>'),
         (
             'gh:pydanny/cookiecutter-django',
-            BUILTIN_ABBREVIATIONS,
+            DEFAULT_ABBREVIATIONS,
             'https://github.com/pydanny/cookiecutter-django.git',
         ),
         (
             'gl:pydanny/cookiecutter-django',
-            BUILTIN_ABBREVIATIONS,
+            DEFAULT_ABBREVIATIONS,
             'https://gitlab.com/pydanny/cookiecutter-django.git',
         ),
         (
             'bb:pydanny/cookiecutter-django',
-            BUILTIN_ABBREVIATIONS,
+            DEFAULT_ABBREVIATIONS,
             'https://bitbucket.org/pydanny/cookiecutter-django',
         ),
     ],

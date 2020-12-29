@@ -4,6 +4,7 @@ import os
 import pytest
 
 from tackle import repository
+from tests.repository import update_source_fixtures
 
 
 @pytest.fixture
@@ -15,7 +16,7 @@ def template():
 @pytest.fixture
 def cloned_cookiecutter_path(user_config_data, template):
     """Fixture. Create fake project directory in special user folder."""
-    cookiecutters_dir = user_config_data['cookiecutters_dir']
+    cookiecutters_dir = user_config_data['tackle_dir']
 
     cloned_template_path = os.path.join(cookiecutters_dir, template)
     os.mkdir(cloned_template_path)
@@ -26,23 +27,22 @@ def cloned_cookiecutter_path(user_config_data, template):
 
 
 def test_should_return_existing_cookiecutter(
-    template, cloned_cookiecutter_path, mode, source, settings
+    template, cloned_cookiecutter_path, user_config_data, change_dir_main_fixtures
 ):
     """
     Should find folder created by `cloned_cookiecutter_path` and return it.
 
     This folder is considered like previously cloned project directory.
     """
-    mode.no_input = True
-
-    project_dir, context_file, cleanup = repository.update_source(
-        source, settings, mode
+    source, mode, settings = update_source_fixtures(
+        template=template,
+        abbreviations={},
+        clone_to_dir=user_config_data['tackle_dir'],
+        checkout=None,
+        no_input=True,
     )
+    repository.update_source(source=source, mode=mode, settings=settings)
 
-    assert cloned_cookiecutter_path == project_dir
-    assert context_file == 'cookiecutter.json'
-    assert not cleanup
-
-
-def test_sturf(context):
-    print(context)
+    assert cloned_cookiecutter_path == source.repo_dir
+    assert source.context_file == 'cookiecutter.json'
+    assert not source.cleanup

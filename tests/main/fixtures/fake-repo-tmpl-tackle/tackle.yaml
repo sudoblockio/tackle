@@ -1,4 +1,4 @@
 ---
 
 project_name: Fake Project Templated
-repo_name: "{{ nuki.project_name|lower|replace(' ', '-') }}"
+repo_name: "{{ project_name|lower|replace(' ', '-') }}"

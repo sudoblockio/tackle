@@ -1,7 +1,8 @@
+
 ---
 
-stuff_nuki:
-  type: nukikata
+stuff:
+  type: tackle
   template: .
   context_file: this.yaml
   no_input: true

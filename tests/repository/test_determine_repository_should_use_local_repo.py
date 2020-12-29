@@ -5,67 +5,77 @@ import os
 import pytest
 
 from tackle import repository, exceptions
+from tests.repository import update_source_fixtures
 
 
-def test_finds_local_repo(monkeypatch, tmpdir):
+def test_finds_local_repo(change_dir_main_fixtures, tmpdir):
     """A valid local repository should be returned."""
-    test_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', '..')
-    monkeypatch.chdir(test_dir)
-
-    project_dir, context_file, cleanup = repository.determine_repo_dir(
-        'tests/legacy/fixtures/fake-repo',
+    source, mode, settings = update_source_fixtures(
+        'fake-repo',
         abbreviations={},
         clone_to_dir=str(tmpdir),
         checkout=None,
         no_input=True,
     )
+    repository.update_source(source=source, mode=mode, settings=settings)
 
-    assert 'tests/legacy/fixtures/fake-repo' == project_dir
-    assert context_file == 'cookiecutter.json'
-    assert not cleanup
+    assert 'fake-repo' == os.path.basename(source.repo_dir)
+    assert source.context_file == 'cookiecutter.json'
+    assert not source.cleanup
 
 
-def test_local_repo_with_no_context_raises(tmpdir):
+def test_local_repo_with_no_context_raises(tmpdir, change_dir_main_fixtures):
     """A local repository without a cookiecutter.json should raise a \
     `RepositoryNotFound` exception."""
-    template_path = os.path.join('tests', 'legacy', 'fixtures', 'fake-repo-bad')
+    template_path = os.path.abspath('fake-repo-bad')
     with pytest.raises(exceptions.RepositoryNotFound) as err:
-        repository.determine_repo_dir(
+        source, mode, settings = update_source_fixtures(
             template_path,
             abbreviations={},
             clone_to_dir=str(tmpdir),
             checkout=None,
             no_input=True,
         )
+        repository.update_source(source=source, mode=mode, settings=settings)
 
-    assert str(err.value) == (
-        'A valid repository for "{}" could not be found in the following '
-        'locations:\n{}'.format(
-            template_path,
-            '\n'.join(
-                [template_path, str(tmpdir / 'tests/legacy/fixtures/fake-repo-bad')]
-            ),
-        )
+    assert (
+        f'A valid repository for "{template_path}" could not be found in the following'
+        in str(err.value)
     )
+    # assert str(err.value) == (
+    #     'A valid repository for "{}" could not be found in the following '
+    #     'locations:\n{}'.format(
+    #         template_path,
+    #         '\n'.join(
+    #             [template_path, str(tmpdir / 'tests/legacy/fixtures/fake-repo-bad')]
+    #         ),
+    #     )
+    # )
 
 
-def test_local_repo_typo(tmpdir):
+def test_local_repo_typo(tmpdir, change_dir_main_fixtures):
     """An unknown local repository should raise a `RepositoryNotFound` \
     exception."""
-    template_path = os.path.join('tests', 'unknown-repo')
+    template_path = 'unknown-repo'
     with pytest.raises(exceptions.RepositoryNotFound) as err:
-        repository.determine_repo_dir(
+        source, mode, settings = update_source_fixtures(
             template_path,
             abbreviations={},
             clone_to_dir=str(tmpdir),
             checkout=None,
             no_input=True,
         )
+        repository.update_source(source=source, mode=mode, settings=settings)
 
-    assert str(err.value) == (
-        'A valid repository for "{}" could not be found in the following '
-        'locations:\n{}'.format(
-            template_path,
-            '\n'.join([template_path, str(tmpdir / 'tests/unknown-repo')]),
-        )
+    assert (
+        f'A valid repository for "{template_path}" could not be found in the following'
+        in str(err.value)
     )
+
+    # assert str(err.value) == (
+    #     'A valid repository for "{}" could not be found in the following '
+    #     'locations:\n{}'.format(
+    #         template_path,
+    #         '\n'.join([template_path, str(tmpdir / 'tests/unknown-repo')]),
+    #     )
+    # )

@@ -1,7 +1,7 @@
 """Tests for all supported cookiecutter template repository locations."""
 import pytest
 
-from tackle.config import BUILTIN_ABBREVIATIONS
+from tackle.models import DEFAULT_ABBREVIATIONS
 from tackle.repository import expand_abbreviations, is_repo_url, is_zip_file
 
 
@@ -71,5 +71,5 @@ def test_expand_abbreviations():
     # First `repository.expand_abbreviations` needs to translate it
     assert is_repo_url(template) is False
 
-    expanded_template = expand_abbreviations(template, BUILTIN_ABBREVIATIONS)
+    expanded_template = expand_abbreviations(template, DEFAULT_ABBREVIATIONS)
     assert is_repo_url(expanded_template) is True

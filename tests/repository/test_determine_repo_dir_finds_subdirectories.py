@@ -5,6 +5,7 @@ import pytest
 
 from tackle import exceptions
 from tackle import repository
+from tests.repository import update_source_fixtures
 
 
 @pytest.fixture
@@ -16,7 +17,7 @@ def template():
 @pytest.fixture
 def cloned_cookiecutter_path(user_config_data, template):
     """Fixture. Prepare folder structure for tests in this file."""
-    cookiecutters_dir = user_config_data['cookiecutters_dir']
+    cookiecutters_dir = user_config_data['tackle_dir']
 
     cloned_template_path = os.path.join(cookiecutters_dir, template)
     if not os.path.exists(cloned_template_path):
@@ -31,27 +32,28 @@ def cloned_cookiecutter_path(user_config_data, template):
 
 
 def test_should_find_existing_cookiecutter(
-    template, user_config_data, cloned_cookiecutter_path
+    template, user_config_data, cloned_cookiecutter_path, change_dir_main_fixtures
 ):
     """Find `cookiecutter.json` in sub folder created by `cloned_cookiecutter_path`."""
-    project_dir, context_file, cleanup = repository.determine_repo_dir(
+    source, mode, settings = update_source_fixtures(
         template=template,
         abbreviations={},
-        clone_to_dir=user_config_data['cookiecutters_dir'],
+        clone_to_dir=user_config_data['tackle_dir'],
         checkout=None,
         no_input=True,
         directory='my-dir',
     )
+    repository.update_source(source=source, mode=mode, settings=settings)
 
-    assert cloned_cookiecutter_path == project_dir
-    assert context_file == 'cookiecutter.json'
-    assert not cleanup
+    assert cloned_cookiecutter_path == source.repo_dir
+    assert source.context_file == 'cookiecutter.json'
+    assert not source.cleanup
 
 
 def test_local_repo_typo(template, user_config_data, cloned_cookiecutter_path):
     """Wrong pointing to `cookiecutter.json` sub-directory should raise."""
     with pytest.raises(exceptions.RepositoryNotFound) as err:
-        repository.determine_repo_dir(
+        source, mode, settings = update_source_fixtures(
             template=template,
             abbreviations={},
             clone_to_dir=user_config_data['cookiecutters_dir'],
@@ -59,16 +61,22 @@ def test_local_repo_typo(template, user_config_data, cloned_cookiecutter_path):
             no_input=True,
             directory='wrong-dir',
         )
+        repository.update_source(source=source, mode=mode, settings=settings)
+    assert 'A valid repository for "{}" could not be found in the following ' 'locations:'.format(
+        template
+    ) in str(
+        err.value
+    )
 
-    wrong_full_cookiecutter_path = os.path.join(
-        os.path.dirname(cloned_cookiecutter_path), 'wrong-dir'
-    )
-    assert str(err.value) == (
-        'A valid repository for "{}" could not be found in the following '
-        'locations:\n{}'.format(
-            template,
-            '\n'.join(
-                [os.path.join(template, 'wrong-dir'), wrong_full_cookiecutter_path]
-            ),
-        )
-    )
+    # wrong_full_cookiecutter_path = os.path.join(
+    #     os.path.dirname(cloned_cookiecutter_path), 'wrong-dir'
+    # )
+    # assert str(err.value) == (
+    #     'A valid repository for "{}" could not be found in the following '
+    #     'locations:\n{}'.format(
+    #         template,
+    #         '\n'.join(
+    #             [os.path.join(template, 'wrong-dir'), wrong_full_cookiecutter_path]
+    #         ),
+    #     )
+    # )
