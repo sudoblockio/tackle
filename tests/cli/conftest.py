@@ -33,7 +33,7 @@ def overwrite_cli_flag(request):
 
 
 @pytest.fixture
-def remove_fake_project_dir(request):
+def remove_fake_project_dir(request, change_dir_main_fixtures):
     """Remove the fake project directory created during the tests."""
     if os.path.isdir('fake-project'):
         rmtree('fake-project')

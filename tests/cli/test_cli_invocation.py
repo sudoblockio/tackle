@@ -4,18 +4,25 @@ test_cookiecutter_invocation.
 Tests to make sure that cookiecutter can be called from the cli without
 using the entry point set up for the package.
 """
-
-
 import os
 import subprocess
 import sys
-
+from tackle.utils.paths import rmtree
 import pytest
 
 FAKE_REPO = 'fake-repo-pre'
 
 
-@pytest.mark.usefixtures('clean_system')
+@pytest.fixture()
+def clean_output(change_dir_main_fixtures):
+    if os.path.isdir('fake-project-templated'):
+        rmtree('fake-project-templated')
+    yield
+    if os.path.isdir('fake-project-templated'):
+        rmtree('fake-project-templated')
+
+
+@pytest.mark.usefixtures('clean_system', 'clean_output')
 def test_should_invoke_main(project_dir, change_dir_main_fixtures):
     """Should create a project and exit with 0 code on cli invocation."""
     exit_code = subprocess.check_call(

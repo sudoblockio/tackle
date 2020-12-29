@@ -24,6 +24,9 @@ from tackle.main import tackle
 from tackle.parser.settings import get_settings
 
 
+# TODO: Fix cli_runner when run from tox
+
+
 def version_msg():
     """Return the Cookiecutter version, location and Python powering it."""
     python_version = sys.version[:3]
@@ -34,16 +37,16 @@ def version_msg():
 
 def validate_overwrite_inputs(ctx, param, value):
     """Validate overwrite inputs."""
-    for s in value:
+    for s in value.split(' '):
         if '=' not in s:
             raise click.BadParameter(
                 'EXTRA_CONTEXT should contain items of the form key=value; '
-                "'{}' doesn't match that form".format(s)
+                "'{}' doesn't match that form".format(value)
             )
 
     # Convert tuple -- e.g.: ('program_name=foobar', 'startsecs=66')
     # to dict -- e.g.: {'program_name': 'foobar', 'startsecs': '66'}
-    return collections.OrderedDict(s.split('=', 1) for s in value) or None
+    return collections.OrderedDict(s.split('=', 1) for s in value.split(' ')) or None
 
 
 def input_string_to_dict(ctx, param, value):
@@ -51,6 +54,8 @@ def input_string_to_dict(ctx, param, value):
     pattern = r'^\{.*\}$'
     if bool(re.search(pattern, value)):
         return ast.literal_eval(value)
+    else:
+        return validate_overwrite_inputs(ctx, param, value)
 
 
 def list_installed_templates(default_config, passed_config_file):
@@ -58,7 +63,7 @@ def list_installed_templates(default_config, passed_config_file):
     # config = get_user_config(passed_config_file, default_config)
     # cookiecutter_folder = config.get('cookiecutters_dir')
     config = get_settings()
-    cookiecutter_folder = config.cookiecutters_dir
+    cookiecutter_folder = config.tackle_dir
     if not os.path.exists(cookiecutter_folder):
         click.echo(
             'Error: Cannot list installed templates. Folder does not exist: '
@@ -81,6 +86,7 @@ def list_installed_templates(default_config, passed_config_file):
 @click.command(context_settings=dict(help_option_names=['-h', '--help']))
 @click.version_option(__version__, '-V', '--version', message=version_msg())
 @click.argument('template', required=False)
+# @click.argument('extra_context', nargs=-1, callback=input_string_to_dict)
 @click.option(
     u'--context-file',
     # type=click.Path(),
