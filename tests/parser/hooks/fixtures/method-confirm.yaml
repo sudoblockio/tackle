@@ -1,10 +1,10 @@
 
 confirm:
-  type: stat
+  type: var
   input: this
   confirm: This?
 
 confirm_dict:
-  type: stat
+  type: var
   input: this
   confirm: This?

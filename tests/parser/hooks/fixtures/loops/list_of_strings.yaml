@@ -8,5 +8,4 @@ render_strings:
 
 after:
   type: pprint
-  statement: "{{ list_str }}"
-#  statement: this
+  statement: "{{ this }}"

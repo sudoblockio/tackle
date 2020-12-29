@@ -1,7 +1,7 @@
 ---
 
 stuff:
-  type: stat
+  type: var
   input: Indeed
 
 #before:
@@ -10,7 +10,7 @@ stuff:
 #  contents: "{{ stuff }}"
 
 things_nuki:
-  type: nukikata
+  type: tackle
   template: .
   context_file: things.yaml
   no_input: true

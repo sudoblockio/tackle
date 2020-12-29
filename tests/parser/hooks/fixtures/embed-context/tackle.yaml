@@ -1,25 +1,26 @@
 ---
+stuff: foo
 foo: bar
 
-#debug:
-#  type: print
-#  statement: "{{ nuki }}"
+debug:
+  type: print
+  statement: "{{ this }}"
 #
 #
 #before:
 #  type: yaml
 #  path: before.yaml
-#  contents: "{{ nuki }}"
+#  contents: "{{ self }}"
 
-stuff_nuki:
-  type: nukikata
+inner_tackle:
+  type: tackle
   template: .
   context_file: stuff.yaml
 #  merge: true
   no_input: true
   chdir: stuffs
-  existing_context: "{{ nuki }}"
+  existing_context: "{{ this }}"
 
 after:
   type: pprint
-  statement: "{{ nuki }}"
+  statement: "{{ self }}"

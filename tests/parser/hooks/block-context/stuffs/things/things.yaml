@@ -1,7 +1,7 @@
 ---
 
 things:
-  type: stat
+  type: var
   input: yes please
 
 before:

@@ -1,11 +1,11 @@
 ---
+after:
+  type: pprint
+  statement: "{{ this }}"
 
 render_dicts:
   type: jinja
   template_path: list_of_dicts.py.j2
   output_path: "output_list_of_dicts-{{ index }}.py"
-  context: "{{ list_of_dicts.a_list_of_dicts[index] }}"
+  context: "{{ list_dict[index] }}"
 
-after:
-  type: pprint
-  statement: "{{ list_of_dicts }}"

@@ -1,7 +1,7 @@
 #trues: true
 
 blah:
-  type: stat
+  type: var
   input:
     - blah
     - foo
@@ -9,6 +9,6 @@ blah:
     - things
 
 things:
-  type: stat
+  type: var
   input: "{{ item }}"
   loop: "{{ blah }}"

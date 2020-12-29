@@ -1,12 +1,15 @@
 ---
 
 things: yes please
+debug:
+  type: print
+  statement: "{{ this }}"
 
 before:
   type: yaml
   path: before.yaml
-  contents: "{{ things }}"
-#
+  contents: "{{ this }}"
+
 #ok:
 #  type: confirm
 #  message: chill winston

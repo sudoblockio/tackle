@@ -6,14 +6,18 @@ stuff: Indeed
 #  type: yaml
 #  path: before.yaml
 #  contents: "{{ stuff }}"
+debug:
+  type: print
+  statement: "{{ this }}"
 
-things_nuki:
-  type: nukikata
+
+things_tackle:
+  type: tackle
   template: .
   context_file: things.yaml
   no_input: true
   chdir: things
-  existing_context: "{{ stuff }}"
+  existing_context: "{{ this }}"
 
 #after:
 #  type: yaml

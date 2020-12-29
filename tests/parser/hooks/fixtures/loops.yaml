@@ -1,13 +1,13 @@
 
 list_str:
-  type: stat
+  type: var
   input:
     - cats
     - dogs
     - chickens
 
 list_dict:
-  type: stat
+  type: var
   input:
     - cats: scratch
       foo: bars
@@ -16,11 +16,16 @@ list_dict:
     - chickens: yum
       things: stuff
 
+this:
+  type: pprint
+  statement: "{{ this }}loops"
+
+
 a_list_of_strings_tackle:
   type: tackle
   context_file: list_of_strings.yaml
   loop: "{{ list_str }}"
-  existing_context: "{{ loops }}"  ## This is no longer needed
+#  existing_context: "{{ this }}"  ## This is no longer needed
   no_input: true
   chdir: loops
 
@@ -28,10 +33,10 @@ a_list_of_strings_tackle:
 #  type: tackle
 #  context_file: list_of_dicts.yaml
 #  loop: "{{ list_dict }}"
-#  existing_context: "{{ loops }}"
+##  existing_context: "{{ loops }}"
 #  no_input: true
 #  chdir: loops
 
 after:
   type: pprint
-  statement: "{{ loops }}"
+  statement: "{{ this }}"

@@ -2,30 +2,30 @@ _true: true
 _false: false
 
 blah:
-  type: stat
+  type: var
   input: blah
   when: "{{ _true }}"
 
 things: stuff
 
 foo:
-  type: stat
+  type: var
   input: blah
   when: "{{ things != 'stuff' }}"
 
 bar:
-  type: stat
+  type: var
   input: blah
   when: "{{ things == 'stuff' }}"
 
 bing:
-  type: stat
+  type: var
   input: blah
   confirm: "{{ _true }}"
   when: "{{ things == 'stuff' }}"
 
 bings:
-  type: stat
+  type: var
   input: blah
   confirm: "{{ _true }}"
   when:
@@ -34,24 +34,24 @@ bings:
 
 
 is_true:
-  type: stat
+  type: var
   input: this
   when: "{{ when._true }}"
 
 is_false:
-  type: stat
+  type: var
   input: that
   when: "{{ when._false }}"
 
 list_true:
-  type: stat
+  type: var
   input: that
   when:
     - "{{ when._true }}"
     - "{{ when._true }}"
 
 list_false:
-  type: stat
+  type: var
   input: that
   when:
     - "{{ when._true }}"

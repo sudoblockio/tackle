@@ -1,6 +1,6 @@
 ---
 foo:
-  type: stat
+  type: var
   input: bar
 
 #debug:
