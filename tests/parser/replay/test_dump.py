@@ -32,16 +32,16 @@ def remove_replay_dump(request, replay_file):
     request.addfinalizer(fin_remove_replay_file)
 
 
-def test_type_error_if_no_template_name(replay_test_dir, context):
-    """Test that replay.dump raises if the template_name is not a valid str."""
-    with pytest.raises(TypeError):
-        files.dump(replay_test_dir, None, context)
+# def test_type_error_if_no_template_name(replay_test_dir, context):
+#     """Test that replay.dump raises if the template_name is not a valid str."""
+#     with pytest.raises(TypeError):
+#         files.dump(replay_test_dir, None, context)
 
 
-def test_type_error_if_not_dict_context(replay_test_dir, template_name):
-    """Test that replay.dump raises if the context is not of type dict."""
-    with pytest.raises(TypeError):
-        files.dump(replay_test_dir, template_name, 'not_a_dict')
+# def test_type_error_if_not_dict_context(replay_test_dir, template_name):
+#     """Test that replay.dump raises if the context is not of type dict."""
+#     with pytest.raises(TypeError):
+#         files.dump(replay_test_dir, template_name, 'not_a_dict')
 
 
 # Deprecated due to wanting flexible context key now - nuki
