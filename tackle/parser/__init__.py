@@ -72,17 +72,17 @@ def _output_record(context: 'Context', mode: 'Mode', settings: 'Settings'):
             context.calling_directory,
             context.context_key + '.record',
             context.output_dict,
-            settings,
+            settings.dump_output,
         )
 
     if isinstance(mode.record, str):
         # Str indicates path to file to dump output to
         if mode.record.startswith('/'):
-            dump('/', mode.record, context.output_dict, settings)
+            dump('/', mode.record, context.output_dict, settings.dump_output)
         if os.path.exists(Path(mode.record).parent):
-            dump(os.curdir, mode.record, context.output_dict, settings)
+            dump(os.curdir, mode.record, context.output_dict, settings.dump_output)
         else:
-            dump(context.calling_directory, mode.record, context.output_dict, settings)
+            dump(context.calling_directory, mode.record, context.output_dict, settings.dump_output)
 
 
 def _evaluate_rerun(rerun_path, mode: 'Mode'):
@@ -102,9 +102,10 @@ def _enrich_context(context: 'Context', source: 'Source'):
 
 
 def _validate_context(context: 'Context', mode: 'Mode'):
-    if mode.replay and len(context.overwrite_inputs) != 0:
-        err_msg = "You can not use both replay and extra_context at the same time."
-        raise InvalidModeException(err_msg)
+    if mode.replay and context.overwrite_inputs:
+        if len(context.overwrite_inputs) != 0:
+            err_msg = "You can not use both replay and extra_context at the same time."
+            raise InvalidModeException(err_msg)
     if mode.replay and mode.rerun:
         err_msg = "You can not use both replay and rerun at the same time."
         raise InvalidModeException(err_msg)
