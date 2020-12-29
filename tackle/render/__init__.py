@@ -10,24 +10,26 @@ if TYPE_CHECKING:
     from tackle.models import Context
 
 
-def build_render_context(c: 'Context'):
+def build_render_context(context: 'Context'):
     """Depending on the generation build a context.
 
     For cookiecutter, enforce standards ie '{{ cookiecutter.var }}' but for tackle,
     support both ie '{{ cookiecutter.var }}' and '{{ var }}'.
     """
     # TODO: get_vars should be instantiated earlier...
-    special_variables = get_vars(c)
-    if c.tackle_gen == 'cookiecutter':
-        render_context = {c.context_key: c.output_dict}
+    special_variables = get_vars(context)
+    if context.tackle_gen == 'cookiecutter':
+        render_context = {'cookiecutter': context.output_dict}
         render_context.update(special_variables)
     else:
-        render_context = dict(c.output_dict, **{c.context_key: dict(c.output_dict)})
+        render_context = dict(
+            context.output_dict, **{context.context_key: dict(context.output_dict)}
+        )
         render_context.update(special_variables)
     return render_context
 
 
-def render_variable(c: 'Context', raw: Any):
+def render_variable(context: 'Context', raw: Any):
     """Render the next variable to be displayed in the user prompt.
 
     Inside the prompting taken from the cookiecutter.json file, this renders
@@ -47,21 +49,24 @@ def render_variable(c: 'Context', raw: Any):
     if raw is None:
         return None
     elif isinstance(raw, dict):
-        return {render_variable(c, k): render_variable(c, v) for k, v in raw.items()}
+        return {
+            render_variable(context, k): render_variable(context, v)
+            for k, v in raw.items()
+        }
     elif isinstance(raw, list):
-        return [render_variable(c, v) for v in raw]
+        return [render_variable(context, v) for v in raw]
     elif not isinstance(raw, six.string_types):
         raw = str(raw)
 
-    template = c.env.from_string(raw)
+    template = context.env.from_string(raw)
 
-    render_context = build_render_context(c)
+    render_context = build_render_context(context)
     # This is where we build both the {{ cookiecutter.var }} and {{ var }} contexts
     rendered_template = template.render(render_context)
 
     # Tackle evaluates dicts, lists, and bools as literals where as cookiecutter
     # renders them to string
-    if c.tackle_gen == 'cookiecutter':
+    if context.tackle_gen == 'cookiecutter':
         return rendered_template
 
     REGEX = [
@@ -72,8 +77,12 @@ def render_variable(c: 'Context', raw: Any):
         r'^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$',  # Float
     ]
     for r in REGEX:
-        if bool(re.search(r, rendered_template)):
-            """If variable looks like list, return literal list"""
-            return ast.literal_eval(rendered_template)
+        try:
+            if bool(re.search(r, rendered_template)):
+                """If variable looks like list, return literal list"""
+                return ast.literal_eval(rendered_template)
+        except ValueError as e:
+            print()
+            raise e
 
     return rendered_template

@@ -24,7 +24,8 @@ def get_vars(context: 'Context'):
         'calling_directory': context.calling_directory,
         'key': context.context_key,
         'tackle_gen': context.tackle_gen,
-        'this': context.output_dict,
+        'this': dict(context.output_dict),
+        # 'self': dict(context.output_dict),
         'output': context.output_dict,
     }
     if platform.system() == 'Linux':
