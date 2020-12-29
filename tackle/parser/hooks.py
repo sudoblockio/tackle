@@ -19,7 +19,33 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-KEYWORDS = {'when', 'loop', 'chdir' 'existing_context', ''}
+
+def raise_hook_validation_error(e, Hook, context: 'Context'):
+    """Raise more clear of an error when pydantic fails to parse an object."""
+    if 'extra fields not permitted' in e.__repr__():
+        # Return all the fields in the hook by removing all the base fields.
+        fields = '--> ' + ', '.join(
+            [
+                i
+                for i in Hook().dict().keys()
+                if i not in BaseHook().dict().keys() and i != 'type'
+            ]
+        )
+        error_out = (
+            f"Error: The field \"{e.raw_errors[0]._loc}\" is not permitted in "
+            f"file=\"{context.context_file}\" and key=\"{context.key}\".\n"
+            f"Only values accepted are {fields}, (plus base fields --> "
+            f"type, when, loop, chdir, merge)"
+        )
+        raise HookCallException(error_out)
+    # elif 'value is not a valid' in e.__repr__():
+    #     error_out = (
+    #         f"Error: The \"{e.raw_errors[0]._loc}\" {e.raw_errors[0].exc} "
+    #         f"when parsing file=\"{context.context_file}\" and key=\"{context.key}\"."
+    #     )
+    #     raise HookCallException(error_out)
+    else:
+        raise e
 
 
 def run_operator(context: 'Context', mode: 'Mode'):
@@ -47,85 +73,14 @@ def run_operator(context: 'Context', mode: 'Mode'):
             **context.dict(exclude=exclude_context),
             **mode.dict(exclude=exclude_mode),
         )
+
+        if hook.post_gen_operator:
+            return None, hook
+        else:
+            return hook.call(), None
+
     except ValidationError as e:
-        if 'extra fields not permitted' in e.__repr__():
-            # This is very common and so lets enrich the error to give the user
-            # more context. Return all the fields in the hook by removing all the
-            # base fields.
-            fields = '--> ' + ', '.join(
-                [
-                    i
-                    for i in Hook().dict().keys()
-                    if i not in BaseHook().dict().keys() and i != 'type'
-                ]
-            )
-            error_out = (
-                f"Error: The field \"{e.raw_errors[0]._loc}\" is not permitted in "
-                f"key=\"{context.key}\".\n"
-                f"Only values accepted are {fields}, plus base fields --> "
-                f"type, when, loop, chdir."
-            )
-            raise HookCallException(error_out)
-        else:
-            raise e
-
-    if hook.post_gen_operator:
-        return None, hook
-    else:
-        return hook.call(), None
-
-
-def parse_hook(
-    context: 'Context', mode: 'Mode', s: 'Source', append_key: bool = False,
-):
-    """Parse input dict for loop and when logic and calls hooks.
-
-    :return: cc_dict
-    """
-    if not context.context_key:
-        context.context_key = next(iter(context.input_dict))  # TODO -> wtf
-
-    logger.debug(
-        "Parsing context_key: %s and key: %s" % (context.context_key, context.key)
-    )
-    context.hook_dict = context.input_dict[context.context_key][context.key]
-
-    when_condition = evaluate_when(context.hook_dict, context)
-
-    if when_condition:
-        # Extract loop
-        if 'loop' in context.hook_dict:
-            loop_targets = render_variable(context, context.hook_dict['loop'])
-            context.hook_dict.pop('loop')
-
-            loop_output = []
-            for i, l in enumerate(loop_targets):
-                context.output_dict.update({'index': i, 'item': l})
-                loop_output += [parse_hook(context, mode, s, append_key=True)]
-
-            context.output_dict.pop('item')
-            context.output_dict.pop('index')
-            context.output_dict[context.key] = loop_output
-            return context.output_dict
-
-        if 'block' not in context.hook_dict['type']:
-            context.hook_dict = render_variable(context, context.hook_dict)
-
-        # Run the operator
-        if context.hook_dict['merge'] if 'merge' in context.hook_dict else False:
-            to_merge, post_gen_hook = run_operator(context, mode)
-            context.output_dict.update(to_merge)
-        else:
-            context.output_dict[context.key], post_gen_hook = run_operator(
-                context, mode
-            )
-        if post_gen_hook:
-            context.post_gen_hooks.append(post_gen_hook)
-
-        if append_key:
-            return context.output_dict[context.key]
-
-    return context.output_dict
+        raise_hook_validation_error(e, Hook, context)
 
 
 def _evaluate_confirm(context: 'Context'):
@@ -157,3 +112,56 @@ def _evaluate_confirm(context: 'Context'):
                         }
                     ]
                 )['tmp']
+
+
+def parse_hook(
+    context: 'Context', mode: 'Mode', source: 'Source', append_key: bool = False,
+):
+    """Parse input dict for loop and when logic and calls hooks.
+
+    :return: cc_dict
+    """
+    if not context.context_key:
+        context.context_key = next(iter(context.input_dict))  # TODO -> wtf
+
+    logger.debug(
+        "Parsing context_key: %s and key: %s" % (context.context_key, context.key)
+    )
+    context.hook_dict = context.input_dict[context.context_key][context.key]
+
+    when_condition = evaluate_when(context.hook_dict, context)
+
+    if when_condition:
+        # Extract loop
+        if 'loop' in context.hook_dict:
+            loop_targets = render_variable(context, context.hook_dict['loop'])
+            context.hook_dict.pop('loop')
+
+            loop_output = []
+            for i, l in enumerate(loop_targets):
+                context.output_dict.update({'index': i, 'item': l})
+                loop_output += [parse_hook(context, mode, source, append_key=True)]
+
+            context.output_dict.pop('item')
+            context.output_dict.pop('index')
+            context.output_dict[context.key] = loop_output
+            return context.output_dict
+
+        if 'block' not in context.hook_dict['type']:
+            context.hook_dict = render_variable(context, context.hook_dict)
+
+        # Run the operator
+        if context.hook_dict['merge'] if 'merge' in context.hook_dict else False:
+            to_merge, post_gen_hook = run_operator(context, mode)
+            context.output_dict.update(to_merge)
+        else:
+            context.output_dict[context.key], post_gen_hook = run_operator(
+                context, mode
+            )
+        if post_gen_hook:
+            context.post_gen_hooks.append(post_gen_hook)
+
+        if append_key:
+            return context.output_dict[context.key]
+
+    return context.output_dict

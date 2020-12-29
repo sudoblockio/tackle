@@ -10,7 +10,7 @@ from tackle.render.environment import StrictEnvironment
 from tackle.utils.paths import expand_path
 from tackle.utils.context_manager import work_in
 
-USER_CONFIG_PATH = os.path.expanduser('~/.cookiecutterrc')
+USER_CONFIG_PATH = os.path.expanduser('~/.tacklerc')
 
 DEFAULT_ABBREVIATIONS: Dict = {
     'gh': 'https://github.com/{0}.git',
@@ -22,10 +22,8 @@ DEFAULT_ABBREVIATIONS: Dict = {
 class Settings(BaseSettings):
     """Base settings for run."""
 
-    cookiecutters_dir: str = '~/.cookiecutters/'
-    replay_dir: str = '~/.cookiecutter_replay/'
-
-    tackle_dir: str = '~/.tackle-box'
+    tackle_dir: str = '~/.tackle'
+    replay_dir: str = os.path.join(tackle_dir, 'replay')
 
     rerun_file_suffix: str = 'rerun.yml'
 
@@ -45,12 +43,8 @@ class Settings(BaseSettings):
         super().__init__(**values)
         self.abbreviations.update(DEFAULT_ABBREVIATIONS)
 
-        self.cookiecutters_dir = expand_path(self.cookiecutters_dir)
+        self.tackle_dir = expand_path(self.tackle_dir)
         self.replay_dir = expand_path(self.replay_dir)
-
-    def init(self):
-        print()
-        pass
 
 
 class TackleGen(str, Enum):
@@ -67,10 +61,6 @@ class Mode(BaseModel):
     replay: Union[bool, str] = None
     record: Union[bool, str] = None
     rerun: Union[bool, str] = None
-    overwrite_if_exists: bool = False
-    skip_if_file_exists: bool = False
-    accept_hooks: bool = True
-    output_dir: str = '.'
 
 
 class Source(BaseModel):
@@ -122,7 +112,7 @@ class Context(BaseModel):
     input_dict: OrderedDict = None
     output_dict: OrderedDict = None
 
-    existing_context: Dict = None
+    existing_context: Union[Dict, OrderedDict] = None
     overwrite_inputs: Dict = None
     override_inputs: Dict = None
 
@@ -142,6 +132,7 @@ class BaseHook(Context, Mode):
     """Base hook mixin class."""
 
     chdir: Optional[str] = None
+    merge: Optional[bool] = False
     post_gen_operator: Optional[bool] = False
     confirm: Optional[str] = False
 

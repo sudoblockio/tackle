@@ -203,3 +203,19 @@ class UnknownHookTypeException(TackleException):
 
     Raised when a hook type is not available from the providers.
     """
+
+
+class Exception(TackleException):
+    """
+    Exception for unknown hook type.
+
+    Raised when a hook type is not available from the providers.
+    """
+
+
+class EscapeHookException(TackleException):
+    """
+    Exception for when general hook errors.
+
+    Raised in hooks.
+    """

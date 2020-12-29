@@ -90,14 +90,9 @@ def prep_context(
     Prompt user to enter values.
 
     Function sets the jinja environment and brings in extensions.
-
-    :param dict c: Source for field names and sample values.
-    :param no_input: Prompt the user at command line for manual configuration.
-    :param context_key: The key to insert all the outputs under in the context dict.
-    :param existing_context: A dictionary of values to use during rendering.
     """
     context.input_dict = OrderedDict([])
-    obj = read_config_file(source.context_file)
+    obj = read_config_file(os.path.join(source.repo_dir, source.context_file))
 
     # Add the Python object to the context dictionary
     if not context.context_key:

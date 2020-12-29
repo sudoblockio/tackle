@@ -2,9 +2,12 @@
 import json
 import os
 
+from tackle.utils import files
+
+
 import pytest
 
-from tackle.utils import replay
+# from tackle.utils import replay
 
 
 @pytest.fixture
@@ -36,13 +39,13 @@ def remove_replay_dump(request, replay_file):
 def test_type_error_if_no_template_name(replay_test_dir, context):
     """Test that replay.dump raises if the template_name is not a valid str."""
     with pytest.raises(TypeError):
-        replay.dump(replay_test_dir, None, context)
+        files.dump(replay_test_dir, None, context)
 
 
 def test_type_error_if_not_dict_context(replay_test_dir, template_name):
     """Test that replay.dump raises if the context is not of type dict."""
     with pytest.raises(TypeError):
-        replay.dump(replay_test_dir, template_name, 'not_a_dict')
+        files.dump(replay_test_dir, template_name, 'not_a_dict')
 
 
 # Deprecated due to wanting flexible context key now - nuki
@@ -70,13 +73,13 @@ def mock_ensure_success(mocker):
     Used to mock internal function and limit test scope.
     Always return expected value: True
     """
-    return mocker.patch('cookiecutter.replay.make_sure_path_exists', return_value=True)
+    return mocker.patch('tackle.utils.replay.make_sure_path_exists', return_value=True)
 
 
 def test_ioerror_if_replay_dir_creation_fails(mock_ensure_failure, replay_test_dir):
     """Test that replay.dump raises when the replay_dir cannot be created."""
     with pytest.raises(IOError):
-        replay.dump(replay_test_dir, 'foo', {'cookiecutter': {'hello': 'world'}})
+        files.dump(replay_test_dir, 'foo', {'cookiecutter': {'hello': 'world'}})
 
     mock_ensure_failure.assert_called_once_with(replay_test_dir)
 
@@ -96,11 +99,11 @@ def test_run_json_dump(
     test_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
     monkeypatch.chdir(test_dir)
 
-    spy_get_replay_file = mocker.spy(replay, 'get_file_name')
+    spy_get_replay_file = mocker.spy(files, 'get_file_name')
 
     mock_json_dump = mocker.patch('json.dump', side_effect=json.dump)
 
-    replay.dump(replay_test_dir, template_name, context)
+    files.dump(replay_test_dir, template_name, context)
 
     assert not mock_user_config.called
     mock_ensure_success.assert_called_once_with(replay_test_dir)

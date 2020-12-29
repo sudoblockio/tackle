@@ -4,12 +4,5 @@ foo:
   - bax
   - bin
 
-blah:
-  type: select
-  choices:
-    - stuff
-    - things
-    - foo
-
 bing: "{{ foo }}"
 bing2: "{{ tackle.foo }}"

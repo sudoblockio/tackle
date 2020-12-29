@@ -4,7 +4,7 @@ import os
 
 import pytest
 
-from tackle.parser import replay
+from tackle.utils import files
 
 
 @pytest.fixture
@@ -23,7 +23,7 @@ def replay_file(replay_test_dir, template_name):
 def test_type_error_if_no_template_name(replay_test_dir):
     """Test that replay.load raises if the template_name is not a valid str."""
     with pytest.raises(TypeError):
-        replay.load(replay_test_dir, None)
+        files.load(replay_test_dir, None)
 
 
 # Deprecated v1.7.2.3
@@ -37,7 +37,7 @@ def test_type_error_if_no_template_name(replay_test_dir):
 def test_io_error_if_no_replay_file(mocker, replay_test_dir):
     """Test that replay.load raises if it cannot find a replay file."""
     with pytest.raises(IOError):
-        replay.load(replay_test_dir, 'no_replay', 'cookiecutter')
+        files.load(replay_test_dir, 'no_replay', 'cookiecutter')
 
 
 def test_run_json_load(
@@ -45,11 +45,11 @@ def test_run_json_load(
 ):
     """Test that replay.load runs json.load under the hood and that the context \
     is correctly loaded from the file in replay_dir."""
-    spy_get_replay_file = mocker.spy(replay, 'get_file_name')
+    spy_get_replay_file = mocker.spy(files, 'get_file_name')
 
     mock_json_load = mocker.patch('json.load', side_effect=json.load)
 
-    loaded_context = replay.load(replay_test_dir, template_name, 'cookiecutter')
+    loaded_context = files.load(replay_test_dir, template_name, 'cookiecutter')
 
     assert not mock_user_config.called
     spy_get_replay_file.assert_called_once_with(replay_test_dir, template_name)

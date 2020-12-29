@@ -12,9 +12,6 @@ import click  # RM
 if TYPE_CHECKING:
     from tackle.models import Context, Mode
 
-# def read_user_variable(var_name, default_value):
-#     pass
-
 
 def read_user_yes_no(question, default_value):
     """Ask user yes or no for generic question."""

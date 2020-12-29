@@ -58,9 +58,6 @@ def update_context(
     context_file_path = os.path.join(source.repo_dir, source.context_file)
     logger.debug('context_file is %s', context_file_path)
 
-    # prepare_context(c=c, s=s, settings=settings)
-    # update_providers(c=c, s=s, settings=settings)
-
     # Main entrypoint to parse the input.
     prep_context(context=context, mode=mode, source=source, settings=settings)
 
@@ -105,7 +102,7 @@ def _enrich_context(context: 'Context', source: 'Source'):
 
 
 def _validate_context(context: 'Context', mode: 'Mode'):
-    if mode.replay and context.overwrite_inputs is not None:
+    if mode.replay and len(context.overwrite_inputs) != 0:
         err_msg = "You can not use both replay and extra_context at the same time."
         raise InvalidModeException(err_msg)
     if mode.replay and mode.rerun:

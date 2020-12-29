@@ -113,7 +113,7 @@ def tackle(
         skip_if_file_exists=skip_if_file_exists,
         accept_hooks=accept_hooks,
     )
-    generate_files(o=output, c=context, s=source, m=mode, settings=settings)
+    generate_files(output=output, context=context, source=source)
 
     # Cleanup (if required)
     if source.cleanup:
