@@ -2,6 +2,14 @@
 Installation
 ============
 
+Basics
+------
+
+.. code-block:: bash
+
+    $ pip3 install tackle-box
+
+
 Prerequisites
 -------------
 
@@ -62,34 +70,22 @@ Packaging tools
 ``pip`` and ``setuptools`` now come with Python 3 >=3.6. See the Python Packaging Authority's (PyPA) documentation `Requirements for Installing Packages <https://packaging.python.org/en/latest/installing/#requirements-for-installing-packages>`_ for full details.
 
 
-Install cookiecutter
+Install Tackle Box
 --------------------
 
 At the command line:
 
 .. code-block:: bash
 
-    $ python3 -m pip install --user cookiecutter
+    $ python3 -m pip install --user tackle-box
 
 Or, if you do not have pip:
 
 .. code-block:: bash
 
-    $ easy_install --user cookiecutter
+    $ easy_install --user tackle-box
 
 Though, pip is recommended.
-
-Or, if you are using conda, first add conda-forge to your channels:
-
-.. code-block:: bash
-
-    $ conda config --add channels conda-forge
-
-Once the conda-forge channel has been enabled, cookiecutter can be installed with:
-
-.. code-block:: bash
-
-    $ conda install cookiecutter
 
 Alternate installations
 -----------------------
