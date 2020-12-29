@@ -71,4 +71,4 @@ env:
   - secure: vQ3uxn9avYgRnjbGaPs3fw4HXWubNHb9bEK7hs0OqqR4b1x2OZBZIYuqkzpvz7NxZO7rc4l7fTr/Oyy5hEFANOsdhcgmwb+uUpwHjGaXXDhRSM32P5uP2S1zpDtX2xsCB6paxDGJceQ9fRvlwWxSN/Yd+hJbD6tZCLeAyQkkJZyVoZ+sEQwpixV5+c0VdXZ5udGoSEzOna08tzydvZ/Q+D6FYJ7fXHmjEdb7JbOKCGgao13vmCyTQ/kmGMQAMUU4CKEfEtqEBLRgZb//+f2qkVRTT8rIK053STJutP2ofriJiszR4nqwBt6+WGr3S1YD00wM0XkHjrLwSh7egBsbx6XFptJlc1e2ucQniBePTOfs6Ork2Ztc16pJDeLMYD85ORoOOJXLCBhlPBG6v+B5x6biYCzshM3VZmx604D+QsnxIVSm0ZbhXuuQ/q7PUlM3rTg+Z6TEPuJwu78RDplRwj0ukVyalRYvY9FXR1vnDCDbLK/35Tsq8UU9+1pEJ5c0VqmJ6Mf8VIOyRYtQbCK0br/H7ISeV/221cyCyl0H2ghWhza0y9fEcwnJSs+QCvSdqdMsHyFMcf28q7A2qP4O/HNYpfoEtiaZ4hegV553//BPPqz2NOuJgdvXNi1F2Nhu7+xQ79xhk5HxWGd/uBL+a1zuWGdgAlOMUfFAqzQjBWA=
 before_install:
 - openssl aes-256-cbc -K $encrypted_52e3c60dbaf5_key -iv $encrypted_52e3c60dbaf5_iv
-  -in travis-gcp.json.enc -out travis-gcp.json -d
+  -in tackle/providers/gcp/tests/travis-gcp.json.enc -out travis-gcp.json -d
