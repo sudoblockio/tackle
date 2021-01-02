@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 
-"""Tests dict input objects for `cookiecutter.operator.aws.ec2_meta` module."""
+"""Tests dict input objects for `tackle.providers.terraform.hooks.terraform` module."""
 
 # import os
-# from cookiecutter.main import cookiecutter
+# from tackle.main import tackle
+
 
 # TODO: Need to be able test pyinquirer
-# def test_operator_terraform(monkeypatch):
+# def test_operator_terraform(change_dir):
 #     """Verify the operator call works successfully."""
-#     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
-#
-#     context = cookiecutter('.', no_input=True, output_dir=str(tmpdir))
+#     context = tackle('.', no_input=True)
 #
 #     assert context

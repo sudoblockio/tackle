@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Tests dict input objects for `cookiecutter.provider.azure.hooks` module."""
+"""Tests dict input objects for `tackle.providers.azure.hooks` module."""
 from tackle.main import tackle
 import pytest
 import os

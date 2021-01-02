@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Tests dict input objects for `cookiecutter.operator.lists` module."""
+"""Tests dict input objects for `tackle.providers.toml.hooks.toml` module."""
 import pytest
 import os
 from tackle.main import tackle
@@ -13,10 +13,8 @@ def test_provider_toml_hook_read(change_dir):
 
 
 @pytest.fixture()
-def clean_toml(request):
+def clean_toml():
     """Remove outputs."""
-    if os.path.exists('writing.toml'):
-        os.remove('writing.toml')
     yield
     if os.path.exists('writing.toml'):
         os.remove('writing.toml')

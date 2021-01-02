@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Tests dict input objects for `cookiecutter.operator.aws.regions` module."""
+"""Tests dict input objects for `tackle.providers.aws.hooks` module."""
 from tackle.main import tackle
 import pytest
 import boto3
@@ -37,7 +37,7 @@ def test_provider_aws_hooks_ec2_meta_instance_family(change_dir):
 # SUPER LONG TEST - Out by default
 # def test_provider_aws_hooks_ec2_meta_all_regions(change_dir):
 #     """Verify the operator call works successfully."""
-#     context = cookiecutter('.', context_file='all_regions.yaml')
+#     context = tackle('.', context_file='all_regions.yaml')
 #
 #     assert len(context['instance_types']) > 1
 #     assert len(context['instance_types']) < 50

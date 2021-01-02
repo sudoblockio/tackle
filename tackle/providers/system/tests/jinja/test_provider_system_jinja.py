@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Tests dict input objects for `cookiecutter.prompt` module."""
+"""Tests dict input objects for `tackle.providers.system.hooks.jinja` module."""
 import os
 import yaml
 

@@ -1,6 +1,6 @@
 # # -*- coding: utf-8 -*-
 #
-# """Tests dict input objects for `cookiecutter.operator.block` module."""
+# """Tests dict input objects for `tackle.providers.tackle.block` module."""
 # from tackle.main import tackle
 #
 #

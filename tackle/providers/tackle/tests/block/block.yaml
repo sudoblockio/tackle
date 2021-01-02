@@ -12,7 +12,7 @@ nuki_block:
     beer:
       type: tackle
       template: .
-      chdir: fake-nuki
+      chdir: fake-tackle
       existing_context: "{{ this }}"
 
     things:

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Tests dict input objects for `cookiecutter.operator.checkbox` module."""
+"""Tests dict input objects for `tackle.providers.system.hooks.yaml` module."""
 import os
 import yaml
 import pytest

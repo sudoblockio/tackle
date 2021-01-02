@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Tests dict input objects for `cookiecutter.operator.gcp.instance_meta` module."""
+"""Tests dict input objects for `tackle.providers.digitalocean.hooks` module."""
 import os
 import pytest
 from tackle.main import tackle

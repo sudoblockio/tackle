@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Tests dict input objects for `cookiecutter.operator.aws.ec2_meta` module."""
+"""Tests dict input objects for `tackle.providers.system.hooks.table` module."""
 from tackle.main import tackle
 
 

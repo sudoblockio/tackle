@@ -35,7 +35,7 @@ class TackleHook(BaseHook):
     :param config_file: User configuration file path.
     :param default_config: Use default values rather than a config file.
     :param password: The password to use when extracting the repository.
-    :param directory: Relative path to a cookiecutter template in a repository.
+    :param directory: Relative path to a tackle box / cookiecutter template in a repository.
     :param accept_hooks: Accept pre and post hooks if set to `True`.
 
     :return: Dictionary of output
