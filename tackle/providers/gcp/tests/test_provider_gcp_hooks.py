@@ -4,28 +4,27 @@
 import os
 import pytest
 from tackle.main import tackle
+from tackle.utils import timeout, TimeoutError
+
+
+@timeout(3)
+def run_operator_gcp_regions():
+    """Verify gcp zones."""
+    return tackle(
+        os.path.abspath(os.path.dirname(__file__)), context_file='regions.yaml'
+    )
 
 
 try:
-    context_file = os.path.join(
-        os.path.abspath(os.path.dirname(__file__)), 'regions.yaml'
-    )
-    tackle('.', context_file=context_file)
-except TypeError:
+    run_operator_gcp_regions()
+except (TypeError, TimeoutError):
     # TODO: Validate that this is the right skip test
     pytest.skip("Skipping GCP tests.", allow_module_level=True)
 
 
-def test_operator_gcp_regions(change_dir):
-    """Verify gcp zones."""
-    context = tackle('.', context_file='regions.yaml')
-
-    assert len(context['azs']) > 1
-
-
 def test_operator_gcp_zones(change_dir):
     """Verify gcp zones."""
-    context = tackle('.', context_file='zones.yaml')
+    context = run_operator_gcp_regions()
 
     assert len(context['azs']) > 1
 
