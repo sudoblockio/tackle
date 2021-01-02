@@ -24,7 +24,7 @@ nuki_block:
       type: block
       items:
         my_dog:
-          type: stat
+          type: var
           input: Penny
           when: "{{ friend == 'dog' }}"
 

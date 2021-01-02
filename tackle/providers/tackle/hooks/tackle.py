@@ -4,9 +4,9 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 
-import tackle as cc
+import tackle as tkl
 import logging
-from typing import Dict, List, Any
+from typing import List, Any
 from pydantic import SecretStr
 
 from tackle.models import BaseHook
@@ -88,13 +88,14 @@ class TackleHook(BaseHook):
     def _run_tackle(self):
 
         # Populate defaults.
-        # Default because passing the render context from tackle to tackle is super common.
+        # Default because passing the render context from tackle to tackle is
+        # super common.
         if 'existing_context' in self.hook_dict:
             existing_context = self.existing_context
         else:
             existing_context = self.output_dict
 
-        output_context = cc.main.tackle(
+        output_context = tkl.main.tackle(
             template=self.template,
             checkout=self.checkout,
             no_input=self.no_input,

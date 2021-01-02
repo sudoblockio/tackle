@@ -1,7 +1,8 @@
 shell:
   type: tackle
-  template: https://github.com/insight-infrastructure/tackle-box
-  directory: tackle/providers/tackle/tests
+  template: https://github.com/robcxyz/tackle-box
+  directory: tackle/providers/tackle/tests/tackle
+  context_file: local.yaml
   existing_context:
     foo: bing
 

@@ -1,5 +1,5 @@
 alist:
-  type: stat
+  type: var
   input:
     - stuff
     - things

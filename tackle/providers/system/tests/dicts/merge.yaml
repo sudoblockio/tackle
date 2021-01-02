@@ -1,11 +1,11 @@
 input_map:
-  type: stat
+  type: var
   input:
     stuff: blah
     sturf: blu
 
 dict_map:
-  type: stat
+  type: var
   input:
     stuff: bing
     things: blu

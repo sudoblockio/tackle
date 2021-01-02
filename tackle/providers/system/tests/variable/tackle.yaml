@@ -1,17 +1,17 @@
 a_list:
-  type: stat
+  type: var
   input:
     - stuff
     - things
 
 another_list:
-  type: stat
+  type: var
   input:
     - dogs
     - cats
 
 a_list_remove:
-  type: stat
+  type: var
   input:
     - _stuff
     - things
@@ -21,28 +21,28 @@ a_list_remove:
     - _$
 
 a_map:
-  type: stat
+  type: var
   input:
     stuff:
       things: 3
     foo: bar
 
 map_update:
-  type: stat
+  type: var
   input: "{{ a_map }}"
   update:
     stuff:
       dogs: cats
 
 map_merge:
-  type: stat
+  type: var
   input: "{{ a_map }}"
   merge_dict:
     stuff:
       dogs: cats
 
 loop_merge:
-  type: stat
+  type: var
   input: "{{ a_map }}"
   loop: "{{ a_list }}"
   merge_dict:
@@ -50,7 +50,7 @@ loop_merge:
       "{{ item }}": "{{ index }}"
 
 boolean:
-  type: stat
+  type: var
   input: true
 
 #print:
@@ -61,7 +61,7 @@ boolean:
 #    {% endfor %}
 
 #jinja_merge:
-#  type: stat
+#  type: var
 #  input: "{{ a_map }}"
 #  merge_dict: |
 #    {% for i in a_list %}{{i}}:

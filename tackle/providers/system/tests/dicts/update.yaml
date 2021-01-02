@@ -1,18 +1,18 @@
 #input_list:
-#  type: stat
+#  type: var
 #  input:
 #    - things: blah
 #    - thingys: blu
 #    - tings: blue
 
 input_map:
-  type: stat
+  type: var
   input:
     stuff: blah
     sturf: blu
 
 dict_map:
-  type: stat
+  type: var
   input:
     foo: bing
     bar: blu

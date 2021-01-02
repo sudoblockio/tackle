@@ -16,7 +16,7 @@ include:
         cats: scratch
 
 envs:
-  type: stat
+  type: var
   input:
     - dev
     - prod

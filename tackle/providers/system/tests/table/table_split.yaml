@@ -1,11 +1,11 @@
 column_names:
-  type: stat
+  type: var
   input:
     - stuff
     - things
 
 data_split:
-  type: stat
+  type: var
   input:
     - foo-bar
     - here-there
@@ -17,7 +17,7 @@ table_split:
   separator: "-"
 
 data:
-  type: stat
+  type: var
   input:
     - ['foo', 'bar']
     - ['here', 'there']

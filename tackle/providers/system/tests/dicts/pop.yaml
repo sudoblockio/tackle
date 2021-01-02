@@ -1,11 +1,11 @@
 a_list:
-  type: stat
+  type: var
   input:
     - stuff
     - foo
 
 a_map:
-  type: stat
+  type: var
   input:
     stuff: bing
     things: blu
