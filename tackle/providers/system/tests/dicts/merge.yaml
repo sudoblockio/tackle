@@ -12,10 +12,10 @@ dict_map:
 
 merge_map:
   type: merge
-  src: "{{ merge.dict_map }}"
-  input: "{{ merge.input_map }}"
+  src: "{{ dict_map }}"
+  input: "{{ input_map }}"
 
 output:
   type: yaml
   path: output-merge.yaml
-  contents: "{{ merge }}"
+  contents: "{{ this }}"

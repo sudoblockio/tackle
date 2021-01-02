@@ -19,9 +19,9 @@ dict_map:
 
 update_map:
   type: update
-  src: "{{ update.input_map }}"
+  src: "{{ input_map }}"
   input:
-    stuff: "{{ update.dict_map }}"
+    stuff: "{{ dict_map }}"
 
 output:
   type: yaml
