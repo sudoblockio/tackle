@@ -223,27 +223,30 @@ def _run_hook_from_repo_dir(
 #         return None
 
 
-def find_template(repo_dir, context_key='cookiecutter', input_dict=None):
+def find_template(repo_dir, context: 'Context'):
     """Determine which child directory of `repo_dir` is the project template.
 
     :param input_dict: The input dict to search for keys to match for renderable dirs.
     :param repo_dir: Local directory of newly cloned repo.
     :returns project_template: Relative path to project template.
     """
-    if input_dict is None:
-        input_dict = {}
     logger.debug('Searching %s for the project template.', repo_dir)
-
     repo_dir_contents = os.listdir(repo_dir)
 
     project_template = None
     for item in repo_dir_contents:
-        if context_key in item and '{{' in item and '}}' in item:
-            project_template = item
-            break
-        if item in input_dict.keys() and '{{' in item and '}}' in item:
-            project_template = item
-            break
+        if context.tackle_gen == 'cookiecutter':
+            if context.context_key in item and '{{' in item and '}}' in item:
+                project_template = item
+                break
+        else:
+            if (
+                item.strip('{{').strip('}}') in context.output_dict.keys()
+                and '{{' in item  # noqa
+                and '}}' in item  # noqa
+            ):
+                project_template = item
+                break
 
     if project_template:
         project_template = os.path.join(repo_dir, project_template)
@@ -263,7 +266,7 @@ def generate_files(output: 'Output', context: 'Context', source: 'Source'):
         if it exists.
     :param accept_hooks: Accept pre and post hooks if set to `True`.
     """
-    template_dir = find_template(source.repo_dir, context.context_key)
+    template_dir = find_template(source.repo_dir, context)
     if template_dir:
         envvars = context.input_dict.get(context.context_key, {}).get(
             '_jinja2_env_vars', {}

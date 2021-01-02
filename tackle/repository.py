@@ -95,16 +95,14 @@ def determine_tackle_generation(context_file: str) -> str:
         return 'cookiecutter'
     else:
         return 'tackle'
-    # elif context_file in CONTEXT_FILE_DICT['tackle']:
-    #     return 'tackle'
 
 
 def repository_has_tackle_file(repo_directory: str, context_file=None):
     """Determine if `repo_directory` contains a `cookiecutter.json` file.
 
     :param repo_directory: The candidate repository directory.
-    :param context_file:
-    :return: The path to the context file and
+    :param context_file: eg. `tackle.yaml`.
+    :return: The path to the context file
     """
     repo_directory_exists = os.path.isdir(repo_directory)
     if context_file:
@@ -113,7 +111,7 @@ def repository_has_tackle_file(repo_directory: str, context_file=None):
         if os.path.isfile(context_file):
             return context_file
         else:
-            raise FileNotFoundError(
+            raise ContextFileNotFound(
                 f"Can't find supplied context_file at {context_file}"
             )
 
@@ -126,7 +124,7 @@ def repository_has_tackle_file(repo_directory: str, context_file=None):
         return None
 
 
-def update_source(source: 'Source', settings: 'Settings', mode: 'Mode',) -> 'Source':
+def update_source(source: 'Source', settings: 'Settings', mode: 'Mode') -> 'Source':
     """
     Locate the repository directory from a template reference.
 
@@ -181,13 +179,6 @@ def update_source(source: 'Source', settings: 'Settings', mode: 'Mode',) -> 'Sou
         ]
 
     for repo_candidate in repository_candidates:
-        if source.context_file:
-            if not os.path.exists(source.context_file):
-                raise ContextFileNotFound(
-                    'The context file "{}" could not be found'.format(
-                        source.context_file
-                    )
-                )
         source.context_file = repository_has_tackle_file(
             repo_candidate, source.context_file
         )
