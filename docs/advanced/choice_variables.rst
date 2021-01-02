@@ -11,7 +11,7 @@ Basic Usage
 
 Choice variables are regular key / value pairs, but with the value being a list of strings.
 
-For example, if you provide the following choice variable in your ``cookiecutter.json``::
+For example, if you provide the following choice variable in your ``tackle.yaml``::
 
    {
        "license": ["MIT", "BSD-3", "GNU GPL v3.0", "Apache Software License 2.0"]
@@ -53,7 +53,7 @@ Overwriting Default Choice Values
 
 Choice Variables are overwritable using a :ref:`user-config` file.
 
-For example, a choice variable can be created in ``cookiecutter.json`` by using a list as value::
+For example, a choice variable can be created in ``tackle.yaml`` by using a list as value::
 
    {
        "license": ["MIT", "BSD-3", "GNU GPL v3.0", "Apache Software License 2.0"]

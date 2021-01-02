@@ -4,16 +4,16 @@ User Config (0.7.0+)
 ====================
 
 If you use Cookiecutter a lot, you'll find it useful to have a user config
-file. By default Cookiecutter tries to retrieve settings from a `.cookiecutterrc`
+file. By default Cookiecutter tries to retrieve settings from a `.tacklerc`
 file in your home directory.
 
 From version 1.3.0 you can also specify a config file on the command line via ``--config-file``::
 
-    $ cookiecutter --config-file /home/audreyr/my-custom-config.yaml cookiecutter-pypackage
+    $ tackle --config-file ~/my-custom-config.yaml cookiecutter-pypackage
 
-Or you can set the ``COOKIECUTTER_CONFIG`` environment variable::
+Or you can set the ``TACKLE_CONFIG`` environment variable::
 
-    $ export COOKIECUTTER_CONFIG=/home/audreyr/my-custom-config.yaml
+    $ export TACKLE_CONFIG=~/my-custom-config.yaml
 
 If you wish to stick to the built-in config and not load any user config file at all,
 use the cli option ``--default-config`` instead. Preventing Cookiecutter from loading
@@ -38,7 +38,7 @@ Possible settings are:
 
 * default_context: A list of key/value pairs that you want injected as context
   whenever you generate a project with Cookiecutter. These values are treated
-  like the defaults in `cookiecutter.json`, upon generation of any project.
+  like the defaults in `tackle.yaml`, upon generation of any project.
 * cookiecutters_dir: Directory where your cookiecutters are cloned to when you
   use Cookiecutter with a repo argument.
 * replay_dir: Directory where Cookiecutter dumps context data to, which

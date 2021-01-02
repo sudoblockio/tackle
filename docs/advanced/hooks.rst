@@ -1,7 +1,33 @@
 .. _user-hooks:
 
-Using Pre/Post-Generate Hooks (0.7.0+)
-======================================
+Hooks
+=====
+
+There are two general types of hooks.  Context hooks, hooks that are run from within the calling script, and pre/post-generate hooks that are run before and after files are templated.
+
+Context Hooks
+=============
+
+The most useful types of hooks are context hooks as they can be used from within the context file to trigger any kind of action. They are called by specifying a type with in dictionary like so:
+
+.. code-block:: YAML
+
+	foo:
+	  type: bar
+	  bar_input: this
+
+For instance, to print out information, one could use the print hook like so:
+
+.. code-block:: YAML
+
+	foo:
+	  type: print
+	  output: Tackle Box is full of hooks?
+
+Each hook exposes a unique interface.
+
+Using Pre/Post-Generate Hooks
+=============================
 
 You can have Python or Shell scripts that run before and/or after your project
 is generated.
@@ -13,7 +39,7 @@ Put them in `hooks/` like this::
     ├── hooks
     │   ├── pre_gen_project.py
     │   └── post_gen_project.py
-    └── cookiecutter.json
+    └── tackle.yaml
 
 Shell scripts work similarly::
 
@@ -22,7 +48,7 @@ Shell scripts work similarly::
     ├── hooks
     │   ├── pre_gen_project.sh
     │   └── post_gen_project.sh
-    └── cookiecutter.json
+    └── tackle.yaml
 
 It shouldn't be too hard to extend Cookiecutter to work with other types of
 scripts too. Pull requests are welcome.
@@ -57,12 +83,12 @@ Template variables are rendered in the script
 
 Just like your project template, Cookiecutter also renders Jinja template
 syntax in your scripts. This lets you incorporate Jinja template variables in
-your scripts. For example, this line of Python sets ``module_name`` to the
-value of the ``cookiecutter.module_name`` template variable:
+your scripts. For example, this line of Python sets ``foo`` to the
+value of the ``bar`` template variable:
 
 .. code-block:: python
 
-    module_name = '{{ cookiecutter.module_name }}'
+    foo = '{{ bar }}'
 
 Example: Validating template variables
 --------------------------------------

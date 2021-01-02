@@ -1,7 +1,7 @@
 """Documentation build configuration file."""
 
 #
-# cookiecutter documentation build configuration file, created by
+# tackle-box documentation build configuration file, created by
 # sphinx-quickstart on Thu Jul 11 11:31:49 2013.
 #
 # This file is execfile()d with the current directory set to its containing
@@ -94,8 +94,8 @@ source_suffix = {'.rst': 'restructuredtext', '.md': 'markdown'}
 master_doc = 'index'
 
 # General information about the project.
-project = 'nukikata'
-copyright = '2013-2019, Audrey Roy and Cookiecutter community'
+project = 'tackle-box'
+copyright = '2020-2021, Rob Cannon'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -223,7 +223,7 @@ html_static_path = []
 # html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'cookiecutterdoc'
+htmlhelp_basename = 'tackleboxdoc'
 
 
 # -- Options for LaTeX output -------------------------------------------------
@@ -240,13 +240,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual])
 latex_documents = [
-    (
-        'index',
-        'cookiecutter.tex',
-        'cookiecutter Documentation',
-        'Audrey Roy and Cookiecutter community',
-        'manual',
-    ),
+    ('index', 'tackle.tex', 'Tackle Box Documentation', 'Rob Cannon', 'manual',),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -274,15 +268,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (
-        'index',
-        'cookiecutter',
-        'cookiecutter Documentation',
-        ['Audrey Roy and Cookiecutter community'],
-        1,
-    )
-]
+man_pages = [('index', 'tackle-box', 'Tackle Box Documentation', ['Rob Cannon'], 1,)]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
@@ -296,10 +282,10 @@ man_pages = [
 texinfo_documents = [
     (
         'index',
-        'cookiecutter',
-        'cookiecutter Documentation',
-        'Audrey Roy and Cookiecutter community',
-        'cookiecutter',
+        'tackle-box',
+        'Tackle Box Documentation',
+        'Rob Cannon',
+        'tackle-box',
         'Creates projects from project templates',
         'Miscellaneous',
     ),
@@ -321,10 +307,10 @@ texinfo_documents = [
 # -- Options for Epub output --------------------------------------------------
 
 # Bibliographic Dublin Core info.
-epub_title = 'cookiecutter'
+epub_title = 'tackle-box'
 epub_author = 'Audrey Roy'
-epub_publisher = 'Audrey Roy and Cookiecutter community'
-epub_copyright = '2013-2019, Audrey Roy and Cookiecutter community'
+epub_publisher = 'Rob Cannon'
+epub_copyright = '2020-2021, Rob Cannon'
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.

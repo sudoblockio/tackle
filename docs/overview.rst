@@ -10,7 +10,7 @@ This is the directory structure for a simple tackle box / cookiecutter::
     tackle-something/
     ├── {{project_name}}/  <--------- Project template
     │   └── ...
-    ├── blah.txt                      <--------- Non-templated files/dirs
+    ├── foo.txt                      <--------- Non-templated files/dirs
     │                                            go outside
     ├── hooks                      <--------- Hooks directory
     │   └── ...

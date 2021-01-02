@@ -13,10 +13,10 @@ this feature::
     https://github.com/user/repo-name.git
         ├── directory1-name/
         |   ├── {{cookiecutter.project_slug}}/
-        |   └── cookiecutter.json
+        |   └── tackle.yaml
         └── directory2-name/
             ├── {{cookiecutter.project_slug}}/
-            └── cookiecutter.json
+            └── tackle.yaml
 
 To activate one of templates within a subdirectory, use the ``--directory`` option::
 

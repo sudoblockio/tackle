@@ -10,16 +10,16 @@ Basic Example: Using the Defaults
 
 Cookiecutter will pick a default value if used with `no_input`::
 
-    from cookiecutter.main import cookiecutter
-    cookiecutter(
+    from tackle.main import tackle
+    tackle(
         'cookiecutter-django',
         no_input=True,
     )
 
-In this case it will be using the default defined in `cookiecutter.json` or `.cookiecutterrc`.
+In this case it will be using the default defined in `tackle.yaml` or `.tacklerc`.
 
 .. note::
-   values from `cookiecutter.json` will be overridden by values from  `.cookiecutterrc`
+   values from `tackle.yaml` will be overridden by values from  `.tacklerc`
 
 Advanced Example: Defaults + Extra Context
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,9 +1,37 @@
-=============================
-Getting to Know Cookiecutter
-=============================
+==========================
+Getting to Know Tackle Box
+==========================
 
-.. note:: Before you begin, please install Cookiecutter 0.7.0 or higher.
+.. note:: Before you begin, please install Tackle Box.
    Instructions are in :doc:`installation`.
+
+Tackle Box is a tool for creating CLIs and generating code. To get started creating your own tackle boxes, create a new directory/repo and create a `tackle.yaml` file with a little content like so.
+
+.. code-block:: bash
+
+    mkdir tackle-first-try
+    cd tackle-first-try
+
+    echo '
+    name: Rob # Default prompt
+    greeting: "{{name}}" # Notice the rendering
+    ' >> tackle.yaml
+
+    tackle .
+
+Here you can see the most basic functionality where each line of the file is progressively interpreted and able to use the output of the previous line as the input of the next. The second value `\{\{name\}\}` is a templating language called jinja, a powerful templating language that is used to gain access to previous entries' outputs.
+
+Here, we only have key value pairs but to tie into other functionality offered by tackle-box, you can use hooks by declaring a special key called `type`.  There are three main prompt hooks that you should know when building tackle boxes, `input` and `select` for strings and `checkbox` for returning lists. Here is a `tackle.yaml` file showing these at work.
+
+.. code-block:: yaml
+
+    name:
+      type: imput
+      message: What is your name?
+
+
+
+
 
 Cookiecutter is a tool for creating projects from *cookiecutters* (project
 templates).
@@ -122,38 +150,43 @@ cookiecutter.json
 ~~~~~~~~~~~~~~~~~
 
 Now navigate back up to `cookiecutter-pypackage/` and look at the
-`cookiecutter.json` file.
+`tackle.yaml` file.
 
 You should see JSON that corresponds to the prompts and default values shown
 earlier during project generation:
 
 .. code-block:: json
 
-    {
-        "full_name": "Audrey Roy Greenfeld",
-        "email": "aroy@alum.mit.edu",
-        "github_username": "audreyr",
-        "project_name": "Python Boilerplate",
-        "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_') }}",
-        "project_short_description": "Python Boilerplate contains all the boilerplate you need to create a Python package.",
-        "pypi_username": "{{ cookiecutter.github_username }}",
-        "version": "0.1.0",
-        "use_pytest": "n",
-        "use_pypi_deployment_with_travis": "y",
-        "create_author_file": "y",
-        "open_source_license": ["MIT", "BSD", "ISCL", "Apache Software License 2.0", "Not open source"]
-    }
+	full_name: Audrey Roy Greenfeld
+	email: aroy@alum.mit.edu
+	github_username: audreyr
+	project_name: Python Boilerplate
+	project_slug: "{{ cookiecutter.project_name.lower().replace(' ', '_') }}"
+	project_short_description: Python Boilerplate contains all the boilerplate you need
+	  to create a Python package.
+	pypi_username: "{{ cookiecutter.github_username }}"
+	version: 0.1.0
+	use_pytest: n
+	use_pypi_deployment_with_travis: y
+	create_author_file: y
+	open_source_license:
+	- MIT
+	- BSD
+	- ISCL
+	- Apache Software License 2.0
+	- Not open source
+
 
 Questions?
 ----------
 
-If anything needs better explanation, please take a moment to file an issue at https://github.com/audreyr/cookiecutter/issues with what could be improved
+If anything needs better explanation, please take a moment to file an issue at https://github.com/robcxyz/tackle-box/issues with what could be improved
 about this tutorial.
 
 Summary
 -------
 
-You have learned how to use Cookiecutter to generate your first project from a
-cookiecutter project template.
+You have learned how to use tackle box to generate your first project from a
+tackle box project template.
 
-In Tutorial 2, you'll see how to create cookiecutters of your own, from scratch.
+In Tutorial 2, you'll see how to create tackle boxes of your own, from scratch.

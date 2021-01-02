@@ -3,17 +3,17 @@
 Injecting Extra Context
 -----------------------
 
-You can specify an `extra_context` dictionary that will override values from `cookiecutter.json` or `.cookiecutterrc`::
+You can specify an `extra_context` dictionary that will override values from `tackle.yaml` or `.tacklerc`::
 
     cookiecutter('cookiecutter-pypackage/',
                  extra_context={'project_name': 'TheGreatest'})
 
-You will also need to add these keys to the `cookiecutter.json` or `.cookiecutterrc`.
+You will also need to add these keys to the `tackle.yaml` or `.tacklerc`.
 
 Example: Injecting a Timestamp
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you have ``cookiecutter.json`` that has the following keys::
+If you have ``tackle.yaml`` that has the following keys::
 
     {
         "timestamp": "{{ cookiecutter.timestamp }}"

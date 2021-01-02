@@ -1,6 +1,4 @@
 
-- `tests/cli` in Tox failing
-    - Something about conversion of types
 - Prompts untested
     - Largely offloading to PyInquirer.  Might need some testing
 - `block` hook not working properly

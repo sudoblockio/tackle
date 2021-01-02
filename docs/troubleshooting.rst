@@ -2,14 +2,13 @@
 Troubleshooting
 ===============
 
-I created a cookiecutter, but it doesn't work, and I can't figure out why
--------------------------------------------------------------------------
+Troubleshooting Tackle Files
+----------------------------
 
-* Try upgrading to Cookiecutter 0.8.0, which prints better error
-  messages and has fixes for several common bugs.
+Often times you find yourself debugging a script and have to enter the same options over and over again which is annoying and difficult to deal with when dealing with many options. For that, it is recommended to use the `record` and `rerun` functionality
 
-I'm having trouble generating Jinja templates from Jinja templates
-------------------------------------------------------------------
+Troubleshooting Jinja templates
+-------------------------------
 
 Make sure you escape things properly, like this::
 
@@ -27,7 +26,7 @@ Or this::
 
 See http://jinja.pocoo.org/docs/templates/#escaping for more info.
 
-You can also use the `_copy_without_render`_ key in your `cookiecutter.json`
+You can also use the `_copy_without_render`_ key in your `tackle.yaml`
 file to escape entire files and directories.
 
 .. _`_copy_without_render`: http://cookiecutter.readthedocs.io/en/latest/advanced/copy_without_render.html

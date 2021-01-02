@@ -3,7 +3,7 @@
 Templates in Context Values
 --------------------------------
 
-The values (but not the keys!) of `cookiecutter.json` are also Jinja2 templates.
+The values (but not the keys!) of `tackle.yaml` are also Jinja2 templates.
 Values from user prompts are added to the context immediately, such that one
 context value can be derived from previous values. This approach can potentially
 save your user a lot of keystrokes by providing more sensible defaults.
@@ -17,12 +17,12 @@ Python packages show some patterns for their naming conventions:
 * a lowercase, dashed repository name
 * an importable, dash-less package name
 
-Here is a `cookiecutter.json` with templated values for this pattern::
+Here is a `tackle.yaml` with templated values for this pattern::
 
     {
       "project_name": "My New Project",
-      "project_slug": "{{ cookiecutter.project_name|lower|replace(' ', '-') }}",
-      "pkg_name": "{{ cookiecutter.project_slug|replace('-', '') }}"
+      "project_slug": "{{ project_name|lower|replace(' ', '-') }}",
+      "pkg_name": "{{ project_slug|replace('-', '') }}"
     }
 
 If the user takes the defaults, or uses `no_input`, the templated values will

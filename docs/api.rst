@@ -1,13 +1,22 @@
 tackle-box packages
 ===================
 
-Subpackages
------------
+Providers
+---------
 
 .. toctree::
    :maxdepth: 4
 
-   cookiecutter.providers
+   tackle.providers.aws.hooks
+
+Providers
+---------
+
+.. automodule:: tackle.providers.aws.hooks
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 
 Submodules
 ----------

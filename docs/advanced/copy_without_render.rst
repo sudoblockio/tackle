@@ -5,7 +5,7 @@ Copy without Render
 
 *New in Cookiecutter 1.1*
 
-To avoid rendering directories and files of a cookiecutter, the `_copy_without_render` key can be used in the `cookiecutter.json`. The value of this key accepts a list of Unix shell-style wildcards::
+To avoid rendering directories and files of a cookiecutter, the `_copy_without_render` key can be used in the `tackle.yaml`. The value of this key accepts a list of Unix shell-style wildcards::
 
     {
         "project_slug": "sample",
@@ -21,8 +21,8 @@ To avoid rendering directories and files of a cookiecutter, the `_copy_without_r
     {
         "project_slug": "sample",
         "_copy_without_render": [
-            "{{cookiecutter.repo_name}}/templates/*.html",
+            "{{repo_name}}/templates/*.html",
         ]
     }
 
-In this example, `{{cookiecutter.repo_name}}` will be rendered as expected but the html file content will be copied without rendering.
+In this example, `{{repo_name}}` will be rendered as expected but the html file content will be copied without rendering.

@@ -24,7 +24,7 @@ Generate your project
 
 Then generate your project from the project template::
 
-    $ cookiecutter cookiecutter-pypackage/
+    $ tackle cookiecutter-pypackage/
 
 The only argument is the input directory. (The output directory is generated
 by rendering that, and it can't be the same as the input directory.)
