@@ -10,6 +10,11 @@ import tackle.utils.paths
 from tackle.render.environment import StrictEnvironment
 from tackle.exceptions import FailedHookException
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from tackle.models import Context
+
 
 logger = logging.getLogger(__name__)
 
@@ -94,7 +99,7 @@ def run_script(script_path, cwd='.'):
         raise FailedHookException('Hook script failed (error: {})'.format(os_error))
 
 
-def run_script_with_context(script_path, cwd, context):
+def run_script_with_context(script_path, cwd, context: 'Context'):
     """Execute a script after rendering it with Jinja.
 
     :param script_path: Absolute path to the script to run.
@@ -107,15 +112,22 @@ def run_script_with_context(script_path, cwd, context):
         contents = file.read()
 
     with tempfile.NamedTemporaryFile(delete=False, mode='wb', suffix=extension) as temp:
-        env = StrictEnvironment(context=context, keep_trailing_newline=True)
+        if context.tackle_gen == 'cookiecutter':
+            render_context = {'cookiecutter': context.output_dict}
+        else:
+            render_context = {'cookiecutter': context.output_dict}
+            render_context.update(context.output_dict)
+
+        env = StrictEnvironment(context=render_context, keep_trailing_newline=True)
         template = env.from_string(contents)
-        output = template.render(**context)
+        output = template.render(**render_context)
+
         temp.write(output.encode('utf-8'))
 
     run_script(temp.name, cwd)
 
 
-def run_hook(hook_name, project_dir, context):
+def run_hook(hook_name, project_dir, context: 'Context'):
     """
     Try to find and execute a hook from the specified project directory.
 

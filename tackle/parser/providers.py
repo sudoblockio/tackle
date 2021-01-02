@@ -45,7 +45,7 @@ def get_providers(
 
     if '__providers' in context.input_dict[context.context_key]:
         append_provider_dicts(
-            context.input_dict[context.context_key]['__providers'], context, mode,
+            context.input_dict[context.context_key]['__providers'], context, mode
         )
 
     # hooks_dir = os.path.join(source.repo_dir, 'hooks')
@@ -79,6 +79,7 @@ def append_provider_dicts(input_providers, context: 'Context', mode: 'Mode'):
                     f"Importing hook_types {mod.hook_types} from {hooks_path}."
                 )
                 context.providers.append(p)
+                continue
             except AttributeError:
                 logger.debug(f"No hook_types in {hooks_path}, importing module.")
         # elif os.listdir(os.path.join(i, 'hooks')):
@@ -91,9 +92,6 @@ def append_provider_dicts(input_providers, context: 'Context', mode: 'Mode'):
         # wil search based on all subclasses
         context.providers.append(get_provider_from_dir(mod_name, hooks_path))
         continue
-
-
-# def parse_provider()
 
 
 def install_requirements_if_exists(path, requirements_file='requirements.txt'):

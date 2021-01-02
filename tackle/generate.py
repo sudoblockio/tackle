@@ -173,7 +173,7 @@ def ensure_dir_is_templated(dirname):
 
 
 def _run_hook_from_repo_dir(
-    repo_dir, hook_name, project_dir, context, delete_project_on_failure
+    repo_dir, hook_name, project_dir, delete_project_on_failure, context: 'Context'
 ):
     """Run hook from repo directory, clean project directory if hook fails.
 
@@ -300,8 +300,8 @@ def generate_files(output: 'Output', context: 'Context', source: 'Source'):
                 source.repo_dir,
                 'pre_gen_project',
                 project_dir,
-                context.input_dict,
                 delete_project_on_failure,
+                context,
             )
 
         with work_in(template_dir):
@@ -375,8 +375,8 @@ def generate_files(output: 'Output', context: 'Context', source: 'Source'):
                 source.repo_dir,
                 'post_gen_project',
                 project_dir,
-                context.input_dict,
                 delete_project_on_failure,
+                context,
             )
 
             for hook in context.post_gen_hooks:
@@ -390,8 +390,8 @@ def generate_files(output: 'Output', context: 'Context', source: 'Source'):
                 source.repo_dir,
                 'post_gen_project',
                 '.',  # TODO: This needs context switching
-                context.input_dict,
                 False,
+                context,
             )
 
         for hook in context.post_gen_hooks:

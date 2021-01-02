@@ -121,9 +121,6 @@ def parse_hook(
 
     :return: cc_dict
     """
-    if not context.context_key:
-        context.context_key = next(iter(context.input_dict))  # TODO -> wtf
-
     logger.debug(
         "Parsing context_key: %s and key: %s" % (context.context_key, context.key)
     )

@@ -5,7 +5,9 @@ import sys
 import textwrap
 
 import pytest
+from _collections import OrderedDict
 
+from tackle.models import Context
 import tackle.utils.context_manager
 import tackle.utils.paths
 from tackle import hooks, exceptions
@@ -173,10 +175,13 @@ class TestExternalHooks(object):
                 fh.write("touch '{{cookiecutter.file}}'\n")
                 os.chmod(hook_path, os.stat(hook_path).st_mode | stat.S_IXUSR)
 
+        context = Context(
+            output_dict=OrderedDict({'file': 'context_post.txt'}),
+            context_key='cookiecutter',
+            tackle_gen='cookiecutter',
+        )
         hooks.run_script_with_context(
-            os.path.join(self.hooks_path, self.post_hook),
-            '.',
-            {'cookiecutter': {'file': 'context_post.txt'}},
+            os.path.join(self.hooks_path, self.post_hook), '.', context
         )
         assert os.path.isfile('context_post.txt')
         # assert 'tests' not in os.getcwd()
@@ -185,12 +190,14 @@ class TestExternalHooks(object):
         """Execute hook from specified template in specified output \
         directory."""
         tests_dir = os.path.join(self.repo_path, 'input{{hooks}}')
+
+        context = Context(tackle_gen='cookiecutter')
         with tackle.utils.context_manager.work_in(self.repo_path):
-            hooks.run_hook('pre_gen_project', tests_dir, {})
+            hooks.run_hook('pre_gen_project', tests_dir, context)
             assert os.path.isfile(os.path.join(tests_dir, 'python_pre.txt'))
             assert os.path.isfile(os.path.join(tests_dir, 'shell_pre.txt'))
 
-            hooks.run_hook('post_gen_project', tests_dir, {})
+            hooks.run_hook('post_gen_project', tests_dir, context)
             assert os.path.isfile(os.path.join(tests_dir, 'shell_post.txt'))
 
     def test_run_failing_hook(self):
@@ -202,9 +209,10 @@ class TestExternalHooks(object):
             f.write("#!/usr/bin/env python\n")
             f.write("import sys; sys.exit(1)\n")
 
+        context = Context(tackle_gen='cookiecutter')
         with tackle.utils.context_manager.work_in(self.repo_path):
             with pytest.raises(exceptions.FailedHookException) as excinfo:
-                hooks.run_hook('pre_gen_project', tests_dir, {})
+                hooks.run_hook('pre_gen_project', tests_dir, context)
             assert 'Hook script failed' in str(excinfo.value)
 
 

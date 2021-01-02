@@ -36,6 +36,7 @@ def test_hooks_raises_errors(
         context_key='cookiecutter',
         input_dict=OrderedDict({'cookiecutter': context}),
         output_dict=OrderedDict(context),
+        tackle_gen='cookiecutter',
     )
     s = Source(repo_dir="hooks-abort-render")
     o = Output(output_dir=str(tmpdir))
