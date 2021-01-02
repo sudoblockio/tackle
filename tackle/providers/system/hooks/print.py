@@ -23,13 +23,16 @@ class PrintHook(BaseHook):
     type: str = 'print'
     statement: Union[Dict, List, str] = None
     out: Union[Dict, List, str] = None
+    input: Union[Dict, List, str] = None
 
     def execute(self):
         if self.statement:
             print(self.statement)
         if self.out:
             print(self.out)
-        return self.statement or self.out
+        if self.input:
+            print(self.input)
+        return self.statement or self.out or self.input
 
 
 class PprintHook(BaseHook):
@@ -40,12 +43,16 @@ class PprintHook(BaseHook):
     """
 
     type: str = 'pprint'
-    statement: Union[Dict, List, str] = None
     out: Union[Dict, List, str] = None
+    input: Union[Dict, List, str] = None
+    statement: Union[Dict, List, str] = None
 
     def execute(self):
         if self.statement:
             pprint(self.statement)
         if self.out:
             pprint(self.out)
-        return self.statement or self.out
+        if self.input:
+            pprint(self.input)
+
+        return self.statement or self.out or self.input
