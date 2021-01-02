@@ -4,7 +4,7 @@ import sys
 import os
 import re
 from collections import defaultdict
-from tackle import __version__
+import codecs
 
 from setuptools import setup, find_packages
 
@@ -19,6 +19,22 @@ DEV_REQUIREMENTS = [
     'freezegun',
     'ptyprocess',
 ]
+
+
+def _read(rel_path):
+    here = os.path.abspath(os.path.dirname(__file__))
+    with codecs.open(os.path.join(here, rel_path), 'r') as fp:
+        return fp.read()
+
+
+def get_version(rel_path):
+    """Get the version from the __version__ file in the tackle dir."""
+    for line in _read(rel_path).splitlines():
+        if line.startswith('__version__'):
+            delim = '"' if '"' in line else "'"
+            return line.split(delim)[1]
+    else:
+        raise RuntimeError("Unable to find version string.")
 
 
 def get_provider_requirements():
@@ -73,9 +89,9 @@ if sys.argv[-1] == 'readme':
 
 setup(
     name='tackle-box',
-    version=__version__,
+    version=get_version(os.path.join('tackle', '__init__.py')),
     description=(
-        'Declarative DSL for creating workflows and generating code. '
+        'Declarative DSL for creating workflows, CLIs, and generating code. '
         'Extends cookiecutter templates with modules, loops, conditionals, '
         'and plugins to perform a wide array of actions.'
     ),
