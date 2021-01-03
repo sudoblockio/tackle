@@ -44,7 +44,7 @@ class ExtensionLoaderMixin(object):
         """
         try:
             extensions = context['cookiecutter']['_extensions']
-        except KeyError:
+        except (KeyError, TypeError):
             return []
         else:
             return [str(ext) for ext in extensions]
