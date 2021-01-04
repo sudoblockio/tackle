@@ -25,7 +25,6 @@ def get_vars(context: 'Context'):
         'key': context.context_key,
         'tackle_gen': context.tackle_gen,
         'this': dict(context.output_dict),
-        # 'self': dict(context.output_dict),
         'output': context.output_dict,
     }
     if platform.system() == 'Linux':

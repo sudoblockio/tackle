@@ -199,30 +199,6 @@ def _run_hook_from_repo_dir(
             raise
 
 
-# def find_template(repo_dir, context_key='cookiecutter'):
-#     """Determine which child directory of `repo_dir` is the project template.
-#
-#     :param repo_dir: Local directory of newly cloned repo.
-#     :returns project_template: Relative path to project template.
-#     """
-#     logger.debug('Searching %s for the project template.', repo_dir)
-#
-#     repo_dir_contents = os.listdir(repo_dir)
-#
-#     project_template = None
-#     for item in repo_dir_contents:
-#         if context_key in item and '{{' in item and '}}' in item:
-#             project_template = item
-#             break
-#
-#     if project_template:
-#         project_template = os.path.join(repo_dir, project_template)
-#         logger.debug('The project template appears to be %s', project_template)
-#         return project_template
-#     else:
-#         return None
-
-
 def find_template(repo_dir, context: 'Context'):
     """Determine which child directory of `repo_dir` is the project template.
 

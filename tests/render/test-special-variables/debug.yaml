@@ -1,0 +1,7 @@
+this: that
+foo:
+  - bar
+  - baz
+
+
+debug: "{{ debug }}"

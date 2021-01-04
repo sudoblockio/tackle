@@ -80,6 +80,7 @@ def generate_files_from_context(
         context_key='cookiecutter',
         input_dict=OrderedDict({'cookiecutter': context}),
         output_dict=OrderedDict(context),
+        tackle_gen='cookiecutter',
     )
     s = Source(repo_dir=repo_dir)
     o = Output(
@@ -201,10 +202,8 @@ def test_generate_files_binaries(tmp_path):
     assert is_binary(str(Path(dst_dir, 'binary_files/binary_files/logo.png')))
 
 
-def test_generate_files_absolute_path(monkeypatch, tmp_path):
+def test_generate_files_absolute_path(change_dir, tmp_path):
     """Verify usage of absolute path does not change files generation behaviour."""
-    monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__))))
-
     context = {'food': 'pizzä'}
     generate_files_from_context(context, tmp_path, repo_dir='test-generate-files')
     assert Path(tmp_path, u'inputpizzä/simple.txt').is_file()

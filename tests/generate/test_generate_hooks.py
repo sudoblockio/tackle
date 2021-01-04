@@ -51,6 +51,7 @@ def generate_files_wrapper(
         context_key='cookiecutter',
         input_dict=OrderedDict(context),
         output_dict=OrderedDict(context['cookiecutter']),
+        tackle_gen='cookiecutter',
     )
     s = Source(repo_dir=repo_dir)
     o = Output(
