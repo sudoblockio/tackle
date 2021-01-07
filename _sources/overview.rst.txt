@@ -5,6 +5,8 @@ Overview
 Input
 -----
 
+foo
+
 This is the directory structure for a simple tackle box / cookiecutter::
 
     tackle-something/
