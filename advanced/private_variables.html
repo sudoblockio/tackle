@@ -1,0 +1,248 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Private Variables &mdash; nukikata  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> nukikata
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Tackle Box</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cookiecutter.html">cookiecutter package</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../HISTORY.html">History</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">nukikata</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Private Variables</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/advanced/private_variables.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="private-variables">
+<span id="id1"></span><h1>Private Variables<a class="headerlink" href="#private-variables" title="Permalink to this headline">¶</a></h1>
+<p>Tackle allows the definition private variables - those the user will not be required to fill in - by prepending an underscore to the variable name. These can either be not rendered, by using a prepending underscore, or rendered, prepending a double underscore. For example, the <code class="docutils literal notranslate"><span class="pre">tackle.json</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;project_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Really cool project&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;_not_rendered&quot;</span><span class="p">:</span> <span class="s2">&quot;{{ project_name|lower }}&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;__rendered&quot;</span><span class="p">:</span> <span class="s2">&quot;{{ project_name|lower }}&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Will be rendered as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;project_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Really cool project&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;_not_rendered&quot;</span><span class="p">:</span> <span class="s2">&quot;{{ project_name|lower }}&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;__rendered&quot;</span><span class="p">:</span> <span class="s2">&quot;really cool project&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The user will only be asked for <code class="docutils literal notranslate"><span class="pre">project_name</span></code>.</p>
+<p>Non-rendered private variables can be used for defining constants. An example of where you may wish to use private <strong>rendered</strong> variables is creating a Python package repository and want to enforce naming consistency. To ensure the repository and package name are based on the project name, you could create a <code class="docutils literal notranslate"><span class="pre">tackle.yaml</span></code> such as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;project_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Project Name&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;__project_slug&quot;</span><span class="p">:</span> <span class="s2">&quot;{{ project_name|lower|replace(&#39; &#39;, &#39;-&#39;) }}&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;__package_name&quot;</span><span class="p">:</span> <span class="s2">&quot;{{ project_name|lower|replace(&#39; &#39;, &#39;_&#39;) }}&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Which could create a structure like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>project-name
+├── Makefile
+├── README.md
+├── requirements.txt
+└── src
+    ├── project_name
+    │   └── __init__.py
+    ├── setup.py
+    └── tests
+        └── __init__.py
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">README.md</span></code> can then have a plain English project title.</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2013-2019, Audrey Roy and Cookiecutter community.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,350 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>cookiecutter.operators package &mdash; nukikata  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="History" href="HISTORY.html" />
+    <link rel="prev" title="cookiecutter package" href="cookiecutter.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> nukikata
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html">Tackle Box</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="cookiecutter.html">cookiecutter package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="cookiecutter.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">cookiecutter.operators package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-aws-module">cookiecutter.operators.aws module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-block-module">cookiecutter.operators.block module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-checkbox-module">cookiecutter.operators.checkbox module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-command-module">cookiecutter.operators.command module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-confirm-module">cookiecutter.operators.confirm module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-dicts-module">cookiecutter.operators.dicts module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-editor-module">cookiecutter.operators.editor module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-expand-module">cookiecutter.operators.expand module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-input-module">cookiecutter.operators.input module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-jinja-module">cookiecutter.operators.jinja module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-json-module">cookiecutter.operators.json module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-list-module">cookiecutter.operators.list module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-listdir-module">cookiecutter.operators.listdir module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-nukikata-module">cookiecutter.operators.nukikata module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-password-module">cookiecutter.operators.password module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-path-module">cookiecutter.operators.path module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-print-module">cookiecutter.operators.print module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-rawlist-module">cookiecutter.operators.rawlist module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-return-module">cookiecutter.operators.return module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-split-module">cookiecutter.operators.split module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-stat-module">cookiecutter.operators.stat module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-table-module">cookiecutter.operators.table module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-terraform-module">cookiecutter.operators.terraform module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cookiecutter-operators-yaml-module">cookiecutter.operators.yaml module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-contents">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cookiecutter.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cookiecutter.html#cookiecutter-cli-module">cookiecutter.cli module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cookiecutter.html#cookiecutter-config-module">cookiecutter.config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cookiecutter.html#cookiecutter-context-manager-module">cookiecutter.context_manager module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cookiecutter.html#cookiecutter-environment-module">cookiecutter.environment module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cookiecutter.html#cookiecutter-exceptions-module">cookiecutter.exceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cookiecutter.html#cookiecutter-extensions-module">cookiecutter.extensions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cookiecutter.html#cookiecutter-find-module">cookiecutter.find module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cookiecutter.html#cookiecutter-generate-module">cookiecutter.generate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cookiecutter.html#cookiecutter-hooks-module">cookiecutter.hooks module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cookiecutter.html#cookiecutter-log-module">cookiecutter.log module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cookiecutter.html#cookiecutter-main-module">cookiecutter.main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cookiecutter.html#cookiecutter-operator-module">cookiecutter.operator module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cookiecutter.html#cookiecutter-prompt-module">cookiecutter.prompt module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cookiecutter.html#cookiecutter-render-module">cookiecutter.render module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cookiecutter.html#cookiecutter-replay-module">cookiecutter.replay module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cookiecutter.html#cookiecutter-repository-module">cookiecutter.repository module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cookiecutter.html#cookiecutter-utils-module">cookiecutter.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cookiecutter.html#cookiecutter-vcs-module">cookiecutter.vcs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cookiecutter.html#cookiecutter-zipfile-module">cookiecutter.zipfile module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cookiecutter.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="HISTORY.html">History</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">nukikata</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="cookiecutter.html">cookiecutter package</a> &raquo;</li>
+        
+      <li>cookiecutter.operators package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/cookiecutter.operators.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="cookiecutter-operators-package">
+<h1>cookiecutter.operators package<a class="headerlink" href="#cookiecutter-operators-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="cookiecutter-operators-aws-module">
+<h2>cookiecutter.operators.aws module<a class="headerlink" href="#cookiecutter-operators-aws-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="cookiecutter-operators-block-module">
+<h2>cookiecutter.operators.block module<a class="headerlink" href="#cookiecutter-operators-block-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="cookiecutter-operators-checkbox-module">
+<h2>cookiecutter.operators.checkbox module<a class="headerlink" href="#cookiecutter-operators-checkbox-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="cookiecutter-operators-command-module">
+<h2>cookiecutter.operators.command module<a class="headerlink" href="#cookiecutter-operators-command-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="cookiecutter-operators-confirm-module">
+<h2>cookiecutter.operators.confirm module<a class="headerlink" href="#cookiecutter-operators-confirm-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="cookiecutter-operators-dicts-module">
+<h2>cookiecutter.operators.dicts module<a class="headerlink" href="#cookiecutter-operators-dicts-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="cookiecutter-operators-editor-module">
+<h2>cookiecutter.operators.editor module<a class="headerlink" href="#cookiecutter-operators-editor-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="cookiecutter-operators-expand-module">
+<h2>cookiecutter.operators.expand module<a class="headerlink" href="#cookiecutter-operators-expand-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="cookiecutter-operators-input-module">
+<h2>cookiecutter.operators.input module<a class="headerlink" href="#cookiecutter-operators-input-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="cookiecutter-operators-jinja-module">
+<h2>cookiecutter.operators.jinja module<a class="headerlink" href="#cookiecutter-operators-jinja-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="cookiecutter-operators-json-module">
+<h2>cookiecutter.operators.json module<a class="headerlink" href="#cookiecutter-operators-json-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="cookiecutter-operators-list-module">
+<h2>cookiecutter.operators.list module<a class="headerlink" href="#cookiecutter-operators-list-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="cookiecutter-operators-listdir-module">
+<h2>cookiecutter.operators.listdir module<a class="headerlink" href="#cookiecutter-operators-listdir-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="cookiecutter-operators-nukikata-module">
+<h2>cookiecutter.operators.nukikata module<a class="headerlink" href="#cookiecutter-operators-nukikata-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="cookiecutter-operators-password-module">
+<h2>cookiecutter.operators.password module<a class="headerlink" href="#cookiecutter-operators-password-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="cookiecutter-operators-path-module">
+<h2>cookiecutter.operators.path module<a class="headerlink" href="#cookiecutter-operators-path-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="cookiecutter-operators-print-module">
+<h2>cookiecutter.operators.print module<a class="headerlink" href="#cookiecutter-operators-print-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="cookiecutter-operators-rawlist-module">
+<h2>cookiecutter.operators.rawlist module<a class="headerlink" href="#cookiecutter-operators-rawlist-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="cookiecutter-operators-return-module">
+<h2>cookiecutter.operators.return module<a class="headerlink" href="#cookiecutter-operators-return-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="cookiecutter-operators-split-module">
+<h2>cookiecutter.operators.split module<a class="headerlink" href="#cookiecutter-operators-split-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="cookiecutter-operators-stat-module">
+<h2>cookiecutter.operators.stat module<a class="headerlink" href="#cookiecutter-operators-stat-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="cookiecutter-operators-table-module">
+<h2>cookiecutter.operators.table module<a class="headerlink" href="#cookiecutter-operators-table-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="cookiecutter-operators-terraform-module">
+<h2>cookiecutter.operators.terraform module<a class="headerlink" href="#cookiecutter-operators-terraform-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="cookiecutter-operators-yaml-module">
+<h2>cookiecutter.operators.yaml module<a class="headerlink" href="#cookiecutter-operators-yaml-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="HISTORY.html" class="btn btn-neutral float-right" title="History" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="cookiecutter.html" class="btn btn-neutral float-left" title="cookiecutter package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2013-2019, Audrey Roy and Cookiecutter community.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

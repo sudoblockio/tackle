@@ -1,0 +1,280 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Choice Variables (1.1+) &mdash; nukikata  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> nukikata
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Tackle Box</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cookiecutter.html">cookiecutter package</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../HISTORY.html">History</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">nukikata</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Choice Variables (1.1+)</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/advanced/choice_variables.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="choice-variables-1-1">
+<span id="choice-variables"></span><h1>Choice Variables (1.1+)<a class="headerlink" href="#choice-variables-1-1" title="Permalink to this headline">¶</a></h1>
+<p>Choice variables provide different choices when creating a project. Depending on a user’s choice
+the template renders things differently.</p>
+<div class="section" id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h2>
+<p>Choice variables are regular key / value pairs, but with the value being a list of strings.</p>
+<p>For example, if you provide the following choice variable in your <code class="docutils literal notranslate"><span class="pre">tackle.yaml</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;license&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;MIT&quot;</span><span class="p">,</span> <span class="s2">&quot;BSD-3&quot;</span><span class="p">,</span> <span class="s2">&quot;GNU GPL v3.0&quot;</span><span class="p">,</span> <span class="s2">&quot;Apache Software License 2.0&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>you’d get the following choices when running Cookiecutter:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Select</span> <span class="n">license</span><span class="p">:</span>
+<span class="mi">1</span> <span class="o">-</span> <span class="n">MIT</span>
+<span class="mi">2</span> <span class="o">-</span> <span class="n">BSD</span><span class="o">-</span><span class="mi">3</span>
+<span class="mi">3</span> <span class="o">-</span> <span class="n">GNU</span> <span class="n">GPL</span> <span class="n">v3</span><span class="o">.</span><span class="mi">0</span>
+<span class="mi">4</span> <span class="o">-</span> <span class="n">Apache</span> <span class="n">Software</span> <span class="n">License</span> <span class="mf">2.0</span>
+<span class="n">Choose</span> <span class="kn">from</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+</pre></div>
+</div>
+<p>Depending on an user’s choice, a different license is rendered by Cookiecutter.</p>
+<p>The above <code class="docutils literal notranslate"><span class="pre">license</span></code> choice variable creates <code class="docutils literal notranslate"><span class="pre">cookiecutter.license</span></code>, which
+can be used like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%-</span> <span class="k">if</span> <span class="n">cookiecutter</span><span class="o">.</span><span class="n">license</span> <span class="o">==</span> <span class="s2">&quot;MIT&quot;</span> <span class="o">-%</span><span class="p">}</span>
+<span class="c1"># Possible license content here</span>
+
+<span class="p">{</span><span class="o">%-</span> <span class="k">elif</span> <span class="n">cookiecutter</span><span class="o">.</span><span class="n">license</span> <span class="o">==</span> <span class="s2">&quot;BSD-3&quot;</span> <span class="o">-%</span><span class="p">}</span>
+<span class="c1"># More possible license content here</span>
+
+<span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Cookiecutter is using <a class="reference external" href="http://jinja.pocoo.org/docs/dev/templates/#if">Jinja2’s if conditional expression</a> to determine the correct license.</p>
+<p>The created choice variable is still a regular Cookiecutter variable and can be used like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>License
+-------
+
+Distributed under the terms of the `{{cookiecutter.license}}`_ license,
+</pre></div>
+</div>
+</div>
+<div class="section" id="overwriting-default-choice-values">
+<h2>Overwriting Default Choice Values<a class="headerlink" href="#overwriting-default-choice-values" title="Permalink to this headline">¶</a></h2>
+<p>Choice Variables are overwritable using a <a class="reference internal" href="user_config.html#user-config"><span class="std std-ref">User Config (0.7.0+)</span></a> file.</p>
+<p>For example, a choice variable can be created in <code class="docutils literal notranslate"><span class="pre">tackle.yaml</span></code> by using a list as value:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;license&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;MIT&quot;</span><span class="p">,</span> <span class="s2">&quot;BSD-3&quot;</span><span class="p">,</span> <span class="s2">&quot;GNU GPL v3.0&quot;</span><span class="p">,</span> <span class="s2">&quot;Apache Software License 2.0&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>By default, the first entry in the values list serves as default value in the prompt.</p>
+<p>Setting the default <code class="docutils literal notranslate"><span class="pre">license</span></code> agreement to <em>Apache Software License 2.0</em> can be done using:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">default_context</span><span class="p">:</span>
+    <span class="nt">license</span><span class="p">:</span> <span class="s">&quot;Apache</span><span class="nv"> </span><span class="s">Software</span><span class="nv"> </span><span class="s">License</span><span class="nv"> </span><span class="s">2.0&quot;</span>
+</pre></div>
+</div>
+<p>in the <a class="reference internal" href="user_config.html#user-config"><span class="std std-ref">User Config (0.7.0+)</span></a> file.</p>
+<p>The resulting prompt changes and looks like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Select</span> <span class="n">license</span><span class="p">:</span>
+<span class="mi">1</span> <span class="o">-</span> <span class="n">Apache</span> <span class="n">Software</span> <span class="n">License</span> <span class="mf">2.0</span>
+<span class="mi">2</span> <span class="o">-</span> <span class="n">MIT</span>
+<span class="mi">3</span> <span class="o">-</span> <span class="n">BSD</span><span class="o">-</span><span class="mi">3</span>
+<span class="mi">4</span> <span class="o">-</span> <span class="n">GNU</span> <span class="n">GPL</span> <span class="n">v3</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">Choose</span> <span class="kn">from</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>As you can see the order of the options changed from <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">-</span> <span class="pre">MIT</span></code> to <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">-</span> <span class="pre">Apache</span> <span class="pre">Software</span> <span class="pre">License</span> <span class="pre">2.0</span></code>. <strong>Cookiecutter</strong> takes the first value in the list as the default.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2013-2019, Audrey Roy and Cookiecutter community.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

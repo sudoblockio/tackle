@@ -1,0 +1,250 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Replay Project Generation &mdash; nukikata  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> nukikata
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Tackle Box</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cookiecutter.html">cookiecutter package</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../HISTORY.html">History</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">nukikata</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Replay Project Generation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/advanced/replay.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="replay-project-generation">
+<span id="replay-feature"></span><h1>Replay Project Generation<a class="headerlink" href="#replay-project-generation" title="Permalink to this headline">¶</a></h1>
+<p><em>New in Cookiecutter 1.1</em></p>
+<p>On invocation <strong>Cookiecutter</strong> dumps a json file to <code class="docutils literal notranslate"><span class="pre">~/.cookiecutter_replay/</span></code> which enables you to <em>replay</em> later on.</p>
+<p>In other words, it persists your <strong>input</strong> for a template and fetches it when you run the same template again.</p>
+<p>Example for a replay file (which was created via <code class="docutils literal notranslate"><span class="pre">cookiecutter</span> <span class="pre">gh:hackebrot/cookiedozer</span></code>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;cookiecutter&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;app_class_name&quot;</span><span class="p">:</span> <span class="s2">&quot;FooBarApp&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;app_title&quot;</span><span class="p">:</span> <span class="s2">&quot;Foo Bar&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;raphael@example.com&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;full_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Raphael Pierzina&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;github_username&quot;</span><span class="p">:</span> <span class="s2">&quot;hackebrot&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;kivy_version&quot;</span><span class="p">:</span> <span class="s2">&quot;1.8.0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;project_slug&quot;</span><span class="p">:</span> <span class="s2">&quot;foobar&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;short_description&quot;</span><span class="p">:</span> <span class="s2">&quot;A sleek slideshow app that supports swipe gestures.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1.0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="s2">&quot;2015&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>To fetch this context data without being prompted on the command line you can use either of the following methods.</p>
+<p>Pass the according option on the CLI:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cookiecutter</span> <span class="o">--</span><span class="n">replay</span> <span class="n">gh</span><span class="p">:</span><span class="n">hackebrot</span><span class="o">/</span><span class="n">cookiedozer</span>
+</pre></div>
+</div>
+<p>Or use the Python API:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cookiecutter.main</span> <span class="kn">import</span> <span class="n">cookiecutter</span>
+<span class="n">cookiecutter</span><span class="p">(</span><span class="s1">&#39;gh:hackebrot/cookiedozer&#39;</span><span class="p">,</span> <span class="n">replay</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This feature is comes in handy if, for instance, you want to create a new project from an updated template.</p>
+<div class="section" id="custom-replay-file">
+<h2>Custom replay file<a class="headerlink" href="#custom-replay-file" title="Permalink to this headline">¶</a></h2>
+<p><em>New in Cookiecutter 2.0</em></p>
+<p>To specify a custom filename, you can use the <code class="docutils literal notranslate"><span class="pre">--replay-file</span></code> option:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cookiecutter</span> <span class="o">--</span><span class="n">replay</span><span class="o">-</span><span class="n">file</span> <span class="o">./</span><span class="n">cookiedozer</span><span class="o">.</span><span class="n">json</span> <span class="n">gh</span><span class="p">:</span><span class="n">hackebrot</span><span class="o">/</span><span class="n">cookiedozer</span>
+</pre></div>
+</div>
+<p>This may be useful to run the same replay file over several machines, in tests
+or when a user of the template reports a problem</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2013-2019, Audrey Roy and Cookiecutter community.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

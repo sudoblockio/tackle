@@ -1,0 +1,322 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Usage &mdash; nukikata  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> nukikata
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html">Tackle Box</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cookiecutter.html">cookiecutter package</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="HISTORY.html">History</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">nukikata</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Usage</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/usage.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="grab-a-cookiecutter-template">
+<h2>Grab a Cookiecutter template<a class="headerlink" href="#grab-a-cookiecutter-template" title="Permalink to this headline">¶</a></h2>
+<p>First, clone a Cookiecutter project template:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone git@github.com:audreyr/cookiecutter-pypackage.git
+</pre></div>
+</div>
+</div>
+<div class="section" id="make-your-changes">
+<h2>Make your changes<a class="headerlink" href="#make-your-changes" title="Permalink to this headline">¶</a></h2>
+<p>Modify the variables defined in <cite>cookiecutter.json</cite>.</p>
+<p>Open up the skeleton project. If you need to change it around a bit, do so.</p>
+<p>You probably also want to create a repo, name it differently, and push it as
+your own new Cookiecutter project template, for handy future use.</p>
+</div>
+<div class="section" id="generate-your-project">
+<h2>Generate your project<a class="headerlink" href="#generate-your-project" title="Permalink to this headline">¶</a></h2>
+<p>Then generate your project from the project template:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cookiecutter cookiecutter-pypackage/
+</pre></div>
+</div>
+<p>The only argument is the input directory. (The output directory is generated
+by rendering that, and it can’t be the same as the input directory.)</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>see <a class="reference internal" href="advanced/cli_options.html#command-line-options"><span class="std std-ref">Command Line Options</span></a> for extra command line arguments</p>
+</div>
+<p>Try it out!</p>
+</div>
+<div class="section" id="works-directly-with-git-and-hg-mercurial-repos-too">
+<h2>Works directly with git and hg (mercurial) repos too<a class="headerlink" href="#works-directly-with-git-and-hg-mercurial-repos-too" title="Permalink to this headline">¶</a></h2>
+<p>To create a project from the cookiecutter-pypackage.git repo template:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cookiecutter gh:audreyr/cookiecutter-pypackage
+</pre></div>
+</div>
+<p>Cookiecutter knows abbreviations for Github (<code class="docutils literal notranslate"><span class="pre">gh</span></code>), Bitbucket (<code class="docutils literal notranslate"><span class="pre">bb</span></code>), and
+GitLab (<code class="docutils literal notranslate"><span class="pre">gl</span></code>) projects, but you can also give it the full URL to any
+repository:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cookiecutter https://github.com/audreyr/cookiecutter-pypackage.git
+$ cookiecutter git+ssh://git@github.com/audreyr/cookiecutter-pypackage.git
+$ cookiecutter hg+ssh://hg@bitbucket.org/audreyr/cookiecutter-pypackage
+</pre></div>
+</div>
+<p>You will be prompted to enter a bunch of project config values. (These are
+defined in the project’s <cite>cookiecutter.json</cite>.)</p>
+<p>Then, Cookiecutter will generate a project from the template, using the values
+that you entered. It will be placed in your current directory.</p>
+<p>And if you want to specify a branch you can do that with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cookiecutter https://github.com/audreyr/cookiecutter-pypackage.git --checkout develop
+</pre></div>
+</div>
+</div>
+<div class="section" id="works-with-private-repos">
+<h2>Works with private repos<a class="headerlink" href="#works-with-private-repos" title="Permalink to this headline">¶</a></h2>
+<p>If you want to work with repos that are not hosted in github or bitbucket you can indicate explicitly the
+type of repo that you want to use prepending <cite>hg+</cite> or <cite>git+</cite> to repo url:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cookiecutter hg+https://example.com/repo
+</pre></div>
+</div>
+<p>In addition, one can provide a path to the cookiecutter stored
+on a local server:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cookiecutter file://server/folder/project.git
+</pre></div>
+</div>
+</div>
+<div class="section" id="works-with-zip-files">
+<h2>Works with Zip files<a class="headerlink" href="#works-with-zip-files" title="Permalink to this headline">¶</a></h2>
+<p>You can also distribute cookiecutter templates as Zip files. To use a Zip file
+template, point cookiecutter at a Zip file on your local machine:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cookiecutter /path/to/template.zip
+</pre></div>
+</div>
+<p>Or, if the Zip file is online:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cookiecutter https://example.com/path/to/template.zip
+</pre></div>
+</div>
+<p>If the template has already been downloaded, or a template with the same name
+has already been downloaded, you will be prompted to delete the existing
+template before proceeding.</p>
+<p>The Zip file contents should be the same as a git/hg repository for a template -
+that is, the zipfile should unpack into a top level directory that contains the
+name of the template. The name of the zipfile doesn’t have to match the name of
+the template - for example, you can label a zipfile with a version number, but
+omit the version number from the directory inside the Zip file.</p>
+<p>If you want to see an example Zipfile, find any Cookiecutter repository on Github
+and download that repository as a zip file - Github repository downloads are in
+a valid format for Cookiecutter.</p>
+<div class="section" id="password-protected-zip-files">
+<h3>Password-protected Zip files<a class="headerlink" href="#password-protected-zip-files" title="Permalink to this headline">¶</a></h3>
+<p>If your repository Zip file is password protected, Cookiecutter will prompt you
+for that password whenever the template is used.</p>
+<p>Alternatively, if you want to use a password-protected Zip file in an
+automated environment, you can export the <cite>COOKIECUTTER_REPO_PASSWORD</cite>
+environment variable; the value of that environment variable will be used
+whenever a password is required.</p>
+</div>
+</div>
+<div class="section" id="keeping-your-cookiecutters-organized">
+<h2>Keeping your cookiecutters organized<a class="headerlink" href="#keeping-your-cookiecutters-organized" title="Permalink to this headline">¶</a></h2>
+<p>As of the Cookiecutter 0.7.0 release:</p>
+<ul class="simple">
+<li><p>Whenever you generate a project with a cookiecutter, the resulting project
+is output to your current directory.</p></li>
+<li><p>Your cloned cookiecutters are stored by default in your <cite>~/.cookiecutters/</cite>
+directory (or Windows equivalent). The location is configurable: see
+<a class="reference internal" href="advanced/user_config.html"><span class="doc">User Config (0.7.0+)</span></a> for details.</p></li>
+</ul>
+<p>Pre-0.7.0, this is how it worked:</p>
+<ul class="simple">
+<li><p>Whenever you generate a project with a cookiecutter, the resulting project
+is output to your current directory.</p></li>
+<li><p>Cloned cookiecutters were not saved locally.</p></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2013-2019, Audrey Roy and Cookiecutter community.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

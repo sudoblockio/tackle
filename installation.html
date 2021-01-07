@@ -1,0 +1,306 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Installation &mdash; nukikata  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> nukikata
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html">Tackle Box</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cookiecutter.html">cookiecutter package</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="HISTORY.html">History</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">nukikata</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Installation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/installation.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="basics">
+<h2>Basics<a class="headerlink" href="#basics" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pip3 install tackle-box
+</pre></div>
+</div>
+</div>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Python interpreter</p></li>
+<li><p>Adjust your path</p></li>
+<li><p>Packaging tools</p></li>
+</ul>
+<div class="section" id="python-interpreter">
+<h3>Python interpreter<a class="headerlink" href="#python-interpreter" title="Permalink to this headline">¶</a></h3>
+<p>Install Python for your operating system. Consult the official <a class="reference external" href="https://docs.python.org/3/using/index.html">Python documentation</a> for details.</p>
+<p>You can install the Python binaries from <a class="reference external" href="https://www.python.org/downloads/mac-osx/">python.org</a>. Alternatively on macOS, you can use the <a class="reference external" href="http://brew.sh/">homebrew</a> package manager.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ brew install python3
+</pre></div>
+</div>
+</div>
+<div class="section" id="adjust-your-path">
+<h3>Adjust your path<a class="headerlink" href="#adjust-your-path" title="Permalink to this headline">¶</a></h3>
+<p>Ensure that your <code class="docutils literal notranslate"><span class="pre">bin</span></code> folder is on your path for your platform. Typically <code class="docutils literal notranslate"><span class="pre">~/.local/</span></code> for UNIX and macOS, or <code class="docutils literal notranslate"><span class="pre">%APPDATA%\Python</span></code> on Windows. (See the Python documentation for <a class="reference external" href="https://docs.python.org/3/library/site.html#site.USER_BASE">site.USER_BASE</a> for full details.)</p>
+<div class="section" id="unix-and-macos">
+<h4>UNIX and macOS<a class="headerlink" href="#unix-and-macos" title="Permalink to this headline">¶</a></h4>
+<p>For bash shells, add the following to your <code class="docutils literal notranslate"><span class="pre">.bash_profile</span></code> (adjust for other shells):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add ~/.local/ to PATH</span>
+<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$HOME</span>/.local/bin:<span class="nv">$PATH</span>
+</pre></div>
+</div>
+<p>Remember to load changes with <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">~/.bash_profile</span></code> or open a new shell session.</p>
+</div>
+<div class="section" id="windows">
+<h4>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h4>
+<p>Ensure the directory where cookiecutter will be installed is in your environment’s <code class="docutils literal notranslate"><span class="pre">Path</span></code> in order to make it possible to invoke it from a command prompt. To do so, search for “Environment Variables” on your computer (on Windows 10, it is under <code class="docutils literal notranslate"><span class="pre">System</span> <span class="pre">Properties</span></code> –&gt; <code class="docutils literal notranslate"><span class="pre">Advanced</span></code>) and add that directory to the <code class="docutils literal notranslate"><span class="pre">Path</span></code> environment variable, using the GUI to edit path segments.</p>
+<p>Example segments should look like <code class="docutils literal notranslate"><span class="pre">%APPDATA%\Python\Python3x\Scripts</span></code>, where you have your version of Python instead of <code class="docutils literal notranslate"><span class="pre">Python3x</span></code>.</p>
+<p>You may need to restart your command prompt session to load the environment variables.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>See <a class="reference external" href="https://docs.python.org/3/using/windows.html#configuring-python">Configuring Python (on Windows)</a> for full details.</p>
+</div>
+<p><strong>Unix on Windows</strong></p>
+<p>You may also install  <a class="reference external" href="https://msdn.microsoft.com/en-us/commandline/wsl/install-win10">Windows Subsystem for Linux</a> or <a class="reference external" href="http://unxutils.sourceforge.net">GNU utilities for Win32</a> to use Unix commands on Windows.</p>
+</div>
+</div>
+<div class="section" id="packaging-tools">
+<h3>Packaging tools<a class="headerlink" href="#packaging-tools" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">pip</span></code> and <code class="docutils literal notranslate"><span class="pre">setuptools</span></code> now come with Python 3 &gt;=3.6. See the Python Packaging Authority’s (PyPA) documentation <a class="reference external" href="https://packaging.python.org/en/latest/installing/#requirements-for-installing-packages">Requirements for Installing Packages</a> for full details.</p>
+</div>
+</div>
+<div class="section" id="install-tackle-box">
+<h2>Install Tackle Box<a class="headerlink" href="#install-tackle-box" title="Permalink to this headline">¶</a></h2>
+<p>At the command line:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ python3 -m pip install --user tackle-box
+</pre></div>
+</div>
+<p>Or, if you do not have pip:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ easy_install --user tackle-box
+</pre></div>
+</div>
+<p>Though, pip is recommended.</p>
+</div>
+<div class="section" id="alternate-installations">
+<h2>Alternate installations<a class="headerlink" href="#alternate-installations" title="Permalink to this headline">¶</a></h2>
+<p><strong>Homebrew (Mac OS X only):</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ brew install cookiecutter
+</pre></div>
+</div>
+<p><strong>Pipx (Linux, OSX and Windows):</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pipx install cookiecutter
+</pre></div>
+</div>
+<p><strong>Debian/Ubuntu:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ sudo apt-get install cookiecutter
+</pre></div>
+</div>
+</div>
+<div class="section" id="upgrading-from-0-6-4-to-0-7-0-or-greater">
+<h2>Upgrading from 0.6.4 to 0.7.0 or greater<a class="headerlink" href="#upgrading-from-0-6-4-to-0-7-0-or-greater" title="Permalink to this headline">¶</a></h2>
+<p>First, read <a class="reference internal" href="HISTORY.html"><span class="doc">History</span></a> in detail. There are a lot of major
+changes. The big ones are:</p>
+<ul class="simple">
+<li><p>Cookiecutter no longer deletes the cloned repo after generating a project.</p></li>
+<li><p>Cloned repos are saved into <cite>~/.cookiecutters/</cite>.</p></li>
+<li><p>You can optionally create a <cite>~/.cookiecutterrc</cite> config file.</p></li>
+</ul>
+<p>Upgrade Cookiecutter either with easy_install:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ easy_install --upgrade cookiecutter
+</pre></div>
+</div>
+<p>Or with pip:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ python3 -m pip install --upgrade cookiecutter
+</pre></div>
+</div>
+<p>Then you should be good to go.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2013-2019, Audrey Roy and Cookiecutter community.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

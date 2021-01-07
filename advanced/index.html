@@ -1,0 +1,261 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Advanced Usage &mdash; nukikata  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> nukikata
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Tackle Box</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cookiecutter.html">cookiecutter package</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../HISTORY.html">History</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">nukikata</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Advanced Usage</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/advanced/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="advanced-usage">
+<h1>Advanced Usage<a class="headerlink" href="#advanced-usage" title="Permalink to this headline">¶</a></h1>
+<p>Various advanced topics regarding tackle-box usage.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="hooks.html">Hooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hooks.html#context-hooks">Context Hooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hooks.html#using-pre-post-generate-hooks">Using Pre/Post-Generate Hooks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hooks.html#writing-hooks">Writing hooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hooks.html#example-validating-template-variables">Example: Validating template variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hooks.html#example-conditional-files-directories">Example: Conditional files / directories</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="user_config.html">User Config (0.7.0+)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calling_from_python.html">Calling Cookiecutter Functions From Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="injecting_context.html">Injecting Extra Context</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="injecting_context.html#example-injecting-a-timestamp">Example: Injecting a Timestamp</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="suppressing_prompts.html">Suppressing Command-Line Prompts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="suppressing_prompts.html#basic-example-using-the-defaults">Basic Example: Using the Defaults</a></li>
+<li class="toctree-l2"><a class="reference internal" href="suppressing_prompts.html#advanced-example-defaults-extra-context">Advanced Example: Defaults + Extra Context</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="templates_in_context.html">Templates in Context Values</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="templates_in_context.html#basic-example-templates-in-context">Basic Example: Templates in Context</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="private_variables.html">Private Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copy_without_render.html">Copy without Render</a></li>
+<li class="toctree-l1"><a class="reference internal" href="replay.html">Replay Project Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="replay.html#custom-replay-file">Custom replay file</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cli_options.html">Command Line Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="choice_variables.html">Choice Variables (1.1+)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="choice_variables.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="choice_variables.html#overwriting-default-choice-values">Overwriting Default Choice Values</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dict_variables.html">Dictionary Variables (1.5+)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dict_variables.html#basic-usage">Basic Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="template_extensions.html">Template Extensions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="template_extensions.html#jsonify-extension">Jsonify extension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="template_extensions.html#random-string-extension">Random string extension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="template_extensions.html#slugify-extension">Slugify extension</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="directories.html">Organizing cookiecutters in directories (1.7+)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="new_line_characters.html">Working with line-ends special symbols LF/CRLF</a></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2013-2019, Audrey Roy and Cookiecutter community.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
