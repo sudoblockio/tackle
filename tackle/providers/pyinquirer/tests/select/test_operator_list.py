@@ -6,8 +6,8 @@ import os
 from tackle.main import tackle
 
 
-def test_operator_select(monkeypatch):
-    """Verify the operator call works successfully."""
+def test_provider_select(monkeypatch):
+    """Verify the hook call works successfully."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
 
     # TODO: Need to properly test this with pty. Tests don't cover now
