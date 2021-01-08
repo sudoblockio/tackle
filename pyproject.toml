@@ -1,5 +1,9 @@
 [tool.black]
 skip-string-normalization = true
-exclude = '/(tests/hooks-abort-render/hooks|docs\/HelloCookieCutter1)/'
+exclude = '/(tests/hooks-abort-render/hooks|docs)/logo/.github'
 line-length = 88
 target-version = ['py36']
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"

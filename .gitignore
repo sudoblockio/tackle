@@ -7,8 +7,6 @@ __pycache__/
 *.so
 
 # WIP providers
-tackle/providers/git
-tackle/providers/github
 
 # Pushing all rendered docs to `docs` branch in GH actions
 docs/_build/*
