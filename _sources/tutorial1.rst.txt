@@ -1,9 +1,37 @@
-=============================
-Getting to Know Cookiecutter
-=============================
+==========================
+Getting to Know Tackle Box
+==========================
 
-.. note:: Before you begin, please install Cookiecutter 0.7.0 or higher.
+.. note:: Before you begin, please install Tackle Box.
    Instructions are in :doc:`installation`.
+
+Tackle Box is a tool for creating CLIs and generating code. To get started creating your own tackle boxes, create a new directory/repo and create a `tackle.yaml` file with a little content like so.
+
+.. code-block:: bash
+
+    mkdir tackle-first-try
+    cd tackle-first-try
+
+    echo '
+    name: Rob # Default prompt
+    greeting: "{{name}}" # Notice the rendering
+    ' >> tackle.yaml
+
+    tackle .
+
+Here you can see the most basic functionality where each line of the file is progressively interpreted and able to use the output of the previous line as the input of the next. The second value `\{\{name\}\}` is a templating language called jinja, a powerful templating language that is used to gain access to previous entries' outputs.
+
+Here, we only have key value pairs but to tie into other functionality offered by tackle-box, you can use hooks by declaring a special key called `type`.  There are three main prompt hooks that you should know when building tackle boxes, `input` and `select` for strings and `checkbox` for returning lists. Here is a `tackle.yaml` file showing these at work.
+
+.. code-block:: yaml
+
+    name:
+      type: imput
+      message: What is your name?
+
+
+
+
 
 Cookiecutter is a tool for creating projects from *cookiecutters* (project
 templates).

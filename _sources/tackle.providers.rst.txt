@@ -1,0 +1,10 @@
+tackle.providers package
+========================
+
+Module contents
+---------------
+
+.. automodule:: tackle.providers
+   :members:
+   :undoc-members:
+   :show-inheritance:

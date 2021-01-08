@@ -1,0 +1,73 @@
+tackle package
+==============
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   tackle.cli
+   tackle.parser
+   tackle.providers
+   tackle.render
+   tackle.utils
+
+Submodules
+----------
+
+tackle.exceptions module
+------------------------
+
+.. automodule:: tackle.exceptions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tackle.generate module
+----------------------
+
+.. automodule:: tackle.generate
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tackle.hooks module
+-------------------
+
+.. automodule:: tackle.hooks
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tackle.main module
+------------------
+
+.. automodule:: tackle.main
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tackle.models module
+--------------------
+
+.. automodule:: tackle.models
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tackle.repository module
+------------------------
+
+.. automodule:: tackle.repository
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: tackle
+   :members:
+   :undoc-members:
+   :show-inheritance:

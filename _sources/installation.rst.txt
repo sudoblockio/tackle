@@ -51,7 +51,7 @@ Remember to load changes with ``source ~/.bash_profile`` or open a new shell ses
 Windows
 """""""
 
-Ensure the directory where cookiecutter will be installed is in your environment's ``Path`` in order to make it possible to invoke it from a command prompt. To do so, search for "Environment Variables" on your computer (on Windows 10, it is under ``System Properties`` --> ``Advanced``) and add that directory to the ``Path`` environment variable, using the GUI to edit path segments.
+Ensure the directory where tackle-box will be installed is in your environment's ``Path`` in order to make it possible to invoke it from a command prompt. To do so, search for "Environment Variables" on your computer (on Windows 10, it is under ``System Properties`` --> ``Advanced``) and add that directory to the ``Path`` environment variable, using the GUI to edit path segments.
 
 Example segments should look like ``%APPDATA%\Python\Python3x\Scripts``, where you have your version of Python instead of ``Python3x``.
 
@@ -86,48 +86,3 @@ Or, if you do not have pip:
     $ easy_install --user tackle-box
 
 Though, pip is recommended.
-
-Alternate installations
------------------------
-
-**Homebrew (Mac OS X only):**
-
-.. code-block:: bash
-
-    $ brew install cookiecutter
-
-**Pipx (Linux, OSX and Windows):**
-
-.. code-block:: bash
-
-    $ pipx install cookiecutter
-
-**Debian/Ubuntu:**
-
-.. code-block:: bash
-
-    $ sudo apt-get install cookiecutter
-
-Upgrading from 0.6.4 to 0.7.0 or greater
-----------------------------------------
-
-First, read :doc:`HISTORY` in detail. There are a lot of major
-changes. The big ones are:
-
-* Cookiecutter no longer deletes the cloned repo after generating a project.
-* Cloned repos are saved into `~/.cookiecutters/`.
-* You can optionally create a `~/.cookiecutterrc` config file.
-
-Upgrade Cookiecutter either with easy_install:
-
-.. code-block:: bash
-
-    $ easy_install --upgrade cookiecutter
-
-Or with pip:
-
-.. code-block:: bash
-
-    $ python3 -m pip install --upgrade cookiecutter
-
-Then you should be good to go.

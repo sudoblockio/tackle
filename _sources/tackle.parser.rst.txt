@@ -1,0 +1,53 @@
+tackle.parser package
+=====================
+
+Submodules
+----------
+
+tackle.parser.context module
+----------------------------
+
+.. automodule:: tackle.parser.context
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tackle.parser.hooks module
+--------------------------
+
+.. automodule:: tackle.parser.hooks
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tackle.parser.prompts module
+----------------------------
+
+.. automodule:: tackle.parser.prompts
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tackle.parser.providers module
+------------------------------
+
+.. automodule:: tackle.parser.providers
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tackle.parser.settings module
+-----------------------------
+
+.. automodule:: tackle.parser.settings
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: tackle.parser
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -23,7 +23,7 @@ Prior to permanently splitting into Tackle Box.
 - Added web, copy, move, dicts, lists operators
 
 ### 2.0.0.1 (2020-07-28)
-- Added special variable `calling_directory` to preserve path regardless of context changing in remote nukikata calls.
+- Added special variable `calling_directory` to preserve path regardless of context changing in remote tackle calls.
 - Fixing listdir and list operators
 
 ### 2.0.0.0 (2020-07-27)

@@ -1,6 +1,6 @@
 # Tackle Box
 
-[![pypi](https://img.shields.io/pypi/v/nukikata.svg)](https://pypi.python.org/pypi/tackle-box)
+[![pypi](https://img.shields.io/pypi/v/tackle-box.svg)](https://pypi.python.org/pypi/tackle-box)
 [![python](https://img.shields.io/pypi/pyversions/tackle-box.svg)](https://pypi.python.org/pypi/tackle-box)
 [![Build Status](https://travis-ci.org/robcxyz/tackle-box.svg?branch=master)](https://travis-ci.org/robcxyz/tackle-box)
 [![codecov](https://codecov.io/gh/robcxyz/tackle-box/branch/master/graphs/badge.svg?branch=master)](https://codecov.io/github/robcxyz/tackle-box?branch=master)
@@ -13,19 +13,15 @@
 
 Tackle box is a DSL for easily creating CLIs, workflows, and generating code from templates. The framework is modular and empowered by a collection of hooks to easily extend functionality. Based off a fork of [cookiecutter](https://github.com/cookiecutter/cookiecutter), this tool evolved from being a code generator to connecting git repositories into a web of CLIs.
 
-> Note: Tackle box is undergoing several refactors.  Expect many changes.
-
-## Quick Demo
+### Quick Demo
 
 <!--  TODO: Refactor -->
 ```
 pip3 install tackle-box
-nukikata https://github.com/robcxyz/nukikata-demos
+tackle https://github.com/robcxyz/tackle-demos
 ```
 
-Note: If you experience installation errors try `pip3 install nukikata --no-binary :all:`.
-
-## Features
+### Features
 
 All cookiecutter features are supported in addition to loops, conditionals, and plugins. These features are only available to supplied dictionary objects with a `type` key to trigger the associated [hook](tackle/models.py). Loops and conditionals are triggered by rendering [jinja](https://github.com/pallets/jinja) expressions per the example below. Other cookiecutters can be called from a single tackle box to knit together modularized components.
 
@@ -54,7 +50,7 @@ outcome:
 bad_outcome:
   type: print
   statement: Wrong answer {{ name }}... # Render the `name` variable
-  when: "{{ outcome == 'flung-off-bridge' }}" # Conditionals are rendered json
+  when: "{{ outcome == 'flung-off-bridge' }}" # Conditionals need to evaluate as booleans
 
 color_essays:
   type: input
@@ -67,15 +63,18 @@ democmd:
   type: command # Run arbitrary system commands and return stdout
   command: pwd
 
-dump_yaml:
-  type: yaml # Read / write yaml
-  contents: "{{ this }}"
-  path: "{{ calling_directory }}/output.yaml"
+output:
+  type: pprint # Pretty print the output
+  output: "{{ this }}" # Special var that contains a dictionary of all the value
 ```
 
-Here the jinja default context key goes to the name of file - ie `{{ <var name> }}` but can be customized if needed. We can also see the use of a special variable `this` which is the current context. 
+Each hook is called via its `type` which, in the case of the `input` hook, can be looked up in the [docs]() or by looking at the [source code]() directly.
 
 Prompts are enhanced by extending the functionality from [PyInquirer](https://github.com/CITGuru/PyInquirer) as a set of hooks as noted by the types `input`, `select`, and `checkbox`. Writing new hooks is super simple as seen in the `print` hook:
+
+### Hooks and Providers
+
+
 
 [`cookiecuttuer/providers/hooks/print.py`](tackle/operators/print.py)
 
@@ -94,33 +93,33 @@ class PrintOperator(BaseHook):
 
 Hooks are built with pydantic by inheriting from the [BaseHook](tackle/models.py) that makes a number of useful methods and attributes available.
 
-#### Base Methods 
+#### Base Methods
 
-A number of useful methods are available when executing any hook. Here is a breif example of all of them being used. 
+A number of useful methods are available when executing any hook. Here is a breif example of all of them being used.
 
 ```yaml
-this: 
+this:
   type: a_hook
-  chdir: /path/to/some/dir # Changes to the dir before executing 
+  chdir: /path/to/some/dir # Changes to the dir before executing
   loop: # Expects a list, creates `item` and `index` variables in loop
     - foo
-    - bar 
-  when: "{{ item == 'foo' }}" # Jinja expression that evaluates to boolean 
-  merge: True # Merge the outputs to the upper level context 
+    - bar
+  when: "{{ item == 'foo' }}" # Jinja expression that evaluates to boolean
+  merge: True # Merge the outputs to the upper level context
 ```
 
-For further documentation on base methods, see check out [the docs](). 
+For further documentation on base methods, see check out [the docs]().
 
 
 
-### Providers 
+### Providers
 
-Providers are groups of hooks and templates to 
+Providers are groups of hooks and templates to
 
 
 ### Hooks
 
-Around 50 different hooks are currently available with more coming down the line. To understand how to use them, please refer to the [API Docs](https://robcxyz.github.io/nukikata/docs/_build/html/cookiecutter.operators.html#submodules).
+Around 50 different hooks are currently available with more coming down the line. To understand how to use them, please refer to the [API Docs](https://robcxyz.github.io/tackle-box/docs/_build/html/cookiecutter.operators.html#submodules).
 
 The main type of operators are derivations of [PyInquirer](https://github.com/CITGuru/PyInquirer) which greatly enhanced the capabilities of the original cookiecutter due to the ability to use multi-select inputs that return lists. Please inspect the [PyInquirer](https://github.com/CITGuru/PyInquirer) API docs to understand the interface. All features are supported except for `validation` and `filter` which is not supported and `when` which is implemented in jinja.
 

@@ -1,0 +1,528 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>tackle.utils package &mdash; tackle-box 0.1.0-alpha.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="History" href="HISTORY.html" />
+    <link rel="prev" title="tackle.render package" href="tackle.render.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> tackle-box
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0-alpha.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html">Tackle Box</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demos.html">Demos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Additional Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial1.html">Getting to Know Tackle Box</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced/index.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tackle.providers.html">tackle.providers package</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="tackle.html">tackle package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="tackle.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="tackle.cli.html">tackle.cli package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tackle.parser.html">tackle.parser package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tackle.providers.html">tackle.providers package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tackle.render.html">tackle.render package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">tackle.utils package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tackle.utils.conditionals">tackle.utils.conditionals module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tackle.utils.context_manager">tackle.utils.context_manager module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tackle-utils-files-module">tackle.utils.files module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tackle.utils.log">tackle.utils.log module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tackle.utils.paths">tackle.utils.paths module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tackle.utils.prompts">tackle.utils.prompts module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tackle.utils.reader">tackle.utils.reader module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tackle.utils.vcs">tackle.utils.vcs module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tackle.utils.zipfile">tackle.utils.zipfile module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tackle.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tackle.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tackle.html#module-tackle.exceptions">tackle.exceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tackle.html#module-tackle.generate">tackle.generate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tackle.html#module-tackle.hooks">tackle.hooks module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tackle.html#tackle-main-module">tackle.main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tackle.html#module-tackle.models">tackle.models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tackle.html#module-tackle.repository">tackle.repository module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tackle.html#module-tackle">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.cli.html">tackle.cli package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.parser.html">tackle.parser package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.render.html">tackle.render package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">tackle.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tackle.utils.conditionals">tackle.utils.conditionals module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tackle.utils.context_manager">tackle.utils.context_manager module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tackle-utils-files-module">tackle.utils.files module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tackle.utils.log">tackle.utils.log module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tackle.utils.paths">tackle.utils.paths module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tackle.utils.prompts">tackle.utils.prompts module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tackle.utils.reader">tackle.utils.reader module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tackle.utils.vcs">tackle.utils.vcs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tackle.utils.zipfile">tackle.utils.zipfile module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tackle.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="HISTORY.html">History</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">tackle-box</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="tackle.html">tackle package</a> &raquo;</li>
+        
+      <li>tackle.utils package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/tackle.utils.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="tackle-utils-package">
+<h1>tackle.utils package<a class="headerlink" href="#tackle-utils-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-tackle.utils.conditionals">
+<span id="tackle-utils-conditionals-module"></span><h2>tackle.utils.conditionals module<a class="headerlink" href="#module-tackle.utils.conditionals" title="Permalink to this headline">¶</a></h2>
+<p>Conditional utilities.</p>
+<dl class="py function">
+<dt id="tackle.utils.conditionals.evaluate_when">
+<code class="sig-prename descclassname">tackle.utils.conditionals.</code><code class="sig-name descname">evaluate_when</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">hook_dict</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)">dict</a></span></em>, <em class="sig-param"><span class="n">context</span><span class="p">:</span> <span class="n">Context</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/utils/conditionals.html#evaluate_when"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.utils.conditionals.evaluate_when" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the when condition and return bool.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-tackle.utils.context_manager">
+<span id="tackle-utils-context-manager-module"></span><h2>tackle.utils.context_manager module<a class="headerlink" href="#module-tackle.utils.context_manager" title="Permalink to this headline">¶</a></h2>
+<p>Function to handle directory context.</p>
+<dl class="py function">
+<dt id="tackle.utils.context_manager.work_in">
+<code class="sig-prename descclassname">tackle.utils.context_manager.</code><code class="sig-name descname">work_in</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dirname</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/utils/context_manager.html#work_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.utils.context_manager.work_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>Context manager version of os.chdir.</p>
+<p>When exited, returns to the working directory prior to entering.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="tackle-utils-files-module">
+<h2>tackle.utils.files module<a class="headerlink" href="#tackle-utils-files-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-tackle.utils.log">
+<span id="tackle-utils-log-module"></span><h2>tackle.utils.log module<a class="headerlink" href="#module-tackle.utils.log" title="Permalink to this headline">¶</a></h2>
+<p>Module for setting up logging.</p>
+<dl class="py function">
+<dt id="tackle.utils.log.configure_logger">
+<code class="sig-prename descclassname">tackle.utils.log.</code><code class="sig-name descname">configure_logger</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stream_level</span><span class="o">=</span><span class="default_value">'DEBUG'</span></em>, <em class="sig-param"><span class="n">debug_file</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/utils/log.html#configure_logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.utils.log.configure_logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configure logging for tackle.</p>
+<p>Set up logging to stdout with given level. If <code class="docutils literal notranslate"><span class="pre">debug_file</span></code> is given set
+up logging to file with DEBUG level.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-tackle.utils.paths">
+<span id="tackle-utils-paths-module"></span><h2>tackle.utils.paths module<a class="headerlink" href="#module-tackle.utils.paths" title="Permalink to this headline">¶</a></h2>
+<p>Path related utils.</p>
+<dl class="py function">
+<dt id="tackle.utils.paths.expand_path">
+<code class="sig-prename descclassname">tackle.utils.paths.</code><code class="sig-name descname">expand_path</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><a class="reference internal" href="_modules/tackle/utils/paths.html#expand_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.utils.paths.expand_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expand both environment variables and user home in the given path.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.utils.paths.expand_paths">
+<code class="sig-prename descclassname">tackle.utils.paths.</code><code class="sig-name descname">expand_paths</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">paths</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a><a class="reference internal" href="_modules/tackle/utils/paths.html#expand_paths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.utils.paths.expand_paths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expand a list of paths.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.utils.paths.force_delete">
+<code class="sig-prename descclassname">tackle.utils.paths.</code><code class="sig-name descname">force_delete</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">exc_info</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/utils/paths.html#force_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.utils.paths.force_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error handler for <cite>shutil.rmtree()</cite> equivalent to <cite>rm -rf</cite>.</p>
+<p>Usage: <cite>shutil.rmtree(path, onerror=force_delete)</cite>
+From stackoverflow.com/questions/1889597</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.utils.paths.listdir_absolute">
+<code class="sig-prename descclassname">tackle.utils.paths.</code><code class="sig-name descname">listdir_absolute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">directory</span></em>, <em class="sig-param"><span class="n">skip_paths</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/utils/paths.html#listdir_absolute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.utils.paths.listdir_absolute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return and iterator of the absolute path.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.utils.paths.make_executable">
+<code class="sig-prename descclassname">tackle.utils.paths.</code><code class="sig-name descname">make_executable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">script_path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/utils/paths.html#make_executable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.utils.paths.make_executable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make <cite>script_path</cite> executable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>script_path</strong> – The file to change</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.utils.paths.make_sure_path_exists">
+<code class="sig-prename descclassname">tackle.utils.paths.</code><code class="sig-name descname">make_sure_path_exists</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/utils/paths.html#make_sure_path_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.utils.paths.make_sure_path_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ensure that a directory exists.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> – A directory path.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.utils.paths.rmtree">
+<code class="sig-prename descclassname">tackle.utils.paths.</code><code class="sig-name descname">rmtree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/utils/paths.html#rmtree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.utils.paths.rmtree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a directory and all its contents. Like rm -rf on Unix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> – A directory path.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-tackle.utils.prompts">
+<span id="tackle-utils-prompts-module"></span><h2>tackle.utils.prompts module<a class="headerlink" href="#module-tackle.utils.prompts" title="Permalink to this headline">¶</a></h2>
+<p>Helper functions used throughout Tackle.</p>
+<dl class="py function">
+<dt id="tackle.utils.prompts.prompt_and_delete">
+<code class="sig-prename descclassname">tackle.utils.prompts.</code><code class="sig-name descname">prompt_and_delete</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">no_input</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/utils/prompts.html#prompt_and_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.utils.prompts.prompt_and_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ask user if it’s okay to delete the previously-downloaded file/directory.</p>
+<p>If yes, delete it. If no, checks to see if the old version should be
+reused. If yes, it’s reused; otherwise, Tackle exits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – Previously downloaded zipfile.</p></li>
+<li><p><strong>no_input</strong> – Suppress prompt to delete repo and just delete it.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if the content was deleted</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.utils.prompts.read_user_yes_no">
+<code class="sig-prename descclassname">tackle.utils.prompts.</code><code class="sig-name descname">read_user_yes_no</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">question</span></em>, <em class="sig-param"><span class="n">default_value</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/utils/prompts.html#read_user_yes_no"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.utils.prompts.read_user_yes_no" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ask user yes or no for generic question.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-tackle.utils.reader">
+<span id="tackle-utils-reader-module"></span><h2>tackle.utils.reader module<a class="headerlink" href="#module-tackle.utils.reader" title="Permalink to this headline">¶</a></h2>
+<p>Generic reader for json, yaml, and hcl.</p>
+<dl class="py function">
+<dt id="tackle.utils.reader.apply_overwrites_to_inputs">
+<code class="sig-prename descclassname">tackle.utils.reader.</code><code class="sig-name descname">apply_overwrites_to_inputs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="n">overwrite_dict</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/utils/reader.html#apply_overwrites_to_inputs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.utils.reader.apply_overwrites_to_inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modify the given context in place based on the overwrite_context.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.utils.reader.read_config_file">
+<code class="sig-prename descclassname">tackle.utils.reader.</code><code class="sig-name descname">read_config_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span></em>, <em class="sig-param"><span class="n">file_extension</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/utils/reader.html#read_config_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.utils.reader.read_config_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read files into objects.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-tackle.utils.vcs">
+<span id="tackle-utils-vcs-module"></span><h2>tackle.utils.vcs module<a class="headerlink" href="#module-tackle.utils.vcs" title="Permalink to this headline">¶</a></h2>
+<p>Helper functions for working with version control systems.</p>
+<dl class="py function">
+<dt id="tackle.utils.vcs.clone">
+<code class="sig-prename descclassname">tackle.utils.vcs.</code><code class="sig-name descname">clone</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">repo_url</span></em>, <em class="sig-param"><span class="n">checkout</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">clone_to_dir</span><span class="o">=</span><span class="default_value">'.'</span></em>, <em class="sig-param"><span class="n">no_input</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/utils/vcs.html#clone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.utils.vcs.clone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clone a repo to the current directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>repo_url</strong> – Repo URL of unknown type.</p></li>
+<li><p><strong>checkout</strong> – The branch, tag or commit ID to checkout after clone.</p></li>
+<li><p><strong>clone_to_dir</strong> – The directory to clone to.
+Defaults to the current directory.</p></li>
+<li><p><strong>no_input</strong> – Suppress all user prompts when calling via API.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>str with path to the new directory of the repository.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.utils.vcs.identify_repo">
+<code class="sig-prename descclassname">tackle.utils.vcs.</code><code class="sig-name descname">identify_repo</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">repo_url</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/utils/vcs.html#identify_repo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.utils.vcs.identify_repo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if <cite>repo_url</cite> should be treated as a URL to a git or hg repo.</p>
+<p>Repos can be identified by prepending “hg+” or “git+” to the repo URL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>repo_url</strong> – Repo URL of unknown type.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(‘git’, repo_url), (‘hg’, repo_url), or None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.utils.vcs.is_vcs_installed">
+<code class="sig-prename descclassname">tackle.utils.vcs.</code><code class="sig-name descname">is_vcs_installed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">repo_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/utils/vcs.html#is_vcs_installed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.utils.vcs.is_vcs_installed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the version control system for a repo type is installed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>repo_type</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-tackle.utils.zipfile">
+<span id="tackle-utils-zipfile-module"></span><h2>tackle.utils.zipfile module<a class="headerlink" href="#module-tackle.utils.zipfile" title="Permalink to this headline">¶</a></h2>
+<p>Utility functions for handling and fetching repo archives in zip format.</p>
+<dl class="py function">
+<dt id="tackle.utils.zipfile.read_repo_password">
+<code class="sig-prename descclassname">tackle.utils.zipfile.</code><code class="sig-name descname">read_repo_password</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">question</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/utils/zipfile.html#read_repo_password"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.utils.zipfile.read_repo_password" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the password.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.utils.zipfile.unzip">
+<code class="sig-prename descclassname">tackle.utils.zipfile.</code><code class="sig-name descname">unzip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">zip_uri</span></em>, <em class="sig-param"><span class="n">is_url</span></em>, <em class="sig-param"><span class="n">clone_to_dir</span><span class="o">=</span><span class="default_value">'.'</span></em>, <em class="sig-param"><span class="n">no_input</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">password</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/utils/zipfile.html#unzip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.utils.zipfile.unzip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download and unpack a zipfile at a given URI.</p>
+<p>This will download the zipfile to the tackle repository,
+and unpack into a temporary directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>zip_uri</strong> – The URI for the zipfile.</p></li>
+<li><p><strong>is_url</strong> – Is the zip URI a URL or a file?</p></li>
+<li><p><strong>clone_to_dir</strong> – The tackle repository directory
+to put the archive into.</p></li>
+<li><p><strong>no_input</strong> – Suppress any prompts</p></li>
+<li><p><strong>password</strong> – The password to use when unpacking the repository.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-tackle.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-tackle.utils" title="Permalink to this headline">¶</a></h2>
+<p>Utils.</p>
+<dl class="py exception">
+<dt id="tackle.utils.TimeoutError">
+<em class="property">exception </em><code class="sig-prename descclassname">tackle.utils.</code><code class="sig-name descname">TimeoutError</code><a class="reference internal" href="_modules/tackle/utils.html#TimeoutError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.utils.TimeoutError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.utils.merge_configs">
+<code class="sig-prename descclassname">tackle.utils.</code><code class="sig-name descname">merge_configs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">default</span></em>, <em class="sig-param"><span class="n">overwrite</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/utils.html#merge_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.utils.merge_configs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursively update a dict with the key/value pair of another.</p>
+<p>Dict values that are dictionaries themselves will be updated, whilst
+preserving existing keys.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.utils.timeout">
+<code class="sig-prename descclassname">tackle.utils.</code><code class="sig-name descname">timeout</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seconds</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">error_message</span><span class="o">=</span><span class="default_value">'Timer expired'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/utils.html#timeout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.utils.timeout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="HISTORY.html" class="btn btn-neutral float-right" title="History" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tackle.render.html" class="btn btn-neutral float-left" title="tackle.render package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020-2021, Rob Cannon.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

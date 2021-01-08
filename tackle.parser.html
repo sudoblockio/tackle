@@ -1,0 +1,475 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>tackle.parser package &mdash; tackle-box 0.1.0-alpha.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="tackle.render package" href="tackle.render.html" />
+    <link rel="prev" title="tackle.cli package" href="tackle.cli.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> tackle-box
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0-alpha.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html">Tackle Box</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demos.html">Demos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Additional Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial1.html">Getting to Know Tackle Box</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced/index.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tackle.providers.html">tackle.providers package</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="tackle.html">tackle package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="tackle.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="tackle.cli.html">tackle.cli package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">tackle.parser package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tackle.parser.context">tackle.parser.context module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tackle.parser.hooks">tackle.parser.hooks module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tackle.parser.prompts">tackle.parser.prompts module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tackle.parser.providers">tackle.parser.providers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tackle-parser-settings-module">tackle.parser.settings module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-contents">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tackle.providers.html">tackle.providers package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tackle.render.html">tackle.render package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tackle.utils.html">tackle.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tackle.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tackle.html#module-tackle.exceptions">tackle.exceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tackle.html#module-tackle.generate">tackle.generate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tackle.html#module-tackle.hooks">tackle.hooks module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tackle.html#tackle-main-module">tackle.main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tackle.html#module-tackle.models">tackle.models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tackle.html#module-tackle.repository">tackle.repository module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tackle.html#module-tackle">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.cli.html">tackle.cli package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">tackle.parser package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tackle.parser.context">tackle.parser.context module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tackle.parser.hooks">tackle.parser.hooks module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tackle.parser.prompts">tackle.parser.prompts module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tackle.parser.providers">tackle.parser.providers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tackle-parser-settings-module">tackle.parser.settings module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-contents">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.render.html">tackle.render package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.utils.html">tackle.utils package</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="HISTORY.html">History</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">tackle-box</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="tackle.html">tackle package</a> &raquo;</li>
+        
+      <li>tackle.parser package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/tackle.parser.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="tackle-parser-package">
+<h1>tackle.parser package<a class="headerlink" href="#tackle-parser-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-tackle.parser.context">
+<span id="tackle-parser-context-module"></span><h2>tackle.parser.context module<a class="headerlink" href="#module-tackle.parser.context" title="Permalink to this headline">¶</a></h2>
+<p>Parser for the general context without generic logic.</p>
+<dl class="py function">
+<dt id="tackle.parser.context.parse_context">
+<code class="sig-prename descclassname">tackle.parser.context.</code><code class="sig-name descname">parse_context</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span><span class="p">:</span> <span class="n">Context</span></em>, <em class="sig-param"><span class="n">mode</span><span class="p">:</span> <span class="n">Mode</span></em>, <em class="sig-param"><span class="n">source</span><span class="p">:</span> <span class="n">Source</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/parser/context.html#parse_context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.parser.context.parse_context" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the context and iterate over values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>context</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – Source for field names and sample values.</p></li>
+<li><p><strong>env</strong> – Jinja environment to render values with.</p></li>
+<li><p><strong>context_key</strong> – The key to insert all the outputs under in the context dict.</p></li>
+<li><p><strong>no_input</strong> – Prompt the user at command line for manual configuration.</p></li>
+<li><p><strong>existing_context</strong> – A dictionary of values to use during rendering.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>cc_dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.parser.context.prep_context">
+<code class="sig-prename descclassname">tackle.parser.context.</code><code class="sig-name descname">prep_context</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span><span class="p">:</span> <span class="n">Context</span></em>, <em class="sig-param"><span class="n">mode</span><span class="p">:</span> <span class="n">Mode</span></em>, <em class="sig-param"><span class="n">source</span><span class="p">:</span> <span class="n">Source</span></em>, <em class="sig-param"><span class="n">settings</span><span class="p">:</span> <span class="n">Settings</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/parser/context.html#prep_context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.parser.context.prep_context" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prompt user to enter values.</p>
+<p>Function sets the jinja environment and brings in extensions.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-tackle.parser.hooks">
+<span id="tackle-parser-hooks-module"></span><h2>tackle.parser.hooks module<a class="headerlink" href="#module-tackle.parser.hooks" title="Permalink to this headline">¶</a></h2>
+<p>Functions for discovering and executing various cookiecutter hooks.</p>
+<dl class="py function">
+<dt id="tackle.parser.hooks.parse_hook">
+<code class="sig-prename descclassname">tackle.parser.hooks.</code><code class="sig-name descname">parse_hook</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span><span class="p">:</span> <span class="n">Context</span></em>, <em class="sig-param"><span class="n">mode</span><span class="p">:</span> <span class="n">Mode</span></em>, <em class="sig-param"><span class="n">source</span><span class="p">:</span> <span class="n">Source</span></em>, <em class="sig-param"><span class="n">append_key</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/parser/hooks.html#parse_hook"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.parser.hooks.parse_hook" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse input dict for loop and when logic and calls hooks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>cc_dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.parser.hooks.raise_hook_validation_error">
+<code class="sig-prename descclassname">tackle.parser.hooks.</code><code class="sig-name descname">raise_hook_validation_error</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">e</span></em>, <em class="sig-param"><span class="n">Hook</span></em>, <em class="sig-param"><span class="n">context</span><span class="p">:</span> <span class="n">Context</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/parser/hooks.html#raise_hook_validation_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.parser.hooks.raise_hook_validation_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raise more clear of an error when pydantic fails to parse an object.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.parser.hooks.run_hook">
+<code class="sig-prename descclassname">tackle.parser.hooks.</code><code class="sig-name descname">run_hook</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span><span class="p">:</span> <span class="n">Context</span></em>, <em class="sig-param"><span class="n">mode</span><span class="p">:</span> <span class="n">Mode</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/parser/hooks.html#run_hook"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.parser.hooks.run_hook" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run hook.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-tackle.parser.prompts">
+<span id="tackle-parser-prompts-module"></span><h2>tackle.parser.prompts module<a class="headerlink" href="#module-tackle.parser.prompts" title="Permalink to this headline">¶</a></h2>
+<p>Prompts used in parsing.</p>
+<dl class="py function">
+<dt id="tackle.parser.prompts.process_json">
+<code class="sig-prename descclassname">tackle.parser.prompts.</code><code class="sig-name descname">process_json</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">user_value</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/parser/prompts.html#process_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.parser.prompts.process_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load user-supplied value as a JSON dict. Legacy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>user_value</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – User-supplied value to load as a JSON dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.parser.prompts.prompt_list">
+<code class="sig-prename descclassname">tackle.parser.prompts.</code><code class="sig-name descname">prompt_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span><span class="p">:</span> <span class="n">Context</span></em>, <em class="sig-param"><span class="n">mode</span><span class="p">:</span> <span class="n">Mode</span></em>, <em class="sig-param"><span class="n">raw</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/parser/prompts.html#prompt_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.parser.prompts.prompt_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prompt user with a set of options to choose from.</p>
+<p>Each of the possible choices is rendered beforehand.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.parser.prompts.prompt_str">
+<code class="sig-prename descclassname">tackle.parser.prompts.</code><code class="sig-name descname">prompt_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span><span class="p">:</span> <span class="n">Context</span></em>, <em class="sig-param"><span class="n">mode</span><span class="p">:</span> <span class="n">Mode</span></em>, <em class="sig-param"><span class="n">raw</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/parser/prompts.html#prompt_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.parser.prompts.prompt_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prompt user for simple imput.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.parser.prompts.read_user_choice">
+<code class="sig-prename descclassname">tackle.parser.prompts.</code><code class="sig-name descname">read_user_choice</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">var_name</span></em>, <em class="sig-param"><span class="n">options</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/parser/prompts.html#read_user_choice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.parser.prompts.read_user_choice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ask user choice for generic question. Legacy.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.parser.prompts.read_user_dict">
+<code class="sig-prename descclassname">tackle.parser.prompts.</code><code class="sig-name descname">read_user_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">var_name</span></em>, <em class="sig-param"><span class="n">default_value</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/parser/prompts.html#read_user_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.parser.prompts.read_user_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prompt the user to provide a dictionary of data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Variable as specified in the context</p></li>
+<li><p><strong>default_value</strong> – Value that will be returned if no input is provided</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A Python dictionary to use in the context.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.parser.prompts.read_user_yes_no">
+<code class="sig-prename descclassname">tackle.parser.prompts.</code><code class="sig-name descname">read_user_yes_no</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">question</span></em>, <em class="sig-param"><span class="n">default_value</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/parser/prompts.html#read_user_yes_no"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.parser.prompts.read_user_yes_no" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ask user yes or no for generic question.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-tackle.parser.providers">
+<span id="tackle-parser-providers-module"></span><h2>tackle.parser.providers module<a class="headerlink" href="#module-tackle.parser.providers" title="Permalink to this headline">¶</a></h2>
+<p>Parser for importing providers into the runtime.</p>
+<dl class="py function">
+<dt id="tackle.parser.providers.append_provider_dicts">
+<code class="sig-prename descclassname">tackle.parser.providers.</code><code class="sig-name descname">append_provider_dicts</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_providers</span></em>, <em class="sig-param"><span class="n">context</span><span class="p">:</span> <span class="n">Context</span></em>, <em class="sig-param"><span class="n">mode</span><span class="p">:</span> <span class="n">Mode</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/parser/providers.html#append_provider_dicts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.parser.providers.append_provider_dicts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the provider list with a new provider.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.parser.providers.get_hook">
+<code class="sig-prename descclassname">tackle.parser.providers.</code><code class="sig-name descname">get_hook</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">hook_type</span></em>, <em class="sig-param"><span class="n">context</span><span class="p">:</span> <span class="n">Context</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/parser/providers.html#get_hook"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.parser.providers.get_hook" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the hook from available providers.</p>
+<p>Does the following to return the hook:
+1. Check if hook hasn’t been imported already
+2. Check if the hook has been declared in a provider’s __init__.py’s
+<cite>hook_types</cite> field.
+3. Try to import it then fall back on installing the requirements.txt file</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.parser.providers.get_path_from_src">
+<code class="sig-prename descclassname">tackle.parser.providers.</code><code class="sig-name descname">get_path_from_src</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">provider</span><span class="p">:</span> <span class="n">Provider</span></em>, <em class="sig-param"><span class="n">settings</span><span class="p">:</span> <span class="n">Settings</span></em>, <em class="sig-param"><span class="n">mode</span><span class="p">:</span> <span class="n">Mode</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/parser/providers.html#get_path_from_src"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.parser.providers.get_path_from_src" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a path from source - UNUSED ATM.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.parser.providers.get_provider_from_dir">
+<code class="sig-prename descclassname">tackle.parser.providers.</code><code class="sig-name descname">get_provider_from_dir</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mod_name</span></em>, <em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/parser/providers.html#get_provider_from_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.parser.providers.get_provider_from_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the provider from a path.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.parser.providers.get_providers">
+<code class="sig-prename descclassname">tackle.parser.providers.</code><code class="sig-name descname">get_providers</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span><span class="p">:</span> <span class="n">Context</span></em>, <em class="sig-param"><span class="n">source</span><span class="p">:</span> <span class="n">Source</span></em>, <em class="sig-param"><span class="n">settings</span><span class="p">:</span> <span class="n">Settings</span></em>, <em class="sig-param"><span class="n">mode</span><span class="p">:</span> <span class="n">Mode</span></em><span class="sig-paren">)</span> &#x2192; [‘Provider’]<a class="reference internal" href="_modules/tackle/parser/providers.html#get_providers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.parser.providers.get_providers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the source with providers and hooks.</p>
+<ol class="arabic simple">
+<li><p>Check if the settings provider has been updated</p></li>
+<li><p>Check if the local provider has been updated</p></li>
+<li><p>Check if the context has additional providers</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of Provider objects</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.parser.providers.import_hooks_from_dir">
+<code class="sig-prename descclassname">tackle.parser.providers.</code><code class="sig-name descname">import_hooks_from_dir</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mod_name</span></em>, <em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">excluded_file_names</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">excluded_file_extensions</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/parser/providers.html#import_hooks_from_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.parser.providers.import_hooks_from_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import hooks from a directory.</p>
+<p>This is meant to be used by generically pointing to a hooks directory and
+importing all the relevent hooks into the context.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.parser.providers.import_module_from_path">
+<code class="sig-prename descclassname">tackle.parser.providers.</code><code class="sig-name descname">import_module_from_path</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mod</span></em>, <em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/parser/providers.html#import_module_from_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.parser.providers.import_module_from_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import a module from a path presumably with hooks in it.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.parser.providers.import_with_fallback_install">
+<code class="sig-prename descclassname">tackle.parser.providers.</code><code class="sig-name descname">import_with_fallback_install</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mod_name</span></em>, <em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/parser/providers.html#import_with_fallback_install"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.parser.providers.import_with_fallback_install" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import a module and on import error, fallback on requirements file.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.parser.providers.install_requirements_if_exists">
+<code class="sig-prename descclassname">tackle.parser.providers.</code><code class="sig-name descname">install_requirements_if_exists</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">requirements_file</span><span class="o">=</span><span class="default_value">'requirements.txt'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/parser/providers.html#install_requirements_if_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.parser.providers.install_requirements_if_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Install the requirements.txt file if it exists in path.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.parser.providers.parse_git_src_str">
+<code class="sig-prename descclassname">tackle.parser.providers.</code><code class="sig-name descname">parse_git_src_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">git_repo</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/parser/providers.html#parse_git_src_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.parser.providers.parse_git_src_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decompose a repo - UNUSED ATM.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="tackle-parser-settings-module">
+<h2>tackle.parser.settings module<a class="headerlink" href="#tackle-parser-settings-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="tackle.render.html" class="btn btn-neutral float-right" title="tackle.render package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tackle.cli.html" class="btn btn-neutral float-left" title="tackle.cli package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020-2021, Rob Cannon.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

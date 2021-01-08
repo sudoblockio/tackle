@@ -1,0 +1,21 @@
+tackle.cli package
+==================
+
+Submodules
+----------
+
+tackle.cli.cli\_parser module
+-----------------------------
+
+.. automodule:: tackle.cli.cli_parser
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: tackle.cli
+   :members:
+   :undoc-members:
+   :show-inheritance:

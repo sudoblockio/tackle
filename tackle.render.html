@@ -1,0 +1,379 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>tackle.render package &mdash; tackle-box 0.1.0-alpha.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="tackle.utils package" href="tackle.utils.html" />
+    <link rel="prev" title="tackle.parser package" href="tackle.parser.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> tackle-box
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0-alpha.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html">Tackle Box</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demos.html">Demos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Additional Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial1.html">Getting to Know Tackle Box</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced/index.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tackle.providers.html">tackle.providers package</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="tackle.html">tackle package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="tackle.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="tackle.cli.html">tackle.cli package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tackle.parser.html">tackle.parser package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tackle.providers.html">tackle.providers package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">tackle.render package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tackle.render.environment">tackle.render.environment module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tackle.render.extensions">tackle.render.extensions module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tackle.render.special_vars">tackle.render.special_vars module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-tackle.render">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tackle.utils.html">tackle.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tackle.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tackle.html#module-tackle.exceptions">tackle.exceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tackle.html#module-tackle.generate">tackle.generate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tackle.html#module-tackle.hooks">tackle.hooks module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tackle.html#tackle-main-module">tackle.main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tackle.html#module-tackle.models">tackle.models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tackle.html#module-tackle.repository">tackle.repository module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tackle.html#module-tackle">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.cli.html">tackle.cli package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.parser.html">tackle.parser package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">tackle.render package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tackle.render.environment">tackle.render.environment module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tackle.render.extensions">tackle.render.extensions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tackle.render.special_vars">tackle.render.special_vars module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tackle.render">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.utils.html">tackle.utils package</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="HISTORY.html">History</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">tackle-box</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="tackle.html">tackle package</a> &raquo;</li>
+        
+      <li>tackle.render package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/tackle.render.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="tackle-render-package">
+<h1>tackle.render package<a class="headerlink" href="#tackle-render-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-tackle.render.environment">
+<span id="tackle-render-environment-module"></span><h2>tackle.render.environment module<a class="headerlink" href="#module-tackle.render.environment" title="Permalink to this headline">¶</a></h2>
+<p>Jinja2 environment and extensions loading.</p>
+<dl class="py class">
+<dt id="tackle.render.environment.ExtensionLoaderMixin">
+<em class="property">class </em><code class="sig-prename descclassname">tackle.render.environment.</code><code class="sig-name descname">ExtensionLoaderMixin</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/render/environment.html#ExtensionLoaderMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.render.environment.ExtensionLoaderMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Mixin providing sane loading of extensions specified in a given context.</p>
+<p>The context is being extracted from the keyword arguments before calling
+the next parent class in line of the child.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="tackle.render.environment.StrictEnvironment">
+<em class="property">class </em><code class="sig-prename descclassname">tackle.render.environment.</code><code class="sig-name descname">StrictEnvironment</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/render/environment.html#StrictEnvironment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.render.environment.StrictEnvironment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tackle.render.environment.ExtensionLoaderMixin" title="tackle.render.environment.ExtensionLoaderMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">tackle.render.environment.ExtensionLoaderMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">jinja2.environment.Environment</span></code></p>
+<p>Create strict Jinja2 environment.</p>
+<p>Jinja2 environment will raise error on undefined variable in template-
+rendering context.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-tackle.render.extensions">
+<span id="tackle-render-extensions-module"></span><h2>tackle.render.extensions module<a class="headerlink" href="#module-tackle.render.extensions" title="Permalink to this headline">¶</a></h2>
+<p>Jinja2 extensions.</p>
+<dl class="py class">
+<dt id="tackle.render.extensions.JsonifyExtension">
+<em class="property">class </em><code class="sig-prename descclassname">tackle.render.extensions.</code><code class="sig-name descname">JsonifyExtension</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">environment</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/render/extensions.html#JsonifyExtension"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.render.extensions.JsonifyExtension" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">jinja2.ext.Extension</span></code></p>
+<p>Jinja2 extension to convert a Python object to JSON.</p>
+<dl class="py attribute">
+<dt id="tackle.render.extensions.JsonifyExtension.identifier">
+<code class="sig-name descname">identifier</code><em class="property"> = 'tackle.render.extensions.JsonifyExtension'</em><a class="headerlink" href="#tackle.render.extensions.JsonifyExtension.identifier" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="tackle.render.extensions.RandomStringExtension">
+<em class="property">class </em><code class="sig-prename descclassname">tackle.render.extensions.</code><code class="sig-name descname">RandomStringExtension</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">environment</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/render/extensions.html#RandomStringExtension"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.render.extensions.RandomStringExtension" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">jinja2.ext.Extension</span></code></p>
+<p>Jinja2 extension to create a random string.</p>
+<dl class="py attribute">
+<dt id="tackle.render.extensions.RandomStringExtension.identifier">
+<code class="sig-name descname">identifier</code><em class="property"> = 'tackle.render.extensions.RandomStringExtension'</em><a class="headerlink" href="#tackle.render.extensions.RandomStringExtension.identifier" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="tackle.render.extensions.SlugifyExtension">
+<em class="property">class </em><code class="sig-prename descclassname">tackle.render.extensions.</code><code class="sig-name descname">SlugifyExtension</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">environment</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/render/extensions.html#SlugifyExtension"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.render.extensions.SlugifyExtension" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">jinja2.ext.Extension</span></code></p>
+<p>Jinja2 Extension to slugify string.</p>
+<dl class="py attribute">
+<dt id="tackle.render.extensions.SlugifyExtension.identifier">
+<code class="sig-name descname">identifier</code><em class="property"> = 'tackle.render.extensions.SlugifyExtension'</em><a class="headerlink" href="#tackle.render.extensions.SlugifyExtension.identifier" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-tackle.render.special_vars">
+<span id="tackle-render-special-vars-module"></span><h2>tackle.render.special_vars module<a class="headerlink" href="#module-tackle.render.special_vars" title="Permalink to this headline">¶</a></h2>
+<p>Special variables to be used in rendering.</p>
+<dl class="py function">
+<dt id="tackle.render.special_vars.get_vars">
+<code class="sig-prename descclassname">tackle.render.special_vars.</code><code class="sig-name descname">get_vars</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span><span class="p">:</span> <span class="n">Context</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/render/special_vars.html#get_vars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.render.special_vars.get_vars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get special variables.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-tackle.render">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-tackle.render" title="Permalink to this headline">¶</a></h2>
+<p>Main entrypoint for rendering.</p>
+<dl class="py function">
+<dt id="tackle.render.build_render_context">
+<code class="sig-prename descclassname">tackle.render.</code><code class="sig-name descname">build_render_context</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span><span class="p">:</span> <span class="n">Context</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/render.html#build_render_context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.render.build_render_context" title="Permalink to this definition">¶</a></dt>
+<dd><p>Depending on the generation build a context.</p>
+<p>For cookiecutter, enforce standards ie ‘{{ cookiecutter.var }}’ but for tackle,
+support both ie ‘{{ cookiecutter.var }}’ and ‘{{ var }}’.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tackle.render.render_variable">
+<code class="sig-prename descclassname">tackle.render.</code><code class="sig-name descname">render_variable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span><span class="p">:</span> <span class="n">Context</span></em>, <em class="sig-param"><span class="n">raw</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tackle/render.html#render_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tackle.render.render_variable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render the next variable to be displayed in the user prompt.</p>
+<p>Inside the prompting taken from the cookiecutter.json file, this renders
+the next variable. For example, if a project_name is “Peanut Butter
+Cookie”, the repo_name could be be rendered with:</p>
+<blockquote>
+<div><p><cite>{{ cookiecutter.project_name.replace(” “, “_”) }}</cite>.</p>
+</div></blockquote>
+<p>This is then presented to the user as the default.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>env</strong> (<em>Environment</em>) – A Jinja2 Environment object.</p></li>
+<li><p><strong>raw</strong> – The next value to be prompted for by the user.</p></li>
+<li><p><strong>cc_dict</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – The current context as it’s gradually
+being populated with variables.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The rendered value for the default variable.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="tackle.utils.html" class="btn btn-neutral float-right" title="tackle.utils package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tackle.parser.html" class="btn btn-neutral float-left" title="tackle.parser package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020-2021, Rob Cannon.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

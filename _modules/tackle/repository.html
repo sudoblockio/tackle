@@ -1,0 +1,419 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>tackle.repository &mdash; tackle-box 0.1.0-alpha.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> tackle-box
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0-alpha.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">Tackle Box</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos.html">Demos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Additional Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial1.html">Getting to Know Tackle Box</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced/index.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../troubleshooting.html">Troubleshooting</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tackle.providers.html">tackle.providers package</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tackle.html">tackle package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tackle.cli.html">tackle.cli package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tackle.parser.html">tackle.parser package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tackle.render.html">tackle.render package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tackle.utils.html">tackle.utils package</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../HISTORY.html">History</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">tackle-box</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>tackle.repository</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for tackle.repository</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Tackle repository functions.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">from</span> <span class="nn">tackle.exceptions</span> <span class="kn">import</span> <span class="n">RepositoryNotFound</span><span class="p">,</span> <span class="n">ContextFileNotFound</span>
+<span class="kn">from</span> <span class="nn">tackle.utils.vcs</span> <span class="kn">import</span> <span class="n">clone</span>
+<span class="kn">from</span> <span class="nn">tackle.utils.zipfile</span> <span class="kn">import</span> <span class="n">unzip</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">tackle.models</span> <span class="kn">import</span> <span class="n">Mode</span><span class="p">,</span> <span class="n">Source</span><span class="p">,</span> <span class="n">Settings</span>
+
+
+<div class="viewcode-block" id="is_git_repo"><a class="viewcode-back" href="../../tackle.html#tackle.repository.is_git_repo">[docs]</a><span class="k">def</span> <span class="nf">is_git_repo</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return True if value is a git repo.&quot;&quot;&quot;</span>
+    <span class="n">GIT_REPO_REGEX</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    # something like git:// ssh:// file:// etc.</span>
+<span class="sd">    (((git\+)?(https?):(//)?)</span>
+<span class="sd">     |                                      # or</span>
+<span class="sd">     (git@[\w\.]+)                          # something like git@...</span>
+<span class="sd">    )</span>
+<span class="sd">    &quot;&quot;&quot;</span><span class="p">,</span>
+        <span class="n">re</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">GIT_REPO_REGEX</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">value</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="is_repo_url"><a class="viewcode-back" href="../../tackle.html#tackle.repository.is_repo_url">[docs]</a><span class="k">def</span> <span class="nf">is_repo_url</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return True if value is a repository URL.&quot;&quot;&quot;</span>
+    <span class="n">REPO_REGEX</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    # something like git:// ssh:// file:// etc.</span>
+<span class="sd">    ((((git|hg)\+)?(git|ssh|file|https?):(//)?)</span>
+<span class="sd">     |                                      # or</span>
+<span class="sd">     (\w+@[\w\.]+)                          # something like user@...</span>
+<span class="sd">    )</span>
+<span class="sd">    &quot;&quot;&quot;</span><span class="p">,</span>
+        <span class="n">re</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">REPO_REGEX</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">value</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="is_zip_file"><a class="viewcode-back" href="../../tackle.html#tackle.repository.is_zip_file">[docs]</a><span class="k">def</span> <span class="nf">is_zip_file</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return True if value is a zip file.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.zip&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="expand_abbreviations"><a class="viewcode-back" href="../../tackle.html#tackle.repository.expand_abbreviations">[docs]</a><span class="k">def</span> <span class="nf">expand_abbreviations</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">abbreviations</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Expand abbreviations in a template name.</span>
+
+<span class="sd">    :param template: The project template name.</span>
+<span class="sd">    :param abbreviations: Abbreviation definitions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">template</span> <span class="ow">in</span> <span class="n">abbreviations</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">abbreviations</span><span class="p">[</span><span class="n">template</span><span class="p">]</span>
+
+    <span class="c1"># Split on colon. If there is no colon, rest will be empty</span>
+    <span class="c1"># and prefix will be the whole template</span>
+    <span class="n">prefix</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="n">rest</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="n">abbreviations</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">abbreviations</span><span class="p">[</span><span class="n">prefix</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rest</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">template</span></div>
+
+
+<span class="n">CONTEXT_FILE_DICT</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;cookiecutter&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s1">&#39;cookiecutter.json&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;cookiecutter.yaml&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;cookiecutter.yml&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;cookiecutter.hcl&#39;</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="s1">&#39;tackle&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s1">&#39;.tackle.yaml&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;.tackle.yml&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;.tackle.json&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;.tackle.hcl&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;tackle.yaml&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;tackle.yml&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;tackle.json&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;tackle.hcl&#39;</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="p">}</span>
+
+<span class="n">ALL_VALID_CONTEXT_FILES</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">CONTEXT_FILE_DICT</span><span class="p">[</span><span class="s1">&#39;cookiecutter&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">CONTEXT_FILE_DICT</span><span class="p">[</span><span class="s1">&#39;tackle&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="determine_tackle_generation"><a class="viewcode-back" href="../../tackle.html#tackle.repository.determine_tackle_generation">[docs]</a><span class="k">def</span> <span class="nf">determine_tackle_generation</span><span class="p">(</span><span class="n">context_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Determine the tackle generation.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">context_file</span> <span class="ow">in</span> <span class="n">CONTEXT_FILE_DICT</span><span class="p">[</span><span class="s1">&#39;cookiecutter&#39;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="s1">&#39;cookiecutter&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;tackle&#39;</span></div>
+
+
+<div class="viewcode-block" id="repository_has_tackle_file"><a class="viewcode-back" href="../../tackle.html#tackle.repository.repository_has_tackle_file">[docs]</a><span class="k">def</span> <span class="nf">repository_has_tackle_file</span><span class="p">(</span><span class="n">repo_directory</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">context_file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Determine if `repo_directory` contains a `cookiecutter.json` file.</span>
+
+<span class="sd">    :param repo_directory: The candidate repository directory.</span>
+<span class="sd">    :param context_file: eg. `tackle.yaml`.</span>
+<span class="sd">    :return: The path to the context file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">repo_directory_exists</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">repo_directory</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">context_file</span><span class="p">:</span>
+        <span class="c1"># The supplied context file exists</span>
+        <span class="n">context_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">repo_directory</span><span class="p">),</span> <span class="n">context_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">context_file</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">context_file</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ContextFileNotFound</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Can&#39;t find supplied context_file at </span><span class="si">{</span><span class="n">context_file</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">repo_directory_exists</span><span class="p">:</span>
+        <span class="c1"># Check for valid context files as default</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">ALL_VALID_CONTEXT_FILES</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">repo_directory</span><span class="p">,</span> <span class="n">f</span><span class="p">)):</span>
+                <span class="k">return</span> <span class="n">f</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="update_source"><a class="viewcode-back" href="../../tackle.html#tackle.repository.update_source">[docs]</a><span class="k">def</span> <span class="nf">update_source</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="s1">&#39;Source&#39;</span><span class="p">,</span> <span class="n">settings</span><span class="p">:</span> <span class="s1">&#39;Settings&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="s1">&#39;Mode&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Source&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Locate the repository directory from a template reference.</span>
+
+<span class="sd">    Applies repository abbreviations to the template reference.</span>
+<span class="sd">    If the template refers to a repository URL, clone it.</span>
+<span class="sd">    If the template is a path to a local repository, use it.</span>
+
+<span class="sd">    :param template: A directory containing a project template directory,</span>
+<span class="sd">        or a URL to a git repository.</span>
+<span class="sd">    :param abbreviations: A dictionary of repository abbreviation</span>
+<span class="sd">        definitions.</span>
+<span class="sd">    :param clone_to_dir: The directory to clone the repository into.</span>
+<span class="sd">    :param checkout: The branch, tag or commit ID to checkout after clone.</span>
+<span class="sd">    :param no_input: Prompt the user at command line for manual configuration?</span>
+<span class="sd">    :param password: The password to use when extracting the repository.</span>
+<span class="sd">    :param directory: Directory within repo where cookiecutter.json lives.</span>
+<span class="sd">    :return: A tuple containing the cookiecutter template directory, and</span>
+<span class="sd">        a boolean descriving whether that directory should be cleaned up</span>
+<span class="sd">        after the template has been instantiated.</span>
+<span class="sd">    :raises: `RepositoryNotFound` if a repository directory could not be found.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">source</span><span class="o">.</span><span class="n">template</span> <span class="o">=</span> <span class="n">expand_abbreviations</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">template</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">abbreviations</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_zip_file</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">template</span><span class="p">):</span>
+        <span class="n">unzipped_dir</span> <span class="o">=</span> <span class="n">unzip</span><span class="p">(</span>
+            <span class="n">zip_uri</span><span class="o">=</span><span class="n">source</span><span class="o">.</span><span class="n">template</span><span class="p">,</span>
+            <span class="n">is_url</span><span class="o">=</span><span class="n">is_repo_url</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">template</span><span class="p">),</span>
+            <span class="n">clone_to_dir</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">tackle_dir</span><span class="p">,</span>
+            <span class="n">no_input</span><span class="o">=</span><span class="n">mode</span><span class="o">.</span><span class="n">no_input</span><span class="p">,</span>
+            <span class="n">password</span><span class="o">=</span><span class="n">source</span><span class="o">.</span><span class="n">password</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">repository_candidates</span> <span class="o">=</span> <span class="p">[</span><span class="n">unzipped_dir</span><span class="p">]</span>
+        <span class="n">source</span><span class="o">.</span><span class="n">cleanup</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">elif</span> <span class="n">is_repo_url</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">template</span><span class="p">):</span>
+        <span class="n">cloned_repo</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span>
+            <span class="n">repo_url</span><span class="o">=</span><span class="n">source</span><span class="o">.</span><span class="n">template</span><span class="p">,</span>
+            <span class="n">checkout</span><span class="o">=</span><span class="n">source</span><span class="o">.</span><span class="n">checkout</span><span class="p">,</span>
+            <span class="n">clone_to_dir</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">tackle_dir</span><span class="p">,</span>
+            <span class="n">no_input</span><span class="o">=</span><span class="n">mode</span><span class="o">.</span><span class="n">no_input</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">repository_candidates</span> <span class="o">=</span> <span class="p">[</span><span class="n">cloned_repo</span><span class="p">]</span>
+        <span class="n">source</span><span class="o">.</span><span class="n">cleanup</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">repository_candidates</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">source</span><span class="o">.</span><span class="n">template</span><span class="p">,</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">tackle_dir</span><span class="p">,</span> <span class="n">source</span><span class="o">.</span><span class="n">template</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="n">source</span><span class="o">.</span><span class="n">cleanup</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">source</span><span class="o">.</span><span class="n">directory</span><span class="p">:</span>
+        <span class="n">repository_candidates</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">source</span><span class="o">.</span><span class="n">directory</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">repository_candidates</span>
+        <span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">repo_candidate</span> <span class="ow">in</span> <span class="n">repository_candidates</span><span class="p">:</span>
+        <span class="n">source</span><span class="o">.</span><span class="n">context_file</span> <span class="o">=</span> <span class="n">repository_has_tackle_file</span><span class="p">(</span>
+            <span class="n">repo_candidate</span><span class="p">,</span> <span class="n">source</span><span class="o">.</span><span class="n">context_file</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">source</span><span class="o">.</span><span class="n">context_file</span><span class="p">:</span>
+            <span class="c1"># Means that no valid context file has been found or provided</span>
+            <span class="k">continue</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">source</span><span class="o">.</span><span class="n">repo_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">repo_candidate</span><span class="p">)</span>
+            <span class="n">source</span><span class="o">.</span><span class="n">template_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">repo_candidate</span><span class="p">))</span>
+            <span class="n">source</span><span class="o">.</span><span class="n">tackle_gen</span> <span class="o">=</span> <span class="n">determine_tackle_generation</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">context_file</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">source</span>
+
+    <span class="k">raise</span> <span class="n">RepositoryNotFound</span><span class="p">(</span>
+        <span class="s1">&#39;A valid repository for &quot;</span><span class="si">{}</span><span class="s1">&quot; could not be found in the following &#39;</span>
+        <span class="s1">&#39;locations:</span><span class="se">\n</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">template</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">repository_candidates</span><span class="p">))</span>
+    <span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020-2021, Rob Cannon.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

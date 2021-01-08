@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Installation &mdash; nukikata  documentation</title>
+  <title>Installation &mdash; tackle-box 0.1.0-alpha.1 documentation</title>
   
 
   
@@ -51,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> nukikata
+            <a href="index.html" class="icon icon-home"> tackle-box
           
 
           
@@ -59,6 +59,10 @@
 
           
             
+            
+              <div class="version">
+                0.1.0-alpha.1
+              </div>
             
           
 
@@ -85,9 +89,22 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="README.html">Tackle Box</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demos.html">Demos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Additional Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial1.html">Getting to Know Tackle Box</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced/index.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="cookiecutter.html">cookiecutter package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.providers.html">tackle.providers package</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tackle.html">tackle package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.cli.html">tackle.cli package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.parser.html">tackle.parser package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.render.html">tackle.render package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.utils.html">tackle.utils package</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="HISTORY.html">History</a></li>
@@ -106,7 +123,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">nukikata</a>
+          <a href="index.html">tackle-box</a>
         
       </nav>
 
@@ -195,7 +212,7 @@
 </div>
 <div class="section" id="windows">
 <h4>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h4>
-<p>Ensure the directory where cookiecutter will be installed is in your environment’s <code class="docutils literal notranslate"><span class="pre">Path</span></code> in order to make it possible to invoke it from a command prompt. To do so, search for “Environment Variables” on your computer (on Windows 10, it is under <code class="docutils literal notranslate"><span class="pre">System</span> <span class="pre">Properties</span></code> –&gt; <code class="docutils literal notranslate"><span class="pre">Advanced</span></code>) and add that directory to the <code class="docutils literal notranslate"><span class="pre">Path</span></code> environment variable, using the GUI to edit path segments.</p>
+<p>Ensure the directory where tackle-box will be installed is in your environment’s <code class="docutils literal notranslate"><span class="pre">Path</span></code> in order to make it possible to invoke it from a command prompt. To do so, search for “Environment Variables” on your computer (on Windows 10, it is under <code class="docutils literal notranslate"><span class="pre">System</span> <span class="pre">Properties</span></code> –&gt; <code class="docutils literal notranslate"><span class="pre">Advanced</span></code>) and add that directory to the <code class="docutils literal notranslate"><span class="pre">Path</span></code> environment variable, using the GUI to edit path segments.</p>
 <p>Example segments should look like <code class="docutils literal notranslate"><span class="pre">%APPDATA%\Python\Python3x\Scripts</span></code>, where you have your version of Python instead of <code class="docutils literal notranslate"><span class="pre">Python3x</span></code>.</p>
 <p>You may need to restart your command prompt session to load the environment variables.</p>
 <div class="admonition seealso">
@@ -223,40 +240,6 @@
 </div>
 <p>Though, pip is recommended.</p>
 </div>
-<div class="section" id="alternate-installations">
-<h2>Alternate installations<a class="headerlink" href="#alternate-installations" title="Permalink to this headline">¶</a></h2>
-<p><strong>Homebrew (Mac OS X only):</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ brew install cookiecutter
-</pre></div>
-</div>
-<p><strong>Pipx (Linux, OSX and Windows):</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pipx install cookiecutter
-</pre></div>
-</div>
-<p><strong>Debian/Ubuntu:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ sudo apt-get install cookiecutter
-</pre></div>
-</div>
-</div>
-<div class="section" id="upgrading-from-0-6-4-to-0-7-0-or-greater">
-<h2>Upgrading from 0.6.4 to 0.7.0 or greater<a class="headerlink" href="#upgrading-from-0-6-4-to-0-7-0-or-greater" title="Permalink to this headline">¶</a></h2>
-<p>First, read <a class="reference internal" href="HISTORY.html"><span class="doc">History</span></a> in detail. There are a lot of major
-changes. The big ones are:</p>
-<ul class="simple">
-<li><p>Cookiecutter no longer deletes the cloned repo after generating a project.</p></li>
-<li><p>Cloned repos are saved into <cite>~/.cookiecutters/</cite>.</p></li>
-<li><p>You can optionally create a <cite>~/.cookiecutterrc</cite> config file.</p></li>
-</ul>
-<p>Upgrade Cookiecutter either with easy_install:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ easy_install --upgrade cookiecutter
-</pre></div>
-</div>
-<p>Or with pip:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ python3 -m pip install --upgrade cookiecutter
-</pre></div>
-</div>
-<p>Then you should be good to go.</p>
-</div>
 </div>
 
 
@@ -269,7 +252,7 @@ changes. The big ones are:</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2013-2019, Audrey Roy and Cookiecutter community.
+        &#169; Copyright 2020-2021, Rob Cannon.
 
     </p>
   </div>

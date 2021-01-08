@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Getting to Know Cookiecutter &mdash; nukikata  documentation</title>
+  <title>Getting to Know Tackle Box &mdash; tackle-box 0.1.0-alpha.1 documentation</title>
   
 
   
@@ -37,7 +37,9 @@
 
     
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Advanced Usage" href="advanced/index.html" />
+    <link rel="prev" title="Additional Tutorials" href="tutorials.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -51,7 +53,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> nukikata
+            <a href="index.html" class="icon icon-home"> tackle-box
           
 
           
@@ -59,6 +61,10 @@
 
           
             
+            
+              <div class="version">
+                0.1.0-alpha.1
+              </div>
             
           
 
@@ -82,12 +88,42 @@
               
             
             
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="README.html">Tackle Box</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demos.html">Demos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Additional Tutorials</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting to Know Tackle Box</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#case-study-cookiecutter-pypackage">Case Study: cookiecutter-pypackage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-1-generate-a-python-package-project">Step 1: Generate a Python Package Project</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#local-cloning-of-project-template">Local Cloning of Project Template</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#local-generation-of-project">Local Generation of Project</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#step-2-explore-what-got-generated">Step 2: Explore What Got Generated</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-3-observe-how-it-was-generated">Step 3: Observe How It Was Generated</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cookiecutter-project-slug">{{ cookiecutter.project_slug }}</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#authors-rst">AUTHORS.rst</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cookiecutter-json">cookiecutter.json</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#questions">Questions?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced/index.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="cookiecutter.html">cookiecutter package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.providers.html">tackle.providers package</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tackle.html">tackle package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.cli.html">tackle.cli package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.parser.html">tackle.parser package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.render.html">tackle.render package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.utils.html">tackle.utils package</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="HISTORY.html">History</a></li>
@@ -106,7 +142,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">nukikata</a>
+          <a href="index.html">tackle-box</a>
         
       </nav>
 
@@ -139,7 +175,7 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Getting to Know Cookiecutter</li>
+      <li>Getting to Know Tackle Box</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -158,12 +194,31 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="getting-to-know-cookiecutter">
-<h1>Getting to Know Cookiecutter<a class="headerlink" href="#getting-to-know-cookiecutter" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="getting-to-know-tackle-box">
+<h1>Getting to Know Tackle Box<a class="headerlink" href="#getting-to-know-tackle-box" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Before you begin, please install Cookiecutter 0.7.0 or higher.
+<p>Before you begin, please install Tackle Box.
 Instructions are in <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a>.</p>
+</div>
+<p>Tackle Box is a tool for creating CLIs and generating code. To get started creating your own tackle boxes, create a new directory/repo and create a <cite>tackle.yaml</cite> file with a little content like so.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir tackle-first-try
+<span class="nb">cd</span> tackle-first-try
+
+<span class="nb">echo</span> <span class="s1">&#39;</span>
+<span class="s1">name: Rob # Default prompt</span>
+<span class="s1">greeting: &quot;{{name}}&quot; # Notice the rendering</span>
+<span class="s1">&#39;</span> &gt;&gt; tackle.yaml
+
+tackle .
+</pre></div>
+</div>
+<p>Here you can see the most basic functionality where each line of the file is progressively interpreted and able to use the output of the previous line as the input of the next. The second value <cite>{{name}}</cite> is a templating language called jinja, a powerful templating language that is used to gain access to previous entries’ outputs.</p>
+<p>Here, we only have key value pairs but to tie into other functionality offered by tackle-box, you can use hooks by declaring a special key called <cite>type</cite>.  There are three main prompt hooks that you should know when building tackle boxes, <cite>input</cite> and <cite>select</cite> for strings and <cite>checkbox</cite> for returning lists. Here is a <cite>tackle.yaml</cite> file showing these at work.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span>
+  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">imput</span>
+  <span class="nt">message</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">What is your name?</span>
+</pre></div>
 </div>
 <p>Cookiecutter is a tool for creating projects from <em>cookiecutters</em> (project
 templates).</p>
@@ -301,12 +356,16 @@ tackle box project template.</p>
            
           </div>
           <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="advanced/index.html" class="btn btn-neutral float-right" title="Advanced Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tutorials.html" class="btn btn-neutral float-left" title="Additional Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2013-2019, Audrey Roy and Cookiecutter community.
+        &#169; Copyright 2020-2021, Rob Cannon.
 
     </p>
   </div>

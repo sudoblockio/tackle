@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Troubleshooting &mdash; nukikata  documentation</title>
+  <title>Troubleshooting &mdash; tackle-box 0.1.0-alpha.1 documentation</title>
   
 
   
@@ -37,7 +37,9 @@
 
     
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="tackle.providers package" href="tackle.providers.html" />
+    <link rel="prev" title="Working with line-ends special symbols LF/CRLF" href="advanced/new_line_characters.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -51,7 +53,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> nukikata
+            <a href="index.html" class="icon icon-home"> tackle-box
           
 
           
@@ -59,6 +61,10 @@
 
           
             
+            
+              <div class="version">
+                0.1.0-alpha.1
+              </div>
             
           
 
@@ -82,12 +88,30 @@
               
             
             
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="README.html">Tackle Box</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demos.html">Demos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Additional Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial1.html">Getting to Know Tackle Box</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced/index.html">Advanced Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting-tackle-files">Troubleshooting Tackle Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting-jinja-templates">Troubleshooting Jinja templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#other-common-issues">Other common issues</a></li>
+</ul>
+</li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="cookiecutter.html">cookiecutter package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.providers.html">tackle.providers package</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tackle.html">tackle package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.cli.html">tackle.cli package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.parser.html">tackle.parser package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.render.html">tackle.render package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.utils.html">tackle.utils package</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="HISTORY.html">History</a></li>
@@ -106,7 +130,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">nukikata</a>
+          <a href="index.html">tackle-box</a>
         
       </nav>
 
@@ -160,15 +184,12 @@
             
   <div class="section" id="troubleshooting">
 <h1>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="i-created-a-cookiecutter-but-it-doesn-t-work-and-i-can-t-figure-out-why">
-<h2>I created a cookiecutter, but it doesn’t work, and I can’t figure out why<a class="headerlink" href="#i-created-a-cookiecutter-but-it-doesn-t-work-and-i-can-t-figure-out-why" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><p>Try upgrading to Cookiecutter 0.8.0, which prints better error
-messages and has fixes for several common bugs.</p></li>
-</ul>
+<div class="section" id="troubleshooting-tackle-files">
+<h2>Troubleshooting Tackle Files<a class="headerlink" href="#troubleshooting-tackle-files" title="Permalink to this headline">¶</a></h2>
+<p>Often times you find yourself debugging a script and have to enter the same options over and over again which is annoying and difficult to deal with when dealing with many options. For that, it is recommended to use the <cite>record</cite> and <cite>rerun</cite> functionality</p>
 </div>
-<div class="section" id="i-m-having-trouble-generating-jinja-templates-from-jinja-templates">
-<h2>I’m having trouble generating Jinja templates from Jinja templates<a class="headerlink" href="#i-m-having-trouble-generating-jinja-templates-from-jinja-templates" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="troubleshooting-jinja-templates">
+<h2>Troubleshooting Jinja templates<a class="headerlink" href="#troubleshooting-jinja-templates" title="Permalink to this headline">¶</a></h2>
 <p>Make sure you escape things properly, like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{{</span> <span class="s2">&quot;{{&quot;</span> <span class="p">}}</span>
 </pre></div>
@@ -200,12 +221,16 @@ adding a section or filing an issue with details would be greatly appreciated.</
            
           </div>
           <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="tackle.providers.html" class="btn btn-neutral float-right" title="tackle.providers package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="advanced/new_line_characters.html" class="btn btn-neutral float-left" title="Working with line-ends special symbols LF/CRLF" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2013-2019, Audrey Roy and Cookiecutter community.
+        &#169; Copyright 2020-2021, Rob Cannon.
 
     </p>
   </div>

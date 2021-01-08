@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Tackle Box &mdash; nukikata  documentation</title>
+  <title>Tackle Box &mdash; tackle-box 0.1.0-alpha.1 documentation</title>
   
 
   
@@ -53,7 +53,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> nukikata
+            <a href="index.html" class="icon icon-home"> tackle-box
           
 
           
@@ -61,6 +61,10 @@
 
           
             
+            
+              <div class="version">
+                0.1.0-alpha.1
+              </div>
             
           
 
@@ -87,19 +91,33 @@
               <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Tackle Box</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#quick-demo">Quick Demo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#features">Features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#features">Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hooks-and-providers">Hooks and Providers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#base-methods">Base Methods</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#providers">Providers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hooks">Hooks</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#providers">Providers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hooks">Hooks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#note-to-users-and-developers">Note to Users and Developers</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demos.html">Demos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Additional Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial1.html">Getting to Know Tackle Box</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced/index.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="cookiecutter.html">cookiecutter package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.providers.html">tackle.providers package</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tackle.html">tackle package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.cli.html">tackle.cli package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.parser.html">tackle.parser package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.render.html">tackle.render package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.utils.html">tackle.utils package</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="HISTORY.html">History</a></li>
@@ -118,7 +136,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">nukikata</a>
+          <a href="index.html">tackle-box</a>
         
       </nav>
 
@@ -172,7 +190,7 @@
             
   <div class="section" id="tackle-box">
 <h1>Tackle Box<a class="headerlink" href="#tackle-box" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference external" href="https://pypi.python.org/pypi/tackle-box"><img alt="pypi" src="https://img.shields.io/pypi/v/nukikata.svg" /></a>
+<p><a class="reference external" href="https://pypi.python.org/pypi/tackle-box"><img alt="pypi" src="https://img.shields.io/pypi/v/tackle-box.svg" /></a>
 <a class="reference external" href="https://pypi.python.org/pypi/tackle-box"><img alt="python" src="https://img.shields.io/pypi/pyversions/tackle-box.svg" /></a>
 <a class="reference external" href="https://travis-ci.org/robcxyz/tackle-box"><img alt="Build Status" src="https://travis-ci.org/robcxyz/tackle-box.svg?branch=master" /></a>
 <a class="reference external" href="https://codecov.io/github/robcxyz/tackle-box?branch=master"><img alt="codecov" src="https://codecov.io/gh/robcxyz/tackle-box/branch/master/graphs/badge.svg?branch=master" /></a></p>
@@ -187,16 +205,12 @@
 <li><p>Free and open source software: <a class="reference external" href="https://github.com/tackle-box/cookiecutter/blob/master/LICENSE">BSD license</a></p></li>
 </ul>
 <p>Tackle box is a DSL for easily creating CLIs, workflows, and generating code from templates. The framework is modular and empowered by a collection of hooks to easily extend functionality. Based off a fork of <a class="reference external" href="https://github.com/cookiecutter/cookiecutter">cookiecutter</a>, this tool evolved from being a code generator to connecting git repositories into a web of CLIs.</p>
-<blockquote>
-<div><p>Note: Tackle box is undergoing several refactors.  Expect many changes.</p>
-</div></blockquote>
 <div class="section" id="quick-demo">
 <h2>Quick Demo<a class="headerlink" href="#quick-demo" title="Permalink to this headline">¶</a></h2>
 <!--  TODO: Refactor --><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="n">tackle</span><span class="o">-</span><span class="n">box</span>
-<span class="n">nukikata</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">robcxyz</span><span class="o">/</span><span class="n">nukikata</span><span class="o">-</span><span class="n">demos</span>
+<span class="n">tackle</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">robcxyz</span><span class="o">/</span><span class="n">tackle</span><span class="o">-</span><span class="n">demos</span>
 </pre></div>
 </div>
-<p>Note: If you experience installation errors try <code class="docutils literal notranslate"><span class="pre">pip3</span> <span class="pre">install</span> <span class="pre">nukikata</span> <span class="pre">--no-binary</span> <span class="pre">:all:</span></code>.</p>
 </div>
 <div class="section" id="features">
 <h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
@@ -225,7 +239,7 @@
 <span class="nt">bad_outcome</span><span class="p">:</span>
   <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">print</span>
   <span class="nt">statement</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Wrong answer {{ name }}...</span> <span class="c1"># Render the `name` variable</span>
-  <span class="nt">when</span><span class="p">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">outcome</span><span class="nv"> </span><span class="s">==</span><span class="nv"> </span><span class="s">&#39;flung-off-bridge&#39;</span><span class="nv"> </span><span class="s">}}&quot;</span> <span class="c1"># Conditionals are rendered json</span>
+  <span class="nt">when</span><span class="p">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">outcome</span><span class="nv"> </span><span class="s">==</span><span class="nv"> </span><span class="s">&#39;flung-off-bridge&#39;</span><span class="nv"> </span><span class="s">}}&quot;</span> <span class="c1"># Conditionals need to evaluate as booleans</span>
 
 <span class="nt">color_essays</span><span class="p">:</span>
   <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">input</span>
@@ -238,14 +252,16 @@
   <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">command</span> <span class="c1"># Run arbitrary system commands and return stdout</span>
   <span class="nt">command</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pwd</span>
 
-<span class="nt">dump_yaml</span><span class="p">:</span>
-  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">yaml</span> <span class="c1"># Read / write yaml</span>
-  <span class="nt">contents</span><span class="p">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">}}&quot;</span>
-  <span class="nt">path</span><span class="p">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">calling_directory</span><span class="nv"> </span><span class="s">}}/output.yaml&quot;</span>
+<span class="nt">output</span><span class="p">:</span>
+  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pprint</span> <span class="c1"># Pretty print the output</span>
+  <span class="nt">output</span><span class="p">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">}}&quot;</span> <span class="c1"># Special var that contains a dictionary of all the value</span>
 </pre></div>
 </div>
-<p>Here the jinja default context key goes to the name of file - ie <code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">&lt;var</span> <span class="pre">name&gt;</span> <span class="pre">}}</span></code> but can be customized if needed. We can also see the use of a special variable <code class="docutils literal notranslate"><span class="pre">this</span></code> which is the current context.</p>
+<p>Each hook is called via its <code class="docutils literal notranslate"><span class="pre">type</span></code> which, in the case of the <code class="docutils literal notranslate"><span class="pre">input</span></code> hook, can be looked up in the <a class="reference external" href="#">docs</a> or by looking at the <a class="reference external" href="#">source code</a> directly.</p>
 <p>Prompts are enhanced by extending the functionality from <a class="reference external" href="https://github.com/CITGuru/PyInquirer">PyInquirer</a> as a set of hooks as noted by the types <code class="docutils literal notranslate"><span class="pre">input</span></code>, <code class="docutils literal notranslate"><span class="pre">select</span></code>, and <code class="docutils literal notranslate"><span class="pre">checkbox</span></code>. Writing new hooks is super simple as seen in the <code class="docutils literal notranslate"><span class="pre">print</span></code> hook:</p>
+</div>
+<div class="section" id="hooks-and-providers">
+<h2>Hooks and Providers<a class="headerlink" href="#hooks-and-providers" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="tackle/operators/print.py"><code class="docutils literal notranslate"><span class="pre">cookiecuttuer/providers/hooks/print.py</span></code></a></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tackle.models</span> <span class="kn">import</span> <span class="n">BaseHook</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
@@ -263,28 +279,28 @@
 <div class="section" id="base-methods">
 <h3>Base Methods<a class="headerlink" href="#base-methods" title="Permalink to this headline">¶</a></h3>
 <p>A number of useful methods are available when executing any hook. Here is a breif example of all of them being used.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">this</span><span class="p">:</span> 
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">this</span><span class="p">:</span>
   <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">a_hook</span>
-  <span class="nt">chdir</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/path/to/some/dir</span> <span class="c1"># Changes to the dir before executing </span>
+  <span class="nt">chdir</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/path/to/some/dir</span> <span class="c1"># Changes to the dir before executing</span>
   <span class="nt">loop</span><span class="p">:</span> <span class="c1"># Expects a list, creates `item` and `index` variables in loop</span>
     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">foo</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">bar</span> 
-  <span class="nt">when</span><span class="p">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">==</span><span class="nv"> </span><span class="s">&#39;foo&#39;</span><span class="nv"> </span><span class="s">}}&quot;</span> <span class="c1"># Jinja expression that evaluates to boolean </span>
-  <span class="nt">merge</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span> <span class="c1"># Merge the outputs to the upper level context </span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">bar</span>
+  <span class="nt">when</span><span class="p">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">==</span><span class="nv"> </span><span class="s">&#39;foo&#39;</span><span class="nv"> </span><span class="s">}}&quot;</span> <span class="c1"># Jinja expression that evaluates to boolean</span>
+  <span class="nt">merge</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span> <span class="c1"># Merge the outputs to the upper level context</span>
 </pre></div>
 </div>
 <p>For further documentation on base methods, see check out <a class="reference external" href="#">the docs</a>.</p>
 </div>
+</div>
 <div class="section" id="providers">
-<h3>Providers<a class="headerlink" href="#providers" title="Permalink to this headline">¶</a></h3>
+<h2>Providers<a class="headerlink" href="#providers" title="Permalink to this headline">¶</a></h2>
 <p>Providers are groups of hooks and templates to</p>
 </div>
 <div class="section" id="hooks">
-<h3>Hooks<a class="headerlink" href="#hooks" title="Permalink to this headline">¶</a></h3>
-<p>Around 50 different hooks are currently available with more coming down the line. To understand how to use them, please refer to the <a class="reference external" href="https://robcxyz.github.io/nukikata/docs/_build/html/cookiecutter.operators.html#submodules">API Docs</a>.</p>
+<h2>Hooks<a class="headerlink" href="#hooks" title="Permalink to this headline">¶</a></h2>
+<p>Around 50 different hooks are currently available with more coming down the line. To understand how to use them, please refer to the <a class="reference external" href="https://robcxyz.github.io/tackle-box/docs/_build/html/cookiecutter.operators.html#submodules">API Docs</a>.</p>
 <p>The main type of operators are derivations of <a class="reference external" href="https://github.com/CITGuru/PyInquirer">PyInquirer</a> which greatly enhanced the capabilities of the original cookiecutter due to the ability to use multi-select inputs that return lists. Please inspect the <a class="reference external" href="https://github.com/CITGuru/PyInquirer">PyInquirer</a> API docs to understand the interface. All features are supported except for <code class="docutils literal notranslate"><span class="pre">validation</span></code> and <code class="docutils literal notranslate"><span class="pre">filter</span></code> which is not supported and <code class="docutils literal notranslate"><span class="pre">when</span></code> which is implemented in jinja.</p>
 <p>To see a number of good examples of the types of interfaces available for each operator, consider downloading the demo above and walking through the syntax.</p>
-</div>
 </div>
 <div class="section" id="note-to-users-and-developers">
 <h2>Note to Users and Developers<a class="headerlink" href="#note-to-users-and-developers" title="Permalink to this headline">¶</a></h2>
@@ -308,7 +324,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2013-2019, Audrey Roy and Cookiecutter community.
+        &#169; Copyright 2020-2021, Rob Cannon.
 
     </p>
   </div>

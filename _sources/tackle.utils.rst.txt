@@ -1,0 +1,85 @@
+tackle.utils package
+====================
+
+Submodules
+----------
+
+tackle.utils.conditionals module
+--------------------------------
+
+.. automodule:: tackle.utils.conditionals
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tackle.utils.context\_manager module
+------------------------------------
+
+.. automodule:: tackle.utils.context_manager
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tackle.utils.files module
+-------------------------
+
+.. automodule:: tackle.utils.files
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tackle.utils.log module
+-----------------------
+
+.. automodule:: tackle.utils.log
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tackle.utils.paths module
+-------------------------
+
+.. automodule:: tackle.utils.paths
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tackle.utils.prompts module
+---------------------------
+
+.. automodule:: tackle.utils.prompts
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tackle.utils.reader module
+--------------------------
+
+.. automodule:: tackle.utils.reader
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tackle.utils.vcs module
+-----------------------
+
+.. automodule:: tackle.utils.vcs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tackle.utils.zipfile module
+---------------------------
+
+.. automodule:: tackle.utils.zipfile
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: tackle.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

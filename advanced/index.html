@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Advanced Usage &mdash; nukikata  documentation</title>
+  <title>Advanced Usage &mdash; tackle-box 0.1.0-alpha.1 documentation</title>
   
 
   
@@ -37,7 +37,9 @@
 
     
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Hooks" href="hooks.html" />
+    <link rel="prev" title="Getting to Know Tackle Box" href="../tutorial1.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -51,7 +53,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> nukikata
+            <a href="../index.html" class="icon icon-home"> tackle-box
           
 
           
@@ -59,6 +61,10 @@
 
           
             
+            
+              <div class="version">
+                0.1.0-alpha.1
+              </div>
             
           
 
@@ -82,12 +88,44 @@
               
             
             
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../README.html">Tackle Box</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos.html">Demos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Additional Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial1.html">Getting to Know Tackle Box</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Advanced Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hooks.html">Hooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hooks.html#context-hooks">Context Hooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hooks.html#using-pre-post-generate-hooks">Using Pre/Post-Generate Hooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_config.html">User Config (0.7.0+)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calling_from_python.html">Calling Cookiecutter Functions From Python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="injecting_context.html">Injecting Extra Context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="suppressing_prompts.html">Suppressing Command-Line Prompts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="templates_in_context.html">Templates in Context Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="private_variables.html">Private Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="copy_without_render.html">Copy without Render</a></li>
+<li class="toctree-l2"><a class="reference internal" href="replay.html">Replay Project Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_options.html">Command Line Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="choice_variables.html">Choice Variables (1.1+)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dict_variables.html">Dictionary Variables (1.5+)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="template_extensions.html">Template Extensions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="directories.html">Organizing cookiecutters in directories (1.7+)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="new_line_characters.html">Working with line-ends special symbols LF/CRLF</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Troubleshooting</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../cookiecutter.html">cookiecutter package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tackle.providers.html">tackle.providers package</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tackle.html">tackle package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tackle.cli.html">tackle.cli package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tackle.parser.html">tackle.parser package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tackle.render.html">tackle.render package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tackle.utils.html">tackle.utils package</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../HISTORY.html">History</a></li>
@@ -106,7 +144,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">nukikata</a>
+          <a href="../index.html">tackle-box</a>
         
       </nav>
 
@@ -219,12 +257,16 @@
            
           </div>
           <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="hooks.html" class="btn btn-neutral float-right" title="Hooks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../tutorial1.html" class="btn btn-neutral float-left" title="Getting to Know Tackle Box" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2013-2019, Audrey Roy and Cookiecutter community.
+        &#169; Copyright 2020-2021, Rob Cannon.
 
     </p>
   </div>

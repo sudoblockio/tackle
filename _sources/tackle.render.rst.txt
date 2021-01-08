@@ -1,0 +1,37 @@
+tackle.render package
+=====================
+
+Submodules
+----------
+
+tackle.render.environment module
+--------------------------------
+
+.. automodule:: tackle.render.environment
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tackle.render.extensions module
+-------------------------------
+
+.. automodule:: tackle.render.extensions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tackle.render.special\_vars module
+----------------------------------
+
+.. automodule:: tackle.render.special_vars
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: tackle.render
+   :members:
+   :undoc-members:
+   :show-inheritance:

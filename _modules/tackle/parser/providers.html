@@ -1,0 +1,442 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>tackle.parser.providers &mdash; tackle-box 0.1.0-alpha.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> tackle-box
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0-alpha.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../README.html">Tackle Box</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos.html">Demos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Additional Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial1.html">Getting to Know Tackle Box</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../advanced/index.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../troubleshooting.html">Troubleshooting</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tackle.providers.html">tackle.providers package</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tackle.html">tackle package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tackle.cli.html">tackle.cli package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tackle.parser.html">tackle.parser package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tackle.render.html">tackle.render package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tackle.utils.html">tackle.utils package</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../HISTORY.html">History</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">tackle-box</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>tackle.parser.providers</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for tackle.parser.providers</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;Parser for importing providers into the runtime.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">importlib.machinery</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">from</span> <span class="nn">tackle.providers</span> <span class="kn">import</span> <span class="n">native_providers</span>
+<span class="kn">from</span> <span class="nn">tackle.utils.paths</span> <span class="kn">import</span> <span class="n">listdir_absolute</span>
+<span class="kn">from</span> <span class="nn">tackle.repository</span> <span class="kn">import</span> <span class="n">is_git_repo</span>
+<span class="kn">from</span> <span class="nn">tackle.exceptions</span> <span class="kn">import</span> <span class="n">UnknownHookTypeException</span>
+<span class="kn">from</span> <span class="nn">tackle.models</span> <span class="kn">import</span> <span class="n">Provider</span><span class="p">,</span> <span class="n">BaseHook</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">tackle.models</span> <span class="kn">import</span> <span class="n">Context</span><span class="p">,</span> <span class="n">Source</span><span class="p">,</span> <span class="n">Mode</span><span class="p">,</span> <span class="n">Settings</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_providers"><a class="viewcode-back" href="../../../tackle.parser.html#tackle.parser.providers.get_providers">[docs]</a><span class="k">def</span> <span class="nf">get_providers</span><span class="p">(</span>
+    <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="s1">&#39;Source&#39;</span><span class="p">,</span> <span class="n">settings</span><span class="p">:</span> <span class="s1">&#39;Settings&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="s1">&#39;Mode&#39;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="s1">&#39;Provider&#39;</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Update the source with providers and hooks.</span>
+
+<span class="sd">    1. Check if the settings provider has been updated</span>
+<span class="sd">    2. Check if the local provider has been updated</span>
+<span class="sd">    3. Check if the context has additional providers</span>
+
+<span class="sd">    :return: List of Provider objects</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">providers</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># Native providers are gathered from</span>
+        <span class="n">append_provider_dicts</span><span class="p">(</span><span class="n">native_providers</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+    <span class="c1"># Get provider dirs</span>
+    <span class="k">if</span> <span class="n">settings</span><span class="o">.</span><span class="n">extra_providers</span><span class="p">:</span>
+        <span class="c1"># Providers from config file</span>
+        <span class="n">append_provider_dicts</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">extra_providers</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;__providers&#39;</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">input_dict</span><span class="p">[</span><span class="n">context</span><span class="o">.</span><span class="n">context_key</span><span class="p">]:</span>
+        <span class="n">append_provider_dicts</span><span class="p">(</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">input_dict</span><span class="p">[</span><span class="n">context</span><span class="o">.</span><span class="n">context_key</span><span class="p">][</span><span class="s1">&#39;__providers&#39;</span><span class="p">],</span> <span class="n">context</span><span class="p">,</span> <span class="n">mode</span>
+        <span class="p">)</span></div>
+
+    <span class="c1"># hooks_dir = os.path.join(source.repo_dir, &#39;hooks&#39;)</span>
+    <span class="c1"># if os.path.isdir(os.path.join(source.repo_dir, &#39;hooks&#39;)):</span>
+    <span class="c1">#     append_provider_dicts()</span>
+
+
+<div class="viewcode-block" id="append_provider_dicts"><a class="viewcode-back" href="../../../tackle.parser.html#tackle.parser.providers.append_provider_dicts">[docs]</a><span class="k">def</span> <span class="nf">append_provider_dicts</span><span class="p">(</span><span class="n">input_providers</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="s1">&#39;Mode&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Update the provider list with a new provider.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_providers</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">input_providers</span> <span class="o">=</span> <span class="p">[</span><span class="n">input_providers</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_providers</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Input provider &#39;</span><span class="si">{</span><span class="n">input_providers</span><span class="si">}</span><span class="s2">&#39; needs to be list.&quot;</span>
+        <span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Importing </span><span class="si">{</span><span class="n">input_providers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">input_providers</span><span class="p">:</span>
+        <span class="c1"># if isinstance(context.provider_dict, str):</span>
+        <span class="c1">#     context.provider_dict = &quot;&quot;</span>
+
+        <span class="n">mod_name</span> <span class="o">=</span> <span class="s1">&#39;tackle.providers.&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">hooks_init_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;hooks&#39;</span><span class="p">,</span> <span class="s1">&#39;__init__.py&#39;</span><span class="p">)</span>
+        <span class="n">hooks_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;hooks&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Importing hook from provider=</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> from path=</span><span class="si">{</span><span class="n">hooks_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">hooks_init_path</span><span class="p">):</span>
+            <span class="n">mod</span> <span class="o">=</span> <span class="n">import_module_from_path</span><span class="p">(</span><span class="n">mod_name</span><span class="p">,</span> <span class="n">hooks_init_path</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">hook_types</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">hook_types</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">Provider</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">hooks_path</span><span class="p">,</span> <span class="n">hook_types</span><span class="o">=</span><span class="n">hook_types</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">mod_name</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Importing hook_types </span><span class="si">{</span><span class="n">mod</span><span class="o">.</span><span class="n">hook_types</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="n">hooks_path</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="p">)</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">providers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No hook_types in </span><span class="si">{</span><span class="n">hooks_path</span><span class="si">}</span><span class="s2">, importing module.&quot;</span><span class="p">)</span>
+        <span class="c1"># elif os.listdir(os.path.join(i, &#39;hooks&#39;)):</span>
+
+        <span class="c1"># elif os.path.isdir(hooks_path):</span>
+        <span class="c1">#     for i in [j for j in os.listdir(hooks_path) if j not in [&#39;__pycache__&#39;]]:</span>
+        <span class="c1">#         import_module_from_path(mod_name, os.path.join(hooks_path, i))</span>
+
+        <span class="c1"># This pass will import all the modules and when retrieving hook types,</span>
+        <span class="c1"># wil search based on all subclasses</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">providers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_provider_from_dir</span><span class="p">(</span><span class="n">mod_name</span><span class="p">,</span> <span class="n">hooks_path</span><span class="p">))</span>
+        <span class="k">continue</span></div>
+
+
+<div class="viewcode-block" id="install_requirements_if_exists"><a class="viewcode-back" href="../../../tackle.parser.html#tackle.parser.providers.install_requirements_if_exists">[docs]</a><span class="k">def</span> <span class="nf">install_requirements_if_exists</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">requirements_file</span><span class="o">=</span><span class="s1">&#39;requirements.txt&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Install the requirements.txt file if it exists in path.&quot;&quot;&quot;</span>
+    <span class="n">requirements_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">requirements_file</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">requirements_file</span><span class="p">):</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span>
+                <span class="s2">&quot;-m&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;pip&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;install&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;--quiet&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;--disable-pip-version-check&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;-r&quot;</span><span class="p">,</span>
+                <span class="n">requirements_file</span><span class="p">,</span>
+            <span class="p">]</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="import_with_fallback_install"><a class="viewcode-back" href="../../../tackle.parser.html#tackle.parser.providers.import_with_fallback_install">[docs]</a><span class="k">def</span> <span class="nf">import_with_fallback_install</span><span class="p">(</span><span class="n">mod_name</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Import a module and on import error, fallback on requirements file.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">import_hooks_from_dir</span><span class="p">(</span><span class="n">mod_name</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+        <span class="n">install_requirements_if_exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+        <span class="n">import_hooks_from_dir</span><span class="p">(</span><span class="n">mod_name</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_provider_from_dir"><a class="viewcode-back" href="../../../tackle.parser.html#tackle.parser.providers.get_provider_from_dir">[docs]</a><span class="k">def</span> <span class="nf">get_provider_from_dir</span><span class="p">(</span><span class="n">mod_name</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Initialize the provider from a path.&quot;&quot;&quot;</span>
+    <span class="n">import_with_fallback_install</span><span class="p">(</span><span class="n">mod_name</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">Provider</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">mod_name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">p</span></div>
+
+
+<div class="viewcode-block" id="import_hooks_from_dir"><a class="viewcode-back" href="../../../tackle.parser.html#tackle.parser.providers.import_hooks_from_dir">[docs]</a><span class="k">def</span> <span class="nf">import_hooks_from_dir</span><span class="p">(</span>
+    <span class="n">mod_name</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">excluded_file_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">excluded_file_extensions</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Import hooks from a directory.</span>
+
+<span class="sd">    This is meant to be used by generically pointing to a hooks directory and</span>
+<span class="sd">    importing all the relevent hooks into the context.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">excluded_file_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">excluded_file_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;pre_gen_project&#39;</span><span class="p">,</span> <span class="s1">&#39;post_gen_project&#39;</span><span class="p">,</span> <span class="s1">&#39;__pycache__&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">excluded_file_extensions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">excluded_file_extensions</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;pyc&#39;</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">listdir_absolute</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">excluded_file_names</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">excluded_file_extensions</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">import_module_from_path</span><span class="p">(</span><span class="n">mod_name</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">f</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_hook"><a class="viewcode-back" href="../../../tackle.parser.html#tackle.parser.providers.get_hook">[docs]</a><span class="k">def</span> <span class="nf">get_hook</span><span class="p">(</span><span class="n">hook_type</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the hook from available providers.</span>
+
+<span class="sd">    Does the following to return the hook:</span>
+<span class="sd">    1. Check if hook hasn&#39;t been imported already</span>
+<span class="sd">    2. Check if the hook has been declared in a provider&#39;s __init__.py&#39;s</span>
+<span class="sd">    `hook_types` field.</span>
+<span class="sd">    3. Try to import it then fall back on installing the requirements.txt file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">BaseHook</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">hook_type</span> <span class="o">==</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">h</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">default</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">h</span>
+
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">providers</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">hook_type</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">hook_types</span><span class="p">:</span>
+            <span class="n">import_with_fallback_install</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">BaseHook</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">hook_type</span> <span class="o">==</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">h</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">default</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">h</span>
+
+    <span class="n">avail_hook_types</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">default</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">BaseHook</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">()</span>
+    <span class="p">]</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Available hook types = </span><span class="si">{</span><span class="n">avail_hook_types</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="n">UnknownHookTypeException</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;The hook type=</span><span class="se">\&quot;</span><span class="si">{</span><span class="n">hook_type</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> is not available in the providers. &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Run the application with `--verbose` to see available hook types.&quot;</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="import_module_from_path"><a class="viewcode-back" href="../../../tackle.parser.html#tackle.parser.providers.import_module_from_path">[docs]</a><span class="k">def</span> <span class="nf">import_module_from_path</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Import a module from a path presumably with hooks in it.&quot;&quot;&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Importing module from path=</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> as mod=</span><span class="si">{</span><span class="n">mod</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">loader</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">machinery</span><span class="o">.</span><span class="n">SourceFileLoader</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+    <span class="n">mod</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load_module</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">mod</span></div>
+
+
+<div class="viewcode-block" id="parse_git_src_str"><a class="viewcode-back" href="../../../tackle.parser.html#tackle.parser.providers.parse_git_src_str">[docs]</a><span class="k">def</span> <span class="nf">parse_git_src_str</span><span class="p">(</span><span class="n">git_repo</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Decompose a repo - UNUSED ATM.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(git@[\w\.]+)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">git_repo</span><span class="p">):</span>
+        <span class="c1"># Check if ssh based</span>
+        <span class="n">git_repo</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;.git&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">git_repo</span><span class="p">)</span>
+        <span class="n">git_suffix</span> <span class="o">=</span> <span class="n">git_repo</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">git_parts</span> <span class="o">=</span> <span class="n">git_suffix</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">git_parts</span>
+
+    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(https:\/\/[\w\.]+)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">git_repo</span><span class="p">):</span>
+        <span class="c1"># Check if https based</span>
+        <span class="n">git_suffix</span> <span class="o">=</span> <span class="n">git_repo</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;//&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">git_parts</span> <span class="o">=</span> <span class="n">git_suffix</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">return</span> <span class="n">git_parts</span></div>
+
+
+<div class="viewcode-block" id="get_path_from_src"><a class="viewcode-back" href="../../../tackle.parser.html#tackle.parser.providers.get_path_from_src">[docs]</a><span class="k">def</span> <span class="nf">get_path_from_src</span><span class="p">(</span><span class="n">provider</span><span class="p">:</span> <span class="s1">&#39;Provider&#39;</span><span class="p">,</span> <span class="n">settings</span><span class="p">:</span> <span class="s1">&#39;Settings&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="s1">&#39;Mode&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get a path from source - UNUSED ATM.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">is_git_repo</span><span class="p">(</span><span class="n">provider</span><span class="o">.</span><span class="n">src</span><span class="p">):</span>
+        <span class="n">git_parts</span> <span class="o">=</span> <span class="n">parse_git_src_str</span><span class="p">(</span><span class="n">provider</span><span class="o">.</span><span class="n">src</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Needs to be a git repo right now.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">provider</span><span class="o">.</span><span class="n">version</span><span class="p">:</span>
+        <span class="n">git_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">provider</span><span class="o">.</span><span class="n">version</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">git_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;master&quot;</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020-2021, Rob Cannon.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

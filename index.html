@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Tackle Box &mdash; nukikata  documentation</title>
+  <title>Tackle Box &mdash; tackle-box 0.1.0-alpha.1 documentation</title>
   
 
   
@@ -52,7 +52,7 @@
           
 
           
-            <a href="#" class="icon icon-home"> nukikata
+            <a href="#" class="icon icon-home"> tackle-box
           
 
           
@@ -60,6 +60,10 @@
 
           
             
+            
+              <div class="version">
+                0.1.0-alpha.1
+              </div>
             
           
 
@@ -86,9 +90,22 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="README.html">Tackle Box</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demos.html">Demos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Additional Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial1.html">Getting to Know Tackle Box</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced/index.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="cookiecutter.html">cookiecutter package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.providers.html">tackle.providers package</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tackle.html">tackle package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.cli.html">tackle.cli package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.parser.html">tackle.parser package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.render.html">tackle.render package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.utils.html">tackle.utils package</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="HISTORY.html">History</a></li>
@@ -107,7 +124,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">nukikata</a>
+          <a href="#">tackle-box</a>
         
       </nav>
 
@@ -161,33 +178,39 @@
             
   <div class="section" id="tackle-box">
 <h1>Tackle Box<a class="headerlink" href="#tackle-box" title="Permalink to this headline">¶</a></h1>
-<p>Cookiecutter creates projects from project templates, e.g. Python package projects.</p>
-<p>Nukikata extends this functionality to include a plugins based system of operators
-with conditionals and loops. With these new options, users can now create modular
-user journeys connecting a web of declarative CLIs.</p>
+<p>Declarative DSL for creating workflows, CLIs, and generating code. Extends cookiecutter templates with modules, loops, conditionals, and plugin based hooks to perform a wide array of actions.</p>
 <div class="section" id="basics">
 <h2>Basics<a class="headerlink" href="#basics" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="README.html">Tackle Box</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="README.html#quick-demo">Quick Demo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="README.html#features">Features</a></li>
-<li class="toctree-l2"><a class="reference internal" href="README.html#note-to-users-and-developers">Note to Users and Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html">Tackle Box</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demos.html">Demos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Additional Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial1.html">Getting to Know Tackle Box</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced/index.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="overview.html#input">Input</a></li>
-<li class="toctree-l2"><a class="reference internal" href="overview.html#output">Output</a></li>
-</ul>
-</li>
+</div>
+</div>
+<div class="section" id="providers-reference">
+<h2>Providers Reference<a class="headerlink" href="#providers-reference" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound" id="api">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tackle.providers.html">tackle.providers package</a></li>
 </ul>
 </div>
 </div>
 <div class="section" id="api-reference">
 <span id="apiref"></span><h2>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound" id="api">
+<div class="toctree-wrapper compound" id="id1">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="cookiecutter.html">cookiecutter package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.html">tackle package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.cli.html">tackle.cli package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.parser.html">tackle.parser package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.render.html">tackle.render package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tackle.utils.html">tackle.utils package</a></li>
 </ul>
 </div>
 </div>
@@ -225,7 +248,7 @@ user journeys connecting a web of declarative CLIs.</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2013-2019, Audrey Roy and Cookiecutter community.
+        &#169; Copyright 2020-2021, Rob Cannon.
 
     </p>
   </div>
