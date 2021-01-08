@@ -1,0 +1,35 @@
+version:
+  type: terraform_version
+
+
+version_13:
+  type: terraform_version
+  minor_version: 13
+
+intall_basic:
+  type: terraform_install
+  output_file_name: terraform0.13.6
+
+check_basic:
+  type: shell
+  command: "{{ cwd }}/terraform0.13.6 --version"
+
+intall_path_dir:
+  type: mkdir
+  path: testing-path
+
+install_path:
+  type: terraform_install
+  output_dir: testing-path
+
+join:
+  type: path_join
+  paths:
+    - "{{ cwd }}"
+    - testing-path
+    - terraform
+
+check_path:
+  type: shell
+  command: "{{ join }} --version"
+

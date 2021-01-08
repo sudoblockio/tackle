@@ -7,7 +7,7 @@ vars:
 output:
   type: json
   path: terraform.tfvars.json
-  contents: "{{ nuki.vars }}"
+  contents: "{{ vars }}"
 
 vars_with_skip:
   type: terraform_variables
@@ -18,7 +18,7 @@ vars_with_skip:
 output_with_skip:
   type: json
   path: terraform_skip.tfvars.json
-  contents: "{{ nuki.vars_with_skip }}"
+  contents: "{{ vars_with_skip }}"
 
 vars_with_list:
   type: terraform_variables
@@ -29,7 +29,7 @@ vars_with_list:
 output_with_list:
   type: json
   path: terraform_list.tfvars.json
-  contents: "{{ nuki.vars_with_list }}"
+  contents: "{{ vars_with_list }}"
 
 going to merge this:
   type: terraform_variables
@@ -41,4 +41,4 @@ going to merge this:
 output_merged:
   type: json
   path: terraform_merged.tfvars.json
-  contents: "{{ nuki }}"
+  contents: "{{ this }}"
