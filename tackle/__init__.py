@@ -1,2 +1,2 @@
 """Main package for tackle box."""
-__version__ = "0.1.0a"
+__version__ = "0.1.0-alpha.1"
