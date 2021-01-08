@@ -3,6 +3,9 @@ on:
   pull_request:
     branches:
       - "*"
+  push:
+    branches:
+      - master
 
 jobs:
   docs:
@@ -14,13 +17,38 @@ jobs:
       - uses: actions/setup-python@v1
         with:
           python-version: "3.7"
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install tox virtualenv
+
       - name: Build docs
-        run: tox -e docs
+        run: |
+          tox -e docs
+
       - uses: actions/upload-artifact@v1
         with:
           name: DocumentationHTML
           path: docs/_build/html/
+
+      - name: Commit documentation changes
+        run: |
+          git clone https://github.com/robcxyz/test-gh-pages.git --branch docs --single-branch gh-pages
+          cp -r docs/_build/html/* gh-pages/
+          cd gh-pages
+          touch .nojekyll
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Update documentation" -a || true
+          # The above command will fail if no changes were present, so we ignore
+          # the return code.
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          branch: docs
+          directory: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
