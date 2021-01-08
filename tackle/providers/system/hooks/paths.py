@@ -78,3 +78,17 @@ class PathRelativeHook(BaseHook):
                     % self.target
                 )
         return self._find_in_parent(dir=os.path.dirname(os.path.abspath(dir)))
+
+
+class PathJoinHook(BaseHook):
+    """Hook joining paths.
+
+    :param path: The path to file or directory
+    :return: boolean:
+    """
+
+    type: str = 'path_join'
+    paths: list
+
+    def execute(self):
+        return os.path.join(*self.paths)

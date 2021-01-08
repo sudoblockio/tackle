@@ -1,0 +1,14 @@
+dirs:
+  type: mkdir
+  path: output
+
+
+join:
+  type: path_join
+  paths:
+    - output
+    - foo
+
+dirs2:
+  type: mkdir
+  path: "{{ join }}"

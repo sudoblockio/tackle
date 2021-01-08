@@ -6,18 +6,18 @@ blocker:
       type: print
     things:
       statement:
-        fun: '{{ nuki.foo }}'
+        fun: '{{ foo }}'
       type: print
   merge: true
   type: block
 foo: bar
 jinja:
-  extra_context: '{{ nuki }}'
+  extra_context: '{{ this }}'
   output_path: things.py
   template_path: templates/things.py.j2
   type: jinja
 output:
-  contents: '{{ nuki }}'
+  contents: '{{ this }}'
   path: output.yaml
   type: yaml
 stuff:
