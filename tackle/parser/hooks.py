@@ -152,9 +152,7 @@ def parse_hook(
             to_merge, post_gen_hook = run_hook(context, mode)
             context.output_dict.update(to_merge)
         else:
-            context.output_dict[context.key], post_gen_hook = run_hook(
-                context, mode
-            )
+            context.output_dict[context.key], post_gen_hook = run_hook(context, mode)
         if post_gen_hook:
             context.post_gen_hooks.append(post_gen_hook)
 

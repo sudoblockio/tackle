@@ -29,6 +29,7 @@ class ListdirHook(BaseHook):
     ignore_hidden_files: bool = False
     path: Union[List[str], str]
     sort: bool = False
+    # TODO: Put a filter on the input here with a regex
     # filter:
 
     def execute(self):
