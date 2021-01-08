@@ -139,7 +139,7 @@ def prep_context(
         with work_in(context.input_dict[context.context_key]['_template']):
             return parse_context(context, mode, source)
     else:
-        # Case where prompt is being called directly as is the case with an operator
+        # Case where prompt is being called directly as is the case with an hook
         return parse_context(context, mode, source)
 
 

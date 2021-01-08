@@ -1,4 +1,4 @@
-"""Helper functions used throughout Cookiecutter."""
+"""Helper functions used throughout Tackle."""
 import logging
 import os
 import sys
@@ -26,7 +26,7 @@ def prompt_and_delete(path, no_input=False):
     Ask user if it's okay to delete the previously-downloaded file/directory.
 
     If yes, delete it. If no, checks to see if the old version should be
-    reused. If yes, it's reused; otherwise, Cookiecutter exits.
+    reused. If yes, it's reused; otherwise, Tackle exits.
 
     :param path: Previously downloaded zipfile.
     :param no_input: Suppress prompt to delete repo and just delete it.

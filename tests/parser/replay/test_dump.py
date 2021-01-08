@@ -44,7 +44,7 @@ def remove_replay_dump(request, replay_file):
 #         files.dump(replay_test_dir, template_name, 'not_a_dict')
 
 
-# Deprecated due to wanting flexible context key now - nuki
+# Deprecated due to wanting flexible context key now
 # def test_value_error_if_key_missing_in_context(replay_test_dir, template_name):
 #     """Test that replay.dump raises if the context does not contain a key \
 #     named 'cookiecutter'."""

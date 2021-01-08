@@ -133,7 +133,7 @@ class BaseHook(Context, Mode):
 
     chdir: Optional[str] = None
     merge: Optional[bool] = False
-    post_gen_operator: Optional[bool] = False
+    post_gen_hook: Optional[bool] = False
     confirm: Optional[str] = False
 
     class Config:
@@ -146,7 +146,7 @@ class BaseHook(Context, Mode):
 
     def call(self) -> Any:
         """
-        Call main entrypoint to calling operator.
+        Call main entrypoint to calling hook.
 
         Handles `chdir` method.
         """

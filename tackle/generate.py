@@ -180,7 +180,7 @@ def _run_hook_from_repo_dir(
     :param repo_dir: Project template input directory.
     :param hook_name: The hook to execute.
     :param project_dir: The directory to execute the script from.
-    :param context: Cookiecutter project context.
+    :param context: Tackle project context.
     :param delete_project_on_failure: Delete the project directory on hook
         failure?
     """

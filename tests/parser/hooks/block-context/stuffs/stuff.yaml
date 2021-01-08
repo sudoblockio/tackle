@@ -9,7 +9,7 @@ stuff:
 #  path: before.yaml
 #  contents: "{{ stuff }}"
 
-things_nuki:
+things:
   type: tackle
   template: .
   context_file: things.yaml

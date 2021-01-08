@@ -6,6 +6,6 @@ repo_name: "{{ project_name|lower|replace(' ', '-') }}"
 
 other_nuki:
   type: tackle
-  template: fake-repo-tmpl-nuki
+  template: fake-repo-tmpl-tackle
   no_input: true
   output_dir: .

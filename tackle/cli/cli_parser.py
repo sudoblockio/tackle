@@ -28,7 +28,7 @@ from tackle.parser.settings import get_settings
 
 
 def version_msg():
-    """Return the Cookiecutter version, location and Python powering it."""
+    """Return the Tackle version, location and Python powering it."""
     python_version = sys.version[:3]
     location = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     message = 'Tackle %(version)s from {} (Python {})'
@@ -52,10 +52,11 @@ def validate_overwrite_inputs(ctx, param, value):
 def input_string_to_dict(ctx, param, value):
     """Call back to convert str to dict."""
     pattern = r'^\{.*\}$'
-    if bool(re.search(pattern, value)):
-        return ast.literal_eval(value)
-    else:
-        return validate_overwrite_inputs(ctx, param, value)
+    if value:
+        if bool(re.search(pattern, value)):
+            return ast.literal_eval(value)
+        else:
+            return validate_overwrite_inputs(ctx, param, value)
 
 
 def list_installed_templates(default_config, passed_config_file):
@@ -97,7 +98,7 @@ def list_installed_templates(default_config, passed_config_file):
     u'--overwrite-inputs',
     # callback=validate_overwrite_inputs,
     callback=input_string_to_dict,
-    default={},
+    # default={},
     help=u'Overwrite the inputs with a dictionary.',
 )
 @click.option(
@@ -233,7 +234,7 @@ def main(
     accept_hooks,
     list_installed,
 ):
-    """Create a project from a Tackle modules or Cookiecutter templates."""
+    """Create a project from a Tackle modules or Tackle templates."""
     # Commands that should work without arguments
     if list_installed:
         list_installed_templates(default_config, config_file)

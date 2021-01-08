@@ -1,11 +1,11 @@
-"""All exceptions used in the Cookiecutter code base are defined here."""
+"""All exceptions used in the tackle box code base are defined here."""
 
 
 class TackleException(Exception):
     """
     Base exception class.
 
-    All Cookiecutter-specific exceptions should subclass this class.
+    All Tackle-specific exceptions should subclass this class.
     """
 
 
@@ -22,7 +22,7 @@ class UnknownTemplateDirException(TackleException):
     """
     Exception for ambiguous project template directory.
 
-    Raised when Cookiecutter cannot determine which directory is the project
+    Raised when Tackle cannot determine which directory is the project
     template, e.g. more than one dir appears to be a template dir.
     """
 

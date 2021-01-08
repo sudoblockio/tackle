@@ -37,6 +37,9 @@ def test_cli_error_on_existing_output_directory(
         os.makedirs('fake-project')
 
     result = cli_runner('fake-repo-pre', '--no-input')
+    # x = result.stderr
+
+    assert result
     assert result.exit_code != 0
     assert result.output == 'Error: "fake-project" directory already exists\n'
 

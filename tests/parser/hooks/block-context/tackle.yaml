@@ -5,7 +5,7 @@ foo:
 
 #debug:
 #  type: print
-#  statement: "{{ nuki }}"
+#  statement: "{{ this }}"
 #
 #stop:
 #  type: confirm
@@ -14,7 +14,7 @@ foo:
 #before:
 #  type: yaml
 #  path: before.yaml
-#  contents: "{{ nuki }}"
+#  contents: "{{ this }}"
 blocker:
 #  merge: true
   type: block
@@ -22,23 +22,23 @@ blocker:
 #    yaml:
 #      type: yaml
 #      path: debug-in-block.yaml
-#      contents: "{{ nuki }}"
+#      contents: "{{ this }}"
 
-    stuff_nuki:
+    stuff:
       type: tackle
       merge: true
       template: .
       context_file: stuff.yaml
       chdir: stuffs
-      existing_context: "{{ nuki }}"
+      existing_context: "{{ this }}"
 #    yaml2:
 #      type: yaml
 #      path: debug-out-block.yaml
-#      contents: "{{ nuki }}"
+#      contents: "{{ this }}"
 #after:
 #  type: pprint
-#  statement: "{{ nuki }}"
+#  statement: "{{ this }}"
 #yaml:
 #  type: yaml
 #  path: debug.yaml
-#  contents: "{{ nuki }}"
+#  contents: "{{ this }}"

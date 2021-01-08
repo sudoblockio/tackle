@@ -58,7 +58,7 @@ class StrictEnvironment(ExtensionLoaderMixin, Environment):
     """
 
     def __init__(self, **kwargs):
-        """Set the standard Cookiecutter StrictEnvironment.
+        """Set the standard Tackle StrictEnvironment.
 
         Also loading extensions defined in cookiecutter.json's _extensions key.
         """

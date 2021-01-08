@@ -87,7 +87,7 @@ from tackle.main import tackle
 #     mock_replay_load.assert_called_once_with('.', 'custom-replay-file', 'cookiecutter')
 
 
-def test_nuki_embed(change_dir_main_fixtures, tmpdir):
+def test__embed(change_dir_main_fixtures, tmpdir):
     """Verify Jinja2 time extension work correctly."""
     context = tackle(
         'fake-repo-tmpl-tackle-embed', no_input=True, output_dir=str(tmpdir)

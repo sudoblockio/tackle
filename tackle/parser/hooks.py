@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Functions for discovering and executing various cookiecutter operators."""
+"""Functions for discovering and executing various cookiecutter hooks."""
 from __future__ import print_function
 import logging
 from PyInquirer import prompt
@@ -48,8 +48,8 @@ def raise_hook_validation_error(e, Hook, context: 'Context'):
         raise e
 
 
-def run_operator(context: 'Context', mode: 'Mode'):
-    """Run operator."""
+def run_hook(context: 'Context', mode: 'Mode'):
+    """Run hook."""
     if context.input_dict is None:
         context.input_dict = {}
 
@@ -74,7 +74,7 @@ def run_operator(context: 'Context', mode: 'Mode'):
             **mode.dict(exclude=exclude_mode),
         )
 
-        if hook.post_gen_operator:
+        if hook.post_gen_hook:
             return None, hook
         else:
             return hook.call(), None
@@ -147,12 +147,12 @@ def parse_hook(
         if 'block' not in context.hook_dict['type']:
             context.hook_dict = render_variable(context, context.hook_dict)
 
-        # Run the operator
+        # Run the hook
         if context.hook_dict['merge'] if 'merge' in context.hook_dict else False:
-            to_merge, post_gen_hook = run_operator(context, mode)
+            to_merge, post_gen_hook = run_hook(context, mode)
             context.output_dict.update(to_merge)
         else:
-            context.output_dict[context.key], post_gen_hook = run_operator(
+            context.output_dict[context.key], post_gen_hook = run_hook(
                 context, mode
             )
         if post_gen_hook:

@@ -104,7 +104,7 @@ def run_script_with_context(script_path, cwd, context: 'Context'):
 
     :param script_path: Absolute path to the script to run.
     :param cwd: The directory to run the script from.
-    :param context: Cookiecutter project template context.
+    :param context: Tackle project template context.
     """
     _, extension = os.path.splitext(script_path)
 
@@ -133,7 +133,7 @@ def run_hook(hook_name, project_dir, context: 'Context'):
 
     :param hook_name: The hook to execute.
     :param project_dir: The directory to execute the script from.
-    :param context: Cookiecutter project context.
+    :param context: Tackle project context.
     """
     scripts = find_hook(hook_name)
     if not scripts:

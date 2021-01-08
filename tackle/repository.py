@@ -1,4 +1,4 @@
-"""Cookiecutter repository functions."""
+"""Tackle repository functions."""
 import os
 import re
 

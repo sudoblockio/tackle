@@ -18,9 +18,9 @@ stuff:
 print:
   type: print
   statement: |
-    {% for item in nuki.friends %}
+    {% for item in friends %}
         {{ item }}
-        {{ nuki.stuff[loop.index0] }}
+        {{ stuff[loop.index0] }}
     {% endfor %}
 
 after:

@@ -1,7 +1,7 @@
 """
 Main entry point for the `tacklebox` command.
 
-The code in this module is also a good example of how to use Cookiecutter as a
+The code in this module is also a good example of how to use Tackle as a
 library rather than a script.
 """
 import logging
