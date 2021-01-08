@@ -60,10 +60,14 @@ coverage: ## Check code coverage quickly with the default Python
 .PHONY: docs
 docs: ## Generate Sphinx HTML documentation, including API docs
 	@echo "+ $@"
-	@rm -f docs/cookiecutter.rst
-	@sphinx-apidoc -o docs/ cookiecutter
-#	@sphinx-apidoc -o docs/ cookiecutter/operators
-#	@sphinx-apidoc -fMeET cookiecutter/operators -o docs/operators
+	@rm -f docs/tackle.rst
+	@sphinx-apidoc -o docs/ tackle
+	@#sphinx-apidoc -o docs/ tackle
+
+	@#sphinx-apidoc -o docs/ `ls | grep -Ev '\.(txt|pdf)$' | column`
+
+#	@sphinx-apidoc -o docs/ tackle/operators
+#	@sphinx-apidoc -fMeET tackle/operators -o docs/operators
 	@rm -f docs/modules.rst
 	@$(MAKE) -C docs clean
 	@$(MAKE) -C docs html

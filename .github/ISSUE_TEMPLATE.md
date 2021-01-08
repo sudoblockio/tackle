@@ -1,4 +1,4 @@
-* Cookiecutter version:
+* Tackle version:
 * Template project url:
 * Python version:
 * Operating System:

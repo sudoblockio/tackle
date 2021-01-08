@@ -1,4 +1,4 @@
-.. cookiecutter documentation master file, created by
+.. tackle box documentation master file, created by
    sphinx-quickstart on Thu Jul 11 11:31:49 2013.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
@@ -12,11 +12,11 @@ Basics
 ------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    README
    overview
-   installation-nukikata
+   installation-tackle
    demos
    usage
    tutorials
@@ -24,18 +24,38 @@ Basics
    tutorial2
    advanced/index
    troubleshooting
+   .. pydantic:: tackle.models
+
+
+Providers Reference
+-------------------
+
+.. toctree::
+   :glob:
+   :maxdepth: 1
+   :name: API
+
+   tackle.providers*
+..   modules
+
 
 .. _apiref:
+
 
 API Reference
 -------------
 
 .. toctree::
+   :glob:
    :maxdepth: 1
    :name: API
 
-   api
-   modules
+   tackle
+   tackle.cli
+   tackle.parser*
+   tackle.render
+   tackle.utils
+
 
 Project Info
 ------------

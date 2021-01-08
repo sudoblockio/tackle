@@ -77,6 +77,7 @@ extensions = [
     'sphinx.ext.imgmath',
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
+    'sphinx-pydantic',
     'sphinx_click.ext',
     'recommonmark',
 ]
