@@ -1,0 +1,4 @@
+simple:
+  type: get
+  url: https://jsonplaceholder.typicode.com/todos/1
+
