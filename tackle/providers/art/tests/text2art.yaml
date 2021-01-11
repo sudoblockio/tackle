@@ -1,0 +1,44 @@
+---
+
+# To see all the fonts
+# python -m art fonts
+
+out:
+  type: text2art
+  text: This is cool!
+
+font:
+  type: text2art
+  text: This is cool!
+  font: block
+
+small:
+  type: text2art
+  text: This is cool!
+  font: small
+
+white_bubble:
+  type: text2art
+  text: This is cool!
+  font: white_bubble
+
+barcode:
+  type: text2art
+  text: This is cool!
+  font: barcode
+
+barcode_barcode:
+  type: text2art
+  text: This is cool!
+  font: fancy5
+  decoration: barcode
+
+rnd-large:
+  type: text2art
+  text: This is cool!
+  font: rnd-large
+
+random-large:
+  type: text2art
+  text: This is cool!
+  font: rand-large
