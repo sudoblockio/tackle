@@ -1,0 +1,11 @@
+path: # So tests work on windows
+  type: path_join
+  paths:
+    - stuff
+    - things
+
+
+file:
+  type: zipfile
+  input: "{{ path }}"
+  output: things.zip

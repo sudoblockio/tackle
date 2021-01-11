@@ -1,0 +1,4 @@
+dir:
+  type: zipfile
+  input: stuff
+  output: things.zip

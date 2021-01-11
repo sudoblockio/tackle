@@ -1,0 +1,3 @@
+dir:
+  type: unzipfile
+  input: stuff.zip
