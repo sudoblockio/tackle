@@ -1,0 +1,13 @@
+
+#basic:
+#  type: askopenfilename
+#
+#initial_dir:
+#  type: askopenfilename
+#  initial_dir: "{{ cwd }}"
+
+filetypes:
+  type: askopenfilename
+  filetypes:
+    all files: "*.*"
+    yaml: "*.yaml|*.yml"
