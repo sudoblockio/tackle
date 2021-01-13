@@ -1,0 +1,10 @@
+shred_file:
+  type: shred
+  src: foo
+
+
+shred_files:
+  type: shred
+  src:
+    - thing
+    - stuff

@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 import os
+import random
 from pathlib import Path
 import logging
 import shutil
@@ -28,7 +29,7 @@ def create_directory_tree(src, dst):
 
 class CopyHook(BaseHook):
     """
-    Hook  for updating dict objects with items.
+    Hook coying a file/files or directory/directories to a location.
 
     :param src: String or list of sources, either a directories or files
     :param dst: String for path to copy to
@@ -73,7 +74,7 @@ class CopyHook(BaseHook):
 
 class MoveHook(BaseHook):
     """
-    Hook  for updating dict objects with items.
+    Hook  for moving a directory or directories to a location.
 
     :param src: String or list of sources, either directories or files
     :param dst: String for path to copy to
@@ -106,3 +107,49 @@ class MoveHook(BaseHook):
                 shutil.move(i, os.path.join(self.dst, os.path.basename(i)))
 
         return None
+
+
+# Source: https://codereview.stackexchange.com/questions/186130/file-shredding-secure-deletion-algorithm
+def wipe(f, passes=30):
+    """Overwrite a file with bytes."""
+    if not os.path.isfile(f):
+        return "Could not find the specified file!"
+    with open(f, "ba+") as f2w:
+        size = f2w.tell()
+        for i in range(passes):
+            f2w.seek(0)
+
+            f2w.write(os.urandom(size))
+    new_name = str(random.randint(1000, 1000000000000))
+    os.rename(f, new_name)
+    os.remove(new_name)
+    return "Success!"
+
+
+class ShredHook(BaseHook):
+    """
+    Hook for shredding file/files.
+
+    :param src: String or list of sources, either directories or files
+    :param dst: String for path to copy to
+    :param create_path: Boolean to create the directory path if it does not exist.
+        Defaults to true
+    :return: None
+    """
+
+    type: str = 'shred'
+    src: Union[List, str]
+    passes: int = 10
+
+    def __init__(self, **data: Any):
+        super().__init__(**data)
+        if isinstance(self.src, str):
+            self.src = os.path.abspath(os.path.expanduser(self.src))
+        if isinstance(self.src, list):
+            self.src = [os.path.abspath(os.path.expanduser(f)) for f in self.src]
+
+    def execute(self) -> None:
+        if isinstance(self.src, str):
+            self.src = [self.src]
+        for i in self.src:
+            wipe(i, self.passes)

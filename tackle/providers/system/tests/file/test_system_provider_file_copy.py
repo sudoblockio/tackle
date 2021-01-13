@@ -4,10 +4,13 @@
 import os
 import shutil
 from tackle.main import tackle
+import pytest
 
 
+@pytest.fixture()
 def clean_files():
     """Clean the run."""
+    yield
     files = ['thing.yaml', 'thing2.yaml', 'stuff']
     for f in files:
         if os.path.isfile(f):
@@ -16,10 +19,8 @@ def clean_files():
             shutil.rmtree(f)
 
 
-def test_provider_system_hook_file(change_dir):
+def test_provider_system_hook_file(change_dir, clean_files):
     """Verify the hook call works properly."""
-    clean_files()
-
     tackle('.', no_input=True)
 
     assert 'thing.yaml' in os.listdir()
@@ -28,4 +29,16 @@ def test_provider_system_hook_file(change_dir):
     # If the file has been moved properly there should be only one file
     assert len(os.listdir('stuff')) == 3
 
-    clean_files()
+
+def test_provider_system_hook_file_shred(change_dir, clean_files):
+    """Verify the hook call works properly."""
+    files = ['stuff', 'thing', 'foo']
+    for f in files:
+        file = open(f, "w")
+        file.write(f)
+        file.close()
+
+    tackle('.', no_input=True, context_file='shred.yaml')
+
+    for f in files:
+        assert not os.path.isfile(f)
