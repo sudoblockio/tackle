@@ -11,10 +11,6 @@ from tackle.models import BaseHook
 logger = logging.getLogger(__name__)
 
 
-def get_base():
-    pass
-
-
 class GithubReposHook(BaseHook):
     """Hook retrieving github repos.
 
