@@ -1,3 +1,4 @@
 repo:
-  type: github_repos
-  
+  type: git_clone
+  url: https://github.com/robcxyz/tackle-pypackage
+
