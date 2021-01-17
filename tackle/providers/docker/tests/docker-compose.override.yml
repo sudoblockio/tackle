@@ -1,0 +1,7 @@
+version: "3.3"
+services:
+
+  pgadmin:
+    image: dpage/pgadmin4
+    depends_on:
+      - db

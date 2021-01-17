@@ -1,0 +1,12 @@
+
+this:
+  type: docker_compose
+  command: config
+  files:
+    - docker-compose.override.yml
+    - pg
+    - docs/mysql
+  env_file: .env.this
+  output_file: docker-stack.yml
+
+
