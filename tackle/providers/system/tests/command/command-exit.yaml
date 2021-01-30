@@ -1,0 +1,3 @@
+shell_exit:
+  type: command
+  command: garbage
