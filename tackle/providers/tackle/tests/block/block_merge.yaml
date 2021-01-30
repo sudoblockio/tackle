@@ -1,5 +1,6 @@
 block:
   type: block
+  merge: true
   items:
     blah: zz
 
@@ -16,7 +17,6 @@ block:
     things:
       type: print
       statement: "{{ beer.things }}"
-
 
     test_block:
       type: block

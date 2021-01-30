@@ -2,6 +2,7 @@ inner: innertings
 
 blocker:
   type: block
+  merge: true
   items:
     stuff:
       type: print
@@ -10,6 +11,3 @@ blocker:
       type: print
       statement: "{{ stuff }}"
 
-#yaml:
-#  type: pprint
-#  statement: "{{ this }}"

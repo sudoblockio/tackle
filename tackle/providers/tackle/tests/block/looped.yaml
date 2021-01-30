@@ -8,14 +8,14 @@ blocker:
   type: block
   loop: "{{ alist }}"
   items:
-    nuki1:
+    first:
       type: tackle
       template: .
       chdir: fake-tackle
 
     print:
       type: print
-      statement: "{{ nuki1 }}"
+      statement: "{{ first }}"
 
 blocker2:
   type: block
@@ -29,4 +29,9 @@ blocker2:
 
 output:
   type: print
-  statement: "{{ looped }}"
+  statement: "{{ this }}"
+
+empty:
+  type: var
+  loop: []
+  input: this
