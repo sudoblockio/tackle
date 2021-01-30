@@ -43,9 +43,9 @@ class PathIsdirListHook(BaseHook):
         return os.path.isdir(self.path)
 
 
-class PathRelativeHook(BaseHook):
+class FindInParentHook(BaseHook):
     """
-    Hook  to find the absolute path to a file or directory in parent directories.
+    Hook to find the absolute path to a file or directory in parent directories.
 
     :param target: The name of the file to find the absolute path to
     :param starting_dir: The starting directory to search from. Defaults to current
@@ -78,6 +78,35 @@ class PathRelativeHook(BaseHook):
                     % self.target
                 )
         return self._find_in_parent(dir=os.path.dirname(os.path.abspath(dir)))
+
+
+class FindInChildHook(BaseHook):
+    """
+    Hook to find the absolute path to a file or directory in child directories.
+
+    :param target: The name of the file to find the absolute path to
+    :param starting_dir: The starting directory to search from. Defaults to current
+        working directory.
+    :param fallback: String to fallback on if the target is not found.
+    :return: string: Absolute path to the target file
+    """
+
+    type: str = 'find_in_child'
+    target: str
+    fallback: Any
+    starting_dir: str = '.'
+
+    def execute(self):
+        """Run the prompt."""
+        files = []
+        for (dirpath, dirnames, filenames) in os.walk(self.starting_dir):
+            files += [os.path.join(dirpath, file) for file
+                      in filenames if file == self.target]
+
+        if len(files) == 0:
+            return self.fallback
+
+        return files
 
 
 class PathJoinHook(BaseHook):

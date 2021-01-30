@@ -6,7 +6,7 @@ path_isdir:
 
 path_exists:
   type: path_exists
-  path: a-path/.gitkeep
+  path: a-path
 
 find_in_parent_dir:
   type: find_in_parent
