@@ -106,3 +106,73 @@ class MoveHook(BaseHook):
                 shutil.move(i, os.path.join(self.dst, os.path.basename(i)))
 
         return None
+
+
+class RemoveHook(BaseHook):
+    """
+    Hook removing a file or directory.
+
+    :param src: String or list of sources, either directories or files
+    :param dst: String for path to copy to
+    :param create_path: Boolean to create the directory path if it does not exist.
+        Defaults to true
+    :return: None
+    """
+
+    type: str = 'move'
+    src: Union[List, str]
+    create_path: bool = True
+    dst: str
+
+    def __init__(self, **data: Any):
+        super().__init__(**data)
+        if isinstance(self.src, str):
+            self.src = os.path.abspath(os.path.expanduser(self.src))
+        if isinstance(self.src, list):
+            self.src = [os.path.abspath(os.path.expanduser(f)) for f in self.src]
+        self.dst = os.path.abspath(self.dst)
+
+    def execute(self) -> None:
+        if self.create_path:
+            create_directory_tree(self.src, self.dst)
+
+        if isinstance(self.src, str):
+            shutil.move(self.src, self.dst)
+        elif isinstance(self.src, list):
+            for i in self.src:
+                shutil.move(i, os.path.join(self.dst, os.path.basename(i)))
+
+        return None
+
+
+class ChmodHook(BaseHook):
+    """
+    Hook removing a file or directory.
+
+    :param src: String or list of sources, either directories or files
+    :param dst: String for path to copy to
+    :param create_path: Boolean to create the directory path if it does not exist.
+        Defaults to true
+    :return: None
+    """
+
+    type: str = 'chmod'
+    path: Union[str, list]
+    mode: str
+
+    def __init__(self, **data: Any):
+        super().__init__(**data)
+        if isinstance(self.path, str):
+            self.path = os.path.abspath(os.path.expanduser(self.path))
+        if isinstance(self.path, list):
+            self.path = [os.path.abspath(os.path.expanduser(f)) for f in self.path]
+
+    def execute(self) -> None:
+
+        if isinstance(self.path, str):
+            self.path = [self.path]
+        for i in self.path:
+            mode = int(self.mode, 8)
+            os.chmod(path=i, mode=mode)
+
+        return None

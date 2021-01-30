@@ -22,6 +22,8 @@ logger = logging.getLogger(__name__)
 
 
 class Repo(BaseModel):
+    """Repo class for parsing dict inputs for repo."""
+
     src: str
     branch: Optional[str] = None
     tag: Optional[str] = None
@@ -29,6 +31,7 @@ class Repo(BaseModel):
 
 # https://stackoverflow.com/a/6027615/12642712
 def flatten_repo_tree(d, parent_key=''):
+    """Flatten a dict to so that keys become nodes in a path."""
     items = []
     for k, v in d.items():
         new_key = os.path.join(parent_key, k)
@@ -49,9 +52,8 @@ def flatten_repo_tree(d, parent_key=''):
 
 
 class MetaGitHook(BaseHook):
-    """
-    Hook to create meta repo.
-    """
+    """Hook to create meta repo."""
+
     type: str = 'meta_repo'
     command: str = None
 
@@ -154,7 +156,8 @@ class MetaGitHook(BaseHook):
 
         else:
             print(
-                f"No command given in mete_hook for key = {self.key}.  Defaults to clone."
+                f"No command given in mete_hook for key = {self.key}.  "
+                f"Defaults to clone."
             )
             self.command = 'clone'
 
