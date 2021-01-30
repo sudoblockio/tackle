@@ -1,0 +1,6 @@
+stuff: things
+
+foo: barr
+
+t:
+  type: debug
