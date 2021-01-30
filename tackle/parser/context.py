@@ -3,13 +3,13 @@
 """Parser for the general context without generic logic."""
 import os
 import logging
+import yaml
 from collections import OrderedDict
 from jinja2.exceptions import UndefinedError
 from tackle.render import render_variable
 from tackle.utils.context_manager import work_in
 from tackle.utils.reader import read_config_file, apply_overwrites_to_inputs
-from tackle.render.environment import StrictEnvironment
-from tackle.exceptions import UndefinedVariableInTemplate
+from tackle.exceptions import UndefinedVariableInTemplate, UnknownHookTypeException
 from tackle.parser.prompts import prompt_list, prompt_str, read_user_dict
 from tackle.parser.hooks import parse_hook
 from tackle.parser.providers import get_providers
@@ -35,20 +35,23 @@ def parse_context(context: 'Context', mode: 'Mode', source: 'Source'):
     for key, raw in context.input_dict[context.context_key].items():
         context.key = key
         # context.raw = raw
-        if mode.rerun and context.key in context.override_inputs:
-            # If there is a rerun dictionary then insert it in output and proceed.
-            context.output_dict[key] = context.override_inputs[key]
-            continue
+        # if context.key in context.override_inputs:
+        #     # If there is a rerun dictionary then insert it in output and proceed.
+        #     context.output_dict[key] = context.override_inputs[key]
+        #     continue
         if key.startswith(u'_') and not key.startswith('__'):
+            # Single underscore denotes unrendered value
             context.output_dict[key] = raw
             continue
         elif key.startswith('__'):
+            # Double underscore denotes rendered value
             context.output_dict[key] = render_variable(context, raw)
             continue
 
-        if key in context.overwrite_inputs:
-            context.output_dict[key] = context.overwrite_inputs[key]
-            continue
+        if context.overwrite_inputs:
+            if key in context.overwrite_inputs:
+                context.output_dict[key] = context.overwrite_inputs[key]
+                continue
 
         try:
             if isinstance(raw, bool):
@@ -72,11 +75,13 @@ def parse_context(context: 'Context', mode: 'Mode', source: 'Source'):
                     # Main entrypoint into hook parsing logic
                     parse_hook(context, mode, source)
 
-        except UndefinedError as err:
+        except (UndefinedError, UnknownHookTypeException) as err:
+            print(mode)
             if mode.record or mode.rerun:
                 # Dump the output context
-                pass
-
+                print(f"Writing rerun file to {context.rerun_path}")
+                with open(context.rerun_path, 'w') as f:
+                    yaml.dump(dict(context.output_dict), f)
             msg = "Unable to render variable '{}'".format(key)
             raise UndefinedVariableInTemplate(msg, err, context.input_dict)
 
@@ -86,12 +91,8 @@ def parse_context(context: 'Context', mode: 'Mode', source: 'Source'):
 def prep_context(
     context: 'Context', mode: 'Mode', source: 'Source', settings: 'Settings'
 ):
-    """
-    Prompt user to enter values.
-
-    Function sets the jinja environment and brings in extensions.
-    """
-    context.input_dict = OrderedDict([])
+    """Prepare the context by setting some default values."""
+    # Read config
     obj = read_config_file(os.path.join(source.repo_dir, source.context_file))
 
     # Add the Python object to the context dictionary
@@ -107,13 +108,15 @@ def prep_context(
     if settings.default_context:
         apply_overwrites_to_inputs(obj, settings.default_context)
 
+    # Apply the overwrites/rides
+    if isinstance(context.overwrite_inputs, str):
+        context.overwrite_inputs = read_config_file(context.overwrite_inputs)
     if context.overwrite_inputs:
         apply_overwrites_to_inputs(obj, context.overwrite_inputs)
     else:
-        context.overwrite_inputs = OrderedDict()
-
+        context.overwrite_inputs = {}
     if not context.override_inputs:
-        context.override_inputs = OrderedDict()
+        context.override_inputs = {}
 
     # include template dir or url in the context dict
     context.input_dict[context.context_key]['_template'] = source.repo_dir
@@ -125,23 +128,8 @@ def prep_context(
     else:
         context.output_dict = OrderedDict(context.existing_context)
 
-    context.env = StrictEnvironment(context=context.input_dict)
-
-    # Entrypoint into
+    # Entrypoint into providers.py
     get_providers(context, source, settings, mode)
 
-    if not context.context_key:
-        # Set as first key in context
-        context.context_key = next(iter(context.input_dict))
-
-    if '_template' in context.input_dict[context.context_key]:
-        # Normal case where '_template' is set in the context in `main`
-        with work_in(context.input_dict[context.context_key]['_template']):
-            return parse_context(context, mode, source)
-    else:
-        # Case where prompt is being called directly as is the case with an hook
+    with work_in(context.input_dict[context.context_key]['_template']):
         return parse_context(context, mode, source)
-
-
-if __name__ == '__main__':
-    print()
