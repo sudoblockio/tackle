@@ -1,0 +1,22 @@
+
+
+this:
+  type: meta_repo
+  git_org: geometry-labs
+  repo_tree:
+    services:
+      thing: robcxyz/tackle-pypackage
+      users: https://github.com/robcxyz/tackle-pypackage
+    foo:
+      bar:
+        main:
+          src: https://github.com/robcxyz/tackle-pypackage
+        thing:
+          src: https://github.com/robcxyz/tackle-pypackage
+          branch: dev
+        gh:
+          src: robcxyz/tackle-pypackage
+          branch: master
+        gh-branch:
+          src: robcxyz/tackle-pypackage
+          branch: dev

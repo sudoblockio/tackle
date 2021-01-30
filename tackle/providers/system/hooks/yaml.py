@@ -5,8 +5,10 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 import logging
-import yaml
+import oyaml as yaml
 import re
+import os
+
 from typing import Union, Dict, List, Any
 
 from tackle.models import BaseHook
@@ -49,20 +51,9 @@ class YamlHook(BaseHook):
     mode: str = None
     write: bool = None
 
-    def execute(self):
-        # Load the path into contents unless it already exists
-        self._load_contents()
-        # Run all the modifiers
-        self._modify_dicts()
-
-        if self.write:
-            mode = self.mode or 'w'
-            with open(self.path, mode) as f:
-                yaml.dump(self.contents, f)
-                return self.contents
-        else:
-            # Read operation, just return contents
-            return self.contents
+    def __init__(self, **data: Any):
+        super().__init__(**data)
+        self.path = os.path.expanduser(os.path.expandvars(self.path))
 
     def _load_contents(self):
         if self.contents:
@@ -80,6 +71,24 @@ class YamlHook(BaseHook):
             mode = self.mode or 'r'
             with open(self.path, mode) as f:
                 self.contents = yaml.safe_load(f)
+
+    def _append_each_item(self, append_item):
+        if isinstance(self.append_keys, str):
+            self.contents[self.append_keys].append(append_item)
+        elif isinstance(self.append_keys, list):
+            for k in self.append_keys[:-1]:
+                self.contents = self.contents.setdefault(k, {})
+            self.contents[self.append_keys[-1]].append(append_item)
+        else:
+            self.contents.append(append_item)
+
+    def _remove_from_contents(self, regex):
+        if isinstance(self.contents, list):
+            self.contents = [i for i in self.contents if not re.search(regex, i)]
+        if isinstance(self.contents, dict):
+            for k in list(self.contents.keys()):
+                if re.search(regex, k):
+                    self.contents.pop(k)
 
     def _modify_dicts(self):
         if self.remove:
@@ -111,20 +120,17 @@ class YamlHook(BaseHook):
                 for i in self.append_items:
                     self._append_each_item(i)
 
-    def _append_each_item(self, append_item):
-        if isinstance(self.append_keys, str):
-            self.contents[self.append_keys].append(append_item)
-        elif isinstance(self.append_keys, list):
-            for k in self.append_keys[:-1]:
-                self.contents = self.contents.setdefault(k, {})
-            self.contents[self.append_keys[-1]].append(append_item)
-        else:
-            self.contents.append(append_item)
+    def execute(self):
+        # Load the path into contents unless it already exists
+        self._load_contents()
+        # Run all the modifiers
+        self._modify_dicts()
 
-    def _remove_from_contents(self, regex):
-        if isinstance(self.contents, list):
-            self.contents = [i for i in self.contents if not re.search(regex, i)]
-        if isinstance(self.contents, dict):
-            for k in list(self.contents.keys()):
-                if re.search(regex, k):
-                    self.contents.pop(k)
+        if self.write:
+            mode = self.mode or 'w'
+            with open(self.path, mode) as f:
+                yaml.dump(self.contents, f)
+                return self.contents
+        else:
+            # Read operation, just return contents
+            return self.contents

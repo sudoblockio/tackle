@@ -60,3 +60,39 @@ class ListRemoveHook(BaseHook):
         if self.item:
             self.input = [i for i in self.input if i != self.item]
         return self.input
+
+
+class ListFromDictHook(BaseHook):
+    """
+    Hook generating a list from a dict based on the keys.
+
+    :param input: A list append to
+    :param item: A list or string to append to `input` list
+    :return: An appended list object.
+    """
+
+    type: str = 'list_from_dict'
+    keys: List
+    input: dict
+
+    def execute(self):
+        return [k for k, _ in self.input.items() if k in self.keys]
+
+
+class ConcatListsHook(BaseHook):
+    """
+    Hook to concatenate a list of items.
+
+    :param inputs: A list append to
+    :param item: A list or string to append to `input` list
+    :return: An appended list object.
+    """
+
+    type: str = 'concat'
+    input: list
+
+    def execute(self):
+        output = None
+        for i in self.input:
+            output = output + i
+        return output

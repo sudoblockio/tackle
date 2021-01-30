@@ -21,11 +21,9 @@ def clean_files():
 
 def test_provider_system_hook_file(change_dir, clean_files):
     """Verify the hook call works properly."""
-    tackle('.', no_input=True)
-
+    tackle(no_input=True)
     assert 'thing.yaml' in os.listdir()
     assert 'stuff' in os.listdir()
-
     # If the file has been moved properly there should be only one file
     assert len(os.listdir('stuff')) == 3
 
@@ -42,3 +40,16 @@ def test_provider_system_hook_file_shred(change_dir, clean_files):
 
     for f in files:
         assert not os.path.isfile(f)
+
+
+@pytest.fixture()
+def fix_file_perms():
+    """Change back file perms."""
+    yield
+    os.chmod('tackle.yaml', int('0o644', 8))
+
+
+def test_provider_system_hook_file_chmod(change_dir, fix_file_perms):
+    """Verify the hook call works properly."""
+    tackle(context_file='chmod.yaml', no_input=True)
+    assert oct(os.stat('tackle.yaml').st_mode)[-3:] == "600"
