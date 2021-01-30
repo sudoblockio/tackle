@@ -9,6 +9,9 @@ from pprint import pprint
 from typing import Union, Dict, List
 
 from tackle.models import BaseHook
+from rich import print
+from rich.console import Console
+from rich.markdown import Markdown
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +27,7 @@ class PrintHook(BaseHook):
     statement: Union[Dict, List, str] = None
     out: Union[Dict, List, str] = None
     input: Union[Dict, List, str] = None
+    style: str = None
 
     def execute(self):
         if self.statement:
@@ -55,4 +59,30 @@ class PprintHook(BaseHook):
         if self.input:
             pprint(self.input)
 
+        return self.statement or self.out or self.input
+
+
+class MarkdownPrintHook(BaseHook):
+    """
+    Hook for printing makrdown and returning the output.
+
+    :param statement: The thing to print
+    :param out: The thing to print
+    :param input: The thing to print
+    """
+
+    type: str = 'markdown'
+    statement: Union[Dict, List, str] = None
+    out: Union[Dict, List, str] = None
+    input: Union[Dict, List, str] = None
+    style: str = None
+
+    def execute(self):
+        console = Console()
+        if self.statement:
+            console.print(Markdown(self.statement))
+        if self.out:
+            console.print(Markdown(self.out))
+        if self.input:
+            console.print(Markdown(self.input))
         return self.statement or self.out or self.input

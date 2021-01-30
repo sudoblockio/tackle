@@ -7,6 +7,7 @@ import re
 import ast
 
 import click
+from rich.traceback import install
 
 from tackle import __version__
 from tackle.exceptions import (
@@ -22,9 +23,6 @@ from tackle.exceptions import (
 from tackle.utils.log import configure_logger
 from tackle.main import tackle
 from tackle.parser.settings import get_settings
-
-
-# TODO: Fix cli_runner when run from tox
 
 
 def version_msg():
@@ -51,10 +49,12 @@ def validate_overwrite_inputs(ctx, param, value):
 
 def input_string_to_dict(ctx, param, value):
     """Call back to convert str to dict."""
-    pattern = r'^\{.*\}$'
     if value:
-        if bool(re.search(pattern, value)):
+        if bool(re.search(r'^\{.*\}$', value)):
+            # If looks like dictionary
             return ast.literal_eval(value)
+        if len(value.split(' ')) == 1:
+            return value
         else:
             return validate_overwrite_inputs(ctx, param, value)
 
@@ -90,15 +90,13 @@ def list_installed_templates(default_config, passed_config_file):
 # @click.argument('extra_context', nargs=-1, callback=input_string_to_dict)
 @click.option(
     u'--context-file',
-    # type=click.Path(),
     default=None,
     help=u'The input context file to parse - overrides default cookiecutter.json',
 )
 @click.option(
     u'--overwrite-inputs',
-    # callback=validate_overwrite_inputs,
     callback=input_string_to_dict,
-    # default={},
+    default=None,
     help=u'Overwrite the inputs with a dictionary.',
 )
 @click.option(
@@ -122,12 +120,14 @@ def list_installed_templates(default_config, passed_config_file):
     help='Do not prompt for parameters and only use cookiecutter.json file content',
 )
 @click.option(
-    '-c', '--checkout', help='branch, tag or commit to checkout after git clone',
+    '-c',
+    '--checkout',
+    help='branch, tag or commit to checkout after git clone'
 )
 @click.option(
     '--directory',
     help='Directory within repo that holds cookiecutter.json file '
-    'for advanced repositories with multi templates in it',
+         'for advanced repositories with multi templates in it',
 )
 @click.option(
     '-v', '--verbose', is_flag=True, help='Print debug information', default=False
@@ -208,33 +208,41 @@ def list_installed_templates(default_config, passed_config_file):
 @click.option(
     '-l', '--list-installed', is_flag=True, help='List currently installed templates.'
 )
+@click.option(
+    '-rt', '--rich-trace', is_flag=True, help='Creates a rich traceback for debugging.'
+)
 def main(
-    template,
-    context_file,
-    context_key,
-    overwrite_inputs,
-    override_inputs,
-    existing_context,
-    no_input,
-    checkout,
-    directory,
-    verbose,
-    replay,
-    replay_file,
-    record,
-    record_file,
-    rerun,
-    rerun_file,
-    overwrite_if_exists,
-    skip_if_file_exists,
-    output_dir,
-    config_file,
-    default_config,
-    debug_file,
-    accept_hooks,
-    list_installed,
+        template,
+        context_file,
+        context_key,
+        overwrite_inputs,
+        override_inputs,
+        existing_context,
+        no_input,
+        checkout,
+        directory,
+        verbose,
+        replay,
+        replay_file,
+        record,
+        record_file,
+        rerun,
+        rerun_file,
+        overwrite_if_exists,
+        skip_if_file_exists,
+        output_dir,
+        config_file,
+        default_config,
+        debug_file,
+        accept_hooks,
+        list_installed,
+        rich_trace,
 ):
     """Create a project from a Tackle modules or Tackle templates."""
+    # Set a rich traceback mode for debugging.
+    if rich_trace:
+        install()  # From rich
+
     # Commands that should work without arguments
     if list_installed:
         list_installed_templates(default_config, config_file)
@@ -285,13 +293,13 @@ def main(
             calling_directory=os.path.curdir,
         )
     except (
-        OutputDirExistsException,
-        InvalidModeException,
-        FailedHookException,
-        UnknownExtension,
-        InvalidZipRepository,
-        RepositoryNotFound,
-        RepositoryCloneFailed,
+            OutputDirExistsException,
+            InvalidModeException,
+            FailedHookException,
+            UnknownExtension,
+            InvalidZipRepository,
+            RepositoryNotFound,
+            RepositoryCloneFailed,
     ) as e:
         click.echo(e)
         sys.exit(1)
