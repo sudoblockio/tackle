@@ -53,7 +53,7 @@ def input_string_to_dict(ctx, param, value):
         if bool(re.search(r'^\{.*\}$', value)):
             # If looks like dictionary
             return ast.literal_eval(value)
-        if len(value.split(' ')) == 1:
+        if len(value.split(' ')) == 1 and '=' not in value:
             return value
         else:
             return validate_overwrite_inputs(ctx, param, value)
