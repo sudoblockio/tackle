@@ -1,0 +1,11 @@
+---
+
+output:
+  type: env_var
+  input: TMP_VAR_THING
+
+
+input:
+  type: env_var
+  input:
+    TMP_VAR_STUFF: stuff

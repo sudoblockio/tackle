@@ -1,11 +1,13 @@
 ---
 repos:
   - repo: https://github.com/python/black.git
-    rev: 19.10b0
+    rev: stable
+#    rev: 20.8b2
     hooks:
       - id: black
         language_version: python3
-        exclude: ^(tests\/hooks-abort-render\/hooks|docs\/HelloCookieCutter1)
+#        exclude: ^(tests\/hooks-abort-render\/hooks|docs\/HelloCookieCutter1)
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.4.0
     hooks:

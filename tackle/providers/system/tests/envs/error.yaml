@@ -1,0 +1,8 @@
+---
+
+output:
+  type: env_var
+  input:
+    stuff: things
+  fallback: this
+
