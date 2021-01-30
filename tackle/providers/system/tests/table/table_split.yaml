@@ -20,7 +20,11 @@ data:
   type: var
   input:
     - ['foo', 'bar']
-    - ['here', 'there']
+    - ['here', 1]
+
+print1_:
+  type: print
+  input: "{{ this }}"
 
 table:
   type: table

@@ -58,6 +58,6 @@ class TableHook(BaseHook):
 
         if self.contents:
             for i in self.contents:
-                table.add_row(*set(i))
+                table.add_row(*[str(j) for j in i])
 
         console.print(table)

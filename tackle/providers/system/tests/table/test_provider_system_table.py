@@ -4,8 +4,7 @@
 from tackle.main import tackle
 
 
-def test_provider_system_hook_terraform(change_dir):
+def test_provider_system_hook_rich_table(change_dir):
     """Verify the hook call works properly."""
-    context = tackle('.', context_file='table_split.yaml', no_input=True)
-
-    assert context
+    output = tackle(context_file='table_split.yaml', no_input=True)
+    assert output

@@ -1,0 +1,35 @@
+column_names:
+  type: var
+  input:
+    - stuff
+    - things
+
+data:
+  type: var
+  input:
+    - ['foo', 'bar']
+    - ['here', 1]
+
+data_bigger:
+  type: var
+  input:
+    - ['foo', 'bar']
+    - ['here', 1]
+    - ['here', 2]
+    - ['here', 3]
+    - ['here', 4]
+
+
+print1_:
+  type: print
+  input: "{{ this }}"
+
+table:
+  type: table
+  column_names: "{{ column_names }}"
+  contents: "{{ data }}"
+
+table_bigger:
+  type: table
+  column_names: "{{ column_names }}"
+  contents: "{{ data_bigger }}"
