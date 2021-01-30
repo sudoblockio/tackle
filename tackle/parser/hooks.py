@@ -8,7 +8,6 @@ from pydantic.error_wrappers import ValidationError
 
 from tackle.render import render_variable
 from tackle.parser.providers import get_hook
-from tackle.utils.conditionals import evaluate_when
 from tackle.exceptions import HookCallException
 from tackle.models import BaseHook
 
@@ -65,9 +64,6 @@ def run_hook(context: 'Context', mode: 'Mode'):
         exclude_mode = {i for i in mode.dict().keys() if i in context.hook_dict.keys()}
         exclude_mode = exclude_mode if exclude_mode != set() else {'tmp'}
 
-        if 'no_input' in context.hook_dict:
-            print()
-
         hook = Hook(
             **context.hook_dict,
             **context.dict(exclude=exclude_context),
@@ -108,14 +104,39 @@ def _evaluate_confirm(context: 'Context'):
                             'type': 'confirm',
                             'name': 'tmp',
                             'message': context.hook_dict['confirm']['message'],
-                            'default': context.hook_dict['confirm']['default'],
+                            'default': context.hook_dict['confirm']['default']
+                            if 'default' in context.hook_dict['confirm'] else None,
                         }
                     ]
                 )['tmp']
 
 
+def evaluate_when(hook_dict: dict, context: 'Context'):
+    """Evaluate the when condition and return bool."""
+    if 'when' not in hook_dict:
+        return True
+
+    when_raw = hook_dict['when']
+    when_condition = False
+    if isinstance(when_raw, bool):
+        when_condition = when_raw
+    if isinstance(when_raw, str):
+        when_condition = render_variable(context, when_raw)
+    elif isinstance(when_raw, list):
+        # Evaluate lists as successively evalutated 'and' conditions
+        for i in when_raw:
+            when_condition = render_variable(context, i)
+            # If anything is false, then break immediately
+            if not when_condition:
+                break
+
+    hook_dict.pop('when')
+
+    return when_condition
+
+
 def parse_hook(
-    context: 'Context', mode: 'Mode', source: 'Source', append_key: bool = False,
+        context: 'Context', mode: 'Mode', source: 'Source', append_key: bool = False,
 ):
     """Parse input dict for loop and when logic and calls hooks.
 
@@ -126,16 +147,31 @@ def parse_hook(
     )
     context.hook_dict = context.input_dict[context.context_key][context.key]
 
-    when_condition = evaluate_when(context.hook_dict, context)
+    else_object = None
+    if 'else' in context.hook_dict:
+        else_object = render_variable(context, context.hook_dict['else'])
+        context.hook_dict.pop('else')
 
-    if when_condition:
+    if evaluate_when(context.hook_dict, context):
         # Extract loop
         if 'loop' in context.hook_dict:
             loop_targets = render_variable(context, context.hook_dict['loop'])
             context.hook_dict.pop('loop')
 
+            if len(loop_targets) == 0:
+                context.output_dict[context.key] = []
+                return []
+
+            reverse = False
+            if 'reverse' in context.hook_dict:
+                reverse = render_variable(context, context.hook_dict['reverse'])
+                if not isinstance(reverse, bool):
+                    raise HookCallException("Parameter `reverse` should be boolean.")
+                context.hook_dict.pop('reverse')
+
             loop_output = []
-            for i, l in enumerate(loop_targets):
+            for i, l in enumerate(loop_targets) if not reverse else \
+                    reversed(list(enumerate(loop_targets))):
                 context.output_dict.update({'index': i, 'item': l})
                 loop_output += [parse_hook(context, mode, source, append_key=True)]
 
@@ -160,5 +196,25 @@ def parse_hook(
 
         if append_key:
             return context.output_dict[context.key]
+
+    else:
+        if else_object is not None:
+            # Handle the false when condition if there is an `else` param.
+            # if 'else' in context.hook_dict:
+            if isinstance(else_object, dict):
+                # If it is a dict, run it as another hook if type key exists, otherwise
+                # fallback to dict
+                if 'type' in else_object:
+                    context.input_dict[context.context_key][context.key] = else_object
+                    return parse_hook(context, mode, source, append_key=append_key)
+            else:
+                # If list or str return tha actual value
+                context.output_dict[context.key] = render_variable(context, else_object)
+                return context.output_dict
+
+    # if 'callback' in context.hook_dict:
+    #     # Call a hook var but don't return it's output
+    #     context.input_dict[context.context_key][context.key] = context.hook_dict['callback']
+    #     return parse_hook(context, mode, source, append_key=append_key)
 
     return context.output_dict
