@@ -1,4 +1,4 @@
-"""Terraform hooks."""
-hook_types = [
-    "yubikey_read",
-]
+# """Terraform hooks."""
+# hook_types = [
+#     "yubikey_read",
+# ]
