@@ -1,0 +1,21 @@
+this:
+  type: print
+  out: this
+
+multiline:
+  type: print
+  out: |
+    this
+
+md:
+  type: markdown
+  out: |
+    # Title
+
+    Stuff + things
+
+    | This | Stuff |
+    | :--- | :--- |
+    | 1 | 2 |
+    | 1 | 2 |
+    | 1 | 2 |

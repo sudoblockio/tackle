@@ -29,7 +29,7 @@ def test_provider_system_hook_block_loop_empty(change_dir):
     """Verify the hook call works properly."""
     output = tackle('.', context_file='loop_empty.yaml', no_input=True)
 
-    assert len(output['blocker']) == 2
+    assert len(output['empty']) == 0
 
 
 def test_provider_system_hook_block_block_merge(change_dir):

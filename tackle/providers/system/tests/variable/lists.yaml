@@ -1,0 +1,22 @@
+
+list_of_lists:
+  type: var
+  input:
+    - [1,2]
+    - [3,4]
+
+
+#print:
+#  type: pprint
+#  statement: |
+#    {% for i in a_list %}{{i}}:
+#      animals: "{{ loop.index }}"
+#    {% endfor %}
+
+#jinja_merge:
+#  type: var
+#  input: "{{ a_map }}"
+#  merge_dict: |
+#    {% for i in a_list %}{{i}}:
+#      animals: "{{ loop.index }}"
+#    {% endfor %}
