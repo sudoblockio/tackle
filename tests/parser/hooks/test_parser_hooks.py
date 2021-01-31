@@ -15,6 +15,13 @@ def test_parser_conditionals_when(change_curdir_fixtures):
     assert 'foo' not in o
     assert 'bar' in o
     assert 'bings' in o
+    assert o['else_str'] == 'this'
+    assert o['else_str_var'] == 'this'
+    assert o['else_list'] == ['this', 'that']
+    assert o['else_list_var'] == ['this', 'that']
+    assert o['else_dict'] == 'thing'
+    assert o['else_dict_not'] == 'that'
+    assert not o['sanity']
 
 
 @pytest.fixture()
@@ -33,12 +40,20 @@ def test_parser_hooks_loops(change_curdir_fixtures, cleanup_loops):
     """Test looping functionality."""
     output = tackle('.', no_input=True, context_file='loops.yaml')
     assert len(output['a_list_of_strings_tackle']) == 3
+    assert output['list_str_reversed'][0] == 'chickens'
+
+
+def test_parser_hooks_loop_empty(change_curdir_fixtures, cleanup_loops):
+    """Test looping functionality."""
+    output = tackle('.', no_input=True, context_file='loop_empty.yaml')
+    assert output
 
 
 def test_parser_hooks_raises_error_on_bad_hook_input(change_curdir_fixtures):
     """
-    Verify that the hook parser raises the right error when a value in the hook
-    dict is not in the hook type.
+    Verify that the hook parser raises the right error.
+
+    When a value in the hook dict is not in the hook type.
     """
     with pytest.raises(HookCallException):
         tackle('.', context_file='unknown-hook-input.yaml')
@@ -46,8 +61,9 @@ def test_parser_hooks_raises_error_on_bad_hook_input(change_curdir_fixtures):
 
 def test_parser_hooks_raises_error_on_bad_hook_input_type(change_curdir_fixtures):
     """
-    Verify that the hook parser raises the right error when a value in the hook
-    dict is not in the hook type.
+    Verify that the hook parser raises the right error.
+
+    When a value in the hook dict is not in the hook type.
     """
     with pytest.raises(ValidationError):
         tackle('.', context_file='bad-hook-input.yaml')

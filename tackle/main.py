@@ -56,8 +56,10 @@ def tackle(
         of the context file minus the file extension.
     :param existing_context: An additional dictionary to use in rendering
         additional prompts.
-    :param override_inputs: A dictionary of context that overrides default
-        and user configuration.
+    :param override_inputs: A dictionary or string pointing to a file to override
+        any prompt based inputs.
+    :param overwrite_inputs: A dictionary or string pointing to a file to overwrite
+        a key and prevent a hook from being called.
     :param replay: Do not prompt for input, instead read from saved json. If
         ``True`` read from the ``replay_dir``.
         if it exists
@@ -91,7 +93,6 @@ def tackle(
 
     context = Context(
         # context_file=context_file,
-        default_context=settings.default_context,
         overwrite_inputs=overwrite_inputs,
         override_inputs=override_inputs,
         existing_context=existing_context,

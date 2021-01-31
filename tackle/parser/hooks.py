@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def raise_hook_validation_error(e, Hook, context: 'Context'):
+def raise_hook_validation_error(e, Hook, context: 'Context', source: 'Source'):
     """Raise more clear of an error when pydantic fails to parse an object."""
     if 'extra fields not permitted' in e.__repr__():
         # Return all the fields in the hook by removing all the base fields.
@@ -32,7 +32,7 @@ def raise_hook_validation_error(e, Hook, context: 'Context'):
         )
         error_out = (
             f"Error: The field \"{e.raw_errors[0]._loc}\" is not permitted in "
-            f"file=\"{context.context_file}\" and key=\"{context.key}\".\n"
+            f"file=\"{source.context_file}\" and key=\"{context.key}\".\n"
             f"Only values accepted are {fields}, (plus base fields --> "
             f"type, when, loop, chdir, merge)"
         )
@@ -47,7 +47,7 @@ def raise_hook_validation_error(e, Hook, context: 'Context'):
         raise e
 
 
-def run_hook(context: 'Context', mode: 'Mode'):
+def run_hook(context: 'Context', mode: 'Mode', source: 'Source'):
     """Run hook."""
     if context.input_dict is None:
         context.input_dict = {}
@@ -76,7 +76,7 @@ def run_hook(context: 'Context', mode: 'Mode'):
             return hook.call(), None
 
     except ValidationError as e:
-        raise_hook_validation_error(e, Hook, context)
+        raise_hook_validation_error(e, Hook, context, source=source)
 
 
 def _evaluate_confirm(context: 'Context'):
@@ -185,10 +185,10 @@ def parse_hook(
 
         # Run the hook
         if context.hook_dict['merge'] if 'merge' in context.hook_dict else False:
-            to_merge, post_gen_hook = run_hook(context, mode)
+            to_merge, post_gen_hook = run_hook(context, mode, source)
             context.output_dict.update(to_merge)
         else:
-            context.output_dict[context.key], post_gen_hook = run_hook(context, mode)
+            context.output_dict[context.key], post_gen_hook = run_hook(context, mode, source)
         if post_gen_hook:
             context.post_gen_hooks.append(post_gen_hook)
 

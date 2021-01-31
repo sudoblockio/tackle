@@ -105,23 +105,22 @@ class Provider(BaseModel):
 class Context(BaseModel):
     """The main object that is being modified by parsing."""
 
-    context_file: str = None
+    # context_file: str = None
     context_key: str = None
     key: str = None
 
-    input_dict: OrderedDict = None
+    input_dict: OrderedDict = OrderedDict([])
     output_dict: OrderedDict = None
 
     existing_context: Union[Dict, OrderedDict] = None
-    overwrite_inputs: Dict = None
-    override_inputs: Dict = None
+    overwrite_inputs: Union[dict, str] = None
+    override_inputs: Union[Dict, str] = None
 
     hook_dict: OrderedDict = None
     post_gen_hooks: List[Any] = []
 
-    env: Type[StrictEnvironment] = None
-
     calling_directory: str = None
+    rerun_path: str = None
     tackle_gen: str = None
 
     providers: List[Provider] = []
@@ -139,6 +138,7 @@ class BaseHook(Context, Mode):
     class Config:
         arbitrary_types_allowed = True
         extra = Extra.forbid
+        # orm_mode = True
 
     def execute(self) -> Any:
         """Abstract method."""
