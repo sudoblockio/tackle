@@ -17,7 +17,7 @@ def read_config_file(file, file_extension=None):
         file_extension = file.split('.')[-1]
 
     if not os.path.exists(file):
-        raise FileNotFoundError
+        raise FileNotFoundError(f"Can't find the file {file}.")
 
     logger.debug(
         'Using \"{}\" as input file and \"{}\" as file extension'.format(

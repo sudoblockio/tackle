@@ -33,7 +33,11 @@ def rmtree(path):
 
     :param path: A directory path.
     """
-    shutil.rmtree(path, onerror=force_delete)
+    if os.path.islink(path):
+        os.unlink(path)
+    else:
+        # Regular file
+        shutil.rmtree(path, onerror=force_delete)
 
 
 def make_sure_path_exists(path):

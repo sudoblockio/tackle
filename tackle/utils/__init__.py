@@ -6,6 +6,22 @@ import os
 import signal
 
 
+# import _collections
+#
+# def merge_configs(base_dct, merge_dct, add_keys=True):
+#     rtn_dct = base_dct.copy()
+#     if add_keys is False:
+#         merge_dct = {key: merge_dct[key] for key in set(rtn_dct).intersection(set(merge_dct))}
+#
+#     rtn_dct.update({
+#         key: merge_configs(rtn_dct[key], merge_dct[key], add_keys=add_keys)
+#         if isinstance(rtn_dct.get(key), dict) and isinstance(merge_dct[key], dict)
+#         else merge_dct[key]
+#         for key in merge_dct.keys()
+#     })
+#     return rtn_dct
+
+
 def merge_configs(default, overwrite):
     """Recursively update a dict with the key/value pair of another.
 
@@ -27,10 +43,13 @@ def merge_configs(default, overwrite):
 
 # https://stackoverflow.com/a/2282656/12642712
 class TimeoutError(Exception):
+    """Exception for timeouts."""
+
     pass
 
 
 def timeout(seconds=10, error_message=os.strerror(errno.ETIME)):
+    """Timeout for any requests that need decorator."""
     def decorator(func):
         def _handle_timeout(signum, frame):
             raise TimeoutError(error_message)

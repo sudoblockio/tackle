@@ -1,14 +1,10 @@
 """Utilities mainly used in helping `modes` like replay and others."""
 import json
 import oyaml as yaml
+# import yaml
 import os
 
 from tackle.utils.paths import make_sure_path_exists
-
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from tackle.models import Settings
 
 
 def get_file_name(replay_dir, template_name, suffix='yaml'):

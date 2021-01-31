@@ -16,7 +16,7 @@ def read_user_yes_no(question, default_value):
         'name': 'tmp',
         'message': question,
         'default': default_value,
-        'choices': ['yes', 'no'],
+        'choices': ['no', 'yes'],
     }
     return prompt([question])['tmp']
 
@@ -40,7 +40,7 @@ def prompt_and_delete(path, no_input=False):
             "You've downloaded {} before. Is it okay to delete and re-download it?"
         ).format(path)
 
-        ok_to_delete = read_user_yes_no(question, 'yes')
+        ok_to_delete = read_user_yes_no(question, 'no')
 
     if ok_to_delete:
         if os.path.isdir(path):

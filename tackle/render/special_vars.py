@@ -15,6 +15,7 @@ def get_vars(context: 'Context'):
     """Get special variables."""
     vars = {
         'cwd': os.getcwd(),
+        'home_dir': os.path.expanduser('~'),
         'system': platform.system(),
         'platform': platform.platform(),
         'release': platform.release(),

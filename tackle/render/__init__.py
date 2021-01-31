@@ -3,6 +3,7 @@ import ast
 import re
 import six
 
+from tackle.render.environment import StrictEnvironment
 from tackle.render.special_vars import get_vars
 from typing import TYPE_CHECKING, Any
 
@@ -58,10 +59,11 @@ def render_variable(context: 'Context', raw: Any):
     elif not isinstance(raw, six.string_types):
         raw = str(raw)
 
-    template = context.env.from_string(raw)
+    env = StrictEnvironment(context=context.input_dict)
+    template = env.from_string(raw)
 
+    # Build both the {{ cookiecutter.var }} and {{ var }} contexts
     render_context = build_render_context(context)
-    # This is where we build both the {{ cookiecutter.var }} and {{ var }} contexts
     rendered_template = template.render(render_context)
 
     # Tackle evaluates dicts, lists, and bools as literals where as cookiecutter
@@ -82,7 +84,6 @@ def render_variable(context: 'Context', raw: Any):
                 """If variable looks like list, return literal list"""
                 return ast.literal_eval(rendered_template)
         except ValueError as e:
-            print()
             raise e
 
     return rendered_template
