@@ -77,9 +77,10 @@ extensions = [
     'sphinx.ext.imgmath',
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
-    'sphinx-pydantic',
+    # 'sphinx-pydantic',
     'sphinx_click.ext',
-    'recommonmark',
+    # 'recommonmark',
+    'm2r2',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
