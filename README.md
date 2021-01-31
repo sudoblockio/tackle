@@ -2,16 +2,15 @@
 
 [![pypi](https://img.shields.io/pypi/v/tackle-box.svg)](https://pypi.python.org/pypi/tackle-box)
 [![python](https://img.shields.io/pypi/pyversions/tackle-box.svg)](https://pypi.python.org/pypi/tackle-box)
-[![Build Status](https://travis-ci.org/robcxyz/tackle-box.svg?branch=master)](https://travis-ci.org/robcxyz/tackle-box)
 [![codecov](https://codecov.io/gh/robcxyz/tackle-box/branch/master/graphs/badge.svg?branch=master)](https://codecov.io/github/robcxyz/tackle-box?branch=master)
 
 * Tackle Box Documentation: [https://robcxyz.github.io/tackle-box](https://robcxyz.github.io/tackle-box)
-    * [API Docs](https://robcxyz.github.io/tackle-box/docs/_build/html/cookiecutter.operators.html#submodules)
+    * [API Docs](https://robcxyz.github.io/tackle-box/docs/_build/html/cookiecutter.operators.html#submodules) # WIP
 * GitHub: [https://github.com/robcxyz/tackle-box](https://github.com/cookiecutter/cookiecutter)
 * PyPI: [https://pypi.org/project/tackle-box/](https://pypi.org/project/tackle-box/)
 * Free and open source software: [BSD license](https://github.com/tackle-box/cookiecutter/blob/master/LICENSE)
 
-Tackle box is a DSL for easily creating CLIs, workflows, and generating code from templates. The framework is modular and empowered by a collection of hooks to easily extend functionality. Based off a fork of [cookiecutter](https://github.com/cookiecutter/cookiecutter), this tool evolved from being a code generator to connecting git repositories into a web of CLIs.
+Tackle box is a DSL for easily creating CLIs, workflows, and generating code from templates. The framework is modular and empowered by a collection of hooks to easily extend functionality through a set of declarative plugins. Based off a fork of [cookiecutter](https://github.com/cookiecutter/cookiecutter), this tool evolved from being a code generator to connecting git repositories into a web of CLIs.
 
 ### Quick Demo
 
@@ -65,16 +64,18 @@ democmd:
 
 output:
   type: pprint # Pretty print the output
-  output: "{{ this }}" # Special var that contains a dictionary of all the value
+  output: "{{ this }}" # Special var that contains a dictionary of all the values
+
+branch:
+  type: tackle
+  template: https://github.com/audreyfeldroy/cookiecutter-pypackage # Call other cookiecutters
 ```
 
 Each hook is called via its `type` which, in the case of the `input` hook, can be looked up in the [docs]() or by looking at the [source code]() directly.
 
 Prompts are enhanced by extending the functionality from [PyInquirer](https://github.com/CITGuru/PyInquirer) as a set of hooks as noted by the types `input`, `select`, and `checkbox`. Writing new hooks is super simple as seen in the `print` hook:
 
-### Hooks and Providers
-
-
+### Hooks
 
 [`cookiecuttuer/providers/hooks/print.py`](tackle/operators/print.py)
 
@@ -100,22 +101,33 @@ A number of useful methods are available when executing any hook. Here is a brei
 ```yaml
 this:
   type: a_hook
-  chdir: /path/to/some/dir # Changes to the dir before executing
+  chdir: "/path/to/some/{{ item }}" # Changes to the dir before executing
   loop: # Expects a list, creates `item` and `index` variables in loop
     - foo
     - bar
-  when: "{{ item == 'foo' }}" # Jinja expression that evaluates to boolean
+    - baz
+  reverse: "{{ some_boolean_variable or condition }}" # Boolean to revers the loop
+  when: "{{ index >= 1 }}" # Jinja expression that evaluates to boolean to conditionally use the hook
+  else: "{{ some_other_var }}" # Fallback for `when` key if false.  Can also be another hook.  
   merge: True # Merge the outputs to the upper level context
 ```
 
-For further documentation on base methods, see check out [the docs]().
+This hook would change the directory into the `bar` and `baz` directory for execution. For further documentation on base methods, see check out [the docs]().
 
+#### Providers
 
+Collections of hooks are made available through lazy loaded providers each with their own dependencies. Each provider has the following directory structure.
 
-### Providers
+```bash
+├── hooks
+│   ├── <package>.py  # Any filename is fine
+│   └── __init__.py  # Optional - Use this file to specify hook names if the provider is to be lazy loaded
+├── requirements.txt
+```
 
-Providers are groups of hooks and templates to
+Providers can either force the user to install the dependencies in the `requirements.txt` when tackle is called or by inserting `hook_types = ["your_hook_name"]` into the `__init__.py` to defer initialization of the provider until it is called.  Provider requirements are then installed if they are called from a tackle script.  This was done to allow users access to a variety of hooks without them needing to install every possible dependency.  It can also be a security concern with future versions dealing with this and also exposing additional features like `commands` and `templates` to extend custom actions.
 
+Check out the providers in `tackle/providers` to get a sense of how to build them. They are really easy to build and test.
 
 ### Hooks
 
