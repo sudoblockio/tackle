@@ -51,6 +51,11 @@ test-all: ## Run tests on every Python version with tox
 	@echo "+ $@"
 	@tox
 
+.PHONY: test-all
+test-providers: ## Run tests on every Python version with tox
+	@echo "+ $@"
+	@tox -e providers
+
 .PHONY: coverage
 coverage: ## Check code coverage quickly with the default Python
 	@echo "+ $@"
@@ -61,14 +66,9 @@ coverage: ## Check code coverage quickly with the default Python
 docs: ## Generate Sphinx HTML documentation, including API docs
 	@echo "+ $@"
 	@rm -f docs/tackle.rst
-	@sphinx-apidoc -o docs/ tackle
-	@#sphinx-apidoc -o docs/ tackle
-
-	@#sphinx-apidoc -o docs/ `ls | grep -Ev '\.(txt|pdf)$' | column`
-
-#	@sphinx-apidoc -o docs/ tackle/operators
-#	@sphinx-apidoc -fMeET tackle/operators -o docs/operators
-	@rm -f docs/modules.rst
+#	@rm -f docs/hooks/*
+#	@find tackle/providers -type d -name hooks -exec sphinx-apidoc -o docs/hooks {} \;
+#	@#sphinx-apidoc -o docs/ `ls | grep -Ev '\.(txt|pdf)$' | column`
 	@$(MAKE) -C docs clean
 	@$(MAKE) -C docs html
 	@$(BROWSER) docs/_build/html/index.html

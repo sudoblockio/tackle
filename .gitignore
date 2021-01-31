@@ -9,7 +9,8 @@ __pycache__/
 # Pushing all rendered docs to `docs` branch in GH actions
 docs/_build/*
 # All API docs generated in CI
-docs/tackle.*
+docs/hooks
+!docs/hooks/.gitkeep
 
 # Distribution / packaging
 .Python
