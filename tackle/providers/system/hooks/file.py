@@ -157,7 +157,7 @@ class ShredHook(BaseHook):
 
 class RemoveHook(BaseHook):
     """Hook removing a file or directory."""
-    
+
     type: str = 'move'
     src: Union[List, str]
     create_path: bool = True

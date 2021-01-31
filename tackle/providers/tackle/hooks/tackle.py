@@ -48,7 +48,7 @@ class TackleHook(BaseHook):
     templates: List[Any] = None
     checkout: str = None
     # no_input: bool = False
-    # context_file: str = None
+    context_file: str = None
     context_files: List = None
     # overwrite_inputs: Dict = None
     # existing_context: Dict = None

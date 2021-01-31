@@ -6,7 +6,7 @@ from __future__ import print_function
 
 import logging
 from PyInquirer import prompt
-from typing import Any, List, Union, Dict
+from typing import Any, List, Union
 
 from tackle.models import BaseHook
 
@@ -33,7 +33,7 @@ class InquirerListHook(BaseHook):
 
     index: bool = False
     default: Any = None
-    choices: Union[List[str], List[Dict]]
+    choices: Union[List[str], List[dict]]
     name: str = 'tmp'
     message: str = None
 
@@ -93,5 +93,7 @@ class InquirerListHook(BaseHook):
                 return response['tmp']
         elif self.default:
             return self.default
-        else:
-            return []
+        elif isinstance(self.choices[0], str):
+            return self.choices[0]
+        elif isinstance(self.choices[0], dict):
+            return list(self.choices[0].keys())[0]
