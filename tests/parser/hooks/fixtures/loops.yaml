@@ -6,6 +6,12 @@ list_str:
     - dogs
     - chickens
 
+list_str_reversed:
+  type: var
+  input: "{{ item }}"
+  loop: "{{ list_str }}"
+  reverse: true
+
 list_dict:
   type: var
   input:

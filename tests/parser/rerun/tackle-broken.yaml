@@ -1,0 +1,10 @@
+foo: bar
+
+bing: "{{ foo }}"
+
+this:
+  type: print
+  out: this
+
+that:
+  type: blaah

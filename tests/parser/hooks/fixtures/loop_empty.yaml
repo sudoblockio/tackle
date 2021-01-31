@@ -1,0 +1,17 @@
+foo: barr
+empty:
+  type: var
+  loop: []
+  input: "{{ not_here }}"
+
+empty_when_t:
+  type: var
+  loop: []
+  when: true
+  input: "{{ index }}"
+
+empty_when_f:
+  type: var
+  loop: []
+  when: false
+  input: "{{ index }}"

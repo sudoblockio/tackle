@@ -1,0 +1,11 @@
+stuff: things
+foo:
+- bar
+- bax
+- bin
+blah: stuff
+bing:
+- bar
+- bax
+- bin
+_template: /home/rob/go/src/github.com/robcxyz/tackle-box/tests/parser/record
