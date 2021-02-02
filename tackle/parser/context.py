@@ -22,6 +22,16 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
+# TODO: Fix this per rerun logic issue
+def dump_rerun_on_error(context: 'Context', mode: 'Mode'):
+    """Dump the context on failure."""
+    if mode.record or mode.rerun:
+        # Dump the output context
+        print(f"Writing rerun file to {context.rerun_path}")
+        with open(context.rerun_path, 'w') as f:
+            yaml.dump(dict(context.output_dict), f)
+
+
 def parse_context(context: 'Context', mode: 'Mode', source: 'Source'):
     """Parse the context and iterate over values.
 
@@ -75,19 +85,17 @@ def parse_context(context: 'Context', mode: 'Mode', source: 'Source'):
                     # Main entrypoint into hook parsing logic
                     parse_hook(context, mode, source)
 
-        except (UndefinedError, UnknownHookTypeException) as err:
-            print(mode)
-            if mode.record or mode.rerun:
-                # Dump the output context
-                print(f"Writing rerun file to {context.rerun_path}")
-                with open(context.rerun_path, 'w') as f:
-                    yaml.dump(dict(context.output_dict), f)
+        except UndefinedError as err:
+            dump_rerun_on_error(context, mode)
             msg = "Unable to render variable '{}'".format(key)
             raise UndefinedVariableInTemplate(msg, err, context.input_dict)
+        except UnknownHookTypeException as err:
+            dump_rerun_on_error(context, mode)
+            raise UnknownHookTypeException(err)
 
     return context
 
-
+# TODO: Break this function up
 def prep_context(
     context: 'Context', mode: 'Mode', source: 'Source', settings: 'Settings'
 ):
@@ -109,12 +117,15 @@ def prep_context(
         apply_overwrites_to_inputs(obj, settings.default_context)
 
     # Apply the overwrites/rides
+    # Strings are interpretted as pointers to files
     if isinstance(context.overwrite_inputs, str):
         context.overwrite_inputs = read_config_file(context.overwrite_inputs)
     if context.overwrite_inputs:
         apply_overwrites_to_inputs(obj, context.overwrite_inputs)
     else:
         context.overwrite_inputs = {}
+
+    # TODO: FIx the override logic in how it is interpreted by hooks
     if not context.override_inputs:
         context.override_inputs = {}
 

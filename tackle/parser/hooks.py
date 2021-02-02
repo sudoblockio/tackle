@@ -135,9 +135,8 @@ def evaluate_when(hook_dict: dict, context: 'Context'):
     return when_condition
 
 
-def evaluate_hook(
-        context: 'Context', mode: 'Mode', source: 'Source'
-):
+def evaluate_loop(context: 'Context', mode: 'Mode', source: 'Source'):
+    """Run the parse_hook function in a loop and return a list of outputs."""
     loop_targets = render_variable(context, context.hook_dict['loop'])
     context.hook_dict.pop('loop')
 
@@ -147,6 +146,7 @@ def evaluate_hook(
 
     reverse = False
     if 'reverse' in context.hook_dict:
+        # Handle reverse boolean logic
         reverse = render_variable(context, context.hook_dict['reverse'])
         if not isinstance(reverse, bool):
             raise HookCallException("Parameter `reverse` should be boolean.")
@@ -155,9 +155,11 @@ def evaluate_hook(
     loop_output = []
     for i, l in enumerate(loop_targets) if not reverse else \
             reversed(list(enumerate(loop_targets))):
+        # Create temporary variables in the context to be used in the loop.
         context.output_dict.update({'index': i, 'item': l})
         loop_output += [parse_hook(context, mode, source, append_key=True)]
 
+    # Remove temp variables
     context.output_dict.pop('item')
     context.output_dict.pop('index')
     context.output_dict[context.key] = loop_output
@@ -185,7 +187,7 @@ def parse_hook(
         # Extract loop
         if 'loop' in context.hook_dict:
             # This runs the current function in a loop and returns a list of results
-            return evaluate_hook(context=context, mode=mode, source=source)
+            return evaluate_loop(context=context, mode=mode, source=source)
 
         # Block hooks are run independently. This prevents rest of the hook dict from
         # being rendered,

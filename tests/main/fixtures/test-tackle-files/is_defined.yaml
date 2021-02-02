@@ -1,0 +1,21 @@
+this: that
+
+defined:
+  type: var
+  input: foo
+  when: "{{ this is defined }}"
+
+not_defined:
+  type: var
+  input: bar
+  when: "{{ this is not defined }}"
+
+not_defined_again:
+  type: var
+  input: bar
+  when: "{{ not_defined is defined }}"
+
+defined_again:
+  type: var
+  input: bar
+  when: "{{ not_defined is not defined }}"
