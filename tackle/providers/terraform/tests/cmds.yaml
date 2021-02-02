@@ -1,0 +1,11 @@
+init:
+  type: terraform
+  cmd: init
+  chdir: tf-basic
+
+plan:
+  type: terraform
+  cmd: plan
+  chdir: tf-basic
+#  terraform_bin_path: terragrunt
+

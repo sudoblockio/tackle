@@ -10,6 +10,12 @@ from typing import List
 import hcl
 from PyInquirer import prompt
 from pydantic import FilePath
+from pydantic import BaseModel, validator, root_validator
+from typing import Union
+from python_terraform import *
+from tackle.exceptions import HookCallException
+from shutil import which
+
 
 from tackle.exceptions import EscapeHookException
 from tackle.models import BaseHook
@@ -34,9 +40,10 @@ class TerraformVariablesHook(BaseHook):
 
     var_list: List[str] = None
     var_skip_list: List[str] = []
-    variables_file: FilePath
+    variables_file: str
+    use_defaults: bool = False
 
-    def execute(self):
+    def execute(self) -> dict:
         with open(self.variables_file, 'r') as f:
             vars = hcl.load(f)
 
@@ -73,8 +80,8 @@ class TerraformVariablesHook(BaseHook):
                     output = self._run_prompt(question, output, v)
 
                 if (
-                    var['type'] in ['list', 'list(string)', 'list(map(string))']
-                    and v not in self.var_skip_list
+                        var['type'] in ['list', 'list(string)', 'list(map(string))']
+                        and v not in self.var_skip_list
                 ):
                     logger.debug('Variable type %s', var['type'])
                     question = {
@@ -89,8 +96,8 @@ class TerraformVariablesHook(BaseHook):
                     output = self._run_prompt(question, output, v)
 
                 if (
-                    var['type'] in ['map', 'map(string)']
-                    and v not in self.var_skip_list
+                        var['type'] in ['map', 'map(string)']
+                        and v not in self.var_skip_list
                 ):
                     logger.debug('Variable type %s', var['type'])
                     question = {
@@ -100,15 +107,80 @@ class TerraformVariablesHook(BaseHook):
                         'name': v,
                     }
                     output = self._run_prompt(question, output, v)
-
         return output
 
-    @staticmethod
-    def _run_prompt(question, output, v, var_type=None):
-        question.update({'name': 'tmp'})
-        answer = prompt([question])['tmp']
-        if not isinstance(var_type, dict):
-            if answer == {}:
-                raise EscapeHookException("Process has been cancelled by user.")
-        output.update({v: answer})
-        return output
+    def _run_prompt(self, question, output, v, var_type=None):
+        if v in self.overwrite_inputs:
+            output.update({v: self.overwrite_inputs[v]})
+            return output
+
+        if self.no_input or self.use_defaults:
+            output.update({v: question['default']})
+            return output
+        else:
+            question.update({'name': 'tmp'})
+            answer = prompt([question])['tmp']
+            if not isinstance(var_type, dict):
+                if answer == {}:
+                    raise EscapeHookException("Process has been cancelled by user.")
+            output.update({v: answer})
+            return output
+
+
+class TerraformMixin(BaseModel):
+    targets: list = None
+    state: str = None
+    variables: dict = None
+    parallelism: int = None
+    var_file: Union[list, str] = None
+    terraform_bin_path: str = 'terraform' # "/home/rob/bin/terraform" #
+    is_env_vars_included: bool = True
+
+
+TERRAFORM_CMDS = [
+    "init",
+    "plan",
+    "apply",
+    "output",
+    "destroy",
+    "import",
+]
+
+class TerraformCmdHook(BaseHook, TerraformMixin):
+    type: str = 'terraform'
+    cmd: str
+
+    @validator('cmd')
+    def cmd_must_be_in_list(cls, v):
+        if v not in TERRAFORM_CMDS:
+            raise HookCallException(f'Terraform `cmd` must be one of {", ".join(TERRAFORM_CMDS)}.')
+        return v
+
+    # @root_validator('terraform_bin_path')
+    # def update_executable_to_full_path(cls, v):
+    #     return which(v)
+
+    def execute(self):
+        # self.terraform_bin_path = which(self.terraform_bin_path)
+        # y = self.terraform_bin_path
+        # x = which(b"{self.terraform_bin_path}")
+
+        import shutil
+        import sys
+        s = shutil.which("terraform")
+        ff = sys.path
+        tf = Terraform(**{k: v for k, v in self.dict().items() if k in TerraformMixin().dict().keys()})
+        f = os.environ["PATH"]
+
+        if self.cmd == 'plan':
+            return_code, stdout, stderr = tf.plan()
+        if self.cmd == 'init':
+            return_code, stdout, stderr = tf.init()
+        if self.cmd == 'apply':
+            return_code, stdout, stderr = tf.apply()
+        if self.cmd == 'output':
+            return_code, stdout, stderr = tf.output()
+        if self.cmd == 'destroy':
+            return_code, stdout, stderr = tf.destroy()
+        if self.cmd == 'plan':
+            return_code, stdout, stderr = tf.plan()

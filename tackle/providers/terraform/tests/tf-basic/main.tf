@@ -1,0 +1,3 @@
+output "this" {
+  value = "this"
+}

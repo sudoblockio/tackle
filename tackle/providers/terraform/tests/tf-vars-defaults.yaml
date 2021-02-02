@@ -1,0 +1,12 @@
+choose_defaults_:
+  type: select
+  message: Use default settings or prompt for choices?
+  choices:
+    - true: Use the default
+    - false: Prompt for choices
+
+vars:
+  type: terraform_variables
+  variables_file: variables.tf
+  use_defaults: "{{ choose_defaults_ }}"
+

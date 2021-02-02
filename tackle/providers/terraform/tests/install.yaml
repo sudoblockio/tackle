@@ -1,7 +1,6 @@
 version:
   type: terraform_version
 
-
 version_13:
   type: terraform_version
   minor_version: 13
