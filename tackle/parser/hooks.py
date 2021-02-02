@@ -135,6 +135,35 @@ def evaluate_when(hook_dict: dict, context: 'Context'):
     return when_condition
 
 
+def evaluate_hook(
+        context: 'Context', mode: 'Mode', source: 'Source'
+):
+    loop_targets = render_variable(context, context.hook_dict['loop'])
+    context.hook_dict.pop('loop')
+
+    if len(loop_targets) == 0:
+        context.output_dict[context.key] = []
+        return []
+
+    reverse = False
+    if 'reverse' in context.hook_dict:
+        reverse = render_variable(context, context.hook_dict['reverse'])
+        if not isinstance(reverse, bool):
+            raise HookCallException("Parameter `reverse` should be boolean.")
+        context.hook_dict.pop('reverse')
+
+    loop_output = []
+    for i, l in enumerate(loop_targets) if not reverse else \
+            reversed(list(enumerate(loop_targets))):
+        context.output_dict.update({'index': i, 'item': l})
+        loop_output += [parse_hook(context, mode, source, append_key=True)]
+
+    context.output_dict.pop('item')
+    context.output_dict.pop('index')
+    context.output_dict[context.key] = loop_output
+    return context.output_dict
+
+
 def parse_hook(
         context: 'Context', mode: 'Mode', source: 'Source', append_key: bool = False,
 ):
@@ -155,41 +184,29 @@ def parse_hook(
     if evaluate_when(context.hook_dict, context):
         # Extract loop
         if 'loop' in context.hook_dict:
-            loop_targets = render_variable(context, context.hook_dict['loop'])
-            context.hook_dict.pop('loop')
+            # This runs the current function in a loop and returns a list of results
+            return evaluate_hook(context=context, mode=mode, source=source)
 
-            if len(loop_targets) == 0:
-                context.output_dict[context.key] = []
-                return []
-
-            reverse = False
-            if 'reverse' in context.hook_dict:
-                reverse = render_variable(context, context.hook_dict['reverse'])
-                if not isinstance(reverse, bool):
-                    raise HookCallException("Parameter `reverse` should be boolean.")
-                context.hook_dict.pop('reverse')
-
-            loop_output = []
-            for i, l in enumerate(loop_targets) if not reverse else \
-                    reversed(list(enumerate(loop_targets))):
-                context.output_dict.update({'index': i, 'item': l})
-                loop_output += [parse_hook(context, mode, source, append_key=True)]
-
-            context.output_dict.pop('item')
-            context.output_dict.pop('index')
-            context.output_dict[context.key] = loop_output
-            return context.output_dict
-
+        # Block hooks are run independently. This prevents rest of the hook dict from
+        # being rendered,
         if 'block' not in context.hook_dict['type']:
             context.hook_dict = render_variable(context, context.hook_dict)
 
         # Run the hook
         if context.hook_dict['merge'] if 'merge' in context.hook_dict else False:
+            # Merging is for dict outputs only where the entire dict is inserted into the
+            # output dictionary.
             to_merge, post_gen_hook = run_hook(context, mode, source)
+            if not isinstance(to_merge, dict):
+                # TODO: Raise better error with context
+                raise ValueError(f"Error merging output from key='{context.key}' in "
+                                 f"file='{source.context_file}'.")
             context.output_dict.update(to_merge)
         else:
+            # Normal hook run
             context.output_dict[context.key], post_gen_hook = run_hook(context, mode, source)
         if post_gen_hook:
+            # TODO: Update this per #4 hook-integration
             context.post_gen_hooks.append(post_gen_hook)
 
         if append_key:
