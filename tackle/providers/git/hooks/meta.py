@@ -179,11 +179,17 @@ class MetaGitHook(BaseHook):
 
             if isinstance(v, str):
                 v = self.update_repo_name(v)
-                with work_in(path):
+                if path != "":
+                    with work_in(path):
+                        self.run_git_command(v, folder_name)
+                else:
                     self.run_git_command(v, folder_name)
 
             if isinstance(v, dict):
                 r = Repo(**v)
                 r.src = self.update_repo_name(r.src)
-                with work_in(path):
+                if path != "":
+                    with work_in(path):
+                        self.run_git_command(r.src, folder_name, r.branch)
+                else:
                     self.run_git_command(r.src, folder_name, r.branch)

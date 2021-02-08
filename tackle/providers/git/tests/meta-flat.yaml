@@ -1,0 +1,8 @@
+
+
+this:
+  type: meta_repo
+  git_org: geometry-labs
+  repo_tree:
+    services: robcxyz/tackle-pypackage
+    foo: robcxyz/tackle-pypackage
