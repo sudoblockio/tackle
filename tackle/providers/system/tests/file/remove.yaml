@@ -1,0 +1,36 @@
+
+file:
+  type: command
+  command: touch this
+
+if_file:
+  type: path_exists
+  path: this
+
+rm:
+  type: remove
+  path: this
+
+not_file:
+  type: path_exists
+  path: this
+
+files:
+  type: command
+  command: |
+    touch this
+    touch that
+
+if_files:
+  type: path_exists
+  path: that
+
+rms:
+  type: remove
+  path:
+    - this
+    - that
+
+not_files:
+  type: path_exists
+  path: that

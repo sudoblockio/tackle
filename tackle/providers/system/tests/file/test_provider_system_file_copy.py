@@ -53,3 +53,12 @@ def test_provider_system_hook_file_chmod(change_dir, fix_file_perms):
     """Verify the hook call works properly."""
     tackle(context_file='chmod.yaml', no_input=True)
     assert oct(os.stat('tackle.yaml').st_mode)[-3:] == "600"
+
+
+def test_provider_system_hook_file_remove(change_dir, fix_file_perms):
+    """Verify the hook call works properly."""
+    o = tackle(context_file='remove.yaml', no_input=True)
+    assert o['if_file']
+    assert not o['not_file']
+    assert o['if_files']
+    assert not o['not_files']

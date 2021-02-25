@@ -44,7 +44,6 @@ def flatten_repo_tree(d, parent_key=''):
         if repo:
             items.append((new_key, v))
         elif isinstance(v, MutableMapping):
-            # items.extend(flatten(v, new_key, sep=sep).items())
             items.extend(flatten_repo_tree(v, new_key).items())
         else:
             items.append((new_key, v))
@@ -65,7 +64,7 @@ class MetaGitHook(BaseHook):
     git_org: str = None
 
     base_dir: str = os.path.abspath(os.path.curdir)
-    meta_file: str = '.meta'
+    repo_tree_overrides: list = None
 
     def run_git_command(self, repo, folder_name, branch=None):
         """Run the git command."""
@@ -166,17 +165,24 @@ class MetaGitHook(BaseHook):
         if not self.command:
             self.get_command()
 
+        # Flatten the repo tree = `{k1: {k2: v}}` -> `[{k1/k2: v}]` where `k1/k2`
+        # is the path to operate (ie clone, etc) on the repo object `v` that can be
+        # a string or dict
         if self.repo_tree:
             self.repo_tree = flatten_repo_tree(self.repo_tree)
 
+        # Select is a bool that can override whether to prompt (basically
         if self.select and not self.no_input:
             self.prompt_repo_choices()
 
+        # Parse flattened repo tree from above
         for k, v in self.repo_tree.items():
+            # Create dir to base path if it does not exist
             path, folder_name = os.path.split(k)
             if not os.path.isdir(path):
                 pathlib.Path(path).mkdir(parents=True, exist_ok=True)
 
+            # Handle string inputs
             if isinstance(v, str):
                 v = self.update_repo_name(v)
                 if path != "":
