@@ -3,6 +3,7 @@ import fnmatch
 import logging
 import os
 import shutil
+import re
 
 from binaryornot.check import is_binary
 from jinja2 import FileSystemLoader
@@ -23,7 +24,6 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from tackle.models import Context, Source, Output
-
 
 logger = logging.getLogger(__name__)
 
@@ -166,7 +166,9 @@ def render_and_create_dir(dirname, context: 'Context', output: 'Output'):
 
 def ensure_dir_is_templated(dirname):
     """Ensure that dirname is a templated directory name."""
-    if '{{' in dirname and '}}' in dirname:
+    if re.match(r"^\{\{+[\s]?[a-zA-Z0-9_]+[\s]?\}\}$", dirname):
+        # TODO: Change this so that we find directories and then qualify them for the
+        #  target in another function allowing directories of templatable directories.
         return True
     else:
         raise NonTemplatedInputDirException
@@ -212,12 +214,12 @@ def find_template(repo_dir, context: 'Context'):
     project_template = None
     for item in repo_dir_contents:
         if context.tackle_gen == 'cookiecutter':
-            if context.context_key in item and '{{' in item and '}}' in item:
+            if re.match(r"^\{\{+[\s]?[a-zA-Z0-9_]+[\s]?\}\}$", item):
                 project_template = item
                 break
         else:
             if (
-                item.strip('{{').strip('}}') in context.output_dict.keys()
+                item.strip('{{').strip('}}').strip() in context.output_dict.keys()
                 and '{{' in item  # noqa
                 and '}}' in item  # noqa
             ):

@@ -1,7 +1,7 @@
 [tool.black]
 skip-string-normalization = true
-exclude = ["*/tests", "hooks-abort-render", "docs", "logo", ".github"]
-#exclude = '/(tests/hooks-abort-render/hooks|docs)/logo/.github'
+#exclude = ["*/tests", "hooks-abort-render", "docs", "logo", ".github"]
+exclude = '/(tests/hooks-abort-render/hooks|docs)/logo/.github'
 line-length = 88
 target-version = ['py36']
 

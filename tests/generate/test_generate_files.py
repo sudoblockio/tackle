@@ -468,9 +468,23 @@ def test_raise_undefined_variable_project_dir(tmpdir, change_dir_main_fixtures):
 
     with pytest.raises(exceptions.UndefinedVariableInTemplate) as err:
         tackle(
-            'undefined-variable/dir-name', no_input=True, output_dir=str(output_dir),
+            'undefined-variable/dir-name',
+            no_input=True,
+            output_dir=str(output_dir),
         )
 
     error = err.value
     msg = "Unable to create project directory '{{cookiecutter.project_slug}}'"
     assert msg == error.message
+
+
+def test_generate_directory_with_spaces(tmpdir, change_dir_main_fixtures):
+    """Verify that white spaces are handled properly templating directories/files."""
+    tackle(
+        template='fake-repo-pre-tackle-spaces', no_input=True, output_dir=str(tmpdir)
+    )
+    assert os.path.exists(os.path.join(tmpdir, 'fake-project'))
+    assert os.path.exists(os.path.join(tmpdir, 'fake-project', 'fake-project'))
+    tackle(template='fake-repo-pre-tackle', no_input=True, output_dir=str(tmpdir))
+    assert os.path.exists(os.path.join(tmpdir, 'fake-project'))
+    assert os.path.exists(os.path.join(tmpdir, 'fake-project', 'fake-project'))
