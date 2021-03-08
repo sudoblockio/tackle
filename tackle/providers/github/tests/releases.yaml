@@ -1,0 +1,4 @@
+repos:
+  type: github_repo_releases
+  user: cookiecutter
+  repo: cookiecutter
