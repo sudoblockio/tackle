@@ -53,6 +53,9 @@ def flatten_repo_tree(d, parent_key=''):
 class MetaGitHook(BaseHook):
     """Hook to create meta repo."""
 
+    __slots__ = ('first_run',)
+    # Per https://github.com/samuelcolvin/pydantic/issues/655 for private vars
+
     type: str = 'meta_repo'
     command: str = None
 
@@ -60,26 +63,70 @@ class MetaGitHook(BaseHook):
     repo_tree: Dict = None
     select: bool = True
 
-    base_url: str = "https://github.com"
+    base_url: str = "github.com"
+    protocol: str = "https"
     git_org: str = None
 
     base_dir: str = os.path.abspath(os.path.curdir)
     repo_tree_overrides: list = None
 
-    def run_git_command(self, repo, folder_name, branch=None):
-        """Run the git command."""
-        if not branch:
-            cmd = f"git {self.command} {repo} {folder_name}"
-        else:
-            cmd = f"git {self.command} {repo} {folder_name} -b {branch}"
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        object.__setattr__(self, 'first_run', True)
 
-        print()
+    def get_repo_prefix(self, repo):
+        """Return a string to prefix url."""
+        if repo.startswith("https") or repo.startswith("git"):
+            # Case where it is provided
+            return ""
+        if self.protocol == "https":
+            return f"https://{self.base_url}/"
+        if self.protocol == "ssh":
+            return f"git@{self.base_url}:"
+
+    def get_git_command(self, branch, repo, folder_name):
+        """Build string to run git command."""
+        if not branch:
+            return (
+                f"git {self.command} {self.get_repo_prefix(repo)}{repo} {folder_name}"
+            )
+        else:
+            return (
+                f"git {self.command} {self.get_repo_prefix(repo)}{repo} "
+                f"{folder_name} -b {branch}"
+            )
+
+    def execute_git_command(self, branch, repo, folder_name):
+        """Execute the git command."""
+        cmd = self.get_git_command(branch, repo, folder_name)
         p = subprocess.Popen(
-            cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            cmd,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
         )
         output, err = p.communicate()
+
         if err:
             print(f"{err} for repo='{repo}' in folder='{folder_name}'.")
+
+    def try_https_then_ssh(self, branch, repo, folder_name):
+        """When running first git command, tries with https then falls back to ssh."""
+        try:
+            self.execute_git_command(branch, repo, folder_name)
+            object.__setattr__(self, 'first_run', False)
+        except Exception:
+            try:
+                self.protocol = "ssh"
+                self.execute_git_command(branch, repo, folder_name)
+            except Exception as e:
+                print(f"{e} for repo='{repo}' - Neither https or ssh works. Skipping.")
+
+    def run_git_command(self, repo, folder_name, branch=None):
+        """Run the git command."""
+        if self.first_run:
+            self.try_https_then_ssh(branch, repo, folder_name)
+        self.execute_git_command(branch, repo, folder_name)
 
     def update_repo_name(self, v):
         """Update the repo name."""
@@ -95,15 +142,15 @@ class MetaGitHook(BaseHook):
                 )
                 return
             else:
-                return f"{self.base_url}/{self.git_org}/{git_parts[0]}"
+                return f"{self.git_org}/{git_parts[0]}"
         if len(git_parts) == 2:
-            return f"{self.base_url}/{git_parts[0]}/{git_parts[1]}"
+            return f"{git_parts[0]}/{git_parts[1]}"
         else:
             print(f"Malformed repo name '{v}' in '{self.key}' key. Skipping.")
 
     def prompt_repo_choices(self):
         """Prompt the user to select which items to operate on."""
-        choices = [{"name": "all repos"}] + [
+        choices = [
             {"name": f"{k} --> {v}", "checked": True} for k, v in self.repo_tree.items()
         ]
         question = {
