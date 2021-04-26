@@ -24,7 +24,7 @@ def test_provider_system_hook_yaml_update(change_dir, clean_outputs):
     tackle('.', context_file='update.yaml', no_input=True)
 
     with open('output.yaml', 'r') as f:
-        output = yaml.load(f)
+        output = yaml.load(f, yaml.SafeLoader)
 
     assert output['stuff'] == {'things': {'cats': 'scratch'}}
 
@@ -34,7 +34,7 @@ def test_provider_system_hook_yaml_remove_str(change_dir, clean_outputs):
     tackle('.', context_file='remove_str.yaml', no_input=True)
 
     with open('output.yaml', 'r') as f:
-        output = yaml.load(f)
+        output = yaml.load(f, yaml.SafeLoader)
 
     assert output == ['stuff', 'things']
 
@@ -44,7 +44,7 @@ def test_provider_system_hook_yaml_remove_list(change_dir, clean_outputs):
     tackle('.', context_file='remove_list.yaml', no_input=True)
 
     with open('output.yaml', 'r') as f:
-        output = yaml.load(f)
+        output = yaml.load(f, yaml.SafeLoader)
 
     assert output == ['stuff', 'things']
 
@@ -68,7 +68,7 @@ def test_provider_system_hook_yaml_update_in_place(change_dir, clean_outputs):
     tackle('.', context_file='update_in_place.yaml', no_input=True)
 
     with open('output_update_in_place.yaml', 'r') as f:
-        output = yaml.load(f)
+        output = yaml.load(f, yaml.SafeLoader)
 
     assert output['dev']['stuff'] == 'things'
 
@@ -78,7 +78,7 @@ def test_provider_system_hook_yaml_merge_in_place(change_dir, clean_outputs):
     tackle('.', context_file='merge_in_place.yaml', no_input=True)
 
     with open('output_merge_in_place.yaml', 'r') as f:
-        output = yaml.load(f)
+        output = yaml.load(f, yaml.SafeLoader)
 
     assert output['dev']['stuff'] == 'things'
 

@@ -51,7 +51,10 @@ def flatten_repo_tree(d, parent_key=''):
 
 
 class MetaGitHook(BaseHook):
-    """Hook to create meta repo."""
+    """Hook to create meta repo.
+
+    :param command: Des...
+    """
 
     __slots__ = ('first_run',)
     # Per https://github.com/samuelcolvin/pydantic/issues/655 for private vars

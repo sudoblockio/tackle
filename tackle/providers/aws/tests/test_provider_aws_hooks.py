@@ -4,13 +4,13 @@
 from tackle.main import tackle
 import pytest
 import boto3
-from botocore.exceptions import ClientError
+from botocore.exceptions import ClientError, NoCredentialsError
 
 
 try:
     sts = boto3.client('sts')
     sts.get_caller_identity()
-except ClientError:
+except (ClientError, NoCredentialsError):
     pytest.skip("Skipping AWS tests due to auth error.", allow_module_level=True)
 
 

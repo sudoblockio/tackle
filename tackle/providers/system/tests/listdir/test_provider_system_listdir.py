@@ -4,7 +4,7 @@
 from tackle.main import tackle
 
 
-def test_provider_system_hook_command(change_dir):
+def test_provider_system_hook_listdir(change_dir):
     """Verify the hook call works properly."""
     output = tackle('.', no_input=True)
 
