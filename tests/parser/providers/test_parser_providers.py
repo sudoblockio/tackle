@@ -8,7 +8,7 @@ import sys
 
 
 @pytest.fixture()
-def temporary_uninstall(package='boto3'):
+def temporary_uninstall(package='art'):
     """Fixture to uninstall a package and install it after the test."""
     subprocess.check_call(
         [
@@ -23,24 +23,13 @@ def temporary_uninstall(package='boto3'):
         ]
     )
     yield
-    subprocess.check_call(
-        [
-            sys.executable,
-            "-m",
-            "pip",
-            "install",
-            "--quiet",
-            "--disable-pip-version-check",
-            package,
-        ]
-    )
 
 
 def test_parser_provider_import_installs_requirements(
     change_curdir_fixtures, temporary_uninstall
 ):
     """Validate that if a package is missing, that it will be installed and usable."""
-    tackle('.', context_file='regions.yaml')
+    tackle('text2art.yaml')
 
 
 def test_parser_hooks_raises_error_on_unknown_hook_type(change_curdir_fixtures):

@@ -485,6 +485,12 @@ def test_generate_directory_with_spaces(tmpdir, change_dir_main_fixtures):
     )
     assert os.path.exists(os.path.join(tmpdir, 'fake-project'))
     assert os.path.exists(os.path.join(tmpdir, 'fake-project', 'fake-project'))
+
+
+def test_generate_directory_without_spaces(tmpdir, change_dir_main_fixtures):
+    """Verify that white spaces are handled properly templating directories/files."""
     tackle(template='fake-repo-pre-tackle', no_input=True, output_dir=str(tmpdir))
-    assert os.path.exists(os.path.join(tmpdir, 'fake-project'))
-    assert os.path.exists(os.path.join(tmpdir, 'fake-project', 'fake-project'))
+    assert os.path.exists(os.path.join(tmpdir, 'fake-project-that'))
+    assert os.path.exists(
+        os.path.join(tmpdir, 'fake-project-that', 'this-fake-project')
+    )

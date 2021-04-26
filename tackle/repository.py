@@ -42,6 +42,24 @@ def is_repo_url(value):
     return bool(REPO_REGEX.match(value))
 
 
+def is_file(value):
+    """Return True if the input looks like a file."""
+    REPO_REGEX = re.compile(
+        r"""^.*\.(yaml|yml|json)$""",
+        re.VERBOSE,
+    )
+    return bool(REPO_REGEX.match(value))
+
+
+# TODO: Allow for abbreviated repo names
+# def update_github_url(url):
+#     """"""
+#     REPO_REGEX = re.compile(
+#         r"""/^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i""",
+#         re.VERBOSE,
+#     )
+
+
 def is_zip_file(value):
     """Return True if value is a zip file."""
     return value.lower().endswith('.zip')
@@ -147,6 +165,7 @@ def update_source(source: 'Source', settings: 'Settings', mode: 'Mode') -> 'Sour
     :raises: `RepositoryNotFound` if a repository directory could not be found.
     """
     source.template = expand_abbreviations(source.template, settings.abbreviations)
+    source.cleanup = False
     if is_zip_file(source.template):
         unzipped_dir = unzip(
             zip_uri=source.template,
@@ -165,13 +184,19 @@ def update_source(source: 'Source', settings: 'Settings', mode: 'Mode') -> 'Sour
             no_input=mode.no_input,
         )
         repository_candidates = [cloned_repo]
-        source.cleanup = False
+    elif is_file(source.template):
+        from pathlib import Path
+
+        source.context_file = os.path.basename(source.template)
+        source.repo_dir = Path(source.template).parent.absolute()
+        source.template_name = os.path.basename(os.path.abspath(source.repo_dir))
+        source.tackle_gen = determine_tackle_generation(source.context_file)
+        return source
     else:
         repository_candidates = [
             source.template,
             os.path.join(settings.tackle_dir, source.template),
         ]
-        source.cleanup = False
 
     if source.directory:
         repository_candidates = [

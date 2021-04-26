@@ -29,7 +29,8 @@ def test_main_tackle_remote(clean_up_output, template, change_dir):
     tackle(template, no_input=True, output_dir='output')
 
 
-def test_main_tackle_generate_simple(change_dir_main_fixtures, clean_up_output):
+def test_main_tackle_generate_simple(change_dir_main_fixtures, clean_up_output, tmpdir):
     """."""
-    tackle('fake-repo-pre-tackle', no_input=True, output_dir='output')
-    assert os.path.isdir('output/fake-project')
+    tackle('fake-repo-pre-tackle', no_input=True, output_dir=str(tmpdir))
+    out_path = os.path.join(tmpdir, 'fake-project-that')
+    assert os.path.isdir(out_path)
