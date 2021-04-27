@@ -19,6 +19,7 @@ from tackle.exceptions import (
 from tackle.hooks import run_hook
 from tackle.utils.paths import rmtree, make_sure_path_exists
 from tackle.utils.context_manager import work_in
+from tackle.render import build_render_context
 
 from typing import TYPE_CHECKING
 
@@ -27,8 +28,10 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+TEMPLATE_DIR_REGEX = r".*\{\{+[\s]?[a-zA-Z0-9_.-]+[\s]?\}\}"
 
-def is_copy_only_path(path, context, context_key='cookiecutter'):
+
+def is_copy_only_path(path, context: 'Context'):
     """Check whether the given `path` should only be copied and not rendered.
 
     Returns True if `path` matches a pattern in the given `context` dict,
@@ -39,7 +42,9 @@ def is_copy_only_path(path, context, context_key='cookiecutter'):
     :param context: cookiecutter context.
     """
     try:
-        for dont_render in context[context_key]['_copy_without_render']:
+        for dont_render in context.input_dict[context.context_key][
+            '_copy_without_render'
+        ]:
             if fnmatch.fnmatch(path, dont_render):
                 return True
     except KeyError:
@@ -135,12 +140,8 @@ def generate_file(project_dir, context: 'Context', output: 'Output'):
 def render_and_create_dir(dirname, context: 'Context', output: 'Output'):
     """Render name of a directory, create the directory, return its path."""
     name_tmpl = output.env.from_string(dirname)
-
-    from tackle.render import build_render_context
-
     render_context = build_render_context(context)
     rendered_dirname = name_tmpl.render(render_context)
-    # rendered_dirname = name_tmpl.render(**context.input_dict)
 
     dir_to_create = os.path.normpath(os.path.join(output.output_dir, rendered_dirname))
 
@@ -166,7 +167,7 @@ def render_and_create_dir(dirname, context: 'Context', output: 'Output'):
 
 def ensure_dir_is_templated(dirname):
     """Ensure that dirname is a templated directory name."""
-    if re.match(r"^\{\{+[\s]?[a-zA-Z0-9_]+[\s]?\}\}$", dirname):
+    if re.match(TEMPLATE_DIR_REGEX, dirname):
         # TODO: Change this so that we find directories and then qualify them for the
         #  target in another function allowing directories of templatable directories.
         return True
@@ -201,7 +202,7 @@ def _run_hook_from_repo_dir(
             raise
 
 
-def find_template(repo_dir, context: 'Context'):
+def find_template(repo_dir):
     """Determine which child directory of `repo_dir` is the project template.
 
     :param input_dict: The input dict to search for keys to match for renderable dirs.
@@ -213,18 +214,9 @@ def find_template(repo_dir, context: 'Context'):
 
     project_template = None
     for item in repo_dir_contents:
-        if context.tackle_gen == 'cookiecutter':
-            if re.match(r"^\{\{+[\s]?[a-zA-Z0-9_]+[\s]?\}\}$", item):
-                project_template = item
-                break
-        else:
-            if (
-                item.strip('{{').strip('}}').strip() in context.output_dict.keys()
-                and '{{' in item  # noqa
-                and '}}' in item  # noqa
-            ):
-                project_template = item
-                break
+        if re.match(TEMPLATE_DIR_REGEX, item):
+            project_template = item
+            break
 
     if project_template:
         project_template = os.path.join(repo_dir, project_template)
@@ -244,7 +236,7 @@ def generate_files(output: 'Output', context: 'Context', source: 'Source'):
         if it exists.
     :param accept_hooks: Accept pre and post hooks if set to `True`.
     """
-    template_dir = find_template(source.repo_dir, context)
+    template_dir = find_template(source.repo_dir)
     if template_dir:
         envvars = context.input_dict.get(context.context_key, {}).get(
             '_jinja2_env_vars', {}
@@ -300,7 +292,7 @@ def generate_files(output: 'Output', context: 'Context', source: 'Source'):
                     # We check the full path, because that's how it can be
                     # specified in the ``_copy_without_render`` setting, but
                     # we store just the dir name
-                    if is_copy_only_path(d_, context.input_dict):
+                    if is_copy_only_path(d_, context):
                         copy_dirs.append(d)
                     else:
                         render_dirs.append(d)
@@ -330,7 +322,7 @@ def generate_files(output: 'Output', context: 'Context', source: 'Source'):
 
                 for f in files:
                     output.infile = os.path.normpath(os.path.join(root, f))
-                    if is_copy_only_path(output.infile, context.input_dict):
+                    if is_copy_only_path(output.infile, context):
                         outfile_tmpl = output.env.from_string(output.infile)
                         outfile_rendered = outfile_tmpl.render(**context.input_dict)
                         outfile = os.path.join(project_dir, outfile_rendered)
