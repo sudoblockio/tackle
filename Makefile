@@ -51,7 +51,7 @@ test-all: ## Run tests on every Python version with tox
 	@echo "+ $@"
 	@tox
 
-.PHONY: test-all
+.PHONY: test-providers
 test-providers: ## Run tests on every Python version with tox
 	@echo "+ $@"
 	@tox -e providers

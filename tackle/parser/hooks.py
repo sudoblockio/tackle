@@ -70,6 +70,12 @@ def run_hook(context: 'Context', mode: 'Mode', source: 'Source'):
             **mode.dict(exclude=exclude_mode),
         )
 
+        # import json
+        # h = json.loads(hook.schema_json())
+        # d = hook.__doc__
+        # from docs.scratch import doc_formatter
+        # doc_formatter(h)
+
         if hook.post_gen_hook:
             return None, hook
         else:
@@ -94,9 +100,7 @@ def _evaluate_confirm(context: 'Context'):
         elif isinstance(context.hook_dict['confirm'], dict):
             when_condition = True
             if 'when' in context.hook_dict['confirm']:
-                when_condition = evaluate_when(
-                    self, self.env, self.cc_dict, self.context_key,  # noqa
-                )
+                when_condition = evaluate_when(context.hook_dict, context)
             if when_condition:
                 return prompt(
                     [
@@ -105,7 +109,8 @@ def _evaluate_confirm(context: 'Context'):
                             'name': 'tmp',
                             'message': context.hook_dict['confirm']['message'],
                             'default': context.hook_dict['confirm']['default']
-                            if 'default' in context.hook_dict['confirm'] else None,
+                            if 'default' in context.hook_dict['confirm']
+                            else None,
                         }
                     ]
                 )['tmp']
@@ -153,8 +158,11 @@ def evaluate_loop(context: 'Context', mode: 'Mode', source: 'Source'):
         context.hook_dict.pop('reverse')
 
     loop_output = []
-    for i, l in enumerate(loop_targets) if not reverse else \
-            reversed(list(enumerate(loop_targets))):
+    for i, l in (
+        enumerate(loop_targets)
+        if not reverse
+        else reversed(list(enumerate(loop_targets)))
+    ):
         # Create temporary variables in the context to be used in the loop.
         context.output_dict.update({'index': i, 'item': l})
         loop_output += [parse_hook(context, mode, source, append_key=True)]
@@ -167,7 +175,10 @@ def evaluate_loop(context: 'Context', mode: 'Mode', source: 'Source'):
 
 
 def parse_hook(
-        context: 'Context', mode: 'Mode', source: 'Source', append_key: bool = False,
+    context: 'Context',
+    mode: 'Mode',
+    source: 'Source',
+    append_key: bool = False,
 ):
     """Parse input dict for loop and when logic and calls hooks.
 
@@ -201,12 +212,16 @@ def parse_hook(
             to_merge, post_gen_hook = run_hook(context, mode, source)
             if not isinstance(to_merge, dict):
                 # TODO: Raise better error with context
-                raise ValueError(f"Error merging output from key='{context.key}' in "
-                                 f"file='{source.context_file}'.")
+                raise ValueError(
+                    f"Error merging output from key='{context.key}' in "
+                    f"file='{source.context_file}'."
+                )
             context.output_dict.update(to_merge)
         else:
             # Normal hook run
-            context.output_dict[context.key], post_gen_hook = run_hook(context, mode, source)
+            context.output_dict[context.key], post_gen_hook = run_hook(
+                context, mode, source
+            )
         if post_gen_hook:
             # TODO: Update this per #4 hook-integration
             context.post_gen_hooks.append(post_gen_hook)

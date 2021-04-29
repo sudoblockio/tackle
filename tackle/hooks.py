@@ -1,4 +1,6 @@
-"""Functions for discovering and executing various cookiecutter hooks."""
+"""
+Functions for discovering and executing various tackle box pre-and post gen hooks.
+"""
 import errno
 import logging
 import os

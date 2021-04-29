@@ -1,6 +1,7 @@
 """Utilities mainly used in helping `modes` like replay and others."""
 import json
 import oyaml as yaml
+
 # import yaml
 import os
 
@@ -34,7 +35,7 @@ def load(replay_dir, template_name, context_key):
     replay_file = get_file_name(replay_dir, template_name)
 
     with open(replay_file, 'r') as infile:
-        context = yaml.load(infile)
+        context = yaml.load(infile, yaml.SafeLoader)
 
     if context_key not in context:
         raise ValueError('Context does not contain the context_key %s' % context_key)

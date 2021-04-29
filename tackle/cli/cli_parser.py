@@ -86,7 +86,10 @@ def list_installed_templates(default_config, passed_config_file):
 
 @click.command(context_settings=dict(help_option_names=['-h', '--help']))
 @click.version_option(__version__, '-V', '--version', message=version_msg())
-@click.argument('template', required=False)
+@click.argument(
+    'template',
+    required=False,
+)
 # @click.argument('extra_context', nargs=-1, callback=input_string_to_dict)
 @click.option(
     u'--context-file',
@@ -120,14 +123,12 @@ def list_installed_templates(default_config, passed_config_file):
     help='Do not prompt for parameters and only use cookiecutter.json file content',
 )
 @click.option(
-    '-c',
-    '--checkout',
-    help='branch, tag or commit to checkout after git clone'
+    '-c', '--checkout', help='branch, tag or commit to checkout after git clone'
 )
 @click.option(
     '--directory',
     help='Directory within repo that holds cookiecutter.json file '
-         'for advanced repositories with multi templates in it',
+    'for advanced repositories with multi templates in it',
 )
 @click.option(
     '-v', '--verbose', is_flag=True, help='Print debug information', default=False
@@ -212,31 +213,31 @@ def list_installed_templates(default_config, passed_config_file):
     '-rt', '--rich-trace', is_flag=True, help='Creates a rich traceback for debugging.'
 )
 def main(
-        template,
-        context_file,
-        context_key,
-        overwrite_inputs,
-        override_inputs,
-        existing_context,
-        no_input,
-        checkout,
-        directory,
-        verbose,
-        replay,
-        replay_file,
-        record,
-        record_file,
-        rerun,
-        rerun_file,
-        overwrite_if_exists,
-        skip_if_file_exists,
-        output_dir,
-        config_file,
-        default_config,
-        debug_file,
-        accept_hooks,
-        list_installed,
-        rich_trace,
+    template,
+    context_file,
+    context_key,
+    overwrite_inputs,
+    override_inputs,
+    existing_context,
+    no_input,
+    checkout,
+    directory,
+    verbose,
+    replay,
+    replay_file,
+    record,
+    record_file,
+    rerun,
+    rerun_file,
+    overwrite_if_exists,
+    skip_if_file_exists,
+    output_dir,
+    config_file,
+    default_config,
+    debug_file,
+    accept_hooks,
+    list_installed,
+    rich_trace,
 ):
     """Create a project from a Tackle modules or Tackle templates."""
     # Set a rich traceback mode for debugging.
@@ -293,13 +294,13 @@ def main(
             calling_directory=os.path.curdir,
         )
     except (
-            OutputDirExistsException,
-            InvalidModeException,
-            FailedHookException,
-            UnknownExtension,
-            InvalidZipRepository,
-            RepositoryNotFound,
-            RepositoryCloneFailed,
+        OutputDirExistsException,
+        InvalidModeException,
+        FailedHookException,
+        UnknownExtension,
+        InvalidZipRepository,
+        RepositoryNotFound,
+        RepositoryCloneFailed,
     ) as e:
         click.echo(e)
         sys.exit(1)
