@@ -1,7 +1,7 @@
 ---
 repos:
   - repo: https://github.com/python/black.git
-    rev: 20.8b1
+    rev: 21.4b2
     hooks:
       - id: black
         language_version: python3
@@ -17,7 +17,7 @@ repos:
       - id: check-merge-conflict
       - id: check-symlinks
   - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.8.4
+    rev: 3.9.1
     hooks:
       - id: flake8
         args: ['--ignore=D106,D102,D107']

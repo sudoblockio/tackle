@@ -5,6 +5,7 @@ import os
 import pytest
 from tackle.main import tackle
 from tackle.utils import timeout, TimeoutError
+from google.auth.exceptions import DefaultCredentialsError
 
 
 @timeout(3)
@@ -17,7 +18,7 @@ def run_provider_gcp_regions():
 
 try:
     run_provider_gcp_regions()
-except (TypeError, TimeoutError):
+except (TypeError, TimeoutError, DefaultCredentialsError):
     # TODO: Validate that this is the right skip test
     pytest.skip("Skipping GCP tests.", allow_module_level=True)
 
