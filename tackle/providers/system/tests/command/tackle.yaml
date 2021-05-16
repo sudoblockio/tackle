@@ -1,7 +1,7 @@
 shell:
   type: shell
-  command: ls
+  command: ls -la
 
 cmd:
   type: command
-  command: ls
+  command: ls -la

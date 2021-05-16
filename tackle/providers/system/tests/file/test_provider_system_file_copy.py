@@ -46,6 +46,8 @@ def test_provider_system_hook_file_shred(change_dir, clean_files):
 def fix_file_perms():
     """Change back file perms."""
     yield
+    if os.name == 'nt':
+        pytest.skip("Skipping when run from windows.", allow_module_level=True)
     os.chmod('tackle.yaml', int('0o644', 8))
 
 

@@ -66,7 +66,7 @@ class TerraformInstallHook(BaseHook):
 
     @staticmethod
     def _get_procesor():
-        if 'x86' in _platform.processor():
+        if 'x86' in _platform.processor() or _platform.system() == 'Windows':
             return 'amd64'
         if '386' in _platform.processor():
             return '386'

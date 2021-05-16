@@ -93,9 +93,9 @@ def test_invalid_config(change_dir):
 
 def test_get_config_with_defaults(change_dir):
     """A config file that overrides 1 of 3 defaults."""
-    conf = get_settings('test-config/valid-partial-config.yaml')
-    default_cookiecutters_dir = os.path.expanduser('~/.tackle/')
-    default_replay_dir = os.path.expanduser('~/.tackle/replay')
+    conf = get_settings(os.path.join('test-config', 'valid-partial-config.yaml'))
+    default_cookiecutters_dir = os.path.join(os.path.expanduser('~/'), '.tackle')
+    default_replay_dir = os.path.join(os.path.expanduser('~/'), '.tackle', 'replay')
     expected_conf = {
         'tackle_dir': default_cookiecutters_dir,
         'replay_dir': default_replay_dir,

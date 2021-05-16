@@ -15,11 +15,18 @@ not_file:
   type: path_exists
   path: this
 
+#files:
+#  type: command
+#  command: |
+#    touch this
+#    touch that
+
 files:
-  type: command
-  command: |
-    touch this
-    touch that
+  type: create_file
+  path:
+    - this
+    - that
+
 
 if_files:
   type: path_exists

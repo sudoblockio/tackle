@@ -28,6 +28,16 @@ def create_directory_tree(src, dst):
         raise NotImplementedError
 
 
+def expand_path(path):
+    """Expand the path for user."""
+    if isinstance(path, str):
+        return os.path.abspath(os.path.expandvars(os.path.expanduser(path)))
+    if isinstance(path, list):
+        return [
+            os.path.abspath(os.path.expandvars(os.path.expanduser(f))) for f in path
+        ]
+
+
 class CopyHook(BaseHook):
     """
     Hook coying a file/files or directory/directories to a location.
@@ -210,10 +220,7 @@ class ChmodHook(BaseHook):
 
     def __init__(self, **data: Any):
         super().__init__(**data)
-        if isinstance(self.path, str):
-            self.path = os.path.abspath(os.path.expanduser(self.path))
-        if isinstance(self.path, list):
-            self.path = [os.path.abspath(os.path.expanduser(f)) for f in self.path]
+        self.path = expand_path(self.path)
 
     def execute(self) -> None:
 
@@ -224,3 +231,27 @@ class ChmodHook(BaseHook):
             os.chmod(path=i, mode=mode)
 
         return None
+
+
+class CreateFileHook(BaseHook):
+    """
+    Hook to create an empty file - like touch.
+
+    :param path: String or list of paths to create.
+    """
+
+    type: str = 'create_file'
+    path: Union[str, list]
+
+    def __init__(self, **data: Any):
+        super().__init__(**data)
+        self.path = expand_path(self.path)
+
+    def execute(self) -> Union[str, list]:
+
+        if isinstance(self.path, str):
+            self.path = [self.path]
+        for i in self.path:
+            Path(i).touch()
+
+        return self.path

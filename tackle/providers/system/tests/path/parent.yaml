@@ -1,5 +1,3 @@
-stuff: things
-
 path_isdir:
   type: path_isdir
   path: a-path
