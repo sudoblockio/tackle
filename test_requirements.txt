@@ -2,6 +2,6 @@ pytest
 pytest-cov
 pytest-mock
 freezegun
-
+flake8
 ptyprocess
 tox

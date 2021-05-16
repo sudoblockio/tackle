@@ -50,6 +50,7 @@ class TimeoutError(Exception):
 
 def timeout(seconds=10, error_message=os.strerror(errno.ETIME)):
     """Timeout for any requests that need decorator."""
+
     def decorator(func):
         def _handle_timeout(signum, frame):
             raise TimeoutError(error_message)

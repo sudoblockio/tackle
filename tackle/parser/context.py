@@ -95,6 +95,7 @@ def parse_context(context: 'Context', mode: 'Mode', source: 'Source'):
 
     return context
 
+
 # TODO: Break this function up
 def prep_context(
     context: 'Context', mode: 'Mode', source: 'Source', settings: 'Settings'

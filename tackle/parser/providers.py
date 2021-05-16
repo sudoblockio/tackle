@@ -87,10 +87,7 @@ def get_provider_from_dir(mod_name, path):
 
 
 def import_hooks_from_dir(
-        mod_name,
-        path,
-        excluded_file_names=None,
-        excluded_file_extensions=None
+    mod_name, path, excluded_file_names=None, excluded_file_extensions=None
 ):
     """Import hooks from a directory.
 
@@ -154,6 +151,7 @@ def import_module_from_path(mod, path):
 def append_provider_dicts(input_providers, context: 'Context', mode: 'Mode'):
     """Update the provider list with a new provider."""
     if isinstance(input_providers, str):
+        # For providers from the context
         input_providers = [input_providers]
     elif isinstance(input_providers, dict):
         raise NotImplementedError(
@@ -193,7 +191,7 @@ def append_provider_dicts(input_providers, context: 'Context', mode: 'Mode'):
 
 
 def get_providers(
-        context: 'Context', source: 'Source', settings: 'Settings', mode: 'Mode'
+    context: 'Context', source: 'Source', settings: 'Settings', mode: 'Mode'
 ) -> ['Provider']:
     """
     Update the source with providers and hooks.

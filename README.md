@@ -10,9 +10,9 @@
 * PyPI: [https://pypi.org/project/tackle-box/](https://pypi.org/project/tackle-box/)
 * Free and open source software: [BSD license](https://github.com/tackle-box/cookiecutter/blob/master/LICENSE)
 
-Tackle box is a DSL for easily creating CLIs, workflows, and generating code from templates. The framework is 
-modular and empowered by a collection of hooks to easily extend functionality through a set of declarative plugins. 
-Based off a fork of [cookiecutter](https://github.com/cookiecutter/cookiecutter), this tool preserves all the 
+Tackle box is a DSL for easily creating CLIs, workflows, and generating code from templates. The framework is
+modular and empowered by a collection of hooks to easily extend functionality through a set of declarative plugins.
+Based off a fork of [cookiecutter](https://github.com/cookiecutter/cookiecutter), this tool preserves all the
 original functionality and extending it with a turing complete yaml based DSL for describing modular workflows.  
 
 ### Quick Demo
@@ -24,9 +24,9 @@ tackle https://github.com/robcxyz/tackle-demos
 
 ### Features
 
-All cookiecutter features are supported in addition to loops, conditionals, and plugins. These features are only 
-available to supplied dictionary objects with a `type` key to trigger the associated [hook](tackle/models.py). Loops 
-and conditionals are triggered by rendering [jinja](https://github.com/pallets/jinja) expressions per the example 
+All cookiecutter features are supported in addition to loops, conditionals, and plugins. These features are only
+available to supplied dictionary objects with a `type` key to trigger the associated [hook](tackle/models.py). Loops
+and conditionals are triggered by rendering [jinja](https://github.com/pallets/jinja) expressions per the example
 below. Other cookiecutters can be called from a single tackle box to knit together modularized components.
 
 `tackle.yaml`
@@ -83,8 +83,7 @@ Prompts are enhanced by extending the functionality from [PyInquirer](https://gi
 
 ### Hooks
 
-[`cookiecuttuer/providers/hooks/print.py`](tackle/operators/print.py)
-
+[`tackle/providers/system/hooks/print.py`](tackle/providers/system/hooks/print.py)
 ```python
 from tackle.models import BaseHook
 from typing import Union
@@ -102,7 +101,7 @@ Hooks are built with pydantic by inheriting from the [BaseHook](tackle/models.py
 
 #### Base Methods
 
-A number of useful methods are available when executing any hook. Here is a breif example of all of them being used.
+A number of useful methods are available when executing any hook. Here is a brief example of all of them being used.
 
 ```yaml
 this:
@@ -115,10 +114,8 @@ this:
   reverse: "{{ some_boolean_variable or condition }}" # Boolean to revers the loop
   when: "{{ index >= 1 }}" # Jinja expression that evaluates to boolean to conditionally use the hook
   else: "{{ some_other_var }}" # Fallback for `when` key if false.  Can also be another hook.  
-  merge: True # Merge the outputs to the upper level context
+  merge: True # Merge the outputs to the upper level context.  Only for dict outputs.
 ```
-
-This hook would change the directory into the `bar` and `baz` directory for execution. For further documentation on base methods, see check out [the docs]().
 
 #### Providers
 
@@ -149,4 +146,4 @@ This is a very early WIP but has long term ambitions of being a sort of swiss ar
 
 This project intends on being an edge release of `cookiecutter` and .  Development in this repository is meant to be a proving ground for features that could be implemented and merged into the original `cookiecutter` repository. Please consider supporting both projects.
 
-This project would not have been possible were it not for the orginal authors of cookiecutter. 
+This project would not have been possible were it not for the orginal authors of cookiecutter.

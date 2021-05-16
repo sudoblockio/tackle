@@ -39,7 +39,7 @@ clean: clean-tox clean-build clean-pyc ## Remove all file artifacts
 .PHONY: lint
 lint: ## Check code style with flake8
 	@echo "+ $@"
-	@tox -e flake8
+	@tox -e lint
 
 .PHONY: test
 test: ## Run tests quickly with the default Python

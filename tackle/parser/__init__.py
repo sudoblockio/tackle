@@ -72,11 +72,11 @@ def _validate_context(context: 'Context', mode: 'Mode'):
 
 
 def update_context(
-        context: 'Context',
-        source: 'Source',
-        mode: 'Mode',
-        settings: 'Settings',
-        providers: 'Providers',
+    context: 'Context',
+    source: 'Source',
+    mode: 'Mode',
+    settings: 'Settings',
+    providers: 'Providers',
 ) -> OrderedDict:
     """Get output dict and entrypoint into broader parsing of context."""
     _validate_context(context, mode)
