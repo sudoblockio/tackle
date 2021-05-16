@@ -13,4 +13,5 @@ def test_special_variables(change_dir):
     assert os.path.basename(output['cwd']) == 'test-special-variables'
     assert len(output) > 12
 
-
+    if output['linux_id_name'] == 'ubuntu':
+        assert 'Ubuntu' in output['lsb_release']

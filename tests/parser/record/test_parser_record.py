@@ -6,6 +6,7 @@ from tackle.main import tackle
 import pytest
 import os
 
+
 @pytest.fixture()
 def clean_outputs():
     """Clean outputs."""
@@ -19,7 +20,11 @@ def clean_outputs():
 @pytest.mark.parametrize("clean_output", ["tackle.record.yaml"], indirect=True)
 def test_parser_record_bool_input(change_dir, clean_output):
     """Verify that when the record flag is set, the output is the ."""
-    o = tackle('.', no_input=True, record=True,)
+    o = tackle(
+        '.',
+        no_input=True,
+        record=True,
+    )
 
     with open(clean_output) as f:
         record_output = yaml.load(f)
@@ -31,7 +36,11 @@ def test_parser_record_bool_input(change_dir, clean_output):
 @pytest.mark.parametrize("clean_output", ["record2.yaml"], indirect=True)
 def test_parser_record_str_input(change_dir, clean_output):
     """Verify the hook call works successfully."""
-    o2 = tackle('.', no_input=True, record=clean_output,)
+    o2 = tackle(
+        '.',
+        no_input=True,
+        record=clean_output,
+    )
 
     with open(clean_output) as f:
         record_output = yaml.load(f)
@@ -82,11 +91,10 @@ def test_parser_record_str_input_and_different_input(change_dir):
         context_file='tackle-other.yaml',
         overwrite_inputs=out_file,
     )
-
-    print()
-
+    assert o2['blah'] == 'stuff'
 
 
-def test_parser_record_cli(tmpdir, change_dir, cli_runner):
-    result = cli_runner('.', '--no-input')
-    print()
+# TODO
+# def test_parser_record_cli(tmpdir, change_dir, cli_runner):
+#     """Make sure the record functionality works."""
+#     cli_runner('.', '--no-input')

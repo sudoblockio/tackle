@@ -32,7 +32,8 @@ def test_parser_contexts_overwrite_inputs_file(change_dir):
     # Also confirm abs path in dir.
     o = tackle(
         no_input=True,
-        overwrite_inputs=os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), overwrite_inputs)
+        overwrite_inputs=os.path.join(
+            os.path.abspath(os.path.dirname(__file__)), overwrite_inputs
+        ),
     )
     assert o['stuff'] == 'dingdongs'

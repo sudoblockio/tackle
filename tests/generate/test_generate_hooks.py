@@ -99,7 +99,8 @@ def test_run_python_hooks_cwd():
     created.
     """
     generate_files_wrapper(
-        context={'cookiecutter': {'pyhooks': 'pyhooks'}}, repo_dir='test-pyhooks/',
+        context={'cookiecutter': {'pyhooks': 'pyhooks'}},
+        repo_dir='test-pyhooks/',
     )
     assert os.path.exists('inputpyhooks/python_pre.txt')
     assert os.path.exists('inputpyhooks/python_post.txt')

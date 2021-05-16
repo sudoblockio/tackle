@@ -19,13 +19,17 @@ def mock_download():
 def test_unzip_local_file(mocker, tmpdir, change_dir_main_fixtures):
     """Local file reference can be unzipped."""
     mock_prompt_and_delete = mocker.patch(
-        'tackle.utils.zipfile.prompt_and_delete', return_value=True, autospec=True,
+        'tackle.utils.zipfile.prompt_and_delete',
+        return_value=True,
+        autospec=True,
     )
 
     clone_to_dir = tmpdir.mkdir('clone')
 
     output_dir = zipfile.unzip(
-        'files/fake-repo-tmpl.zip', is_url=False, clone_to_dir=str(clone_to_dir),
+        'files/fake-repo-tmpl.zip',
+        is_url=False,
+        clone_to_dir=str(clone_to_dir),
     )
 
     assert output_dir.startswith(tempfile.gettempdir())
@@ -37,7 +41,9 @@ def test_unzip_protected_local_file_environment_password(
 ):
     """In `unzip()`, the environment can be used to provide a repo password."""
     mock_prompt_and_delete = mocker.patch(
-        'tackle.utils.zipfile.prompt_and_delete', return_value=True, autospec=True,
+        'tackle.utils.zipfile.prompt_and_delete',
+        return_value=True,
+        autospec=True,
     )
 
     clone_to_dir = tmpdir.mkdir('clone')
@@ -58,7 +64,9 @@ def test_unzip_protected_local_file_bad_environment_password(
 ):
     """In `unzip()`, an error occurs if the environment has a bad password."""
     mocker.patch(
-        'tackle.utils.zipfile.prompt_and_delete', return_value=True, autospec=True,
+        'tackle.utils.zipfile.prompt_and_delete',
+        return_value=True,
+        autospec=True,
     )
 
     clone_to_dir = tmpdir.mkdir('clone')
@@ -77,7 +85,9 @@ def test_unzip_protected_local_file_user_password_with_noinput(
 ):
     """Can't unpack a password-protected repo in no_input mode."""
     mocker.patch(
-        'tackle.utils.zipfile.prompt_and_delete', return_value=True, autospec=True,
+        'tackle.utils.zipfile.prompt_and_delete',
+        return_value=True,
+        autospec=True,
     )
 
     clone_to_dir = tmpdir.mkdir('clone')
@@ -96,7 +106,9 @@ def test_unzip_protected_local_file_user_password(
 ):
     """A password-protected local file reference can be unzipped."""
     mock_prompt_and_delete = mocker.patch(
-        'tackle.utils.zipfile.prompt_and_delete', return_value=True, autospec=True,
+        'tackle.utils.zipfile.prompt_and_delete',
+        return_value=True,
+        autospec=True,
     )
     mocker.patch('tackle.utils.zipfile.read_repo_password', return_value='sekrit')
 
@@ -117,7 +129,9 @@ def test_unzip_protected_local_file_user_bad_password(
 ):
     """Error in `unzip()`, if user can't provide a valid password."""
     mocker.patch(
-        'tackle.utils.zipfile.prompt_and_delete', return_value=True, autospec=True,
+        'tackle.utils.zipfile.prompt_and_delete',
+        return_value=True,
+        autospec=True,
     )
     mocker.patch(
         'tackle.utils.zipfile.read_repo_password',
@@ -137,56 +151,72 @@ def test_unzip_protected_local_file_user_bad_password(
 def test_empty_zip_file(mocker, tmpdir, change_dir_main_fixtures):
     """In `unzip()`, an empty file raises an error."""
     mocker.patch(
-        'tackle.utils.zipfile.prompt_and_delete', return_value=True, autospec=True,
+        'tackle.utils.zipfile.prompt_and_delete',
+        return_value=True,
+        autospec=True,
     )
 
     clone_to_dir = tmpdir.mkdir('clone')
 
     with pytest.raises(InvalidZipRepository):
         zipfile.unzip(
-            'files/empty.zip', is_url=False, clone_to_dir=str(clone_to_dir),
+            'files/empty.zip',
+            is_url=False,
+            clone_to_dir=str(clone_to_dir),
         )
 
 
 def test_non_repo_zip_file(mocker, tmpdir, change_dir_main_fixtures):
     """In `unzip()`, a repository must have a top level directory."""
     mocker.patch(
-        'tackle.utils.zipfile.prompt_and_delete', return_value=True, autospec=True,
+        'tackle.utils.zipfile.prompt_and_delete',
+        return_value=True,
+        autospec=True,
     )
 
     clone_to_dir = tmpdir.mkdir('clone')
 
     with pytest.raises(InvalidZipRepository):
         zipfile.unzip(
-            'files/not-a-repo.zip', is_url=False, clone_to_dir=str(clone_to_dir),
+            'files/not-a-repo.zip',
+            is_url=False,
+            clone_to_dir=str(clone_to_dir),
         )
 
 
 def test_bad_zip_file(mocker, tmpdir, change_dir_main_fixtures):
     """In `unzip()`, a corrupted zip file raises an error."""
     mocker.patch(
-        'tackle.utils.zipfile.prompt_and_delete', return_value=True, autospec=True,
+        'tackle.utils.zipfile.prompt_and_delete',
+        return_value=True,
+        autospec=True,
     )
 
     clone_to_dir = tmpdir.mkdir('clone')
 
     with pytest.raises(InvalidZipRepository):
         zipfile.unzip(
-            'files/bad-zip-file.zip', is_url=False, clone_to_dir=str(clone_to_dir),
+            'files/bad-zip-file.zip',
+            is_url=False,
+            clone_to_dir=str(clone_to_dir),
         )
 
 
 def test_unzip_url(mocker, tmpdir, change_dir_main_fixtures):
     """In `unzip()`, a url will be downloaded and unzipped."""
     mock_prompt_and_delete = mocker.patch(
-        'tackle.utils.zipfile.prompt_and_delete', return_value=True, autospec=True,
+        'tackle.utils.zipfile.prompt_and_delete',
+        return_value=True,
+        autospec=True,
     )
 
     request = mocker.MagicMock()
     request.iter_content.return_value = mock_download()
 
     mocker.patch(
-        'tackle.utils.zipfile.requests.get', return_value=request, autospec=True,
+        'tackle.utils.zipfile.requests.get',
+        return_value=request,
+        autospec=True,
     )
 
     clone_to_dir = tmpdir.mkdir('clone')
@@ -204,14 +234,18 @@ def test_unzip_url(mocker, tmpdir, change_dir_main_fixtures):
 def test_unzip_url_existing_cache(mocker, tmpdir, change_dir_main_fixtures):
     """Url should be downloaded and unzipped, old zip file will be removed."""
     mock_prompt_and_delete = mocker.patch(
-        'tackle.utils.zipfile.prompt_and_delete', return_value=True, autospec=True,
+        'tackle.utils.zipfile.prompt_and_delete',
+        return_value=True,
+        autospec=True,
     )
 
     request = mocker.MagicMock()
     request.iter_content.return_value = mock_download()
 
     mocker.patch(
-        'tackle.utils.zipfile.requests.get', return_value=request, autospec=True,
+        'tackle.utils.zipfile.requests.get',
+        return_value=request,
+        autospec=True,
     )
 
     clone_to_dir = tmpdir.mkdir('clone')
@@ -236,7 +270,9 @@ def test_unzip_url_existing_cache_no_input(mocker, tmpdir, change_dir_main_fixtu
     request.iter_content.return_value = mock_download()
 
     mocker.patch(
-        'tackle.utils.zipfile.requests.get', return_value=request, autospec=True,
+        'tackle.utils.zipfile.requests.get',
+        return_value=request,
+        autospec=True,
     )
 
     clone_to_dir = tmpdir.mkdir('clone')
@@ -258,11 +294,14 @@ def test_unzip_url_existing_cache_no_input(mocker, tmpdir, change_dir_main_fixtu
 def test_unzip_should_abort_if_no_redownload(mocker, tmpdir, change_dir_main_fixtures):
     """Should exit without cloning anything If no redownload."""
     mocker.patch(
-        'tackle.utils.zipfile.prompt_and_delete', side_effect=SystemExit, autospec=True,
+        'tackle.utils.zipfile.prompt_and_delete',
+        side_effect=SystemExit,
+        autospec=True,
     )
 
     mock_requests_get = mocker.patch(
-        'tackle.utils.zipfile.requests.get', autospec=True,
+        'tackle.utils.zipfile.requests.get',
+        autospec=True,
     )
 
     clone_to_dir = tmpdir.mkdir('clone')

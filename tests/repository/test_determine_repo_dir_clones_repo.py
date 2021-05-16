@@ -25,7 +25,9 @@ def test_zipfile_unzip(
     is passed a zipfile, or a URL to a zipfile.
     """
     mock_clone = mocker.patch(
-        'tackle.repository.unzip', return_value='fake-repo-tmpl', autospec=True,
+        'tackle.repository.unzip',
+        return_value='fake-repo-tmpl',
+        autospec=True,
     )
 
     source, mode, settings = update_source_fixtures(
@@ -69,7 +71,9 @@ def test_repository_url_should_clone(
     passed a repository template url.
     """
     mock_clone = mocker.patch(
-        'tackle.repository.clone', return_value='fake-repo-tmpl', autospec=True,
+        'tackle.repository.clone',
+        return_value='fake-repo-tmpl',
+        autospec=True,
     )
 
     source, mode, settings = update_source_fixtures(
@@ -98,7 +102,9 @@ def test_repository_url_with_no_context_file(
 ):
     """Verify cloned repository without `cookiecutter.json` file raises error."""
     mocker.patch(
-        'tackle.repository.clone', return_value='fake-repo-bad', autospec=True,
+        'tackle.repository.clone',
+        return_value='fake-repo-bad',
+        autospec=True,
     )
 
     with pytest.raises(exceptions.RepositoryNotFound) as err:

@@ -2,9 +2,9 @@
 
 """Tests dict input objects for `cookiecutter.operator.aws.azs` module."""
 
-import os
-import yaml
-from tackle.main import tackle
+# import os
+# import yaml
+# from tackle.main import tackle
 
 
 # def test_block_context(monkeypatch, tmpdir):

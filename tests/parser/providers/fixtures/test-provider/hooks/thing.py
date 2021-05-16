@@ -1,3 +1,4 @@
+"""Example."""
 from tackle.models import BaseHook
 
 

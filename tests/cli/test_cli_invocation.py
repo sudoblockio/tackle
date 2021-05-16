@@ -15,6 +15,7 @@ FAKE_REPO = 'fake-repo-pre'
 
 @pytest.fixture()
 def clean_output(change_dir_main_fixtures):
+    """Clean outputs."""
     if os.path.isdir('fake-project-templated'):
         rmtree('fake-project-templated')
     yield
@@ -69,7 +70,10 @@ def test_default_user_config_overwrite(
     mock = mocker.patch('tackle.cli.cli_parser.tackle')
 
     result = cli_runner(
-        FAKE_REPO, '--config-file', user_config_path, '--default-config',
+        FAKE_REPO,
+        '--config-file',
+        user_config_path,
+        '--default-config',
     )
 
     assert result.exit_code == 0

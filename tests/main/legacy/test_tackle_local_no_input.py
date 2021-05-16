@@ -146,7 +146,9 @@ def test_cookiecutter_template_cleanup(change_dir_main_fixtures, mocker):
     mocker.patch('tempfile.mkdtemp', return_value='fake-tmp', autospec=True)
 
     mocker.patch(
-        'tackle.utils.prompts.prompt_and_delete', return_value=True, autospec=True,
+        'tackle.utils.prompts.prompt_and_delete',
+        return_value=True,
+        autospec=True,
     )
 
     main.tackle('files/fake-repo-tmpl.zip', no_input=True)

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """Tests dict input objects for `cookiecutter.operator.lists` module."""
-import os
-from tackle.main import tackle
+# import os
+# from tackle.main import tackle
 
 
 # def test_parser_replay(change_dir):

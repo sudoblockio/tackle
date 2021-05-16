@@ -1,12 +1,11 @@
 """Collection of tests around cookiecutter's replay feature."""
 
-import os
 from tackle.main import tackle
 
 
 # TODO: Fix with replay
 # def test_replay_dump_template_name(
-#     monkeypatch, mocker, user_config_data, user_config_file
+#     monkeypatch, mocker, user_config_data, user_config_file, change_dir_main_fixtures
 # ):
 #     """Check that replay_dump is called with a valid template_name.
 #
@@ -19,18 +18,10 @@ from tackle.main import tackle
 #     Change the current working directory temporarily to 'tests/legacy/fixtures/fake-repo-tmpl'
 #     for this test and call cookiecutter with '.' for the target template.
 #     """
-#     monkeypatch.chdir(
-#         os.path.join(
-#             os.path.abspath(os.path.dirname(__file__)),
-#             '..',
-#             'legacy',
-#             'fixtures',
-#             'fake-repo-tmpl',
-#         )
-#     )
+#     monkeypatch.chdir('fake-repo-tmpl')
 #
-#     mock_replay_dump = mocker.patch('cookiecutter.main.dump')
-#     mocker.patch('cookiecutter.main.generate_files')
+#     mock_replay_dump = mocker.patch('tackle.utils.files.dump')
+#     mocker.patch('tackle.generate.generate_files')
 #
 #     tackle(
 #         '.', no_input=True, replay=False, config_file=user_config_file,

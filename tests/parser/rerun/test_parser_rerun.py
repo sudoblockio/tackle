@@ -24,8 +24,10 @@ from tackle.exceptions import UnknownHookTypeException
 
 RERUN_FILE = '.rerun.rerun.yml'
 
+
 @pytest.fixture()
 def clean_rerun():
+    """Clean outputs."""
     yield
     if os.path.isfile(RERUN_FILE):
         os.remove(RERUN_FILE)

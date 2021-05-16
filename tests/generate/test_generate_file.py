@@ -64,7 +64,10 @@ def generate_file_wrapper(project_dir, infile, context, skip_if_file_exists=Fals
         input_dict=OrderedDict(context),
         output_dict=OrderedDict(context['cookiecutter']),
     )
-    o = Output(infile=infile, skip_if_file_exists=skip_if_file_exists,)
+    o = Output(
+        infile=infile,
+        skip_if_file_exists=skip_if_file_exists,
+    )
 
     envvars = c.input_dict.get(c.context_key, {}).get('_jinja2_env_vars', {})
     o.env = StrictEnvironment(

@@ -29,7 +29,7 @@ def test_cli_version(cli_runner, version_cli_flag):
 
 
 def test_cli_error_on_existing_output_directory(
-        change_dir_main_fixtures, cli_runner, remove_fake_project_dir
+    change_dir_main_fixtures, cli_runner, remove_fake_project_dir
 ):
     """Test cli invocation without `overwrite-if-exists` fail if dir exist."""
     if not os.path.isdir('fake-project'):
@@ -96,7 +96,7 @@ def test_cli_verbose(change_dir_main_fixtures, remove_fake_project_dir, cli_runn
 
 @pytest.mark.usefixtures('remove_fake_project_dir')
 def test_cli_overwrite_if_exists_when_output_dir_does_not_exist(
-        cli_runner, overwrite_cli_flag, change_dir_main_fixtures
+    cli_runner, overwrite_cli_flag, change_dir_main_fixtures
 ):
     """Test cli invocation with `overwrite-if-exists` and `no-input` flags.
 
@@ -109,7 +109,7 @@ def test_cli_overwrite_if_exists_when_output_dir_does_not_exist(
 
 
 def test_cli_overwrite_if_exists_when_output_dir_exists(
-        cli_runner, remove_fake_project_dir, overwrite_cli_flag, change_dir_main_fixtures
+    cli_runner, remove_fake_project_dir, overwrite_cli_flag, change_dir_main_fixtures
 ):
     """Test cli invocation with `overwrite-if-exists` and `no-input` flags.
 
@@ -147,7 +147,7 @@ def user_config_path(tmpdir):
     reason="Outdated pypy3 version on Travis CI/CD with wrong OrderedDict syntax.",
 )
 def test_echo_undefined_variable_error(
-        monkeypatch, tmpdir, cli_runner, change_dir_main_fixtures
+    monkeypatch, tmpdir, cli_runner, change_dir_main_fixtures
 ):
     """Cli invocation return error if variable undefined in template."""
     output_dir = str(tmpdir.mkdir('output'))
@@ -183,7 +183,7 @@ def test_echo_unknown_extension_error(tmpdir, cli_runner, change_dir_main_fixtur
 
 
 def test_cli_extra_context(
-        cli_runner, change_dir_main_fixtures, remove_fake_project_dir
+    cli_runner, change_dir_main_fixtures, remove_fake_project_dir
 ):
     """Cli invocation replace content if called with replacement pairs."""
     result = cli_runner(
@@ -200,7 +200,7 @@ def test_cli_extra_context(
 
 
 def test_cli_extra_contexts(
-        cli_runner, change_dir_main_fixtures, remove_fake_project_dir
+    cli_runner, change_dir_main_fixtures, remove_fake_project_dir
 ):
     """Cli invocation replace content if called with replacement pairs."""
     result = cli_runner(
@@ -233,8 +233,9 @@ def test_cli_extra_contexts(
 #     assert "Error: Invalid value for" in result.output
 #     assert 'should contain items of the form key=value' in result.output
 
+
 def test_cli_overwrite_context_invalid_path(
-        cli_runner, change_dir_main_fixtures, remove_fake_project_dir
+    cli_runner, change_dir_main_fixtures, remove_fake_project_dir
 ):
     """Cli invocation raise error if called with unknown path argument."""
     result = cli_runner(
@@ -248,7 +249,7 @@ def test_cli_overwrite_context_invalid_path(
 
 
 def test_cli_overwrite_context_valid_path(
-        cli_runner, change_dir_main_fixtures, remove_fake_project_dir
+    cli_runner, change_dir_main_fixtures, remove_fake_project_dir
 ):
     """Cli invocation with path arg to overwrite_context."""
     result = cli_runner(
@@ -271,7 +272,7 @@ def debug_file(tmpdir):
 
 
 def test_debug_file_non_verbose(
-        cli_runner, debug_file, change_dir_main_fixtures, remove_fake_project_dir
+    cli_runner, debug_file, change_dir_main_fixtures, remove_fake_project_dir
 ):
     """Test cli invocation writes log to `debug-file` if flag enabled.
 
@@ -287,7 +288,7 @@ def test_debug_file_non_verbose(
 
 
 def test_debug_file_verbose(
-        cli_runner, debug_file, change_dir_main_fixtures, remove_fake_project_dir
+    cli_runner, debug_file, change_dir_main_fixtures, remove_fake_project_dir
 ):
     """Test cli invocation writes log to `debug-file` if flag enabled.
 

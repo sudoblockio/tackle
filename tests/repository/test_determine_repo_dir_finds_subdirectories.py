@@ -62,10 +62,9 @@ def test_local_repo_typo(template, user_config_data, cloned_cookiecutter_path):
             directory='wrong-dir',
         )
         repository.update_source(source=source, mode=mode, settings=settings)
-    assert 'A valid repository for "{}" could not be found in the following ' 'locations:'.format(
-        template
-    ) in str(
-        err.value
+    assert (
+        'A valid repository for "{}" could not be found in the following '
+        'locations:'.format(template) in str(err.value)
     )
 
     # wrong_full_cookiecutter_path = os.path.join(
