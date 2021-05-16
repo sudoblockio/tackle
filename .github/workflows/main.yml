@@ -35,10 +35,10 @@ jobs:
 
         include:
           # TODO: Get this to pass manually before putting back in CI
-#          - name: "linting"
-#            python: "3.8"
-#            os: ubuntu-latest
-#            tox_env: "lint"
+          #          - name: "linting"
+          #            python: "3.8"
+          #            os: ubuntu-latest
+          #            tox_env: "lint"
 
           - name: "ubuntu-py36"
             python: "3.6"
@@ -88,14 +88,14 @@ jobs:
             tox_env: "py38"
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python }}
-      uses: actions/setup-python@v1
-      with:
-        python-version: ${{ matrix.python }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install tox virtualenv
-    - name: Test build
-      run: "tox -e ${{ matrix.tox_env }}"
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install tox virtualenv
+      - name: Test build
+        run: "tox -e ${{ matrix.tox_env }}"
