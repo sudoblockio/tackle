@@ -1,7 +1,7 @@
 """test_load."""
-import yaml
 import os
 
+import yaml
 import pytest
 
 from tackle.utils import files
@@ -53,8 +53,8 @@ def test_run_json_load(
     is correctly loaded from the file in replay_dir."""
     spy_get_replay_file = mocker.spy(files, 'get_file_name')
     assert not mock_user_config.called
-    loaded_context = files.load(replay_test_dir, template_name, 'cookiecutter')
-    mock_json_load = mocker.patch('yaml.load', side_effect=yaml.load)
+    files.load(replay_test_dir, template_name, 'cookiecutter')
+    mocker.patch('yaml.load', side_effect=yaml.load)
     spy_get_replay_file.assert_called_once_with(replay_test_dir, template_name)
 
     # assert mock_json_load.call_count == 1

@@ -10,7 +10,6 @@ import pytest
 
 from tackle.utils import paths
 from tackle import exceptions
-from tackle import generate
 from tackle.main import tackle
 
 

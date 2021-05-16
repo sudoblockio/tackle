@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 class TerraformVersionsHook(BaseHook):
     """
     Hook that reads an input hcl file and prompts user to fill in.
+
     :param :
     :return:
     """
@@ -35,8 +36,8 @@ class TerraformVersionsHook(BaseHook):
     def execute(self):
         response = requests.get("https://releases.hashicorp.com/terraform/")
         versions = []
-        for l in response.text.split('\n'):
-            match = re.search("\/(\d+\.\d+\.\d+)(-[a-zA-z]+\d*)?\/", l)  # noqa
+        for version in response.text.split('\n'):
+            match = re.search("\/(\d+\.\d+\.\d+)(-[a-zA-z]+\d*)?\/", version)  # noqa
             if match:
                 versions.append(match.group(1))
 
@@ -49,6 +50,7 @@ class TerraformVersionsHook(BaseHook):
 class TerraformInstallHook(BaseHook):
     """
     Hook that reads an input hcl file and prompts user to fill in.
+
     :param :
     :return:
     """

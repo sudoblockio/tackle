@@ -51,7 +51,7 @@ class GitCloneHook(BaseHook):
         if not self.to_path:
             self.to_path = self.url.split('/')[-1].split('.')[0]
         if self.url:
-            cloned_repo = Repo.clone_from(
+            Repo.clone_from(
                 url=self.url,
                 to_path=self.to_path,
                 progress=self.progress,

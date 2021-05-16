@@ -1,5 +1,5 @@
 """Tests around handling repositories which require authentication."""
-from tackle.utils.zipfile import read_repo_password
+# from tackle.utils.zipfile import read_repo_password
 
 
 # def test_click_invocation(mocker):

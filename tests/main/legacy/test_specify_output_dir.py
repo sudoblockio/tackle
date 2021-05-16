@@ -1,8 +1,6 @@
 """Tests for cookiecutter's output directory customization feature."""
 import pytest
 
-from tackle import main
-
 
 @pytest.fixture
 def context():

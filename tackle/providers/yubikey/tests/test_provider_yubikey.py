@@ -1,6 +1,5 @@
-# # -*- coding: utf-8 -*-
-#
-# """Tests dict input objects for `tackle.providers.yubikey.hooks.yubikey` module."""
+# -*- coding: utf-8 -*-
+"""Tests dict input objects for `tackle.providers.yubikey.hooks.yubikey` module."""
 # import pytest
 # import os
 # from tackle.main import tackle
