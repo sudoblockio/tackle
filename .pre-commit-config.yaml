@@ -20,9 +20,9 @@ repos:
     rev: 3.9.1
     hooks:
       - id: flake8
-        args: ['--ignore=D106,D102,D107,E501,W503 --exclude=.git,__pycache__,docs,build,dist,tests/main/fixtures/hooks-abort-render/hooks']
-#          - '--ignore=D106,D102,D107,E501,W503'
-#          - '--exclude=.git,__pycache__,docs,build,dist,tests/main/fixtures/hooks-abort-render/hooks'
+        args:
+          - '--ignore=D106,D102,D107,E501,W503'
+          - '--exclude=.git,__pycache__,docs,build,dist,tests/main/fixtures/hooks-abort-render/hooks'
         additional_dependencies:
           - flake8-absolute-import
           - flake8-black

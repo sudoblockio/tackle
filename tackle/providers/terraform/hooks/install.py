@@ -100,7 +100,7 @@ class TerraformInstallHook(BaseHook):
         elif _platform.system() == 'Windows':
             self.platform = '_'.join(['windows', processor])
         elif _platform.system() == 'Darwin':
-            self.platform = '_'.join(['darwin', processor])
+            self.platform = '_'.join(['darwin', 'amd64'])
 
         # Not invoked unless flagged
         if self.platform_choose:

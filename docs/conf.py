@@ -16,6 +16,7 @@
 import os
 import sys
 
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -51,7 +52,6 @@ class Mock(object):
 MOCK_MODULES = ['yaml']
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = Mock()
-
 
 # Add parent dir to path
 cwd = os.getcwd()
@@ -227,7 +227,6 @@ html_static_path = []
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'tackleboxdoc'
 
-
 # -- Options for LaTeX output -------------------------------------------------
 
 latex_elements = {
@@ -242,7 +241,13 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual])
 latex_documents = [
-    ('index', 'tackle.tex', 'Tackle Box Documentation', 'Rob Cannon', 'manual',),
+    (
+        'index',
+        'tackle.tex',
+        'Tackle Box Documentation',
+        'Rob Cannon',
+        'manual',
+    ),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -270,7 +275,15 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [('index', 'tackle-box', 'Tackle Box Documentation', ['Rob Cannon'], 1,)]
+man_pages = [
+    (
+        'index',
+        'tackle-box',
+        'Tackle Box Documentation',
+        ['Rob Cannon'],
+        1,
+    )
+]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False

@@ -17,12 +17,12 @@ def run_provider_gcp_regions():
 
 
 try:
-    if os.name != 'nt':
+    if os.name == 'nt':
         # https://github.com/geometry-labs/tackle-box/runs/2592830572?check_suite_focus=true#step:5:217
         # https://stackoverflow.com/questions/52779920/why-is-signal-sigalrm-not-working-in-python-on-windows
         pytest.skip("Skipping GCP tests on windows.", allow_module_level=True)
     run_provider_gcp_regions()
-except (TypeError, TimeoutError, DefaultCredentialsError):
+except (TypeError, AttributeError, TimeoutError, DefaultCredentialsError):
     # TODO: Validate that this is the right skip test
     pytest.skip("Skipping GCP tests.", allow_module_level=True)
 
