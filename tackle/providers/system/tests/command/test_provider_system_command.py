@@ -15,8 +15,8 @@ def test_provider_system_hook_command(change_dir):
     """Verify the hook call works properly."""
     context = tackle(no_input=True)
 
-    assert 'tackle.yaml' in context['shell']
     assert 'tackle.yaml' in context['cmd']
+    assert 'tackle.yaml' in context['shell']
 
 
 def test_provider_system_hook_command_multi_line(change_dir):

@@ -142,7 +142,7 @@ def get_hook(hook_type, context: 'Context'):
 
 def import_module_from_path(mod, path):
     """Import a module from a path presumably with hooks in it."""
-    logger.debug(f"Importing module from path={path} as mod={mod}")
+    # logger.debug(f"Importing module from path={path} as mod={mod}")
     loader = importlib.machinery.SourceFileLoader(mod, path)
     mod = loader.load_module()
     return mod
