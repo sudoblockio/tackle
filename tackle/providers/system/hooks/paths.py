@@ -100,8 +100,9 @@ class FindInChildHook(BaseHook):
         """Run the prompt."""
         files = []
         for (dirpath, dirnames, filenames) in os.walk(self.starting_dir):
-            files += [os.path.join(dirpath, file) for file
-                      in filenames if file == self.target]
+            files += [
+                os.path.join(dirpath, file) for file in filenames if file == self.target
+            ]
 
         if len(files) == 0:
             return self.fallback

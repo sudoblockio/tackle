@@ -193,9 +193,6 @@ class ShredHook(BaseHook):
             wipe(i, self.passes)
 
 
-
-
-
 class ChmodHook(BaseHook):
     """
     Hook removing a file or directory.

@@ -33,7 +33,11 @@ def test_provider_digitalocean_hooks_instance_meta(change_dir):
 
 def test_provider_digitalocean_hooks_instance_meta_instance_family(change_dir):
     """Verify Jinja2 time extension work correctly."""
-    context = tackle('.', context_file='instance_family.yaml', no_input=True,)
+    context = tackle(
+        '.',
+        context_file='instance_family.yaml',
+        no_input=True,
+    )
 
     assert len(context['instance_types']) > 1
     assert len(context['instance_types']) < 20

@@ -103,7 +103,10 @@ class GcpInstanceTypesHook(BaseHook):
             instances = [
                 item['name']
                 for item in client.machineTypes()
-                .list(project=self.gcp_project, zone=self.zone,)
+                .list(
+                    project=self.gcp_project,
+                    zone=self.zone,
+                )
                 .execute['items']
             ]
 
@@ -119,7 +122,11 @@ class GcpInstanceTypesHook(BaseHook):
             instances = [
                 item['name']
                 for item in client.machineTypes()
-                .list(project=self.gcp_project, zone=self.zone, filter=query,)
+                .list(
+                    project=self.gcp_project,
+                    zone=self.zone,
+                    filter=query,
+                )
                 .execute['items']
             ]
 

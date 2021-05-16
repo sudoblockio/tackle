@@ -66,4 +66,5 @@ class VarHook(BaseHook):
 # TODO: Keep till 0.2+
 class StatHook(VarHook, BaseHook):
     """Temporary holder."""
+
     type: str = 'stat'

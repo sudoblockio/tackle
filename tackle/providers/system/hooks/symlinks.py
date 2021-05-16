@@ -39,13 +39,18 @@ class SymlinkHook(BaseHook):
     def execute(self) -> None:
         """Run the hook."""
         if self.overwrite and os.path.islink(self.dst):
-            os.symlink(self.src, ''.join([self.dst, '.tmp']),
-                       target_is_directory=self.target_is_directory)
+            os.symlink(
+                self.src,
+                ''.join([self.dst, '.tmp']),
+                target_is_directory=self.target_is_directory,
+            )
             os.rename(self.dst + '.tmp', self.dst)
         elif self.overwrite and os.path.isfile(self.dst):
             os.remove(self.dst)
-            os.symlink(src=self.src, dst=self.dst,
-                       target_is_directory=self.target_is_directory)
+            os.symlink(
+                src=self.src, dst=self.dst, target_is_directory=self.target_is_directory
+            )
         else:
-            os.symlink(src=self.src, dst=self.dst,
-                       target_is_directory=self.target_is_directory)
+            os.symlink(
+                src=self.src, dst=self.dst, target_is_directory=self.target_is_directory
+            )

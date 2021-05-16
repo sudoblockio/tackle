@@ -47,10 +47,9 @@ class CommandHook(BaseHook):
     ignore_error: bool = False
 
     def execute(self):
-        p = subprocess.Popen(self.command,
-                             shell=True,
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE)
+        p = subprocess.Popen(
+            self.command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
         output, err = p.communicate()
 
         if err and not self.ignore_error:
@@ -78,7 +77,10 @@ class ShellHook(BaseHook):
 
     def _set_size(self, fd):
         """Found at: https://stackoverflow.com/a/6420070."""
-        _COLUMNS, _ROWS, = shutil.get_terminal_size(fallback=(80, 20))
+        (
+            _COLUMNS,
+            _ROWS,
+        ) = shutil.get_terminal_size(fallback=(80, 20))
         size = struct.pack("HHHH", _ROWS, _COLUMNS, 0, 0)
         fcntl.ioctl(fd, termios.TIOCSWINSZ, size)
 

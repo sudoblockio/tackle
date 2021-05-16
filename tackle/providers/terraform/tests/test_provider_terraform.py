@@ -18,6 +18,7 @@ from tackle.utils.paths import rmtree
 
 @pytest.fixture()
 def clean_up_tf():
+    """Clean up outputs."""
     yield
     output_files = ["terraform0.13.6", "testing-path"]
     for o in output_files:

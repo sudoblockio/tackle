@@ -40,7 +40,9 @@ class BlockHook(BaseHook):
         source = Source()
 
         output = tkl.parser.context.parse_context(
-            context=context, mode=mode, source=source,
+            context=context,
+            mode=mode,
+            source=source,
         )
 
         return dict(output.output_dict)
