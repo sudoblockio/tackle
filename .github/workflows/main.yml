@@ -34,11 +34,10 @@ jobs:
           - "windows-py38"
 
         include:
-          # TODO: Get this to pass manually before putting back in CI
-          #          - name: "linting"
-          #            python: "3.8"
-          #            os: ubuntu-latest
-          #            tox_env: "lint"
+          - name: "linting"
+            python: "3.8"
+            os: ubuntu-latest
+            tox_env: "lint"
 
           - name: "ubuntu-py36"
             python: "3.6"
