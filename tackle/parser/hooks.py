@@ -14,12 +14,12 @@ from tackle.models import BaseHook
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from tackle.models import Mode, Context, Source
+    from tackle.models import Context
 
 logger = logging.getLogger(__name__)
 
 
-def raise_hook_validation_error(e, Hook, context: 'Context', source: 'Source'):
+def raise_hook_validation_error(e, Hook, context: 'Context'):
     """Raise more clear of an error when pydantic fails to parse an object."""
     if 'extra fields not permitted' in e.__repr__():
         # Return all the fields in the hook by removing all the base fields.
@@ -32,7 +32,7 @@ def raise_hook_validation_error(e, Hook, context: 'Context', source: 'Source'):
         )
         error_out = (
             f"Error: The field \"{e.raw_errors[0]._loc}\" is not permitted in "
-            f"file=\"{source.context_file}\" and key=\"{context.key}\".\n"
+            f"file=\"{context.context_file}\" and key=\"{context.key}\".\n"
             f"Only values accepted are {fields}, (plus base fields --> "
             f"type, when, loop, chdir, merge)"
         )
@@ -47,7 +47,7 @@ def raise_hook_validation_error(e, Hook, context: 'Context', source: 'Source'):
         raise e
 
 
-def run_hook(context: 'Context', mode: 'Mode', source: 'Source'):
+def run_hook(context: 'Context'):
     """Run hook."""
     if context.input_dict is None:
         context.input_dict = {}
@@ -61,13 +61,13 @@ def run_hook(context: 'Context', mode: 'Mode', source: 'Source'):
             i for i in context.dict().keys() if i in context.hook_dict.keys()
         }
         exclude_context.update({'env'})
-        exclude_mode = {i for i in mode.dict().keys() if i in context.hook_dict.keys()}
-        exclude_mode = exclude_mode if exclude_mode != set() else {'tmp'}
+        # exclude_mode = {i for i in mode.dict().keys() if i in context.hook_dict.keys()}
+        # exclude_mode = exclude_mode if exclude_mode != set() else {'tmp'}
 
         hook = Hook(
             **context.hook_dict,
             **context.dict(exclude=exclude_context),
-            **mode.dict(exclude=exclude_mode),
+            # **mode.dict(exclude=exclude_mode),
         )
 
         # import json
@@ -82,7 +82,7 @@ def run_hook(context: 'Context', mode: 'Mode', source: 'Source'):
             return hook.call(), None
 
     except ValidationError as e:
-        raise_hook_validation_error(e, Hook, context, source=source)
+        raise_hook_validation_error(e, Hook, context)
 
 
 def _evaluate_confirm(context: 'Context'):
@@ -140,7 +140,7 @@ def evaluate_when(hook_dict: dict, context: 'Context'):
     return when_condition
 
 
-def evaluate_loop(context: 'Context', mode: 'Mode', source: 'Source'):
+def evaluate_loop(context: 'Context'):
     """Run the parse_hook function in a loop and return a list of outputs."""
     loop_targets = render_variable(context, context.hook_dict['loop'])
     context.hook_dict.pop('loop')
@@ -165,7 +165,7 @@ def evaluate_loop(context: 'Context', mode: 'Mode', source: 'Source'):
     ):
         # Create temporary variables in the context to be used in the loop.
         context.output_dict.update({'index': i, 'item': l})
-        loop_output += [parse_hook(context, mode, source, append_key=True)]
+        loop_output += [parse_hook(context, append_key=True)]
 
     # Remove temp variables
     context.output_dict.pop('item')
@@ -176,8 +176,6 @@ def evaluate_loop(context: 'Context', mode: 'Mode', source: 'Source'):
 
 def parse_hook(
     context: 'Context',
-    mode: 'Mode',
-    source: 'Source',
     append_key: bool = False,
 ):
     """Parse input dict for loop and when logic and calls hooks.
@@ -198,7 +196,7 @@ def parse_hook(
         # Extract loop
         if 'loop' in context.hook_dict:
             # This runs the current function in a loop and returns a list of results
-            return evaluate_loop(context=context, mode=mode, source=source)
+            return evaluate_loop(context=context)
 
         # Block hooks are run independently. This prevents rest of the hook dict from
         # being rendered,
@@ -209,19 +207,17 @@ def parse_hook(
         if context.hook_dict['merge'] if 'merge' in context.hook_dict else False:
             # Merging is for dict outputs only where the entire dict is inserted into the
             # output dictionary.
-            to_merge, post_gen_hook = run_hook(context, mode, source)
+            to_merge, post_gen_hook = run_hook(context)
             if not isinstance(to_merge, dict):
                 # TODO: Raise better error with context
                 raise ValueError(
                     f"Error merging output from key='{context.key}' in "
-                    f"file='{source.context_file}'."
+                    f"file='{context.context_file}'."
                 )
             context.output_dict.update(to_merge)
         else:
             # Normal hook run
-            context.output_dict[context.key], post_gen_hook = run_hook(
-                context, mode, source
-            )
+            context.output_dict[context.key], post_gen_hook = run_hook(context)
         if post_gen_hook:
             # TODO: Update this per #4 hook-integration
             context.post_gen_hooks.append(post_gen_hook)
@@ -238,7 +234,7 @@ def parse_hook(
                 # fallback to dict
                 if 'type' in else_object:
                     context.input_dict[context.context_key][context.key] = else_object
-                    return parse_hook(context, mode, source, append_key=append_key)
+                    return parse_hook(context, append_key=append_key)
             else:
                 # If list or str return tha actual value
                 context.output_dict[context.key] = render_variable(context, else_object)

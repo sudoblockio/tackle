@@ -226,7 +226,7 @@ def find_template(repo_dir):
         return None
 
 
-def generate_files(output: 'Output', context: 'Context', source: 'Source'):
+def generate_files(output: 'Output', context: 'Context'):
     """Render the templates and saves them to files.
 
     :param repo_dir: Project template input directory.
@@ -236,7 +236,7 @@ def generate_files(output: 'Output', context: 'Context', source: 'Source'):
         if it exists.
     :param accept_hooks: Accept pre and post hooks if set to `True`.
     """
-    template_dir = find_template(source.repo_dir)
+    template_dir = find_template(context.repo_dir)
     if template_dir:
         envvars = context.input_dict.get(context.context_key, {}).get(
             '_jinja2_env_vars', {}
@@ -270,7 +270,7 @@ def generate_files(output: 'Output', context: 'Context', source: 'Source'):
 
         if output.accept_hooks:
             _run_hook_from_repo_dir(
-                source.repo_dir,
+                context.repo_dir,
                 'pre_gen_project',
                 project_dir,
                 delete_project_on_failure,
@@ -345,7 +345,7 @@ def generate_files(output: 'Output', context: 'Context', source: 'Source'):
 
         if output.accept_hooks:
             _run_hook_from_repo_dir(
-                source.repo_dir,
+                context.repo_dir,
                 'post_gen_project',
                 project_dir,
                 delete_project_on_failure,
@@ -360,7 +360,7 @@ def generate_files(output: 'Output', context: 'Context', source: 'Source'):
     else:
         if output.accept_hooks:
             _run_hook_from_repo_dir(
-                source.repo_dir,
+                context.repo_dir,
                 'post_gen_project',
                 '.',  # TODO: This needs context switching
                 False,

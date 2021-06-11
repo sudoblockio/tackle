@@ -97,16 +97,14 @@ def parse_context(context: 'Context', mode: 'Mode', source: 'Source'):
 
 
 # TODO: Break this function up
-def prep_context(
-    context: 'Context', mode: 'Mode', source: 'Source', settings: 'Settings'
-):
+def prep_context(context: 'Context', settings: 'Settings'):
     """Prepare the context by setting some default values."""
     # Read config
-    obj = read_config_file(os.path.join(source.repo_dir, source.context_file))
+    obj = read_config_file(os.path.join(context.repo_dir, context.context_file))
 
     # Add the Python object to the context dictionary
     if not context.context_key:
-        file_name = os.path.split(source.context_file)[1]
+        file_name = os.path.split(context.context_file)[1]
         file_stem = file_name.split('.')[0]
         context.input_dict[file_stem] = obj
     else:
@@ -131,7 +129,7 @@ def prep_context(
         context.override_inputs = {}
 
     # include template dir or url in the context dict
-    context.input_dict[context.context_key]['_template'] = source.repo_dir
+    context.input_dict[context.context_key]['_template'] = context.repo_dir
 
     logger.debug('Context generated is %s', context.input_dict)
 
@@ -141,7 +139,7 @@ def prep_context(
         context.output_dict = OrderedDict(context.existing_context)
 
     # Entrypoint into providers.py
-    get_providers(context, source, settings, mode)
+    get_providers(context, settings)
 
     with work_in(context.input_dict[context.context_key]['_template']):
-        return parse_context(context, mode, source)
+        return parse_context(context)

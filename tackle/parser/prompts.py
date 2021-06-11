@@ -77,19 +77,19 @@ def read_user_dict(var_name, default_value):
     return user_value
 
 
-def prompt_list(context: 'Context', mode: 'Mode', raw):
+def prompt_list(context: 'Context', raw):
     """Prompt user with a set of options to choose from.
 
     Each of the possible choices is rendered beforehand.
     """
     rendered_options = [render_variable(context, raw) for raw in raw]
 
-    if mode.no_input and context.tackle_gen == 'cookiecutter':
+    if context.no_input and context.tackle_gen == 'cookiecutter':
         return rendered_options[0]
-    elif mode.no_input and context.tackle_gen == 'tackle':
+    elif context.no_input and context.tackle_gen == 'tackle':
         return rendered_options
 
-    if mode.rerun and context.key in context.override_inputs:
+    if context.rerun and context.key in context.override_inputs:
         return context.override_inputs[context.key]
 
     question = {
@@ -101,13 +101,13 @@ def prompt_list(context: 'Context', mode: 'Mode', raw):
     return prompt([question])['tmp']
 
 
-def prompt_str(context: 'Context', mode: 'Mode', raw):
+def prompt_str(context: 'Context', raw):
     """Prompt user for simple imput."""
     val = render_variable(context, raw)
-    if mode.no_input:
+    if context.no_input:
         return val
 
-    if mode.rerun and context.key in context.override_inputs:
+    if context.rerun and context.key in context.override_inputs:
         return context.override_inputs[context.key]
 
     else:

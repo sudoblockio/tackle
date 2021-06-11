@@ -148,7 +148,7 @@ def import_module_from_path(mod, path):
     return mod
 
 
-def append_provider_dicts(input_providers, context: 'Context', mode: 'Mode'):
+def append_provider_dicts(input_providers, context: 'Context'):
     """Update the provider list with a new provider."""
     if isinstance(input_providers, str):
         # For providers from the context
@@ -190,9 +190,7 @@ def append_provider_dicts(input_providers, context: 'Context', mode: 'Mode'):
         continue
 
 
-def get_providers(
-    context: 'Context', source: 'Source', settings: 'Settings', mode: 'Mode'
-) -> ['Provider']:
+def get_providers(context: 'Context', settings: 'Settings') -> ['Provider']:
     """
     Update the source with providers and hooks.
 
@@ -204,18 +202,18 @@ def get_providers(
     """
     if len(context.providers) == 0:
         # Native providers are gathered from
-        append_provider_dicts(native_providers, context, mode)
+        append_provider_dicts(native_providers, context)
 
     # Get provider dirs
     if settings.extra_providers:
         # Providers from config file
-        append_provider_dicts(settings.extra_providers, context, mode)
+        append_provider_dicts(settings.extra_providers, context)
 
     if '__providers' in context.input_dict[context.context_key]:
         append_provider_dicts(
-            context.input_dict[context.context_key]['__providers'], context, mode
+            context.input_dict[context.context_key]['__providers'], context
         )
 
-    # hooks_dir = os.path.join(source.repo_dir, 'hooks')
-    # if os.path.isdir(os.path.join(source.repo_dir, 'hooks')):
+    # hooks_dir = os.path.join(context.repo_dir, 'hooks')
+    # if os.path.isdir(os.path.join(context.repo_dir, 'hooks')):
     #     append_provider_dicts()

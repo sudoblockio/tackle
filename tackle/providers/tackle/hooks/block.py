@@ -8,7 +8,7 @@ import logging
 from _collections import OrderedDict
 from typing import Dict
 
-from tackle.models import BaseHook, Context, Mode, Source
+from tackle.models import BaseHook, Context
 import tackle as tkl
 
 
@@ -35,14 +35,11 @@ class BlockHook(BaseHook):
             overwrite_inputs=self.overwrite_inputs,
             override_inputs=self.override_inputs,
             context_key=self.context_key,
+            no_input=self.no_input,
         )
-        mode = Mode(no_input=self.no_input)
-        source = Source()
 
         output = tkl.parser.context.parse_context(
             context=context,
-            mode=mode,
-            source=source,
         )
 
         return dict(output.output_dict)

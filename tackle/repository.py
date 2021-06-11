@@ -9,7 +9,7 @@ from tackle.utils.zipfile import unzip
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from tackle.models import Mode, Source, Settings
+    from tackle.models import Context, Settings
 
 
 def is_git_repo(value):
@@ -44,20 +44,22 @@ def is_repo_url(value):
 
 def is_file(value):
     """Return True if the input looks like a file."""
-    REPO_REGEX = re.compile(
+    FILE_REGEX = re.compile(
         r"""^.*\.(yaml|yml|json)$""",
         re.VERBOSE,
     )
-    return bool(REPO_REGEX.match(value))
+    return bool(FILE_REGEX.match(value))
 
 
 # TODO: Allow for abbreviated repo names
-# def update_github_url(url):
-#     """"""
-#     REPO_REGEX = re.compile(
-#         r"""/^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i""",
-#         re.VERBOSE,
-#     )
+def update_github_url(url):
+    """ """
+    REPO_REGEX = re.compile(
+        r"""/^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i""",
+        re.VERBOSE,
+    )
+    if REPO_REGEX.match(url) and not os.path.exists(url):
+        return
 
 
 def is_zip_file(value):
@@ -142,7 +144,7 @@ def repository_has_tackle_file(repo_directory: str, context_file=None):
         return None
 
 
-def update_source(source: 'Source', settings: 'Settings', mode: 'Mode') -> 'Source':
+def update_source(context: 'Context', settings: 'Settings'):
     """
     Locate the repository directory from a template reference.
 
@@ -164,59 +166,60 @@ def update_source(source: 'Source', settings: 'Settings', mode: 'Mode') -> 'Sour
         after the template has been instantiated.
     :raises: `RepositoryNotFound` if a repository directory could not be found.
     """
-    source.template = expand_abbreviations(source.template, settings.abbreviations)
-    source.cleanup = False
-    if is_zip_file(source.template):
+    # context.template = expand_abbreviations(context.template, settings.abbreviations)
+    # context.cleanup = False
+    if is_zip_file(context.template):
         unzipped_dir = unzip(
-            zip_uri=source.template,
-            is_url=is_repo_url(source.template),
+            zip_uri=context.template,
             clone_to_dir=settings.tackle_dir,
-            no_input=mode.no_input,
-            password=source.password,
+            no_input=context.no_input,
+            password=context.password,
         )
         repository_candidates = [unzipped_dir]
-        source.cleanup = True
-    elif is_repo_url(source.template):
+        context.cleanup = True
+    elif is_repo_url(context.template):
         cloned_repo = clone(
-            repo_url=source.template,
-            checkout=source.checkout,
+            repo_url=context.template,
+            checkout=context.checkout,
             clone_to_dir=settings.tackle_dir,
-            no_input=mode.no_input,
+            no_input=context.no_input,
         )
         repository_candidates = [cloned_repo]
-    elif is_file(source.template):
+    elif is_file(context.template):
         from pathlib import Path
 
-        source.context_file = os.path.basename(source.template)
-        source.repo_dir = Path(source.template).parent.absolute()
-        source.template_name = os.path.basename(os.path.abspath(source.repo_dir))
-        source.tackle_gen = determine_tackle_generation(source.context_file)
-        return source
+        context.context_file = os.path.basename(context.template)
+        context.repo_dir = Path(context.template).parent.absolute()
+        context.template_name = os.path.basename(os.path.abspath(context.repo_dir))
+        context.tackle_gen = determine_tackle_generation(context.context_file)
+        # return context
+        return
     else:
         repository_candidates = [
-            source.template,
-            os.path.join(settings.tackle_dir, source.template),
+            context.template,
+            os.path.join(settings.tackle_dir, context.template),
         ]
 
-    if source.directory:
+    if context.directory:
         repository_candidates = [
-            os.path.join(s, source.directory) for s in repository_candidates
+            os.path.join(s, context.directory) for s in repository_candidates
         ]
 
     for repo_candidate in repository_candidates:
-        source.context_file = repository_has_tackle_file(
-            repo_candidate, source.context_file
+        context.context_file = repository_has_tackle_file(
+            repo_candidate, context.context_file
         )
-        if not source.context_file:
+        if not context.context_file:
             # Means that no valid context file has been found or provided
             continue
         else:
-            source.repo_dir = os.path.abspath(repo_candidate)
-            source.template_name = os.path.basename(os.path.abspath(repo_candidate))
-            source.tackle_gen = determine_tackle_generation(source.context_file)
-            return source
+            context.repo_dir = os.path.abspath(repo_candidate)
+            context.template_name = os.path.basename(os.path.abspath(repo_candidate))
+            context.tackle_gen = determine_tackle_generation(context.context_file)
+            # return context
+            return
 
     raise RepositoryNotFound(
         'A valid repository for "{}" could not be found in the following '
-        'locations:\n{}'.format(source.template, '\n'.join(repository_candidates))
+        'locations:\n{}'.format(context.template, '\n'.join(repository_candidates))
     )

@@ -11,7 +11,7 @@ from _collections import OrderedDict
 from tackle.generate import generate_files
 from tackle.utils.paths import rmtree
 from tackle.parser.settings import get_settings
-from tackle.models import Context, Mode, Output, Source
+from tackle.models import Context, Output
 from tackle.repository import update_source
 from tackle.parser import update_context
 
@@ -72,38 +72,49 @@ def tackle(
 
     :return Dictionary of output
     """
-    settings = get_settings(
-        config_file=config_file,
-        env_file=env_file,
-        config=config,
-        default_config=default_config,
-    )
+    # settings = get_settings(
+    #     config_file=config_file,
+    #     env_file=env_file,
+    #     config=config,
+    #     default_config=default_config,
+    # )
 
-    mode = Mode(no_input=no_input, replay=replay, record=record, rerun=rerun)
+    # mode = Mode(no_input=no_input, replay=replay, record=record, rerun=rerun)
 
-    source = Source(
+    # source = Source(
+    #     template=template,
+    #     checkout=checkout,
+    #     no_input=no_input,
+    #     context_file=context_file,
+    #     password=password,
+    #     directory=directory,
+    # )
+    context = Context(
+        # settings=settings,
+        no_input=no_input,
+        replay=replay,
+        record=record,
+        rerun=rerun,
         template=template,
         checkout=checkout,
-        no_input=no_input,
         context_file=context_file,
         password=password,
         directory=directory,
-    )
-    update_source(source=source, settings=settings, mode=mode)
-
-    context = Context(
-        # context_file=context_file,
         overwrite_inputs=overwrite_inputs,
         override_inputs=override_inputs,
         existing_context=existing_context,
         context_key=context_key,
-        tackle_gen=source.tackle_gen,
         calling_directory=calling_directory,
     )
+
+    context.update_source()
+    # update_source(
+    #     context=context,
+    #     settings=settings,
+    # )
+
     update_context(
         context=context,
-        source=source,
-        mode=mode,
         settings=settings,
         providers=providers,
     )
@@ -114,11 +125,11 @@ def tackle(
         skip_if_file_exists=skip_if_file_exists,
         accept_hooks=accept_hooks,
     )
-    generate_files(output=output, context=context, source=source)
+    generate_files(output=output, context=context)
 
     # Cleanup (if required)
-    if source.cleanup:
-        rmtree(source.repo_dir)
+    if context.cleanup:
+        rmtree(context.repo_dir)
 
     if isinstance(context, OrderedDict):
         context = json.loads(json.dumps(context))

@@ -4,8 +4,41 @@ import os
 import shutil
 import stat
 import logging
+import re
+from tackle.exceptions import ContextFileNotFound
 
 logger = logging.getLogger(__name__)
+
+CONTEXT_FILE_DICT = {
+    'cookiecutter': [
+        'cookiecutter.json',
+        'cookiecutter.yaml',
+        'cookiecutter.yml',
+        'cookiecutter.hcl',
+    ],
+    'tackle': [
+        '.tackle.yaml',
+        '.tackle.yml',
+        '.tackle.json',
+        '.tackle.hcl',
+        'tackle.yaml',
+        'tackle.yml',
+        'tackle.json',
+        'tackle.hcl',
+    ],
+}
+
+ALL_VALID_CONTEXT_FILES = (
+    CONTEXT_FILE_DICT['cookiecutter'] + CONTEXT_FILE_DICT['tackle']
+)
+
+
+def determine_tackle_generation(context_file: str) -> str:
+    """Determine the tackle generation."""
+    if context_file in CONTEXT_FILE_DICT['cookiecutter']:
+        return 'cookiecutter'
+    else:
+        return 'tackle'
 
 
 def listdir_absolute(directory, skip_paths=None):
@@ -77,3 +110,72 @@ def expand_path(path: str) -> str:
     path = os.path.expandvars(path)
     path = os.path.expanduser(path)
     return path
+
+
+def expand_abbreviations(template, abbreviations) -> str:
+    """Expand abbreviations in a template name.
+
+    :param template: The project template name.
+    :param abbreviations: Abbreviation definitions.
+    """
+    if template in abbreviations:
+        return abbreviations[template]
+
+    # Split on colon. If there is no colon, rest will be empty
+    # and prefix will be the whole template
+    prefix, sep, rest = template.partition(':')
+    if prefix in abbreviations:
+        return abbreviations[prefix].format(rest)
+
+    return template
+
+
+def is_repo_url(value):
+    """Return True if value is a repository URL."""
+    REPO_REGEX = re.compile(
+        r"""
+    # something like git:// ssh:// file:// etc.
+    ((((git|hg)\+)?(git|ssh|file|https?):(//)?)
+     |                                      # or
+     (\w+@[\w\.]+)                          # something like user@...
+    )
+    """,
+        re.VERBOSE,
+    )
+    return bool(REPO_REGEX.match(value))
+
+
+def is_file(value):
+    """Return True if the input looks like a file."""
+    FILE_REGEX = re.compile(
+        r"""^.*\.(yaml|yml|json)$""",
+        re.VERBOSE,
+    )
+    return bool(FILE_REGEX.match(value))
+
+
+def repository_has_tackle_file(repo_directory: str, context_file=None):
+    """Determine if `repo_directory` contains a `cookiecutter.json` file.
+
+    :param repo_directory: The candidate repository directory.
+    :param context_file: eg. `tackle.yaml`.
+    :return: The path to the context file
+    """
+    repo_directory_exists = os.path.isdir(repo_directory)
+    if context_file:
+        # The supplied context file exists
+        context_file = os.path.join(os.path.abspath(repo_directory), context_file)
+        if os.path.isfile(context_file):
+            return context_file
+        else:
+            raise ContextFileNotFound(
+                f"Can't find supplied context_file at {context_file}"
+            )
+
+    if repo_directory_exists:
+        # Check for valid context files as default
+        for f in ALL_VALID_CONTEXT_FILES:
+            if os.path.isfile(os.path.join(repo_directory, f)):
+                return f
+    else:
+        return None
