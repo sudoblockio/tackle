@@ -10,38 +10,41 @@ from _collections import OrderedDict
 
 from tackle.generate import generate_files
 from tackle.utils.paths import rmtree
-from tackle.parser.settings import get_settings
 from tackle.models import Context, Output
-from tackle.repository import update_source
-from tackle.parser import update_context
+# from tackle.repository import update_source
+
+from tackle.parser.context import update_context
+
+from tackle.settings import get_settings
+from tackle.parser.providers import update_providers
+
 
 logger = logging.getLogger(__name__)
 
 
 def tackle(
-    template='.',
-    no_input=False,
-    checkout=None,
-    context_file=None,
-    context_key=None,
-    password=None,
-    directory=None,
-    existing_context=None,
-    overwrite_inputs=None,
-    override_inputs=None,
-    replay=None,
-    record=None,
-    rerun=None,
-    output_dir='.',
-    overwrite_if_exists=False,
-    skip_if_file_exists=False,
-    accept_hooks=True,
-    config_file=None,
-    env_file=None,
-    default_config=False,
-    config=None,
-    calling_directory=None,
-    providers=None,
+        template='.',
+        no_input=False,
+        checkout=None,
+        context_file=None,
+        context_key=None,
+        password=None,
+        directory=None,
+        existing_context=None,
+        overwrite_inputs=None,
+        override_inputs=None,
+        replay=None,
+        record=None,
+        rerun=None,
+        output_dir='.',
+        overwrite_if_exists=False,
+        skip_if_file_exists=False,
+        accept_hooks=True,
+        config_file=None,
+        default_config=False,
+        config=None,
+        # calling_directory=None,
+        providers=None,
 ):
     """
     Run Tackle Box just as if using it from the command line.
@@ -74,7 +77,6 @@ def tackle(
     """
     # settings = get_settings(
     #     config_file=config_file,
-    #     env_file=env_file,
     #     config=config,
     #     default_config=default_config,
     # )
@@ -89,8 +91,14 @@ def tackle(
     #     password=password,
     #     directory=directory,
     # )
+
+    print()
     context = Context(
-        # settings=settings,
+        settings=get_settings(
+            config_file=config_file,
+            config=config,
+            default_config=default_config,
+        ),
         no_input=no_input,
         replay=replay,
         record=record,
@@ -104,20 +112,26 @@ def tackle(
         override_inputs=override_inputs,
         existing_context=existing_context,
         context_key=context_key,
-        calling_directory=calling_directory,
+        # calling_directory=calling_directory,
+        providers=providers,
     )
-
     context.update_source()
+    context.update_input_dict()
+
+    update_providers(context)
+    update_context(context)
+
+    # context.update_source()
     # update_source(
     #     context=context,
     #     settings=settings,
     # )
 
-    update_context(
-        context=context,
-        settings=settings,
-        providers=providers,
-    )
+    # update_context(
+    #     context=context,
+    #     settings=settings,
+    #     providers=providers,
+    # )
 
     output = Output(
         output_dir=output_dir,

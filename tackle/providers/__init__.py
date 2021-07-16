@@ -1,11 +1,12 @@
 """Providers."""
 import os
 
+file_path = os.path.dirname(os.path.abspath(__file__))
 
 native_providers = [
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), f)
-    for f in os.listdir(os.path.dirname(os.path.abspath(__file__)))
-    if os.path.isdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), f))
+    os.path.join(file_path, f)
+    for f in os.listdir(file_path)
+    if os.path.isdir(os.path.join(file_path, f))
     and f != '__pycache__'
 ]
 

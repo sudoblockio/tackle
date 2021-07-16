@@ -1,0 +1,6 @@
+foo: bing
+
+shell:
+  type: tackle
+  template: .
+  chdir: fixture

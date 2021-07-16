@@ -22,7 +22,7 @@ from tackle.exceptions import (
 )
 from tackle.utils.log import configure_logger
 from tackle.main import tackle
-from tackle.parser.settings import get_settings
+from tackle.settings import get_settings
 
 
 def version_msg():
@@ -107,11 +107,11 @@ def list_installed_templates(default_config, passed_config_file):
     default=None,
     help=u'Override the inputs. Anything included will not be prompted.',
 )
-@click.option(
-    u'--existing-context',
-    default=None,
-    help=u'An existing context to render the input context file.',
-)
+# @click.option(
+#     u'--existing-context',
+#     default=None,
+#     help=u'An existing context to render the input context file.',
+# )
 @click.option(
     u'--context-key',
     default=None,
@@ -135,37 +135,52 @@ def list_installed_templates(default_config, passed_config_file):
 )
 @click.option(
     '--replay',
-    is_flag=True,
+    default=None,
     help='Do not prompt for parameters and only use information entered previously',
 )
-@click.option(
-    '--replay-file',
-    type=click.Path(),
-    default=None,
-    help='Use this file for replay instead of the default.',
-)
+# @click.option(
+#     '--replay',
+#     is_flag=True,
+#     help='Do not prompt for parameters and only use information entered previously',
+# )
+# @click.option(
+#     '--replay-file',
+#     type=click.Path(),
+#     default=None,
+#     help='Use this file for replay instead of the default.',
+# )
 @click.option(
     '--record',
-    is_flag=True,
-    help='Record the inputs to a local file "<template name>.rerun.yml".',
-)
-@click.option(
-    '--record-file',
-    type=click.Path(),
     default=None,
-    help='Record the inputs to a local file "<record file>.yml".',
+    help='Record the inputs to a local file "<record file>.yml". Default is ',
 )
+# @click.option(
+#     '--record',
+#     is_flag=True,
+#     help='Record the inputs to a local file "<template name>.rerun.yml".',
+# )
+# @click.option(
+#     '--record-file',
+#     type=click.Path(),
+#     default=None,
+#     help='Record the inputs to a local file "<record file>.yml".',
+# )
 @click.option(
     '--rerun',
-    is_flag=True,
+    default=None,
     help='Reruns the inputs from a local file "<template name>.rerun.yml".',
 )
-@click.option(
-    '--rerun-file',
-    type=click.Path(),
-    default=None,
-    help='Reruns the inputs from a local file "<record file>.yml".',
-)
+# @click.option(
+#     '--rerun',
+#     is_flag=True,
+#     help='Reruns the inputs from a local file "<template name>.rerun.yml".',
+# )
+# @click.option(
+#     '--rerun-file',
+#     type=click.Path(),
+#     default=None,
+#     help='Reruns the inputs from a local file "<record file>.yml".',
+# )
 @click.option(
     '-f',
     '--overwrite-if-exists',
@@ -218,17 +233,17 @@ def main(
     context_key,
     overwrite_inputs,
     override_inputs,
-    existing_context,
+    # existing_context,
     no_input,
     checkout,
     directory,
     verbose,
+    # replay_directory,
     replay,
-    replay_file,
+    # record_file,
     record,
-    record_file,
+    # rerun_file,
     rerun,
-    rerun_file,
     overwrite_if_exists,
     skip_if_file_exists,
     output_dir,
@@ -263,12 +278,12 @@ def main(
     else:
         _accept_hooks = accept_hooks == "yes"
 
-    if replay_file:
-        replay = replay_file
-    if record_file:
-        record = record_file
-    if rerun_file:
-        rerun = rerun_file
+    # if replay_file:
+    #     replay = replay_file
+    # if record_file:
+    #     record = record_file
+    # if rerun_file:
+    #     rerun = rerun_file
 
     try:
         tackle(
@@ -279,7 +294,7 @@ def main(
             context_key=context_key,
             overwrite_inputs=overwrite_inputs,
             override_inputs=override_inputs,
-            existing_context=existing_context,
+            # existing_context=existing_context,
             replay=replay,
             record=record,
             rerun=rerun,
@@ -291,7 +306,7 @@ def main(
             directory=directory,
             skip_if_file_exists=skip_if_file_exists,
             accept_hooks=_accept_hooks,
-            calling_directory=os.path.curdir,
+            # calling_directory=os.path.curdir,
         )
     except (
         OutputDirExistsException,

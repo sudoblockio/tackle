@@ -1,73 +1,22 @@
 # -*- coding: utf-8 -*-
 
 """Parser for importing providers into the runtime."""
-import re
 import os
 import logging
 import subprocess
 import sys
 import importlib.machinery
-import inspect
+
 from tackle.providers import native_providers
 from tackle.utils.paths import listdir_absolute
-from tackle.repository import is_git_repo
-from tackle.exceptions import UnknownHookTypeException
-from tackle.models import Provider, BaseHook
+from tackle.models import Provider
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from tackle.models import Context, Source, Mode, Settings
+    from tackle.models import Context
 
 logger = logging.getLogger(__name__)
-
-
-# TODO: Integrate with parsing the input provider strings for DL from GH
-def parse_git_src_str(git_repo: str):
-    """Decompose a repo - UNUSED ATM."""
-    if re.compile(r"(git@[\w\.]+)").match(git_repo):
-        # Check if ssh based
-        git_repo = re.sub('.git', '', git_repo)
-        git_suffix = git_repo.split(':')[-1]
-        git_parts = git_suffix.split('/')
-        return git_parts
-
-    if re.compile(r"(https:\/\/[\w\.]+)").match(git_repo):
-        # Check if https based
-        git_suffix = git_repo.split('//')[-1]
-        git_parts = git_suffix.split('/')[1:]
-        return git_parts
-
-
-def get_path_from_src(provider: 'Provider', settings: 'Settings', mode: 'Mode'):
-    """Get a path from source - UNUSED ATM."""
-    if is_git_repo(provider.src):
-        git_parts = parse_git_src_str(provider.src)
-    else:
-        raise NotImplementedError("Needs to be a git repo right now.")
-
-    if provider.version:
-        git_parts.append(provider.version)
-    else:
-        git_parts.append("master")
-
-
-def install_requirements_if_exists(path, requirements_file='requirements.txt'):
-    """Install the requirements.txt file if it exists in path."""
-    requirements_file = os.path.join(path, requirements_file)
-    if os.path.isfile(requirements_file):
-        subprocess.check_call(
-            [
-                sys.executable,
-                "-m",
-                "pip",
-                "install",
-                "--quiet",
-                "--disable-pip-version-check",
-                "-r",
-                requirements_file,
-            ]
-        )
 
 
 def import_with_fallback_install(mod_name, path):
@@ -75,7 +24,21 @@ def import_with_fallback_install(mod_name, path):
     try:
         import_hooks_from_dir(mod_name, path)
     except ModuleNotFoundError:
-        install_requirements_if_exists(os.path.dirname(path))
+        if os.path.isfile(os.path.join(path, 'requirements.txt')):
+            # It is a convention of providers to have a requirements file at the base.
+            # Install the contents if there was an import error
+            subprocess.check_call(
+                [
+                    sys.executable,
+                    "-m",
+                    "pip",
+                    "install",
+                    "--quiet",
+                    "--disable-pip-version-check",
+                    "-r",
+                    'requirements.txt',
+                ]
+            )
         import_hooks_from_dir(mod_name, path)
 
 
@@ -87,7 +50,7 @@ def get_provider_from_dir(mod_name, path):
 
 
 def import_hooks_from_dir(
-    mod_name, path, excluded_file_names=None, excluded_file_extensions=None
+        mod_name, path, excluded_file_names=None, excluded_file_extensions=None
 ):
     """Import hooks from a directory.
 
@@ -105,39 +68,6 @@ def import_hooks_from_dir(
         if os.path.basename(f).split('.')[-1] in excluded_file_extensions:
             continue
         import_module_from_path(mod_name + '.' + os.path.basename(f).split('.')[0], f)
-
-
-def get_hook(hook_type, context: 'Context'):
-    """
-    Get the hook from available providers.
-
-    Does the following to return the hook:
-    1. Check if hook hasn't been imported already
-    2. Check if the hook has been declared in a provider's __init__.py's
-    `hook_types` field.
-    3. Try to import it then fall back on installing the requirements.txt file
-    """
-    for h in BaseHook.__subclasses__():
-        if hook_type == inspect.signature(h).parameters['type'].default:
-            return h
-
-    for p in context.providers:
-        if hook_type in p.hook_types:
-            import_with_fallback_install(p.name, p.path)
-
-    for h in BaseHook.__subclasses__():
-        if hook_type == inspect.signature(h).parameters['type'].default:
-            return h
-
-    avail_hook_types = [
-        inspect.signature(i).parameters['type'].default
-        for i in BaseHook.__subclasses__()
-    ]
-    logger.debug(f"Available hook types = {avail_hook_types}")
-    raise UnknownHookTypeException(
-        f"The hook type=\"{hook_type}\" is not available in the providers. "
-        f"Run the application with `--verbose` to see available hook types."
-    )
 
 
 def import_module_from_path(mod, path):
@@ -165,7 +95,7 @@ def append_provider_dicts(input_providers, context: 'Context'):
         mod_name = 'tackle.providers.' + os.path.basename(i)
         hooks_init_path = os.path.join(i, 'hooks', '__init__.py')
         hooks_path = os.path.join(i, 'hooks')
-        logger.debug(f"Importing hook from provider={i} from path={hooks_path}")
+        # logger.debug(f"Importing hook from provider={i} from path={hooks_path}")
         if os.path.isfile(hooks_init_path):
             mod = import_module_from_path(mod_name, hooks_init_path)
             try:
@@ -190,7 +120,7 @@ def append_provider_dicts(input_providers, context: 'Context'):
         continue
 
 
-def get_providers(context: 'Context', settings: 'Settings') -> ['Provider']:
+def update_providers(context: 'Context'):
     """
     Update the source with providers and hooks.
 
@@ -200,20 +130,22 @@ def get_providers(context: 'Context', settings: 'Settings') -> ['Provider']:
 
     :return: List of Provider objects
     """
-    if len(context.providers) == 0:
+    if not context.providers:
+        context.providers = []
         # Native providers are gathered from
         append_provider_dicts(native_providers, context)
 
     # Get provider dirs
-    if settings.extra_providers:
+    if context.settings.extra_providers:
         # Providers from config file
-        append_provider_dicts(settings.extra_providers, context)
+        append_provider_dicts(context.settings.extra_providers, context)
 
-    if '__providers' in context.input_dict[context.context_key]:
-        append_provider_dicts(
-            context.input_dict[context.context_key]['__providers'], context
-        )
+    # if '__providers' in context.input_dict[context.context_key]:
+    #     append_provider_dicts(
+    #         context.input_dict[context.context_key]['__providers'], context
+    #     )
 
+    # TODO: Automatically import hooks
     # hooks_dir = os.path.join(context.repo_dir, 'hooks')
     # if os.path.isdir(os.path.join(context.repo_dir, 'hooks')):
     #     append_provider_dicts()

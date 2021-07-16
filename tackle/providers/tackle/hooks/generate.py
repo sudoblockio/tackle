@@ -6,7 +6,7 @@ from __future__ import print_function
 
 import logging
 
-from tackle.models import BaseHook, Output, Context, Source
+from tackle.models import BaseHook, Output, Context
 from tackle.generate import generate_files
 
 logger = logging.getLogger(__name__)
@@ -37,9 +37,8 @@ class GenerateHook(BaseHook):
             output_dict=self.output_dict,
             context_key=self.context_key,
             tackle_gen='tackle',
+            repo_dir=self.project_dir,
         )
-
-        source = Source(repo_dir=self.project_dir)
 
         output = Output(
             output_dir=self.output_dir,
@@ -47,4 +46,4 @@ class GenerateHook(BaseHook):
             skip_if_file_exists=self.skip_if_file_exists,
             accept_hooks=self.accept_hooks,
         )
-        generate_files(output=output, context=context, source=source)
+        generate_files(output=output, context=context)

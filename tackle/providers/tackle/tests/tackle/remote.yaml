@@ -1,7 +1,7 @@
 
 # List of popular cookiecutters
 _repos:
-#  - https://github.com/pydanny/cookiecutter-django # Failing due to lack of context switching when running post-gen hook
+  - https://github.com/pydanny/cookiecutter-django # Failing due to lack of context switching when running post-gen hook
   - https://github.com/tiangolo/full-stack-fastapi-postgresql
 
 shell:

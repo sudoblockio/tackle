@@ -51,7 +51,7 @@ class TackleHook(BaseHook):
     context_file: str = None
     context_files: List = None
     # overwrite_inputs: Dict = None
-    # existing_context: Dict = None
+    existing_context: dict = None
     # replay: bool = None
     overwrite_if_exists: bool = False
     output_dir: str = '.'
@@ -96,24 +96,35 @@ class TackleHook(BaseHook):
         else:
             existing_context = self.output_dict
 
+        # special_keys = ['type', 'chdir', 'when', 'else', 'loop', 'confirm']
+        # for i in self.hook_dict.keys():
+        #     if i not in special_keys:
+        #         setattr(self, i, self.hook_dict[i])
+
+        # Snub out any attributes updated when context.update_source() is called in main
+        # self.repo_dir = None
+        # self.template_name = None
+        # self.tackle_gen = None
+
+
         output_context = tkl.main.tackle(
-            template=self.template,
+            template=self.hook_dict['template'] if 'template' in self.hook_dict else None,
             checkout=self.checkout,
             no_input=self.no_input,
-            context_file=self.context_file,
-            context_key=self.context_key,
-            overwrite_inputs=self.overwrite_inputs,
+            context_file=self.hook_dict['context_file'] if 'context_file' in self.hook_dict else None,
+            context_key=self.hook_dict['context_key'] if 'context_key' in self.hook_dict else None,
+            overwrite_inputs=self.hook_dict['overwrite_inputs'] if 'overwrite_inputs' in self.hook_dict else None,
             existing_context=existing_context,
             replay=self.replay,
             rerun=self.rerun,
             record=self.record,
             overwrite_if_exists=self.overwrite_if_exists,
-            output_dir=self.output_dir,
-            config_file=self.config_file,
+            output_dir=self.hook_dict['output_dir'] if 'output_dir' in self.hook_dict else '.',
+            config_file=self.hook_dict['config_file'] if 'config_file' in self.hook_dict else None,
             default_config=self.default_config,
             password=self.password,
-            directory=self.directory,
-            skip_if_file_exists=self.skip_if_file_exists,
+            directory=self.hook_dict['directory'] if 'directory' in self.hook_dict else None,
+            skip_if_file_exists=self.hook_dict['skip_if_file_exists'] if 'skip_if_file_exists' in self.hook_dict else False,
         )
 
         return dict(output_context)

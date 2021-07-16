@@ -6,15 +6,3 @@ foo:
 read_stuff:
   type: yaml
   path: example.yaml
-
-
-var:
-  type: var
-  input: kjlk
-#  statement: "{{ this }}"
-#  blah: ldskjl
-
-
-print:
-  type: print
-  out: "{{ this }}"

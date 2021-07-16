@@ -6,9 +6,10 @@ from tackle.main import tackle
 
 def test_provider_system_hook_block_tackle(change_dir):
     """Verify the hook call works properly."""
-    output = tackle('.', no_input=True)
+    output = tackle(no_input=True)
 
     assert output['stuff'] == 'here'
+    assert output['things'] == 'here'
 
 
 def test_provider_system_hook_block_embedded_blocks(change_dir):

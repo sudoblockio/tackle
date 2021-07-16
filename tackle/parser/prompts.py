@@ -7,10 +7,10 @@ from PyInquirer import prompt
 from tackle.render import render_variable
 
 from typing import TYPE_CHECKING
-import click  # RM
+import click
 
 if TYPE_CHECKING:
-    from tackle.models import Context, Mode
+    from tackle.models import Context
 
 
 def read_user_yes_no(question, default_value):

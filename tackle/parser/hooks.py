@@ -7,9 +7,11 @@ from PyInquirer import prompt
 from pydantic.error_wrappers import ValidationError
 
 from tackle.render import render_variable
-from tackle.parser.providers import get_hook
-from tackle.exceptions import HookCallException
+from tackle.exceptions import HookCallException, UnknownHookTypeException
+import inspect
+
 from tackle.models import BaseHook
+from tackle.parser.providers import import_with_fallback_install
 
 from typing import TYPE_CHECKING
 
@@ -47,10 +49,43 @@ def raise_hook_validation_error(e, Hook, context: 'Context'):
         raise e
 
 
+def get_hook(hook_type, context: 'Context'):
+    """
+    Get the hook from available providers. This function
+
+    Does the following to return the hook:
+    1. Check if hook hasn't been imported already
+    2. Check if the hook has been declared in a provider's __init__.py's
+    `hook_types` field.
+    3. Try to import it then fall back on installing the requirements.txt file
+    """
+    for h in BaseHook.__subclasses__():
+        if hook_type == inspect.signature(h).parameters['type'].default:
+            return h
+
+    for p in context.providers:
+        if hook_type in p.hook_types:
+            import_with_fallback_install(p.name, p.path)
+
+    for h in BaseHook.__subclasses__():
+        if hook_type == inspect.signature(h).parameters['type'].default:
+            return h
+
+    avail_hook_types = [
+        inspect.signature(i).parameters['type'].default
+        for i in BaseHook.__subclasses__()
+    ]
+    logger.debug(f"Available hook types = {avail_hook_types}")
+    raise UnknownHookTypeException(
+        f"The hook type=\"{hook_type}\" is not available in the providers. "
+        f"Run the application with `--verbose` to see available hook types."
+    )
+
+
 def run_hook(context: 'Context'):
     """Run hook."""
-    if context.input_dict is None:
-        context.input_dict = {}
+    # if context.input_dict is None:
+    #     context.input_dict = {}
 
     Hook = get_hook(context.hook_dict['type'], context)
 
@@ -153,15 +188,15 @@ def evaluate_loop(context: 'Context'):
     if 'reverse' in context.hook_dict:
         # Handle reverse boolean logic
         reverse = render_variable(context, context.hook_dict['reverse'])
-        if not isinstance(reverse, bool):
+        if not isinstance(reverse, bool):  # TODO: pydantic validator
             raise HookCallException("Parameter `reverse` should be boolean.")
         context.hook_dict.pop('reverse')
 
     loop_output = []
     for i, l in (
-        enumerate(loop_targets)
-        if not reverse
-        else reversed(list(enumerate(loop_targets)))
+            enumerate(loop_targets)
+            if not reverse
+            else reversed(list(enumerate(loop_targets)))
     ):
         # Create temporary variables in the context to be used in the loop.
         context.output_dict.update({'index': i, 'item': l})
@@ -175,8 +210,8 @@ def evaluate_loop(context: 'Context'):
 
 
 def parse_hook(
-    context: 'Context',
-    append_key: bool = False,
+        context: 'Context',
+        append_key: bool = False,
 ):
     """Parse input dict for loop and when logic and calls hooks.
 
@@ -198,8 +233,8 @@ def parse_hook(
             # This runs the current function in a loop and returns a list of results
             return evaluate_loop(context=context)
 
-        # Block hooks are run independently. This prevents rest of the hook dict from
-        # being rendered,
+        # Block hooks are run independently. This prevents the rest of the hook dict from
+        # being rendered ahead of execution.
         if 'block' not in context.hook_dict['type']:
             context.hook_dict = render_variable(context, context.hook_dict)
 

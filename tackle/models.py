@@ -6,7 +6,7 @@ import re
 from enum import Enum
 from pathlib import Path
 
-from pydantic import BaseModel, SecretStr, BaseSettings, Extra, validator
+from pydantic import BaseModel, SecretStr, BaseSettings, Extra, validator, FilePath
 from typing import Dict, Any, Union, Type, List, Optional
 
 from tackle.render.environment import StrictEnvironment
@@ -17,10 +17,12 @@ from tackle.utils.paths import (
     is_file,
     repository_has_tackle_file,
 )
+from tackle.utils.reader import read_config_file, apply_overwrites_to_inputs
 from tackle.utils.zipfile import unzip
 from tackle.utils.vcs import clone
 from tackle.utils.context_manager import work_in
 from tackle.exceptions import InvalidModeException, RepositoryNotFound
+from tackle.settings import Settings
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +54,7 @@ CONTEXT_FILE_DICT = {
 }
 
 ALL_VALID_CONTEXT_FILES = (
-    CONTEXT_FILE_DICT['cookiecutter'] + CONTEXT_FILE_DICT['tackle']
+        CONTEXT_FILE_DICT['cookiecutter'] + CONTEXT_FILE_DICT['tackle']
 )
 
 
@@ -64,39 +66,39 @@ def determine_tackle_generation(context_file: str) -> str:
         return 'tackle'
 
 
-class Settings(BaseSettings):
-    """Base settings for run."""
+# class Settings(BaseSettings):
+#     """Base settings for run."""
+#
+#     tackle_dir: str = '~/.tackle'
+#     replay_dir: str = os.path.join(tackle_dir, 'replay')
+#
+#     rerun_file_suffix: str = 'rerun.yml'
+#
+#     abbreviations: Dict = {}
+#     default_context: Dict = OrderedDict([])
+#
+#     config_path: str = None
+#
+#     extra_providers: list = None
+#     dump_output: str = 'yaml'
+#
+#     class Config:
+#         env_prefix = 'TACKLE_'
+#         env_file_encoding = 'utf-8'
+#
+#     def __init__(self, **values: Any):
+#         super().__init__(**values)
+#         self.abbreviations.update(DEFAULT_ABBREVIATIONS)
+#
+#         self.tackle_dir = expand_path(self.tackle_dir)
+#         self.replay_dir = expand_path(self.replay_dir)
 
-    tackle_dir: str = '~/.tackle'
-    replay_dir: str = os.path.join(tackle_dir, 'replay')
 
-    rerun_file_suffix: str = 'rerun.yml'
-
-    abbreviations: Dict = {}
-    default_context: Dict = OrderedDict([])
-
-    config_path: str = None
-
-    extra_providers: list = None
-    dump_output: str = 'yaml'
-
-    class Config:
-        env_prefix = 'TACKLE_'
-        env_file_encoding = 'utf-8'
-
-    def __init__(self, **values: Any):
-        super().__init__(**values)
-        self.abbreviations.update(DEFAULT_ABBREVIATIONS)
-
-        self.tackle_dir = expand_path(self.tackle_dir)
-        self.replay_dir = expand_path(self.replay_dir)
-
-
-class TackleGen(str, Enum):
-    """Tackel generation, placeholder for successive parsers."""
-
-    cookiecutter = 'cookiecutter'
-    tackle = 'tackle'
+# class TackleGen(str, Enum):
+#     """Tackle generation, placeholder for successive parsers."""
+#
+#     cookiecutter = 'cookiecutter'
+#     tackle = 'tackle'
 
 
 # class Mode(BaseModel):
@@ -164,19 +166,19 @@ class Provider(BaseModel):
 class Context(BaseModel):
     """The main object that is being modified by parsing."""
 
-    settings: Settings = Settings()
+    settings: Settings = None
 
     # Mode
     no_input: bool = False
-    replay: Union[bool, str] = None
-    record: Union[bool, str] = None
-    rerun: Union[bool, str] = None
+    replay: bool = None
+    record: Path = None
+    rerun: Path = None
 
     # Source
     password: SecretStr = None
     directory: str = None
     repo: str = None
-    repo_dir: str = None
+    repo_dir: Path = None
 
     template_type: str = None
     template: str = "."
@@ -187,23 +189,23 @@ class Context(BaseModel):
     tackle_gen: str = None  # This attr is copied over to 'Context' for convenience
 
     # Context
-    input_dict: OrderedDict = OrderedDict([])
-    output_dict: OrderedDict = None
-
     existing_context: Union[Dict, OrderedDict] = None
     overwrite_inputs: Union[dict, str] = None
     override_inputs: Union[Dict, str] = None
 
+    input_dict: OrderedDict = OrderedDict([])
+    output_dict: OrderedDict = OrderedDict([])
+
     hook_dict: OrderedDict = None
     post_gen_hooks: List[Any] = []
 
-    calling_directory: str = None
+    calling_directory: str = os.path.abspath(os.path.curdir)
     rerun_path: str = None
 
     context_key: str = None
     key: str = None
 
-    providers: List[Provider] = []
+    providers: List[Provider] = None
     imported_hook_types: List[str] = []
 
     # @validator('settings')
@@ -211,11 +213,11 @@ class Context(BaseModel):
     #     return expand_abbreviations(v, values['settings']['abbreviations'])
 
     @validator('template')
-    def template_expand_abbreviations(cls, v, values):
-        return expand_abbreviations(v, values['settings']['abbreviations'])
+    def template_expand_abbreviations(cls, v, values, **kwargs):
+        return expand_abbreviations(v, values['settings'].abbreviations)
 
     @validator('template')
-    def update_template_if_has_single_slash(cls, v, values):
+    def update_template_if_has_single_slash(cls, v):
         """
         Check if the template has a single slash, then check if it is a path,
         otherwise it is github repo and the full path is prepended.
@@ -229,15 +231,17 @@ class Context(BaseModel):
             return v
         if REPO_REGEX.match(v):
             return v
+        # TODO - Test this, seems broken
+        return v
 
-    @validator('overwrite_inputs')
-    def validate_overwrite_fits_mode(cls, v, values):
-        """Validate that the mode works with the context settings."""
-        if values['replay'] and len(v) != 0:
-            err_msg = "You can not use both replay and extra_context at the same time."
-            raise InvalidModeException(err_msg)
-        else:
-            return v
+    # @validator('overwrite_inputs')
+    # def validate_overwrite_fits_mode(cls, v, values):
+    #     """Validate that the mode works with the context settings."""
+    #     if values['replay'] and len(v) != 0:
+    #         err_msg = "You can not use both replay and extra_context at the same time."
+    #         raise InvalidModeException(err_msg)
+    #     else:
+    #         return v
 
     @validator('replay')
     def validate_rerun_and_replay_both_not_set(cls, v, values):
@@ -252,28 +256,47 @@ class Context(BaseModel):
     # def validate_overwrite_fits_mode(cls, v, values):
     #     """Validate that the mode works with the context settings."""
 
+    @validator('record')
+    def update_bool_to_path_record(cls, v, values):
+        """Validate that the mode works with the context settings."""
+        if isinstance(v, bool):
+            return values['context_key'] + '.record'
+        return v
+
+
+    @validator('context_file')
+    def update_bool_to_path(cls, v, values):
+        """Validate that the mode works with the context settings."""
+        if isinstance(v, bool):
+            return values['context_key'] + '.record'
+        return v
+
+
     def __init__(self, **data: Any):
         super().__init__(**data)
-        if self.context_file:
-            self.context_file = os.path.expanduser(
-                os.path.expandvars(self.context_file)
-            )
-        if not self.context_key:
-            self.context_key = os.path.basename(self.context_file).split('.')[0]
-
-        if not self.calling_directory:
-            self.calling_directory = os.path.abspath(os.path.curdir)
+        if self.existing_context:
+            self.output_dict.update(self.existing_context)
+    #     self.update_source()
+    #     self.update_input_dict()
+    #
+    #     # if self.context_file:
+    #     #     self.context_file = os.path.expanduser(
+    #     #         os.path.expandvars(self.context_file)
+    #     #     )
+    #     # if not self.context_key:
+    #     #     self.context_key = os.path.basename(self.context_file).split('.')[0]
+    #
+    #     if not self.calling_directory:
+    #         self.calling_directory = os.path.abspath(os.path.curdir)
 
     def update_source(self):
         """
         Locate the repository directory from a template reference.
 
         If the template refers to a zip file or zip url, download / unzip as the context.
-        If the template refers to a file, use that as the context.
         If the template refers to a repository URL, clone it.
+        If the template refers to a file, use that as the context.
         If the template is a path to a local repository, use it.
-
-        :return: None
         """
         # Zipfile
         if self.template.lower().endswith('.zip'):
@@ -296,7 +319,7 @@ class Context(BaseModel):
             repository_candidates = [cloned_repo]
         # File
         elif is_file(self.template):
-
+            # Special case where the input is a path to a file
             self.context_file = os.path.basename(self.template)
             self.repo_dir = Path(self.template).parent.absolute()
             self.template_name = os.path.basename(os.path.abspath(self.repo_dir))
@@ -304,6 +327,8 @@ class Context(BaseModel):
             return
         else:
             # Search in potential locations
+            if self.template == ".":
+                testing = os.path.abspath(self.template)
             repository_candidates = [
                 self.template,
                 os.path.join(self.settings.tackle_dir, self.template),
@@ -322,7 +347,10 @@ class Context(BaseModel):
                 # Means that no valid context file has been found or provided
                 continue
             else:
-                self.repo_dir = os.path.abspath(repo_candidate)
+                testing = os.path.abspath('.')
+
+                self.repo_dir = Path(os.path.abspath(repo_candidate))
+                # self.repo_dir = Path(os.path.abspath(os.path.dirname(self.context_file)))
                 self.template_name = os.path.basename(os.path.abspath(repo_candidate))
                 self.tackle_gen = determine_tackle_generation(self.context_file)
                 return
@@ -331,6 +359,43 @@ class Context(BaseModel):
             'A valid repository for "{}" could not be found in the following '
             'locations:\n{}'.format(self.template, '\n'.join(repository_candidates))
         )
+
+    def update_input_dict(self):
+        """
+        TODO:
+            - How the input context is keyed and why
+            - How context keys are managed
+
+        :return:
+        """
+        # Add the Python object to the context dictionary
+        if not self.context_key:
+            file_name = os.path.split(self.context_file)[1]
+            self.context_key = file_name.split('.')[0]
+            self.input_dict[self.context_key] = read_config_file(os.path.join(self.repo_dir, self.context_file))
+        else:
+            self.input_dict[self.context_key] = read_config_file(os.path.join(self.repo_dir, self.context_file))
+
+        # Overwrite context variable defaults with the default context from the
+        # user's global config, if available
+        if self.settings.default_context:
+            apply_overwrites_to_inputs(self.input_dict[self.context_key], self.settings.default_context)
+
+        # Apply the overwrites
+        # Strings are interpreted as pointers to files and converted to dict
+        if isinstance(self.overwrite_inputs, str):
+            self.overwrite_inputs = read_config_file(self.overwrite_inputs)
+        if self.overwrite_inputs:
+            apply_overwrites_to_inputs(self.input_dict[self.context_key], self.overwrite_inputs)
+
+        # TODO: Integrate overwrite logic to `output_dict`
+        # Should pop the inputs and insert itself into the input dict
+        if isinstance(self.override_inputs, str):
+            self.override_inputs = read_config_file(self.override_inputs)
+        if self.override_inputs:
+            apply_overwrites_to_inputs(self.output_dict[self.context_key], self.override_inputs)
+            for k, _ in self.override_inputs:
+                self.input_dict.pop(k)
 
 
 class BaseHook(Context):
@@ -347,8 +412,7 @@ class BaseHook(Context):
         # orm_mode = True
 
     def execute(self) -> Any:
-        """Abstract method."""
-        raise NotImplementedError()
+        raise NotImplementedError("Every hook needs an execute method.")
 
     def call(self) -> Any:
         """
@@ -357,7 +421,7 @@ class BaseHook(Context):
         Handles `chdir` method.
         """
         if self.chdir and os.path.isdir(
-            os.path.abspath(os.path.expanduser(self.chdir))
+                os.path.abspath(os.path.expanduser(self.chdir))
         ):
             # Use contextlib to switch dirs and come back out
             with work_in(os.path.abspath(os.path.expanduser(self.chdir))):

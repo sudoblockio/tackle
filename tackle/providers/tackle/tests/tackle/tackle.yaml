@@ -1,4 +1,4 @@
-shell:
+tackle:
   type: tackle
   template: https://github.com/robcxyz/tackle-box
   directory: tackle/providers/tackle/tests/tackle
