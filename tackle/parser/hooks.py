@@ -51,9 +51,9 @@ def raise_hook_validation_error(e, Hook, context: 'Context'):
 
 def get_hook(hook_type, context: 'Context'):
     """
-    Get the hook from available providers. This function
+    Get the hook from available providers.
 
-    Does the following to return the hook:
+    This function does the following to return the hook:
     1. Check if hook hasn't been imported already
     2. Check if the hook has been declared in a provider's __init__.py's
     `hook_types` field.
@@ -84,9 +84,6 @@ def get_hook(hook_type, context: 'Context'):
 
 def run_hook(context: 'Context'):
     """Run hook."""
-    # if context.input_dict is None:
-    #     context.input_dict = {}
-
     Hook = get_hook(context.hook_dict['type'], context)
 
     try:
@@ -96,13 +93,10 @@ def run_hook(context: 'Context'):
             i for i in context.dict().keys() if i in context.hook_dict.keys()
         }
         exclude_context.update({'env'})
-        # exclude_mode = {i for i in mode.dict().keys() if i in context.hook_dict.keys()}
-        # exclude_mode = exclude_mode if exclude_mode != set() else {'tmp'}
 
         hook = Hook(
             **context.hook_dict,
             **context.dict(exclude=exclude_context),
-            # **mode.dict(exclude=exclude_mode),
         )
 
         # import json
@@ -120,8 +114,23 @@ def run_hook(context: 'Context'):
         raise_hook_validation_error(e, Hook, context)
 
 
-def _evaluate_confirm(context: 'Context'):
+def evaluate_confirm(context: 'Context'):
+    """
+    Confirm the user wants to do something before an important step.
+
+    Runs with the `confirm` key which can be one of:
+    bool - Generic confirmation
+    string - Message for confirmation
+    dict - Extra params:
+        when: Evaluate as boolean
+        message: The message to confirm with
+        default: True or false as default to confirm
+    """
     if 'confirm' in context.hook_dict:
+        if isinstance(context.hook_dict['confirm'], bool):
+            # Override bool with generic message.
+            if context.hook_dict['confirm']:
+                context.hook_dict['confirm'] = "Are you sure you want to do this?"
         if isinstance(context.hook_dict['confirm'], str):
             return prompt(
                 [
@@ -151,7 +160,7 @@ def _evaluate_confirm(context: 'Context'):
                 )['tmp']
 
 
-def evaluate_when(hook_dict: dict, context: 'Context'):
+def evaluate_when(hook_dict: dict, context: 'Context') -> bool:
     """Evaluate the when condition and return bool."""
     if 'when' not in hook_dict:
         return True
@@ -194,9 +203,9 @@ def evaluate_loop(context: 'Context'):
 
     loop_output = []
     for i, l in (
-            enumerate(loop_targets)
-            if not reverse
-            else reversed(list(enumerate(loop_targets)))
+        enumerate(loop_targets)
+        if not reverse
+        else reversed(list(enumerate(loop_targets)))
     ):
         # Create temporary variables in the context to be used in the loop.
         context.output_dict.update({'index': i, 'item': l})
@@ -210,8 +219,8 @@ def evaluate_loop(context: 'Context'):
 
 
 def parse_hook(
-        context: 'Context',
-        append_key: bool = False,
+    context: 'Context',
+    append_key: bool = False,
 ):
     """Parse input dict for loop and when logic and calls hooks.
 
@@ -235,8 +244,11 @@ def parse_hook(
 
         # Block hooks are run independently. This prevents the rest of the hook dict from
         # being rendered ahead of execution.
-        if 'block' not in context.hook_dict['type']:
+        if context.hook_dict['type'] != 'block':
             context.hook_dict = render_variable(context, context.hook_dict)
+
+        if evaluate_confirm(context):
+            pass
 
         # Run the hook
         if context.hook_dict['merge'] if 'merge' in context.hook_dict else False:
