@@ -41,7 +41,7 @@ def test_parser_hooks_raises_error_on_unknown_hook_type(change_curdir_fixtures):
     from tackle.exceptions import UnknownHookTypeException
 
     with pytest.raises(UnknownHookTypeException):
-        tackle('.', context_file='unknown-hook-type.yaml')
+        tackle(context_file='unknown-hook-type.yaml')
 
 
 def test_parser_provider_hook_add(change_curdir_fixtures):
@@ -50,7 +50,7 @@ def test_parser_provider_hook_add(change_curdir_fixtures):
     Validate that you can give a `__provider` key to point to
     additional providers and make them available as a type.
     """
-    o = tackle('.', context_file='context_provider.yaml')
+    o = tackle(context_file='context_provider.yaml')
     assert o['things'] == 'bar'
 
 
@@ -60,6 +60,6 @@ def test_parser_provider_hook_add_list(change_curdir_fixtures):
     Validate that you can give multiple `__provider` keys to point to
     additional providers and make them available as a types.
     """
-    o = tackle('.', context_file='context_provider_2.yaml')
+    o = tackle(context_file='context_provider_list.yaml')
     assert o['things'] == 'bar'
     assert o['stuff'] == 'bar'

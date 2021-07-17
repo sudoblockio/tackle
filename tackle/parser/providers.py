@@ -24,7 +24,8 @@ def import_with_fallback_install(mod_name, path):
     try:
         import_hooks_from_dir(mod_name, path)
     except ModuleNotFoundError:
-        if os.path.isfile(os.path.join(path, 'requirements.txt')):
+        requirements_path = os.path.join(path, '..', 'requirements.txt')
+        if os.path.isfile(requirements_path):
             # It is a convention of providers to have a requirements file at the base.
             # Install the contents if there was an import error
             subprocess.check_call(
@@ -36,7 +37,7 @@ def import_with_fallback_install(mod_name, path):
                     "--quiet",
                     "--disable-pip-version-check",
                     "-r",
-                    'requirements.txt',
+                    requirements_path,
                 ]
             )
         import_hooks_from_dir(mod_name, path)
@@ -50,7 +51,7 @@ def get_provider_from_dir(mod_name, path):
 
 
 def import_hooks_from_dir(
-        mod_name, path, excluded_file_names=None, excluded_file_extensions=None
+    mod_name, path, excluded_file_names=None, excluded_file_extensions=None
 ):
     """Import hooks from a directory.
 
@@ -61,6 +62,9 @@ def import_hooks_from_dir(
         excluded_file_names = ['pre_gen_project', 'post_gen_project', '__pycache__']
     if excluded_file_extensions is None:
         excluded_file_extensions = ['pyc']
+
+    # if mod_name == 'tackle.providers.art':
+    #     print('debug')
 
     for f in listdir_absolute(path):
         if os.path.basename(f).split('.')[0] in excluded_file_names:
@@ -140,10 +144,11 @@ def update_providers(context: 'Context'):
         # Providers from config file
         append_provider_dicts(context.settings.extra_providers, context)
 
-    # if '__providers' in context.input_dict[context.context_key]:
-    #     append_provider_dicts(
-    #         context.input_dict[context.context_key]['__providers'], context
-    #     )
+    # If any special providers are provided in the context file with the `__providers` key
+    if '__providers' in context.input_dict[context.context_key]:
+        append_provider_dicts(
+            context.input_dict[context.context_key]['__providers'], context
+        )
 
     # TODO: Automatically import hooks
     # hooks_dir = os.path.join(context.repo_dir, 'hooks')
