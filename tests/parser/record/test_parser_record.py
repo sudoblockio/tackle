@@ -17,33 +17,30 @@ def clean_outputs():
             os.remove(o)
 
 
-@pytest.mark.parametrize("clean_output", ["tackle.record.yaml"], indirect=True)
-def test_parser_record_bool_input(change_dir, clean_output):
+def test_parser_record_bool_input(change_dir, clean_outputs):
     """Verify that when the record flag is set, the output is the ."""
     o = tackle(
-        '.',
         no_input=True,
         record=True,
     )
 
-    with open(clean_output) as f:
-        record_output = yaml.load(f)
+    with open("tackle.record.yaml") as f:
+        record_output = yaml.safe_load(f)
 
     assert 'stuff' in o
     assert 'stuff' in record_output
 
 
-@pytest.mark.parametrize("clean_output", ["record2.yaml"], indirect=True)
-def test_parser_record_str_input(change_dir, clean_output):
+def test_parser_record_str_input(change_dir, clean_outputs):
     """Verify the hook call works successfully."""
     o2 = tackle(
         '.',
         no_input=True,
-        record=clean_output,
+        record="record2.yaml",
     )
 
-    with open(clean_output) as f:
-        record_output = yaml.load(f)
+    with open("record2.yaml") as f:
+        record_output = yaml.safe_load(f)
 
     assert 'stuff' in o2
     assert 'stuff' in record_output
@@ -69,8 +66,8 @@ def test_parser_record_str_input(change_dir, clean_output):
 # @pytest.mark.parametrize("clean_output", ["tackle-other.record.yaml"], indirect=True)
 
 
-def test_parser_record_str_input_and_different_input(change_dir):
-    """Verify the hook call works successfully."""
+def test_parser_record_str_input_and_different_input(change_dir, clean_outputs):
+    """Verify that ."""
     o1 = tackle(
         '.',
         no_input=True,
@@ -81,7 +78,7 @@ def test_parser_record_str_input_and_different_input(change_dir):
     out_file = "tackle-other.record.yaml"
 
     with open(out_file) as f:
-        record_output = yaml.load(f)
+        record_output = yaml.safe_load(f)
 
     assert 'stuff' in o1
     assert 'stuff' in record_output

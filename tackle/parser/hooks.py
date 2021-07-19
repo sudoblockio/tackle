@@ -144,7 +144,7 @@ def evaluate_confirm(context: 'Context'):
         elif isinstance(context.hook_dict['confirm'], dict):
             when_condition = True
             if 'when' in context.hook_dict['confirm']:
-                when_condition = evaluate_when(context.hook_dict, context)
+                when_condition = evaluate_when(context.hook_dict['confirm'], context)
             if when_condition:
                 return prompt(
                     [

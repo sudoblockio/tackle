@@ -47,9 +47,9 @@ class Settings(BaseSettings):
 
 
 def get_settings(
-        config_file: str = None,
-        config: dict = None,
-        default_config: bool = False,
+    config_file: str = None,
+    config: dict = None,
+    default_config: bool = False,
 ) -> 'Settings':
     """
     Return the user config as a dict.

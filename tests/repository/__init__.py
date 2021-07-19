@@ -2,7 +2,7 @@
 
 """Fixture to keep legacy unit tests working."""
 from tackle import models
-
+from tackle.settings import Settings
 
 def update_source_fixtures(
     template,
@@ -14,13 +14,13 @@ def update_source_fixtures(
     directory=None,
 ):
     """Mock the old cookiecutter interfece for tests."""
-    source = models.Source(
+    context = models.Context(
         template=template,
         password=password,
         checkout=checkout,
         directory=directory,
+        no_input=no_input,
+        settings=Settings(abbreviations=abbreviations, tackle_dir=clone_to_dir)
     )
-    mode = models.Mode(no_input=no_input)
-    settings = models.Settings(abbreviations=abbreviations, tackle_dir=clone_to_dir)
 
-    return source, mode, settings
+    return context

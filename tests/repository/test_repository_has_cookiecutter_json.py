@@ -1,7 +1,7 @@
 """Tests for `repository_has_cookiecutter_json` function."""
 import pytest
 
-from tackle.repository import repository_has_tackle_file
+from tackle.utils.paths import repository_has_tackle_file
 
 
 def test_valid_repository(change_dir_main_fixtures):

@@ -2,7 +2,7 @@
 import pytest
 
 from tackle.models import DEFAULT_ABBREVIATIONS
-from tackle.repository import expand_abbreviations
+from tackle.utils.paths import expand_abbreviations
 
 
 @pytest.mark.parametrize(

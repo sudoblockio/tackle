@@ -13,7 +13,7 @@ import tackle.utils.paths
 from tackle import exceptions
 from tackle import generate
 from tackle.main import tackle
-from tackle.models import Source, Context, Output
+from tackle.models import Context, Output
 from _collections import OrderedDict
 
 
@@ -81,14 +81,14 @@ def generate_files_from_context(
         input_dict=OrderedDict({'cookiecutter': context}),
         output_dict=OrderedDict(context),
         tackle_gen='cookiecutter',
+        repo_dir=repo_dir
     )
-    s = Source(repo_dir=repo_dir)
     o = Output(
         output_dir=str(path),
         overwrite_if_exists=overwrite_if_exists,
         skip_if_file_exists=skip_if_file_exists,
     )
-    output = generate.generate_files(context=c, source=s, output=o)
+    output = generate.generate_files(context=c, output=o)
     return output
 
 
@@ -387,7 +387,6 @@ def test_raise_undefined_variable_file_name_existing_project(
 
     error = err.value
     assert "Unable to create file '{{cookiecutter.foobar}}'" == error.message
-    del error.context['cookiecutter']['_template']
     assert error.context == undefined_context
     assert output_dir.join('testproject').exists()
 
@@ -408,7 +407,6 @@ def test_raise_undefined_variable_file_content(
 
     error = err.value
     assert "Unable to create file 'README.rst'" == error.message
-    del error.context['cookiecutter']['_template']
     assert error.context == undefined_context
 
     assert not output_dir.join('testproject').exists()

@@ -21,13 +21,13 @@ bar:
 bing:
   type: var
   input: blah
-  confirm: "{{ _true }}"
+#  confirm: "{{ _true }}"
   when: "{{ things == 'stuff' }}"
 
 bings:
   type: var
   input: blah
-  confirm: "{{ _true }}"
+#  confirm: "{{ _true }}"
   when:
     - "{{ things == 'stuff' }}"
     - "{{ _true }}"

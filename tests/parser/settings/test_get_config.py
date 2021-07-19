@@ -6,7 +6,7 @@ from yaml.scanner import ScannerError
 
 from tackle import utils
 from tackle.exceptions import ConfigDoesNotExistException
-from tackle.parser.settings import get_settings
+from tackle.settings import get_settings
 
 
 def test_merge_configs():

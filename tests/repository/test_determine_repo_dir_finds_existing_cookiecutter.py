@@ -2,8 +2,8 @@
 import os
 
 import pytest
+from pathlib import Path
 
-from tackle import repository
 from tests.repository import update_source_fixtures
 
 
@@ -34,15 +34,15 @@ def test_should_return_existing_cookiecutter(
 
     This folder is considered like previously cloned project directory.
     """
-    source, mode, settings = update_source_fixtures(
+    context = update_source_fixtures(
         template=template,
         abbreviations={},
         clone_to_dir=user_config_data['tackle_dir'],
         checkout=None,
         no_input=True,
     )
-    repository.update_source(source=source, mode=mode, settings=settings)
+    context.update_source()
 
-    assert cloned_cookiecutter_path == source.repo_dir
-    assert source.context_file == 'cookiecutter.json'
-    assert not source.cleanup
+    assert Path(cloned_cookiecutter_path) == context.repo_dir
+    assert context.context_file == 'cookiecutter.json'
+    assert not context.cleanup

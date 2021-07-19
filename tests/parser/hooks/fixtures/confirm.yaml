@@ -1,0 +1,31 @@
+_true: true
+_false: false
+
+#bool_true:
+#  type: var
+#  input: blah
+#  confirm: "{{ _true }}"
+
+bool_false:
+  type: var
+  input: blah
+  confirm: "{{ _false }}"
+
+#string:
+#  type: var
+#  input: blah
+#  confirm: Are you sure?
+
+dict_false:
+  type: var
+  input: blah
+  confirm:
+    message: Are you sure?
+    when: "{{ _false }}"
+
+#dict_true:
+#  type: var
+#  input: blah
+#  confirm:
+#    message: Are you sure?
+#    when: "{{ _true }}"

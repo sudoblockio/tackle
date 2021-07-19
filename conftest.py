@@ -7,26 +7,6 @@ from tackle.__main__ import main
 import pytest
 
 
-def remove_from_dir(param):
-    """Remove file(s) if exist."""
-    if isinstance(param, str):
-        if os.path.exists(param):
-            os.remove(param)
-
-    elif isinstance(param, tuple):
-        for i in param:
-            if os.path.exists(i):
-                os.remove(i)
-
-
-@pytest.fixture(scope='function')
-def clean_output(request):
-    """Take input of string or tuple and removes the files from dir."""
-    remove_from_dir(request.param)
-    yield request.param
-    remove_from_dir(request.param)
-
-
 @pytest.fixture(scope="function")
 def change_dir(request):
     """Change to the current directory of the test."""
@@ -40,26 +20,9 @@ def change_curdir_fixtures(request):
 
 
 @pytest.fixture(scope='function')
-def change_main_dir_fixtures(request):
-    """Change to the tests/main/fixtures dir to run tests."""
-    os.chdir(
-        os.path.join(
-            os.path.abspath(os.path.dirname(__file__)), 'tests', 'main', 'fixtures'
-        )
-    )
-
-
-@pytest.fixture(scope='function')
 def change_dir_base(monkeypatch):
     """Change to the current directory."""
     monkeypatch.chdir(os.path.abspath(os.path.dirname(__file__)))
-
-
-# @pytest.fixture(scope='function')
-# def change_dir_main_fixtures(monkeypatch):
-#     """Change to the current directory."""
-#     monkeypatch.chdir(os.path.join(os.path.abspath(
-#         os.path.dirname(__file__)), 'tests', 'main', 'fixtures'))
 
 
 @pytest.fixture(scope='function')
@@ -77,13 +40,13 @@ def load_yaml(request):
     """Return dict of yaml input(s) either str or tuple."""
     if isinstance(request.param, str):
         with open(request.param) as f:
-            return yaml.load(f)
+            return yaml.safe_load(f)
 
     if isinstance(request.param, tuple):
         output = []
         for i in request.param:
             with open(i) as f:
-                output.append(yaml.load(f))
+                output.append(yaml.safe_load(f))
         return output
 
 

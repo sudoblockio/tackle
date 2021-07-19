@@ -8,6 +8,8 @@ errors occur in (optional) pre- or pos-gen hooks.
 import pytest
 
 from tackle import exceptions, generate
+from tackle.models import Context, Output
+from _collections import OrderedDict
 
 
 @pytest.mark.parametrize(
@@ -29,19 +31,17 @@ def test_hooks_raises_errors(
         "abort_pre_gen": abort_pre_gen,
         "abort_post_gen": abort_post_gen,
     }
-    from tackle.models import Source, Context, Output
-    from _collections import OrderedDict
 
     c = Context(
         context_key='cookiecutter',
         input_dict=OrderedDict({'cookiecutter': context}),
         output_dict=OrderedDict(context),
         tackle_gen='cookiecutter',
+        repo_dir="hooks-abort-render"
     )
-    s = Source(repo_dir="hooks-abort-render")
     o = Output(output_dir=str(tmpdir))
 
     with pytest.raises(exceptions.FailedHookException) as error:
-        generate.generate_files(context=c, source=s, output=o)
+        generate.generate_files(context=c, output=o)
         assert error.value.code == 5
     assert not tmpdir.join("foobar").isdir()

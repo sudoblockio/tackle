@@ -2,24 +2,7 @@
 import pytest
 
 from tackle.models import DEFAULT_ABBREVIATIONS
-from tackle.repository import expand_abbreviations, is_repo_url, is_zip_file
-
-
-@pytest.fixture(
-    params=[
-        '/path/to/zipfile.zip',
-        'https://example.com/path/to/zipfile.zip',
-        'http://example.com/path/to/zipfile.zip',
-    ]
-)
-def zipfile(request):
-    """Fixture. Represent possible paths to zip file."""
-    return request.param
-
-
-def test_is_zip_file(zipfile):
-    """Verify is_repo_url works."""
-    assert is_zip_file(zipfile) is True
+from tackle.utils.paths import expand_abbreviations, is_repo_url
 
 
 @pytest.fixture(

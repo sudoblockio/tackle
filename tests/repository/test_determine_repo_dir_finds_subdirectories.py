@@ -2,9 +2,8 @@
 import os
 
 import pytest
-
+from pathlib import Path
 from tackle import exceptions
-from tackle import repository
 from tests.repository import update_source_fixtures
 
 
@@ -35,7 +34,7 @@ def test_should_find_existing_cookiecutter(
     template, user_config_data, cloned_cookiecutter_path, change_dir_main_fixtures
 ):
     """Find `cookiecutter.json` in sub folder created by `cloned_cookiecutter_path`."""
-    source, mode, settings = update_source_fixtures(
+    context = update_source_fixtures(
         template=template,
         abbreviations={},
         clone_to_dir=user_config_data['tackle_dir'],
@@ -43,17 +42,17 @@ def test_should_find_existing_cookiecutter(
         no_input=True,
         directory='my-dir',
     )
-    repository.update_source(source=source, mode=mode, settings=settings)
+    context.update_source()
 
-    assert cloned_cookiecutter_path == source.repo_dir
-    assert source.context_file == 'cookiecutter.json'
-    assert not source.cleanup
+    assert Path(cloned_cookiecutter_path) == context.repo_dir
+    assert context.context_file == 'cookiecutter.json'
+    assert not context.cleanup
 
 
 def test_local_repo_typo(template, user_config_data, cloned_cookiecutter_path):
     """Wrong pointing to `cookiecutter.json` sub-directory should raise."""
     with pytest.raises(exceptions.RepositoryNotFound) as err:
-        source, mode, settings = update_source_fixtures(
+        context = update_source_fixtures(
             template=template,
             abbreviations={},
             clone_to_dir=user_config_data['cookiecutters_dir'],
@@ -61,7 +60,7 @@ def test_local_repo_typo(template, user_config_data, cloned_cookiecutter_path):
             no_input=True,
             directory='wrong-dir',
         )
-        repository.update_source(source=source, mode=mode, settings=settings)
+        context.update_source()
     assert (
         'A valid repository for "{}" could not be found in the following '
         'locations:'.format(template) in str(err.value)

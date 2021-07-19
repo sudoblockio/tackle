@@ -38,7 +38,7 @@ class BlockHook(BaseHook):
                 override_inputs=self.override_inputs,
                 context_key=self.context_key,
                 no_input=self.no_input,
-                settings=self.settings
+                settings=self.settings,
             ),
         )
         return dict(output.output_dict)

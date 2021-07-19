@@ -39,6 +39,6 @@ def test_parser_rerun_broken_recover(change_dir, clean_rerun):
         tackle(no_input=True, rerun=True, context_file='tackle-broken.yaml')
 
     with open(RERUN_FILE) as f:
-        rerun = yaml.load(f)
+        rerun = yaml.safe_load(f)
 
     assert rerun['foo'] == 'bar'

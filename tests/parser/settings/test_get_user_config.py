@@ -6,7 +6,7 @@ import pytest
 
 from yaml.scanner import ScannerError
 from tackle import models
-from tackle.parser.settings import get_settings
+from tackle.settings import get_settings
 
 
 @pytest.fixture(scope='module')
@@ -76,10 +76,10 @@ def test_get_user_config_invalid(user_config_path, change_dir):
         get_settings()
 
 
-# @pytest.mark.usefixtures('back_up_rc')
-# def test_get_user_config_nonexistent():
-#     """Validate default app config returned, if user does not have own config."""
-#     assert get_settings() == get_settings().DEFAULT_CONFIG
+@pytest.mark.usefixtures('back_up_rc')
+def test_get_user_config_nonexistent():
+    """Validate default app config returned, if user does not have own config."""
+    assert get_settings() == get_settings(default_config=True)
 
 
 @pytest.fixture

@@ -17,7 +17,7 @@ from tackle.parser.hooks import parse_hook
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from tackle.models import Context, Settings
+    from tackle.models import Context
 
 logger = logging.getLogger(__name__)
 
@@ -33,16 +33,7 @@ def dump_rerun_on_error(context: 'Context'):
 
 
 def parse_context(context: 'Context'):
-    """Parse the context and iterate over values.
-
-    :param dict context: Source for field names and sample values.
-    :param env: Jinja environment to render values with.
-    :param context_key: The key to insert all the outputs under in the context dict.
-    :param no_input: Prompt the user at command line for manual configuration.
-    :param existing_context: A dictionary of values to use during rendering.
-    :return: cc_dict
-    """
-
+    """Parse the context based on the key type and iterate over values."""
     for key, raw in context.input_dict[context.context_key].items():
         context.key = key
         # context.raw = raw
@@ -97,93 +88,21 @@ def parse_context(context: 'Context'):
     return context
 
 
-# TODO: Break this function up
-def prep_context(context: 'Context', settings: 'Settings'):
-    """Prepare the context by setting some default values."""
-    # Read config
-    # obj = read_config_file(os.path.join(context.repo_dir, context.context_file))
-    #
-    # # Add the Python object to the context dictionary
-    # if not context.context_key:
-    #     file_name = os.path.split(context.context_file)[1]
-    #     file_stem = file_name.split('.')[0]
-    #     context.input_dict[file_stem] = obj
-    # else:
-    #     context.input_dict[context.context_key] = obj
-    #
-    # # Overwrite context variable defaults with the default context from the
-    # # user's global config, if available
-    # if settings.default_context:
-    #     apply_overwrites_to_inputs(obj, settings.default_context)
-    #
-    # # Apply the overwrites/rides
-    # # Strings are interpretted as pointers to files
-    # if isinstance(context.overwrite_inputs, str):
-    #     context.overwrite_inputs = read_config_file(context.overwrite_inputs)
-    # if context.overwrite_inputs:
-    #     apply_overwrites_to_inputs(obj, context.overwrite_inputs)
-    # else:
-    #     context.overwrite_inputs = {}
-    #
-    # # TODO: FIx the override logic in how it is interpreted by hooks
-    # if not context.override_inputs:
-    #     context.override_inputs = {}
-    #
-    # # include template dir or url in the context dict
-    # context.input_dict[context.context_key]['_template'] = context.repo_dir
-    #
-    # logger.debug('Context generated is %s', context.input_dict)
-    #
-    # if not context.existing_context:
-    #     context.output_dict = OrderedDict([])
-    # else:
-    #     context.output_dict = OrderedDict(context.existing_context)
-
-    # Entrypoint into providers.py
-    # get_providers(context, settings)
-    #
-    # with work_in(context.input_dict[context.context_key]['_template']):
-    #     return parse_context(context)
-
-
-def output_record(context: 'Context'):
-    """Output a file that can be used to """
-    pass
-
-
-def evaluate_rerun(rerun_path):
-    if os.path.exists(rerun_path):
-        with open(rerun_path, 'r') as f:
+def evaluate_rerun(context):
+    """Return file or if file does not exist, set record to be true."""
+    if os.path.exists(context.rerun_path):
+        with open(context.rerun_path, 'r') as f:
             return yaml.safe_load(f)
-    # else:
-    #     if not context.record:
-    #         print('No rerun file, will create record and use next time.')
-    #         context.record = True
-
-
-# def _enrich_context(context: 'Context', source: 'Source'):
-#     if not context.context_key:
-#         context.context_key = os.path.basename(source.context_file).split('.')[0]
-#     if not context.calling_directory:
-#         context.calling_directory = os.path.abspath(os.path.curdir)
-
-
-# def _validate_context(context: 'Context', mode: 'Mode'):
-#     if context.replay and len(context.overwrite_inputs) != 0:
-#         err_msg = "You can not use both replay and extra_context at the same time."
-#         raise InvalidModeException(err_msg)
-#     if context.replay and context.rerun:
-#         err_msg = "You can not use both replay and rerun at the same time."
-#         raise InvalidModeException(err_msg)
+    else:
+        if not context.record:
+            print('No rerun file, will create record and use next time.')
+            context.record = True
 
 
 def update_context(
-        context: 'Context',
+    context: 'Context',
 ):
     """Get output dict and entrypoint into broader parsing of context."""
-    # _validate_context(context, mode)
-    # _enrich_context(context, source)
-
     if context.replay:
         if isinstance(context.replay, bool):
             context.output_dict = load(
@@ -191,7 +110,7 @@ def update_context(
             )
             return
         else:
-            # path, template_name = os.path.split(os.path.splitext(context.replay)[0])
+            # TODO: fix
             path, template_name = os.path.split(os.path.splitext(context.replay)[0])
             context.output_dict = load(path, template_name, context.context_key)
             return
@@ -208,15 +127,15 @@ def update_context(
             #  unless the function call is aware of which context (the calling context)
             #  or a subprocess context. Detecting based on calling dir won't work.
             # if os.path.abspath(os.path.curdir) == context.calling_directory:
-            context.override_inputs = evaluate_rerun(context.rerun_path)
+            context.override_inputs = evaluate_rerun(context)
         if isinstance(context.rerun, bool):
             context.rerun_path = os.path.join(
-                context.calling_directory,
-                '.' + '.'.join([context.template_name, context.settings.rerun_file_suffix]),
+                os.curdir,
+                '.'
+                + '.'.join([context.template_name, context.settings.rerun_file_suffix]),
             )
-            context.override_inputs = evaluate_rerun(context.rerun_path)
+            context.override_inputs = evaluate_rerun(context)
 
-    TESTING = os.path.abspath('.')
     # Main entrypoint to parse the input.
     with work_in(context.repo_dir):
         parse_context(context)
@@ -225,7 +144,7 @@ def update_context(
         if isinstance(context.record, bool):
             # Bool indicates dumping def
             dump(
-                context.calling_directory,
+                os.curdir,
                 context.context_key + '.record',
                 context.output_dict,
                 context.settings.dump_output,
@@ -234,9 +153,19 @@ def update_context(
         if isinstance(context.record, str):
             # Str indicates path to file to dump output to
             if context.record.startswith('/'):
-                dump('/', context.record, context.output_dict, context.settings.dump_output)
+                dump(
+                    '/',
+                    context.record,
+                    context.output_dict,
+                    context.settings.dump_output,
+                )
             if os.path.exists(Path(context.record).parent):
-                dump(os.curdir, context.record, context.output_dict, context.settings.dump_output)
+                dump(
+                    os.curdir,
+                    context.record,
+                    context.output_dict,
+                    context.settings.dump_output,
+                )
             else:
                 dump(
                     context.calling_directory,

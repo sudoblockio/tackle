@@ -3,7 +3,6 @@ import os
 
 import pytest
 
-from tackle import repository
 from tackle import exceptions
 from tests.repository import update_source_fixtures
 
@@ -25,12 +24,12 @@ def test_zipfile_unzip(
     is passed a zipfile, or a URL to a zipfile.
     """
     mock_clone = mocker.patch(
-        'tackle.repository.unzip',
+        'tackle.models.unzip',
         return_value='fake-repo-tmpl',
         autospec=True,
     )
 
-    source, mode, settings = update_source_fixtures(
+    context = update_source_fixtures(
         template,
         abbreviations={},
         clone_to_dir=user_config_data['tackle_dir'],
@@ -38,19 +37,17 @@ def test_zipfile_unzip(
         no_input=True,
         password=None,
     )
-    repository.update_source(source=source, mode=mode, settings=settings)
+    context.update_source()
 
     mock_clone.assert_called_once_with(
         zip_uri=template,
-        is_url=is_url,
         clone_to_dir=user_config_data['tackle_dir'],
         no_input=True,
         password=None,
     )
 
-    # assert os.path.isdir(project_dir)
-    # assert cleanup
-    # assert 'tests/legacy/fixtures/fake-repo-tmpl' == project_dir
+    assert os.path.isdir(context.repo_dir)
+    assert context.cleanup
 
 
 @pytest.fixture
@@ -71,19 +68,19 @@ def test_repository_url_should_clone(
     passed a repository template url.
     """
     mock_clone = mocker.patch(
-        'tackle.repository.clone',
+        'tackle.models.clone',
         return_value='fake-repo-tmpl',
         autospec=True,
     )
 
-    source, mode, settings = update_source_fixtures(
+    context = update_source_fixtures(
         template_url,
         abbreviations={},
         clone_to_dir=user_config_data['tackle_dir'],
         checkout=None,
         no_input=True,
     )
-    repository.update_source(source=source, mode=mode, settings=settings)
+    context.update_source()
 
     mock_clone.assert_called_once_with(
         repo_url=template_url,
@@ -92,9 +89,9 @@ def test_repository_url_should_clone(
         no_input=True,
     )
 
-    assert os.path.isdir(source.repo_dir)
-    assert not source.cleanup
-    assert source.context_file == 'cookiecutter.json'
+    assert os.path.isdir(context.repo_dir)
+    assert not context.cleanup
+    assert context.context_file == 'cookiecutter.json'
 
 
 def test_repository_url_with_no_context_file(
@@ -102,20 +99,20 @@ def test_repository_url_with_no_context_file(
 ):
     """Verify cloned repository without `cookiecutter.json` file raises error."""
     mocker.patch(
-        'tackle.repository.clone',
+        'tackle.models.clone',
         return_value='fake-repo-bad',
         autospec=True,
     )
 
     with pytest.raises(exceptions.RepositoryNotFound) as err:
-        source, mode, settings = update_source_fixtures(
+        context = update_source_fixtures(
             template_url,
             abbreviations={},
             clone_to_dir=user_config_data['tackle_dir'],
             checkout=None,
             no_input=True,
         )
-        repository.update_source(source=source, mode=mode, settings=settings)
+        context.update_source()
 
     assert str(err.value) == (
         'A valid repository for "{}" could not be found in the following '

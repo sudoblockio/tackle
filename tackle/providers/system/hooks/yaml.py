@@ -8,6 +8,7 @@ import logging
 import oyaml as yaml
 import re
 import os
+from _collections import OrderedDict
 
 from typing import Union, Dict, List, Any
 
@@ -37,7 +38,6 @@ class YamlHook(BaseHook):
     """
 
     type: str = 'yaml'
-    from _collections import OrderedDict
 
     remove: Union[List, str] = None
     contents: Union[Dict, OrderedDict, List] = None
