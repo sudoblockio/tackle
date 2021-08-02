@@ -14,11 +14,11 @@ from tackle.utils.paths import (
     is_repo_url,
     is_file,
     repository_has_tackle_file,
+    determine_tackle_generation, work_in,
 )
-from tackle.utils.reader import read_config_file, apply_overwrites_to_inputs
+from tackle.utils.files import read_config_file, apply_overwrites_to_inputs
 from tackle.utils.zipfile import unzip
 from tackle.utils.vcs import clone
-from tackle.utils.context_manager import work_in
 from tackle.exceptions import InvalidModeException, RepositoryNotFound
 from tackle.settings import Settings
 
@@ -54,14 +54,6 @@ CONTEXT_FILE_DICT = {
 ALL_VALID_CONTEXT_FILES = (
     CONTEXT_FILE_DICT['cookiecutter'] + CONTEXT_FILE_DICT['tackle']
 )
-
-
-def determine_tackle_generation(context_file: str) -> str:
-    """Determine the tackle generation."""
-    if context_file in CONTEXT_FILE_DICT['cookiecutter']:
-        return 'cookiecutter'
-    else:
-        return 'tackle'
 
 
 class Provider(BaseModel):
@@ -297,12 +289,13 @@ class BaseHook(Context):
 
         Handles `chdir` method.
         """
-        if self.chdir and os.path.isdir(
-            os.path.abspath(os.path.expanduser(self.chdir))
-        ):
-            # Use contextlib to switch dirs and come back out
-            with work_in(os.path.abspath(os.path.expanduser(self.chdir))):
-                return self.execute()
+        if self.chdir:
+            if os.path.isdir(os.path.abspath(os.path.expanduser(self.chdir))):
+                # Use contextlib to switch dirs and come back out
+                with work_in(os.path.abspath(os.path.expanduser(self.chdir))):
+                    return self.execute()
+            else:
+                raise NotADirectoryError("The specified path to change to was not found.")
         else:
             return self.execute()
 

@@ -81,7 +81,7 @@ def generate_files_from_context(
         input_dict=OrderedDict({'cookiecutter': context}),
         output_dict=OrderedDict(context),
         tackle_gen='cookiecutter',
-        repo_dir=repo_dir
+        repo_dir=repo_dir,
     )
     o = Output(
         output_dir=str(path),

@@ -52,7 +52,7 @@ def generate_files_wrapper(
         input_dict=OrderedDict(context),
         output_dict=OrderedDict(context['cookiecutter']),
         tackle_gen='cookiecutter',
-        repo_dir=repo_dir
+        repo_dir=repo_dir,
     )
     o = Output(
         output_dir=str(output_dir),

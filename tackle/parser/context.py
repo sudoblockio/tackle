@@ -7,7 +7,7 @@ import yaml
 from pathlib import Path
 from jinja2.exceptions import UndefinedError
 from tackle.render import render_variable
-from tackle.utils.context_manager import work_in
+from tackle.utils.paths import work_in
 from tackle.utils.files import load, dump
 
 from tackle.exceptions import UndefinedVariableInTemplate, UnknownHookTypeException

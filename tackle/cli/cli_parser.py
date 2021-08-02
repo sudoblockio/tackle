@@ -278,12 +278,11 @@ def main(
     else:
         _accept_hooks = accept_hooks == "yes"
 
-    # if replay_file:
-    #     replay = replay_file
-    # if record_file:
-    #     record = record_file
-    # if rerun_file:
-    #     rerun = rerun_file
+    # settings = get_settings(
+    #     config_file=config_file,
+    #     # config=config,
+    #     default_config=default_config,
+    # )
 
     try:
         tackle(

@@ -4,6 +4,7 @@
 from tackle import models
 from tackle.settings import Settings
 
+
 def update_source_fixtures(
     template,
     abbreviations,
@@ -20,7 +21,7 @@ def update_source_fixtures(
         checkout=checkout,
         directory=directory,
         no_input=no_input,
-        settings=Settings(abbreviations=abbreviations, tackle_dir=clone_to_dir)
+        settings=Settings(abbreviations=abbreviations, tackle_dir=clone_to_dir),
     )
 
     return context

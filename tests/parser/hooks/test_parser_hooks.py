@@ -8,11 +8,11 @@ from tackle.exceptions import HookCallException
 from pydantic.error_wrappers import ValidationError
 
 
-
 def test_parser_conditionals_confirm(change_curdir_fixtures):
     """Verify that the `when` keyword acts right."""
     o = tackle(no_input=True, context_file='confirm.yaml')
     assert o
+
 
 def test_parser_conditionals_when(change_curdir_fixtures):
     """Verify that the `when` keyword acts right."""

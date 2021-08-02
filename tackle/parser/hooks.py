@@ -99,12 +99,6 @@ def run_hook(context: 'Context'):
             **context.dict(exclude=exclude_context),
         )
 
-        # import json
-        # h = json.loads(hook.schema_json())
-        # d = hook.__doc__
-        # from docs.scratch import doc_formatter
-        # doc_formatter(h)
-
         if hook.post_gen_hook:
             return None, hook
         else:
@@ -112,6 +106,9 @@ def run_hook(context: 'Context'):
 
     except ValidationError as e:
         raise_hook_validation_error(e, Hook, context)
+    except Exception as e:
+        # TODO: Do a more graceful shut down - ie raise HookCallException and catch it later?
+        raise e
 
 
 def evaluate_confirm(context: 'Context'):
@@ -287,9 +284,9 @@ def parse_hook(
                 context.output_dict[context.key] = render_variable(context, else_object)
                 return context.output_dict
 
-    # if 'callback' in context.hook_dict:
-    #     # Call a hook var but don't return it's output
-    #     context.input_dict[context.context_key][context.key] = context.hook_dict['callback']
-    #     return parse_hook(context, mode, source, append_key=append_key)
+    if 'callback' in context.hook_dict:
+        # Call a hook var but don't return it's output
+        context.input_dict[context.context_key][context.key] = context.hook_dict['callback']
+        return parse_hook(context, append_key=append_key)
 
     return context.output_dict

@@ -5,7 +5,7 @@ from typing import Dict
 import os
 import logging
 
-from tackle.utils.reader import read_config_file
+from tackle.utils.files import read_config_file
 from tackle.exceptions import ConfigDoesNotExistException
 
 from tackle.utils.paths import expand_path

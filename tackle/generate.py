@@ -17,14 +17,13 @@ from tackle.exceptions import (
     UndefinedVariableInTemplate,
 )
 from tackle.hooks import run_hook
-from tackle.utils.paths import rmtree, make_sure_path_exists
-from tackle.utils.context_manager import work_in
+from tackle.utils.paths import rmtree, make_sure_path_exists, work_in
 from tackle.render import build_render_context
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from tackle.models import Context, Source, Output
+    from tackle.models import Context, Output
 
 logger = logging.getLogger(__name__)
 
