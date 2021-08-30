@@ -6,8 +6,6 @@ import oyaml as yaml
 import os
 import logging
 
-import yaml
-
 from tackle.exceptions import ContextDecodingException
 from tackle.utils.paths import make_sure_path_exists
 

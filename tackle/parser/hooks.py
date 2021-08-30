@@ -286,7 +286,9 @@ def parse_hook(
 
     if 'callback' in context.hook_dict:
         # Call a hook var but don't return it's output
-        context.input_dict[context.context_key][context.key] = context.hook_dict['callback']
+        context.input_dict[context.context_key][context.key] = context.hook_dict[
+            'callback'
+        ]
         return parse_hook(context, append_key=append_key)
 
     return context.output_dict

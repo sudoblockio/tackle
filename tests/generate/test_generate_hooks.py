@@ -7,7 +7,7 @@ import pytest
 
 from _collections import OrderedDict
 
-from tackle.models import Context, Output
+from tackle.models import Context
 import tackle.utils.paths
 from tackle import generate
 from tackle.exceptions import FailedHookException
@@ -53,14 +53,18 @@ def generate_files_wrapper(
         output_dict=OrderedDict(context['cookiecutter']),
         tackle_gen='cookiecutter',
         repo_dir=repo_dir,
-    )
-    o = Output(
         output_dir=str(output_dir),
         overwrite_if_exists=overwrite_if_exists,
         skip_if_file_exists=skip_if_file_exists,
         accept_hooks=accept_hooks,
     )
-    output = generate.generate_files(context=c, output=o)
+    # o = Output(
+    #     output_dir=str(output_dir),
+    #     overwrite_if_exists=overwrite_if_exists,
+    #     skip_if_file_exists=skip_if_file_exists,
+    #     accept_hooks=accept_hooks,
+    # )
+    output = generate.generate_files(context=c)
     return output
 
 

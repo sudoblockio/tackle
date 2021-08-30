@@ -52,7 +52,7 @@ def is_copy_only_path(path, context: 'Context'):
     return False
 
 
-def generate_file(project_dir, context: 'Context', output: 'Output'):
+def generate_file(project_dir, context: 'Context'):
     """Render filename of infile as name of outfile, handle infile correctly.
 
     Dealing with infile appropriately:
@@ -73,10 +73,10 @@ def generate_file(project_dir, context: 'Context', output: 'Output'):
     :param context: Dict for populating the cookiecutter's variables.
     :param env: Jinja2 template execution environment.
     """
-    logger.debug('Processing file %s', output.infile)
+    logger.debug('Processing file %s', context.infile)
 
     # Render the path to the output file (not including the root project dir)
-    outfile_tmpl = output.env.from_string(output.infile)
+    outfile_tmpl = context.env.from_string(context.infile)
 
     from tackle.render import build_render_context
 
@@ -88,27 +88,27 @@ def generate_file(project_dir, context: 'Context', output: 'Output'):
         logger.debug('The resulting file name is empty: %s', outfile)
         return
 
-    if output.skip_if_file_exists and os.path.exists(outfile):
+    if context.skip_if_file_exists and os.path.exists(outfile):
         logger.debug('The resulting file already exists: %s', outfile)
         return
 
     logger.debug('Created file at %s', outfile)
 
     # Just copy over binary files. Don't render.
-    logger.debug("Check %s to see if it's a binary", output.infile)
-    if is_binary(output.infile):
+    logger.debug("Check %s to see if it's a binary", context.infile)
+    if is_binary(context.infile):
         logger.debug(
-            'Copying binary %s to %s without rendering', output.infile, outfile
+            'Copying binary %s to %s without rendering', context.infile, outfile
         )
-        shutil.copyfile(output.infile, outfile)
+        shutil.copyfile(context.infile, outfile)
     else:
         # Force fwd slashes on Windows for get_template
         # This is a by-design Jinja issue
-        infile_fwd_slashes = output.infile.replace(os.path.sep, '/')
+        infile_fwd_slashes = context.infile.replace(os.path.sep, '/')
 
         # Render the file
         try:
-            tmpl = output.env.get_template(infile_fwd_slashes)
+            tmpl = context.env.get_template(infile_fwd_slashes)
         except TemplateSyntaxError as exception:
             # Disable translated so that printed exception contains verbose
             # information about syntax error location
@@ -118,7 +118,7 @@ def generate_file(project_dir, context: 'Context', output: 'Output'):
 
         # Detect original file newline to output the rendered file
         # note: newline='' ensures newlines are not converted
-        with open(output.infile, 'r', encoding='utf-8', newline='') as rd:
+        with open(context.infile, 'r', encoding='utf-8', newline='') as rd:
             rd.readline()  # Read the first line to load 'newlines' value
 
             # Use `_new_lines` overwrite from context, if configured.
@@ -133,25 +133,25 @@ def generate_file(project_dir, context: 'Context', output: 'Output'):
             fh.write(rendered_file)
 
     # Apply file permissions to output file
-    shutil.copymode(output.infile, outfile)
+    shutil.copymode(context.infile, outfile)
 
 
-def render_and_create_dir(dirname, context: 'Context', output: 'Output'):
+def render_and_create_dir(dirname, context: 'Context'):
     """Render name of a directory, create the directory, return its path."""
-    name_tmpl = output.env.from_string(dirname)
+    name_tmpl = context.env.from_string(dirname)
     render_context = build_render_context(context)
     rendered_dirname = name_tmpl.render(render_context)
 
-    dir_to_create = os.path.normpath(os.path.join(output.output_dir, rendered_dirname))
+    dir_to_create = os.path.normpath(os.path.join(context.output_dir, rendered_dirname))
 
     logger.debug(
-        'Rendered dir %s must exist in output_dir %s', dir_to_create, output.output_dir
+        'Rendered dir %s must exist in output_dir %s', dir_to_create, context.output_dir
     )
 
     output_dir_exists = os.path.exists(dir_to_create)
 
     if output_dir_exists:
-        if output.overwrite_if_exists:
+        if context.overwrite_if_exists:
             logger.debug(
                 'Output directory %s already exists, overwriting it', dir_to_create
             )
@@ -225,7 +225,7 @@ def find_template(repo_dir):
         return None
 
 
-def generate_files(output: 'Output', context: 'Context'):
+def generate_files(context: 'Context'):
     """Render the templates and saves them to files.
 
     :param repo_dir: Project template input directory.
@@ -243,12 +243,12 @@ def generate_files(output: 'Output', context: 'Context'):
 
         unrendered_dir = os.path.split(template_dir)[1]
         ensure_dir_is_templated(unrendered_dir)
-        output.env = StrictEnvironment(
+        context.env = StrictEnvironment(
             context=context.input_dict, keep_trailing_newline=True, **envvars
         )
         try:
             project_dir, output_directory_created = render_and_create_dir(
-                unrendered_dir, context, output
+                unrendered_dir, context
             )
         except UndefinedError as err:
             msg = "Unable to create project directory '{}'".format(unrendered_dir)
@@ -267,7 +267,7 @@ def generate_files(output: 'Output', context: 'Context'):
         # if rendering fails
         delete_project_on_failure = output_directory_created
 
-        if output.accept_hooks:
+        if context.accept_hooks:
             _run_hook_from_repo_dir(
                 context.repo_dir,
                 'pre_gen_project',
@@ -277,7 +277,7 @@ def generate_files(output: 'Output', context: 'Context'):
             )
 
         with work_in(template_dir):
-            output.env.loader = FileSystemLoader('.')
+            context.env.loader = FileSystemLoader('.')
 
             for root, dirs, files in os.walk('.'):
                 # We must separate the two types of dirs into different lists.
@@ -299,7 +299,7 @@ def generate_files(output: 'Output', context: 'Context'):
                 for copy_dir in copy_dirs:
                     indir = os.path.normpath(os.path.join(root, copy_dir))
                     outdir = os.path.normpath(os.path.join(project_dir, indir))
-                    outdir = output.env.from_string(outdir).render(**context.input_dict)
+                    outdir = context.env.from_string(outdir).render(**context.input_dict)
                     logger.debug(
                         'Copying dir %s to %s without rendering', indir, outdir
                     )
@@ -311,38 +311,38 @@ def generate_files(output: 'Output', context: 'Context'):
                 for d in dirs:
                     unrendered_dir = os.path.join(project_dir, root, d)
                     try:
-                        render_and_create_dir(unrendered_dir, context, output)
+                        render_and_create_dir(unrendered_dir, context)
                     except UndefinedError as err:
                         if delete_project_on_failure:
                             rmtree(project_dir)
-                        _dir = os.path.relpath(unrendered_dir, output.output_dir)
+                        _dir = os.path.relpath(unrendered_dir, context.output_dir)
                         msg = "Unable to create directory '{}'".format(_dir)
                         raise UndefinedVariableInTemplate(msg, err, context.input_dict)
 
                 for f in files:
-                    output.infile = os.path.normpath(os.path.join(root, f))
-                    if is_copy_only_path(output.infile, context):
-                        outfile_tmpl = output.env.from_string(output.infile)
+                    context.infile = os.path.normpath(os.path.join(root, f))
+                    if is_copy_only_path(context.infile, context):
+                        outfile_tmpl = context.env.from_string(context.infile)
                         outfile_rendered = outfile_tmpl.render(**context.input_dict)
                         outfile = os.path.join(project_dir, outfile_rendered)
                         logger.debug(
                             'Copying file %s to %s without rendering',
-                            output.infile,
+                            context.infile,
                             outfile,
                         )
-                        shutil.copyfile(output.infile, outfile)
-                        shutil.copymode(output.infile, outfile)
+                        shutil.copyfile(context.infile, outfile)
+                        shutil.copymode(context.infile, outfile)
                         continue
                     try:
-                        generate_file(project_dir, context, output)
+                        generate_file(project_dir, context)
 
                     except UndefinedError as err:
                         if delete_project_on_failure:
                             rmtree(project_dir)
-                        msg = "Unable to create file '{}'".format(output.infile)
+                        msg = "Unable to create file '{}'".format(context.infile)
                         raise UndefinedVariableInTemplate(msg, err, context.input_dict)
 
-        if output.accept_hooks:
+        if context.accept_hooks:
             _run_hook_from_repo_dir(
                 context.repo_dir,
                 'post_gen_project',
@@ -357,7 +357,7 @@ def generate_files(output: 'Output', context: 'Context'):
             logger.debug('Resulting project directory created at %s', project_dir)
             return project_dir
     else:
-        if output.accept_hooks:
+        if context.accept_hooks:
             _run_hook_from_repo_dir(
                 context.repo_dir,
                 'post_gen_project',

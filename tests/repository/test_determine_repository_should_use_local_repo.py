@@ -11,7 +11,7 @@ from tests.repository import update_source_fixtures
 def test_finds_local_repo(change_dir_main_fixtures, tmpdir):
     """A valid local repository should be returned."""
     context = update_source_fixtures(
-        'fake-repo',
+        template='fake-repo',
         abbreviations={},
         clone_to_dir=str(tmpdir),
         checkout=None,
@@ -30,7 +30,7 @@ def test_local_repo_with_no_context_raises(tmpdir, change_dir_main_fixtures):
     template_path = os.path.abspath('fake-repo-bad')
     with pytest.raises(exceptions.RepositoryNotFound) as err:
         context = update_source_fixtures(
-            template_path,
+            template=template_path,
             abbreviations={},
             clone_to_dir=str(tmpdir),
             checkout=None,
@@ -44,13 +44,13 @@ def test_local_repo_with_no_context_raises(tmpdir, change_dir_main_fixtures):
     )
 
 
-def test_local_repo_typo(tmpdir, change_dir_main_fixtures):
+def test_local_repo_typo_unknown(tmpdir, change_dir_main_fixtures):
     """An unknown local repository should raise a `RepositoryNotFound` \
     exception."""
     template_path = 'unknown-repo'
     with pytest.raises(exceptions.RepositoryNotFound) as err:
         context = update_source_fixtures(
-            template_path,
+            template=template_path,
             abbreviations={},
             clone_to_dir=str(tmpdir),
             checkout=None,

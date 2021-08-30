@@ -8,7 +8,7 @@ errors occur in (optional) pre- or pos-gen hooks.
 import pytest
 
 from tackle import exceptions, generate
-from tackle.models import Context, Output
+from tackle.models import Context
 from _collections import OrderedDict
 
 
@@ -38,10 +38,11 @@ def test_hooks_raises_errors(
         output_dict=OrderedDict(context),
         tackle_gen='cookiecutter',
         repo_dir="hooks-abort-render",
+        output_dir=str(tmpdir),
     )
-    o = Output(output_dir=str(tmpdir))
+    # o = Output(output_dir=str(tmpdir))
 
     with pytest.raises(exceptions.FailedHookException) as error:
-        generate.generate_files(context=c, output=o)
+        generate.generate_files(context=c)
         assert error.value.code == 5
     assert not tmpdir.join("foobar").isdir()

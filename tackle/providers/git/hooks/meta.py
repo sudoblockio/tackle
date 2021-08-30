@@ -13,8 +13,8 @@ import subprocess
 from collections import MutableMapping
 from PyInquirer import prompt
 
-from pydantic import BaseModel, ValidationError
-from tackle.utils.context_manager import work_in
+from pydantic import BaseModel, ValidationError, validator
+from tackle.utils.paths import work_in
 from tackle.models import BaseHook
 from typing import Dict, Optional
 
@@ -27,6 +27,13 @@ class Repo(BaseModel):
     src: str
     branch: Optional[str] = None
     tag: Optional[str] = None
+
+    # @validator("src")
+    # def va(cls, v):
+
+
+    def clone(self):
+        pass
 
 
 # https://stackoverflow.com/a/6027615/12642712
@@ -66,12 +73,27 @@ class MetaGitHook(BaseHook):
     repo_tree: Dict = None
     select: bool = True
 
-    base_url: str = "github.com"
     protocol: str = "https"
+    token: str = None
+    base_url: str = "github.com"
     git_org: str = None
 
     base_dir: str = os.path.abspath(os.path.curdir)
     repo_tree_overrides: list = None
+
+    @validator('token')
+    def no_token_with_ssh_protocol(cls, v, values, **kwargs):
+        if v and values['protocol'] == 'ssh':
+            raise ValueError("Can't supply token with ssh protocol.")
+        else:
+            return v
+
+    @validator('base_url')
+    def update_base_url_if_token_exists(cls, v, values, **kwargs):
+        if values['token']:
+            return values['token'] + ':x-oauth-basic@' + v
+        else:
+            return v
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

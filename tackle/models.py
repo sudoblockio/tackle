@@ -2,19 +2,21 @@
 import logging
 from collections import OrderedDict
 import os
-import re
+# import re
 from pathlib import Path
 
 from pydantic import BaseModel, SecretStr, Extra, validator
-from typing import Dict, Any, Union, Type, List, Optional
+from typing import Dict, Any, Union, List, Optional
 
-from tackle.render.environment import StrictEnvironment
+# from typing import Type
+# from tackle.render.environment import StrictEnvironment
 from tackle.utils.paths import (
-    expand_abbreviations,
+    # expand_abbreviations,
     is_repo_url,
     is_file,
     repository_has_tackle_file,
-    determine_tackle_generation, work_in,
+    determine_tackle_generation,
+    work_in,
 )
 from tackle.utils.files import read_config_file, apply_overwrites_to_inputs
 from tackle.utils.zipfile import unzip
@@ -74,6 +76,10 @@ class Provider(BaseModel):
 class Context(BaseModel):
     """The main object that is being modified by parsing."""
 
+    config_file: str = None
+    config: dict = None
+    default_config: bool = False
+
     settings: Settings = None
 
     # Mode
@@ -89,7 +95,9 @@ class Context(BaseModel):
     repo_dir: Path = None
 
     template_type: str = None
-    template: str = "."
+
+    template: Any = "."
+
     template_name: str = None
     checkout: str = None
     context_file: str = None
@@ -116,9 +124,18 @@ class Context(BaseModel):
     providers: List[Provider] = None
     imported_hook_types: List[str] = []
 
-    @validator('template')
-    def template_expand_abbreviations(cls, v, values, **kwargs):
-        return expand_abbreviations(v, values['settings'].abbreviations)
+    output_dir: str = '.'
+    overwrite_if_exists: bool = False
+    skip_if_file_exists: bool = False
+    accept_hooks: bool = True
+    unrendered_dir: str = None
+    # env: Type[StrictEnvironment] = None
+    env: Any = None
+    infile: str = None
+
+    # @validator('template')
+    # def template_expand_abbreviations(cls, v, values, **kwargs):
+    #     return expand_abbreviations(v, values['settings'].abbreviations)
 
     @validator('template')
     def update_template_if_has_single_slash(cls, v):
@@ -126,15 +143,22 @@ class Context(BaseModel):
         Check if the template has a single slash, then check if it is a path,
         otherwise it is github repo and the full path is prepended.
         """
-        REPO_REGEX = re.compile(
-            r"""/^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i""",
-            re.VERBOSE,
-        )
-        if os.path.exists(v):
-            # Path reference
-            return v
-        if REPO_REGEX.match(v):
-            return v
+        if isinstance(v, tuple):
+            if len(v) == 0:
+                return "."
+            elif len(v) == 1:
+                return v[0]
+            else:
+                return v
+        # REPO_REGEX = re.compile(
+        #     r"""/^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i""",
+        #     re.VERBOSE,
+        # )
+        # if os.path.exists(v):
+        #     # Path reference
+        #     return v
+        # if REPO_REGEX.match(v):
+        #     return v
         # TODO - Test this, seems broken
         return v
 
@@ -151,6 +175,14 @@ class Context(BaseModel):
         super().__init__(**data)
         if self.existing_context:
             self.output_dict.update(self.existing_context)
+
+        from tackle.settings import get_settings
+
+        self.settings = get_settings(
+            config_file=self.config_file,
+            config=self.config,
+            default_config=self.default_config,
+        )
 
     def update_source(self):
         """
@@ -290,23 +322,26 @@ class BaseHook(Context):
         Handles `chdir` method.
         """
         if self.chdir:
-            if os.path.isdir(os.path.abspath(os.path.expanduser(self.chdir))):
-                # Use contextlib to switch dirs and come back out
+            path = os.path.abspath(os.path.expanduser(self.chdir))
+            if os.path.isdir(path):
+                # Use contextlib to switch dirs
                 with work_in(os.path.abspath(os.path.expanduser(self.chdir))):
                     return self.execute()
             else:
-                raise NotADirectoryError("The specified path to change to was not found.")
+                raise NotADirectoryError(
+                    f"The specified path='{path}' to change to was not found."
+                )
         else:
             return self.execute()
 
 
-class Output(BaseModel):
-    """Output model."""
-
-    output_dir: str = '.'
-    overwrite_if_exists: bool = False
-    skip_if_file_exists: bool = False
-    accept_hooks: bool = True
-    unrendered_dir: str = None
-    env: Type[StrictEnvironment] = None
-    infile: str = None
+# class Output(BaseModel):
+#     """Output model."""
+#
+#     output_dir: str = '.'
+#     overwrite_if_exists: bool = False
+#     skip_if_file_exists: bool = False
+#     accept_hooks: bool = True
+#     unrendered_dir: str = None
+#     env: Type[StrictEnvironment] = None
+#     infile: str = None

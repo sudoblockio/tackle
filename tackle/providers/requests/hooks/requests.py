@@ -43,10 +43,13 @@ class RequestsGetHook(BaseHook):
     no_exit: bool = False
 
     url: str
-    kwargs: Dict = {}
-    params: Optional[Union[Dict, List[tuple], bytes]] = None
+    kwargs: dict = {}
+    params: dict = None
+    # Requests API docs call for additional functionality not for yaml
+    # params: Union[Dict, List[tuple], bytes] = None
 
-    def execute(self):
+
+    def execute(self) -> dict:
         r = requests.get(self.url, params=self.params, **self.kwargs)
         exit_none_200(r, self.no_exit, self.url)
         return process_content(r)
@@ -64,11 +67,14 @@ class RequestsPostHook(BaseHook):
     no_exit: bool = False
 
     url: str
-    kwargs: Dict = {}
-    data: Optional[Union[Dict, List[tuple], bytes, str]]
-    input_json: Optional[dict] = None
+    kwargs: dict = {}
 
-    def execute(self):
+    # Requests API docs call for additional functionality not for yaml
+    data: Union[dict, list, str] = None
+    # data: Optional[Union[Dict, List[tuple], bytes, str]]
+    input_json: dict = None
+
+    def execute(self) -> dict:
         if isinstance(self.data, str):
             if not os.path.exists(self.data):
                 raise FileNotFoundError(

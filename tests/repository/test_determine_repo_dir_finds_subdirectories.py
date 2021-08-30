@@ -2,7 +2,6 @@
 import os
 
 import pytest
-from pathlib import Path
 from tackle import exceptions
 from tests.repository import update_source_fixtures
 
@@ -30,23 +29,23 @@ def cloned_cookiecutter_path(user_config_data, template):
     return subdir_template_path
 
 
-def test_should_find_existing_cookiecutter(
-    template, user_config_data, cloned_cookiecutter_path, change_dir_main_fixtures
-):
-    """Find `cookiecutter.json` in sub folder created by `cloned_cookiecutter_path`."""
-    context = update_source_fixtures(
-        template=template,
-        abbreviations={},
-        clone_to_dir=user_config_data['tackle_dir'],
-        checkout=None,
-        no_input=True,
-        directory='my-dir',
-    )
-    context.update_source()
-
-    assert Path(cloned_cookiecutter_path) == context.repo_dir
-    assert context.context_file == 'cookiecutter.json'
-    assert not context.cleanup
+# def test_should_find_existing_cookiecutter(
+#     template, user_config_data, cloned_cookiecutter_path, change_dir_main_fixtures
+# ):
+#     """Find `cookiecutter.json` in sub folder created by `cloned_cookiecutter_path`."""
+#     context = update_source_fixtures(
+#         template=template,
+#         abbreviations={},
+#         clone_to_dir=user_config_data['tackle_dir'],
+#         checkout=None,
+#         no_input=True,
+#         directory='my-dir',
+#     )
+#     context.update_source()
+#
+#     assert Path(cloned_cookiecutter_path) == context.repo_dir
+#     assert context.context_file == 'cookiecutter.json'
+#     assert not context.cleanup
 
 
 def test_local_repo_typo(template, user_config_data, cloned_cookiecutter_path):

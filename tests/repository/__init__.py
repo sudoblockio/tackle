@@ -2,7 +2,6 @@
 
 """Fixture to keep legacy unit tests working."""
 from tackle import models
-from tackle.settings import Settings
 
 
 def update_source_fixtures(
@@ -21,7 +20,8 @@ def update_source_fixtures(
         checkout=checkout,
         directory=directory,
         no_input=no_input,
-        settings=Settings(abbreviations=abbreviations, tackle_dir=clone_to_dir),
+        abbreviations=abbreviations,
+        settings={'tackle_dir': clone_to_dir},
     )
 
     return context

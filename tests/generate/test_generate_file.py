@@ -9,7 +9,7 @@ from jinja2.exceptions import TemplateSyntaxError
 
 from tackle import generate
 from tackle.render.environment import StrictEnvironment
-from tackle.models import Context, Output
+from tackle.models import Context
 from tackle.main import tackle
 from tackle.utils.paths import rmtree
 
@@ -63,19 +63,21 @@ def generate_file_wrapper(project_dir, infile, context, skip_if_file_exists=Fals
         context_key='cookiecutter',
         input_dict=OrderedDict(context),
         output_dict=OrderedDict(context['cookiecutter']),
-    )
-    o = Output(
         infile=infile,
         skip_if_file_exists=skip_if_file_exists,
     )
+    # o = Output(
+    #     infile=infile,
+    #     skip_if_file_exists=skip_if_file_exists,
+    # )
 
     envvars = c.input_dict.get(c.context_key, {}).get('_jinja2_env_vars', {})
-    o.env = StrictEnvironment(
+    c.env = StrictEnvironment(
         context=c.input_dict, keep_trailing_newline=True, **envvars
     )
-    o.env.loader = FileSystemLoader('.')
+    c.env.loader = FileSystemLoader('.')
 
-    output = generate.generate_file(project_dir=project_dir, context=c, output=o)
+    output = generate.generate_file(project_dir=project_dir, context=c)
     return output
 
 

@@ -13,7 +13,7 @@ import tackle.utils.paths
 from tackle import exceptions
 from tackle import generate
 from tackle.main import tackle
-from tackle.models import Context, Output
+from tackle.models import Context
 from _collections import OrderedDict
 
 
@@ -82,13 +82,16 @@ def generate_files_from_context(
         output_dict=OrderedDict(context),
         tackle_gen='cookiecutter',
         repo_dir=repo_dir,
-    )
-    o = Output(
         output_dir=str(path),
         overwrite_if_exists=overwrite_if_exists,
         skip_if_file_exists=skip_if_file_exists,
     )
-    output = generate.generate_files(context=c, output=o)
+    # o = Output(
+    #     output_dir=str(path),
+    #     overwrite_if_exists=overwrite_if_exists,
+    #     skip_if_file_exists=skip_if_file_exists,
+    # )
+    output = generate.generate_files(context=c)
     return output
 
 
@@ -479,7 +482,7 @@ def test_raise_undefined_variable_project_dir(tmpdir, change_dir_main_fixtures):
 def test_generate_directory_with_spaces(tmpdir, change_dir_main_fixtures):
     """Verify that white spaces are handled properly templating directories/files."""
     tackle(
-        template='fake-repo-pre-tackle-spaces', no_input=True, output_dir=str(tmpdir)
+        'fake-repo-pre-tackle-spaces', no_input=True, output_dir=str(tmpdir)
     )
     assert os.path.exists(os.path.join(tmpdir, 'fake-project'))
     assert os.path.exists(os.path.join(tmpdir, 'fake-project', 'fake-project'))
@@ -487,7 +490,7 @@ def test_generate_directory_with_spaces(tmpdir, change_dir_main_fixtures):
 
 def test_generate_directory_without_spaces(tmpdir, change_dir_main_fixtures):
     """Verify that white spaces are handled properly templating directories/files."""
-    tackle(template='fake-repo-pre-tackle', no_input=True, output_dir=str(tmpdir))
+    tackle('fake-repo-pre-tackle', no_input=True, output_dir=str(tmpdir))
     assert os.path.exists(os.path.join(tmpdir, 'fake-project-that'))
     assert os.path.exists(
         os.path.join(tmpdir, 'fake-project-that', 'this-fake-project')

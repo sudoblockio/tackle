@@ -10,13 +10,13 @@ from _collections import OrderedDict
 
 from tackle.generate import generate_files
 from tackle.utils.paths import rmtree
-from tackle.models import Context, Output
+from tackle.models import Context
 
 # from tackle.repository import update_source
 
 from tackle.parser.context import update_context
 
-from tackle.settings import get_settings
+# from tackle.settings import get_settings
 from tackle.parser.providers import update_providers
 
 
@@ -24,27 +24,29 @@ logger = logging.getLogger(__name__)
 
 
 def tackle(
-    template='.',
-    no_input=False,
-    checkout=None,
-    context_file=None,
-    context_key=None,
-    password=None,
-    directory=None,
-    existing_context=None,
-    overwrite_inputs=None,
-    override_inputs=None,
-    replay=None,
-    record=None,
-    rerun=None,
-    output_dir='.',
-    overwrite_if_exists=False,
-    skip_if_file_exists=False,
-    accept_hooks=True,
-    config_file=None,
-    default_config=False,
-    config=None,
-    providers=None,
+    # template='.',
+    # no_input=False,
+    # checkout=None,
+    # context_file=None,
+    # context_key=None,
+    # password=None,
+    # directory=None,
+    # existing_context=None,
+    # overwrite_inputs=None,
+    # override_inputs=None,
+    # replay=None,
+    # record=None,
+    # rerun=None,
+    # output_dir='.',
+    # overwrite_if_exists=False,
+    # skip_if_file_exists=False,
+    # accept_hooks=True,
+    # config_file=None,
+    # default_config=False,
+    # config=None,
+    # providers=None,
+    *args,
+    **kwargs,
 ):
     """
     Run Tackle Box just as if using it from the command line.
@@ -76,25 +78,34 @@ def tackle(
     :return Dictionary of output
     """
     context = Context(
-        settings=get_settings(
-            config_file=config_file,
-            config=config,
-            default_config=default_config,
-        ),
-        no_input=no_input,
-        replay=replay,
-        record=record,
-        rerun=rerun,
-        template=template,
-        checkout=checkout,
-        context_file=context_file,
-        password=password,
-        directory=directory,
-        overwrite_inputs=overwrite_inputs,
-        override_inputs=override_inputs,
-        existing_context=existing_context,
-        context_key=context_key,
-        providers=providers,
+        # settings=get_settings(
+        #     config_file=config_file,
+        #     config=config,
+        #     default_config=default_config,
+        # ),
+        # config_file=config_file,
+        # config=config,
+        # default_config=default_config,
+        # no_input=no_input,
+        # replay=replay,
+        # record=record,
+        # rerun=rerun,
+        # template=template,
+        # checkout=checkout,
+        # context_file=context_file,
+        # password=password,
+        # directory=directory,
+        # overwrite_inputs=overwrite_inputs,
+        # override_inputs=override_inputs,
+        # existing_context=existing_context,
+        # context_key=context_key,
+        # providers=providers,
+        # output_dir=output_dir,
+        # overwrite_if_exists=overwrite_if_exists,
+        # skip_if_file_exists=skip_if_file_exists,
+        # accept_hooks=accept_hooks,
+        template=args,
+        **kwargs,
     )
     context.update_source()
     context.update_input_dict()
@@ -104,13 +115,13 @@ def tackle(
     # Main parsing logic
     update_context(context)
 
-    output = Output(
-        output_dir=output_dir,
-        overwrite_if_exists=overwrite_if_exists,
-        skip_if_file_exists=skip_if_file_exists,
-        accept_hooks=accept_hooks,
-    )
-    generate_files(output=output, context=context)
+    # output = Output(
+    #     output_dir=output_dir,
+    #     overwrite_if_exists=overwrite_if_exists,
+    #     skip_if_file_exists=skip_if_file_exists,
+    #     accept_hooks=accept_hooks,
+    # )
+    generate_files(context=context)
 
     # Cleanup (if required)
     if context.cleanup:
