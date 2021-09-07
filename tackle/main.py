@@ -77,6 +77,9 @@ def tackle(
 
     :return Dictionary of output
     """
+    if args:
+        # setattr(kwargs, 'template', args)
+        kwargs['template'] = args[0]
     context = Context(
         # settings=get_settings(
         #     config_file=config_file,
@@ -104,7 +107,7 @@ def tackle(
         # overwrite_if_exists=overwrite_if_exists,
         # skip_if_file_exists=skip_if_file_exists,
         # accept_hooks=accept_hooks,
-        template=args,
+        # template=args,
         **kwargs,
     )
     context.update_source()

@@ -228,55 +228,61 @@ def list_installed_templates(default_config, passed_config_file):
     '-rt', '--rich-trace', is_flag=True, help='Creates a rich traceback for debugging.'
 )
 def main(
-    template,
-    context_file,
-    context_key,
-    overwrite_inputs,
-    override_inputs,
-    # existing_context,
-    no_input,
-    checkout,
-    directory,
-    verbose,
-    # replay_directory,
-    replay,
-    # record_file,
-    record,
-    # rerun_file,
-    rerun,
-    overwrite_if_exists,
-    skip_if_file_exists,
-    output_dir,
-    config_file,
-    default_config,
-    debug_file,
-    accept_hooks,
-    list_installed,
-    rich_trace,
+    # *args,
+    **kwargs,
+    # template,
+    # context_file,
+    # context_key,
+    # overwrite_inputs,
+    # override_inputs,
+    # # existing_context,
+    # no_input,
+    # checkout,
+    # directory,
+    # verbose,
+    # # replay_directory,
+    # replay,
+    # # record_file,
+    # record,
+    # # rerun_file,
+    # rerun,
+    # overwrite_if_exists,
+    # skip_if_file_exists,
+    # output_dir,
+    # config_file,
+    # default_config,
+    # debug_file,
+    # accept_hooks,
+    # list_installed,
+    # rich_trace,
 ):
     """Create a project from a Tackle modules or Tackle templates."""
     # Set a rich traceback mode for debugging.
-    if rich_trace:
+    if getattr(kwargs, "rich_trace", False):
         install()  # From rich
+        kwargs.pop("rich_trace")
 
     # Commands that should work without arguments
-    if list_installed:
-        list_installed_templates(default_config, config_file)
-        sys.exit(0)
+    # if getattr(kwargs, "list_installed"):
+    #     list_installed_templates(default_config, config_file)
+    #     sys.exit(0)
 
     # Raising usage, after all commands that should work without args.
-    if not template or template.lower() == 'help':
-        click.echo(click.get_current_context().get_help())
-        sys.exit(0)
+    # if not template or template.lower() == 'help':
+    #     click.echo(click.get_current_context().get_help())
+    #     sys.exit(0)
 
-    configure_logger(stream_level='DEBUG' if verbose else 'INFO', debug_file=debug_file)
+    configure_logger(
+        stream_level='DEBUG' if getattr(kwargs, "verbose", False) else 'INFO',
+        debug_file=getattr(kwargs, "debug_file", None),
+    )
 
     # If needed, prompt the user to ask whether or not they want to execute
     # the pre/post hooks.
-    if accept_hooks == "ask":
-        _accept_hooks = click.confirm("Do you want to execute hooks?")
-    else:
-        _accept_hooks = accept_hooks == "yes"
+    # if accept_hooks == "ask":
+    #     _accept_hooks = click.confirm("Do you want to execute hooks?")
+    # else:
+    #     _accept_hooks = accept_hooks == "yes"
 
     # settings = get_settings(
     #     config_file=config_file,
@@ -284,28 +290,36 @@ def main(
     #     default_config=default_config,
     # )
 
+    cli_args = ['rich_trace', 'list_installed', 'debug_file', 'verbose', 'debug_file']
+    for arg in cli_args:
+        kwargs.pop(arg, None)
+
+    # tackle(*args, **kwargs)
+
     try:
         tackle(
-            template,
-            checkout=checkout,
-            no_input=no_input,
-            context_file=context_file,
-            context_key=context_key,
-            overwrite_inputs=overwrite_inputs,
-            override_inputs=override_inputs,
-            # existing_context=existing_context,
-            replay=replay,
-            record=record,
-            rerun=rerun,
-            overwrite_if_exists=overwrite_if_exists,
-            output_dir=output_dir,
-            config_file=config_file,
-            default_config=default_config,
-            password=os.environ.get('COOKIECUTTER_REPO_PASSWORD'),
-            directory=directory,
-            skip_if_file_exists=skip_if_file_exists,
-            accept_hooks=_accept_hooks,
-            # calling_directory=os.path.curdir,
+            # *args,
+            **kwargs
+            # template,
+            # checkout=checkout,
+            # no_input=no_input,
+            # context_file=context_file,
+            # context_key=context_key,
+            # overwrite_inputs=overwrite_inputs,
+            # override_inputs=override_inputs,
+            # # existing_context=existing_context,
+            # replay=replay,
+            # record=record,
+            # rerun=rerun,
+            # overwrite_if_exists=overwrite_if_exists,
+            # output_dir=output_dir,
+            # config_file=config_file,
+            # default_config=default_config,
+            # password=os.environ.get('COOKIECUTTER_REPO_PASSWORD'),
+            # directory=directory,
+            # skip_if_file_exists=skip_if_file_exists,
+            # accept_hooks=_accept_hooks,
+            # # calling_directory=os.path.curdir,
         )
     except (
         OutputDirExistsException,

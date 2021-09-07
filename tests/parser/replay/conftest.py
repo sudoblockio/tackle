@@ -25,4 +25,4 @@ def replay_test_dir():
 @pytest.fixture
 def mock_user_config(mocker):
     """Fixture to mock user config."""
-    return mocker.patch('tackle.main.get_settings')
+    return mocker.patch('tackle.settings.get_settings')

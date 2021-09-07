@@ -23,7 +23,7 @@ from tackle.render import build_render_context
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from tackle.models import Context, Output
+    from tackle.models import Context
 
 logger = logging.getLogger(__name__)
 
@@ -299,7 +299,9 @@ def generate_files(context: 'Context'):
                 for copy_dir in copy_dirs:
                     indir = os.path.normpath(os.path.join(root, copy_dir))
                     outdir = os.path.normpath(os.path.join(project_dir, indir))
-                    outdir = context.env.from_string(outdir).render(**context.input_dict)
+                    outdir = context.env.from_string(outdir).render(
+                        **context.input_dict
+                    )
                     logger.debug(
                         'Copying dir %s to %s without rendering', indir, outdir
                     )
