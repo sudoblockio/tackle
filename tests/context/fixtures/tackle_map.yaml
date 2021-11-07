@@ -1,0 +1,34 @@
+foo:
+  expanded:
+    <: var
+    input: this
+
+  mixed:
+    <: var this
+    if: foo.expanded == 'this'
+
+#  <compact: var this --if "foo.mixed == 'this'"
+  <compact: var this
+
+bar:
+  expanded:
+    <: var
+    input: this
+
+  mixed:
+    <: var this
+    if: bar.expanded == 'this'
+
+  <compact: var this --if "foo.compact == 'this'"
+
+
+#  lists:
+#    - expanded:
+#      <: var
+#      input: this
+#
+#    - mixed:
+#      <: var this
+#      if: foo.expanded == 'this'
+#
+#    - <compact: var this --if "foo.mixed == 'this'"

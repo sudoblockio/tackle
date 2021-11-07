@@ -37,6 +37,8 @@ class VarHook(BaseHook):
     merge_config: bool = None
     merge_dict: Dict = None
 
+    _args: list = ['input']
+
     def _remove_from_contents(self, regex):
         if isinstance(self.input, list):
             self.input = [i for i in self.input if not re.search(regex, i)]

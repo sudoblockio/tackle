@@ -5,8 +5,7 @@ _repos:
   - https://github.com/tiangolo/full-stack-fastapi-postgresql
 
 shell:
-  type: tackle
-  template: "{{ item }}"
+  type: tackle "{{ item }}"
   loop: "{{ _repos }}"
   output_dir: "{{ cwd }}/output"
 

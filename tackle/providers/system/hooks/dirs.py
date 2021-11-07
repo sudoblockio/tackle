@@ -22,6 +22,8 @@ class MakeDirectoryHook(BaseHook):
     type: str = 'mkdir'
     path: str
 
+    _args: list = ['path']
+
     def execute(self):
         pathlib.Path(self.path).mkdir(parents=True, exist_ok=True)
         return self.path

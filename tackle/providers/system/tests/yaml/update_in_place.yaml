@@ -1,5 +1,5 @@
 write:
-  type: yaml
+  <: yaml
   path: output_update_in_place.yaml
   contents:
     prod:
@@ -12,7 +12,7 @@ _a_list:
   - stage
 
 update:
-  type: yaml
+  <: yaml
   loop: "{{ update_in_place._a_list }}"
   path: output_update_in_place.yaml
   in_place: true

@@ -30,6 +30,8 @@ class JsonHook(BaseHook):
     contents: Dict = None
     path: str
 
+    _args: list = ['path', 'contents']
+
     def execute(self):
         if self.contents:
             with open(self.path, 'w') as f:

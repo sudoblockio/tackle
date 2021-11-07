@@ -13,43 +13,43 @@ if os.name == 'nt':
 
 def test_provider_system_hook_command(change_dir):
     """Verify the hook call works properly."""
-    context = tackle(no_input=True)
-
-    assert 'tackle.yaml' in context['cmd']
-    assert 'tackle.yaml' in context['shell']
+    fixture = 'list-dir.yaml'
+    context = tackle(fixture)
+    assert fixture in context['cmd']
+    assert context['shell']
 
 
 def test_provider_system_hook_command_multi_line(change_dir):
     """Verify the hook call works properly."""
-    context = tackle(context_file='multi-line-cmd.yaml', no_input=True)
+    context = tackle('multi-line-cmd.yaml')
     assert 'No such file' not in context['shell']
 
 
 def test_provider_system_hook_command_exit(change_dir):
     """Verify the hook call works properly."""
     with pytest.raises(HookCallException):
-        tackle(context_file='command-exit.yaml', no_input=True)
+        tackle('command-exit.yaml')
 
 
 def test_provider_system_hook_shell_exit(change_dir):
     """Verify the hook call works properly."""
     with pytest.raises(HookCallException):
-        tackle(context_file='shell-exit.yaml', no_input=True)
+        tackle('shell-exit.yaml')
 
 
 def test_provider_system_hook_shell_exit_long(change_dir):
     """Verify the hook call works properly."""
     with pytest.raises(HookCallException):
-        tackle(context_file='shell-exit-long.yaml', no_input=True)
+        tackle('shell-exit-long.yaml')
 
 
 def test_provider_system_hook_shell_exit_ignore(change_dir):
     """Verify the hook call works properly."""
-    o = tackle(context_file='shell-exit-ignore.yaml', no_input=True)
+    o = tackle('shell-exit-ignore.yaml')
     assert o
 
 
 def test_provider_system_hook_command_exit_ignore(change_dir):
     """Verify the hook call works properly."""
-    o = tackle(context_file='command-exit-ignore.yaml', no_input=True)
+    o = tackle('command-exit-ignore.yaml')
     assert o

@@ -1,0 +1,73 @@
+
+
+setup:
+  Things that are run before:
+    <: print Hello world!
+  parent_meta:
+    <: find_in_parent repos.yaml
+
+help: Facilitates management of meta repos. Finds a repos.yaml file in the parent directory to operate against.
+
+action:
+  <: block
+  items:
+    run_meta:
+      <: tackle {{parent_meta}}
+      when: parent_meta is not None
+
+commands:
+  clone:
+    help: Tries to clone new repos
+    # tackle meta clone
+#    <: tackle_command
+#    action:
+#      <: block
+#      items:
+#        run_meta:
+#          <: tackle {{parent_meta}}
+#          when: parent_meta is not None
+
+  pull:
+    help: Pulls repos
+    <: tackle {{ parent_meta }} git clone
+
+  status:
+    <: tackle {{ parent_meta }} git status
+
+
+positional_args:
+  -
+
+
+flags:
+  bare: False
+  shallow:
+    shallow_clone: False
+
+
+    <: this
+
+args:
+  sub_action:
+    <: tackle_command
+    action:
+      type: print
+      statement: Some action
+
+  this:
+    type: var
+    input: foo
+
+  that: default-value or empty for null
+
+kwargs:
+  this: that
+
+
+#Usage: [options] [command]
+#
+#Options:
+#
+#Commands:
+#
+#  git

@@ -1,0 +1,23 @@
+
+
+providers_raw:
+  type: listdir
+  path: tackle/providers
+  ignore_hidden_files: true
+  
+providers:
+  type: list_remove
+  input: "{{ providers_raw }}"
+  filter: ^__
+
+run_api_doc:
+  type: shell
+  command: |
+    sphinx-apidoc -o docs/ tackle/providers/{{ item }}/hooks
+    # mv
+  loop: "{{ providers }}"
+
+debug:
+  type: print
+  out: "{{ this }}"
+

@@ -3,13 +3,13 @@ _foo:
   - baz
 #
 #append_str_list:
-#  type: yaml
+#  <: yaml
 #  path: output.yaml
 #  contents: "{{ append._foo }}"
 #  append_items: bing
 #
 #append_list_list:
-#  type: yaml
+#  <: yaml
 #  path: output.yaml
 #  in_place: true
 #  contents: "{{ append._foo }}"
@@ -23,7 +23,7 @@ _stuff:
     - cats
 
 append_dict:
-  type: yaml
+  <: yaml
   path: output-dict.yaml
   contents: "{{ append._stuff }}"
   append_items: "{{ append._foo }}"

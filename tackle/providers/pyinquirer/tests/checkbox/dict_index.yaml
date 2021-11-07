@@ -1,12 +1,6 @@
-stuff: things
-
 choices:
-  type: checkbox
+  <: checkbox
   message: You foo?
   choices:
     - foo: ya foo?
     - bar: you bar?
-
-debug:
-  type: pprint
-  statement: "{{ choices }}"

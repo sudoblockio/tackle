@@ -30,7 +30,7 @@ def test_embedded_context(change_curdir_fixtures, clean_up_embed):
 
     assert context['inner_tackle']['stuff'] == 'Indeed'
     with open(INNER_YAML) as f:
-        embedded_yaml = yaml.load(f)
+        embedded_yaml = yaml.safe_load(f)
 
     assert embedded_yaml['foo'] == 'bar'
     assert embedded_yaml['stuff'] == 'Indeed'

@@ -1,6 +1,0 @@
-instance_types:
-  type: azure_vm_types
-  region: eastus
-  instance_families:
-    - A
-    - D

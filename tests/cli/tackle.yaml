@@ -1,0 +1,8 @@
+this:
+  that:
+    <: file.yaml {{ item }} arg1 kwar=1 --this
+    loop:
+      - foo
+      - bar
+
+#  statement: foo

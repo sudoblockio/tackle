@@ -1,4 +1,4 @@
 shell_exit:
-  type: command
+  <_: command
   command: garbage
   ignore_error: true

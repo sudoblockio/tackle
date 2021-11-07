@@ -8,23 +8,22 @@ import logging
 from typing import List, Union
 import re
 
-from tackle.models import BaseHook
+from tackle import BaseHook, Field
+from tackle.utils import literal_type
 
 logger = logging.getLogger(__name__)
 
 
 class ListAppendHook(BaseHook):
-    """
-    Hook  for updating dict objects with items.
-
-    :param input: A list append to
-    :param item: A list or string to append to `input` list
-    :return: An appended list object.
-    """
+    """Hook for updating dict objects with items."""
 
     type: str = 'append'
-    input: List
-    item: Union[List, str]
+    input: list = Field(..., description="A list append to.")
+    item: Union[list, str] = Field(
+        ..., description="A list or string to append to `input` list."
+    )
+
+    _args: list = ['input', 'item']
 
     def execute(self):
         if isinstance(self.item, list):
@@ -43,20 +42,18 @@ class ListRemoveHook(BaseHook):
     :param input: A list append to
     :param item: A list or string to remove to `input` list
     :param filter: A regex to remove items from list with
-    :return: An removed list list object.
+    :return: A list without removed objects objects.
     """
 
     type: str = 'list_remove'
-    input: List
-    item: str = None
-    items: List = None
-    filter: str = None
+    input: list = Field(description="A list to append to.")
+    item: Union[list, str] = Field(
+        ..., description="A list or string to append to `input` list."
+    )
+
+    _args: list = ['input', 'item']
 
     def execute(self):
-        if self.filter:
-            self.input = [i for i in self.input if not re.search(self.filter, i)]
-        if self.items:
-            self.input = [i for i in self.input if i not in self.items]
         if self.item:
             self.input = [i for i in self.input if i != self.item]
         return self.input
@@ -72,7 +69,7 @@ class ListFromDictHook(BaseHook):
     """
 
     type: str = 'list_from_dict'
-    keys: List
+    keys: list
     input: dict
 
     def execute(self):

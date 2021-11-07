@@ -23,9 +23,10 @@ def build_render_context(context: 'Context'):
         render_context = {'cookiecutter': context.output_dict}
         render_context.update(special_variables)
     else:
-        render_context = dict(
-            context.output_dict, **{context.context_key: dict(context.output_dict)}
-        )
+        render_context = dict(context.output_dict)
+        # render_context = dict(
+        #     context.output_dict, **{context.context_key: dict(context.output_dict)}
+        # )
         render_context.update(special_variables)
     return render_context
 

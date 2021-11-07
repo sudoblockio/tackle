@@ -31,7 +31,7 @@ clean-pyc: ## Remove Python file artifacts
 	@echo "+ $@"
 	@find . -type d -name '__pycache__' -exec rm -rf {} +
 	@find . -type f -name '*.py[co]' -exec rm -f {} +
-	@find . -name '*~' -exec rm -f {} +
+#	@find . -name '*~' -exec rm -f {} +
 
 .PHONY: clean
 clean: clean-tox clean-build clean-pyc ## Remove all file artifacts
@@ -41,8 +41,9 @@ lint: ## Check code style with flake8
 	@echo "+ $@"
 	@tox -e lint
 
+# TODO: Fix
 .PHONY: test
-test: ## Run tests quickly with the default Python
+test:  ## Run tests quickly with the default Python
 	@echo "+ $@"
 	@tox -e py
 

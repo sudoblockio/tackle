@@ -1,0 +1,13 @@
+
+stuff:
+  things:
+    foo: bar
+    boo: bing
+
+update_thing:
+  stuff:
+    things:
+      foo: baa
+
+this:
+  type: update stuff update_things

@@ -9,6 +9,8 @@ from _collections import OrderedDict
 from typing import Dict
 
 from tackle.models import BaseHook, Context
+from tackle.settings import settings
+
 import tackle as tkl
 
 logger = logging.getLogger(__name__)
@@ -38,7 +40,7 @@ class BlockHook(BaseHook):
                 override_inputs=self.override_inputs,
                 context_key=self.context_key,
                 no_input=self.no_input,
-                settings=self.settings,
+                settings=settings,
             ),
         )
         return dict(output.output_dict)

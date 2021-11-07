@@ -3,10 +3,9 @@
 import os
 import platform
 
-import distro
+import csv
 
 from typing import TYPE_CHECKING
-import csv
 
 if TYPE_CHECKING:
     from tackle.models import Context
@@ -53,15 +52,18 @@ def get_vars(context: 'Context'):
         'output': context.output_dict,
     }
     if platform.system() == 'Linux':
-        linux_id_name, linux_version, linux_codename = distro.linux_distribution(
-            full_distribution_name=False
-        )
-        linux_vars = {
-            'linux_id_name': linux_id_name,
-            'linux_version': linux_version,
-            'linux_codename': linux_codename,
-        }
-        vars.update(linux_vars)
+        # TODO: Replace - This shouldn't have to import distro
+        # import distro
+        # linux_id_name, linux_version, linux_codename = distro.linux_distribution(
+        #     full_distribution_name=False
+        # )
+        # linux_vars = {
+        #     'linux_id_name': linux_id_name,
+        #     'linux_version': linux_version,
+        #     'linux_codename': linux_codename,
+        # }
+        # vars.update(linux_vars)
+        pass
     else:
         linux_vars = {
             'linux_id_name': None,

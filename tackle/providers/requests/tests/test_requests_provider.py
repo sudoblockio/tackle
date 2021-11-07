@@ -8,6 +8,7 @@ def test_provider_requests_get(change_dir):
     """Verify the hook call works successfully."""
     output = tackle('.', context_file='get.yaml', no_input=True)
     assert output['simple']['userId'] == 1
+    assert output['simple'] == output['compact']
 
 
 def test_provider_requests_post(change_dir):

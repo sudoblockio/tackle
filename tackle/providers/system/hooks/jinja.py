@@ -10,7 +10,7 @@ from jinja2 import FileSystemLoader
 import logging
 from typing import Dict, Union
 
-from tackle.models import BaseHook
+from tackle import BaseHook, Field
 from tackle.exceptions import UndefinedVariableInTemplate
 from tackle.render.environment import StrictEnvironment
 
@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 class JinjaHook(BaseHook):
     """
-    Hook  for jinja templates.
+    Hook for jinja templates.
 
     :param template_path: Path to the template to render
     :param extra_context: A dict to use to render
@@ -28,13 +28,15 @@ class JinjaHook(BaseHook):
     """
 
     type: str = 'jinja'
-    file_system_loader: str = '.'
+    file_system_loader: str = Field('.', description="")
     template_path: str
     output_path: str
     context: Union[Dict, str] = None
     extra_context: Dict = {}
 
-    def execute(self):
+    _args: list = ['template_path', 'output_path']
+
+    def execute(self) -> dict:
         env = StrictEnvironment(context=self.input_dict)
         env.loader = FileSystemLoader(self.file_system_loader)
         template = env.get_template(self.template_path)
@@ -45,9 +47,11 @@ class JinjaHook(BaseHook):
             jinja_context.update(self.extra_context)
 
         try:
-            output_from_parsed_template = template.render(
-                **{self.context_key: jinja_context}, **jinja_context
-            )
+            # output_from_parsed_template = template.render(
+            #     **{self.context_key: jinja_context}, **jinja_context
+            # )
+            output_from_parsed_template = template.render(**jinja_context)
+
         except UndefinedError as err:
             msg = f"The Jinja hook for '{self.key}' failed to render"
             raise UndefinedVariableInTemplate(msg, err, self.output_dict)

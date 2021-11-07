@@ -1,0 +1,25 @@
+block:
+  <: block
+  items:
+    blah: zz
+
+    furry:
+      <: confirm  Are our friends furry?
+    beer:
+      <: tackle
+      chdir: fake-tackle
+
+    things:
+      <: print "{{ beer.things }}"
+
+    test_block:
+      <: block
+      items:
+        my_dog:
+          <: var
+          input: Penny
+          when: "{{ friend == 'dog' }}"
+
+    foo:
+      <: print
+      statement: bar

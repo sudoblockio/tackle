@@ -1,1 +1,0 @@
-"""Entrypoint to parser."""

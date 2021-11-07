@@ -1,0 +1,6 @@
+two_args:
+  <: print foo bar
+
+three_args:
+  type: print foo bar baz
+  when: two_args =! "foo bar"

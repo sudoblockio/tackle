@@ -1,4 +1,3 @@
 shell:
   type: tackle
-  template: .
   chdir: fixture

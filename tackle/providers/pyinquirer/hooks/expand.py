@@ -6,9 +6,11 @@ from __future__ import print_function
 
 import logging
 from PyInquirer import prompt
+from pydantic import Field
 
 from typing import Union, List, Dict
 from tackle.models import BaseHook
+from tackle.utils import literal_type
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +31,9 @@ class InquirerExpandHook(BaseHook):
 
     default: Union[Dict, List[str], str] = None
     name: str = 'tmp'
-    message: str = None
+    message: str = Field(None, description="String message to show when prompting.")
+
+    _args: list = ['message', 'default']
 
     def execute(self):
         if not self.no_input:

@@ -1,0 +1,9 @@
+
+full:
+  <: print
+  obj: what do you want?
+
+semi:
+  <: print what do you want?
+
+<condensed: print what do you want?

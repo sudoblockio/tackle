@@ -14,7 +14,6 @@ debug:
 
 inner_tackle:
   type: tackle
-  template: .
   context_file: stuff.yaml
 #  merge: true
   no_input: true

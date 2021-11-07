@@ -1,20 +1,20 @@
 path_isdir:
-  type: path_isdir
+  <: path_isdir
   path: a-path
 
 path_exists:
-  type: path_exists
+  <: path_exists
   path: a-path
 
 find_in_parent_dir:
-  type: find_in_parent
+  <: find_in_parent
   target: tests
 
 find_in_parent_file:
-  type: find_in_parent
+  <: find_in_parent
   target: Makefile
 
 find_in_parent_fallback:
-  type: find_in_parent
+  <: find_in_parent
   target: something-not-right
   fallback: "{{ find_in_parent_dir }}"

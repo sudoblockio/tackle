@@ -1,0 +1,25 @@
+
+this:
+  lists:
+    - merr
+    - stuff
+    - bax
+  dos_lists:
+    - merr
+    - stuff
+    - bax
+  keys:
+    foo:
+      bar:
+        stuff: things
+        tres_lists:
+          - merr
+          - stuff
+          - bax
+
+
+#0: # [0, 'breaking', [0]] -> ['breaking': []]
+#  breaking:
+#    - merr
+#    - stuff
+#    - bax

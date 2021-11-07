@@ -1,0 +1,9 @@
+shell:
+  <: shell
+  command: ls -la
+
+<shell_arg: shell "ls -la"
+
+cmd:
+  <: command
+  command: ls -la

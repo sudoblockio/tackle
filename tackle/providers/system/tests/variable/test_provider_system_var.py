@@ -6,7 +6,7 @@ from tackle.main import tackle
 
 def test_provider_system_hook_stat(change_dir):
     """Verify the hook call works properly."""
-    output = tackle(no_input=True, context_file='stat.yaml')
+    output = tackle('stat.yaml')
 
     assert output['a_list_remove'] == ['things']
     assert output['map_update'] == {'stuff': {'dogs': 'cats'}, 'foo': 'bar'}
@@ -20,7 +20,7 @@ def test_provider_system_hook_stat(change_dir):
 
 def test_provider_system_hook_var(change_dir):
     """Verify the hook call works properly."""
-    output = tackle('.', no_input=True, context_file='tackle.yaml')
+    output = tackle('tackle.yaml')
 
     assert output['a_list_remove'] == ['things']
     assert output['map_update'] == {'stuff': {'dogs': 'cats'}, 'foo': 'bar'}
@@ -34,6 +34,6 @@ def test_provider_system_hook_var(change_dir):
 
 def test_provider_system_hook_var_lists_embed(change_dir):
     """Verify the hook call works properly."""
-    output = tackle(no_input=True, context_file='lists.yaml')
+    output = tackle('lists.yaml')
 
     assert output['list_of_lists'] == [[1, 2], [3, 4]]

@@ -1,5 +1,5 @@
 shell_exit:
-  type: shell
+  <: shell
   command: |
     sleep 3
     garbage

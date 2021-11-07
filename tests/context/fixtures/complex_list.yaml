@@ -1,0 +1,40 @@
+foo: bar
+this:
+  lists:
+    - first
+    - one:
+        two:
+        three: 4
+    - second
+    - third:
+        foo:
+          - this
+          - that
+          - third:
+              foo:
+                - this
+                - that
+                - third:
+                    foo:
+                      - this
+                      - that
+
+  dos_lists:
+    - first
+    - stuff
+    - second
+  keys:
+    foo:
+      bar:
+      stuff: things
+      tres_lists:
+        - first
+        - stuff
+        - second
+        - one:
+            two:
+              three: this
+            three: 4
+        - stuff
+        - second
+that: foo

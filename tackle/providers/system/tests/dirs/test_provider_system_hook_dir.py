@@ -20,8 +20,12 @@ def clean_files(change_dir):
 
 
 def test_provider_system_hook_file(change_dir, clean_files):
-    """Verify the hook call works properly."""
-    o = tackle('.', no_input=True)
+    o = tackle('tackle.yaml')
+    assert os.path.isdir('output')
+    assert os.path.exists(o['join'])
 
+
+def test_provider_system_hook_file_args(change_dir, clean_files):
+    o = tackle('tackle.yaml')
     assert os.path.isdir('output')
     assert os.path.exists(o['join'])

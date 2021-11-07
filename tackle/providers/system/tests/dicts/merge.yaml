@@ -1,21 +1,14 @@
 input_map:
-  type: var
-  input:
-    stuff: blah
-    sturf: blu
+  stuff: blah
+  sturf: blu
 
 dict_map:
-  type: var
-  input:
-    stuff: bing
-    things: blu
+  stuff: bing
+  things: blu
 
 merge_map:
-  type: merge
-  src: "{{ dict_map }}"
+  <: merge
   input: "{{ input_map }}"
+  src: "{{ dict_map }}"
 
-output:
-  type: yaml
-  path: output-merge.yaml
-  contents: "{{ this }}"
+<arg1: merge {{dict_map}} {{input_map}}

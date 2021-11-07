@@ -1,3 +1,0 @@
-zones:
-  type: gcp_azs
-  region: us-east-1

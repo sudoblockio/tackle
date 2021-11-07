@@ -1,0 +1,4 @@
+# This fixture should equal petstore.yaml
+spec:
+  <: tackle petstore.yaml
+  merge: true

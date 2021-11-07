@@ -67,20 +67,21 @@ def get_provider_requirements():
 
 
 INSTALL_REQUIREMENTS = [
-    'binaryornot>=0.4.4',
+    # 'pydantic[dotenv]>=1.6.0',
+    'pydantic>=1.6.0',
     'Jinja2<3.0.0',
     'click>=7.0',
-    'poyo>=0.5.0',
-    'jinja2-time>=0.2.0',
-    'python-slugify>=4.0.0',
     'requests>=2.23.0',
-    'PyInquirer>=1.0.3',
     'PyYAML>=5.3',
-    'oyaml>=v1.0',
-    'pyhcl>=0.4.4',
-    'distro>=1.5.0',
     'rich>=3.3.0',
-    'pydantic>=1.6.0',
+    'PyInquirer>=1.0.3',
+    'python-slugify>=4.0.0',  # Move to extension
+    'pyhcl>=0.4.4',  # Move to extension
+    'distro>=1.5.0',  # Move to extension
+    'oyaml>=v1.0',  # RM
+    # 'poyo>=0.5.0',  # RM
+    'jinja2-time>=0.2.0',  # RM
+    'binaryornot>=0.4.4',  # RM
 ]
 
 if sys.argv[-1] == 'readme':

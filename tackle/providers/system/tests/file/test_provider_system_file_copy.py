@@ -21,7 +21,7 @@ def clean_files():
 
 def test_provider_system_hook_file(change_dir, clean_files):
     """Verify the hook call works properly."""
-    tackle(no_input=True)
+    tackle('tackle.yaml')
     assert 'thing.yaml' in os.listdir()
     assert 'stuff' in os.listdir()
     # If the file has been moved properly there should be only one file
@@ -36,7 +36,7 @@ def test_provider_system_hook_file_shred(change_dir, clean_files):
         file.write(f)
         file.close()
 
-    tackle('.', no_input=True, context_file='shred.yaml')
+    tackle('shred.yaml')
 
     for f in files:
         assert not os.path.isfile(f)
@@ -53,13 +53,13 @@ def fix_file_perms():
 
 def test_provider_system_hook_file_chmod(change_dir, fix_file_perms):
     """Verify the hook call works properly."""
-    tackle(context_file='chmod.yaml', no_input=True)
+    tackle('chmod.yaml')
     assert oct(os.stat('tackle.yaml').st_mode)[-3:] == "600"
 
 
 def test_provider_system_hook_file_remove(change_dir, fix_file_perms):
     """Verify the hook call works properly."""
-    o = tackle(context_file='remove.yaml', no_input=True)
+    o = tackle('remove.yaml')
     assert o['if_file']
     assert not o['not_file']
     assert o['if_files']

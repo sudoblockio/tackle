@@ -7,8 +7,10 @@ from __future__ import print_function
 import logging
 from PyInquirer import prompt
 from typing import Any
+from pydantic import Field
 
 from tackle.models import BaseHook
+from tackle.utils import literal_type
 
 logger = logging.getLogger(__name__)
 
@@ -26,14 +28,16 @@ class InquirerConfirmHook(BaseHook):
 
     type: str = 'confirm'
 
-    default: bool = True
-    name: str = 'tmp'
-    message: str = None
+    default: Any = Field(None, description="Default choice.")
+    message: str = Field(True, description="String message to show when prompting.")
+    name: str = Field('tmp', description="Extra key to embed into. Artifact of API.")
+
+    _args: list = ['message', 'default']
 
     def __init__(self, **data: Any):
         super().__init__(**data)
         if not self.message:
-            self.message = ''.join([self.key, " >> "])
+            self.message = ''.join([self.key_, " >> "])
 
     def execute(self) -> bool:
         if not self.no_input:

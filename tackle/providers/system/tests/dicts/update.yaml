@@ -1,29 +1,22 @@
-#input_list:
-#  type: var
-#  input:
-#    - things: blah
-#    - thingys: blu
-#    - tings: blue
-
 input_map:
-  type: var
-  input:
-    stuff: blah
-    sturf: blu
+  stuff: blah
+  sturf: blu
 
 dict_map:
-  type: var
-  input:
-    foo: bing
-    bar: blu
+  foo: bing
+  bar: blu
 
 update_map:
-  type: update
+  <: update
+  src: "{{ input_map }}"
+  input: "{{ dict_map }}"
+
+update_map2:
+  <: update
   src: "{{ input_map }}"
   input:
     stuff: "{{ dict_map }}"
 
-output:
-  type: yaml
-  path: output.yaml
-  contents: "{{ update }}"
+<arg: update "{{ input_map }}" "{{ dict_map }}"
+
+<arg2: update {{input_map}} "{'stuff':{{dict_map}}}"

@@ -4,6 +4,8 @@ from functools import wraps
 import errno
 import os
 import signal
+import ast
+import re
 
 
 # import _collections
@@ -67,3 +69,23 @@ def timeout(seconds=10, error_message=os.strerror(errno.ETIME)):
         return wraps(func)(wrapper)
 
     return decorator
+
+
+def literal_type(input):
+    """Takes in any serializable argument as string and returns the literal."""
+    if isinstance(input, str):
+        REGEX = [
+            r'^\[.*\]$',  # List
+            r'^\{.*\}$',  # Dict
+            r'^True$|^False$',  # Boolean
+            r'^\d+$',  # Integer
+            r'^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$',  # Float
+        ]
+        for r in REGEX:
+            # First try to match on a list of regexs that can be evaluated by ast
+            if re.match(r, input):
+                """If variable looks like list, return literal list"""
+                return ast.literal_eval(input)
+        # If not just t
+        return input
+    return input

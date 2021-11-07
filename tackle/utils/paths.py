@@ -16,7 +16,7 @@ CONTEXT_FILE_DICT = {
         'cookiecutter.json',
         'cookiecutter.yaml',
         'cookiecutter.yml',
-        'cookiecutter.hcl',
+        # 'cookiecutter.hcl',
     ],
     'tackle': [
         '.tackle.yaml',
@@ -26,7 +26,7 @@ CONTEXT_FILE_DICT = {
         'tackle.yaml',
         'tackle.yml',
         'tackle.json',
-        'tackle.hcl',
+        # 'tackle.hcl',
     ],
 }
 
@@ -156,14 +156,36 @@ def is_file(value):
     return bool(FILE_REGEX.match(value))
 
 
+def is_multi_part_command(value):
+    """Return True if the input looks like a file."""
+    SPACE_REGEX = re.compile(
+        r"""/\s/""",
+        re.VERBOSE,
+    )
+    return bool(SPACE_REGEX.match(value))
+
+
+# def is_tackle_project(value):
+#     """Return True if the input looks like a file."""
+#     repo_directory_exists = os.path.isdir(value)
+#     if repo_directory_exists:
+#         # Check for valid context files as default
+#         for f in ALL_VALID_CONTEXT_FILES:
+#             if os.path.isfile(os.path.join(value, f)):
+#                 return True
+#     return False
+
+
 def repository_has_tackle_file(repo_directory: str, context_file=None):
-    """Determine if `repo_directory` contains a `cookiecutter.json` file.
+    """
+    Determine if `repo_directory` contains a valid context file. Acceptable choices
+    are `tackle.yaml`, `tackle.yml`, `tackle.json`, `cookiecutter.json` in order of
+    precedence.
 
     :param repo_directory: The candidate repository directory.
     :param context_file: eg. `tackle.yaml`.
     :return: The path to the context file
     """
-    repo_directory_exists = os.path.isdir(repo_directory)
     if context_file:
         # The supplied context file exists
         context_file = os.path.join(os.path.abspath(repo_directory), context_file)
@@ -174,6 +196,7 @@ def repository_has_tackle_file(repo_directory: str, context_file=None):
                 f"Can't find supplied context_file at {context_file}"
             )
 
+    repo_directory_exists = os.path.isdir(repo_directory)
     if repo_directory_exists:
         # Check for valid context files as default
         for f in ALL_VALID_CONTEXT_FILES:

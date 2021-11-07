@@ -20,7 +20,7 @@ def clean_things():
 
 def test_provider_system_hook_jinja(change_dir, clean_things):
     """Verify the hook call works properly."""
-    context = tackle('.', no_input=True)
+    context = tackle('.')
     assert context['foo'] == 'bar'
     with open('things.py') as f:
         output = yaml.load(f, yaml.SafeLoader)

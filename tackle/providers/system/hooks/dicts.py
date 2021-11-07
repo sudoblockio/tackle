@@ -7,8 +7,11 @@ from __future__ import print_function
 import logging
 from typing import Union, Dict, List
 
-from tackle.models import BaseHook
-from tackle.utils import merge_configs
+# from tackle.models import BaseHook
+
+from tackle import BaseHook, Field
+
+from tackle.utils import merge_configs, literal_type
 
 logger = logging.getLogger(__name__)
 
@@ -18,22 +21,18 @@ class DictUpdateHook(BaseHook):
     Hook  for updating dict objects with items.
 
     :param src: The input dict to update
-    :param input: A dict or list of dicts to update the input `src`
     :return: An updated dict object.
     """
 
     type: str = 'update'
 
-    input: Union[Dict, List[Dict]]
-    src: Dict
+    src: dict = Field(description="A dict or list of dicts to update the input `src`")
+    input: dict = Field(description="A dict or list of dicts to update the input `src`")
+
+    _args: list = ['src', 'input']
 
     def execute(self):
-        if isinstance(self.input, list):
-            for i in self.input:
-                self.src.update(i)
-        else:
-            self.src.update(self.input)
-
+        self.src.update(self.input)
         return self.src
 
 
@@ -47,8 +46,10 @@ class DictMergeHook(BaseHook):
     """
 
     type: str = 'merge'
-    input: Union[Dict, List[Dict]]
-    src: Dict
+    src: Dict = None
+    input: Union[Dict, List[Dict]] = None
+
+    _args: list = ['src', 'input']
 
     def execute(self):
         if isinstance(self.input, list):
@@ -70,30 +71,36 @@ class DictPopHook(BaseHook):
 
     type: str = 'pop'
 
-    item: Union[Dict, List[str], str]
-    src: Dict
+    src: Union[dict, list] = None
+    item: Union[Dict, List[str], str] = None
+
+    _args: list = ['src', 'item']
 
     def execute(self):
-        if isinstance(self.item, list):
+        if self.item is None:
+            self.src.pop()
+        elif isinstance(self.item, list):
             for i in self.item:
                 self.src.pop(i)
-            return self.src
         else:
             self.src.pop(self.item)
-            return self.src
+
+        return self.src
 
 
 class DictKeysHook(BaseHook):
     """
-    Hook  for returning the keys of a dict.
+    Hook  for returning the keys of a dict as a list.
 
     :param src: The input dict or list of dicts return the keys for
     :return: List of keys or list of list of keys if input is list
     """
 
-    type: str = 'dict_keys'
+    type: str = 'keys'
 
-    src: Union[Dict, List[Dict]]
+    src: dict = None
+
+    _args: list = ['src']
 
     def execute(self):
         if isinstance(self.src, list):
@@ -102,4 +109,4 @@ class DictKeysHook(BaseHook):
                 keys.append(i.keys())
             return keys
         else:
-            return self.src.keys()
+            return list(self.src.keys())

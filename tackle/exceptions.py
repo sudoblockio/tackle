@@ -1,4 +1,32 @@
 """All exceptions used in the tackle box code base are defined here."""
+import inspect
+import os
+
+
+class ContributionNeededException(Exception):
+    def __init__(self):
+        # self.path_to_code = link_to_code
+        self.message = f"Unimplemented / needs to be built - PLEASE HELP -> https://github.com/robcxyz/tackle-box/blob/main/{self.file_location()}"
+        super().__init__(self.message)
+
+    def __new__(cls, *args, **kwargs):
+        new_instance = super(ContributionNeededException, cls).__new__(
+            cls, *args, **kwargs
+        )
+        stack_trace = inspect.stack()
+        created_at = '%s:%d' % (stack_trace[1][1], stack_trace[1][2])
+        new_instance.created_at = created_at
+        return new_instance
+
+    def file_location(self):
+        path_list = os.path.normpath(self.created_at).split(os.sep)
+        for i, v in enumerate(path_list):
+            if v == 'tackle':
+                break
+        github_path_list = path_list[i:-1] + [
+            path_list[-1].split(':')[0] + "#L" + path_list[-1].split(':')[1]
+        ]
+        return os.path.join(*github_path_list)
 
 
 class TackleException(Exception):

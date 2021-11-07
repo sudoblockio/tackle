@@ -99,6 +99,8 @@ class MoveHook(BaseHook):
     create_path: bool = True
     dst: str
 
+    _args: list = ['environment_variable', 'value']
+
     def __init__(self, **data: Any):
         super().__init__(**data)
         if isinstance(self.src, str):

@@ -6,9 +6,11 @@ from __future__ import print_function
 
 import logging
 from PyInquirer import prompt
+from pydantic import Field
 
-from typing import Union, List, Dict
+from typing import Any
 from tackle.models import BaseHook
+from tackle.utils import literal_type
 
 logger = logging.getLogger(__name__)
 
@@ -27,9 +29,11 @@ class InquirerRawListHook(BaseHook):
 
     type: str = 'rawlist'
 
-    default: Union[Dict, List[str], str] = None
-    name: str = 'tmp'
-    message: str = None
+    default: Any = Field(None, description="Default choice.")
+    message: str = Field(None, description="String message to show when prompting.")
+    name: str = Field('tmp', description="Extra key to embed into. Artifact of API.")
+
+    _args: list = ['message', 'default']
 
     def execute(self):
         if not self.no_input:

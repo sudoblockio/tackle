@@ -11,12 +11,13 @@ Declarative DSL for creating workflows, CLIs, and generating code. Extends cooki
 Basics
 ------
 
+.. mdinclude:: ../README.md
+
 .. toctree::
    :maxdepth: 1
 
-   README
    overview
-   installation-tackle
+   installation
    demos
    usage
    tutorials

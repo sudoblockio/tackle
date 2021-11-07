@@ -5,46 +5,22 @@ The code in this module is also a good example of how to use Tackle as a
 library rather than a script.
 """
 import logging
-import json
-from _collections import OrderedDict
 
 from tackle.generate import generate_files
 from tackle.utils.paths import rmtree
 from tackle.models import Context
+from tackle.parser import walk_context, update_source
 
-# from tackle.repository import update_source
+# from tackle.context import update_context
+# from tackle.providers import update_providers
 
-from tackle.parser.context import update_context
-
-# from tackle.settings import get_settings
-from tackle.parser.providers import update_providers
-
+# from tackle.input_dict import update_input_dict
+# from tackle.source import update_source
 
 logger = logging.getLogger(__name__)
 
 
 def tackle(
-    # template='.',
-    # no_input=False,
-    # checkout=None,
-    # context_file=None,
-    # context_key=None,
-    # password=None,
-    # directory=None,
-    # existing_context=None,
-    # overwrite_inputs=None,
-    # override_inputs=None,
-    # replay=None,
-    # record=None,
-    # rerun=None,
-    # output_dir='.',
-    # overwrite_if_exists=False,
-    # skip_if_file_exists=False,
-    # accept_hooks=True,
-    # config_file=None,
-    # default_config=False,
-    # config=None,
-    # providers=None,
     *args,
     **kwargs,
 ):
@@ -78,59 +54,24 @@ def tackle(
     :return Dictionary of output
     """
     if args:
-        # setattr(kwargs, 'template', args)
-        kwargs['template'] = args[0]
-    context = Context(
-        # settings=get_settings(
-        #     config_file=config_file,
-        #     config=config,
-        #     default_config=default_config,
-        # ),
-        # config_file=config_file,
-        # config=config,
-        # default_config=default_config,
-        # no_input=no_input,
-        # replay=replay,
-        # record=record,
-        # rerun=rerun,
-        # template=template,
-        # checkout=checkout,
-        # context_file=context_file,
-        # password=password,
-        # directory=directory,
-        # overwrite_inputs=overwrite_inputs,
-        # override_inputs=override_inputs,
-        # existing_context=existing_context,
-        # context_key=context_key,
-        # providers=providers,
-        # output_dir=output_dir,
-        # overwrite_if_exists=overwrite_if_exists,
-        # skip_if_file_exists=skip_if_file_exists,
-        # accept_hooks=accept_hooks,
-        # template=args,
-        **kwargs,
-    )
-    context.update_source()
-    context.update_input_dict()
+        kwargs['input_string'] = args[0]
 
-    # Get the providers
-    update_providers(context)
-    # Main parsing logic
-    update_context(context)
+    context = Context(**kwargs)
 
-    # output = Output(
-    #     output_dir=output_dir,
-    #     overwrite_if_exists=overwrite_if_exists,
-    #     skip_if_file_exists=skip_if_file_exists,
-    #     accept_hooks=accept_hooks,
-    # )
+    update_source(context)
+
+    # TODO: Update with hook
     generate_files(context=context)
 
     # Cleanup (if required)
     if context.cleanup:
         rmtree(context.repo_dir)
 
-    if isinstance(context, OrderedDict):
-        context = json.loads(json.dumps(context))
+    from tackle.utils.dicts import remove_private_vars
+
+    remove_private_vars(context=context)
+
+    # if isinstance(context, OrderedDict):
+    #     context = json.loads(json.dumps(context))
 
     return context.output_dict

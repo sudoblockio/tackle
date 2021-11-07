@@ -16,6 +16,7 @@ import os
 import click
 from itertools import chain
 from select import select
+from pydantic import Field
 
 from tackle.models import BaseHook
 from tackle.exceptions import HookCallException
@@ -31,20 +32,14 @@ logger = logging.getLogger(__name__)
 
 
 class CommandHook(BaseHook):
-    """
-    `command` hook for system calls.
-
-    Hides streaming output. To view streaming output of command use the `shell`
-    hook.
-
-    :param command: The command to run on the host
-    :return: String output of command
-    """
+    """System calls."""
 
     type: str = 'command'
 
-    command: str
-    ignore_error: bool = False
+    command: str = Field(..., description="A shell command.")
+    ignore_error: bool = Field(False, description="Ignore errors.")
+
+    _args: list = ['command']
 
     def execute(self):
         p = subprocess.Popen(
@@ -74,6 +69,8 @@ class ShellHook(BaseHook):
 
     command: str
     ignore_error: bool = False
+
+    _args: list = ['command']
 
     def _set_size(self, fd):
         """Found at: https://stackoverflow.com/a/6420070."""

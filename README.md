@@ -10,63 +10,64 @@
 * PyPI: [https://pypi.org/project/tackle-box/](https://pypi.org/project/tackle-box/)
 * Free and open source software: [BSD license](https://github.com/tackle-box/cookiecutter/blob/master/LICENSE)
 
-Tackle box is a DSL for easily creating CLIs, workflows, and generating code from templates. The framework is
-modular and empowered by a collection of hooks to easily extend functionality through a set of declarative plugins.
-Based off a fork of [cookiecutter](https://github.com/cookiecutter/cookiecutter), this tool preserves all the
-original functionality and extending it with a turing complete yaml based DSL for describing modular workflows.  
+Tackle box is a structured data parser that employs a collection of hooks to turn any yaml / json file into a CLI. Created originally as a fork of cookiecutter, this project evolved from being a code generator to a full-blown configuration language reeling in a wide variety of use cases.  The syntax is easy to learn and runs out of the box with over 100 hooks which can easily be extended by importing additional providers or simply writing your own hook in less than a minute.
 
-### Quick Demo
+### Demos
+
+Tackle box has a wide variety of use cases spanning from building code templates from specs (OpenAPI )
 
 ```
 pip3 install tackle-box
 tackle https://github.com/robcxyz/tackle-demos
 ```
 
-### Features
+### Syntax
 
-All cookiecutter features are supported in addition to loops, conditionals, and plugins. These features are only
-available to supplied dictionary objects with a `type` key to trigger the associated [hook](tackle/models.py). Loops
-and conditionals are triggered by rendering [jinja](https://github.com/pallets/jinja) expressions per the example
-below. Other cookiecutters can be called from a single tackle box to knit together modularized components.
+Parse any yaml / json file by running `tackle <file name>`.  Syntax can call hooks in either compact form with arguments or in expanded form with key value arguments. For instance to prompt a user to fill in variables, we could use hooks from the PyInquirer provider such as [input](), [checkbox](), and [select](). 
 
-`tackle.yaml`
 ```yaml
 ---
-name:
-  type: input # Input prompt which is stored in `name`
-  message: What is your name?
+# Compact form
+name<-: input What is your name?  # Input prompt which is stored in `name`
+# Here `input` is a hook that takes a message as its argument. 
+# Hooks are triggered whenever we see `<-` 
 
-colors:
-  type: checkbox # Multi selector - returns a list
-  message: What are your favorite colors?
-  choices:
-    - blue
-    - green
-    - grey
+# Mixed compact and expanded form
+favorite: # Arbitrary nesting of keys and lists supported 
+  colors:
+    <-: checkbox What are your favorite colors?  # Multi selector - returns a list
+    choices:
+      - blue
+      - green
+      - grey
 
+# Expanded form 
 outcome:
-  type: select # Single selector - returns a string
+  <-: select # Single selector - returns a string
   message: What is the airspeed velocity of an unladen swallow??
   choices:
     - flung-off-bridge: I donno # Map for choices interpretted as {key: question}
     - walk-across-bridge: What do you mean? African or European swallow?
+```
 
+Every single line is rendered as a Jinja template allowing conditionals and loops. For instance,
+
+```yaml
 bad_outcome:
-  type: print
-  statement: Wrong answer {{ name }}... # Render the `name` variable
-  when: "{{ outcome == 'flung-off-bridge' }}" # Conditionals need to evaluate as booleans
+  <: print Wrong answer {{ name }}... # Render the `name` variable
+  if: outcome == 'flung-off-bridge' # Strings are rendered  by default - no need to wrap with braces
 
 color_essays:
-  type: input
-  message: Please tell me how much you like the color {{item}}?
+  <: input Please tell me how much you like the color {{item}}?
   default: Oh color {{item}}, you are so frickin cool...
-  loop: "{{ colors }}" # loops over colors
-  when: "{{ colors|length > 1 }}"
+  for: favorite.colors # loops over colors from prior question - strings rendered by default.
+  if: favorite.colors | length > 1
   else: Who doesn't like colors?
+```
 
-democmd:
-  type: command # Run arbitrary system commands and return stdout
-  command: pwd
+
+```yaml
+democmd<-: command pwd # Run arbitrary system commands and return stdout****
 
 output:
   type: pprint # Pretty print the output

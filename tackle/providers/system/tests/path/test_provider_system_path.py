@@ -7,7 +7,7 @@ from tackle.main import tackle
 
 def test_provider_system_hook_path(change_dir):
     """Verify the hook call works properly."""
-    context = tackle(no_input=True, context_file='parent.yaml')
+    context = tackle('parent.yaml')
 
     assert context['path_isdir']
 
@@ -19,7 +19,7 @@ def test_provider_system_hook_path(change_dir):
 
 def test_provider_system_hook_path_child(change_dir):
     """Verify the hook call works properly."""
-    context = tackle(no_input=True, context_file='child.yaml')
+    context = tackle('child.yaml')
 
     assert len(context['find_in_child']) == 2
     assert len(context['find_in_child_starting_dir']) == 1

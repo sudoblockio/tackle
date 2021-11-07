@@ -1,7 +1,0 @@
-shell:
-  type: shell
-  command: ls -la
-
-cmd:
-  type: command
-  command: ls -la

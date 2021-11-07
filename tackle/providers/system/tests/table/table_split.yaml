@@ -1,32 +1,32 @@
 column_names:
-  type: var
+  <: var
   input:
     - stuff
     - things
 
 data_split:
-  type: var
+  <: var
   input:
     - foo-bar
     - here-there
 
 table_split:
-  type: table
+  <: table
   column_names: "{{ table_split.column_names }}"
   contents_split: "{{ table_split.data_split }}"
   separator: "-"
 
 data:
-  type: var
+  <: var
   input:
     - ['foo', 'bar']
     - ['here', 1]
 
 print1_:
-  type: print
+  <: print
   input: "{{ this }}"
 
 table:
-  type: table
+  <: table
   column_names: "{{ table_split.column_names }}"
   contents: "{{ table_split.data }}"

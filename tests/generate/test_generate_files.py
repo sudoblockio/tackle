@@ -481,9 +481,7 @@ def test_raise_undefined_variable_project_dir(tmpdir, change_dir_main_fixtures):
 
 def test_generate_directory_with_spaces(tmpdir, change_dir_main_fixtures):
     """Verify that white spaces are handled properly templating directories/files."""
-    tackle(
-        'fake-repo-pre-tackle-spaces', no_input=True, output_dir=str(tmpdir)
-    )
+    tackle('fake-repo-pre-tackle-spaces', no_input=True, output_dir=str(tmpdir))
     assert os.path.exists(os.path.join(tmpdir, 'fake-project'))
     assert os.path.exists(os.path.join(tmpdir, 'fake-project', 'fake-project'))
 

@@ -1,0 +1,7 @@
+
+outer:
+  type: tackle inner_tackle.yaml
+
+
+inner:
+  type: print {{ outer }}
