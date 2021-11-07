@@ -6,8 +6,8 @@ from tackle.models import Context
 from tackle.main import tackle
 
 FIXTURES = [
-    # ('tackle_map.yaml', 'tackle_map_output.yaml'),
-    # ('tackle_map_root.yaml', 'tackle_map_root_output.yaml'),
+    ('tackle_map.yaml', 'tackle_map_output.yaml'),
+    ('tackle_map_root.yaml', 'tackle_map_root_output.yaml'),
     ('tackle_import.yaml', 'petstore.yaml'),
 ]
 

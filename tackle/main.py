@@ -69,7 +69,7 @@ def tackle(
 
     from tackle.utils.dicts import remove_private_vars
 
-    remove_private_vars(context=context)
+    # remove_private_vars(context=context)
 
     # if isinstance(context, OrderedDict):
     #     context = json.loads(json.dumps(context))

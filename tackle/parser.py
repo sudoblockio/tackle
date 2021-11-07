@@ -786,11 +786,7 @@ def walk_context_extract(context: 'Context', parse_value: dict = None):
                 or isinstance(v, float)
                 or v is None
             ):
-                nested_set(context.output_dict, context.key_path + [k], v)
-            elif v is None:
-                context.key_path.append(k)
-                # do something special
-                context.key_path.pop()
+                continue
             elif isinstance(v, list):
                 context.key_path.append(k)
                 for append_index, v_int in enumerate(v):
@@ -808,3 +804,5 @@ def walk_context_extract(context: 'Context', parse_value: dict = None):
                         type(v), ".".join(context.key_path), k, v
                     )
                 )
+
+
