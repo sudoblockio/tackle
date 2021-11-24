@@ -14,6 +14,7 @@ FIXTURES = [
     # ('tackle_import.yaml', 'petstore.yaml'),
 ]
 
+
 @pytest.mark.parametrize("fixture,expected_output", FIXTURES)
 @pytest.mark.asyncio
 async def test_some_asyncio_code(change_curdir_fixtures, fixture, expected_output):
@@ -24,15 +25,15 @@ async def test_some_asyncio_code(change_curdir_fixtures, fixture, expected_outpu
 
 
 @pytest.mark.parametrize("fixture,expected_output", FIXTURES)
-def test_async_walk_run_until_complete(change_curdir_fixtures, fixture, expected_output):
+def test_async_walk_run_until_complete(
+    change_curdir_fixtures, fixture, expected_output
+):
     loop = asyncio.get_event_loop()
 
     with open(fixture) as f:
         input_dict = yaml.safe_load(f)
 
-    context = Context(
-        input_dict=input_dict
-    )
+    context = Context(input_dict=input_dict)
     # loop.run_until_complete(asyncio.gather(walk_elements(input_dict, output_dict)))
     # future = asyncio.ensure_future(walk_elements(input_dict, output_dict))
     # responses = loop.run_until_complete(future)
@@ -75,6 +76,7 @@ baz:
     - <-: var
 """
 
+
 def test_async_walk_run_until_complete_yaml():
     loop = asyncio.get_event_loop()
 
@@ -93,5 +95,3 @@ def test_is_tackle_hook():
     assert is_tackle_function('foo<_')
     assert not is_tackle_function('<-foo')
     assert not is_tackle_function('<-foo')
-
-

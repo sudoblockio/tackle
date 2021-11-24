@@ -5,31 +5,20 @@ from tackle.utils.dicts import (
     decode_list_index,
     nested_set,
     nested_get,
-    nested_delete
+    nested_delete,
 )
 
 ZERO_INDEX = encode_list_index(0)
+
 
 def test_index_encoding():
     assert decode_list_index(encode_list_index(1)) == 1
 
 
 SET_KEY_PATHS = [
-    (
-        {},
-        ['foo'],
-        {'foo': True}
-    ),
-    (
-        {},
-        ['one', 'two', 'three'],
-        {'one': {'two': {'three': True}}}
-    ),
-    (
-        {},
-        ['this', 'lists', ZERO_INDEX],
-        {'this': {'lists': [True]}}
-    ),
+    ({}, ['foo'], {'foo': True}),
+    ({}, ['one', 'two', 'three'], {'one': {'two': {'three': True}}}),
+    ({}, ['this', 'lists', ZERO_INDEX], {'this': {'lists': [True]}}),
     (
         {},
         ['this', 'lists', ZERO_INDEX, 'one', 'two'],
@@ -45,21 +34,9 @@ SET_KEY_PATHS = [
         ['this', 'lists', ZERO_INDEX, 'one', 'two', ZERO_INDEX, 'one', 'two', 'three'],
         {'this': {'lists': [{'one': {'two': [{'one': {'two': {'three': True}}}]}}]}},
     ),
-    (
-        {'bar': 2},
-        ['foo'],
-        {'bar': 2, 'foo': True}
-    ),
-    (
-        {'bar': 2},
-        ['one', 'two', 'three'],
-        {'bar': 2, 'one': {'two': {'three': True}}}
-    ),
-    (
-        {'bar': 2},
-        ['this', 'lists', ZERO_INDEX],
-        {'bar': 2, 'this': {'lists': [True]}}
-    ),
+    ({'bar': 2}, ['foo'], {'bar': 2, 'foo': True}),
+    ({'bar': 2}, ['one', 'two', 'three'], {'bar': 2, 'one': {'two': {'three': True}}}),
+    ({'bar': 2}, ['this', 'lists', ZERO_INDEX], {'bar': 2, 'this': {'lists': [True]}}),
     (
         {'this': {'lists': [{'one': {'two': 1}}]}},
         ['this', 'lists', ZERO_INDEX, 'one', 'three'],
@@ -78,18 +55,10 @@ SET_KEY_PATHS = [
     (
         {},
         ['this', ZERO_INDEX, 'one', 'two', ZERO_INDEX],
-        {'this': [{'one': {'two': [True]}}]}
+        {'this': [{'one': {'two': [True]}}]},
     ),
-    (
-        {},
-        ['this', ZERO_INDEX, 'one', ZERO_INDEX],
-        {'this': [{'one': [True]}]}
-    ),
-    (
-        {},
-        ['this', ZERO_INDEX, 'one'],
-        {'this': [{'one': True}]}
-    ),
+    ({}, ['this', ZERO_INDEX, 'one', ZERO_INDEX], {'this': [{'one': [True]}]}),
+    ({}, ['this', ZERO_INDEX, 'one'], {'this': [{'one': True}]}),
     (
         {},
         ['this', 'that', 'foo', ZERO_INDEX, 'one'],
@@ -110,31 +79,19 @@ def test_nested_append_bytes(output, key_path, expected_output):
 
 
 GET_KEY_PATHS = [
-    (
-        {'foo': 1},
-        ['foo'],
-        1
-    ),
+    ({'foo': 1}, ['foo'], 1),
     (
         {'this': {'that': {'foo': [{'one': 1}, {'one': 'foo'}]}}},
         ['this', 'that', 'foo', encode_list_index(1), 'one'],
         'foo',
     ),
-    (
-        {'list': [{'->': 'var this'}]},
-        ['list', ZERO_INDEX, '->'],
-        'var this'
-    ),
+    ({'list': [{'->': 'var this'}]}, ['list', ZERO_INDEX, '->'], 'var this'),
     (
         {'list': [{'->': 'var this'}, {'key->': 'var this'}]},
         ['list', b'\x00\x01', 'key->'],
-        'var this'
+        'var this',
     ),
-    (
-        {'foo': [1]},
-        ['foo', ZERO_INDEX],
-        1
-    ),
+    ({'foo': [1]}, ['foo', ZERO_INDEX], 1),
 ]
 
 
@@ -145,30 +102,14 @@ def test_nested_get(input, key_path, expected_output):
 
 
 DELETE_KEY_PATHS = [
-    (
-        {'foo': 1},
-        ['foo'],
-        {}
-    ),
-    (
-        {'foo': 1, 'bar': 1},
-        ['foo'],
-        {'bar': 1}
-    ),
-    (
-        {'foo': 'baz', 'bar': 1},
-        ['foo', 'baz'],
-        {'foo': None, 'bar': 1}
-    ),
-    (
-        {'list': [{'->': 'var this'}]},
-        ['list', ZERO_INDEX, '->'],
-        {'list': []}
-    ),
+    ({'foo': 1}, ['foo'], {}),
+    ({'foo': 1, 'bar': 1}, ['foo'], {'bar': 1}),
+    ({'foo': 'baz', 'bar': 1}, ['foo', 'baz'], {'foo': None, 'bar': 1}),
+    ({'list': [{'->': 'var this'}]}, ['list', ZERO_INDEX, '->'], {'list': []}),
     (
         {'list': [{'->': 'var this'}, 'foo']},
         ['list', ZERO_INDEX, '->'],
-        {'list': ['foo']}
+        {'list': ['foo']},
     ),
     (
         {'this': {'that': {'foo': [{'one': 1}, {'one': 'foo'}]}}},
@@ -185,45 +126,25 @@ DELETE_KEY_PATHS = [
         ['this', 'that', 'foo', encode_list_index(1), 'one'],
         {'this': {'that': {'foo': [{'one': 1}, {'two': 'boo'}]}}},
     ),
-    (
-        {'foo': {'baz': 1, 'bar': 1}},
-        ['foo', 'bar'],
-        {'foo': {'baz': 1}}
-    ),
-    (
-        {'foo': 'bar', 'baz': 1},
-        ['foo', 'bar'],
-        {'foo': None, 'baz': 1}
-    ),
-    (
-        {'foo': {'bar': 1, 'baz': 1}},
-        ['foo', 'bar'],
-        {'foo': {'baz': 1}}
-    ),
-    (
-        {'foo': {'bar': 1}, 'baz': 1},
-        ['foo', 'bar'],
-        {'foo': {}, 'baz': 1}
-    ),
-    (
-        {'foo': 'bar'},
-        ['foo', 'bar'],
-        {'foo': None}
-    ),
+    ({'foo': {'baz': 1, 'bar': 1}}, ['foo', 'bar'], {'foo': {'baz': 1}}),
+    ({'foo': 'bar', 'baz': 1}, ['foo', 'bar'], {'foo': None, 'baz': 1}),
+    ({'foo': {'bar': 1, 'baz': 1}}, ['foo', 'bar'], {'foo': {'baz': 1}}),
+    ({'foo': {'bar': 1}, 'baz': 1}, ['foo', 'bar'], {'foo': {}, 'baz': 1}),
+    ({'foo': 'bar'}, ['foo', 'bar'], {'foo': None}),
     (
         {'list': [{'->': 'var this'}]},
         ['list', ZERO_INDEX, '->', 'var this'],
-        {'list': [{'->': None}]}
+        {'list': [{'->': None}]},
     ),
     (
         {'list': ['foo', ['a', 'embedded', 'list']]},
         ['list', encode_list_index(1)],
-        {'list': ['foo']}
+        {'list': ['foo']},
     ),
     (
         {'list': ['foo', ['a', 'embedded', 'list']]},
         ['list', encode_list_index(1), encode_list_index(0)],
-        {'list': ['foo', ['embedded', 'list']]}
+        {'list': ['foo', ['embedded', 'list']]},
     ),
 ]
 

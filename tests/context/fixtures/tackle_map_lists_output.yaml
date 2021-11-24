@@ -4,6 +4,6 @@ list:
   - key: things
   - value: things
   - map:
-      key: 
+      key:
         key: things
 

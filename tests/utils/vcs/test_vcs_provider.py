@@ -35,15 +35,24 @@ def test_asssert_error_unknown_repo():
 DEMO_INPUTS = [
     ("https://github.com/robcxyz/tackle-demos", "main", "main"),
     ("github.com/robcxyz/tackle-demos", "latest", "main"),
-    ("robcxyz/tackle-demos", "v0.0.1-alpha.1", "e11248f29c7e4ebcd04164be230f41513b576ffe"),
+    (
+        "robcxyz/tackle-demos",
+        "v0.0.1-alpha.1",
+        "e11248f29c7e4ebcd04164be230f41513b576ffe",
+    ),
 ]
 
 
 @pytest.mark.parametrize("repo_input,repo_version,expected_version", DEMO_INPUTS)
-def test_get_repo_source(tmp_move_tackle_dir, repo_input, repo_version, expected_version):
+def test_get_repo_source(
+    tmp_move_tackle_dir, repo_input, repo_version, expected_version
+):
     get_repo_source(repo=repo_input, repo_version=repo_version)
     assert os.listdir(settings.provider_dir) == ['robcxyz']
-    assert get_repo_version(os.path.join(settings.provider_dir, 'robcxyz', 'tackle-demos')) == expected_version
+    assert (
+        get_repo_version(os.path.join(settings.provider_dir, 'robcxyz', 'tackle-demos'))
+        == expected_version
+    )
 
 
 def test_get_repo_version(change_dir_base):

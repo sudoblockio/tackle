@@ -28,6 +28,7 @@ def basic_commands(request):
 def test_cli_commands(change_curdir_fixtures, cli_runner, command):
     from click.testing import CliRunner
     from tackle.cli_parser import main
+
     runner = CliRunner()
     result = runner.invoke(main, ['tackle-hello.yaml'])
     assert result.exit_code == 0

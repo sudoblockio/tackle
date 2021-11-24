@@ -11,6 +11,7 @@ FIXTURES = [
     # ('tackle_import.yaml', 'petstore.yaml'),
 ]
 
+
 @pytest.mark.parametrize("fixture,expected_output", FIXTURES)
 def test_main_foo(change_curdir_fixtures, fixture, expected_output):
     with open(expected_output) as f:
@@ -19,4 +20,5 @@ def test_main_foo(change_curdir_fixtures, fixture, expected_output):
     output = tackle(fixture)
     # assert dict(output) == expected_output
     from pprint import pprint
+
     pprint(output)
