@@ -75,6 +75,7 @@ INSTALL_REQUIREMENTS = [
     'PyYAML>=5.3',
     'rich>=3.3.0',
     'PyInquirer>=1.0.3',
+    'GitPython',
     'python-slugify>=4.0.0',  # Move to extension
     'pyhcl>=0.4.4',  # Move to extension
     'distro>=1.5.0',  # Move to extension

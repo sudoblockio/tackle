@@ -1,12 +1,12 @@
 """Utilities mainly used in helping `modes` like replay and others."""
 import json
 from collections import OrderedDict
-import hcl
 import oyaml as yaml
 import os
 import logging
+from yaml.composer import ComposerError
 
-from tackle.exceptions import ContextDecodingException
+from tackle.exceptions import ContextDecodingException, UnsupportedBaseFileTypeException
 from tackle.utils.paths import make_sure_path_exists
 
 logger = logging.getLogger(__name__)
@@ -65,16 +65,19 @@ def read_config_file(file, file_extension=None):
             with open(file) as f:
                 config = json.load(f, object_pairs_hook=OrderedDict)
             return config
-        elif file_extension in ('yaml', 'yml', 'tacklerc'):
-            with open(file, encoding='utf-8') as f:
-                config = yaml.safe_load(f)
-            return config
-        elif file_extension == 'hcl':
-            with open(file) as f:
-                config = hcl.loads(f.read())
-            return config
+        elif file_extension in ('yaml', 'yml'):
+            try:
+                with open(file, encoding='utf-8') as f:
+                    config = yaml.safe_load(f)
+                return config
+            except ComposerError:
+                output = []
+                with open(file, encoding='utf-8') as f:
+                    for doc in yaml.safe_load_all(f.read()):
+                        output.append(doc)
+                return output
         else:
-            raise ValueError(
+            raise UnsupportedBaseFileTypeException(
                 'Unable to parse file {}. Error: Unsupported extension (json/yaml only)'
                 ''.format(file)
             )  # noqa
@@ -83,8 +86,8 @@ def read_config_file(file, file_extension=None):
         # JSON decoding error.  Let's throw a new exception that is more
         # friendly for the developer or user.
         our_exc_message = (
-            'JSON decoding error while loading "{0}".  Decoding'
-            ' error details: "{1}"'.format(file, str(e))
+            f'JSON decoding error while loading "{file}".  Decoding'
+            f' error details: "{str(e)}"'
         )
         raise ContextDecodingException(our_exc_message)
 

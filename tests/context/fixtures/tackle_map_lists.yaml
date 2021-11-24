@@ -1,0 +1,16 @@
+#stuff: things
+#list:
+#  - key->: var stuff
+#  - value:
+#      ->: var stuff
+#  - map:
+#      key:
+#        key:
+#          ->: var stuff
+
+list:
+  - 1
+  - foo
+  - bar
+
+another_list->: var item --for list

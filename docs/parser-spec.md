@@ -1,13 +1,13 @@
 
 
-The following document outlines the specification to write tackle scripts. 
+The following document outlines the specification to write tackle scripts.
 
 
 
 ```yaml
-<: 
+<:
 
-<2: this 
+<2: this
 
 
 

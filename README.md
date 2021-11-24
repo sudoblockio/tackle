@@ -23,17 +23,17 @@ tackle https://github.com/robcxyz/tackle-demos
 
 ### Syntax
 
-Parse any yaml / json file by running `tackle <file name>`.  Syntax can call hooks in either compact form with arguments or in expanded form with key value arguments. For instance to prompt a user to fill in variables, we could use hooks from the PyInquirer provider such as [input](), [checkbox](), and [select](). 
+Parse any yaml / json file by running `tackle <file name>`.  Syntax can call hooks in either compact form with arguments or in expanded form with key value arguments. For instance to prompt a user to fill in variables, we could use hooks from the PyInquirer provider such as [input](), [checkbox](), and [select]().
 
 ```yaml
 ---
 # Compact form
 name<-: input What is your name?  # Input prompt which is stored in `name`
-# Here `input` is a hook that takes a message as its argument. 
-# Hooks are triggered whenever we see `<-` 
+# Here `input` is a hook that takes a message as its argument.
+# Hooks are triggered whenever we see `<-`
 
 # Mixed compact and expanded form
-favorite: # Arbitrary nesting of keys and lists supported 
+favorite: # Arbitrary nesting of keys and lists supported
   colors:
     <-: checkbox What are your favorite colors?  # Multi selector - returns a list
     choices:
@@ -41,7 +41,7 @@ favorite: # Arbitrary nesting of keys and lists supported
       - green
       - grey
 
-# Expanded form 
+# Expanded form
 outcome:
   <-: select # Single selector - returns a string
   message: What is the airspeed velocity of an unladen swallow??
@@ -67,15 +67,13 @@ color_essays:
 
 
 ```yaml
-democmd<-: command pwd # Run arbitrary system commands and return stdout****
+demo:
+  cmd<-: command curl https://postman-echo.com/get # Run arbitrary system commands and return stdout****
+  requests<-: get https://postman-echo.com/get # Or use the get hook.  Both are equivalent. 
 
-output:
-  type: pprint # Pretty print the output
-  output: "{{ this }}" # Special var that contains a dictionary of all the values
-
-branch:
-  type: tackle
-  template: https://github.com/audreyfeldroy/cookiecutter-pypackage # Call other cookiecutters
+branching:
+  files: path/to/a/yaml/or/json/file.yml 
+  repos<-: github.com/robcxyz/tackle-demo # Call other tackle boxes 
 ```
 
 Each hook is called via its `type` which, in the case of the `input` hook, can be looked up in the [docs]() or by looking at the [source code]() directly.

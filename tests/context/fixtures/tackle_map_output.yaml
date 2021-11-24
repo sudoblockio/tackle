@@ -1,9 +1,10 @@
+that: that
 foo:
-  expanded: this
-  mixed: this
-  compact: this
+  expanded: that
+  mixed: that
+  compact: that
 
 bar:
-  expanded: this
-  mixed: this
-  compact: this
+  expanded: that
+  mixed: that
+  compact: that

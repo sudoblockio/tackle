@@ -1,34 +1,23 @@
+that: that
+
 foo:
   expanded:
-    <: var
-    input: this
+    ->: var
+    input: that
 
   mixed:
-    <: var this
-    if: foo.expanded == 'this'
+    ->: var that
+    if: foo.expanded == 'that'
 
-#  <compact: var this --if "foo.mixed == 'this'"
-  <compact: var this
+  compact->: var that --if "foo.mixed == 'that'"
 
 bar:
   expanded:
-    <: var
-    input: this
+    ->: var
+    input: that
 
   mixed:
-    <: var this
-    if: bar.expanded == 'this'
+    ->: var that
+    if: bar.expanded == 'that'
 
-  <compact: var this --if "foo.compact == 'this'"
-
-
-#  lists:
-#    - expanded:
-#      <: var
-#      input: this
-#
-#    - mixed:
-#      <: var this
-#      if: foo.expanded == 'this'
-#
-#    - <compact: var this --if "foo.mixed == 'this'"
+  compact->: var that --if "foo.compact == 'that'"

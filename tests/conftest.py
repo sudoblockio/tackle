@@ -6,6 +6,8 @@ import shutil
 import pytest
 
 import tackle.utils.paths
+from tackle.settings import settings
+
 
 USER_CONFIG = """
 cookiecutters_dir: "{cookiecutters_dir}"
@@ -185,3 +187,11 @@ def disable_poyo_logging():
     """Fixture that disables poyo logging."""
     logging.getLogger('poyo').setLevel(logging.WARNING)
 
+
+@pytest.fixture()
+def tmp_move_tackle_dir():
+    """Fixture to temporarily move tackle dir where providers are stored."""
+    if os.path.isdir(settings.tackle_dir):
+        shutil.move(settings.tackle_dir, settings.tackle_dir + '.tmp')
+    yield
+    shutil.move(settings.tackle_dir + '.tmp', settings.tackle_dir)

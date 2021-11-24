@@ -13,10 +13,7 @@ def unpack_args_kwargs(input_string):
     Updates the command_args and command_kwargs with a list of strings and
     list of dicts respectively.
     """
-
     input_list = shlex.split(input_string)
-    # input_list = input_string.split()
-
     input_list_length = len(input_list)
     args = []
     kwargs = {}

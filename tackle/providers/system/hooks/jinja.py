@@ -19,20 +19,15 @@ logger = logging.getLogger(__name__)
 
 class JinjaHook(BaseHook):
     """
-    Hook for jinja templates.
-
-    :param template_path: Path to the template to render
-    :param extra_context: A dict to use to render
-    :param output_path: Path to the output file
-    :return: String path to the output file
+    Hook for jinja templates. Returns string path to the output file.
     """
 
     type: str = 'jinja'
     file_system_loader: str = Field('.', description="")
-    template_path: str
-    output_path: str
-    context: Union[Dict, str] = None
-    extra_context: Dict = {}
+    template_path: str = Field(..., description="Path to the template to render")
+    output_path: str = Field(..., description="Path to the output file")
+    context: Union[dict, str] = Field(None, description="")
+    extra_context: dict = Field({}, description="A dict to use to render")
 
     _args: list = ['template_path', 'output_path']
 

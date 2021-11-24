@@ -47,7 +47,6 @@ def get_vars(context: 'Context'):
         'lsb_release': get_linux_distribution(),
         'calling_directory': context.calling_directory,
         'key': context.context_key,
-        'tackle_gen': context.tackle_gen,
         'this': dict(context.output_dict),
         'output': context.output_dict,
     }

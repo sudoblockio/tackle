@@ -240,7 +240,7 @@ def help_command(arg):
     '-rt', '--rich-trace', is_flag=True, help='Creates a rich traceback for debugging.'
 )
 def main(
-    # *args,
+    *args,
     **kwargs,
 ):
     """Create a project from a Tackle modules or Tackle templates."""
@@ -278,8 +278,8 @@ def main(
     # )
 
     cli_args = ['rich_trace', 'list_installed', 'debug_file', 'verbose', 'debug_file']
-    for arg in cli_args:
-        kwargs.pop(arg, None)
+    for argument in cli_args:
+        kwargs.pop(argument, None)
 
     # tackle(*args, **kwargs)
 

@@ -29,6 +29,9 @@ native_providers = [
 ]
 
 
+print()
+
+
 class Provider(BaseModel):
     """Base provider."""
 
@@ -71,7 +74,8 @@ class ProviderList(BaseModel):
         # append_provider_dicts(native_providers, context)
         # append_provider_dicts(settings.extra_providers, context)
         self.import_paths(native_providers)
-        self.import_paths(settings.extra_providers)
+        if settings.extra_providers:
+            self.import_paths(settings.extra_providers)
 
     def import_paths(self, provider_paths):
         for i in provider_paths:
@@ -148,7 +152,8 @@ def import_with_fallback_install(mod_name, path):
 def import_hooks_from_dir(
     mod_name, path, excluded_file_names=None, excluded_file_extensions=None
 ):
-    """Import hooks from a directory.
+    """
+    Import hooks from a directory.
 
     This is meant to be used by generically pointing to a hooks directory and
     importing all the relevant hooks into the context.
@@ -182,29 +187,29 @@ def import_hooks_from_dir(
 #     return mod
 
 
-def get_remote_provider(input_provider: str, context: 'Context'):
-    git_org = input_provider.split('/')[-2]
-    provider_name = input_provider.split('/')[-1]
-    provider_org_path = os.path.join(settings.tackle_dir, git_org)
-    provider_path = os.path.join(provider_org_path, provider_name)
-
-    if not os.path.exists(provider_org_path):
-        os.mkdir(provider_org_path)
-
-    if os.path.exists(provider_path):
-        with work_in(provider_path):
-            # Do a git pull
-            pass
-    else:
-        clone(
-            repo_url=input_provider,
-            checkout=context.checkout,
-            clone_to_dir=provider_org_path,
-            no_input=context.no_input,
-        )
-    mod_name = f'tackle.providers.{git_org}.{provider_name}'
-
-    return mod_name, provider_org_path
+# def get_remote_provider(input_provider: str, context: 'Context'):
+#     git_org = input_provider.split('/')[-2]
+#     provider_name = input_provider.split('/')[-1]
+#     provider_org_path = os.path.join(settings.tackle_dir, git_org)
+#     provider_path = os.path.join(provider_org_path, provider_name)
+#
+#     if not os.path.exists(provider_org_path):
+#         os.mkdir(provider_org_path)
+#
+#     if os.path.exists(provider_path):
+#         with work_in(provider_path):
+#             # Do a git pull
+#             pass
+#     else:
+#         clone(
+#             repo_url=input_provider,
+#             checkout=context.checkout,
+#             clone_to_dir=provider_org_path,
+#             no_input=context.no_input,
+#         )
+#     mod_name = f'tackle.providers.{git_org}.{provider_name}'
+#
+#     return mod_name, provider_org_path
 
 
 # def append_provider_dicts(input_providers, context: 'Context'):

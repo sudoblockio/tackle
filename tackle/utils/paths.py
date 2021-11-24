@@ -35,12 +35,12 @@ ALL_VALID_CONTEXT_FILES = (
 )
 
 
-def determine_tackle_generation(context_file: str) -> str:
-    """Determine the tackle generation."""
-    if context_file in CONTEXT_FILE_DICT['cookiecutter']:
-        return 'cookiecutter'
-    else:
-        return 'tackle'
+# def determine_tackle_generation(context_file: str) -> str:
+#     """Determine the tackle generation."""
+#     if context_file in CONTEXT_FILE_DICT['cookiecutter']:
+#         return 'cookiecutter'
+#     else:
+#         return 'tackle'
 
 
 def listdir_absolute(directory, skip_paths=None):

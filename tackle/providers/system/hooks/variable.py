@@ -7,6 +7,7 @@ from __future__ import print_function
 import logging
 import re
 from typing import Union, List, Dict, Any
+from pydantic import Field
 
 from tackle.models import BaseHook
 from tackle.utils import merge_configs
@@ -16,26 +17,20 @@ logger = logging.getLogger(__name__)
 
 class VarHook(BaseHook):
     """
-    Hook for registering a variable based on an input. Useful with rendering.
-
-    :param remove: Parameter or regex to remove from list or dict
-    :param update: Use the python `update` dict method on `contents` before writing
-    :param merge_config: Recursively update the contents before writing.
-    :param input: Any type input
-    :return: any: Processed input.
+    Hook for registering a variable based on an input. Only useful for rendering as
+    otherwise you wouldn't need this hook at all.
     """
 
     type: str = 'var'
-
-    # TODO: Figure out what the right constraints are.  Fails tests and casts a
-    #  list of lists into a dict for some reason. Any is too loose and
-    # input: Union[str, dict, list]
-    input: Any
-
-    remove: Union[str, List] = None
-    update: Dict = None
-    merge_config: bool = None
-    merge_dict: Dict = None
+    input: Any = Field(..., description="Any variable input.", render_by_default=True)
+    remove: Union[str, List] = Field(
+        None, description="Parameter or regex to remove from list or dict"
+    )
+    update: Dict = Field(
+        None,
+        description="Use the python `update` dict method on `contents` before writing",
+    )
+    merge_dict: Dict = Field(None, description="Merge a map into a map variable.")
 
     _args: list = ['input']
 
@@ -63,10 +58,3 @@ class VarHook(BaseHook):
             self.input = merge_configs(self.input, self.merge_dict)
 
         return self.input
-
-
-# TODO: Keep till 0.2+
-class StatHook(VarHook, BaseHook):
-    """Temporary holder."""
-
-    type: str = 'stat'

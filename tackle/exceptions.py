@@ -4,9 +4,15 @@ import os
 
 
 class ContributionNeededException(Exception):
-    def __init__(self):
+    def __init__(self, extra_message=None):
         # self.path_to_code = link_to_code
-        self.message = f"Unimplemented / needs to be built - PLEASE HELP -> https://github.com/robcxyz/tackle-box/blob/main/{self.file_location()}"
+        self.extra_message = extra_message
+        self.message = (
+            f"Unimplemented / needs to be built "
+            f"- PLEASE HELP -> "
+            f"https://github.com/robcxyz/tackle-box/blob/main/{self.file_location()}"
+            + f"\n{self.extra_message}"
+        )
         super().__init__(self.message)
 
     def __new__(cls, *args, **kwargs):
@@ -35,6 +41,11 @@ class TackleException(Exception):
 
     All Tackle-specific exceptions should subclass this class.
     """
+
+    # def __init__(self, message=None):
+    #     # self.path_to_code = link_to_code
+    #     self.message = message
+    #     super().__init__(self.message)
 
 
 class NonTemplatedInputDirException(TackleException):
@@ -99,6 +110,22 @@ class VCSNotInstalled(TackleException):
     Exception when version control is unavailable.
 
     Raised if the version control system (git or hg) is not installed.
+    """
+
+
+class VersionNotFoundError(TackleException):
+    """
+    Exception when a version to a provider is given but does not exist.
+
+    Raised if a version is specified but does not exist on the remote.
+    """
+
+
+class UnsupportedBaseFileTypeException(TackleException):
+    """
+    Exception for when a none json / yaml file are read
+
+    Raised if the base file that is being called is not json / yaml.
     """
 
 

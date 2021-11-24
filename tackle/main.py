@@ -9,7 +9,7 @@ import logging
 from tackle.generate import generate_files
 from tackle.utils.paths import rmtree
 from tackle.models import Context
-from tackle.parser import walk_context, update_source
+from tackle.parser import update_source
 
 # from tackle.context import update_context
 # from tackle.providers import update_providers
@@ -55,23 +55,19 @@ def tackle(
     """
     if args:
         kwargs['input_string'] = args[0]
+    # else:
+    #     raise NotImplementedError(
+    #         "Need to decide what to do with empty arg. Likely will traverse directories"
+    #         " back to find a tackle file but need to settle on that default name."
+    #         " `.tackle.yaml`?")
 
     context = Context(**kwargs)
 
+    # Apply overwrites
+
+    # Synchronous execution
     update_source(context)
 
-    # TODO: Update with hook
-    generate_files(context=context)
-
-    # Cleanup (if required)
-    if context.cleanup:
-        rmtree(context.repo_dir)
-
-    from tackle.utils.dicts import remove_private_vars
-
-    # remove_private_vars(context=context)
-
-    # if isinstance(context, OrderedDict):
-    #     context = json.loads(json.dumps(context))
+    # Combine with input
 
     return context.output_dict

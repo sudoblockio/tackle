@@ -18,16 +18,21 @@ def build_render_context(context: 'Context'):
     support both ie '{{ cookiecutter.var }}' and '{{ var }}'.
     """
     # TODO: get_vars should be instantiated earlier...
-    special_variables = get_vars(context)
-    if context.tackle_gen == 'cookiecutter':
-        render_context = {'cookiecutter': context.output_dict}
-        render_context.update(special_variables)
-    else:
-        render_context = dict(context.output_dict)
-        # render_context = dict(
-        #     context.output_dict, **{context.context_key: dict(context.output_dict)}
-        # )
-        render_context.update(special_variables)
+    # if context.tackle_gen == 'cookiecutter':
+    #     render_context = {'cookiecutter': context.output_dict}
+    #     render_context.update(special_variables)
+    # else:
+    #     render_context = dict(context.output_dict)
+    #     # render_context = dict(
+    #     #     context.output_dict, **{context.context_key: dict(context.output_dict)}
+    #     # )
+    #     render_context.update(special_variables)
+    # return render_context
+    render_context = dict(context.output_dict)
+
+    # special_variables = get_vars(context)
+    # render_context.update(special_variables)
+
     return render_context
 
 
@@ -61,6 +66,11 @@ def render_variable(context: 'Context', raw: Any):
         raw = str(raw)
 
     env = StrictEnvironment(context=context.input_dict)
+
+    # from jinja2 import Environment, meta
+    # as_literal = env.parse(raw)
+    # x = meta.find_undeclared_variables(as_literal)
+
     template = env.from_string(raw)
 
     # Build both the {{ cookiecutter.var }} and {{ var }} contexts
@@ -69,9 +79,6 @@ def render_variable(context: 'Context', raw: Any):
 
     # Tackle evaluates dicts, lists, and bools as literals where as cookiecutter
     # renders them to string
-    if context.tackle_gen == 'cookiecutter':
-        return rendered_template
-
     REGEX = [
         r'^\[.*\]$',  # List
         r'^\{.*\}$',  # Dict

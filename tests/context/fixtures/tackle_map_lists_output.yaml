@@ -1,0 +1,9 @@
+stuff: things
+
+list:
+  - key: things
+  - value: things
+  - map:
+      key: 
+        key: things
+

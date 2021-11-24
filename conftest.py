@@ -35,28 +35,13 @@ def change_dir_main_fixtures(request):
     )
 
 
-@pytest.fixture(scope='function')
-def load_yaml(request):
-    """Return dict of yaml input(s) either str or tuple."""
-    if isinstance(request.param, str):
-        with open(request.param) as f:
-            return yaml.safe_load(f)
-
-    if isinstance(request.param, tuple):
-        output = []
-        for i in request.param:
-            with open(i) as f:
-                output.append(yaml.safe_load(f))
-        return output
-
-
 @pytest.fixture(scope='session')
 def cli_runner():
     """Fixture that returns a helper function to run the cookiecutter cli."""
     runner = CliRunner()
 
     def cli_main(*cli_args, **cli_kwargs):
-        """Run cookiecutter cli main with the given args."""
+        """Run tackle cli main with the given args."""
         return runner.invoke(main, cli_args, **cli_kwargs)
 
     return cli_main
