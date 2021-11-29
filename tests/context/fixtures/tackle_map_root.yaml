@@ -1,10 +1,11 @@
-mixed:
-  <: var this
-  if: expanded == 'this'
+this: that
 
 expanded:
-  <: var
+  ->: var
   input: this
 
+mixed:
+  ->: var this
+  if: expanded == 'that'
 
-<compact: var this --if "mixed == 'this'"
+compact->: var this --if "mixed == 'that'"

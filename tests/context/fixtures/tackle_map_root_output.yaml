@@ -1,4 +1,5 @@
-expanded: this
-mixed: this
-compact: this
+this: that
+expanded: that
+mixed: that
+compact: that
 

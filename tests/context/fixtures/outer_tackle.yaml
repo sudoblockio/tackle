@@ -1,7 +1,2 @@
 
-outer:
-  type: tackle inner_tackle.yaml
-
-
-inner:
-  type: print {{ outer }}
+outer->: tackle inner_tackle.yaml

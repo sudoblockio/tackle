@@ -1,3 +1,14 @@
 
-inner:
-  type: print this
+stuff: things
+
+more_things->: var lots of {{stuff}} -if "stuff == 'things'"
+
+foo:
+  - bar
+  - baz
+
+foo_items->: var item -for foo
+foo_index->: var index -for foo
+
+#inner:
+#  type: print this

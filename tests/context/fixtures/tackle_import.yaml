@@ -1,4 +1,4 @@
 # This fixture should equal petstore.yaml
-spec:
-  <: tackle petstore.yaml
+arbitrary key:
+  ->: petstore.yaml
   merge: true
