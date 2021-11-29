@@ -18,7 +18,8 @@ from tackle.exceptions import (
 )
 from tackle.hooks import run_hook
 from tackle.utils.paths import rmtree, make_sure_path_exists, work_in
-from tackle.render import build_render_context
+
+# from tackle.render import build_render_context
 
 from typing import TYPE_CHECKING
 

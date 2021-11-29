@@ -6,8 +6,8 @@ library rather than a script.
 """
 import logging
 
-from tackle.generate import generate_files
-from tackle.utils.paths import rmtree
+# from tackle.generate import generate_files
+# from tackle.utils.paths import rmtree
 from tackle.models import Context
 from tackle.parser import update_source
 

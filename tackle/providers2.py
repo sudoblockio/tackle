@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Parser for importing providers into the runtime."""
 import os
 import logging

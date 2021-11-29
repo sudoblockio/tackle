@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Parser for the general context without generic logic."""
 import os
 import logging

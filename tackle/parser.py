@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Main parsing module for walking down arbitrary data structures and executing hooks."""
 from __future__ import print_function
 import logging
@@ -10,13 +8,13 @@ import os
 import inspect
 from typing import Type, Any
 
+from tackle import BaseHook
 from tackle.providers import import_with_fallback_install
-from tackle.render import render_variable
+from tackle.render import render_variable, wrap_jinja_braces
 from tackle.utils.dicts import (
     nested_get,
-    nested_set,
+    nested_delete,
     encode_list_index,
-    decode_list_index,
     set_key,
 )
 from tackle.utils.command import unpack_args_kwargs
@@ -28,7 +26,7 @@ from tackle.utils.paths import (
     is_file,
 )
 from tackle.utils.zipfile import unzip
-from tackle.models import Context, BaseHook, HookDict, ConfirmHookDict
+from tackle.models import Context, BaseHook
 from tackle.exceptions import (
     HookCallException,
     UnknownHookTypeException,
@@ -122,6 +120,10 @@ def import_local_provider_source(context: 'Context', provider_dir: str):
     get_base_file(context)
 
 
+def update_provider_source(context: 'Context'):
+    pass
+
+
 def update_source(context: 'Context'):
     """
     Locate the repository directory from a template reference. This is the main parser
@@ -185,378 +187,358 @@ def update_source(context: 'Context'):
         walk_sync(context=context, element=context.input_dict.copy())
         return
 
-    # Calling a hook directly
-    elif get_hook(first_arg, context, suppress_error=True):
-        """Main entrypoint to hook parsing logic. All hook calls are funneled here."""
+    # No other options for if it is a remote source so input should be hook
+    Hook = get_hook(first_arg, context, suppress_error=True)
 
-        if context.key_path[-1] in ('->', '_>'):
-            hook_value = nested_get(context.input_dict, context.key_path[:-1])
+    if Hook is None:
+        from tackle.exceptions import UnknownHookTypeException
 
-            # Need to replace these keys as for the time being (pydantic 1.8.2) -
-            # multiple aliases can't be specified so doing this hack
-            if '->' in hook_value:
-                hook_value['hook_type'] = hook_value['->']
-                hook_value.pop('->')
-            else:
-                hook_value['hook_type'] = hook_value['_>']
-                hook_value.pop('_>')
+        raise UnknownHookTypeException
+
+    if context.key_path[-1] in ('->', '_>'):
+        # We have a expanded or mixed (with args) hook expression and so there will be
+        # additional properties in adjacent keys
+        hook_dict = nested_get(context.input_dict, context.key_path[:-1])
+
+        # Need to replace arrow keys as for the time being (pydantic 1.8.2) - multiple
+        # aliases for the same field (type) can't be specified so doing this hack
+        if '->' in hook_dict:
+            hook_dict['type'] = hook_dict['->']
+            hook_dict.pop('->')
         else:
-            hook_value = nested_get(context.input_dict, context.key_path)
-
-        if isinstance(hook_value, dict):
-            context.hook_dict = HookDict(**hook_value)
-        else:
-            context.hook_dict = HookDict()
-
-        # Set the args which will be overlayed with the `evaluate_args` function later
-        # that will override various parameters set within `_args` in the hook def.
-        context.hook_dict._args = args
-        # Set any kwars from the hook call - ie `->: somehook --if 'key.a_value == 2'`
-        for k, v in kwargs.items():
-            setattr(context.hook_dict, k, v)
-
-        # Set the hook_type
-        context.hook_dict.hook_type = first_arg
-
-        # Parse for any loops / conditionals
-        parse_hook(context)
-        return
-
-    from tackle.exceptions import UnknownHookTypeException
-
-    # TODO: Raise better error
-    raise UnknownHookTypeException
-
-
-def raise_hook_validation_error(e, Hook, context: 'Context'):
-    """Raise more clear of an error when pydantic fails to parse an object."""
-    if 'extra fields not permitted' in e.__repr__():
-        # Return all the fields in the hook by removing all the base fields.
-        context_base_keys = (
-            BaseHook(input_string='tmp', type=context.hook_dict.hook_type).dict().keys()
-        )
-
-        fields = '--> ' + ', '.join(
-            [
-                i
-                for i in Hook(input_string='tmp').dict().keys()
-                if i not in context_base_keys and i != 'type'
-            ]
-        )
-        error_out = (
-            f"Error: The field \"{e.raw_errors[0]._loc}\" is not permitted in "
-            f"file=\"{context.context_file}\" and key_path=\"{context.key_path}\".\n"
-            f"Only values accepted are {fields}, (plus base fields --> "
-            f"type, when, loop, chdir, merge)"
-        )
-        raise HookCallException(error_out)
+            hook_dict['type'] = hook_dict['_>']
+            hook_dict.pop('_>')
     else:
-        raise e
+        # Hook is a compact expression - Can only be a string
+        hook_dict = {}
+        # hook_dict['type'] = nested_get(context.input_dict, context.key_path)
+        hook_dict['type'] = first_arg
+
+    # Associate hook arguments provided in the call with hook attributes
+    evaluate_args(args, hook_dict, Hook)
+    # Add any kwargs
+    for k, v in kwargs.items():
+        hook_dict[k] = v
+
+    # Handle render by default
+    # for k, v in Hook.__fields__.items():
+    #     if 'render_by_default' in v.field_info.extra:
+    #         hook_dict[k] = "{{" + hook_dict[k] + "}}"
+
+    # Render the input variables
+    # for k, v in hook_dict.items():
+    #     hook_dict[k] = render_variable(context, v)
+
+    import time
+
+    now = time.time()
+
+    hook = Hook(
+        **hook_dict,
+        input_dict=context.input_dict,
+        output_dict=context.output_dict,
+        # context=context
+    )
+
+    after = time.time() - now
+    output = parse_hook(hook, context)
+
+    # set_key(
+    #     element=context.output_dict,
+    #     keys=context.key_path,
+    #     value=output,
+    #     keys_to_delete=context.remove_key_list,
+    # )
+
+    # print()
+
+    # if isinstance(hook_value, dict):
+    #     context.hook_dict = HookDict(**hook_value)
+    # else:
+    #     context.hook_dict = HookDict()
+
+    # Calling a hook directly
+    # elif get_hook(first_arg, context, suppress_error=True):
+    #     """Main entrypoint to hook parsing logic. All hook calls are funneled here."""
+    #
+    #     if context.key_path[-1] in ('->', '_>'):
+    #         hook_value = nested_get(context.input_dict, context.key_path[:-1])
+    #
+    #         # Need to replace these keys as for the time being (pydantic 1.8.2) -
+    #         # multiple aliases can't be specified so doing this hack
+    #         if '->' in hook_value:
+    #             hook_value['hook_type'] = hook_value['->']
+    #             hook_value.pop('->')
+    #         else:
+    #             hook_value['hook_type'] = hook_value['_>']
+    #             hook_value.pop('_>')
+    #     else:
+    #         hook_value = nested_get(context.input_dict, context.key_path)
+    #
+    #     if isinstance(hook_value, dict):
+    #         context.hook_dict = HookDict(**hook_value)
+    #     else:
+    #         context.hook_dict = HookDict()
+    #
+    #     # Set the args which will be overlayed with the `evaluate_args` function later
+    #     # that will override various parameters set within `_args` in the hook def.
+    #     context.hook_dict._args = args
+    #     # Set any kwars from the hook call - ie `->: somehook --if 'key.a_value == 2'`
+    #     for k, v in kwargs.items():
+    #         setattr(context.hook_dict, k, v)
+    #
+    #     # Set the hook_type
+    #     context.hook_dict.hook_type = first_arg
+    #
+    #     # Parse for any loops / conditionals
+    #     parse_hook(context)
+    #     return
+    #
+    # from tackle.exceptions import UnknownHookTypeException
+    #
+    # # TODO: Raise better error
+    # raise UnknownHookTypeException
 
 
-def set_hook(context: 'Context', Hook: Type[BaseHook], index: int, value):
-    """Handles setting the hooks values as literal types and renders fields by default."""
-    if 'render_by_default' in Hook.__fields__[Hook._args[index]].field_info.extra:
-        if Hook.__fields__[Hook._args[index]].field_info.extra['render_by_default']:
-            # Will be rendered with the rest of the variables
-            value = render_variable(context, "{{" + value + "}}")
-            setattr(context.hook_dict, Hook._args[index], value)
-            return
-    # literal_type converts string to typed var
-    setattr(context.hook_dict, Hook._args[index], literal_type(value))
+# def raise_hook_validation_error(e, Hook, context: 'Context'):
+#     """Raise more clear of an error when pydantic fails to parse an object."""
+#     if 'extra fields not permitted' in e.__repr__():
+#         # Return all the fields in the hook by removing all the base fields.
+#         context_base_keys = (
+#             BaseHook(input_string='tmp', type=context.hook_dict.hook_type).dict().keys()
+#         )
+#
+#         fields = '--> ' + ', '.join(
+#             [
+#                 i
+#                 for i in Hook(input_string='tmp').dict().keys()
+#                 if i not in context_base_keys and i != 'type'
+#             ]
+#         )
+#         error_out = (
+#             f"Error: The field \"{e.raw_errors[0]._loc}\" is not permitted in "
+#             f"file=\"{context.context_file}\" and key_path=\"{context.key_path}\".\n"
+#             f"Only values accepted are {fields}, (plus base fields --> "
+#             f"type, when, loop, chdir, merge)"
+#         )
+#         raise HookCallException(error_out)
+#     else:
+#         raise e
 
 
-def evaluate_args(
-    context: 'Context',
-    Hook: Type[BaseHook],
-):
+def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
     """
     Associate hook arguments provided in the call with hook attributes. Parses the
     hook's `_args` attribute to know how to map arguments are mapped to where and
     deal with rendering by default.
     """
-    for i, v in enumerate(context.hook_dict._args):
+    for i, v in enumerate(args):
         # Iterate over the input args
         if i + 1 == len(Hook._args):
             # We are at the last argument mapping so we need to join the remaining
-            # arguments as a single string. Was parsed on spaces so reconstructed.
-            if (
-                isinstance(
-                    Hook.__fields__[Hook._args[i]], (str, float, int, bool, bytes)
-                )
-                or Hook.__fields__[Hook._args[i]].type_ == Any
+            # arguments as a single string if it is not a list of another map.
+            # Was parsed on spaces so reconstructed.
+            x = Hook.__fields__[Hook._args[i]]
+            if Hook.__fields__[Hook._args[i]].type_ in (
+                str,
+                float,
+                int,
+                bool,
+                bytes,
+                Any,
             ):
-                value = ''.join(context.hook_dict._args[i:])
+
+                # if (
+                #         isinstance(
+                #             Hook.__fields__[Hook._args[i]], (str, float, int, bool, bytes)
+                #         )
+                #         or Hook.__fields__[Hook._args[i]].type_ == Any
+                # ):
+                value = ''.join(args[i:])
             elif isinstance(Hook.__fields__[Hook._args[i]], list):
-                # If list then remaining items
-                value = context.hook_dict._args[i:]
+                # If list then all the remaining items
+                value = args[i:]
             else:
                 # Only thing left is a dict
-                if len(context.hook_dict._args[i:]) > 1:
+                if len(args[i:]) > 1:
                     raise ValueError(
                         f"Can't specify multiple arguments for map argument "
                         f"{Hook.__fields__[Hook._args[i]]}."
                     )
-                value = context.hook_dict._args[i]
                 # Join everything up as a list as it doesn't make sense to do anything
                 # else at this point.
+                value = args[i]
 
-            set_hook(context, Hook, i, value)
+            hook_dict[Hook._args[i]] = value
+            # hook_dict[Hook._args[i]] = literal_type(value)
+            # set_hook(hook_dict, Hook, i, value)
             return
         else:
             # The hooks arguments are indexed
-            set_hook(context, Hook, i, v)
+            hook_dict[Hook._args[i]] = v
+            # set_hook(hook_dict, Hook, i, v)
+            return
 
 
-def run_hook(context: 'Context', hook_type: str = None):
-    """
-    Get and call the hook. Handles duplicate keys by removing them from the hook
-    instantiation / call.
-    """
-    Hook = get_hook(context.hook_dict.hook_type, context)
-    # Arguments from call are associated with arguments in the hook
-    evaluate_args(context, Hook)
-    try:
-        # Take the items out of the global context and mode if they are declared in the
-        # hook dict. This establishes a precedence that attributes declared in the hook
-        # are used when running the hook instead of items declared in the context.
-        # import time
-        # time_start = time.time()
-
-        hook_exclude = {i for i in HookDict.__fields__}
-        hook_exclude.update({'_args', '_kwargs', '_flags'})
-        hook_context = context.hook_dict.dict(exclude=hook_exclude)
-        context_exclude = {i for i in hook_context}
-        context_exclude.add('env')
-        hook = Hook(**hook_context, **context.dict(exclude=context_exclude))
-
-        hook_output = hook.call()
-
-        # x = time.time() - time_start
-        # print(x)
-
-        return hook_output
-
-    except Exception as e:
-        # TODO: Do a more graceful shut down - ie raise HookCallException and catch it later?
-        raise e
-
-
-def evaluate_confirm(context: 'Context'):
-    """
-    Confirm the user wants to do something before an important step.
-
-    Runs with the `confirm` key which can be one of:
-    bool - Generic confirmation
-    string - Message for confirmation
-    dict - Extra params:
-        when: Evaluate as boolean
-        message: The message to confirm with
-        default: True or false as default to confirm
-    """
-    if context.hook_dict.confirm is None:
-        return
-
-    if isinstance(context.hook_dict.confirm, bool):
-        # Override bool with generic message.
-        if context.hook_dict.confirm:
-            context.hook_dict.confirm = "Are you sure you want to do this?"
-    if isinstance(context.hook_dict.confirm, str):
-        return prompt(
-            [
-                {
-                    'type': 'confirm',
-                    'name': 'tmp',
-                    'message': context.hook_dict.confirm,
-                }
-            ]
-        )['tmp']
-    elif isinstance(context.hook_dict.confirm, dict):
-        when_condition = True
-        confirm_hook_dict = ConfirmHookDict(**context.hook_dict.confirm)
-        # if 'when' in context.hook_dict.confirm:
-        if confirm_hook_dict.if_:
-            when_condition = evaluate_if(confirm_hook_dict, context)
-        if when_condition:
-            return prompt(
-                [
-                    {
-                        'type': 'confirm',
-                        'name': 'tmp',
-                        'message': confirm_hook_dict.message,
-                        'default': confirm_hook_dict.default
-                        if 'default' in context.hook_dict.confirm
-                        else None,
-                    }
-                ]
-            )['tmp']
-
-
-def evaluate_if(hook_dict: HookDict, context: 'Context') -> bool:
-    """Evaluate the when condition and return bool."""
-    if context.hook_dict.if_ is None:
-        return True
-
-    when_raw = hook_dict.if_
-    when_condition = False
-    # if isinstance(when_raw, bool):
-    #     when_condition = when_raw
-    if isinstance(when_raw, str):
-        when_condition = render_variable(context, when_raw)
-    elif isinstance(when_raw, list):
-        # Evaluate lists as successively evalutated 'and' conditions
-        for i in when_raw:
-            when_condition = render_variable(context, i)
-            # If anything is false, then break immediately
-            if not when_condition:
-                break
-
-    hook_dict.if_ = None
-
-    return when_condition
-
-
-def evaluate_loop(context: 'Context'):
+def evaluate_for(hook: BaseHook, context: 'Context'):
     """Run the parse_hook function in a loop and return a list of outputs."""
-    loop_targets = render_variable(context, context.hook_dict.for_)
-    context.hook_dict.for_ = None
+    loop_targets = render_variable(context, hook.for_)
+    hook.for_ = None
+
+    # Need add an empty list in the value so we have something to append to
+    set_key(
+        element=context.output_dict,
+        keys=context.key_path,
+        value=[],
+        keys_to_delete=context.remove_key_list,
+    )
 
     if len(loop_targets) == 0:
-        return []
+        return
 
-    loop_output = []
+    output = []
     for i, l in (
         enumerate(loop_targets)
-        if not context.hook_dict.reverse
+        if not render_variable(context, hook.reverse)
         else reversed(list(enumerate(loop_targets)))
     ):
         # Create temporary variables in the context to be used in the loop.
         # TODO: Consider putting this in another dictionary that is looked up based
         #  on inspecting the raw template for refs.
         context.output_dict.update({'index': i, 'item': l})
-        # context._index = i
-        # context._item = l
         context.key_path.append(encode_list_index(i))
-        parse_hook(context, append_key=True)
-        context.key_path.pop()
-        # loop_output += [parse_hook(context, append_key=True)]
 
-    # # Remove temp variables
+        # We need to parse a copy of the hook as
+        # output.append(parse_hook(hook.copy(), context, append_hook_value=True))
+        output = parse_hook(hook.copy(), context, append_hook_value=True)
+
+        context.key_path.pop()
+
+        # set_key(
+        #     element=context.output_dict,
+        #     keys=context.key_path,
+        #     value=output,
+        #     keys_to_delete=context.remove_key_list,
+        # )
+
+    # Remove temp variables
     context.output_dict.pop('item')
     context.output_dict.pop('index')
-    # context.output_dict[context.key] = loop_output
-    # return context.output_dict
-    return loop_output
-    # output_dict[context.key] = loop_output
-    # return output_dict
+
+    return output
 
 
-def parse_hook(
-    context: 'Context',
-    append_key: bool = False,  # Lets the parser know if it is in a loop
-):
+def evaluate_if(hook: BaseHook, context: 'Context', append_hook_value: bool) -> bool:
+    """Evaluate the when condition and return bool."""
+    if hook.for_ is not None and not append_hook_value:
+        return True
+    if hook.if_ is None:
+        return True
+    return render_variable(context, hook.if_)
+
+
+def render_hook_vars(hook: BaseHook, context: 'Context'):
+    print()
+    for k, v in hook.__fields__.items():
+        hook_value = getattr(hook, k)
+
+        if hook_value is None:
+            continue
+
+        if k in hook._render_exclude:
+            continue
+
+        if 'render_by_default' in v.field_info.extra:
+            hook_value = wrap_jinja_braces(hook_value)
+
+        setattr(hook, k, render_variable(context, hook_value))
+
+
+def parse_hook(hook: BaseHook, context: 'Context', append_hook_value: bool = None):
     """Parse input dict for loop and when logic and calls hooks."""
-    else_object = None
-    if context.hook_dict.else_:
-        else_object = render_variable(context, context.hook_dict.else_)
-
-    if evaluate_if(context.hook_dict, context):
-        # Extract for loop
-        if context.hook_dict.for_:
+    if evaluate_if(hook, context, append_hook_value):
+        if hook.for_ is not None:
             # This runs the current function in a loop and returns a list of results
-            return evaluate_loop(context=context)
-
-        # Block hooks are run independently. This prevents the rest of the hook dict
-        # from being rendered ahead of execution.
-        if context.hook_dict.hook_type != 'block':
-            # TODO: Performance
-            # import time
-            # time_start = time.time()
-
-            # Render each item of the dictionary
-            for k, v in context.hook_dict.dict().items():
-                setattr(context.hook_dict, k, render_variable(context, v))
-
-            # x = time.time() - time_start
-            # print(x)
-
-        if evaluate_confirm(context):
-            return
-
-        # Run the hook
-        if context.hook_dict.merge:
-            # Merging is for dict outputs only where the entire dict is inserted into
-            # the output dictionary.
-            to_merge = run_hook(context)
-            if not isinstance(to_merge, dict):
-                # TODO: Raise better error with context
-                raise ValueError(
-                    f"Error merging output from key='{context.key_}' in "
-                    f"file='{context.context_file}'."
-                )
-            # context.output_dict.update(to_merge)
-            # x = context.key_path[1:]
-            for k, v in to_merge.items():
-                # nested_set(context.output_dict, context.key_path[1:] + [k], v)
-                set_key(context.output_dict, context.key_path[1:] + [k], v)
+            output = evaluate_for(hook, context)
+            return output
 
         else:
             # Normal hook run
-            # context.output_dict[context.key], post_gen_hook = run_hook(context)
-            # nested_set(context.output_dict, context.key_path, run_hook(context))
-            # x = run_hook(context)
-            # if append_key:
-            #
-            # else:
+            render_hook_vars(hook, context)
+            hook_output_value = hook.call()
+            # return hook_output_value
             set_key(
                 element=context.output_dict,
                 keys=context.key_path,
-                value=run_hook(context),
+                value=hook_output_value,
                 keys_to_delete=context.remove_key_list,
+                append_hook_value=append_hook_value,
             )
 
-            # context.key_path.pop()
-        # if post_gen_hook:
-        #     # TODO: Update this per #4 hook-integration
-        #     context.post_gen_hooks.append(post_gen_hook)
+    elif hook.else_ is not None:
+        print()
 
-        # if append_key:
-        #     # TODO: ?
-        #     return context.output_dict[context.key_]
+    else:
+        # False side of the `if` condition
+        if not append_hook_value:
+            # Only delete the key if we're not in a loop where the key would not exist
+            nested_delete(
+                element=context.output_dict,
+                keys=context.key_path,
+            )
 
-    # else:
-    #     if else_object is not None:
-    #         # Handle the false when condition if there is an `else` param.
-    #         # if 'else' in context.hook_dict:
-    #         if isinstance(else_object, dict):
-    #             # If it is a dict, run it as another hook if type key exists, otherwise
-    #             # fallback to dict
-    #             if 'type' in else_object:
-    #                 # context.input_dict[context.context_key][context.key] = else_object
-    #                 # nested_set(context.output_dict, context.key_path, else_object)
-    #                 set_key(context.output_dict, context.key_path, else_object)
-    #                 return parse_hook(context, append_key=append_key)
-    #
-    #         else:
-    #             # If list or str return tha actual value
-    #             # context.output_dict[context.key] = render_variable(context, else_object)
-    #             nested_set(
-    #                 context.output_dict,
-    #                 context.key_path,
-    #                 render_variable(context, else_object),
-    #             )
-    #
-    #             return context.output_dict
 
-    # if context.hook_dict.callback:
-    #     # Call a hook var but don't return it's output
-    #     # TODO: RM?
-    #     context.input_dict[context.context_key][
-    #         context.key
-    #     ] = context.hook_dict.callback
-    #     return parse_hook(context, append_key=append_key)
+# context.key_path.pop()
+# if post_gen_hook:
+#     # TODO: Update this per #4 hook-integration
+#     context.post_gen_hooks.append(post_gen_hook)
 
-    return context.output_dict
+# if append_key:
+#     # TODO: ?
+#     return context.output_dict[context.key_]
+#     if append_index:
+#         # Case where we are in a loop and we are appending the output
+#         set_key(
+#             element=context.output_dict,
+#             keys=context.key_path + [append_index],
+#             value=hook_output_value,
+#             keys_to_delete=context.remove_key_list,
+#         )
+#     else:
+
+# else:
+#     if else_object is not None:
+#         # Handle the false when condition if there is an `else` param.
+#         # if 'else' in context.hook_dict:
+#         if isinstance(else_object, dict):
+#             # If it is a dict, run it as another hook if type key exists, otherwise
+#             # fallback to dict
+#             if 'type' in else_object:
+#                 # context.input_dict[context.context_key][context.key] = else_object
+#                 # nested_set(context.output_dict, context.key_path, else_object)
+#                 set_key(context.output_dict, context.key_path, else_object)
+#                 return parse_hook(context, append_key=append_key)
+#
+#         else:
+#             # If list or str return tha actual value
+#             # context.output_dict[context.key] = render_variable(context, else_object)
+#             nested_set(
+#                 context.output_dict,
+#                 context.key_path,
+#                 render_variable(context, else_object),
+#             )
+#
+#             return context.output_dict
+
+# if context.hook_dict.callback:
+#     # Call a hook var but don't return it's output
+#     # TODO: RM?
+#     context.input_dict[context.context_key][
+#         context.key
+#     ] = context.hook_dict.callback
+#     return parse_hook(context, append_key=append_key)
+
+# return context.output_dict
 
 
 import re

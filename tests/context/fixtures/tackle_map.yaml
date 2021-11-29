@@ -1,4 +1,4 @@
-that: that
+that: something
 
 foo:
   expanded:
@@ -7,9 +7,9 @@ foo:
 
   mixed:
     ->: var that
-    if: foo.expanded == 'that'
+    if: foo.expanded == 'something'
 
-  compact->: var that --if "foo.mixed == 'that'"
+  compact->: var that --if "foo.mixed == 'something'"
 
 bar:
   expanded:
@@ -18,6 +18,6 @@ bar:
 
   mixed:
     ->: var that
-    if: bar.expanded == 'that'
+    if: bar.expanded == 'something'
 
-  compact->: var that --if "foo.compact == 'that'"
+  compact->: var that --if "foo.compact == 'something'"

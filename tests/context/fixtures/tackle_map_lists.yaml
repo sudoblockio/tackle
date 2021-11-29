@@ -1,16 +1,18 @@
-#stuff: things
-#list:
-#  - key->: var stuff
-#  - value:
-#      ->: var stuff
-#  - map:
-#      key:
-#        key:
-#          ->: var stuff
-
 list:
   - 1
   - foo
   - bar
 
-another_list->: var item --for list
+loop->: var {{item}} --for list
+
+hook_list:
+  - ->: var list
+  - foo:
+      ->: var list
+  - foo->: var list
+
+hook_list_loops:
+  - ->: var {{index}} --for list
+  - foo:
+      ->: var {{index}} --for list --if 'index != 1'
+  - foo->: var {{item}} --for list

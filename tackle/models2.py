@@ -7,8 +7,8 @@ from pydantic import BaseModel, SecretStr, Field, Extra, validator, PrivateAttr
 from typing import Dict, Any, Union, List, Optional, Tuple, Callable
 
 from tackle.utils.paths import work_in
+from tackle.exceptions import InvalidModeException
 from tackle.providers import ProviderList
-from tackle.render import wrap_jinja_braces
 
 from typing import TYPE_CHECKING
 
@@ -49,93 +49,91 @@ ALL_VALID_CONTEXT_FILES = (
 )
 
 
-# def wrap_jinja_braces(item):
-#     """Allows for setting a value without {{ value }}"""
-#     if '{{' not in item and '{{' not in item:
-#         return '{{' + item + '}}'
+def wrap_jinja_braces(item):
+    """Allows for setting a value without {{ value }}"""
+    if '{{' not in item and '{{' not in item:
+        return '{{' + item + '}}'
 
 
-# class HookDict(BaseModel):
-#     if_: Union[str, bool] = None
-#     else_: Union[str, bool] = None
-#
-#     # Python 3.10+
-#     match_: Any = None
-#     case_: list = None
-#
-#     # Retiring
-#     # when: Union[str, bool] = None
-#     # loop: Union[str, list] = None
-#
-#     for_: Union[str, list] = None
-#     while_: Union[str, bool] = None  # TODO
-#     enumerate_: Union[str, list] = None  # TODO
-#     reverse: Union[str, bool] = False
-#
-#     callback: str = None
-#
-#     # Order matters here where we want the literal bool to be evaluated first
-#     merge: Union[bool, str] = None
-#     # TODO: Move to BaseHook
-#     confirm: Union[bool, str, dict] = None
-#
-#     hook_type: str = None
-#
-#     _args: list = []
-#     _kwargs: dict = {}
-#     _flags: list = []
-#
-#     _render_exclude: set = ('input_dict', 'output_dict')
-#
-#     @validator('if_', 'else_', 'reverse', 'while_', 'for_', 'merge')
-#     def wrap_bool_if_string(cls, v):
-#         if isinstance(v, str):
-#             return wrap_jinja_braces(v)
-#         return v
-#
-#     @validator('match_', 'case_')
-#     def check_if_using_the_right_python_version(cls, v):
-#         import sys
-#
-#         if sys.version_info[1] >= 10:
-#             return v
-#         if v is not None:
-#             logger.info(
-#                 "Must be using Python 3.10+ to use match / case statements. Ignoring."
-#             )
-#
-#     # Per https://github.com/samuelcolvin/pydantic/issues/1577
-#     # See below
-#     def __setattr__(self, key, val):
-#         if key in self.__config__.alias_to_fields:
-#             key = self.__config__.alias_to_fields[key]
-#         super().__setattr__(key, val)
-#
-#     class Config:
-#         extra = 'allow'
-#         validate_assignment = True
-#         fields = {
-#             'hook_type': '<',
-#             'if_': 'if',
-#             'else_': 'else',
-#             'match_': 'match',
-#             'case_': 'case',
-#             'for_': 'for',
-#             'while_': 'while',
-#             'enumerate_': 'enumerate',
-#         }
-#         # Per https://github.com/samuelcolvin/pydantic/issues/1577
-#         # This is an issue until pydantic 1.9 is released and items can be set with
-#         # properties which will override the internal __setattr__ method that
-#         # disregards aliased fields
-#         alias_to_fields = {v: k for k, v in fields.items()}
+class HookDict(BaseModel):
+    if_: Union[str, bool] = None
+    else_: Union[str, bool] = None
+
+    # Python 3.10+
+    match_: Any = None
+    case_: list = None
+
+    # Retiring
+    # when: Union[str, bool] = None
+    # loop: Union[str, list] = None
+
+    for_: Union[str, list] = None
+    while_: Union[str, bool] = None  # TODO
+    enumerate_: Union[str, list] = None  # TODO
+    reverse: Union[str, bool] = False
+
+    callback: str = None
+
+    # Order matters here where we want the literal bool to be evaluated first
+    merge: Union[bool, str] = None
+    # TODO: Move to BaseHook
+    confirm: Union[bool, str, dict] = None
+
+    hook_type: str = None
+
+    _args: list = []
+    _kwargs: dict = {}
+    _flags: list = []
+
+    @validator('if_', 'else_', 'reverse', 'while_', 'for_', 'merge')
+    def wrap_bool_if_string(cls, v):
+        if isinstance(v, str):
+            return wrap_jinja_braces(v)
+        return v
+
+    @validator('match_', 'case_')
+    def check_if_using_the_right_python_version(cls, v):
+        import sys
+
+        if sys.version_info[1] >= 10:
+            return v
+        if v is not None:
+            logger.info(
+                "Must be using Python 3.10+ to use match / case statements. Ignoring."
+            )
+
+    # Per https://github.com/samuelcolvin/pydantic/issues/1577
+    # See below
+    def __setattr__(self, key, val):
+        if key in self.__config__.alias_to_fields:
+            key = self.__config__.alias_to_fields[key]
+        super().__setattr__(key, val)
+
+    class Config:
+        extra = 'allow'
+        validate_assignment = True
+        fields = {
+            'hook_type': '<',
+            'if_': 'if',
+            'else_': 'else',
+            'match_': 'match',
+            'case_': 'case',
+            'for_': 'for',
+            'while_': 'while',
+            'enumerate_': 'enumerate',
+        }
+        # Per https://github.com/samuelcolvin/pydantic/issues/1577
+        # This is an issue until pydantic 1.9 is released and items can be set with
+        # properties which will override the internal __setattr__ method that
+        # disregards aliased fields
+        alias_to_fields = {v: k for k, v in fields.items()}
 
 
-# class ConfirmHookDict(HookDict):
-#     """Special case when we want to validate messages/default."""
-#
-#     message: str = None
-#     default: str = None
+class ConfirmHookDict(HookDict):
+    """Special case when we want to validate messages/default."""
+
+    message: str = None
+    default: str = None
 
 
 class Context(BaseModel):
@@ -178,7 +176,7 @@ class Context(BaseModel):
     output_dict: OrderedDict = OrderedDict([])
     remove_key_list: list = []
 
-    # hook_dict: HookDict = None
+    hook_dict: HookDict = None
     post_gen_hooks: List[Any] = []
 
     calling_directory: str = os.path.abspath(os.path.curdir)
@@ -241,78 +239,22 @@ class Context(BaseModel):
             self.output_dict.update(self.existing_context)
 
 
-class BaseHook(BaseModel):
+class BaseHook(Context):
     """Base hook class from which all other hooks inherit from to be discovered."""
 
     type: str = Field(..., description="Name of the hook.")
 
-    if_: Union[str, bool] = Field(None, render_by_default=True)
-    else_: Union[str, bool] = Field(None, render_by_default=True)
-    for_: Union[str, list] = Field(None, render_by_default=True)
-    reverse: Union[str, bool] = Field(None, render_by_default=True)
-
-    # while_: Union[str, bool] = None  # TODO
-    # enumerate_: Union[str, list] = None  # TODO
-    # match_: Any = None  # TODO
-    # case_: list = None  # TODO
-
-    callback: str = None
-
     chdir: Optional[str] = Field(None, description="Name of the hook.")
+    merge: Optional[bool] = False
+    confirm: Optional[Any] = False
 
-    merge: Union[bool, str] = None
-    # merge: Optional[bool] = False
-    # confirm: Union[bool, str, dict] = None
-    confirm: Optional[Any] = None
-
-    # _args: Union[List[str], List[Tuple[str, Callable]]] = []
-    # _kwargs: dict = {}
-    # _flags: List[str] = {}
-
-    # context: Context
-    input_dict: dict = None
-    output_dict: dict = None
-
-    _args: list = []
+    _args: Union[List[str], List[Tuple[str, Callable]]] = []
     _kwargs: dict = {}
-    _flags: list = []
-    _render_exclude: set = ('input_dict', 'output_dict', 'type')
-
-    @validator('if_', 'else_', 'reverse', 'for_', 'merge')
-    def wrap_bool_if_string(cls, v):
-        return wrap_jinja_braces(v)
-        # if isinstance(v, str):
-        #     if '{{' in v and '}}' in v:
-        #         # Already templated
-        #         return v
-        #     return wrap_jinja_braces(v)
-        # return v
-
-    # Per https://github.com/samuelcolvin/pydantic/issues/1577
-    # See below
-    def __setattr__(self, key, val):
-        if key in self.__config__.alias_to_fields:
-            key = self.__config__.alias_to_fields[key]
-        super().__setattr__(key, val)
+    _flags: List[str] = {}
 
     class Config:
         arbitrary_types_allowed = True
         extra = Extra.forbid
-        validate_assignment = True
-        fields = {
-            'if_': 'if',
-            'else_': 'else',
-            'match_': 'match',
-            'case_': 'case',
-            'for_': 'for',
-            'while_': 'while',
-            'enumerate_': 'enumerate',
-        }
-        # Per https://github.com/samuelcolvin/pydantic/issues/1577
-        # This is an issue until pydantic 1.9 is released and items can be set with
-        # properties which will override the internal __setattr__ method that
-        # disregards aliased fields
-        alias_to_fields = {v: k for k, v in fields.items()}
 
     def __init__(self, **data: Any):
         super().__init__(**data)
