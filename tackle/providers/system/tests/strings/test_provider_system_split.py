@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Tests dict input objects for `tackle.providers.system.hooks.var` module."""
 from tackle.main import tackle
 

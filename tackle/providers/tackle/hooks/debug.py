@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-
 """Block hook."""
-from __future__ import unicode_literals
-from __future__ import print_function
-
 import logging
 from rich import print
 from PyInquirer import prompt

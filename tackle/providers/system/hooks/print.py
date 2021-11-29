@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Print hooks."""
 import logging
 from pprint import pprint

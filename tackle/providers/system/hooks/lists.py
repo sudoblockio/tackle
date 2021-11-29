@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-
 """Lists hook."""
-from __future__ import unicode_literals
-from __future__ import print_function
-
 import logging
 from typing import List, Union
 import re

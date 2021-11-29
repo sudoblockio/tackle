@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Tests dict input objects for `tackle.providers.pyinquirer.hooks.select` module."""
 
 import os

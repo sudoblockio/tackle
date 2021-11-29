@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Terraform hooks."""
 from __future__ import print_function
 from __future__ import unicode_literals

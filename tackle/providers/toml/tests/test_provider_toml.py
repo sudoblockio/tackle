@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Tests dict input objects for `tackle.providers.toml.hooks.toml` module."""
 import pytest
 import os

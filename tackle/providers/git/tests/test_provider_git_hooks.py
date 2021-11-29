@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Tests dict input objects for `tackle.providers.github.hooks` modules."""
 import os
 from tackle.main import tackle

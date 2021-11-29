@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-
 """Meta hooks."""
-from __future__ import unicode_literals
-from __future__ import print_function
-
 from git import Repo
 import logging
 from tackle.models import BaseHook

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Tests dict input objects for `tackle.providers.system.hooks.command` module."""
 import os
 import pytest
@@ -17,6 +15,7 @@ def test_provider_system_hook_command(change_dir):
     context = tackle(fixture)
     assert fixture in context['cmd']
     assert context['shell']
+    assert context['cmd'] == context['cmd_arg']
 
 
 def test_provider_system_hook_command_multi_line(change_dir):

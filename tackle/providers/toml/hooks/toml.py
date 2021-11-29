@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Hook plugin that inherits a base class and is made available through `type`."""
 from __future__ import print_function
 from __future__ import unicode_literals

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Tests dict input objects for `tackle.providers.pyinquirer.hooks.checkbox` module."""
 from tackle.main import tackle
 

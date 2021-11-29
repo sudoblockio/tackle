@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-
 """Table hook."""
-from __future__ import unicode_literals
-from __future__ import print_function
-
 import logging
 from rich.console import Console
 from rich.table import Table

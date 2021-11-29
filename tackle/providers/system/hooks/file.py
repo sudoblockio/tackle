@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-
 """File hooks."""
-from __future__ import unicode_literals
-from __future__ import print_function
-
 import os
 import random
 from pathlib import Path
@@ -12,7 +7,7 @@ import shutil
 from distutils.dir_util import copy_tree
 from typing import List, Union, Any
 
-from tackle.models import BaseHook
+from tackle.models import BaseHook, Field
 from tackle.exceptions import HookCallException
 
 logger = logging.getLogger(__name__)
@@ -50,9 +45,11 @@ class CopyHook(BaseHook):
     """
 
     type: str = 'copy'
-    src: Union[List, str]
+    src: Union[List, str] = Field(
+        ..., description="String or list of sources, either a directories or files"
+    )
+    dst: str = Field(..., description="")
     create_path: bool = True
-    dst: str
 
     def __init__(self, **data: Any):
         super().__init__(**data)

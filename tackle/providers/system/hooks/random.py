@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-
 """Random number / string hooks."""
-from __future__ import unicode_literals
-from __future__ import print_function
-
 from typing_extensions import Literal
 import random
 import string

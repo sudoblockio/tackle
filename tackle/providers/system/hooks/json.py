@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-
 """JSON hooks."""
-from __future__ import unicode_literals
-from __future__ import print_function
-
 import logging
 import json
 from typing import Union

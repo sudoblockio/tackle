@@ -1,9 +1,4 @@
-# # -*- coding: utf-8 -*-
-
-"""Path hooks."""
-from __future__ import unicode_literals
-from __future__ import print_function
-
+# """Path hooks."""
 from typing import Any
 import logging
 import os

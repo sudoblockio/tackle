@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Tests dict input objects for `tackle.providers.hcl.hooks.hcl` module."""
 from tackle.main import tackle
 import json

@@ -1,9 +1,4 @@
-# # -*- coding: utf-8 -*-
-
-"""Raw list hook."""
-from __future__ import unicode_literals
-from __future__ import print_function
-
+# """Raw list hook."""
 import logging
 from PyInquirer import prompt
 from pydantic import Field

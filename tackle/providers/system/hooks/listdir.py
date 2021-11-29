@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-
 """List directory hook."""
-from __future__ import unicode_literals
-from __future__ import print_function
-
 from typing import Union, List
 import os
 import logging
