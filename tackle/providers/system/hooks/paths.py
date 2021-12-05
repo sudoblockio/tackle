@@ -1,40 +1,31 @@
-# """Path hooks."""
+"""Path hooks."""
 from typing import Any
 import logging
 import os
 
-from tackle.models import BaseHook
+from tackle.models import BaseHook, Field
+from tackle.utils.paths import find_in_parent
 
 logger = logging.getLogger(__name__)
 
 
 class PathExistsListHook(BaseHook):
-    """Hook  for os package 'path_exists' hook.
-
-    :param path: The path to file or directory
-    :return: boolean:
-    """
+    """Hook for os package 'path_exists' hook."""
 
     type: str = 'path_exists'
-    path: str
+    path: str = Field(..., description="The path to file or directory")
 
-    def execute(self):
+    def execute(self) -> bool:
         return os.path.exists(self.path)
 
 
 class PathIsdirListHook(BaseHook):
-    """
-    Hook  for os package 'path_exists' hook.
-
-    :param path: The path to file or directory
-    :return: boolean:
-    """
+    """Hook  for os package 'path_exists' hook."""
 
     type: str = 'path_isdir'
-    path: str
+    path: str = Field(..., description="The path to file or directory")
 
-    def execute(self):
-        """Run the prompt."""
+    def execute(self) -> bool:
         return os.path.isdir(self.path)
 
 
@@ -42,57 +33,49 @@ class FindInParentHook(BaseHook):
     """
     Hook to find the absolute path to a file or directory in parent directories.
 
-    :param target: The name of the file to find the absolute path to
-    :param starting_dir: The starting directory to search from. Defaults to current
-        working directory.
-    :param fallback: String to fallback on if the target is not found.
     :return: string: Absolute path to the target file
     """
 
     type: str = 'find_in_parent'
-    target: str
-    fallback: Any
-    starting_dir: str = '.'
+    target: str = Field(
+        ..., description="The name of the file to find the absolute path to"
+    )
+    fallback: Any = Field(
+        None, description="String to fallback on if the target is not found."
+    )
+    starting_dir: str = Field(
+        '.',
+        description="The starting directory to search from. Defaults to current working directory.",
+    )
+
+    _args: list = ['target']
 
     def execute(self):
-        """Run the prompt."""
-        return self._find_in_parent(self.starting_dir)
-
-    def _find_in_parent(self, dir):
-        for i in os.listdir(dir):
-            if os.path.exists(os.path.join(dir, i)) and i == self.target:
-                return os.path.abspath(os.path.join(dir, i))
-
-        if os.path.abspath(dir) == '/':
-
-            if self.fallback:
-                return self.fallback
-            else:
-                raise NotADirectoryError(
-                    'The %s target doesn\'t exist in the parent directories.'
-                    % self.target
-                )
-        return self._find_in_parent(dir=os.path.dirname(os.path.abspath(dir)))
+        return find_in_parent(
+            dir=self.starting_dir, targets=[self.target], fallback=self.fallback
+        )
 
 
 class FindInChildHook(BaseHook):
     """
     Hook to find the absolute path to a file or directory in child directories.
 
-    :param target: The name of the file to find the absolute path to
-    :param starting_dir: The starting directory to search from. Defaults to current
-        working directory.
-    :param fallback: String to fallback on if the target is not found.
     :return: string: Absolute path to the target file
     """
 
     type: str = 'find_in_child'
-    target: str
-    fallback: Any
-    starting_dir: str = '.'
+    target: str = Field(
+        ..., description="The name of the file to find the absolute path to"
+    )
+    fallback: Any = Field(
+        None, description="String to fallback on if the target is not found."
+    )
+    starting_dir: str = Field(
+        '.',
+        description="The starting directory to search from. Defaults to current working directory.",
+    )
 
     def execute(self):
-        """Run the prompt."""
         files = []
         for (dirpath, dirnames, filenames) in os.walk(self.starting_dir):
             files += [
@@ -106,14 +89,12 @@ class FindInChildHook(BaseHook):
 
 
 class PathJoinHook(BaseHook):
-    """Hook joining paths.
-
-    :param path: The path to file or directory
-    :return: boolean:
-    """
+    """Hook joining paths."""
 
     type: str = 'path_join'
-    paths: list
+    paths: list = Field(
+        ..., description="List of items in a path to file or directory."
+    )
 
     def execute(self):
         return os.path.join(*self.paths)

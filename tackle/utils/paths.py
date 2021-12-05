@@ -7,40 +7,18 @@ import stat
 import logging
 import re
 
-from tackle.exceptions import ContextFileNotFound
+from tackle.exceptions import ContextFileNotFound, InvalidConfiguration
 
 logger = logging.getLogger(__name__)
 
-CONTEXT_FILE_DICT = {
-    'cookiecutter': [
-        'cookiecutter.json',
-        'cookiecutter.yaml',
-        'cookiecutter.yml',
-        # 'cookiecutter.hcl',
-    ],
-    'tackle': [
-        '.tackle.yaml',
-        '.tackle.yml',
-        '.tackle.json',
-        '.tackle.hcl',
-        'tackle.yaml',
-        'tackle.yml',
-        'tackle.json',
-        # 'tackle.hcl',
-    ],
+CONTEXT_FILES = {
+    '.tackle.yaml',
+    '.tackle.yml',
+    '.tackle.json',
+    'tackle.yaml',
+    'tackle.yml',
+    'tackle.json',
 }
-
-ALL_VALID_CONTEXT_FILES = (
-    CONTEXT_FILE_DICT['cookiecutter'] + CONTEXT_FILE_DICT['tackle']
-)
-
-
-# def determine_tackle_generation(context_file: str) -> str:
-#     """Determine the tackle generation."""
-#     if context_file in CONTEXT_FILE_DICT['cookiecutter']:
-#         return 'cookiecutter'
-#     else:
-#         return 'tackle'
 
 
 def listdir_absolute(directory, skip_paths=None):
@@ -165,15 +143,41 @@ def is_multi_part_command(value):
     return bool(SPACE_REGEX.match(value))
 
 
-# def is_tackle_project(value):
-#     """Return True if the input looks like a file."""
-#     repo_directory_exists = os.path.isdir(value)
-#     if repo_directory_exists:
-#         # Check for valid context files as default
-#         for f in ALL_VALID_CONTEXT_FILES:
-#             if os.path.isfile(os.path.join(value, f)):
-#                 return True
-#     return False
+def find_tackle_file(provider_dir) -> str:
+    """Find the tackle files based on some defaults and return the path."""
+    provider_contents = os.listdir(provider_dir)
+    for i in provider_contents:
+        if i in CONTEXT_FILES:
+            return os.path.join(provider_dir, i)
+
+    raise InvalidConfiguration
+
+
+def find_in_parent(dir, targets, fallback=None, fallback_call=None):
+    """Recursively search in parent directories for a path to a target file."""
+    for i in os.listdir(dir):
+        if i in targets:
+            return os.path.abspath(os.path.join(dir, i))
+
+    if os.path.abspath(dir) == '/':
+        if fallback:
+            return fallback
+        elif fallback_call:
+            return fallback_call()
+        else:
+            raise NotADirectoryError(
+                f'The {targets} target doesn\'t exist in the parent directories.'
+            )
+    return find_in_parent(
+        dir=os.path.dirname(os.path.abspath(dir)),
+        targets=targets,
+        fallback=fallback,
+    )
+
+
+def find_nearest_tackle_file():
+    """Find the nearest tackle file from a set of default tackle files."""
+    return find_in_parent(os.curdir, CONTEXT_FILES)
 
 
 def repository_has_tackle_file(repo_directory: str, context_file=None):
@@ -199,7 +203,7 @@ def repository_has_tackle_file(repo_directory: str, context_file=None):
     repo_directory_exists = os.path.isdir(repo_directory)
     if repo_directory_exists:
         # Check for valid context files as default
-        for f in ALL_VALID_CONTEXT_FILES:
+        for f in CONTEXT_FILES:
             if os.path.isfile(os.path.join(repo_directory, f)):
                 return f
     else:
