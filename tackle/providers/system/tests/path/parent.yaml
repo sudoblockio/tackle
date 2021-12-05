@@ -1,6 +1,5 @@
 path_isdir:
-  ->: path_isdir
-  path: a-path
+  ->: path_isdir a-path
 
 path_exists:
   ->: path_exists

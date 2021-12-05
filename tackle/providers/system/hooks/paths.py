@@ -15,6 +15,8 @@ class PathExistsListHook(BaseHook):
     type: str = 'path_exists'
     path: str = Field(..., description="The path to file or directory")
 
+    _args: list = ['path']
+
     def execute(self) -> bool:
         return os.path.exists(self.path)
 
@@ -24,6 +26,8 @@ class PathIsdirListHook(BaseHook):
 
     type: str = 'path_isdir'
     path: str = Field(..., description="The path to file or directory")
+
+    _args: list = ['path']
 
     def execute(self) -> bool:
         return os.path.isdir(self.path)
@@ -75,6 +79,8 @@ class FindInChildHook(BaseHook):
         description="The starting directory to search from. Defaults to current working directory.",
     )
 
+    _args: list = ['target']
+
     def execute(self):
         files = []
         for (dirpath, dirnames, filenames) in os.walk(self.starting_dir):
@@ -93,8 +99,12 @@ class PathJoinHook(BaseHook):
 
     type: str = 'path_join'
     paths: list = Field(
-        ..., description="List of items in a path to file or directory."
+        ...,
+        description="List of items in a path to file or directory.",
+        render_by_default=True,
     )
+
+    _args: list = ['paths']
 
     def execute(self):
         return os.path.join(*self.paths)
