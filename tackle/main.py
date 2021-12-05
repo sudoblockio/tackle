@@ -4,20 +4,9 @@ Main entry point for the `tacklebox` command.
 The code in this module is also a good example of how to use Tackle as a
 library rather than a script.
 """
-import logging
-
-# from tackle.generate import generate_files
-# from tackle.utils.paths import rmtree
 from tackle.models import Context
 from tackle.parser import update_source
-
-# from tackle.context import update_context
-# from tackle.providers import update_providers
-
-# from tackle.input_dict import update_input_dict
-# from tackle.source import update_source
-
-logger = logging.getLogger(__name__)
+from tackle.utils.paths import find_nearest_tackle_file
 
 
 def tackle(
@@ -51,23 +40,18 @@ def tackle(
     :param config_file: User configuration file path.
     :param default_config: Use default values rather than a config file.
 
-    :return Dictionary of output
+    :return Dictionary of the output
     """
     if args:
         kwargs['input_string'] = args[0]
-    # else:
-    #     raise NotImplementedError(
-    #         "Need to decide what to do with empty arg. Likely will traverse directories"
-    #         " back to find a tackle file but need to settle on that default name."
-    #         " `.tackle.yaml`?")
 
+    if kwargs['input_string'] is None:
+        kwargs['input_string'] = find_nearest_tackle_file()
+
+    # Initialize context
     context = Context(**kwargs)
-
-    # Apply overwrites
 
     # Synchronous execution
     update_source(context)
-
-    # Combine with input
 
     return context.output_dict

@@ -23,9 +23,7 @@ from tackle.exceptions import (
 from tackle.utils.log import configure_logger
 from tackle.main import tackle
 
-# from tackle.settings import get_settings
 
-# TODO: Move
 def version_msg():
     """Return the Tackle version, location and Python powering it."""
     python_version = sys.version[:3]
@@ -89,18 +87,12 @@ def list_installed_templates(default_config, passed_config_file):
         click.echo(' * {}'.format(name))
 
 
-def help_command(arg):
-    """Extract the first level keys"""
-    pass
-
-
 @click.command(context_settings=dict(help_option_names=['-h', '--help']))
 @click.version_option(__version__, '-V', '--version', message=version_msg())
 @click.argument(
     'input-string',
     required=False,
 )
-# @click.argument('extra_context', nargs=-1, callback=input_string_to_dict)
 @click.option(
     u'--context-file',
     default=None,
@@ -117,11 +109,6 @@ def help_command(arg):
     default=None,
     help=u'Override the inputs. Anything included will not be prompted.',
 )
-# @click.option(
-#     u'--existing-context',
-#     default=None,
-#     help=u'An existing context to render the input context file.',
-# )
 @click.option(
     u'--context-key',
     default=None,
@@ -144,54 +131,6 @@ def help_command(arg):
     '-v', '--verbose', is_flag=True, help='Print debug information', default=False
 )
 @click.option(
-    '--replay',
-    default=None,
-    help='Do not prompt for parameters and only use information entered previously',
-)
-# @click.option(
-#     '--replay',
-#     is_flag=True,
-#     help='Do not prompt for parameters and only use information entered previously',
-# )
-# @click.option(
-#     '--replay-file',
-#     type=click.Path(),
-#     default=None,
-#     help='Use this file for replay instead of the default.',
-# )
-@click.option(
-    '--record',
-    default=None,
-    help='Record the inputs to a local file "<record file>.yml". Default is ',
-)
-# @click.option(
-#     '--record',
-#     is_flag=True,
-#     help='Record the inputs to a local file "<template name>.rerun.yml".',
-# )
-# @click.option(
-#     '--record-file',
-#     type=click.Path(),
-#     default=None,
-#     help='Record the inputs to a local file "<record file>.yml".',
-# )
-@click.option(
-    '--rerun',
-    default=None,
-    help='Reruns the inputs from a local file "<template name>.rerun.yml".',
-)
-# @click.option(
-#     '--rerun',
-#     is_flag=True,
-#     help='Reruns the inputs from a local file "<template name>.rerun.yml".',
-# )
-# @click.option(
-#     '--rerun-file',
-#     type=click.Path(),
-#     default=None,
-#     help='Reruns the inputs from a local file "<record file>.yml".',
-# )
-@click.option(
     '-f',
     '--overwrite-if-exists',
     is_flag=True,
@@ -211,15 +150,6 @@ def help_command(arg):
     type=click.Path(),
     help='Where to output the generated project dir into',
 )
-# TODO: RM
-# @click.option(
-#     '--config-file', type=click.Path(), default=None, help='User configuration file'
-# # )
-# @click.option(
-#     '--default-config',
-#     is_flag=True,
-#     help='Do not load a config file. Use the defaults instead',
-# )
 @click.option(
     '--debug-file',
     type=click.Path(),
@@ -240,7 +170,6 @@ def help_command(arg):
     '-rt', '--rich-trace', is_flag=True, help='Creates a rich traceback for debugging.'
 )
 def main(
-    *args,
     **kwargs,
 ):
     """Create a project from a Tackle modules or Tackle templates."""
@@ -249,68 +178,21 @@ def main(
         install()  # From rich
         kwargs.pop("rich_trace")
 
-    # Commands that should work without arguments
-    # if getattr(kwargs, "list_installed"):
-    #     list_installed_templates(default_config, config_file)
-    #     sys.exit(0)
-
-    # Raising usage, after all commands that should work without args.
-    # if not template or template.lower() == 'help':
-    #     click.echo(click.get_current_context().get_help())
-    #     sys.exit(0)
-
     configure_logger(
         stream_level='DEBUG' if getattr(kwargs, "verbose", False) else 'INFO',
         debug_file=getattr(kwargs, "debug_file", None),
     )
 
-    # If needed, prompt the user to ask whether or not they want to execute
-    # the pre/post hooks.
-    # if accept_hooks == "ask":
-    #     _accept_hooks = click.confirm("Do you want to execute hooks?")
-    # else:
-    #     _accept_hooks = accept_hooks == "yes"
-
-    # settings = get_settings(
-    #     config_file=config_file,
-    #     # config=config,
-    #     default_config=default_config,
-    # )
-
     cli_args = ['rich_trace', 'list_installed', 'debug_file', 'verbose', 'debug_file']
     for argument in cli_args:
         kwargs.pop(argument, None)
 
-    # tackle(*args, **kwargs)
-
     try:
-        output_dict = tackle(
-            # *args,
-            **kwargs
-            # template,
-            # checkout=checkout,
-            # no_input=no_input,
-            # context_file=context_file,
-            # context_key=context_key,
-            # overwrite_inputs=overwrite_inputs,
-            # override_inputs=override_inputs,
-            # # existing_context=existing_context,
-            # replay=replay,
-            # record=record,
-            # rerun=rerun,
-            # overwrite_if_exists=overwrite_if_exists,
-            # output_dir=output_dir,
-            # config_file=config_file,
-            # default_config=default_config,
-            # password=os.environ.get('COOKIECUTTER_REPO_PASSWORD'),
-            # directory=directory,
-            # skip_if_file_exists=skip_if_file_exists,
-            # accept_hooks=_accept_hooks,
-            # # calling_directory=os.path.curdir,
-        )
-        import json
+        output_dict = tackle(**kwargs)
 
+        # TODO: Print based on local format.
         print(json.dumps(dict(output_dict)))
+
     except (
         OutputDirExistsException,
         InvalidModeException,

@@ -1,37 +1,23 @@
 """Main parsing module for walking down arbitrary data structures and executing hooks."""
 from __future__ import print_function
 import logging
-from PyInquirer import prompt
-
 from pathlib import Path
 import os
 import inspect
+import re
+import copy
 from typing import Type, Any
 
-from tackle import BaseHook
 from tackle.providers import import_with_fallback_install
 from tackle.render import render_variable, wrap_jinja_braces
-from tackle.utils.dicts import (
-    nested_get,
-    nested_delete,
-    encode_list_index,
-    set_key,
-)
+from tackle.utils.dicts import nested_get, nested_delete, encode_list_index, set_key
 from tackle.utils.command import unpack_args_kwargs
-from tackle.utils import literal_type
 from tackle.utils.vcs import get_repo_source
 from tackle.utils.files import read_config_file
-from tackle.utils.paths import (
-    is_repo_url,
-    is_file,
-)
+from tackle.utils.paths import is_repo_url, is_file, find_tackle_file
 from tackle.utils.zipfile import unzip
 from tackle.models import Context, BaseHook
-from tackle.exceptions import (
-    HookCallException,
-    UnknownHookTypeException,
-    InvalidConfiguration,
-)
+from tackle.exceptions import UnknownHookTypeException
 from tackle.settings import settings
 
 logger = logging.getLogger(__name__)
@@ -71,37 +57,27 @@ def get_hook(hook_type, context: 'Context', suppress_error: bool = False):
         )
 
 
-def update_global_args(context: 'Context', args: list, kwargs: dict, flags: list):
-    """
-    Handler for global args, kwargs, and flags when the source is one of zip, repo, or
-    directory. Both kwargs and flags update the override dictionary. Args are first
-    used to search within the `input_dict` to see if there is a key of that type and
-    jumping to that level and then using those arguments inside that hook call.
-    """
-    # context.global_kwargs = kwargs
-    # context.global_flags = flags
-    for k, v in kwargs:
-        context.override_inputs.update({k: v})
-
-    for i in flags:
-        context.override_inputs.update({i: True})
-
-    # TODO: Implement key seeking logic
-    # context.global_args = args
-
-
-def find_tackle_file(provider_dir):
-    provider_contents = os.listdir(provider_dir)
-    for i in provider_contents:
-        if i in ['tackle.yaml', 'tackle.yml', '.tackle.yaml', '.tackle.yml']:
-            return os.path.join(provider_dir, i)
-
-    raise InvalidConfiguration
+# def update_global_args(context: 'Context', args: list, kwargs: dict, flags: list):
+#     """
+#     Handler for global args, kwargs, and flags when the source is one of zip, repo, or
+#     directory. Both kwargs and flags update the override dictionary. Args are first
+#     used to search within the `input_dict` to see if there is a key of that type and
+#     jumping to that level and then using those arguments inside that hook call.
+#     """
+#     # context.global_kwargs = kwargs
+#     # context.global_flags = flags
+#     for k, v in kwargs:
+#         context.override_inputs.update({k: v})
+#
+#     for i in flags:
+#         context.override_inputs.update({i: True})
+#
+#     # TODO: Implement key seeking logic
+#     # context.global_args = args
 
 
 def get_base_file(context: 'Context'):
-    import copy
-
+    """Read the tackle file and copy it's contents into the output_dict."""
     context.input_dict = read_config_file(
         os.path.join(context.repo_dir, context.context_file)
     )
@@ -109,7 +85,10 @@ def get_base_file(context: 'Context'):
 
 
 def import_local_provider_source(context: 'Context', provider_dir: str):
-    """Imports a provider from a path by checking if the"""
+    """
+    Import a provider from a path by checking if the provider has a tackle file and
+    returning a path.
+    """
     context.repo_dir = provider_dir
     if context.context_file is None:
         context.context_file = find_tackle_file(provider_dir)
@@ -118,10 +97,6 @@ def import_local_provider_source(context: 'Context', provider_dir: str):
         context.context_file = os.path.join(context.context_file, context.directory_)
 
     get_base_file(context)
-
-
-def update_provider_source(context: 'Context'):
-    pass
 
 
 def update_source(context: 'Context'):
@@ -177,14 +152,32 @@ def update_source(context: 'Context'):
     elif is_file(first_arg):
         # Special case where the input is a path to a file. Need to override some
         # settings that would normally get populated by zip / repo refs
+        # if context.key_path == []:
         context.context_file = os.path.basename(first_arg)
         context.repo_dir = Path(first_arg).parent.absolute()
 
         # Load the base file into input_dict
         get_base_file(context)
+        # else:
+        #     # Means we are calling from within an execution
+        #     from time import time
+        #     now = time()
+        #     new_context = Context(providers=context.providers)
+        #     after = time() - now
+        #
+        #     new_context.context_file = os.path.basename(first_arg)
+        #     new_context.repo_dir = Path(first_arg).parent.absolute()
 
         # Main parsing logic
         walk_sync(context=context, element=context.input_dict.copy())
+
+        # set_key(
+        #     element=context.output_dict,
+        #     keys=context.key_path,
+        #     value=out,
+        #     keys_to_delete=context.remove_key_list,
+        # )
+
         return
 
     # No other options for if it is a remote source so input should be hook
@@ -220,110 +213,15 @@ def update_source(context: 'Context'):
     for k, v in kwargs.items():
         hook_dict[k] = v
 
-    # Handle render by default
-    # for k, v in Hook.__fields__.items():
-    #     if 'render_by_default' in v.field_info.extra:
-    #         hook_dict[k] = "{{" + hook_dict[k] + "}}"
-
-    # Render the input variables
-    # for k, v in hook_dict.items():
-    #     hook_dict[k] = render_variable(context, v)
-
-    import time
-
-    now = time.time()
-
     hook = Hook(
         **hook_dict,
         input_dict=context.input_dict,
         output_dict=context.output_dict,
-        # context=context
+        no_input=context.no_input,
     )
 
-    after = time.time() - now
-    output = parse_hook(hook, context)
-
-    # set_key(
-    #     element=context.output_dict,
-    #     keys=context.key_path,
-    #     value=output,
-    #     keys_to_delete=context.remove_key_list,
-    # )
-
-    # print()
-
-    # if isinstance(hook_value, dict):
-    #     context.hook_dict = HookDict(**hook_value)
-    # else:
-    #     context.hook_dict = HookDict()
-
-    # Calling a hook directly
-    # elif get_hook(first_arg, context, suppress_error=True):
-    #     """Main entrypoint to hook parsing logic. All hook calls are funneled here."""
-    #
-    #     if context.key_path[-1] in ('->', '_>'):
-    #         hook_value = nested_get(context.input_dict, context.key_path[:-1])
-    #
-    #         # Need to replace these keys as for the time being (pydantic 1.8.2) -
-    #         # multiple aliases can't be specified so doing this hack
-    #         if '->' in hook_value:
-    #             hook_value['hook_type'] = hook_value['->']
-    #             hook_value.pop('->')
-    #         else:
-    #             hook_value['hook_type'] = hook_value['_>']
-    #             hook_value.pop('_>')
-    #     else:
-    #         hook_value = nested_get(context.input_dict, context.key_path)
-    #
-    #     if isinstance(hook_value, dict):
-    #         context.hook_dict = HookDict(**hook_value)
-    #     else:
-    #         context.hook_dict = HookDict()
-    #
-    #     # Set the args which will be overlayed with the `evaluate_args` function later
-    #     # that will override various parameters set within `_args` in the hook def.
-    #     context.hook_dict._args = args
-    #     # Set any kwars from the hook call - ie `->: somehook --if 'key.a_value == 2'`
-    #     for k, v in kwargs.items():
-    #         setattr(context.hook_dict, k, v)
-    #
-    #     # Set the hook_type
-    #     context.hook_dict.hook_type = first_arg
-    #
-    #     # Parse for any loops / conditionals
-    #     parse_hook(context)
-    #     return
-    #
-    # from tackle.exceptions import UnknownHookTypeException
-    #
-    # # TODO: Raise better error
-    # raise UnknownHookTypeException
-
-
-# def raise_hook_validation_error(e, Hook, context: 'Context'):
-#     """Raise more clear of an error when pydantic fails to parse an object."""
-#     if 'extra fields not permitted' in e.__repr__():
-#         # Return all the fields in the hook by removing all the base fields.
-#         context_base_keys = (
-#             BaseHook(input_string='tmp', type=context.hook_dict.hook_type).dict().keys()
-#         )
-#
-#         fields = '--> ' + ', '.join(
-#             [
-#                 i
-#                 for i in Hook(input_string='tmp').dict().keys()
-#                 if i not in context_base_keys and i != 'type'
-#             ]
-#         )
-#         error_out = (
-#             f"Error: The field \"{e.raw_errors[0]._loc}\" is not permitted in "
-#             f"file=\"{context.context_file}\" and key_path=\"{context.key_path}\".\n"
-#             f"Only values accepted are {fields}, (plus base fields --> "
-#             f"type, when, loop, chdir, merge)"
-#         )
-#         raise HookCallException(error_out)
-#     else:
-#         raise e
+    # Main parser
+    parse_hook(hook, context)
 
 
 def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
@@ -337,24 +235,11 @@ def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
         if i + 1 == len(Hook._args):
             # We are at the last argument mapping so we need to join the remaining
             # arguments as a single string if it is not a list of another map.
-            # Was parsed on spaces so reconstructed.
-            x = Hook.__fields__[Hook._args[i]]
-            if Hook.__fields__[Hook._args[i]].type_ in (
-                str,
-                float,
-                int,
-                bool,
-                bytes,
-                Any,
-            ):
+            if Hook.__fields__[Hook._args[i]].type_ in (str, float, int, bool, Any):
 
-                # if (
-                #         isinstance(
-                #             Hook.__fields__[Hook._args[i]], (str, float, int, bool, bytes)
-                #         )
-                #         or Hook.__fields__[Hook._args[i]].type_ == Any
-                # ):
-                value = ''.join(args[i:])
+                # Was parsed on spaces so reconstructed.
+                value = ' '.join(args[i:])
+            # fmt: skip
             elif isinstance(Hook.__fields__[Hook._args[i]], list):
                 # If list then all the remaining items
                 value = args[i:]
@@ -370,14 +255,22 @@ def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
                 value = args[i]
 
             hook_dict[Hook._args[i]] = value
-            # hook_dict[Hook._args[i]] = literal_type(value)
-            # set_hook(hook_dict, Hook, i, value)
             return
         else:
             # The hooks arguments are indexed
             hook_dict[Hook._args[i]] = v
-            # set_hook(hook_dict, Hook, i, v)
             return
+
+
+# def evaluate_merge(key_path: list, merge: bool):
+#
+#     if merge:
+#         if key_path[-1] in ('->', '_>'):
+#             pass
+#         elif key_path[-1].endswith(('->', '_>')):
+#             pass
+#     else:
+#         return key_path
 
 
 def evaluate_for(hook: BaseHook, context: 'Context'):
@@ -396,7 +289,6 @@ def evaluate_for(hook: BaseHook, context: 'Context'):
     if len(loop_targets) == 0:
         return
 
-    output = []
     for i, l in (
         enumerate(loop_targets)
         if not render_variable(context, hook.reverse)
@@ -410,22 +302,14 @@ def evaluate_for(hook: BaseHook, context: 'Context'):
 
         # We need to parse a copy of the hook as
         # output.append(parse_hook(hook.copy(), context, append_hook_value=True))
-        output = parse_hook(hook.copy(), context, append_hook_value=True)
-
+        parse_hook(hook.copy(), context, append_hook_value=True)
         context.key_path.pop()
-
-        # set_key(
-        #     element=context.output_dict,
-        #     keys=context.key_path,
-        #     value=output,
-        #     keys_to_delete=context.remove_key_list,
-        # )
 
     # Remove temp variables
     context.output_dict.pop('item')
     context.output_dict.pop('index')
 
-    return output
+    # return output
 
 
 def evaluate_if(hook: BaseHook, context: 'Context', append_hook_value: bool) -> bool:
@@ -438,7 +322,7 @@ def evaluate_if(hook: BaseHook, context: 'Context', append_hook_value: bool) -> 
 
 
 def render_hook_vars(hook: BaseHook, context: 'Context'):
-    print()
+    """Render the hook variables."""
     for k, v in hook.__fields__.items():
         hook_value = getattr(hook, k)
 
@@ -458,9 +342,14 @@ def parse_hook(hook: BaseHook, context: 'Context', append_hook_value: bool = Non
     """Parse input dict for loop and when logic and calls hooks."""
     if evaluate_if(hook, context, append_hook_value):
         if hook.for_ is not None:
-            # This runs the current function in a loop and returns a list of results
-            output = evaluate_for(hook, context)
-            return output
+            # This runs the current function in a loop with `append_hook_value` set so
+            # that keys are appended in the loop.
+            evaluate_for(hook, context)
+            return
+
+        # if hook.while_ is not None:
+        #     evaluate_when(hook, context)
+        #     return
 
         else:
             # Normal hook run
@@ -469,14 +358,18 @@ def parse_hook(hook: BaseHook, context: 'Context', append_hook_value: bool = Non
             # return hook_output_value
             set_key(
                 element=context.output_dict,
-                keys=context.key_path,
+                keys=context.key_path if not hook.merge else context.key_path[:-1],
                 value=hook_output_value,
                 keys_to_delete=context.remove_key_list,
                 append_hook_value=append_hook_value,
             )
 
     elif hook.else_ is not None:
+        # TODO: Implement
         print()
+        raise NotImplementedError
+
+    # elif hook.match_ is not None:
 
     else:
         # False side of the `if` condition
@@ -488,63 +381,8 @@ def parse_hook(hook: BaseHook, context: 'Context', append_hook_value: bool = Non
             )
 
 
-# context.key_path.pop()
-# if post_gen_hook:
-#     # TODO: Update this per #4 hook-integration
-#     context.post_gen_hooks.append(post_gen_hook)
-
-# if append_key:
-#     # TODO: ?
-#     return context.output_dict[context.key_]
-#     if append_index:
-#         # Case where we are in a loop and we are appending the output
-#         set_key(
-#             element=context.output_dict,
-#             keys=context.key_path + [append_index],
-#             value=hook_output_value,
-#             keys_to_delete=context.remove_key_list,
-#         )
-#     else:
-
-# else:
-#     if else_object is not None:
-#         # Handle the false when condition if there is an `else` param.
-#         # if 'else' in context.hook_dict:
-#         if isinstance(else_object, dict):
-#             # If it is a dict, run it as another hook if type key exists, otherwise
-#             # fallback to dict
-#             if 'type' in else_object:
-#                 # context.input_dict[context.context_key][context.key] = else_object
-#                 # nested_set(context.output_dict, context.key_path, else_object)
-#                 set_key(context.output_dict, context.key_path, else_object)
-#                 return parse_hook(context, append_key=append_key)
-#
-#         else:
-#             # If list or str return tha actual value
-#             # context.output_dict[context.key] = render_variable(context, else_object)
-#             nested_set(
-#                 context.output_dict,
-#                 context.key_path,
-#                 render_variable(context, else_object),
-#             )
-#
-#             return context.output_dict
-
-# if context.hook_dict.callback:
-#     # Call a hook var but don't return it's output
-#     # TODO: RM?
-#     context.input_dict[context.context_key][
-#         context.key
-#     ] = context.hook_dict.callback
-#     return parse_hook(context, append_key=append_key)
-
-# return context.output_dict
-
-
-import re
-
-
 def is_tackle_hook(value):
+    """Regex qualify if the key is a hook."""
     if isinstance(value, bytes):
         return False
 
@@ -556,20 +394,17 @@ def is_tackle_hook(value):
 
 
 def walk_sync(context: 'Context', element):
+    """Traverse an object looking for hook calls."""
     if isinstance(element, str):
-        if is_tackle_hook(context.key_path[-1]):
-
+        if is_tackle_hook(context.key_path[-1]):  # Regex qualify
             if len(context.key_path[-1]) == 2:
+                # Expanded or mixed expression - ie in ('->', '_>')
                 context.input_string = element
                 update_source(context)
                 return
-
-            # context.key_path.append(element)
-            # context.key_ = context.key_path[1:]
-
+            # Compact expression
             context.input_string = element
             update_source(context)
-            # context.key_path.pop()
         return
 
     elif isinstance(element, dict):
@@ -583,3 +418,5 @@ def walk_sync(context: 'Context', element):
             context.key_path.append(encode_list_index(i))
             walk_sync(context, v)
             context.key_path.pop()
+
+    return context.output_dict
