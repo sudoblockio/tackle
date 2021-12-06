@@ -11,13 +11,13 @@ from typing import Type, Any
 from tackle.providers import import_with_fallback_install
 from tackle.render import render_variable, wrap_jinja_braces
 from tackle.utils.dicts import nested_get, nested_delete, encode_list_index, set_key
-from tackle.utils.command import unpack_args_kwargs
+from tackle.utils.command import unpack_args_kwargs_string
 from tackle.utils.vcs import get_repo_source
 from tackle.utils.files import read_config_file
 from tackle.utils.paths import is_repo_url, is_file, find_tackle_file
 from tackle.utils.zipfile import unzip
 from tackle.models import Context, BaseHook
-from tackle.exceptions import UnknownHookTypeException
+from tackle.exceptions import UnknownHookTypeException, UnknownSourceException
 from tackle.settings import settings
 
 logger = logging.getLogger(__name__)
@@ -74,192 +74,6 @@ def get_hook(hook_type, context: 'Context', suppress_error: bool = False):
 #
 #     # TODO: Implement key seeking logic
 #     # context.global_args = args
-
-
-def get_base_file(context: 'Context'):
-    """Read the tackle file and copy it's contents into the output_dict."""
-    context.input_dict = read_config_file(
-        os.path.join(context.repo_dir, context.context_file)
-    )
-    context.output_dict = copy.deepcopy(context.input_dict)
-
-
-def import_local_provider_source(context: 'Context', provider_dir: str):
-    """
-    Import a provider from a path by checking if the provider has a tackle file and
-    returning a path.
-    """
-    context.repo_dir = provider_dir
-    if context.context_file is None:
-        context.context_file = find_tackle_file(provider_dir)
-
-    if context.directory_:
-        context.context_file = os.path.join(context.context_file, context.directory_)
-
-    get_base_file(context)
-
-
-def update_source(context: 'Context'):
-    """
-    Locate the repository directory from a template reference. This is the main parser
-    for determining the source of the context and calls the succeeding parsing
-    functions. The parsing order has the following order of precedence.
-
-    If the template refers to a zip file or zip url, download / unzip as the context.
-    If the template refers to a repository URL, clone it.
-    If the template refers to a file, use that as the context.
-    If the template refers to a hook, run that hook with arguments inserted.
-    If the template is a path to a local repository, use it.
-    """
-    if context.input_string is None:
-        # TODO: This is a patch as depending on the context we want to default to a given
-        # param.  So if it is None, check if tackle in dir, out of dir, etc...
-        # Thos would be it?
-        context.input_string = '.'
-    args, kwargs, flags = unpack_args_kwargs(context.input_string)
-
-    # The first arg determines the source
-    if len(args) == 0:
-        args.append(".")
-
-    first_arg = args[0]
-
-    # Remove first args it will be consumed and no longer relevant
-    args.pop(0)
-
-    # Zipfile
-    if first_arg.lower().endswith('.zip'):
-        unzipped_dir = unzip(
-            zip_uri=first_arg,
-            clone_to_dir=settings.tackle_dir,
-            no_input=context.no_input,
-            password=context.password_,  # TODO: RM - Should prompt?
-        )
-        import_local_provider_source(context, unzipped_dir)
-        # TODO: Fix this
-        # context.cleanup = True
-        walk_sync(context=context, element=context.input_dict)
-        return
-    # Repo
-    elif is_repo_url(first_arg):
-        import_local_provider_source(
-            context, get_repo_source(first_arg, context.version_)
-        )
-        walk_sync(context=context, element=context.input_dict.copy())
-        return
-
-    # File
-    elif is_file(first_arg):
-        # Special case where the input is a path to a file. Need to override some
-        # settings that would normally get populated by zip / repo refs
-        # if context.key_path == []:
-        context.context_file = os.path.basename(first_arg)
-        context.repo_dir = Path(first_arg).parent.absolute()
-
-        # Load the base file into input_dict
-        get_base_file(context)
-        # else:
-        #     # Means we are calling from within an execution
-        #     from time import time
-        #     now = time()
-        #     new_context = Context(providers=context.providers)
-        #     after = time() - now
-        #
-        #     new_context.context_file = os.path.basename(first_arg)
-        #     new_context.repo_dir = Path(first_arg).parent.absolute()
-
-        # Main parsing logic
-        walk_sync(context=context, element=context.input_dict.copy())
-
-        # set_key(
-        #     element=context.output_dict,
-        #     keys=context.key_path,
-        #     value=out,
-        #     keys_to_delete=context.remove_key_list,
-        # )
-
-        return
-
-    # No other options for if it is a remote source so input should be hook
-    Hook = get_hook(first_arg, context, suppress_error=True)
-
-    if Hook is None:
-        from tackle.exceptions import UnknownHookTypeException
-
-        raise UnknownHookTypeException
-
-    if context.key_path[-1] in ('->', '_>'):
-        # We have a expanded or mixed (with args) hook expression and so there will be
-        # additional properties in adjacent keys
-        hook_dict = nested_get(context.input_dict, context.key_path[:-1])
-
-        # Need to replace arrow keys as for the time being (pydantic 1.8.2) - multiple
-        # aliases for the same field (type) can't be specified so doing this hack
-        if '->' in hook_dict:
-            hook_dict['type'] = hook_dict['->']
-            hook_dict.pop('->')
-        else:
-            hook_dict['type'] = hook_dict['_>']
-            hook_dict.pop('_>')
-    else:
-        # Hook is a compact expression - Can only be a string
-        hook_dict = {}
-        # hook_dict['type'] = nested_get(context.input_dict, context.key_path)
-        hook_dict['type'] = first_arg
-
-    # Associate hook arguments provided in the call with hook attributes
-    evaluate_args(args, hook_dict, Hook)
-    # Add any kwargs
-    for k, v in kwargs.items():
-        hook_dict[k] = v
-
-    hook = Hook(
-        **hook_dict,
-        input_dict=context.input_dict,
-        output_dict=context.output_dict,
-        no_input=context.no_input,
-    )
-
-    # Main parser
-    parse_hook(hook, context)
-
-
-def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
-    """
-    Associate hook arguments provided in the call with hook attributes. Parses the
-    hook's `_args` attribute to know how to map arguments are mapped to where and
-    deal with rendering by default.
-    """
-    for i, v in enumerate(args):
-        # Iterate over the input args
-        if i + 1 == len(Hook._args):
-            # We are at the last argument mapping so we need to join the remaining
-            # arguments as a single string if it is not a list of another map.
-            if Hook.__fields__[Hook._args[i]].type_ in (str, float, int, bool, Any):
-
-                # Was parsed on spaces so reconstructed.
-                value = ' '.join(args[i:])
-            # fmt: skip
-            elif isinstance(Hook.__fields__[Hook._args[i]], list):
-                # If list then all the remaining items
-                value = args[i:]
-            else:
-                # Only thing left is a dict
-                if len(args[i:]) > 1:
-                    raise ValueError(
-                        f"Can't specify multiple arguments for map argument "
-                        f"{Hook.__fields__[Hook._args[i]]}."
-                    )
-                # Join everything up as a list as it doesn't make sense to do anything
-                # else at this point.
-                value = args[i]
-
-            hook_dict[Hook._args[i]] = value
-            return
-        else:
-            # The hooks arguments are indexed
-            hook_dict[Hook._args[i]] = v
-            return
 
 
 # def evaluate_merge(key_path: list, merge: bool):
@@ -355,7 +169,6 @@ def parse_hook(hook: BaseHook, context: 'Context', append_hook_value: bool = Non
             # Normal hook run
             render_hook_vars(hook, context)
             hook_output_value = hook.call()
-            # return hook_output_value
             set_key(
                 element=context.output_dict,
                 keys=context.key_path if not hook.merge else context.key_path[:-1],
@@ -363,10 +176,10 @@ def parse_hook(hook: BaseHook, context: 'Context', append_hook_value: bool = Non
                 keys_to_delete=context.remove_key_list,
                 append_hook_value=append_hook_value,
             )
+            return
 
     elif hook.else_ is not None:
         # TODO: Implement
-        print()
         raise NotImplementedError
 
     # elif hook.match_ is not None:
@@ -393,6 +206,65 @@ def is_tackle_hook(value):
     return bool(REGEX.match(value))
 
 
+def run_hook_function(context: 'Context'):
+    """
+    Run either a hook or a function. In this context the args are associated with
+    arguments in
+    """
+    args, kwargs, flags = unpack_args_kwargs_string(context.input_string)
+    first_arg = args[0]
+    # Remove first args it will be consumed and no longer relevant
+    args.pop(0)
+
+    if '{{' in first_arg and '}}' in first_arg:
+        args.append(first_arg)
+        first_arg = 'var'
+
+    # Look up the hook from the imported providers
+    Hook = get_hook(first_arg, context, suppress_error=True)
+
+    if Hook is None:
+        # TODO: Rm and raise error in get_hook?
+        from tackle.exceptions import UnknownHookTypeException
+
+        raise UnknownHookTypeException
+
+    if context.key_path[-1] in ('->', '_>'):
+        # We have a expanded or mixed (with args) hook expression and so there will be
+        # additional properties in adjacent keys
+        hook_dict = nested_get(context.input_dict, context.key_path[:-1])
+
+        # Need to replace arrow keys as for the time being (pydantic 1.8.2) - multiple
+        # aliases for the same field (type) can't be specified so doing this hack
+        if '->' in hook_dict:
+            hook_dict['type'] = hook_dict['->']
+            hook_dict.pop('->')
+        else:
+            hook_dict['type'] = hook_dict['_>']
+            hook_dict.pop('_>')
+    else:
+        # Hook is a compact expression - Can only be a string
+        hook_dict = {}
+        # hook_dict['type'] = nested_get(context.input_dict, context.key_path)
+        hook_dict['type'] = first_arg
+
+    # Associate hook arguments provided in the call with hook attributes
+    evaluate_args(args, hook_dict, Hook)
+    # Add any kwargs
+    for k, v in kwargs.items():
+        hook_dict[k] = v
+
+    hook = Hook(
+        **hook_dict,
+        input_dict=context.input_dict,
+        output_dict=context.output_dict,
+        no_input=context.no_input,
+    )
+
+    # Main parser
+    parse_hook(hook, context)
+
+
 def walk_sync(context: 'Context', element):
     """Traverse an object looking for hook calls."""
     if isinstance(element, str):
@@ -400,11 +272,11 @@ def walk_sync(context: 'Context', element):
             if len(context.key_path[-1]) == 2:
                 # Expanded or mixed expression - ie in ('->', '_>')
                 context.input_string = element
-                update_source(context)
+                run_hook_function(context)
                 return
             # Compact expression
             context.input_string = element
-            update_source(context)
+            run_hook_function(context)
         return
 
     elif isinstance(element, dict):
@@ -420,3 +292,117 @@ def walk_sync(context: 'Context', element):
             context.key_path.pop()
 
     return context.output_dict
+
+
+def get_base_file(context: 'Context'):
+    """Read the tackle file and copy it's contents into the output_dict."""
+    context.input_dict = read_config_file(
+        os.path.join(context.repo_dir, context.context_file)
+    )
+    context.output_dict = copy.deepcopy(context.input_dict)
+
+
+def import_local_provider_source(context: 'Context', provider_dir: str):
+    """
+    Import a provider from a path by checking if the provider has a tackle file and
+    returning a path.
+    """
+    context.repo_dir = provider_dir
+    if context.context_file is None:
+        context.context_file = find_tackle_file(provider_dir)
+
+    if context.directory_:
+        context.context_file = os.path.join(context.context_file, context.directory_)
+
+    get_base_file(context)
+
+
+def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
+    """
+    Associate hook arguments provided in the call with hook attributes. Parses the
+    hook's `_args` attribute to know how to map arguments are mapped to where and
+    deal with rendering by default.
+    """
+    for i, v in enumerate(args):
+        # Iterate over the input args
+        if i + 1 == len(Hook._args):
+            # We are at the last argument mapping so we need to join the remaining
+            # arguments as a single string if it is not a list of another map.
+            if Hook.__fields__[Hook._args[i]].type_ in (str, float, int, bool, Any):
+                # Was parsed on spaces so reconstructed.
+                value = ' '.join(args[i:])
+            # fmt: skip
+            elif isinstance(Hook.__fields__[Hook._args[i]], list):
+                # If list then all the remaining items
+                value = args[i:]
+            else:
+                # Only thing left is a dict
+                if len(args[i:]) > 1:
+                    raise ValueError(
+                        f"Can't specify multiple arguments for map argument "
+                        f"{Hook.__fields__[Hook._args[i]]}."
+                    )
+                # Join everything up as a list as it doesn't make sense to do anything
+                # else at this point.
+                value = args[i]
+
+            hook_dict[Hook._args[i]] = value
+            return
+        else:
+            # The hooks arguments are indexed
+            hook_dict[Hook._args[i]] = v
+
+
+def update_source(context: 'Context'):
+    """
+    Locate the repository directory from a template reference. This is the main parser
+    for determining the source of the context and calls the succeeding parsing
+    functions. The parsing order has the following order of precedence.
+
+    If the template wasn't given then use the file in that parent directory.
+    If the template refers to a zip file or zip url, download / unzip as the context.
+    If the template refers to a repository URL, clone it.
+    If the template refers to a file, use that as the context.
+    If the template refers to a hook, run that hook with arguments inserted.
+    If the template is a path to a local repository, use it.
+    """
+    args, kwargs, flags = unpack_args_kwargs_string(context.input_string)
+    first_arg = args[0]
+    # Remove first args it will be consumed and no longer relevant
+    args.pop(0)
+
+    # Zipfile
+    if first_arg.lower().endswith('.zip'):
+        unzipped_dir = unzip(
+            zip_uri=first_arg,
+            clone_to_dir=settings.tackle_dir,
+            no_input=context.no_input,
+            password=context.password_,  # TODO: RM - Should prompt?
+        )
+        import_local_provider_source(context, unzipped_dir)
+        walk_sync(context=context, element=context.input_dict)
+        return
+    # Repo
+    elif is_repo_url(first_arg):
+        import_local_provider_source(
+            context, get_repo_source(first_arg, context.version_)
+        )
+        walk_sync(context=context, element=context.input_dict.copy())
+        return
+
+    # File
+    elif is_file(first_arg):
+        # Special case where the input is a path to a file. Need to override some
+        # settings that would normally get populated by zip / repo refs
+        context.context_file = os.path.basename(first_arg)
+        context.repo_dir = Path(first_arg).parent.absolute()
+
+        # Load the base file into input_dict
+        get_base_file(context)
+
+        # Main parsing logic
+        walk_sync(context=context, element=context.input_dict.copy())
+        return
+    else:
+        # TODO: Improve
+        raise UnknownSourceException

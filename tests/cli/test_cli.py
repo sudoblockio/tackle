@@ -10,7 +10,8 @@ INPUT_SOURCES = [
     ("github.com/robcxyz/tackle-demo", {'input_string': "github.com/robcxyz/tackle-demo"}),
     ("robcxyz/tackle-demo --no-input", {'input_string': 'robcxyz/tackle-demo', 'no_input': True}),
     ("thing --no-input", {'input_string': 'thing', 'no_input': True}),
-    ("thing --foo bar", {'input_string': 'thing'}),
+    ("thing --foo bar", {'input_string': 'thing', 'global_kwargs': {'foo': 'bar'}}),
+    ("thing foo bar", {'input_string': 'thing', 'global_args': ['foo', 'bar']}),
 ]
 # fmt: on
 

@@ -4,12 +4,15 @@ import yaml
 
 from tackle.main import tackle
 
+
 FIXTURES = [
     ('tackle_map.yaml', 'tackle_map_output.yaml'),
     ('tackle_map_lists.yaml', 'tackle_map_lists_output.yaml'),
     ('tackle_map_root.yaml', 'tackle_map_root_output.yaml'),
     ('outer_tackle.yaml', 'outer_tackle_expected.yaml'),
-    # Non tackle things
+    # ('a_tackle.yaml', 'outer_tackle_expected.yaml'),
+    # # ('tackle_merge.yaml', 'petstore.yaml'),
+    # # Non tackle things
     ('k8s-deployment.yaml', 'k8s-deployment.yaml'),
     ('docker-compose.yml', 'docker-compose.yml'),
 ]

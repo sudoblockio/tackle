@@ -57,11 +57,11 @@ class NonTemplatedInputDirException(TackleException):
     """
 
 
-class UnknownTemplateDirException(TackleException):
+class UnknownSourceException(TackleException):
     """
-    Exception for ambiguous project template directory.
+    Exception for ambiguous source.
 
-    Raised when Tackle cannot determine which directory is the project
+    Raised when tackle cannot determine which directory is the project
     template, e.g. more than one dir appears to be a template dir.
     """
 
