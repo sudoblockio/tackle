@@ -70,12 +70,12 @@ INSTALL_REQUIREMENTS = [
     # 'pydantic[dotenv]>=1.6.0',
     'pydantic>=1.6.0',
     'Jinja2<3.0.0',
-    'click>=7.0',
+    # 'click>=7.0',
     'requests>=2.23.0',
     'PyYAML>=5.3',
-    'rich>=3.3.0',
+    'rich>=3.3.0',  # RM
     'PyInquirer>=1.0.3',
-    'GitPython',
+    'GitPython',  # RM
     'python-slugify>=4.0.0',  # Move to extension
     'pyhcl>=0.4.4',  # Move to extension
     'distro>=1.5.0',  # Move to extension
@@ -104,7 +104,7 @@ setup(
     url='https://github.com/robcxyz/tackle-box',
     packages=find_packages(exclude=['tests*', 'logo*', 'docs*', '.github*']),
     package_dir={'tackle': 'tackle'},
-    entry_points={'console_scripts': ['tackle = tackle.__main__:main']},
+    entry_points={'console_scripts': ['tackle = tackle.cli:main']},
     extras_require=get_provider_requirements(),
     include_package_data=True,
     python_requires='>=3.6',
@@ -130,6 +130,9 @@ setup(
     keywords=[
         "cookiecutter",
         "tackle",
+        "tackle-box",
+        "tacklebox",
+        "tackle box",
         "Python",
         "projects",
         "project templates",
@@ -139,5 +142,6 @@ setup(
         "project directory",
         "package",
         "packaging",
+        "kubernetes",
     ],
 )
