@@ -1,15 +1,22 @@
+"""
+Utils for modifying complex dictionaries generally based on an encoded key_path which is
+a list of strings for key value lookups and byte encoded integers for items in a list.
+"""
+
+
 def encode_list_index(list_index: int) -> bytes:
-    """Helper to encode an index for lists in a key path to bytes."""
+    """Encode an index for lists in a key path to bytes."""
     return list_index.to_bytes(2, byteorder='big')
 
 
 def decode_list_index(list_index: bytes) -> int:
-    """Helper to decode an index for lists in a key path from bytes."""
+    """Decode an index for lists in a key path from bytes."""
     return int.from_bytes(list_index, byteorder='big')
 
 
 def remove_dead_leaves():
-    """For traversing up a generic element and removing items if there are no"""
+    """Traverse up a generic element and removing empty elements."""
+    # TODO: Implement?
     pass
 
 
@@ -63,6 +70,12 @@ def nested_delete(element, keys):
 
 
 def nested_get(element, keys):
+    """
+    Getter for dictionary / list elements based on a key_path.
+    :param element: A generic dictionary or list
+    :param keys: List of string and byte encoded integers.
+    :return: The value from the key_path
+    """
     num_elements = len(keys)
 
     if num_elements == 1:
@@ -75,22 +88,20 @@ def nested_get(element, keys):
     return nested_get(element[keys[0]], keys[1:])
 
 
-def nested_set(
-    element,
-    keys,
-    value,
-    index: int = 0,  # Index is only used when called recursively, not initially
-):
+def nested_set(element, keys, value, index: int = 0):
     """
     Set the value of an arbitrary object based on a key_path in the form of a list
     with strings for keys and byte encoded integers for indexes in a list.
 
     NOTE: This is garbage code and needs to be rewritten. But it does work...
-    """
-    # TODO: Bring in the context and use for the - ?
-    num_elements = len(keys)
-    i = 0
 
+    :param element: A generic dictionary or list
+    :param keys: List of string and byte encoded integers.
+    :param value: The value to set
+    :param index: Index is only used when called recursively, not initially
+    """
+    # TODO: Integrate with the context object?
+    num_elements = len(keys)
     if isinstance(element, dict):
         # Drilling down into nested element
         for i, key in enumerate(keys[index:-1]):
@@ -194,19 +205,19 @@ def set_key(
             nested_set(element, keys, value)
 
     elif keys[-1] == '->':  # Expanded public hook call
-        # if isinstance(keys[-2], bytes):
-        #     nested_delete(element, keys)
         nested_set(element, keys[:-1], value)
-
     elif keys[-1].endswith('->'):  # Compact public hook call
         nested_set(element, keys[:-1] + [keys[-1][:-2]], value)
-        nested_delete(element, keys)
-    elif keys[-1] == '_>':  # Expanded public hook call
+        nested_delete(element, keys)  # Delete the old key containing the arrow
+    elif keys[-1] == '_>':  # Expanded private hook call
         nested_set(element, keys[:-1], value)
         keys_to_delete.append(keys[:-1])
-    elif keys[-1].endswith('_>'):  # Compact public hook call
-        nested_set(element, keys[:-1], {keys[-1][:-2]: value})
-        keys_to_delete.append(keys[:-1])
+    elif keys[-1].endswith('_>'):  # Compact private hook call
+        key_path = keys[:-1] + [keys[-1][:-2]]
+        nested_set(element, key_path, value)
+        nested_delete(element, keys)  # Delete the old key containing the arrow
+        # nested_set(element, keys[:-1], {keys[-1][:-2]: value})
+        keys_to_delete.append(key_path)
 
 
 def append_key(
