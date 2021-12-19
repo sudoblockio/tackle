@@ -33,42 +33,60 @@ def get_linux_distribution():
         return None
 
 
-def get_vars(context: 'Context'):
-    """Get special variables."""
-    vars = {
-        'cwd': os.getcwd(),
-        'home_dir': os.path.expanduser('~'),
-        'system': platform.system(),
-        'platform': platform.platform(),
-        'release': platform.release(),
-        'version': platform.version(),
-        'processor': platform.processor(),
-        'architecture': platform.architecture(),
-        'lsb_release': get_linux_distribution(),
-        'calling_directory': context.calling_directory,
-        'key': context.context_key,
-        'this': dict(context.output_dict),
-        'output': context.output_dict,
-    }
-    if platform.system() == 'Linux':
-        # TODO: Replace - This shouldn't have to import distro
-        # import distro
-        # linux_id_name, linux_version, linux_codename = distro.linux_distribution(
-        #     full_distribution_name=False
-        # )
-        # linux_vars = {
-        #     'linux_id_name': linux_id_name,
-        #     'linux_version': linux_version,
-        #     'linux_codename': linux_codename,
-        # }
-        # vars.update(linux_vars)
-        pass
-    else:
-        linux_vars = {
-            'linux_id_name': None,
-            'linux_version': None,
-            'linux_codename': None,
-        }
-        vars.update(linux_vars)
+def _cwd():
+    return os.getcwd()
 
-    return vars
+
+def _home_dir():
+    return os.path.expanduser('~')
+
+
+def _system():
+    return platform.system()
+
+
+def _platform():
+    return platform.platform()
+
+
+def _release():
+    return platform.release()
+
+
+def _version():
+    return platform.version()
+
+
+def _processor():
+    return platform.processor()
+
+
+def _architecture():
+    return platform.architecture()
+
+
+def _calling_directory(context: 'Context'):
+    return context.calling_directory
+
+
+def _this(context: 'Context'):
+    return dict(context.output_dict)
+
+
+def _output(context: 'Context'):
+    return context.output_dict
+
+
+special_variables = {
+    'cwd': _cwd,
+    'home_dir': _home_dir,
+    'system': _system,
+    'platform': _platform,
+    'version': _version,
+    'processor': _processor,
+    'architecture': _architecture,
+    'lsb_release': get_linux_distribution,
+    'calling_directory': _calling_directory,
+    'this': _this,
+    'output': _output,
+}
