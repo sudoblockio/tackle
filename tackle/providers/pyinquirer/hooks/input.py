@@ -5,7 +5,6 @@ from pydantic import Field
 
 from typing import Any
 from tackle.models import BaseHook
-from tackle.utils import literal_type
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +27,7 @@ class InquirerInputHook(BaseHook):
     message: str = Field(None, description="String message to show when prompting.")
     name: str = Field('tmp', description="Extra key to embed into. Artifact of API.")
 
-    _args: list = ['message', 'default']
+    _args: list = ['message']
 
     def execute(self):
         if not self.no_input:

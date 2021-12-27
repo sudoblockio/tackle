@@ -5,21 +5,12 @@ from typing import Any
 from pydantic import Field
 
 from tackle.models import BaseHook
-from tackle.utils import literal_type
 
 logger = logging.getLogger(__name__)
 
 
 class InquirerPasswordHook(BaseHook):
-    """
-    Hook for PyInquirer `password` type prompts.
-
-    :param message:
-    :param choices: A list of strings or list of k/v pairs per above description
-    :param name: A key to insert the output value to. If not provided defaults to
-        inserting into parent key
-    :return:
-    """
+    """Hook for PyInquirer `password` type prompts."""
 
     type: str = 'password'
 

@@ -5,7 +5,6 @@ from typing import Union, List, Any, Dict
 from pydantic import Field
 
 from tackle.models import BaseHook
-from tackle.utils import literal_type
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +32,7 @@ class InquirerCheckboxHook(BaseHook):
     index: bool = Field(
         False, description="Boolean to return the output in a list."
     )  # TODO: Fix this?
-    default: Any = Field(None, description="Default for the return value")
+    default: Any = Field([], description="Default for the return value")
     choices: Union[List[str], List[Dict]] = Field(
         ..., description="Either a list of strings or dictionary ."
     )
@@ -42,7 +41,7 @@ class InquirerCheckboxHook(BaseHook):
     )
     name: str = 'tmp'
 
-    _args: list = ['message', 'default']
+    _args: list = ['message']
 
     def execute(self) -> list:
         if self.no_input:
@@ -98,7 +97,7 @@ class InquirerCheckboxHook(BaseHook):
 
     def _run_prompt(self):
         question = {
-            'type': self.type,
+            'type': 'checkbox',
             'name': self.name,
             'message': self.message,
             'choices': self.choices,

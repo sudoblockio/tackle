@@ -5,7 +5,6 @@ from typing import Any, List, Union
 from pydantic import Field
 
 from tackle.models import BaseHook
-from tackle.utils import literal_type
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +38,7 @@ class InquirerListHook(BaseHook):
         False, description="Boolean to return the index instead of the answer"
     )
 
-    _args: list = ['message', 'default']
+    _args: list = ['message']
 
     def __init__(self, **data: Any):
         super().__init__(**data)

@@ -5,7 +5,6 @@ from typing import Any
 from pydantic import Field
 
 from tackle.models import BaseHook
-from tackle.utils import literal_type
 
 logger = logging.getLogger(__name__)
 
@@ -23,8 +22,8 @@ class InquirerEditorHook(BaseHook):
     """
 
     type: str = 'editor'
-    default: bool = True
-    name: str = 'tmp'
+    default: Any = Field(None, description="Default selection.")
+    name: str = Field('tmp', description="Extra key to embed into. Artifact of API.")
     message: str = Field(None, description="String message to show when prompting.")
 
     _args: list = ['message', 'default']
