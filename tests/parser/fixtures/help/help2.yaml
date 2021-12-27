@@ -1,0 +1,12 @@
+that: something
+
+f_>: print "this and that" --help "Do this and that"
+
+
+foo:
+  ->: block
+  items:
+    foo: bar
+    stuff:
+      ->: print things
+      if: foo.foo == 'bar'

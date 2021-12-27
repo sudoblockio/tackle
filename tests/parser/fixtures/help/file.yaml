@@ -1,0 +1,17 @@
+stuff: things
+
+do_stuff:
+  ->: print Doing {{stuff}}...
+  help: Print stuff
+
+do_stuff_compact->: print Doing {{stuff}}... --help Print stuff
+
+do_stuff_compact_block->:
+  help: Do things
+  if: stuff == 'things'
+  print_this->: print this and that
+  print_that->: print this and that
+
+do_things:
+  ->: print Doing stuff...
+  help: Print things

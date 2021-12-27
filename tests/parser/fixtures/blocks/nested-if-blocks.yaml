@@ -1,0 +1,39 @@
+#depolyment_enable->: confirm Do you want to generate deployment scripts as well?
+deployment->:
+  if: depolyment_enable
+  type:
+    ->: print How do you want to deploy your application?
+#    choices:
+#      - Docker
+#      - Serverless
+#      - VM
+
+#  docker->:
+#    if: deployment == 'Docker'
+#    type:
+#      ->: select How do you want to deploy your {{deployment.type}} application?
+#      choices:
+#        - docker-compose: Docker Compose
+#        - docker-swarm: Docker Swarm
+#        - helm: Helm
+#        - kustomize: Kustomize
+#
+#  serverless->:
+#    if: deployment == 'Serverless'
+#    type:
+#      ->: select How do you want to deploy your {{deployment.type}} application?
+#      choices:
+#        - docker-compose: Docker Compose
+#        - docker-swarm: Docker Swarm
+#        - helm: Helm
+#        - kustomize: Kustomize
+#
+#
+#  vm->:
+#    if: deployment == 'VM'
+#    type:
+#      ->: select Do you want to generate an ansible role to deploy your
+#      choices:
+#
+#        - aws-lambda: AWS Lambda
+

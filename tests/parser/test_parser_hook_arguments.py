@@ -2,7 +2,7 @@
 import pytest
 from tackle.utils.command import unpack_args_kwargs_string
 from tackle import tackle
-
+from tackle.cli import main
 
 FIXTURES = [
     ("this --if \"expanded == 'that'\"", ["this"], {"if": "expanded == 'that'"}, []),
@@ -46,7 +46,31 @@ def test_parser_tackle_in_tackle_arg(change_curdir_fixtures):
 def test_parser_render_hook_input(change_curdir_fixtures):
     """
     Show that when the first argument is a renderable that you just render that with the
-    context and logic."""
+    context and logic.
+    """
     output = tackle('render_hook_input.yaml', no_input=True)
     for k, v in output.items():
         assert v == 'things'
+
+
+@pytest.mark.parametrize("input_string", ['do_stuff', 'tackle.yaml do_stuff'])
+def test_parser_call_key_on_args(chdir_fixture, input_string):
+    """Validate that when an additional argument is supplied that the key is called."""
+    chdir_fixture('help')
+    output = tackle(input_string)
+    assert output['do_stuff'] == 'Doing things...'
+    assert output['do_things'] != 'Doing stuff...'
+
+
+@pytest.mark.parametrize(
+    "input_string",
+    [
+        # 'do_stuff',
+        # 'file.yaml do_stuff do_things'
+        'file.yaml do_stuff_compact do_things and other things'
+        # 'file.yaml do_stuff_compact_block print_this and print all this to'
+    ],
+)
+def test_parser_call_key_on_args_cli(chdir_fixture, input_string):
+    chdir_fixture('help')
+    main(input_string.split())

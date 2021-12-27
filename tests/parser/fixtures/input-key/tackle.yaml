@@ -1,0 +1,17 @@
+
+#do_stuff:
+#  ->:
+#  help: Do stuff.
+#    ->: print Hello world
+
+stuff: things
+
+
+do_stuff:
+  ->: print Doing stuff
+  help: Do things.
+
+do_things:
+  ->: print Doing things
+  help: Do things.
+

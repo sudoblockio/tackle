@@ -6,15 +6,19 @@ from tackle.main import tackle
 
 
 FIXTURES = [
-    ('tackle_map.yaml', 'tackle_map_output.yaml'),
-    ('tackle_map_lists.yaml', 'tackle_map_lists_output.yaml'),
-    ('tackle_map_root.yaml', 'tackle_map_root_output.yaml'),
-    ('outer_tackle.yaml', 'outer_tackle_expected.yaml'),
-    # ('a_tackle.yaml', 'outer_tackle_expected.yaml'),
-    # # ('tackle_merge.yaml', 'petstore.yaml'),
+    ('map.yaml', 'map-output.yaml'),
+    ('map-lists.yaml', 'map-lists-output.yaml'),
+    ('map-root.yaml', 'map-root-output.yaml'),
+    ('outer-tackle.yaml', 'outer-tackle-output.yaml'),
+    ('private-hooks.yaml', 'private-hooks-output.yaml'),
+    # ('document-hooks.yaml', 'outer_tackle_expected.yaml'),
+    ('outer-tackle.yaml', 'outer-tackle-output.yaml'),
+    ('merge-simple.yaml', 'merge-simple-output.yaml'),
     # # Non tackle things
-    ('k8s-deployment.yaml', 'k8s-deployment.yaml'),
-    ('docker-compose.yml', 'docker-compose.yml'),
+    # ('k8s-deployment.yaml', 'k8s-deployment.yaml'),
+    # ('docker-compose.yml', 'docker-compose.yml'),
+    # # Broken
+    # ('merge-petstore.yaml', 'petstore.yaml'),
 ]
 
 

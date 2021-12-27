@@ -1,0 +1,30 @@
+stuff: things
+
+a_list:
+  - stuff
+  - things
+
+a_block:
+  a_item:
+    - A stuff
+    - A things
+  b_item:
+    - B 0
+    - B 1
+
+#b_block_private_verify:
+#  foo:
+#    bar:
+#      baz:
+#        - 1
+#        - 2
+#    bing: bang
+
+
+b_block:
+  foo:
+    bar:
+      baz:
+        - 1
+        - 2
+    bing: bang

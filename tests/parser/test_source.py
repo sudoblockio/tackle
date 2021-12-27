@@ -14,3 +14,16 @@ INPUT_SOURCES = [
 def test_parser_update_source(change_curdir_fixtures, input_string):
     context = Context(input_string=input_string, no_input=True)
     update_source(context)
+
+
+def test_parser_update_source_key_to_parent(chdir, mocker):
+    """
+    Test that when an input string is not a file/provider source that we correctly
+    traverse to the nearest tackle file and run a key within it.
+    """
+    chdir('fixtures/input-key/child')
+    # mocker.patch("tackle.parser.walk_sync")
+
+    context = Context(input_string="do_things", no_input=True)
+    update_source(context)
+    print()

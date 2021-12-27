@@ -1,0 +1,30 @@
+that: something
+
+expanded:
+  ->: var
+  match: that
+  case:
+    something:
+      ->: var
+    something-else->: print here
+
+expanded_block:
+  ->: block
+  if: that == 'something'
+  items:
+    expanded:
+      ->: var
+      input: that
+    mixed:
+      ->: var that
+      if: foo.expanded == 'something'
+    compact->: var that --if "foo.compact == 'something'"
+
+compact_>:
+  if: that == 'something'
+#  for: [1, 2]
+#  merge: true
+
+  expanded:
+    ->: var
+    input: that

@@ -1,6 +1,6 @@
-that: something
+stuff: things
 foo: {}
 bar:
-  expanded: something
-  mixed: something
-  compact: something
+  expanded: things
+  mixed: things
+  compact: things

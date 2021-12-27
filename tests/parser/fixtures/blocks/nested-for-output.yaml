@@ -1,0 +1,47 @@
+stuff: things
+
+a_list:
+  - stuff
+  - things
+
+no_block:
+  - A stuff
+  - A things
+
+d_block:
+  - one:
+      foo:
+        bar:
+          baz:
+            - 0
+            - stuff
+        bing: bang
+  - one:
+      foo:
+        bar:
+          baz:
+            - 1
+            - things
+        bing: bang
+
+
+e_block:
+  - one:
+      foo:
+        - bar:
+            baz: stuff
+          bing: bang
+        - bar:
+            baz: things
+          bing: bang
+    stuff: things
+
+  - one:
+      foo:
+        - bar:
+            baz: stuff
+          bing: bang
+        - bar:
+            baz: things
+          bing: bang
+    stuff: things

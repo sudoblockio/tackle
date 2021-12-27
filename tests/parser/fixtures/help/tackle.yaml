@@ -1,0 +1,28 @@
+stuff: things
+
+expanded:
+  ->: print Doing {{stuff}}...
+  help: Do the expanded
+
+compact_arg->: print "Doing stuff..." --help "Do the compact"
+compact_implicit->: print "Doing stuff..."
+
+block->:
+  help: Do the block
+  expanded:
+    ->: print Doing {{stuff}}...
+    help: Print stuff
+
+  compact->: print "Doing stuff..." --help "Print things"
+
+function<-:
+  help: Do the function
+  args:
+    - thing
+  exec:
+    expanded:
+      ->: print Doing {{stuff}}...
+      help: Print stuff
+
+    compact->: print "Doing stuff..." --help "Print things"
+

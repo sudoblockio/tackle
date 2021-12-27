@@ -1,0 +1,141 @@
+stuff: things
+alist:
+  - stuff
+  - things
+
+expanded:
+  ->:
+  help: Do expanded
+  expanded:
+    ->: var
+    input: stuff
+  mixed:
+    ->: var that
+    if: foo.expanded == 'something'
+  compact->: var that --if "foo.compact == 'something'"
+
+exposed_hook_function->:
+  # If this was a function (ie `<-` / `<_`) it would not get called by default when file is ran normally
+  help: Do stuff
+  args:
+    - stuff
+    - thing
+  kwargs:
+    foo: bar
+  exec:
+    do_stuff->: print Doing {{stuff}}
+    do_other_stuff->: print Doing {{stuff}}  --if "foo == 'bar'"
+
+exposed_hook_exanded:
+  ->:
+  args:
+    - stuff
+    - thing
+  kwargs:
+    foo: bar
+  exec:
+    do_stuff->: print Doing {{stuff}}
+    do_other_stuff->: print Doing {{stuff}}  --if "foo == 'bar'"
+
+ignored_key->:
+  if: stuff == 'things'
+  expanded:
+    ->: var
+    input: stuff
+  mixed:
+    ->: var stuff
+    if: foo.expanded == 'things'
+  compact->: var that --if "foo.compact == 'things'"
+
+logic_key->:
+  if: ignored_key.expanded == that
+  expanded:
+    ->: var
+    input: stuff
+  mixed:
+    ->: var stuff
+    if: foo.expanded == 'things'
+  compact->: var that --if "foo.compact == 'things'"
+
+loop_key->:
+  for: alist
+  expanded:
+    ->: var
+    input: stuff
+  mixed:
+    ->: var stuff
+    if: foo.expanded == 'things'
+  compact->: var that --if "foo.compact == 'things'"
+
+#expanded_block:
+#  ->: block
+#  if: that == 'something'
+#  for: [1, 2]
+#  items:
+#    expanded:
+#      ->: var
+#      input: that
+#    mixed:
+#      ->: var that
+#      if: foo.expanded == 'something'
+#    compact->: var that --if "foo.compact == 'something'"
+
+compact_empty->:
+  exec:
+    expanded:
+      ->: var
+      input: that
+    mixed:
+      ->: var that
+      if: compact_empty.expanded == 'something'
+    compact->: var that --if "compact_empty.compact == 'something'"
+  return: "{{ compact }}"
+
+compact_args->:
+  args:
+    - name: foo
+      type: str
+      description: Foo the best
+      default: bar
+  exec:
+    expanded:
+      ->: var
+      input: that
+      if: foo == 'bar'
+    mixed:
+      ->: var that
+      if: compact_empty.expanded == 'something'
+    compact->: var that --if "compact_empty.compact == 'something'"
+
+compact_empty:
+  ->: hook
+  args:
+    - name: foo
+      type: str
+      description: Foo the best
+      default: bar
+  exec:
+    expanded:
+      ->: var
+      input: that
+      if: foo == 'bar'
+    mixed:
+      ->: var that
+      if: compact_empty.expanded == 'something'
+    compact->: var that --if "compact_empty.compact == 'something'"
+
+block_compact->:
+  this->: var stuff
+
+
+#compact_block->:
+#  if: that == 'something'
+##  for: [1, 2]
+##  merge: true
+#  expanded:
+#    ->: var
+#    input: that
+#  mixed:
+#    ->: var that
+#    if: foo.expanded == 'something'
+#  compact->: var that --if "foo.compact == 'something'"

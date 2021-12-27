@@ -1,0 +1,56 @@
+stuff: things
+
+a_list:
+  - stuff
+  - things
+
+no_block:
+  - A stuff
+  - A things
+
+a_block:
+  a_item:
+    - A stuff
+    - A things
+
+  b_item:
+    - B 0
+    - B 1
+
+
+b_block:
+  foo:
+    bar:
+      baz:
+        - 1
+        - 2
+    bing: bang
+
+c_block:
+  - foo:
+      bar:
+        baz:
+          - 1
+          - 2
+      bing: bang
+  - foo:
+      bar:
+        baz:
+          - 1
+          - 2
+      bing: bang
+
+d_block:
+  - foo:
+      bar:
+        baz:
+          - 0
+          - stuff
+      bing: bang
+
+  - foo:
+      bar:
+        baz:
+          - 1
+          - things
+      bing: bang

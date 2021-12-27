@@ -1,0 +1,40 @@
+that: something
+
+## Help string
+#->: help Tackle thing that does stuff
+
+# Help map
+_:
+  expanded:
+    _>: help
+  _>: help
+
+# Help list
+__:
+  - help
+
+
+do_stuff->:
+  help: Do stuff
+  expanded:
+    ->: var
+    input: that
+  mixed:
+    ->: var that
+    if: foo.expanded == 'something'
+  compact->: var that --if "foo.compact == 'something'"
+
+
+
+
+foo->:
+  if: that == 'something'
+  expanded:
+    ->: var
+    input: that
+
+#  mixed:
+#    ->: var that
+#    if: foo.expanded == 'something'
+#
+#  compact->: var that --if "foo.mixed == 'something'"

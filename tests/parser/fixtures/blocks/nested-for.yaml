@@ -1,0 +1,53 @@
+stuff: things
+
+a_list:
+  - stuff
+  - things
+
+no_block:
+  ->: print A {{item}} --for a_list
+  if: stuff == 'things'
+
+d_block->:
+  for: a_list
+  one:
+    foo:
+      bar:
+        baz->:
+          - "{{index}}"
+          - "{{item}}"
+      bing: bang
+
+
+e_block->:
+  for: a_list
+  stuff->: "{{stuff}}"
+  one:
+    foo->:
+      for: a_list
+      bar:
+        baz->: "{{item}}"
+      bing: bang
+
+#f_block->:
+#  for: a_list
+#  one:
+#    foo->:
+#      for: a_list
+#      bar:
+#        baz->:
+#          - "{{index}}"
+#          - "{{item}}"
+#      bing: bang
+
+#g_block->:
+#  for: a_list
+#  one:
+#    foo->:
+#      for: a_list
+#      bar->:
+#        if: stuff == 'things'
+#        baz:
+#          - "{{index}}"
+#          - "{{item}}"
+#      bing: bang
