@@ -41,7 +41,7 @@ def test_parser_hooks_raises_error_on_unknown_hook_type(change_curdir_fixtures):
     from tackle.exceptions import UnknownHookTypeException
 
     with pytest.raises(UnknownHookTypeException):
-        tackle(context_file='unknown-hook-type.yaml')
+        tackle('unknown-hook-type.yaml')
 
 
 def test_parser_provider_hook_add(change_curdir_fixtures):
