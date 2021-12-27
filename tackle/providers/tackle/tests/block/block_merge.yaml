@@ -1,31 +1,21 @@
-block:
-  type: block
+block->:
   merge: true
-  items:
-    blah: zz
+  furry:
+    ->: confirm
+    message: Are our friends furry?
+  friend: dog
 
-    furry:
-      type: confirm
-      message: Are our friends furry?
-    friend: dog
+  beer->: tackle fake-tackle
 
-    beer:
-      type: tackle
-      template: .
-      chdir: fake-tackle
+  things:
+    ->: print "{{ beer.things }}"
 
-    things:
-      type: print
-      statement: "{{ beer.things }}"
+  test_block:
+    ->: block
+    items:
+      my_dog:
+        ->: var
+        input: friend
+        if: friend == 'dog'
 
-    test_block:
-      type: block
-      items:
-        my_dog:
-          type: var
-          input: Penny
-          when: "{{ friend == 'dog' }}"
-
-    foo:
-      type: print
-      statement: bar
+  foo->: print bar

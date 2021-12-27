@@ -1,14 +1,5 @@
 """Block hook."""
-import logging
-from _collections import OrderedDict
-from typing import Dict
-
 from tackle.models import BaseHook, Context
-from tackle.settings import settings
-
-import tackle as tkl
-
-logger = logging.getLogger(__name__)
 
 
 class BlockHook(BaseHook):
@@ -24,18 +15,23 @@ class BlockHook(BaseHook):
     """
 
     type: str = 'block'
-    items: Dict
+    items: dict
+
+    _render_exclude = {'items'}
 
     def execute(self):
-        output = tkl.parser.context.parse_context(
-            context=Context(
-                input_dict=OrderedDict({self.context_key: self.items}),
-                output_dict=OrderedDict(self.output_dict),
-                overwrite_inputs=self.overwrite_inputs,
-                override_inputs=self.override_inputs,
-                context_key=self.context_key,
-                no_input=self.no_input,
-                settings=settings,
-            ),
+        from tackle.parser import walk_sync
+
+        existing_context = self.output_dict.copy()
+        existing_context.update(self.existing_context)
+
+        tmp_context = Context(
+            providers=self.providers_,
+            existing_context=existing_context,
+            output_dict={},
+            input_dict=self.items,
+            key_path=[],
+            no_input=self.no_input,
         )
-        return dict(output.output_dict)
+        walk_sync(context=tmp_context, element=self.items.copy())
+        return tmp_context.output_dict

@@ -16,6 +16,7 @@ from tackle.exceptions import (
 )
 from tackle.utils.log import configure_logger
 from tackle.main import tackle
+from tackle.utils.command import unpack_args_kwargs_list
 
 
 def main(raw_args=None):
@@ -30,10 +31,24 @@ def main(raw_args=None):
         nargs="?",
         type=str,
         default=None,
-        help="The input to parse as a source either to a local file or directory or remote location - ie github.com/robcxyz/tackle-demos or robcxyz/tackle-demos.",
+        help="The input to parse as a source either to a local file / directory or "
+        "remote location - ie github.com/robcxyz/tackle-demos or "
+        "robcxyz/tackle-demos. \n"
+        # "If no source is matched then the tool defaults to searching in parent "
+        # "directories for a .tackle.yaml file using this argument in for running "
+        # "that file.",
     )
     parser.add_argument(
-        '--no-input', '-n', action='store_true', help="Do not prompt for anything."
+        '--no-input',
+        '-n',
+        action='store_true',
+        help="Do not prompt for anything resulting in default choices.",
+    )
+    parser.add_argument(
+        '--verbose', '-v', action='store_true', help="Execute in verbose mode."
+    )
+    parser.add_argument(
+        '--print', '-p', action='store_true', help="Print the resulting output."
     )
     parser.add_argument(
         '--checkout',
@@ -57,19 +72,20 @@ def main(raw_args=None):
         type=str,
         metavar="",
         dest="context_file",
-        help="The file to run. Only relevent for remote sources as otherwise you can just give directly as input.",
+        help="The file to run. Only relevent for remote sources as otherwise you can just give full path to file as input.",
     )
-
-    # parser.add_argument('--verbose', '-v',  # TODO: Implement in logger?
-    #                     help="Verbose mode")
     parser.add_argument(
         '--version', action='version', version=f'tackle-box {__version__}'
     )
 
     args, unknown_args = parser.parse_known_args(raw_args)
 
-    # print(vars(args))
-    # print(args, unknown_args)
+    # Handle printing variable which isn't needed in core logic
+    print_enabled = args.print
+    del args.print
+
+    # Breakup the unknown arguments which are added later into the runtime's args/kwargs
+    global_args, global_kwargs, global_flags = unpack_args_kwargs_list(unknown_args)
 
     configure_logger(
         stream_level='DEBUG' if getattr(args, "verbose", False) else 'INFO',
@@ -77,11 +93,14 @@ def main(raw_args=None):
     )
 
     try:
-        output_dict = tackle(**vars(args))
-
-        # TODO: Print based on local format.
-        print(json.dumps(dict(output_dict)))
-        return output_dict
+        output_dict = tackle(
+            **vars(args),
+            global_args=global_args,
+            global_kwargs=global_kwargs,
+            global_flags=global_flags,
+        )
+        if print_enabled:
+            print(json.dumps(dict(output_dict)))
     except (
         OutputDirExistsException,
         InvalidModeException,

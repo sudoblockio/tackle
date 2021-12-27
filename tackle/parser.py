@@ -4,20 +4,35 @@ import logging
 from pathlib import Path
 import os
 import inspect
-import re
-import copy
+import warnings
 from typing import Type, Any
 
 from tackle.providers import import_with_fallback_install
 from tackle.render import render_variable, wrap_jinja_braces
-from tackle.utils.dicts import nested_get, nested_delete, encode_list_index, set_key
+from tackle.utils.dicts import (
+    nested_get,
+    nested_delete,
+    nested_set,
+    encode_list_index,
+    set_key,
+)
 from tackle.utils.command import unpack_args_kwargs_string
 from tackle.utils.vcs import get_repo_source
 from tackle.utils.files import read_config_file
-from tackle.utils.paths import is_repo_url, is_file, find_tackle_file
+from tackle.utils.paths import (
+    is_repo_url,
+    is_directory_with_tackle,
+    is_file,
+    find_tackle_file,
+    find_nearest_tackle_file,
+)
 from tackle.utils.zipfile import unzip
 from tackle.models import Context, BaseHook
-from tackle.exceptions import UnknownHookTypeException, UnknownSourceException
+from tackle.exceptions import (
+    UnknownHookTypeException,
+    UnknownArgumentException,
+    EmptyTackleFileException,
+)
 from tackle.settings import settings
 
 logger = logging.getLogger(__name__)
@@ -57,36 +72,6 @@ def get_hook(hook_type, context: 'Context', suppress_error: bool = False):
         )
 
 
-# def update_global_args(context: 'Context', args: list, kwargs: dict, flags: list):
-#     """
-#     Handler for global args, kwargs, and flags when the source is one of zip, repo, or
-#     directory. Both kwargs and flags update the override dictionary. Args are first
-#     used to search within the `input_dict` to see if there is a key of that type and
-#     jumping to that level and then using those arguments inside that hook call.
-#     """
-#     # context.global_kwargs = kwargs
-#     # context.global_flags = flags
-#     for k, v in kwargs:
-#         context.override_inputs.update({k: v})
-#
-#     for i in flags:
-#         context.override_inputs.update({i: True})
-#
-#     # TODO: Implement key seeking logic
-#     # context.global_args = args
-
-
-# def evaluate_merge(key_path: list, merge: bool):
-#
-#     if merge:
-#         if key_path[-1] in ('->', '_>'):
-#             pass
-#         elif key_path[-1].endswith(('->', '_>')):
-#             pass
-#     else:
-#         return key_path
-
-
 def evaluate_for(hook: BaseHook, context: 'Context'):
     """Run the parse_hook function in a loop and return a list of outputs."""
     loop_targets = render_variable(context, hook.for_)
@@ -97,7 +82,7 @@ def evaluate_for(hook: BaseHook, context: 'Context'):
         element=context.output_dict,
         keys=context.key_path,
         value=[],
-        keys_to_delete=context.remove_key_list,
+        keys_to_delete=context.keys_to_remove,
     )
 
     if len(loop_targets) == 0:
@@ -109,30 +94,27 @@ def evaluate_for(hook: BaseHook, context: 'Context'):
         else reversed(list(enumerate(loop_targets)))
     ):
         # Create temporary variables in the context to be used in the loop.
-        # TODO: Consider putting this in another dictionary that is looked up based
-        #  on inspecting the raw template for refs.
-        context.output_dict.update({'index': i, 'item': l})
+        context.existing_context.update({'index': i, 'item': l})
+        # Append the index to the keypath
         context.key_path.append(encode_list_index(i))
 
-        # We need to parse a copy of the hook as
-        # output.append(parse_hook(hook.copy(), context, append_hook_value=True))
+        # TODO: Do we need to parse a copy of the hook?
         parse_hook(hook.copy(), context, append_hook_value=True)
         context.key_path.pop()
 
     # Remove temp variables
-    context.output_dict.pop('item')
-    context.output_dict.pop('index')
-
-    # return output
+    context.existing_context.pop('item')
+    context.existing_context.pop('index')
 
 
 def evaluate_if(hook: BaseHook, context: 'Context', append_hook_value: bool) -> bool:
     """Evaluate the when condition and return bool."""
     if hook.for_ is not None and not append_hook_value:
+        # We qualify if conditions within for loop logic
         return True
     if hook.if_ is None:
         return True
-    return render_variable(context, hook.if_)
+    return render_variable(context, wrap_jinja_braces(hook.if_))
 
 
 def render_hook_vars(hook: BaseHook, context: 'Context'):
@@ -143,7 +125,7 @@ def render_hook_vars(hook: BaseHook, context: 'Context'):
         if hook_value is None:
             continue
 
-        if k in hook._render_exclude:
+        if k in hook._render_exclude or k in hook._render_exclude_default:
             continue
 
         if 'render_by_default' in v.field_info.extra:
@@ -162,159 +144,54 @@ def parse_hook(hook: BaseHook, context: 'Context', append_hook_value: bool = Non
             return
 
         # if hook.while_ is not None:
-        #     evaluate_when(hook, context)
+        #     evaluate_while(hook, context)
         #     return
 
         else:
-            # Normal hook run
+            # Render the remaining hook variables
             render_hook_vars(hook, context)
+
+            # Normal hook run
             hook_output_value = hook.call()
+
+            if hook.merge:
+                if context.key_path[-1] in ('->', '_>'):
+                    # Expanded key - Remove parent key from key path
+                    key_path = context.key_path[:-2] + [context.key_path[-1]]
+                else:
+                    # Compact key
+                    key_path = context.key_path[:-1] + [context.key_path[-1][:-2]]
+
+                # Can't merge into top level keys without merging k/v individually
+                if len(key_path) == 1:
+                    # This is only valid for dict output
+                    if isinstance(hook_output_value, dict):
+                        for k, v in hook_output_value.items():
+                            set_key(
+                                element=context.output_dict,
+                                keys=[k] + key_path,
+                                value=v,
+                                keys_to_delete=context.keys_to_remove,
+                                append_hook_value=append_hook_value,
+                            )
+                        return
+                    else:
+                        raise ValueError("Can't merge non maps into top level keys.")
+
+            else:
+                key_path = context.key_path
+
             set_key(
                 element=context.output_dict,
-                keys=context.key_path if not hook.merge else context.key_path[:-1],
+                keys=key_path,
                 value=hook_output_value,
-                keys_to_delete=context.remove_key_list,
+                keys_to_delete=context.keys_to_remove,
                 append_hook_value=append_hook_value,
             )
-            return
 
     elif hook.else_ is not None:
         # TODO: Implement
         raise NotImplementedError
-
-    # elif hook.match_ is not None:
-
-    else:
-        # False side of the `if` condition
-        if not append_hook_value:
-            # Only delete the key if we're not in a loop where the key would not exist
-            nested_delete(
-                element=context.output_dict,
-                keys=context.key_path,
-            )
-
-
-def is_tackle_hook(value):
-    """Regex qualify if the key is a hook."""
-    if isinstance(value, bytes):
-        return False
-
-    REGEX = re.compile(
-        r"""^.*(->|_>)$""",
-        re.VERBOSE,
-    )
-    return bool(REGEX.match(value))
-
-
-def run_hook_function(context: 'Context'):
-    """
-    Run either a hook or a function. In this context the args are associated with
-    arguments in
-    """
-    args, kwargs, flags = unpack_args_kwargs_string(context.input_string)
-    first_arg = args[0]
-    # Remove first args it will be consumed and no longer relevant
-    args.pop(0)
-
-    if '{{' in first_arg and '}}' in first_arg:
-        args.append(first_arg)
-        first_arg = 'var'
-
-    # Look up the hook from the imported providers
-    Hook = get_hook(first_arg, context, suppress_error=True)
-
-    if Hook is None:
-        # TODO: Rm and raise error in get_hook?
-        from tackle.exceptions import UnknownHookTypeException
-
-        raise UnknownHookTypeException
-
-    if context.key_path[-1] in ('->', '_>'):
-        # We have a expanded or mixed (with args) hook expression and so there will be
-        # additional properties in adjacent keys
-        hook_dict = nested_get(context.input_dict, context.key_path[:-1])
-
-        # Need to replace arrow keys as for the time being (pydantic 1.8.2) - multiple
-        # aliases for the same field (type) can't be specified so doing this hack
-        if '->' in hook_dict:
-            hook_dict['type'] = hook_dict['->']
-            hook_dict.pop('->')
-        else:
-            hook_dict['type'] = hook_dict['_>']
-            hook_dict.pop('_>')
-    else:
-        # Hook is a compact expression - Can only be a string
-        hook_dict = {}
-        # hook_dict['type'] = nested_get(context.input_dict, context.key_path)
-        hook_dict['type'] = first_arg
-
-    # Associate hook arguments provided in the call with hook attributes
-    evaluate_args(args, hook_dict, Hook)
-    # Add any kwargs
-    for k, v in kwargs.items():
-        hook_dict[k] = v
-
-    hook = Hook(
-        **hook_dict,
-        input_dict=context.input_dict,
-        output_dict=context.output_dict,
-        no_input=context.no_input,
-    )
-
-    # Main parser
-    parse_hook(hook, context)
-
-
-def walk_sync(context: 'Context', element):
-    """Traverse an object looking for hook calls."""
-    if isinstance(element, str):
-        if is_tackle_hook(context.key_path[-1]):  # Regex qualify
-            if len(context.key_path[-1]) == 2:
-                # Expanded or mixed expression - ie in ('->', '_>')
-                context.input_string = element
-                run_hook_function(context)
-                return
-            # Compact expression
-            context.input_string = element
-            run_hook_function(context)
-        return
-
-    elif isinstance(element, dict):
-        for k, v in element.copy().items():
-            context.key_path.append(k)
-            walk_sync(context, v)
-            context.key_path.pop()
-
-    elif isinstance(element, list):
-        for i, v in enumerate(element.copy()):
-            context.key_path.append(encode_list_index(i))
-            walk_sync(context, v)
-            context.key_path.pop()
-
-    return context.output_dict
-
-
-def get_base_file(context: 'Context'):
-    """Read the tackle file and copy it's contents into the output_dict."""
-    context.input_dict = read_config_file(
-        os.path.join(context.repo_dir, context.context_file)
-    )
-    context.output_dict = copy.deepcopy(context.input_dict)
-
-
-def import_local_provider_source(context: 'Context', provider_dir: str):
-    """
-    Import a provider from a path by checking if the provider has a tackle file and
-    returning a path.
-    """
-    context.repo_dir = provider_dir
-    if context.context_file is None:
-        context.context_file = find_tackle_file(provider_dir)
-
-    if context.directory_:
-        context.context_file = os.path.join(context.context_file, context.directory_)
-
-    get_base_file(context)
 
 
 def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
@@ -350,7 +227,351 @@ def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
             return
         else:
             # The hooks arguments are indexed
-            hook_dict[Hook._args[i]] = v
+            try:
+                hook_dict[Hook._args[i]] = v
+            except IndexError:
+                raise UnknownArgumentException(f"Unknown argument {Hook._args[i]}.")
+
+
+def run_hook_function(context: 'Context'):
+    """
+    Run either a hook or a function. In this context the args are associated with
+    arguments in
+    """
+    if isinstance(context.input_string, str):
+        args, kwargs, flags = unpack_args_kwargs_string(context.input_string)
+        first_arg = args[0]
+        # Remove first args it will be consumed and no longer relevant
+        args.pop(0)
+        if '{{' in first_arg and '}}' in first_arg:
+            args.insert(0, first_arg)
+            first_arg = 'var'
+
+    else:
+        # Rare case when an arrow is used to indicate rendering of a list.
+        # Only qualified when input is of form `key->: [{{var}},{{var}},...]
+        # In this case we need to set the key a as an empty list
+        nested_set(
+            element=context.output_dict,
+            keys=context.key_path[:-1] + [context.key_path[-1][:-2]],
+            value=[],
+        )
+        # Iterate over values appending rendered values. Rendered values can be any type
+        for i, v in enumerate(context.input_string):
+            nested_set(
+                element=context.output_dict,
+                keys=context.key_path[:-1]
+                + [context.key_path[-1][:-2]]
+                + [encode_list_index(i)],
+                value=render_variable(context, v),
+            )
+        return
+
+    # Look up the hook from the imported providers
+    Hook = get_hook(first_arg, context, suppress_error=True)
+
+    if Hook is None:
+        raise UnknownHookTypeException
+
+    if context.key_path[-1] in ('->', '_>'):
+        # We have a expanded or mixed (with args) hook expression and so there will be
+        # additional properties in adjacent keys
+        hook_dict = nested_get(context.input_dict, context.key_path[:-1]).copy()
+
+        # Need to replace arrow keys as for the time being (pydantic 1.8.2) - multiple
+        # aliases for the same field (type) can't be specified so doing this hack
+        if '->' in hook_dict:
+            hook_dict['type'] = first_arg
+            hook_dict.pop('->')
+        else:
+            hook_dict['type'] = first_arg
+            hook_dict.pop('_>')
+
+    else:
+        # Hook is a compact expression - Can only be a string
+        hook_dict = {}
+        # hook_dict['type'] = nested_get(context.input_dict, context.key_path)
+        hook_dict['type'] = first_arg
+
+    # Associate hook arguments provided in the call with hook attributes
+    evaluate_args(args, hook_dict, Hook)
+    # Add any kwargs
+    for k, v in kwargs.items():
+        hook_dict[k] = v
+
+    hook = Hook(
+        **hook_dict,
+        input_dict=context.input_dict,
+        output_dict=context.output_dict,
+        existing_context=context.existing_context,
+        no_input=context.no_input,
+        providers_=context.providers,
+        key_path_=context.key_path,
+    )
+
+    # Main parser
+    parse_hook(hook, context)
+
+
+def handle_empty_blocks(context: 'Context', block_value):
+    """
+    Handle keys appended with arrows and interpret them as `block` hooks. Value is
+    re-written over with a `block` hook to support the following syntax.
+
+    a-key->:
+      if: stuff == 'things'
+      for: a_list
+      foo->: print ...
+      bar->: print ...
+
+    to
+
+    a-key:
+      ->: block
+      if: stuff == 'things'
+      for: a_list
+      items:
+        foo->: print ...
+        bar->: print ...
+
+    :param context:
+    :param block_key:
+    :param block_value:
+    :return:
+    """
+    # Break up key paths
+    base_key_path = context.key_path[:-1]
+    new_key = [context.key_path[-1][:-2]]
+
+    # Over-write the input with an expanded path (ie no arrow in key)
+    nested_set(
+        element=context.input_dict,
+        keys=base_key_path + new_key,
+        value=block_value,
+    )
+    # Add back the arrow with the value set to `block` for the block hook
+    arrow = [context.key_path[-1][-2:]]
+    nested_set(
+        element=context.input_dict,
+        keys=base_key_path + new_key + arrow,
+        value='block',
+    )
+    # Remove the old key
+    nested_delete(context.input_dict, context.key_path)
+
+    # Iterate through the block keys except for the reserved keys like `for` or `if`
+    aliases = [v.alias for _, v in BaseHook.__fields__.items()] + ['->', '_>']
+    for k, v in block_value.copy().items():
+        if k not in aliases:
+            # Set the keys under the `items` key per the block hook's input
+            nested_set(
+                element=context.input_dict,
+                keys=base_key_path + new_key + ['items', k],
+                value=v,
+            )
+            # Remove the old key
+            nested_delete(context.input_dict, base_key_path + new_key + [k])
+        elif context.verbose:
+            warnings.warn(f"Warning - skipping over {k} in block hook.")
+
+
+def walk_sync(context: 'Context', element):
+    """Traverse an object looking for hook calls."""
+    if len(context.key_path) != 0:
+        # Handle compact expressions - ie key->: hook_type args
+        # if is_tackle_hook(context.key_path[-1]):
+        if context.key_path[-1][-2:] in ('->', '_>'):
+            context.input_string = element
+            run_hook_function(context)
+            if context.key_path[-1][-2:] == '_>':
+                # Private hook calls
+                context.keys_to_remove.append(
+                    context.key_path[:-1] + [context.key_path[-1][:-2]]
+                )
+            return
+
+    if isinstance(element, dict):
+        # Handle expanded expressions - ie key:\n  ->: hook_type args
+        if '->' in element.keys():
+            # Public hook calls
+            context.key_path.append('->')
+            context.input_string = element['->']
+            run_hook_function(context)
+            context.key_path.pop()
+            return
+        elif '_>' in element.keys():
+            # Private hook calls
+            context.key_path.append('_>')
+            context.input_string = element['_>']
+            run_hook_function(context)
+            context.key_path.pop()
+            context.keys_to_remove.append(context.key_path.copy())
+            return
+
+        for k, v in element.copy().items():
+            context.key_path.append(k)
+            # Special case where we have an empty hook, expanded or compact
+            if k[-2:] in ('->', '_>') and (v is None or isinstance(v, dict)):
+                # Here we re-write the input to turn empty hooks into block hooks
+                handle_empty_blocks(context, v)
+                context.key_path[-1] = k[:-2]
+                walk_sync(context, v)
+                context.key_path.pop()
+            else:
+                walk_sync(context, v)
+                context.key_path.pop()
+
+    # Non-hook calls recurse through inputs
+    elif isinstance(element, list):
+        for i, v in enumerate(element.copy()):
+            context.key_path.append(encode_list_index(i))
+            walk_sync(context, v)
+            context.key_path.pop()
+    else:
+        nested_set(element=context.output_dict, keys=context.key_path, value=element)
+
+
+def run_handler(context, handler_key, handler_value):
+    """
+    Run a pre/post execution handlers which are either hooks or functions.
+
+    NOTE: This is an experimental feature and may change.
+    """
+    if isinstance(handler_value, str):
+        args, kwargs, flags = unpack_args_kwargs_string(handler_value)
+    elif isinstance(handler_value, list):
+        pass
+    elif isinstance(handler_value, dict):
+        pass
+    else:
+        raise ValueError
+
+    if handler_key in context.functions:
+        """Run functions"""
+        function = context.functions[handler_key]
+        context.input_dict = function.exec
+        # context.output_dict = copy.deepcopy(function.exec)
+
+        walk_sync(context, function.exec.copy())
+
+    elif get_hook(handler_key, context, suppress_error=True):
+        Hook = get_hook(handler_key, context)
+        # context.input_string('import ' + handler_value)
+        # run_hook_function(context)
+        # if isinstance()
+        hook = Hook(
+            **handler_value,
+            input_dict=context.input_dict,
+            output_dict=context.output_dict,
+            no_input=context.no_input,
+            providers=context.providers,
+        )
+        hook.call()
+    else:
+        raise UnknownHookTypeException()
+
+
+def run_source(context: 'Context', args: list, kwargs: dict, flags: list):
+    """
+    Take the input dict and impose global args/kwargs/flags with the following logic:
+    - Use kwargs/flags as overriding keys in the input_dict
+    - Check the input dict if there is a key matching the arg and run that key
+      - Additional arguments are assessed as
+        - If the call is to a hook directly, then inject that as an argument
+        - If the call is to a block of hooks then call the next hook key
+    - Otherwise run normally (ie full parsing).
+
+    An exception exists for if the last arg is `help` in which case that level's help
+    is called and exited 0.
+    """
+    if context.global_args is not None:
+        args = args + context.global_args
+        context.global_args = None
+
+    # Global kwargs/flags are immediately consumed and injected into the kwargs/flags
+    if context.global_kwargs is not None:
+        kwargs.update(context.global_kwargs)
+        context.global_kwargs = None
+
+    if context.global_flags is not None:
+        kwargs.update({i: True for i in context.global_flags})
+        context.global_kwargs = None
+
+    for k, v in kwargs:
+        # Process kwargs as an overriding key
+        context.input_dict.update({k: v})
+
+    for i in flags:
+        # Process flags by setting key to true
+        context.input_dict.update({i: True})
+
+    if len(args) >= 1:
+        # TODO: Implement help
+        # `help` which will always be the last arg
+        # if args[-1] == 'help':
+        #     # Calling help will exit 0. End of the line.
+        #     run_help(context, context.input_dict, args[:-1])
+
+        # Loop through all args
+        for i in args:
+            # Remove any arrows on the first level keys
+            first_level_compact_keys = [
+                k[:-2] for k, _ in context.input_dict.items() if k.endswith('->')
+            ]
+            if i in first_level_compact_keys:
+                arg_key_value = context.input_dict[i + '->']
+                if isinstance(arg_key_value, str):
+                    # We have a compact hook so nothing else to traverse
+                    break
+
+            elif i in context.input_dict:
+                context.key_path.append(i)
+                walk_sync(context, context.input_dict[i].copy())
+                context.key_path.pop()
+            else:
+                raise ValueError(f"Argument {i} not found as key in input.")
+        return
+    walk_sync(context, context.input_dict.copy())
+
+
+def extract_base_file(context: 'Context'):
+    """Read the tackle file and initialize input_dict."""
+    path = os.path.join(context.input_dir, context.input_file)
+    input_dict = read_config_file(path)
+    context.input_dict = input_dict
+
+    if input_dict is None:
+        raise EmptyTackleFileException(f"No tackle file found at {path}.")
+
+    # TODO: Experimental feature that could be integrated later
+    # # Extract handlers
+    # for k, v in list(input_dict.items()):
+    #     if k.startswith('__'):
+    #         # Run pre-execution handlers and remove from input
+    #         run_handler(context, k[2:], v)
+    #         input_dict.pop(k)
+    #     if k.endswith('__'):
+    #         # Store post-execution handlers and remove from input
+    #         # TODO: Execute post exec handlers
+    #         context.post_exec_handlers.append({k[:-2]: v})
+    #         input_dict.pop(k)
+
+    context.input_dict = input_dict
+
+
+def import_local_provider_source(context: 'Context', provider_dir: str):
+    """
+    Import a provider from a path by checking if the provider has a tackle file and
+    returning a path.
+    """
+    context.input_dir = provider_dir
+    if context.input_file is None:
+        context.input_file = find_tackle_file(provider_dir)
+
+    if context.directory:
+        context.input_file = os.path.join(context.input_file, context.directory)
+
+    extract_base_file(context)
 
 
 def update_source(context: 'Context'):
@@ -363,10 +584,9 @@ def update_source(context: 'Context'):
     If the template refers to a zip file or zip url, download / unzip as the context.
     If the template refers to a repository URL, clone it.
     If the template refers to a file, use that as the context.
-    If the template refers to a hook, run that hook with arguments inserted.
-    If the template is a path to a local repository, use it.
     """
     args, kwargs, flags = unpack_args_kwargs_string(context.input_string)
+
     first_arg = args[0]
     # Remove first args it will be consumed and no longer relevant
     args.pop(0)
@@ -377,32 +597,36 @@ def update_source(context: 'Context'):
             zip_uri=first_arg,
             clone_to_dir=settings.tackle_dir,
             no_input=context.no_input,
-            password=context.password_,  # TODO: RM - Should prompt?
+            password=context.password,  # TODO: RM - Should prompt?
         )
         import_local_provider_source(context, unzipped_dir)
-        walk_sync(context=context, element=context.input_dict)
-        return
     # Repo
     elif is_repo_url(first_arg):
         import_local_provider_source(
-            context, get_repo_source(first_arg, context.version_)
+            context, get_repo_source(first_arg, context.version)
         )
-        walk_sync(context=context, element=context.input_dict.copy())
-        return
-
-    # File
-    elif is_file(first_arg):
-        # Special case where the input is a path to a file. Need to override some
+    # Directory
+    elif is_directory_with_tackle(first_arg):
+        # Special case where the input is a path to a directory. Need to override some
         # settings that would normally get populated by zip / repo refs
-        context.context_file = os.path.basename(first_arg)
-        context.repo_dir = Path(first_arg).parent.absolute()
+        context.input_file = os.path.basename(find_tackle_file(first_arg))
+        context.input_dir = Path(first_arg).absolute()
 
         # Load the base file into input_dict
-        get_base_file(context)
-
-        # Main parsing logic
-        walk_sync(context=context, element=context.input_dict.copy())
-        return
+        extract_base_file(context)
+    # File
+    elif is_file(first_arg):
+        context.input_file = os.path.basename(first_arg)
+        context.input_dir = Path(first_arg).parent.absolute()
+        extract_base_file(context)
+    # Search in parent
     else:
-        # TODO: Improve
-        raise UnknownSourceException
+        # Lastly we check if there is a key in the parent that matches the arg
+        tackle_file = find_nearest_tackle_file()
+        context.input_file = os.path.basename(tackle_file)
+        context.input_dir = Path(tackle_file).parent.absolute()
+        extract_base_file(context)
+        args.insert(0, first_arg)
+
+    # Main parsing logic
+    run_source(context, args, kwargs, flags)

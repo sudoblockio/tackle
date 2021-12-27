@@ -4,6 +4,11 @@ import os
 
 
 class ContributionNeededException(Exception):
+    """
+    Special exception to point users (particularly of the windows variety) to contribute
+    a fix with context that includes a link to the file needing upgrade.
+    """
+
     def __init__(self, extra_message=None):
         # self.path_to_code = link_to_code
         self.extra_message = extra_message
@@ -77,6 +82,31 @@ class MissingProjectDir(TackleException):
     """
 
     # unused locally
+
+
+class UnknownArgumentException(TackleException):
+    """
+    Exception unknown argument when supplied via a hook call.
+
+    Raised when a hook is called with an unknown argument in it's mapping (ie missing
+    `_args` param in the hook definition.
+    """
+
+
+class UnknownTemplateVariableException(TackleException):
+    """
+    Exception an unknown templatable argument.
+
+    Raised when rendering variables.
+    """
+
+
+class EmptyTackleFileException(TackleException):
+    """
+    Exception when base tackle file is empty.
+
+    Raised when calling files / providers.
+    """
 
 
 class ConfigDoesNotExistException(TackleException):

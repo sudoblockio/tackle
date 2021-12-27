@@ -1,5 +1,0 @@
-
-empty:
-  type: var
-  loop: []
-  input: this

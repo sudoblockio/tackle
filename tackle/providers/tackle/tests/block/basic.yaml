@@ -1,0 +1,5 @@
+stuff: things
+block->:
+  merge: true
+  stuff->: print here
+  things->: print "{{ stuff }}" --if "{{ stuff == 'things' }}"
