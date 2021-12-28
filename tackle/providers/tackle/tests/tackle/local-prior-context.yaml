@@ -1,5 +1,5 @@
 foo: bing
 
 shell:
-  type: tackle
+  ->: tackle
   chdir: fixture

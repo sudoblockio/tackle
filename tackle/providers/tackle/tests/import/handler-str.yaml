@@ -1,0 +1,2 @@
+# Compact string - This is used as a pre-execution handler
+__import: robcxyz/tackle-demo  # Defaults to default branch (ie main)

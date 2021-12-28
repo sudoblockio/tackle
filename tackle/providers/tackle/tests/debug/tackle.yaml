@@ -3,4 +3,6 @@ stuff: things
 foo: barr
 
 t:
-  type: debug
+  ->: debug
+
+g_>: debug

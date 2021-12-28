@@ -1,0 +1,5 @@
+# Expanded strings - Used as a private hook call where key is deleted post exec
+arbitrary key:
+  _>: import
+  src: robcxyz/tackle-demos
+  version: v0.0.1-alpha.1

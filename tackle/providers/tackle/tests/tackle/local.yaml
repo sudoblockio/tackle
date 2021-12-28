@@ -1,5 +1,13 @@
+foo: bing
+bar: baz
+
 shell:
-  type: tackle
+  ->: tackle local.yaml
   chdir: fixture
-  existing_context:
+
+additional_context:
+  ->: tackle local.yaml
+  chdir: fixture
+  additional_context:
     foo: bing
+    bar: baz

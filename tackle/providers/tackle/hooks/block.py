@@ -1,5 +1,5 @@
 """Block hook."""
-from tackle.models import BaseHook, Context
+from tackle.models import BaseHook, Context, Field
 
 
 class BlockHook(BaseHook):
@@ -11,11 +11,32 @@ class BlockHook(BaseHook):
     normal pass. Useful if you have a block of hooks that should be grouped
     into a single conditional / looped execution.
 
+    Render context is a little different than normal where both the context
+    from outside of the hook and within the hook are made available. For
+    instance in this contrived example:
+
+    ```
+    stuff: things
+    block->:
+      merge: true
+      stuff->: print other_things
+      things->: print "{{ stuff }}" --if "{{ stuff == 'things' }}"
+    ```
+
+    The output would be:
+
+    ```
+    stuff: other_things
+    ```
+
+    Because the higher level `stuff` takes precidance where as
+
+
     :param items: Map of inputs
     """
 
     type: str = 'block'
-    items: dict
+    items: dict = Field(..., description="Items to be parsed like a normal input.")
 
     _render_exclude = {'items'}
 

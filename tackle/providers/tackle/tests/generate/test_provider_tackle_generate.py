@@ -1,25 +1,33 @@
 """Tests dict input objects for `tackle.providers.tackle.generate` module."""
 import pytest
-import os
 
 from tackle.main import tackle
-from tackle.utils.paths import rmtree
+from jinja2.exceptions import TemplateNotFound
+
+FIXTURES = [
+    "file.yaml",
+    "plain-src.yaml",
+    "render-file.yaml",
+    "render-dir-file.yaml",
+    "render-dir-file-base.yaml",
+]
 
 
-@pytest.fixture()
-def clean_up_files():
-    def clean_up_files(files: list):
-        for f in files:
-            rmtree(f)
-
-    yield clean_up_files
-
-
-def test_provider_system_hook_generate(change_dir, clean_up_files):
+@pytest.mark.parametrize("fixture", FIXTURES)
+def test_provider_system_hook_generate_fixtures(change_dir, fixture):
     """Verify the hook call works properly."""
-    output = tackle(no_input=True)
+    output = tackle(fixture)
+    assert not output['init']
+    assert output['after']
 
-    assert os.path.exists("things")
 
-    clean_up_files(["things"])
-    assert not output['t']
+ERRORS = [
+    ("missing-file.yaml", TemplateNotFound),
+]
+
+
+@pytest.mark.parametrize("fixture,error", ERRORS)
+def test_provider_system_hook_generate_error(change_dir, fixture, error):
+    """Verify the hook call works properly."""
+    with pytest.raises(error):
+        tackle(fixture)

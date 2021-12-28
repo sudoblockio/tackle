@@ -1,0 +1,9 @@
+stuff: things
+
+init->: isdir output/plain_src
+
+compact->: generate plain_src output_dir
+
+after->: isdir output_dir/models
+
+cleanup->: remove output_dir

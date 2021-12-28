@@ -1,17 +1,13 @@
 """Tackle hooks."""
 import tackle as tkl
-import logging
-from typing import List, Any
 from pydantic import SecretStr
 
-from tackle.models import BaseHook
-
-logger = logging.getLogger(__name__)
+from tackle.models import BaseHook, Field
 
 
 class TackleHook(BaseHook):
     """
-    Hook  for calling external tackle / cookiecutters.
+    Hook  for calling external tackle.
 
     :param template: A directory containing a project template,
         or a URL to a git repository.
@@ -39,48 +35,48 @@ class TackleHook(BaseHook):
 
     type: str = 'tackle'
 
-    input_string: str = '.'
-    inputs: List[Any] = None
-    checkout: str = None
-    context_file: str = None
-    context_files: list = None
-    overwrite_inputs: dict = None
-    existing_context: dict = None
-    overwrite_if_exists: bool = False
-    output_dir: str = '.'
-    config_file: str = None
-    default_config: str = None
-    password: SecretStr = None
-    directory: str = None
-    directories: List = None
-    skip_if_file_exists: bool = False
+    # fmt: off
+
+    input_string: str = Field(
+        None, description="The input can be one of repo, file path, directory with tackle.yaml, zip file, or if left blank parent tackle file.")
+    checkout: str = Field(None, description="The branch or version to checkout for repo type inputs_strings.")
+    context_file: str = Field(None, description="The file to run inside a repo input.")
+    additional_context: dict = Field(
+        None, description="Any additional context to use when calling the hook. Like existing context.")
+    context: dict = Field(None, description="A context to use that overrides the current context.")
+    password: SecretStr = Field(None, description="A password to use for repo inputs.")
+    directory: str = Field(None, description="The directory to run inside for repo inputs.")
+
+    # fmt: on
 
     _args = ['input_string']
 
     def execute(self):
-        # fmt: off
+
+        # if self.existing_context in (None, {}):
+        #     existing_context = self.output_dict
+        # else:
+        #     existing_context = self.existing_context
+
+        if self.context:
+            existing_context = self.context
+        else:
+            existing_context = self.output_dict.copy()
+            existing_context.update(self.existing_context)
+
+            if self.additional_context:
+                existing_context.update(self.additional_context)
+
         output_context = tkl.main.tackle(
             self.input_string,
             checkout=self.checkout,
-            existing_context=self.output_dict,
+            password=self.password,
+            directory=self.directory,
+            # Evaluated
+            existing_context=existing_context,
+            # Implicit
+            providers=self.providers_,
+            no_input=self.no_input,
         )
-        # fmt: on
 
         return dict(output_context)
-
-
-# checkout = self.checkout,
-# no_input = self.no_input,
-# context_file = self.hook_dict.context_file if 'context_file' in hook_dict else None,
-# context_key = self.hook_dict.context_key if 'context_key' in hook_dict else None,
-# overwrite_inputs = self.hook_dict.overwrite_inputs if 'overwrite_inputs' in hook_dict else None,
-# existing_context = self.hook_dict.existing_context if 'existing_context' in hook_dict else None,
-# replay = self.replay,
-# rerun = self.rerun,
-# record = self.record,
-# overwrite_if_exists = self.overwrite_if_exists,
-# output_dir = self.hook_dict.output_dir if 'output_dir' in hook_dict else '.',
-# default_config = self.default_config,
-# password = self.password,
-# directory = self.hook_dict.directory if 'directory' in hook_dict else None,
-# skip_if_file_exists = self.hook_dict.skip_if_file_exists if 'skip_if_file_exists' in hook_dict else False,

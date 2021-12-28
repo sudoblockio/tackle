@@ -1,8 +1,6 @@
-foo: bar
-
 stuff:
   ->: print {{foo}}
-  if: foo == 'bar'
+  if: foo == 'bing'
 
 read_stuff:
   ->: yaml
