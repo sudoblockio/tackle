@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 class CommandHook(BaseHook):
     """System calls."""
 
-    type: str = 'command'
+    hook_type: str = 'command'
 
     command: str = Field(..., description="A shell command.")
     ignore_error: bool = Field(False, description="Ignore errors.")
@@ -60,7 +60,7 @@ class ShellHook(BaseHook):
     :return: String output of command
     """
 
-    type: str = 'shell'
+    hook_type: str = 'shell'
 
     command: str
     ignore_error: bool = False

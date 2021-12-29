@@ -1,18 +1,13 @@
 """Lists hook."""
-import logging
-from typing import List, Union
-import re
+from typing import Union
 
 from tackle import BaseHook, Field
-from tackle.utils import literal_type
-
-logger = logging.getLogger(__name__)
 
 
 class ListAppendHook(BaseHook):
     """Hook for updating dict objects with items."""
 
-    type: str = 'append'
+    hook_type: str = 'append'
     input: list = Field(..., description="A list append to.")
     item: Union[list, str] = Field(
         ..., description="A list or string to append to `input` list."
@@ -40,7 +35,7 @@ class ListRemoveHook(BaseHook):
     :return: A list without removed objects objects.
     """
 
-    type: str = 'list_remove'
+    hook_type: str = 'list_remove'
     input: list = Field(description="A list to append to.")
     item: Union[list, str] = Field(
         ..., description="A list or string to append to `input` list."
@@ -63,7 +58,7 @@ class ListFromDictHook(BaseHook):
     :return: An appended list object.
     """
 
-    type: str = 'list_from_dict'
+    hook_type: str = 'list_from_dict'
     keys: list
     input: dict
 
@@ -80,7 +75,7 @@ class ConcatListsHook(BaseHook):
     :return: An appended list object.
     """
 
-    type: str = 'concat'
+    hook_type: str = 'concat'
     input: list
 
     def execute(self):

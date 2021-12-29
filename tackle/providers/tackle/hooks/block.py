@@ -35,7 +35,7 @@ class BlockHook(BaseHook):
     :param items: Map of inputs
     """
 
-    type: str = 'block'
+    hook_type: str = 'block'
     items: dict = Field(..., description="Items to be parsed like a normal input.")
 
     _render_exclude = {'items'}

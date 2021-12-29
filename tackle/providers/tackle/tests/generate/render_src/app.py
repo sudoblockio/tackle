@@ -1,2 +1,1 @@
-"""Foo"""
 print({"stuff": "things"})

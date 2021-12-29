@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 class SymlinkHook(BaseHook):
     """Hook creating symlinks wrapping `os.symlink` functionality."""
 
-    type: str = 'symlink'
+    hook_type: str = 'symlink'
     src: str = Field(
         ..., description="String or list of sources, either a directories or files"
     )

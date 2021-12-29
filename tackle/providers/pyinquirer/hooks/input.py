@@ -21,7 +21,7 @@ class InquirerInputHook(BaseHook):
     :return: String answer
     """
 
-    type: str = 'input'
+    hook_type: str = 'input'
 
     default: Any = Field(None, description="Default choice.")
     message: str = Field(None, description="String message to show when prompting.")

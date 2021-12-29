@@ -44,7 +44,7 @@ class CopyHook(BaseHook):
     :return: None
     """
 
-    type: str = 'copy'
+    hook_type: str = 'copy'
     src: Union[List, str] = Field(
         ..., description="String or list of sources, either a directories or files"
     )
@@ -91,7 +91,7 @@ class MoveHook(BaseHook):
     :return: None
     """
 
-    type: str = 'move'
+    hook_type: str = 'move'
     src: Union[List, str]
     create_path: bool = True
     dst: str
@@ -127,7 +127,7 @@ class RemoveHook(BaseHook):
     :return: None
     """
 
-    type: str = 'remove'
+    hook_type: str = 'remove'
     path: Union[List, str]
     fail_silently: bool = False
 
@@ -186,7 +186,7 @@ class ShredHook(BaseHook):
     :return: None
     """
 
-    type: str = 'shred'
+    hook_type: str = 'shred'
     src: Union[List, str]
     passes: int = 10
 
@@ -215,7 +215,7 @@ class ChmodHook(BaseHook):
     :return: None
     """
 
-    type: str = 'chmod'
+    hook_type: str = 'chmod'
     path: Union[str, list]
     mode: str
 
@@ -241,7 +241,7 @@ class CreateFileHook(BaseHook):
     :param path: String or list of paths to create.
     """
 
-    type: str = 'create_file'
+    hook_type: str = 'create_file'
     path: Union[str, list]
 
     def __init__(self, **data: Any):

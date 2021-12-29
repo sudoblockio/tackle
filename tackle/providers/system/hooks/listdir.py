@@ -16,7 +16,7 @@ class ListdirHook(BaseHook):
         A map with keys of items if input `path` is list.
     """
 
-    type: str = 'listdir'
+    hook_type: str = 'listdir'
     ignore_hidden_files: bool = Field(
         None, description="Boolean to ignore hidden files"
     )

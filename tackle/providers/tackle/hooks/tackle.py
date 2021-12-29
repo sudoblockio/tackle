@@ -33,7 +33,7 @@ class TackleHook(BaseHook):
     :return: Dictionary of output
     """
 
-    type: str = 'tackle'
+    hook_type: str = 'tackle'
 
     # fmt: off
 

@@ -23,7 +23,7 @@ class VarHook(BaseHook):
     For unrendered values you would omit any hook logic.
     """
 
-    type: str = 'var'
+    hook_type: str = 'var'
     input: Any = Field(..., description="Any variable input.", render_by_default=True)
     _args: list = ['input']
 
@@ -34,7 +34,7 @@ class VarHook(BaseHook):
 class TypeHook(BaseHook):
     """Hook for getting the type of a variable."""
 
-    type: str = 'type'
+    hook_type: str = 'type'
     input: Any = Field(..., description="Any variable input.", render_by_default=True)
     _args: list = ['input']
 

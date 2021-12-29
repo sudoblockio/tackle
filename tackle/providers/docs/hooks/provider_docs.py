@@ -38,13 +38,13 @@ def get_hook_title(hook: BaseHook, schema: dict):
 class HookDocField(BaseModel):
     name: str
     required: str
-    type: str
+    hook_type: str
     default: Union[str, dict, bool, list] = ""
     description: str = ""
 
 
 class HookDoc(BaseModel):
-    type: str
+    hook_type: str
     description: str = ""
     properties: List[HookDocField]
     output: str = None
@@ -102,7 +102,7 @@ def get_hook_properties(schema: dict) -> List[HookDocField]:
 class ProviderDocsHook(BaseHook):
     """Hook building provider docs."""
 
-    type: str = "docs"
+    hook_type: str = "docs"
 
     path: str = Field(".", description="The path to the provider.")
     output: str = Field(".", description="The path to output the docs to.")

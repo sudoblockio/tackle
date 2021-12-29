@@ -34,7 +34,7 @@ class GitCloneHook(BaseHook):
             All remaining keyword arguments are given to the git-clone command
     """
 
-    type: str = 'git_clone'
+    hook_type: str = 'git_clone'
     url: str = None
     to_path: str = None
     progress: Optional[str] = None

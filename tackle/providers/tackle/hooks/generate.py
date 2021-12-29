@@ -22,7 +22,7 @@ class GenerateHook(BaseHook):
 
     """
 
-    type: str = 'generate'
+    hook_type: str = 'generate'
     templates: Union[str, list] = Field(
         ...,
         description="Path to a templatable directory or file to recursively render the contents.",

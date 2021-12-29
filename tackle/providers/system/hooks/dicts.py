@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 class DictUpdateHook(BaseHook):
     """Hook for updating dict objects with items."""
 
-    type: str = 'update'
+    hook_type: str = 'update'
 
     src: dict = Field(description="A dict or list of dicts to update the input `src`")
     input: dict = Field(description="A dict or list of dicts to update the input `src`")
@@ -32,7 +32,7 @@ class DictMergeHook(BaseHook):
     :return: An updated dict object.
     """
 
-    type: str = 'merge'
+    hook_type: str = 'merge'
     inputs: list = Field(
         ...,
         description="A list of dictionaries to merge together.",
@@ -59,7 +59,7 @@ class DictPopHook(BaseHook):
     :return: An updated dict object.
     """
 
-    type: str = 'pop'
+    hook_type: str = 'pop'
 
     src: Union[dict, list] = None
     item: Union[Dict, List[str], str] = None
@@ -86,7 +86,7 @@ class DictKeysHook(BaseHook):
     :return: List of keys or list of list of keys if input is list
     """
 
-    type: str = 'keys'
+    hook_type: str = 'keys'
 
     src: dict = None
 

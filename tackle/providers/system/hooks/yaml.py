@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 class YamlHook(BaseHook):
     """Hook for yaml."""
 
-    type: str = 'yaml'
+    hook_type: str = 'yaml'
 
     remove: Union[List, str] = Field(
         None, description="Parameter or regex to remove from list or dict."

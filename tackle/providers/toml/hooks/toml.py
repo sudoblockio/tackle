@@ -32,7 +32,7 @@ class TomlHook(BaseHook):
         Seee https://docs.python.org/3/library/functions.html#open
     """
 
-    type: str = 'toml'
+    hook_type: str = 'toml'
 
     remove: Union[List, str] = None
     contents: Union[Dict, List] = None

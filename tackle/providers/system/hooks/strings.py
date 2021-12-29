@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 class SplitHook(BaseHook):
     """Hook for splitting a string into as list based on a separator."""
 
-    type: str = 'split'
+    hook_type: str = 'split'
 
     input: str = Field(..., description="A list of string to split or just a string")
     separator: str = Field(".", description="String separator")
@@ -23,7 +23,7 @@ class SplitHook(BaseHook):
 class JoinHook(BaseHook):
     """Join a list of strings with a separator."""
 
-    type: str = 'join'
+    hook_type: str = 'join'
 
     input: List[str] = Field(
         ..., description="A list of strings to join.", render_by_default=True

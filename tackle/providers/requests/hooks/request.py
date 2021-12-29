@@ -34,7 +34,7 @@ class RequestsGetHook(BaseHook):
     :return: Response of request in a dict
     """
 
-    type: str = 'get'
+    hook_type: str = 'get'
     no_exit: bool = False
 
     url: str = None
@@ -63,7 +63,7 @@ class RequestsPostHook(BaseHook):
     :return: Response of request in a dict
     """
 
-    type: str = 'post'
+    hook_type: str = 'post'
     no_exit: bool = False
 
     url: str
@@ -98,7 +98,7 @@ class RequestsPutHook(BaseHook):
     :return: Response of request in a dict
     """
 
-    type: str = 'put'
+    hook_type: str = 'put'
     no_exit: bool = False
 
     url: str
@@ -130,7 +130,7 @@ class RequestsPatchHook(BaseHook):
     :return: Response of request in a dict
     """
 
-    type: str = 'patch'
+    hook_type: str = 'patch'
     no_exit: bool = False
 
     url: str
@@ -163,7 +163,7 @@ class RequestsDeleteHook(BaseHook):
     Wraps https://docs.python-requests.org/en/latest/api/
     """
 
-    type: str = 'delete'
+    hook_type: str = 'delete'
     url: str
     kwargs: Dict = {}
     no_exit: bool = False

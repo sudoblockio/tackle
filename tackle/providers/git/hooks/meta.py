@@ -60,7 +60,7 @@ class MetaGitHook(BaseHook):
     __slots__ = ('first_run',)
     # Per https://github.com/samuelcolvin/pydantic/issues/655 for private vars
 
-    type: str = 'meta_repo'
+    hook_type: str = 'meta_repo'
     command: str = None
 
     repos: Dict = None

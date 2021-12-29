@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 class MakeDirectoryHook(BaseHook):
     """Hook creating a directory."""
 
-    type: str = 'mkdir'
+    hook_type: str = 'mkdir'
     path: str = Field(..., description="The path to file or directory")
 
     _args: list = ['path']

@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class JinjaHook(BaseHook):
     """Hook for jinja templates. Returns string path to the output file."""
 
-    type: str = 'jinja'
+    hook_type: str = 'jinja'
     file_system_loader: str = Field('.', description="")
     template_path: str = Field(..., description="Path to the template to render")
     output_path: str = Field(..., description="Path to the output file")

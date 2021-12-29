@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 class GetEnvHook(BaseHook):
     """Hook for getting environment variables."""
 
-    type: str = 'get_env'
+    hook_type: str = 'get_env'
     environment_variable: str = Field(
         None,
         description="Dict for setting and string for getting environment variables",
@@ -34,7 +34,7 @@ class GetEnvHook(BaseHook):
 class EnvironmentVariableHook(BaseHook):
     """Hook for setting environment variables."""
 
-    type: str = 'set_env'
+    hook_type: str = 'set_env'
     environment_variable: str = Field(
         ..., description="The name of the environment variable to set."
     )
@@ -66,7 +66,7 @@ class ExportHook(BaseHook):
     :return: input
     """
 
-    type: str = 'export'
+    hook_type: str = 'export'
     environment_variable: str = Field(
         ..., description="The name of the environment variable to set."
     )
@@ -90,7 +90,7 @@ class ExportHook(BaseHook):
 class UnsetHook(BaseHook):
     """Hook for unsetting environment variables."""
 
-    type: str = 'unset'
+    hook_type: str = 'unset'
     environment_variable: str = Field(
         ..., description="The name of the environment variable to set."
     )

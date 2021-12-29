@@ -1,13 +1,9 @@
-# """Raw list hook."""
-import logging
+"""Raw list hook."""
 from PyInquirer import prompt
 from pydantic import Field
 
 from typing import Any
 from tackle.models import BaseHook
-from tackle.utils import literal_type
-
-logger = logging.getLogger(__name__)
 
 
 class InquirerRawListHook(BaseHook):
@@ -22,7 +18,7 @@ class InquirerRawListHook(BaseHook):
     :return: String for the answer
     """
 
-    type: str = 'rawlist'
+    hook_type: str = 'rawlist'
 
     default: Any = Field(None, description="Default choice.")
     message: str = Field(None, description="String message to show when prompting.")

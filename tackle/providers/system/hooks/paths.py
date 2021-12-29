@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 class PathExistsListHook(BaseHook):
     """Hook for os package 'path.exists'."""
 
-    type: str = 'path_exists'
+    hook_type: str = 'path_exists'
     path: str = Field(..., description="The path to file or directory")
 
     _args: list = ['path']
@@ -24,7 +24,7 @@ class PathExistsListHook(BaseHook):
 class PathIsDirListHook(BaseHook):
     """Hook for os package 'path.isdir'."""
 
-    type: str = 'isdir'
+    hook_type: str = 'isdir'
     path: str = Field(..., description="The path to a directory")
 
     _args: list = ['path']
@@ -36,7 +36,7 @@ class PathIsDirListHook(BaseHook):
 class PathIsFileListHook(BaseHook):
     """Hook for os package 'path.isfile'."""
 
-    type: str = 'isfile'
+    hook_type: str = 'isfile'
     path: str = Field(..., description="The path to a file")
 
     _args: list = ['path']
@@ -52,7 +52,7 @@ class FindInParentHook(BaseHook):
     :return: string: Absolute path to the target file
     """
 
-    type: str = 'find_in_parent'
+    hook_type: str = 'find_in_parent'
     target: str = Field(
         ..., description="The name of the file to find the absolute path to"
     )
@@ -79,7 +79,7 @@ class FindInChildHook(BaseHook):
     :return: string: Absolute path to the target file
     """
 
-    type: str = 'find_in_child'
+    hook_type: str = 'find_in_child'
     target: str = Field(
         ..., description="The name of the file to find the absolute path to"
     )
@@ -109,7 +109,7 @@ class FindInChildHook(BaseHook):
 class PathJoinHook(BaseHook):
     """Hook joining paths."""
 
-    type: str = 'path_join'
+    hook_type: str = 'path_join'
     paths: list = Field(
         ...,
         description="List of items in a path to file or directory.",

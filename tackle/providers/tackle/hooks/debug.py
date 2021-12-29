@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 class DebugHook(BaseHook):
     """Hook for debugging that prints the output context and pauses runtime."""
 
-    type: str = 'debug'
+    hook_type: str = 'debug'
 
     def execute(self):
         """Run the hook."""

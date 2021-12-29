@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 class WebBrowserHook(BaseHook):
     """Hook for registering a variable based on an input. Useful with rendering."""
 
-    type: str = 'webbrowser'
+    hook_type: str = 'webbrowser'
     url: AnyUrl = Field(..., description="String url to open in browser.")
 
     def execute(self):

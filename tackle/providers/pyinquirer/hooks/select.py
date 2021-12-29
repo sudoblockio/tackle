@@ -25,7 +25,7 @@ class InquirerListHook(BaseHook):
     :return: String for answer
     """
 
-    type: str = 'select'
+    hook_type: str = 'select'
 
     message: str = Field(None, description="String message to show when prompting.")
     default: Any = Field(None, description="Default choice.")

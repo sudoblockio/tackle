@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 class InquirerConfirmHook(BaseHook):
     """Hook to confirm with a message and return a boolean."""
 
-    type: str = 'confirm'
+    hook_type: str = 'confirm'
 
     default: Any = Field(True, description="Default choice.")
     message: str = Field(None, description="String message to show when prompting.")

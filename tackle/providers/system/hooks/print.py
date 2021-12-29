@@ -21,7 +21,7 @@ class PrintHook(BaseHook):
     print(*objects, sep=' ', end='\n', file=sys.stdout, flush=False)
     """
 
-    type: str = 'print'
+    hook_type: str = 'print'
 
     objects: Any = Field(None, description="The objects to print.")
     sep: str = Field(' ', description="Separator between printed objects.")
@@ -42,7 +42,7 @@ class PprintHook(BaseHook):
     https://docs.python.org/3/library/pprint.html#pprint.PrettyPrinter
     """
 
-    type: str = 'pprint'
+    hook_type: str = 'pprint'
 
     objects: Any = None
     indent: int = 1
@@ -70,7 +70,7 @@ class PprintHook(BaseHook):
 class MarkdownPrintHook(BaseHook):
     """Hook for printing markdown and returning the output."""
 
-    type: str = 'markdown'
+    hook_type: str = 'markdown'
     text: str = None
 
     _args: list = ['text']

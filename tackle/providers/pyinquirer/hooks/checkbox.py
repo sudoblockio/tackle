@@ -26,7 +26,7 @@ class InquirerCheckboxHook(BaseHook):
     :return: List of answers
     """
 
-    type: str = 'checkbox'
+    hook_type: str = 'checkbox'
 
     message: str = Field(None, description="String message to show when prompting.")
     index: bool = Field(

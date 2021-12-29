@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 class TableHook(BaseHook):
     """Hook for creating tables with rich - github.com/willmcgugan/rich."""
 
-    type: str = 'table'
+    hook_type: str = 'table'
 
     column_names: List = Field([], description="List of column names")
     sort: bool = Field(False, description="Boolean to sort contents or contents_split")

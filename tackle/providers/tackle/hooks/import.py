@@ -55,7 +55,7 @@ class ImportHook(BaseHook):
     ```
     """
 
-    type: str = 'import'
+    hook_type: str = 'import'
     src: Any = Field(..., description="A str/list/dict as above.")
     version: str = Field(
         None, description="Version of src for remote imports. Rarely used."

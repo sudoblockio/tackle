@@ -21,7 +21,7 @@ class InquirerEditorHook(BaseHook):
         inserting into parent key
     """
 
-    type: str = 'editor'
+    hook_type: str = 'editor'
     default: Any = Field(None, description="Default selection.")
     name: str = Field('tmp', description="Extra key to embed into. Artifact of API.")
     message: str = Field(None, description="String message to show when prompting.")

@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 class RandomHexHook(BaseHook):
     """Hook  for `random_hex`. Lists the contents of a directory."""
 
-    type: str = 'random_hex'
+    hook_type: str = 'random_hex'
     length: int = Field(8, description="Number for number of digits - default 8")
 
     _args: list = ['length']
@@ -27,7 +27,7 @@ class RandomHexHook(BaseHook):
 class RandomStringHook(BaseHook):
     """Hook  for `random_string`. Lists the contents of a directory."""
 
-    type: str = 'random_string'
+    hook_type: str = 'random_string'
     string_case: str = Field(
         'lower', description="Case of output, one of `upper` or `lower`"
     )

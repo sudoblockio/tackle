@@ -14,7 +14,7 @@ class JsonHook(BaseHook):
      it writes the `contents`. When writing, returns path. When reading, returns dict.
     """
 
-    type: str = 'json'
+    hook_type: str = 'json'
     path: str = Field(..., description="The path to write the file.")
     contents: dict = Field(None, description="A dict to write")
 

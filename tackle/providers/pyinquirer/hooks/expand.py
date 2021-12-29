@@ -21,7 +21,7 @@ class InquirerExpandHook(BaseHook):
     :return: List of answers
     """
 
-    type: str = 'expand'
+    hook_type: str = 'expand'
 
     default: Any = Field(None, description="Default selection.")
     name: str = Field('tmp', description="Extra key to embed into. Artifact of API.")

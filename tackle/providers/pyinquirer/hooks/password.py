@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 class InquirerPasswordHook(BaseHook):
     """Hook for PyInquirer `password` type prompts."""
 
-    type: str = 'password'
+    hook_type: str = 'password'
 
     default: Any = Field(None, description="Default choice.")
     message: str = Field(None, description="String message to show when prompting.")

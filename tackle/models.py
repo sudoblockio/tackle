@@ -65,7 +65,7 @@ class BaseHook(BaseModel):
 
     """
 
-    type: str = Field(..., description="Name of the hook.")
+    hook_type: str = Field(..., description="Name of the hook.")
 
     # TODO: Serialize the access modifier earlier in parsing - Could store the arrow in
     #  key_path as boolean. Would have big changes to tackle.utils.dicts
@@ -99,7 +99,7 @@ class BaseHook(BaseModel):
     _kwargs: dict = {}
     _flags: list = []
     # Fields that should not be rendered by default
-    _render_exclude_default: set = {'input_dict', 'output_dict', 'type'}
+    _render_exclude_default: set = {'input_dict', 'output_dict', 'hook_type'}
     _render_exclude: set = {}
     _render_by_default: list = []
 

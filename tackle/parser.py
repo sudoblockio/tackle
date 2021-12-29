@@ -51,7 +51,7 @@ def get_hook(hook_type, context: 'Context', suppress_error: bool = False):
     3. Try to import it then fall back on installing the requirements.txt file
     """
     for h in BaseHook.__subclasses__():
-        if hook_type == inspect.signature(h).parameters['type'].default:
+        if hook_type == inspect.signature(h).parameters['hook_type'].default:
             return h
 
     for p in context.providers:
@@ -59,11 +59,11 @@ def get_hook(hook_type, context: 'Context', suppress_error: bool = False):
             import_with_fallback_install(p.name, p.path)
 
     for h in BaseHook.__subclasses__():
-        if hook_type == inspect.signature(h).parameters['type'].default:
+        if hook_type == inspect.signature(h).parameters['hook_type'].default:
             return h
 
     avail_hook_types = [
-        inspect.signature(i).parameters['type'].default
+        inspect.signature(i).parameters['hook_type'].default
         for i in BaseHook.__subclasses__()
     ]
     logger.debug(f"Available hook types = {avail_hook_types}")
@@ -314,17 +314,17 @@ def run_hook(context: 'Context'):
         # Need to replace arrow keys as for the time being (pydantic 1.8.2) - multiple
         # aliases for the same field (type) can't be specified so doing this hack
         if '->' in hook_dict:
-            hook_dict['type'] = first_arg
+            hook_dict['hook_type'] = first_arg
             hook_dict.pop('->')
         else:
-            hook_dict['type'] = first_arg
+            hook_dict['hook_type'] = first_arg
             hook_dict.pop('_>')
 
     else:
         # Hook is a compact expression - Can only be a string
         hook_dict = {}
-        # hook_dict['type'] = nested_get(context.input_dict, context.key_path)
-        hook_dict['type'] = first_arg
+        # hook_dict['hook_type'] = nested_get(context.input_dict, context.key_path)
+        hook_dict['hook_type'] = first_arg
 
     # Associate hook arguments provided in the call with hook attributes
     evaluate_args(args, hook_dict, Hook)
