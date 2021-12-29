@@ -17,7 +17,7 @@ from tackle.utils.dicts import (
     encode_list_index,
     set_key,
 )
-from tackle.utils.command import unpack_args_kwargs_string
+from tackle.utils.command import unpack_args_kwargs_string, unpack_input_string
 from tackle.utils.vcs import get_repo_source
 from tackle.utils.files import read_config_file
 from tackle.utils.paths import (
@@ -274,13 +274,11 @@ def run_hook(context: 'Context'):
     arguments in
     """
     if isinstance(context.input_string, str):
-        args, kwargs, flags = unpack_args_kwargs_string(context.input_string)
+        args, kwargs, flags = unpack_input_string(context.input_string)
+        # args, kwargs, flags = unpack_args_kwargs_string(context.input_string)
         first_arg = args[0]
         # Remove first args it will be consumed and no longer relevant
         args.pop(0)
-        if '{{' in first_arg and '}}' in first_arg:
-            args.insert(0, first_arg)
-            first_arg = 'var'
 
     else:
         # Rare case when an arrow is used to indicate rendering of a list.
