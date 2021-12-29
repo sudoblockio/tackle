@@ -6,6 +6,7 @@ import os
 import inspect
 import warnings
 from typing import Type, Any
+from pydantic.main import ModelMetaclass
 
 from tackle.providers import import_with_fallback_install
 from tackle.render import render_variable, wrap_jinja_braces
@@ -29,6 +30,7 @@ from tackle.utils.paths import (
 from tackle.utils.zipfile import unzip
 from tackle.models import Context, BaseHook
 from tackle.exceptions import (
+    HookCallException,
     UnknownHookTypeException,
     UnknownArgumentException,
     EmptyTackleFileException,
@@ -72,17 +74,16 @@ def get_hook(hook_type, context: 'Context', suppress_error: bool = False):
         )
 
 
-def evaluate_for(hook: BaseHook, context: 'Context'):
+def evaluate_for(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
     """Run the parse_hook function in a loop and return a list of outputs."""
-    loop_targets = render_variable(context, hook.for_)
-    hook.for_ = None
+    loop_targets = render_variable(context, wrap_jinja_braces(hook_dict['for']))
+    hook_dict.pop('for')
 
     # Need add an empty list in the value so we have something to append to
     set_key(
         element=context.output_dict,
         keys=context.key_path,
         value=[],
-        keys_to_delete=context.keys_to_remove,
     )
 
     if len(loop_targets) == 0:
@@ -90,7 +91,7 @@ def evaluate_for(hook: BaseHook, context: 'Context'):
 
     for i, l in (
         enumerate(loop_targets)
-        if not render_variable(context, hook.reverse)
+        if not render_variable(context, hook_dict.get('reverse', None))
         else reversed(list(enumerate(loop_targets)))
     ):
         # Create temporary variables in the context to be used in the loop.
@@ -99,7 +100,7 @@ def evaluate_for(hook: BaseHook, context: 'Context'):
         context.key_path.append(encode_list_index(i))
 
         # TODO: Do we need to parse a copy of the hook?
-        parse_hook(hook.copy(), context, append_hook_value=True)
+        parse_hook(hook_dict.copy(), Hook, context, append_hook_value=True)
         context.key_path.pop()
 
     # Remove temp variables
@@ -107,91 +108,125 @@ def evaluate_for(hook: BaseHook, context: 'Context'):
     context.existing_context.pop('index')
 
 
-def evaluate_if(hook: BaseHook, context: 'Context', append_hook_value: bool) -> bool:
+def evaluate_if(hook_dict: dict, context: 'Context', append_hook_value: bool) -> bool:
     """Evaluate the when condition and return bool."""
-    if hook.for_ is not None and not append_hook_value:
-        # We qualify if conditions within for loop logic
+    if hook_dict.get('for', None) is not None and not append_hook_value:
+        # We qualify `if` conditions within for loop logic
         return True
-    if hook.if_ is None:
+    if hook_dict.get('if', None) is None:
         return True
-    return render_variable(context, wrap_jinja_braces(hook.if_))
+    return render_variable(context, wrap_jinja_braces(hook_dict['if']))
 
 
-def render_hook_vars(hook: BaseHook, context: 'Context'):
+def evaluate_merge(
+    hook_output_value, context: 'Context', append_hook_value: bool = False
+):
+    """Merge the contents into it's top level set of keys."""
+    if append_hook_value:
+        raise HookCallException("Can't merge from for loop.")
+
+    if context.key_path[-1] in ('->', '_>'):
+        # Expanded key - Remove parent key from key path
+        key_path = context.key_path[:-2] + [context.key_path[-1]]
+    else:
+        # Compact key
+        key_path = context.key_path[:-1] + [context.key_path[-1][:-2]]
+
+    # Can't merge into top level keys without merging k/v individually
+    if len(key_path) == 1:
+        # This is only valid for dict output
+        if isinstance(hook_output_value, dict):
+            for k, v in hook_output_value.items():
+                set_key(
+                    element=context.output_dict,
+                    keys=[k] + key_path,
+                    value=v,
+                )
+            return
+        else:
+            raise HookCallException("Can't merge non maps into top level keys.")
+    else:
+        set_key(
+            element=context.output_dict,
+            keys=key_path,
+            value=hook_output_value,
+        )
+
+
+def render_hook_vars(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
     """Render the hook variables."""
-    for k, v in hook.__fields__.items():
-        hook_value = getattr(hook, k)
-
-        if hook_value is None:
+    for key, value in list(hook_dict.items()):
+        if key in Hook.Config.alias_to_fields:
+            # Skip any keys used in logic as these are evaluated / rendered separately
             continue
 
-        if k in hook._render_exclude or k in hook._render_exclude_default:
+        if key in Hook._render_exclude or key in Hook._render_exclude_default:
+            # Skip anything that has been marked excluded. Needed for things like block
+            # hooks which will have templating within the inputs
             continue
 
-        if 'render_by_default' in v.field_info.extra:
-            hook_value = wrap_jinja_braces(hook_value)
+        if isinstance(value, str):
+            # Check Hook private vars for rendering by default which wraps bare strings
+            if key in Hook._render_by_default:
+                hook_dict[key] = render_variable(context, wrap_jinja_braces(value))
 
-        setattr(hook, k, render_variable(context, hook_value))
+            # TODO: When we build our own custom Field function then this will change
+            elif 'render_by_default' in Hook.__fields__[key].field_info.extra:
+                hook_dict[key] = render_variable(context, wrap_jinja_braces(value))
+
+            elif '{{' in value and '}}' in value:
+                hook_dict[key] = render_variable(context, value)
+
+        elif isinstance(value, (list, dict)):
+            hook_dict[key] = render_variable(context, value)
 
 
-def parse_hook(hook: BaseHook, context: 'Context', append_hook_value: bool = None):
+def parse_hook(
+    hook_dict, Hook: ModelMetaclass, context: 'Context', append_hook_value: bool = None
+):
     """Parse input dict for loop and when logic and calls hooks."""
-    if evaluate_if(hook, context, append_hook_value):
-        if hook.for_ is not None:
+    if evaluate_if(hook_dict, context, append_hook_value):
+
+        if 'for' in hook_dict:
             # This runs the current function in a loop with `append_hook_value` set so
             # that keys are appended in the loop.
-            evaluate_for(hook, context)
+            evaluate_for(hook_dict, Hook, context)
             return
-
-        # if hook.while_ is not None:
-        #     evaluate_while(hook, context)
-        #     return
 
         else:
             # Render the remaining hook variables
-            render_hook_vars(hook, context)
+            render_hook_vars(hook_dict, Hook, context)
+
+            hook = Hook(
+                **hook_dict,
+                input_dict=context.input_dict,
+                output_dict=context.output_dict,
+                existing_context=context.existing_context,
+                no_input=context.no_input,
+                providers_=context.providers,
+                key_path_=context.key_path,
+            )
 
             # Normal hook run
             hook_output_value = hook.call()
 
             if hook.merge:
-                if context.key_path[-1] in ('->', '_>'):
-                    # Expanded key - Remove parent key from key path
-                    key_path = context.key_path[:-2] + [context.key_path[-1]]
-                else:
-                    # Compact key
-                    key_path = context.key_path[:-1] + [context.key_path[-1][:-2]]
-
-                # Can't merge into top level keys without merging k/v individually
-                if len(key_path) == 1:
-                    # This is only valid for dict output
-                    if isinstance(hook_output_value, dict):
-                        for k, v in hook_output_value.items():
-                            set_key(
-                                element=context.output_dict,
-                                keys=[k] + key_path,
-                                value=v,
-                                keys_to_delete=context.keys_to_remove,
-                                append_hook_value=append_hook_value,
-                            )
-                        return
-                    else:
-                        raise ValueError("Can't merge non maps into top level keys.")
-
+                evaluate_merge(hook_output_value, context, append_hook_value)
             else:
-                key_path = context.key_path
+                set_key(
+                    element=context.output_dict,
+                    keys=context.key_path,
+                    value=hook_output_value,
+                    append_hook_value=append_hook_value,
+                )
 
-            set_key(
-                element=context.output_dict,
-                keys=key_path,
-                value=hook_output_value,
-                keys_to_delete=context.keys_to_remove,
-                append_hook_value=append_hook_value,
-            )
-
-    elif hook.else_ is not None:
-        # TODO: Implement
-        raise NotImplementedError
+    elif 'else' in hook_dict:
+        set_key(
+            element=context.output_dict,
+            keys=context.key_path,
+            value=render_variable(context, wrap_jinja_braces(hook_dict['else'])),
+            append_hook_value=append_hook_value,
+        )
 
 
 def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
@@ -233,7 +268,7 @@ def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
                 raise UnknownArgumentException(f"Unknown argument {Hook._args[i]}.")
 
 
-def run_hook_function(context: 'Context'):
+def run_hook(context: 'Context'):
     """
     Run either a hook or a function. In this context the args are associated with
     arguments in
@@ -299,18 +334,8 @@ def run_hook_function(context: 'Context'):
     for k, v in kwargs.items():
         hook_dict[k] = v
 
-    hook = Hook(
-        **hook_dict,
-        input_dict=context.input_dict,
-        output_dict=context.output_dict,
-        existing_context=context.existing_context,
-        no_input=context.no_input,
-        providers_=context.providers,
-        key_path_=context.key_path,
-    )
-
     # Main parser
-    parse_hook(hook, context)
+    parse_hook(hook_dict, Hook, context)
 
 
 def handle_empty_blocks(context: 'Context', block_value):
@@ -376,13 +401,16 @@ def handle_empty_blocks(context: 'Context', block_value):
 
 
 def walk_sync(context: 'Context', element):
-    """Traverse an object looking for hook calls."""
+    """
+    Traverse an object looking for hook calls and running those hooks. Here we are
+    keeping track of which keys are traversed in a list called `key_path` with strings
+    as dict keys and byte encoded integers for list indexes.
+    """
     if len(context.key_path) != 0:
         # Handle compact expressions - ie key->: hook_type args
-        # if is_tackle_hook(context.key_path[-1]):
         if context.key_path[-1][-2:] in ('->', '_>'):
             context.input_string = element
-            run_hook_function(context)
+            run_hook(context)
             if context.key_path[-1][-2:] == '_>':
                 # Private hook calls
                 context.keys_to_remove.append(
@@ -396,14 +424,14 @@ def walk_sync(context: 'Context', element):
             # Public hook calls
             context.key_path.append('->')
             context.input_string = element['->']
-            run_hook_function(context)
+            run_hook(context)
             context.key_path.pop()
             return
         elif '_>' in element.keys():
             # Private hook calls
             context.key_path.append('_>')
             context.input_string = element['_>']
-            run_hook_function(context)
+            run_hook(context)
             context.key_path.pop()
             context.keys_to_remove.append(context.key_path.copy())
             return
@@ -418,6 +446,7 @@ def walk_sync(context: 'Context', element):
                 walk_sync(context, v)
                 context.key_path.pop()
             else:
+                # Recurse
                 walk_sync(context, v)
                 context.key_path.pop()
 
@@ -437,21 +466,10 @@ def run_handler(context, handler_key, handler_value):
 
     NOTE: This is an experimental feature and may change.
     """
-    if isinstance(handler_value, str):
-        args, kwargs, flags = unpack_args_kwargs_string(handler_value)
-    elif isinstance(handler_value, list):
-        pass
-    elif isinstance(handler_value, dict):
-        pass
-    else:
-        raise ValueError
-
     if handler_key in context.functions:
         """Run functions"""
         function = context.functions[handler_key]
         context.input_dict = function.exec
-        # context.output_dict = copy.deepcopy(function.exec)
-
         walk_sync(context, function.exec.copy())
 
     elif get_hook(handler_key, context, suppress_error=True):
@@ -484,6 +502,8 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list):
     An exception exists for if the last arg is `help` in which case that level's help
     is called and exited 0.
     """
+    # Tackle is called both through the CLI and as a package and so to preserve args /
+    # kwargs we
     if context.global_args is not None:
         args = args + context.global_args
         context.global_args = None

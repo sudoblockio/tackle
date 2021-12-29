@@ -1,5 +1,4 @@
 """Models for the project."""
-# from collections import OrderedDict
 import os
 from pathlib import Path
 from pydantic import BaseModel, SecretStr, Field, Extra, validator
@@ -99,8 +98,10 @@ class BaseHook(BaseModel):
     _args: list = []
     _kwargs: dict = {}
     _flags: list = []
+    # Fields that should not be rendered by default
     _render_exclude_default: set = {'input_dict', 'output_dict', 'type'}
     _render_exclude: set = {}
+    _render_by_default: list = []
 
     @validator('if_', 'else_', 'reverse', 'for_', 'merge')
     def wrap_bool_if_string(cls, v):

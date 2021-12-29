@@ -1,6 +1,6 @@
 """Settings initializer."""
 from pydantic import BaseSettings, Field
-from typing import Dict, List
+from typing import Dict
 
 import os
 import logging
