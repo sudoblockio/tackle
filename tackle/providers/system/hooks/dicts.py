@@ -2,22 +2,14 @@
 import logging
 from typing import Union, Dict, List
 
-# from tackle.models import BaseHook
-
 from tackle import BaseHook, Field
-
-from tackle.utils import merge_configs, literal_type
+from tackle.utils import merge_configs
 
 logger = logging.getLogger(__name__)
 
 
 class DictUpdateHook(BaseHook):
-    """
-    Hook  for updating dict objects with items.
-
-    :param src: The input dict to update
-    :return: An updated dict object.
-    """
+    """Hook for updating dict objects with items."""
 
     type: str = 'update'
 
@@ -33,7 +25,7 @@ class DictUpdateHook(BaseHook):
 
 class DictMergeHook(BaseHook):
     """
-    Hook  for recursively merging dict objects with input maps.
+    Hook for recursively merging dict objects with input maps.
 
     :param src: The input dict to update
     :param input: A dict or list of dicts to update the input `dict`
@@ -41,18 +33,21 @@ class DictMergeHook(BaseHook):
     """
 
     type: str = 'merge'
-    src: Dict = None
-    input: Union[Dict, List[Dict]] = None
+    inputs: list = Field(
+        ...,
+        description="A list of dictionaries to merge together.",
+        render_by_default=True,
+    )
+    # pairs: Union[dict, list] = Field(..., description="")
 
-    _args: list = ['src', 'input']
+    _args: list = ['inputs']
+    _render_by_default = ['pairs']
 
     def execute(self):
-        if isinstance(self.input, list):
-            for i in self.input:
-                self.src = merge_configs(self.src, i)
-            return self.src
-        else:
-            return merge_configs(self.src, self.input)
+        output = {}
+        for i in self.inputs:
+            output = merge_configs(output, i)
+        return output
 
 
 class DictPopHook(BaseHook):

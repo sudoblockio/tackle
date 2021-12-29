@@ -1,7 +1,7 @@
 """Print hooks."""
 import logging
 from pprint import pprint
-from typing import Any, Union, Dict, List
+from typing import Any
 
 from rich import print
 from rich.console import Console
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class PrintHook(BaseHook):
-    """
+    r"""
     Hook  for printing an input and returning the output.
 
     Follows: https://docs.python.org/3/library/functions.html#print
@@ -23,31 +23,31 @@ class PrintHook(BaseHook):
 
     type: str = 'print'
 
-    objects: Any = None
-    sep: str = ' '
-    end: str = '\n'
-    flush: bool = False
+    objects: Any = Field(None, description="The objects to print.")
+    sep: str = Field(' ', description="Separator between printed objects.")
+    end: str = Field('\n', description="What to print at the end")
+    flush: bool = Field(False, description="No clue.")
 
     _args: list = ['objects']
 
     def execute(self):
         print(self.objects, sep=self.sep, end=self.end, flush=self.flush)
-        return
+        return self.objects
 
 
 class PprintHook(BaseHook):
     """
-    Wraps python pprint builtin. https://docs.python.org/3/library/pprint.html#pprint.PrettyPrinter
+    Wraps python pprint builtin.
+
+    https://docs.python.org/3/library/pprint.html#pprint.PrettyPrinter
     """
 
     type: str = 'pprint'
 
     objects: Any = None
-
     indent: int = 1
     width: int = 80
     depth: int = None
-    # stream = None
     compact: bool = False
     sort_dicts: bool = True
     underscore_numbers: bool = False
@@ -68,24 +68,14 @@ class PprintHook(BaseHook):
 
 
 class MarkdownPrintHook(BaseHook):
-    """
-    Hook for printing makrdown and returning the output.
-    """
+    """Hook for printing markdown and returning the output."""
 
     type: str = 'markdown'
-    statement: Union[Dict, List, str] = None
-    out: Union[Dict, List, str] = None
-    input: Union[Dict, List, str] = None
-    style: str = None
+    text: str = None
 
-    _args: list = ['objects']
+    _args: list = ['text']
 
     def execute(self):
         console = Console()
-        if self.statement:
-            console.print(Markdown(self.statement))
-        if self.out:
-            console.print(Markdown(self.out))
-        if self.input:
-            console.print(Markdown(self.input))
-        return self.statement or self.out or self.input
+        console.print(Markdown(self.text))
+        return self.text

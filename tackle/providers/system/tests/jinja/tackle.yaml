@@ -1,6 +1,6 @@
 foo: bar
 
 jinja:
-  <: jinja
+  ->: jinja
   template_path: templates/things.py.j2
   output_path: things.py

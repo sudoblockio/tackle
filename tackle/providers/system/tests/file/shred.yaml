@@ -1,10 +1,10 @@
 shred_file:
-  <: shred
+  ->: shred
   src: foo
 
 
 shred_files:
-  <: shred
+  ->: shred
   src:
     - thing
     - stuff

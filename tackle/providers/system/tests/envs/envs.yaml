@@ -1,20 +1,20 @@
 ---
 
 get_env:
-  <: get_env
+  ->: get_env
   environment_variable: TMP_VAR_THING
 
-<get_env_arg: get_env TMP_VAR_THING
+get_env_arg->: get_env TMP_VAR_THING
 
-<get_env_arg_fallback: get_env DOES_NOT_EXIST stuff
+get_env_arg_fallback->: get_env DOES_NOT_EXIST stuff
 
 set_env:
-  <: set_env
+  ->: set_env
   environment_variable: TMP_VAR_THING
   value: things
 
-<set_env_arg: set_env TMP_VAR_THING things
+set_env_arg->: set_env TMP_VAR_THING things
 
-<get_env_arg_after_set: get_env TMP_VAR_THING
+get_env_arg_after_set->: get_env TMP_VAR_THING
 
-<unset: unset TMP_VAR_THING
+unset->: unset TMP_VAR_THING

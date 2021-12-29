@@ -1,15 +1,15 @@
-_foo:
+foo:
   - bar
   - baz
 #
 #append_str_list:
-#  <: yaml
+#  ->: yaml
 #  path: output.yaml
 #  contents: "{{ append._foo }}"
 #  append_items: bing
 #
 #append_list_list:
-#  <: yaml
+#  ->: yaml
 #  path: output.yaml
 #  in_place: true
 #  contents: "{{ append._foo }}"
@@ -17,14 +17,14 @@ _foo:
 #    - bing
 #    - bang
 
-_stuff:
+stuff:
   things:
     - dogs
     - cats
 
 append_dict:
-  <: yaml
+  ->: yaml
   path: output-dict.yaml
-  contents: "{{ append._stuff }}"
-  append_items: "{{ append._foo }}"
+  contents: "{{ stuff }}"
+  append_items: "{{ foo }}"
   append_keys: things

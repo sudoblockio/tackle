@@ -3,7 +3,7 @@ import logging
 import oyaml as yaml
 import re
 import os
-from _collections import OrderedDict
+from pydantic import Field
 
 from typing import Union, Dict, List, Any
 
@@ -14,37 +14,41 @@ logger = logging.getLogger(__name__)
 
 
 class YamlHook(BaseHook):
-    """
-    Hook  for yaml.
-
-    :param path: The file path to put read or write to
-    :param contents: Supplied dictionary or list to write.
-    :param in_place: Boolean to read the contents of the `path` and then write after
-        modifications.
-    :param remove: Parameter or regex to remove from list or dict
-    :param update: Use the python `update` dict method on `contents` before writing
-    :param filter: List or string to values to.
-    :param merge_dict: Dict input that recursively overwrites the `contents`.
-    :param append_items: List to append to `append_key` key.
-    :param append_key: String or list of hierarchical keys to append item to. Defaults
-        to root element.
-    :param mode: The mode that the file should write. Defaults to write 'w'.
-        Seee https://docs.python.org/3/library/functions.html#open
-    """
+    """Hook for yaml."""
 
     type: str = 'yaml'
 
-    remove: Union[List, str] = None
-    contents: Union[Dict, OrderedDict, List] = None
-    update: Dict = None
-    filter: List = None
-    path: str
-    merge_dict: Dict = None
-    in_place: bool = False
-    append_items: Union[Dict, str, List[Any]] = None
-    append_keys: Union[Dict, str, List[Any]] = None
-    mode: str = None
-    write: bool = None
+    remove: Union[List, str] = Field(
+        None, description="Parameter or regex to remove from list or dict."
+    )
+    contents: Union[Dict, List] = Field(
+        None, description="Supplied dictionary or list to write."
+    )
+    update: Dict = Field(
+        None,
+        description="Use the python `update` dict method on `contents` before writing",
+    )
+    filter: List = Field(None, description="List or string to values to.")
+    path: str = Field(..., description="The file path to put read or write to.")
+    merge_dict: Dict = Field(
+        None, description="Dict input that recursively overwrites the `contents`."
+    )
+    in_place: bool = Field(
+        False,
+        description="Boolean to read the contents of the `path` and then write after modifications.",
+    )
+    append_items: Union[Dict, str, List[Any]] = Field(
+        None, description="List to append to `append_key` key."
+    )
+    append_keys: Union[Dict, str, List[Any]] = Field(
+        None,
+        description="String or list of hierarchical keys to append item to. Defaults",
+    )
+    mode: str = Field(
+        None,
+        description="The mode that the file should write. Defaults to write 'w'. See https://docs.python.org/3/library/functions.html#open",
+    )
+    write: bool = Field(None, description="")
 
     def __init__(self, **data: Any):
         super().__init__(**data)

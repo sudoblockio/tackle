@@ -131,6 +131,8 @@ class RemoveHook(BaseHook):
     path: Union[List, str]
     fail_silently: bool = False
 
+    _args: list = ['path']
+
     def __init__(self, **data: Any):
         super().__init__(**data)
         if isinstance(self.path, str):

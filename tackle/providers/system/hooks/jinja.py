@@ -3,7 +3,7 @@ from jinja2.exceptions import UndefinedError
 from jinja2 import FileSystemLoader
 
 import logging
-from typing import Dict, Union
+from typing import Union
 
 from tackle import BaseHook, Field
 from tackle.exceptions import UndefinedVariableInTemplate
@@ -13,9 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class JinjaHook(BaseHook):
-    """
-    Hook for jinja templates. Returns string path to the output file.
-    """
+    """Hook for jinja templates. Returns string path to the output file."""
 
     type: str = 'jinja'
     file_system_loader: str = Field('.', description="")
@@ -31,7 +29,7 @@ class JinjaHook(BaseHook):
         env.loader = FileSystemLoader(self.file_system_loader)
         template = env.get_template(self.template_path)
 
-        jinja_context = dict(self.output_dict)
+        jinja_context = self.output_dict.copy()
 
         if self.extra_context:
             jinja_context.update(self.extra_context)

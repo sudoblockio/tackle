@@ -1,24 +1,20 @@
-# """Path hooks."""
+"""Directory hooks."""
 import logging
 import pathlib
 
-from tackle.models import BaseHook
+from tackle.models import BaseHook, Field
 
 logger = logging.getLogger(__name__)
 
 
 class MakeDirectoryHook(BaseHook):
-    """Hook creating a directory.
-
-    :param path: The path to file or directory
-    :return: boolean:
-    """
+    """Hook creating a directory."""
 
     type: str = 'mkdir'
-    path: str
+    path: str = Field(..., description="The path to file or directory")
 
     _args: list = ['path']
 
-    def execute(self):
+    def execute(self) -> str:
         pathlib.Path(self.path).mkdir(parents=True, exist_ok=True)
         return self.path

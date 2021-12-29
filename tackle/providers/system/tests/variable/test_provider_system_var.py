@@ -2,32 +2,11 @@
 from tackle.main import tackle
 
 
-def test_provider_system_hook_stat(change_dir):
-    """Verify the hook call works properly."""
-    output = tackle('stat.yaml')
-
-    assert output['a_list_remove'] == ['things']
-    assert output['map_update'] == {'stuff': {'dogs': 'cats'}, 'foo': 'bar'}
-    assert output['map_merge'] == {
-        'stuff': {'things': 3, 'dogs': 'cats'},
-        'foo': 'bar',
-    }
-    assert output['loop_merge'][1] == {'stuff': {'things': 1}, 'foo': 'bar'}
-    assert output['boolean']
-
-
 def test_provider_system_hook_var(change_dir):
     """Verify the hook call works properly."""
     output = tackle('tackle.yaml')
 
-    assert output['a_list_remove'] == ['things']
-    assert output['map_update'] == {'stuff': {'dogs': 'cats'}, 'foo': 'bar'}
-    assert output['map_merge'] == {
-        'stuff': {'things': 3, 'dogs': 'cats'},
-        'foo': 'bar',
-    }
-    assert output['loop_merge'][1] == {'stuff': {'things': 1}, 'foo': 'bar'}
-    assert output['boolean']
+    assert output['short'] == output['a_list']
 
 
 def test_provider_system_hook_var_lists_embed(change_dir):

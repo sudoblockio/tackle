@@ -4,30 +4,26 @@ from rich.console import Console
 from rich.table import Table
 from typing import List, Any
 
-from tackle.models import BaseHook
+from tackle.models import BaseHook, Field
 
 logger = logging.getLogger(__name__)
 
 
 class TableHook(BaseHook):
-    """
-    Hook  for creating tables with rich - github.com/willmcgugan/rich.
-
-    :param column_names: List of column names
-    :param contents: List of lists to put into columns / rows
-    :param contents_split: List of strings to separate into columns based on `separator`
-    :param separator: A string to separate the strings in the contents
-    :param sort: Boolean to sort contents or contents_split
-    """
+    """Hook for creating tables with rich - github.com/willmcgugan/rich."""
 
     type: str = 'table'
 
-    column_names: List = []
-    sort: bool = False
-    contents: Any = None
-    contents_split: List = None
-    # TODO: Validate one of above is entered
-    separator: str = None
+    column_names: List = Field([], description="List of column names")
+    sort: bool = Field(False, description="Boolean to sort contents or contents_split")
+    contents: Any = Field(None, description="List of lists to put into columns / rows")
+    contents_split: List = Field(
+        None,
+        description="List of strings to separate into columns based on `separator`",
+    )
+    separator: str = Field(
+        None, description="A string to separate the strings in the contents"
+    )
 
     def execute(self):
         if self.sort:

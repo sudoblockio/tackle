@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 import logging
 import os
 import zipfile
+from pydantic import Field
 
 from tackle.models import BaseHook
 
@@ -12,18 +13,12 @@ logger = logging.getLogger(__name__)
 
 
 class ZipHook(BaseHook):
-    """
-    Hook to zip a file or directory.
-
-    :param input: Input path
-    :param output: Output path
-    :return: Output path
-    """
+    """Hook to zip a file or directory."""
 
     type: str = 'zipfile'
 
-    input: str
-    output: str
+    input: str = Field(..., description="Input path")
+    output: str = Field(..., description="Output path")
 
     def execute(self):
         if os.path.isdir(self.input):
@@ -41,18 +36,12 @@ class ZipHook(BaseHook):
 
 
 class UnzipHook(BaseHook):
-    """
-    Hook to unzip a file.
-
-    :param input: Input path
-    :param output: Output path, default to current directory
-    :return: Output path
-    """
+    """Hook to unzip a file."""
 
     type: str = 'unzipfile'
 
-    input: str
-    output: str = '.'
+    input: str = Field(..., description="Input path")
+    output: str = Field(".", description="Output path, default to current directory")
 
     def execute(self):
         if os.path.isfile(self.input):

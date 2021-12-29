@@ -7,9 +7,9 @@ stuff:
     dog: penny
 
 include:
-  <: yaml
+  ->: yaml
   path: output.yaml
-  contents: "{{ update }}"
+  contents: "{{ stuff }}"
   update:
     stuff:
       things:

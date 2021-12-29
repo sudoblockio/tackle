@@ -7,7 +7,7 @@ stuff:
     dog: penny
 
 include:
-  <: yaml
+  ->: yaml
   path: output.yaml
   contents: "{{ merge_dict }}"
   merge_dict:
@@ -16,7 +16,7 @@ include:
         cats: scratch
 
 envs:
-  <: var
+  ->: var
   input:
     - dev
     - prod
@@ -28,7 +28,7 @@ map:
   prod: null
 
 merger:
-  <: yaml
+  ->: yaml
   path: output.yaml
   loop: "{{ merge_dict.envs }}"
   contents: "{{ merge_dict }}"

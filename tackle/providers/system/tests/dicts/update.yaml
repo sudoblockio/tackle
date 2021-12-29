@@ -7,16 +7,16 @@ dict_map:
   bar: blu
 
 update_map:
-  <: update
+  ->: update
   src: "{{ input_map }}"
   input: "{{ dict_map }}"
 
 update_map2:
-  <: update
+  ->: update
   src: "{{ input_map }}"
   input:
     stuff: "{{ dict_map }}"
 
-<arg: update "{{ input_map }}" "{{ dict_map }}"
+arg->: update "{{ input_map }}" "{{ dict_map }}"
 
-<arg2: update {{input_map}} "{'stuff':{{dict_map}}}"
+arg2->: update {{input_map}} "{'stuff':{{dict_map}}}"

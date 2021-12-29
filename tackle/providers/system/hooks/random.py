@@ -1,50 +1,54 @@
 """Random number / string hooks."""
-from typing_extensions import Literal
 import random
 import string
 import logging
 
-from tackle.models import BaseHook
+from tackle.models import BaseHook, Field
+from pydantic import validator
+from tackle.exceptions import HookCallException
 
 logger = logging.getLogger(__name__)
 
 
 class RandomHexHook(BaseHook):
-    """
-    Hook  for `random_hex`. Lists the contents of a directory.
-
-    :param length: Number for number of digits - default 8
-    :return: String
-    """
+    """Hook  for `random_hex`. Lists the contents of a directory."""
 
     type: str = 'random_hex'
-    length: int = 8
+    length: int = Field(8, description="Number for number of digits - default 8")
 
-    def execute(self):
+    _args: list = ['length']
+
+    def execute(self) -> str:
         return ''.join(['%0', str(self.length), 'x']) % random.randrange(
             16 ** self.length
         )
 
 
 class RandomStringHook(BaseHook):
-    """
-    Hook  for `random_string`. Lists the contents of a directory.
-
-    :param case: String, either upper or lower, defaults to lower
-    :param length: Number for number of digits - default 8
-    :return: String
-    """
+    """Hook  for `random_string`. Lists the contents of a directory."""
 
     type: str = 'random_string'
-    case: Literal['upper', 'lower'] = 'upper'
-    length: int = 8
+    string_case: str = Field(
+        'lower', description="Case of output, one of `upper` or `lower`"
+    )
+    length: int = Field(8, description="Length of the random string.")
+
+    _args: list = ['length', 'string_case']
+
+    @validator('string_case', allow_reuse=True)
+    def validate_string_case2(cls, v):
+        if v not in ['upper', 'lower']:
+            raise HookCallException(
+                "Field `string_case` must be one of 'upper' or 'lower'."
+            )
+        return v
 
     def execute(self):
-        if self.case == 'upper':
+        if self.string_case == 'upper':
             return ''.join(
                 random.choices(string.ascii_uppercase + string.digits, k=self.length)
             )
-        elif self.case == 'lower':
+        elif self.string_case == 'lower':
             return ''.join(
                 random.choices(string.ascii_lowercase + string.digits, k=self.length)
             )

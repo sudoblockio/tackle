@@ -7,8 +7,13 @@ dict_map:
   things: blu
 
 merge_map:
-  <: merge
-  input: "{{ input_map }}"
-  src: "{{ dict_map }}"
+  ->: merge
+  inputs:
+    - "{{input_map}}"
+    - "{{dict_map}}"
 
-<arg1: merge {{dict_map}} {{input_map}}
+
+#  src: "{{ dict_map }}"
+#  input: "{{ input_map }}"
+
+#arg1->: merge {{dict_map}} {{input_map}}

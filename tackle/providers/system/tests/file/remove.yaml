@@ -1,43 +1,43 @@
 
 file:
-  <: command
+  ->: command
   command: touch this
 
 if_file:
-  <: path_exists
+  ->: path_exists
   path: this
 
 rm:
-  <: remove
+  ->: remove
   path: this
 
 not_file:
-  <: path_exists
+  ->: path_exists
   path: this
 
 #files:
-#  <: command
+#  ->: command
 #  command: |
 #    touch this
 #    touch that
 
 files:
-  <: create_file
+  ->: create_file
   path:
     - this
     - that
 
 
 if_files:
-  <: path_exists
+  ->: path_exists
   path: that
 
 rms:
-  <: remove
+  ->: remove
   path:
     - this
     - that
 
 not_files:
-  <: path_exists
+  ->: path_exists
   path: that

@@ -1,17 +1,17 @@
 column_names:
-  <: var
+  ->: var
   input:
     - stuff
     - things
 
 data:
-  <: var
+  ->: var
   input:
     - ['foo', 'bar']
     - ['here', 1]
 
 data_bigger:
-  <: var
+  ->: var
   input:
     - ['foo', 'bar']
     - ['here', 1]
@@ -21,15 +21,15 @@ data_bigger:
 
 
 print1_:
-  <: print
+  ->: print
   input: "{{ this }}"
 
 table:
-  <: table
+  ->: table
   column_names: "{{ column_names }}"
   contents: "{{ data }}"
 
 table_bigger:
-  <: table
+  ->: table
   column_names: "{{ column_names }}"
   contents: "{{ data_bigger }}"

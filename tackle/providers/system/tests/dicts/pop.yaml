@@ -2,7 +2,7 @@ a_list:
   - stuff
   - foo
 
-<arg_1: pop {{a_list}}
+arg_1->: pop {{a_list}}
 
 a_map:
   stuff: bing
@@ -11,21 +11,21 @@ a_map:
   baz: grrr
 
 
-<arg_2: pop {{a_map}} foo
+arg_2->: pop {{a_map}} foo
 
 pop_map:
-  <: pop
+  ->: pop
   src: "{{ a_map }}"
   item: stuff
 
 pop_maps:
-  <: pop
+  ->: pop
   src: "{{ a_map }}"
   item:
     - stuff
     - things
 
 #output:
-#  <: yaml
+#  ->: yaml
 #  path: output-pop.yaml
 #  contents: "{{ pop }}"

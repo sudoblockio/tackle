@@ -16,9 +16,7 @@ def clean_outputs():
 def test_provider_system_hook_dicts_merge(change_dir):
     """Verify the hook call works properly."""
     output = tackle('merge.yaml')
-    assert output['merge_map']['stuff'] == 'blah'
-    assert len(output['merge_map']) == 3
-    assert output['arg1'] == output['merge_map']
+    assert output['merge_map']['stuff'] == 'bing'
 
 
 def test_provider_system_hook_dicts_update(change_dir):

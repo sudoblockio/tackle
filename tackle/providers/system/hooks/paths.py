@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 class PathExistsListHook(BaseHook):
-    """Hook for os package 'path_exists' hook."""
+    """Hook for os package 'path.exists'."""
 
     type: str = 'path_exists'
     path: str = Field(..., description="The path to file or directory")
@@ -21,16 +21,28 @@ class PathExistsListHook(BaseHook):
         return os.path.exists(self.path)
 
 
-class PathIsdirListHook(BaseHook):
-    """Hook  for os package 'path_exists' hook."""
+class PathIsDirListHook(BaseHook):
+    """Hook for os package 'path.isdir'."""
 
-    type: str = 'path_isdir'
-    path: str = Field(..., description="The path to file or directory")
+    type: str = 'isdir'
+    path: str = Field(..., description="The path to a directory")
 
     _args: list = ['path']
 
     def execute(self) -> bool:
         return os.path.isdir(self.path)
+
+
+class PathIsFileListHook(BaseHook):
+    """Hook for os package 'path.isfile'."""
+
+    type: str = 'isfile'
+    path: str = Field(..., description="The path to a file")
+
+    _args: list = ['path']
+
+    def execute(self) -> bool:
+        return os.path.isfile(self.path)
 
 
 class FindInParentHook(BaseHook):

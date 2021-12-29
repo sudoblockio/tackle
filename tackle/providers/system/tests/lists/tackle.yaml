@@ -5,16 +5,16 @@ _list:
   - bar
 
 appended_list:
-  <: append
+  ->: append
   input: "{{ _list }}"
   item: donkey
 
 appended_list_arg:
-  <: append "{{ _list }}" donkey
+  ->: append "{{ _list }}" donkey
 
 
 appended_lists:
-  <: append
+  ->: append
   input: "{{ _list }}"
   item:
     - donkey
@@ -25,4 +25,4 @@ items:
   - chickens
 
 appended_lists_arg:
-  <: append "{{ _list }}" "{{items}}"
+  ->: append "{{ _list }}" "{{items}}"

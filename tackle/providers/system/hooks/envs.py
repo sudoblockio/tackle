@@ -3,25 +3,20 @@ import os
 import logging
 import platform
 
-from tackle.models import BaseHook
+from tackle.models import BaseHook, Field
 
 logger = logging.getLogger(__name__)
 
 
 class GetEnvHook(BaseHook):
-    """
-    Hook for getting environment variables.
-
-    Sets with input dict. Gets with input string.
-
-    :param input: Dict for setting and string for getting environment variables
-    :param fallback: A fallback for getting.
-    :return: input
-    """
+    """Hook for getting environment variables."""
 
     type: str = 'get_env'
-    environment_variable: str = None
-    fallback: str = None
+    environment_variable: str = Field(
+        None,
+        description="Dict for setting and string for getting environment variables",
+    )
+    fallback: str = Field(None, description="A fallback for getting.")
 
     _args: list = ['environment_variable', 'fallback']
 
@@ -37,19 +32,13 @@ class GetEnvHook(BaseHook):
 
 
 class EnvironmentVariableHook(BaseHook):
-    """
-    Hook for setting / getting environment variables.
-
-    Sets with input dict. Gets with input string.
-
-    :param input: Dict for setting and string for getting environment variables
-    :param fallback: A fallback for getting.
-    :return: input
-    """
+    """Hook for setting environment variables."""
 
     type: str = 'set_env'
-    environment_variable: str
-    value: str = None
+    environment_variable: str = Field(
+        ..., description="The name of the environment variable to set."
+    )
+    value: str = Field(None, description="The value to set it.")
 
     _args: list = ['environment_variable', 'value']
 
@@ -78,8 +67,10 @@ class ExportHook(BaseHook):
     """
 
     type: str = 'export'
-    environment_variable: str = None
-    value: str = None
+    environment_variable: str = Field(
+        ..., description="The name of the environment variable to set."
+    )
+    value: str = Field(None, description="The value to set it.")
 
     _args: list = ['environment_variable', 'value']
 
@@ -97,18 +88,12 @@ class ExportHook(BaseHook):
 
 
 class UnsetHook(BaseHook):
-    """
-    Hook for unsetting environment variables.
-
-    Sets with input dict. Gets with input string.
-
-    :param input: Dict for setting and string for getting environment variables
-    :param fallback: A fallback for getting.
-    :return: input
-    """
+    """Hook for unsetting environment variables."""
 
     type: str = 'unset'
-    environment_variable: str = None
+    environment_variable: str = Field(
+        ..., description="The name of the environment variable to set."
+    )
 
     _args: list = ['environment_variable']
 
