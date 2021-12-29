@@ -17,19 +17,19 @@ def clean_outputs():
 
 def test_provider_git_hooks_repos(change_dir, clean_outputs):
     """Verify hook."""
-    tackle('.', context_file='repo.yaml')
+    tackle('repo.yaml')
     assert os.path.isdir('tackle-pypackage')
 
 
 def test_provider_git_hooks_meta_flat(change_dir, clean_outputs):
     """Verify hook."""
-    tackle('.', context_file='meta-flat.yaml', no_input=True)
+    tackle('meta-flat.yaml', no_input=True)
     assert os.path.isdir('foo')
 
 
 def test_provider_git_hooks_meta(change_dir, clean_outputs):
     """Verify hook."""
-    tackle('.', context_file='meta.yaml', no_input=True)
+    tackle('meta.yaml', no_input=True)
     assert os.path.isdir(os.path.join('foo', 'bar', 'thing', 'docs'))
     assert os.path.isdir(os.path.join('foo', 'bar', 'gh', 'docs'))
     assert os.path.isdir(os.path.join('foo', 'bar', 'gh-branch', 'docs'))

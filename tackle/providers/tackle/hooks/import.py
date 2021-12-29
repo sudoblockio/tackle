@@ -32,6 +32,7 @@ from tackle.utils.vcs import get_repo_source
 
 class RepoSource(BaseModel):
     """Repo object."""
+
     src: str
     version: str = None
 

@@ -165,7 +165,10 @@ class MetaGitHook(BaseHook):
         if len(git_parts) == 2:
             return f"{git_parts[0]}/{git_parts[1]}"
         else:
-            print(f"Malformed repo name '{v}' in '{self.key}' key. Skipping.")
+            from tackle.utils.dicts import get_key_from_key_path
+
+            key = get_key_from_key_path(self.key_path_)
+            print(f"Malformed repo name '{v}' in '{key}' key. Skipping.")
 
     def prompt_repo_choices(self):
         """Prompt the user to select which items to operate on."""
@@ -220,10 +223,10 @@ class MetaGitHook(BaseHook):
                 self.command = "branch " + prompt([question])['tmp']
 
         else:
-            print(
-                f"No command given in mete_hook for key = {self.key}.  "
-                f"Defaults to clone."
-            )
+            # print(
+            #     f"No command given in mete_hook for key = {self.key}.  "
+            #     f"Defaults to clone."
+            # )
             self.command = 'clone'
 
     def execute(self):

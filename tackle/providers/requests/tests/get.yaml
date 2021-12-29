@@ -1,6 +1,6 @@
 simple:
-  <: get
+  ->: get
   url: https://jsonplaceholder.typicode.com/todos/1
 
 compact:
-  <: get https://jsonplaceholder.typicode.com/todos/1
+  ->: get https://jsonplaceholder.typicode.com/todos/1

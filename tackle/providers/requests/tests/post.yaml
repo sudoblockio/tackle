@@ -1,5 +1,5 @@
 simple:
-  <: post
+  ->: post
   url: https://reqres.in/api/users
   input_json:
     name: Rob Cannon
