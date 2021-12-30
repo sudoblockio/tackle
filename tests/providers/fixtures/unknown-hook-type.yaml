@@ -1,4 +1,4 @@
 
 print:
-  type: foobar
+  ->: foobar
   foo: bar

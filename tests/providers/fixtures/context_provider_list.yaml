@@ -1,11 +1,18 @@
-__providers:
-  - test-provider
-  - test-provider-2
+#__providers:
+#  - test-provider
+#  - test-provider-2
+
+import:
+  _>: import
+  src: "{{item}}"
+  for:
+    - test-provider
+    - test-provider-2
 
 stuff:
-  type: thing
+  ->: thing
   stuff: bar
 
 things:
-  type: stuff
+  ->: stuff
   thing: bar
