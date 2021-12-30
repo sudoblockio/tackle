@@ -86,7 +86,6 @@ def identify_repo(repo_url):
 #         sys.exit()
 
 
-
 def clone(repo_url, checkout=None, clone_to_dir='.', no_input=False):
     """Clone a repo to the current directory.
 

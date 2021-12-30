@@ -656,6 +656,9 @@ def update_source(context: 'Context'):
         # basically the fallback logic but need to raise error right away if the key
         # does not exist so we don't have to catch it with context later.
         tackle_file = find_nearest_tackle_file()
+        if tackle_file is None:
+            raise UnknownSourceException(f"Could not find source = {first_arg}")
+
         context.input_file = os.path.basename(tackle_file)
         context.input_dir = Path(tackle_file).parent.absolute()
         extract_base_file(context)

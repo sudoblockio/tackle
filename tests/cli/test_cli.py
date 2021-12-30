@@ -5,6 +5,7 @@ import os
 from tackle.models import Context
 from tackle.cli import main
 
+
 # fmt: off
 INPUT_SOURCES = [
     ("github.com/robcxyz/tackle-demo",
@@ -34,7 +35,7 @@ def test_cli_parse_args(mocker, change_dir_base, input_string, output):
         assert context[k] == v
 
 
-def test_cli_parse_args_empty(mocker, change_dir_base):
+def test_cli_parse_args_empty(mocker, change_curdir_fixtures):
     """When no arg is given we should find the closest tackle file."""
     mock = mocker.patch("tackle.main.update_source", autospec=True, return_value={})
     main([])
@@ -49,7 +50,9 @@ PRINTS = ["--print", "-p"]
 
 
 @pytest.mark.parametrize("input_string", PRINTS)
-def test_cli_parse_args_print_option(mocker, change_dir_base, capsys, input_string):
+def test_cli_parse_args_print_option(
+    mocker, change_curdir_fixtures, capsys, input_string
+):
     """When no arg is given we should find the closest tackle file."""
     mocker.patch("tackle.main.update_source", autospec=True, return_value={})
     main([input_string])

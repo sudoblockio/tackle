@@ -102,6 +102,15 @@ class UnknownArgumentException(TackleException):
     """
 
 
+class NoInputOrParentTackleException(TackleException):
+    """
+    Exception when no input has been given, nor is there a parent tackle.
+
+    Raised when a hook is called with an unknown argument in it's mapping (ie missing
+    `_args` param in the hook definition.
+    """
+
+
 class UnknownTemplateVariableException(TackleException):
     """
     Exception an unknown templatable argument.

@@ -8,6 +8,7 @@ from tackle.models import Context
 from tackle.parser import update_source
 from tackle.utils.paths import find_nearest_tackle_file
 from tackle.utils.dicts import nested_delete
+from tackle.exceptions import NoInputOrParentTackleException
 
 
 def tackle(
@@ -39,6 +40,10 @@ def tackle(
         kwargs['input_string'] = find_nearest_tackle_file()
     elif kwargs['input_string'] is None:
         kwargs['input_string'] = find_nearest_tackle_file()
+
+    # Handle the exception if no tackle file is found in parent directory
+    if kwargs['input_string'] is None:
+        raise NoInputOrParentTackleException("No input or tackle file has been given.")
 
     # Initialize context
     context = Context(**kwargs)

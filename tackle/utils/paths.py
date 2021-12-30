@@ -174,7 +174,7 @@ def find_tackle_file(provider_dir) -> str:
     raise InvalidConfiguration(f"Can't find tackle file in {provider_dir}")
 
 
-def find_in_parent(dir, targets, fallback=None, fallback_call=None):
+def find_in_parent(dir, targets, fallback=None):
     """Recursively search in parent directories for a path to a target file."""
     for i in os.listdir(dir):
         if i in targets:
@@ -183,8 +183,6 @@ def find_in_parent(dir, targets, fallback=None, fallback_call=None):
     if os.path.abspath(dir) == '/':
         if fallback:
             return fallback
-        elif fallback_call:
-            return fallback_call()
         else:
             raise NotADirectoryError(
                 f'The {targets} target doesn\'t exist in the parent directories.'
@@ -197,8 +195,15 @@ def find_in_parent(dir, targets, fallback=None, fallback_call=None):
 
 
 def find_nearest_tackle_file():
-    """Find the nearest tackle file from a set of default tackle files."""
-    return find_in_parent(os.curdir, CONTEXT_FILES)
+    """
+    Find the nearest tackle file from a set of default tackle files.
+    :return: Path or None if not found
+    """
+    tackle_file_location = find_in_parent(os.curdir, CONTEXT_FILES, fallback=True)
+    if isinstance(tackle_file_location, bool):
+        return None
+
+    return tackle_file_location
 
 
 def repository_has_tackle_file(repo_directory: str, context_file=None):
