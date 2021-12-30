@@ -2,8 +2,6 @@
 import os
 import pytest
 
-from tackle.cli import main
-
 
 @pytest.fixture(scope="function")
 def change_dir(request):
@@ -26,14 +24,18 @@ def change_dir_base(monkeypatch):
 @pytest.fixture(scope='function')
 def chdir(request):
     """Change to a directory based on an argument within the scope of the test."""
+
     def f(dir):
         os.chdir(os.path.join(request.fspath.dirname, dir))
+
     return f
 
 
 @pytest.fixture(scope='function')
 def chdir_fixture(request):
     """Change to a directory based on an argument within the scope of the test."""
+
     def f(dir):
         os.chdir(os.path.join(request.fspath.dirname, 'fixtures', dir))
+
     return f
