@@ -53,6 +53,15 @@ class TackleException(Exception):
     #     super().__init__(self.message)
 
 
+class EmptyBlockException(TackleException):
+    """
+    Exception when a block (ie a compact hook without a hook type - key->: if:/for:)
+    is declared without any contents.
+
+    Raised when handling empty blocks.
+    """
+
+
 class NonTemplatedInputDirException(TackleException):
     """
     Exception for when a project's input dir is not templated.

@@ -6,7 +6,7 @@ import os
 import inspect
 import warnings
 from typing import Type, Any
-from pydantic.main import ModelMetaclass
+from pydantic.main import ModelMetaclass, ValidationError
 
 from tackle.providers import import_with_fallback_install
 from tackle.render import render_variable, wrap_jinja_braces
@@ -16,6 +16,7 @@ from tackle.utils.dicts import (
     nested_set,
     encode_list_index,
     set_key,
+    get_readable_key_path,
 )
 from tackle.utils.command import unpack_args_kwargs_string, unpack_input_string
 from tackle.utils.vcs import get_repo_source
@@ -34,6 +35,7 @@ from tackle.exceptions import (
     UnknownHookTypeException,
     UnknownArgumentException,
     EmptyTackleFileException,
+    EmptyBlockException,
 )
 from tackle.settings import settings
 
@@ -197,15 +199,19 @@ def parse_hook(
             # Render the remaining hook variables
             render_hook_vars(hook_dict, Hook, context)
 
-            hook = Hook(
-                **hook_dict,
-                input_dict=context.input_dict,
-                output_dict=context.output_dict,
-                existing_context=context.existing_context,
-                no_input=context.no_input,
-                providers_=context.providers,
-                key_path_=context.key_path,
-            )
+            try:
+                hook = Hook(
+                    **hook_dict,
+                    input_dict=context.input_dict,
+                    output_dict=context.output_dict,
+                    existing_context=context.existing_context,
+                    no_input=context.no_input,
+                    providers_=context.providers,
+                    key_path_=context.key_path,
+                )
+            except ValidationError as e:
+                print()
+                raise e
 
             # Normal hook run
             hook_output_value = hook.call()
@@ -396,6 +402,12 @@ def handle_empty_blocks(context: 'Context', block_value):
             nested_delete(context.input_dict, base_key_path + new_key + [k])
         elif context.verbose:
             warnings.warn(f"Warning - skipping over {k} in block hook.")
+
+    # Finally check if the `items` key exists in the input_dict.  If not then we have
+    # an empty hook which will cause an ambiguous ValidationError for missing field
+    if 'item' not in nested_get(context.input_dict, base_key_path + new_key):
+        key = get_readable_key_path(base_key_path + new_key)
+        raise EmptyBlockException(f"Empty hook in key path = {key}")
 
 
 def walk_sync(context: 'Context', element):

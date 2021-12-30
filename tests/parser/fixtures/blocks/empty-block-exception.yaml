@@ -1,0 +1,8 @@
+stuff: things
+
+a_list:
+  - stuff
+  - things
+
+e_block->:
+  for: a_list

@@ -20,6 +20,28 @@ def remove_dead_leaves():
     pass
 
 
+def get_key_from_key_path(key_path: list) -> str:
+    """Take key_path and return the nearest key from end removing arrows."""
+    if key_path[-1] in ('->', '_>'):
+        # Expanded key
+        return key_path[-2]
+    elif key_path[-1].endswith('->', '_>'):
+        # Compact key
+        return key_path[-1][:-2]
+
+
+def get_readable_key_path(key_path: list) -> str:
+    """Take key_path and return the nearest key from end removing arrows."""
+    readable_key_path = []
+    for i in key_path:
+        if isinstance(i, bytes):
+            readable_key_path.append(decode_list_index(i))
+        else:
+            readable_key_path.append(i)
+
+    return '.'.join(readable_key_path)
+
+
 def nested_delete(element, keys):
     """
     Delete items in a generic element (list / dict) based on a key path in the form of
@@ -170,9 +192,7 @@ def nested_set(element, keys, value, index: int = 0):
             element[decode_list_index(keys[-1])] = value
 
 
-def set_key(
-    element, keys: list, value, keys_to_delete, append_hook_value: bool = False
-):
+def set_key(element, keys: list, value, append_hook_value: bool = False):
     """
     Wrap nested_set to set keys for both public and private hook calls.
 
@@ -208,42 +228,13 @@ def set_key(
         nested_set(element, keys[:-1], value)
     elif keys[-1].endswith('->'):  # Compact public hook call
         nested_set(element, keys[:-1] + [keys[-1][:-2]], value)
-        nested_delete(element, keys)  # Delete the old key containing the arrow
+        # nested_delete(element, keys)  # Delete the old key containing the arrow
     elif keys[-1] == '_>':  # Expanded private hook call
         nested_set(element, keys[:-1], value)
-        keys_to_delete.append(keys[:-1])
+        # keys_to_delete.append(keys[:-1])
     elif keys[-1].endswith('_>'):  # Compact private hook call
         key_path = keys[:-1] + [keys[-1][:-2]]
         nested_set(element, key_path, value)
-        nested_delete(element, keys)  # Delete the old key containing the arrow
+        # nested_delete(element, keys)  # Delete the old key containing the arrow
         # nested_set(element, keys[:-1], {keys[-1][:-2]: value})
-        keys_to_delete.append(key_path)
-
-
-def append_key(
-    element,
-    keys: list,
-    value,
-    keys_to_delete,
-):
-    """
-    Wrap nested_set to set keys for both public and private hook calls.
-
-    For public hook calls, qualifies if the hook is compact form (ie key->) or expanded
-    (ie key: {->:..}) before setting the output. For private hook calls, the key and
-    all parent keys without additional objects are deleted later as they might be
-    used in rendering so they are added as well but their key paths are tracked for
-    later deletion.
-    """
-    # TODO: Implement removal of parent keys without values
-    if keys[-1] == '->':  # Expanded public hook call
-        nested_set(element, keys[:-1], value)
-    elif keys[-1].endswith('->'):  # Compact public hook call
-        nested_set(element, keys[:-1] + [keys[-1][:-2]], value)
-        nested_delete(element, keys)
-    elif keys[-1] == '_>':  # Expanded public hook call
-        nested_set(element, keys[:-1], value)
-        keys_to_delete.append(keys[:-1])
-    elif keys[-1].endswith('_>'):  # Compact public hook call
-        nested_set(element, keys[:-1], {keys[-1][:-2]: value})
-        keys_to_delete.append(keys[:-1])
+        # keys_to_delete.append(key_path)
