@@ -226,11 +226,7 @@ class UndefinedVariableInTemplate(TackleException):
 
     def __str__(self):
         """Text representation of UndefinedVariableInTemplate."""
-        return (
-            "{self.message}. "
-            "Error message: {self.error.message}. "
-            "Context: {self.context}"
-        ).format(**locals())
+        return self.message
 
 
 class UnknownExtension(TackleException):

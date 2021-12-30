@@ -1,7 +1,11 @@
 """Main tests."""
 import os
 
+import pytest
+
+from tackle import tackle
 from tackle.cli import main
+from tackle.exceptions import NoInputOrParentTackleException
 
 
 def test_main_cli_call_mock(mocker):
@@ -11,7 +15,7 @@ def test_main_cli_call_mock(mocker):
     assert mock.called
 
 
-def test_main_cli_call_empty(change_dir, mocker):
+def test_main_cli_call_empty(change_curdir_fixtures, mocker):
     """
     Check that when no arg is given that we find the closes tackle file which
     could be in the parent directory.
@@ -21,3 +25,16 @@ def test_main_cli_call_empty(change_dir, mocker):
     assert mock.called
     local_tackle = os.path.join(os.path.abspath('.'), '.tackle.yaml')
     assert mock.call_args.args[0].input_string == local_tackle
+
+
+def test_main_cli_call_empty_no_parent_tackle_raises(chdir, mocker):
+    """
+    Check that when no arg is given that we find the closes tackle file which
+    could be in the parent directory.
+    """
+    if os.name != 'nt':
+        chdir('/')
+    else:
+        chdir('\\')
+    with pytest.raises(NoInputOrParentTackleException):
+        tackle()
