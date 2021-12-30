@@ -81,17 +81,18 @@ class ProviderList(BaseModel):
         super().__init__(**data)
         """Import natve, settings, and local providers."""
         # Import native providers in tackle.providers
-        self._import_paths(native_providers)
+        self.import_paths(native_providers)
         # Import any providers in settings
         if settings.extra_providers:
-            self._import_paths(settings.extra_providers)
+            self.import_paths(settings.extra_providers)
         # If there is a hooks directory in the same dir as execution, import those
         if 'hooks' in os.listdir():
             curent_dir_provider_name = Path().parent.absolute().name
             with work_in(".."):
-                self._import_paths([curent_dir_provider_name])
+                self.import_paths([curent_dir_provider_name])
 
-    def _import_paths(self, provider_paths):
+    def import_paths(self, provider_paths):
+        """Iterate through paths and import them."""
         for i in provider_paths:
             self.append_from_path(i)
 

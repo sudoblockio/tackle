@@ -1,0 +1,6 @@
+# Expanded strings - Used as a private hook call where key is deleted post exec
+arbitrary key:
+  _>: import
+  src: test-provider
+
+stuff->: thing --stuff thing

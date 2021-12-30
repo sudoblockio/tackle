@@ -1,4 +1,5 @@
 """Tackle hooks."""
+import os
 from typing import Any
 from pydantic import BaseModel, Field
 
@@ -64,29 +65,35 @@ class ImportHook(BaseHook):
 
     def execute(self):
         if isinstance(self.src, str):
-            # get_repo_source clones and returns path to provider
-            provider_dir = get_repo_source(self.src, self.version)
-            self.providers_.import_paths([provider_dir])
+            # Get the provider path eith local or remote.
+            provider_path = self.get_dir_or_repo(self.src, self.version)
+            self.providers_.import_paths([provider_path])
 
         elif isinstance(self.src, list):
             provider_dirs = []
             for i in self.src:
                 if isinstance(i, str):
-                    provider_dirs.append(get_repo_source(repo=i, repo_version=None))
+                    provider_dirs.append(self.get_dir_or_repo(i, None))
                 if isinstance(i, dict):
                     # dict types validated above and transposed through same logic
                     repo_source = RepoSource(**i)
                     provider_dirs.append(
-                        get_repo_source(
-                            repo=repo_source.src, repo_version=repo_source.version
-                        )
+                        self.get_dir_or_repo(repo_source.src, repo_source.version)
                     )
 
             self.providers_.import_paths(provider_dirs)
 
         elif isinstance(self.src, dict):
+            # Don't even check if path is directory as one would never use a dict here
             repo_source = RepoSource(**self.src)
             provider_dir = get_repo_source(
                 repo=repo_source.src, repo_version=repo_source.version
             )
             self.providers_.import_paths([provider_dir])
+
+    def get_dir_or_repo(self, src, version):
+        """Check if there is a path that matches input otherwise try as repo."""
+        if os.path.exists(src):
+            return src
+        else:
+            return get_repo_source(src, version)
