@@ -1,9 +1,9 @@
 stuff: things
 
-init->: isdir output/plain_src
+init->: isdir output
 
-compact->: generate plain_src output_dir
+compact->: generate plain_src output
 
-after->: isdir output_dir/models
+after->: isdir output/models
 
-cleanup->: remove output_dir
+cleanup->: remove output

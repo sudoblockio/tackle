@@ -1,9 +1,13 @@
 stuff: things
 
-init->: isdir output/simple_src
+init->: isdir output
 
-compact->: generate render_src .
+compact->: generate render_src output
 
-after->: isfile render_src/models/stuff-{{stuff}}.yaml
+targets:
+  - output/models/stuff-things.yaml
+  - output/models/.hidden.yaml
 
-#cleanup->: remove render_src
+after->: isfile "{{item}}" --for targets
+
+cleanup->: remove output

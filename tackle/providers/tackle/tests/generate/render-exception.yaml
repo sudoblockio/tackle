@@ -1,0 +1,7 @@
+stuff: things
+
+init->: isdir output
+
+compact->: generate render-error output
+
+#cleanup->: remove output

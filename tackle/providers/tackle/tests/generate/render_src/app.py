@@ -1,1 +1,2 @@
-print({"stuff": "things"})
+"""Template."""
+print("{{stuff}}")
