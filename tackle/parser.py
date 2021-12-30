@@ -34,6 +34,7 @@ from tackle.exceptions import (
     HookCallException,
     UnknownHookTypeException,
     UnknownArgumentException,
+    UnknownSourceException,
     EmptyTackleFileException,
     EmptyBlockException,
 )
@@ -651,11 +652,19 @@ def update_source(context: 'Context'):
         extract_base_file(context)
     # Search in parent
     else:
-        # Lastly we check if there is a key in the parent that matches the arg
+        # Lastly we check if there is a key in the parent that matches the arg. This is
+        # basically the fallback logic but need to raise error right away if the key
+        # does not exist so we don't have to catch it with context later.
         tackle_file = find_nearest_tackle_file()
         context.input_file = os.path.basename(tackle_file)
         context.input_dir = Path(tackle_file).parent.absolute()
         extract_base_file(context)
+
+        if first_arg not in context.input_dict:
+            raise UnknownSourceException(
+                f"Could not find source = {first_arg} or as "
+                f"key in parent tackle file."
+            )
         args.insert(0, first_arg)
 
     # Main parsing logic

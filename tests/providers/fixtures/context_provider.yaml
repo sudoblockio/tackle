@@ -1,5 +1,4 @@
-__providers: test-provider
 
 things:
-  type: thing
+  ->: thing
   stuff: bar
