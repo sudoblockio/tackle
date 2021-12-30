@@ -406,7 +406,7 @@ def handle_empty_blocks(context: 'Context', block_value):
 
     # Finally check if the `items` key exists in the input_dict.  If not then we have
     # an empty hook which will cause an ambiguous ValidationError for missing field
-    if 'item' not in nested_get(context.input_dict, base_key_path + new_key):
+    if 'items' not in nested_get(context.input_dict, base_key_path + new_key):
         key = get_readable_key_path(base_key_path + new_key)
         raise EmptyBlockException(f"Empty hook in key path = {key}")
 

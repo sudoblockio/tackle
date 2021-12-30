@@ -7,8 +7,10 @@ from tackle.cli import main
 
 # fmt: off
 INPUT_SOURCES = [
-    ("github.com/robcxyz/tackle-demo", {'input_string': "github.com/robcxyz/tackle-demo"}),
-    ("robcxyz/tackle-demo --no-input", {'input_string': 'robcxyz/tackle-demo', 'no_input': True}),
+    ("github.com/robcxyz/tackle-demo",
+     {'input_string': "github.com/robcxyz/tackle-demo"}),
+    ("robcxyz/tackle-demo --no-input",
+     {'input_string': 'robcxyz/tackle-demo', 'no_input': True}),
     ("thing --no-input", {'input_string': 'thing', 'no_input': True}),
     ("thing --foo bar", {'input_string': 'thing', 'global_kwargs': {'foo': 'bar'}}),
     ("thing foo bar", {'input_string': 'thing', 'global_args': ['foo', 'bar']}),
@@ -41,3 +43,36 @@ def test_cli_parse_args_empty(mocker, change_dir_base):
     assert isinstance(mock.call_args[0][0], Context)
     context = mock.call_args[0][0].dict()
     assert context['input_string'] == os.path.abspath('.tackle.yaml')
+
+
+PRINTS = ["--print", "-p"]
+
+
+@pytest.mark.parametrize("input_string", PRINTS)
+def test_cli_parse_args_print_option(mocker, change_dir_base, capsys, input_string):
+    """When no arg is given we should find the closest tackle file."""
+    mocker.patch("tackle.main.update_source", autospec=True, return_value={})
+    main([input_string])
+    assert '{}' in capsys.readouterr().out
+
+
+# def test_cli_parse_args_help_arg(change_curdir_fixtures):
+#     main(["tackle-help.yaml help"])
+
+
+def test_cli_parse_args_help():
+    """Test help arg."""
+    with pytest.raises(SystemExit) as e:
+        main(["--help"])
+        assert e.value.code == 0
+
+    with pytest.raises(SystemExit) as e:
+        main(["-h"])
+        assert e.value.code == 0
+
+
+def test_cli_parse_args_version():
+    """Test version arg."""
+    with pytest.raises(SystemExit) as e:
+        main(["--version"])
+        assert e.value.code == 0

@@ -14,11 +14,10 @@ FIXTURES = [
     # ('document-hooks.yaml', 'outer_tackle_expected.yaml'),
     ('outer-tackle.yaml', 'outer-tackle-output.yaml'),
     ('merge-simple.yaml', 'merge-simple-output.yaml'),
+    ('merge-petstore.yaml', 'petstore.yaml'),
     # # Non tackle things
-    # ('k8s-deployment.yaml', 'k8s-deployment.yaml'),
-    # ('docker-compose.yml', 'docker-compose.yml'),
-    # # Broken
-    # ('merge-petstore.yaml', 'petstore.yaml'),
+    ('k8s-deployment.yaml', 'k8s-deployment.yaml'),
+    ('docker-compose.yml', 'docker-compose.yml'),
 ]
 
 

@@ -10,7 +10,6 @@ FIXTURES = [
     ('single-level.yaml', 'single-level-output.yaml'),
     ('nested-dict.yaml', 'nested-dict-output.yaml'),
     ('nested-for.yaml', 'nested-for-output.yaml'),
-    ('nested-if-blocks.yaml', 'nested-for-output.yaml'),
 ]
 
 
