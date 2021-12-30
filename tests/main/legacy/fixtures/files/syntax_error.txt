@@ -1,1 +1,0 @@
-I eat {{ syntax_error }} {# this comment is not closed}

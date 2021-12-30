@@ -1,5 +1,0 @@
-{
-    "project_slug": "foobar",
-    "name": "World",
-    "_extensions": ["hello_extension.HelloExtension"]
-}

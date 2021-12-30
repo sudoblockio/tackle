@@ -1,6 +1,0 @@
----
-
-full_name: Audrey Roy
-project_name: Fake Nuki2 Templated
-repo_name: "{{ project_name|lower|replace(' ', '-') }}"
-
