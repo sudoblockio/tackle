@@ -1,6 +1,5 @@
-"""Block hook."""
+"""Debug hook."""
 import logging
-from rich import print
 from PyInquirer import prompt
 from tackle.models import BaseHook
 

@@ -2,7 +2,6 @@
 import pathlib
 import os
 import re
-from rich import print
 import logging
 import subprocess
 from collections import MutableMapping

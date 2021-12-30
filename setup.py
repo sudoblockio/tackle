@@ -12,14 +12,6 @@ from setuptools import setup, find_packages
 with open('README.md', encoding='utf-8') as readme_file:
     readme = readme_file.read()
 
-DEV_REQUIREMENTS = [
-    'pytest',
-    'pytest-cov',
-    'pytest-mock',
-    'freezegun',
-    'ptyprocess',
-]
-
 
 def _read(rel_path):
     here = os.path.abspath(os.path.dirname(__file__))
@@ -37,6 +29,30 @@ def get_version(rel_path):
         raise RuntimeError("Unable to find version string.")
 
 
+def parse_requirements_file(reqs_file, provider_requirements, key):
+    """
+    Parse a requirements file and update the provider_requirements dict.
+
+    :param reqs_file: Path to requirements file
+    :param provider_requirements: A default dict with keys for `extras_require` and value
+        as set of requirements.
+    :param key: Key for installing `extras_require`.
+    :return: Response of request in a dict
+
+    """
+    with open(reqs_file) as fp:
+        for k in fp:
+            if k.strip() and not k.startswith('#'):
+                tags = set()
+                if ':' in k:
+                    k, v = k.split(':')
+                    tags.update(vv.strip() for vv in v.split(','))
+                tags.add(re.split('[<=>]', k)[0])
+
+                for _ in tags:
+                    provider_requirements[key].add(k)
+
+
 def get_provider_requirements():
     """Get the provider requirements from each provider to allow extra requirements."""
     providers_dir = os.path.join(os.path.dirname(__file__), 'tackle', 'providers')
@@ -47,19 +63,8 @@ def get_provider_requirements():
             continue
         reqs_file = os.path.join(providers_dir, p, 'requirements.txt')
         if os.path.isfile(reqs_file):
-            with open(reqs_file) as fp:
-                for k in fp:
-                    if k.strip() and not k.startswith('#'):
-                        tags = set()
-                        if ':' in k:
-                            k, v = k.split(':')
-                            tags.update(vv.strip() for vv in v.split(','))
-                        tags.add(re.split('[<=>]', k)[0])
-
-                        for _ in tags:
-                            provider_requirements[p].add(k)
-
-    provider_requirements['dev'] = set(DEV_REQUIREMENTS)
+            parse_requirements_file(reqs_file, provider_requirements, p)
+    parse_requirements_file('requirements-dev.txt', provider_requirements, 'dev')
     provider_requirements['all'] = set(
         vv for v in provider_requirements.values() for vv in v
     )

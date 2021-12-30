@@ -1,10 +1,11 @@
 """Utility functions for handling and fetching repo archives in zip format."""
 import os
+import sys
 import tempfile
 
 from zipfile import BadZipFile, ZipFile
 
-import requests
+# import requests
 import logging
 from PyInquirer import prompt
 
@@ -54,12 +55,20 @@ def unzip(zip_uri, clone_to_dir='.', no_input=False, password=None):
             download = True
 
         if download:
-            # (Re) download the zipfile
-            r = requests.get(zip_uri, stream=True)
-            with open(zip_path, 'wb') as f:
-                for chunk in r.iter_content(chunk_size=1024):
-                    if chunk:  # filter out keep-alive new chunks
-                        f.write(chunk)
+            if 'requests' in sys.modules:
+                import requests
+
+                # (Re) download the zipfile
+                r = requests.get(zip_uri, stream=True)
+                with open(zip_path, 'wb') as f:
+                    for chunk in r.iter_content(chunk_size=1024):
+                        if chunk:  # filter out keep-alive new chunks
+                            f.write(chunk)
+            else:
+                raise Exception(
+                    "To install from zip files in remote locations, please "
+                    "install `requests` -> `pip install requests`."
+                )
     else:
         # Just use the local zipfile as-is.
         zip_path = os.path.abspath(zip_uri)

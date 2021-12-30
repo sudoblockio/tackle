@@ -30,14 +30,17 @@ tackle <your GH username>/tackle-your-provider
 # Or alternatively import/call it from another tackle file
 ```
 
-### Use Cases
+[comment]: <> (### Use Cases)
 
-Tackle box has a wide variety of use cases. Here are a few for inspiration.
+[comment]: <> (Tackle box has a wide variety of use cases. Here are a few for inspiration.)
 
-- [Code generation]() - WIP
-- [Custom workflows]() - WIP
-- [Keeping configuration files dry]() - WIP
-- [Kubernetes]() - WIP
+[comment]: <> (- [Code generation]&#40;&#41; - WIP)
+
+[comment]: <> (- [Custom workflows]&#40;&#41; - WIP)
+
+[comment]: <> (- [Keeping configuration files dry]&#40;&#41; - WIP)
+
+[comment]: <> (- [Kubernetes]&#40;&#41; - WIP)
 
 ### Features
 
