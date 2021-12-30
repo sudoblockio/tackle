@@ -1,4 +1,4 @@
 dir:
-  type: zipfile
+  ->: zipfile
   input: stuff
   output: things.zip

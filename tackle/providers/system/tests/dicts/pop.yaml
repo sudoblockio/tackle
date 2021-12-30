@@ -1,32 +1,31 @@
 a_list:
-  type: var
-  input:
-    - stuff
-    - foo
+  - stuff
+  - foo
+
+arg_1->: pop {{a_list}}
 
 a_map:
-  type: var
-  input:
-    stuff: bing
-    things: blu
-    foo: bar
-    baz: grrr
+  stuff: bing
+  things: blu
+  foo: bar
+  baz: grrr
+
+
+arg_2->: pop {{a_map}} foo
 
 pop_map:
-  type: pop
-  src: "{{ pop.a_map }}"
+  ->: pop
+  src: "{{ a_map }}"
   item: stuff
 
 pop_maps:
-  type: pop
-  src: "{{ pop.a_map }}"
+  ->: pop
+  src: "{{ a_map }}"
   item:
     - stuff
     - things
 
-
-
 #output:
-#  type: yaml
+#  ->: yaml
 #  path: output-pop.yaml
 #  contents: "{{ pop }}"

@@ -1,0 +1,38 @@
+
+this:
+  lists:
+    - foo:
+        barr:
+          baz: 2
+          bing: six
+        bang: foo
+      brang: foo
+    - stuff
+    - bax
+  dos_lists:
+    - merr
+    - foo:
+        barr:
+          baz: 2
+          bing: six
+        bang: foo
+      brang: foo
+    - bax
+  keys:
+    foo:
+      bar:
+      stuff: things
+      tres_lists:
+        - foo:
+            barr:
+              baz: 2
+              bing: six
+            bang: foo
+          brang: foo
+        - stuff
+        - foo:
+            barr:
+              baz: 2
+              bing: six
+            bang: foo
+          brang: foo

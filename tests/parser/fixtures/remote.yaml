@@ -1,0 +1,4 @@
+# This fixture should equal petstore.yaml
+arbitrary key:
+  ->: petstore.yaml
+  merge: true

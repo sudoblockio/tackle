@@ -1,12 +1,9 @@
-"""Helper functions used throughout Tackle."""
-import logging
+"""Prompts used in cloning."""
 import os
 import sys
 from PyInquirer import prompt
 
 from tackle.utils.paths import rmtree
-
-logger = logging.getLogger(__name__)
 
 
 def read_user_yes_no(question, default_value):
@@ -16,7 +13,7 @@ def read_user_yes_no(question, default_value):
         'name': 'tmp',
         'message': question,
         'default': default_value,
-        'choices': ['no', 'yes'],
+        'choices': ['yes', 'no'],
     }
     return prompt([question])['tmp']
 

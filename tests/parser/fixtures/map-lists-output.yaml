@@ -1,0 +1,31 @@
+a_list:
+  - 1
+  - foo
+  - bar
+
+hook_list:
+  - - 1
+    - foo
+    - bar
+  - foo:
+    - 1
+    - foo
+    - bar
+  - foo:
+    - 1
+    - foo
+    - bar
+
+hook_list_loops:
+  - [0, 1, 2]
+  - foo: [0, 2]  # Missing
+  - foo:
+    - 1
+    - foo
+    - bar
+
+loop:
+  - 1
+  - foo
+  - bar
+

@@ -1,0 +1,11 @@
+stuff: things
+
+stuff_arg->: "{{stuff}}"
+
+stuff_expanded:
+  ->: "{{stuff}}"
+
+stuff_expanded_logic:
+  ->: "{{stuff}}"
+  if: stuff == 'things'
+

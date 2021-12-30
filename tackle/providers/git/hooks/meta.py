@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-
 """Meta hooks."""
-from __future__ import unicode_literals
-from __future__ import print_function
-
 import pathlib
 import os
 import re
@@ -13,8 +8,8 @@ import subprocess
 from collections import MutableMapping
 from PyInquirer import prompt
 
-from pydantic import BaseModel, ValidationError
-from tackle.utils.context_manager import work_in
+from pydantic import BaseModel, ValidationError, validator
+from tackle.utils.paths import work_in
 from tackle.models import BaseHook
 from typing import Dict, Optional
 
@@ -27,6 +22,12 @@ class Repo(BaseModel):
     src: str
     branch: Optional[str] = None
     tag: Optional[str] = None
+
+    # @validator("src")
+    # def va(cls, v):
+
+    def clone(self):
+        pass
 
 
 # https://stackoverflow.com/a/6027615/12642712
@@ -59,19 +60,34 @@ class MetaGitHook(BaseHook):
     __slots__ = ('first_run',)
     # Per https://github.com/samuelcolvin/pydantic/issues/655 for private vars
 
-    type: str = 'meta_repo'
+    hook_type: str = 'meta_repo'
     command: str = None
 
     repos: Dict = None
     repo_tree: Dict = None
     select: bool = True
 
-    base_url: str = "github.com"
     protocol: str = "https"
+    token: str = None
+    base_url: str = "github.com"
     git_org: str = None
 
     base_dir: str = os.path.abspath(os.path.curdir)
     repo_tree_overrides: list = None
+
+    @validator('token')
+    def no_token_with_ssh_protocol(cls, v, values, **kwargs):
+        if v and values['protocol'] == 'ssh':
+            raise ValueError("Can't supply token with ssh protocol.")
+        else:
+            return v
+
+    @validator('base_url')
+    def update_base_url_if_token_exists(cls, v, values, **kwargs):
+        if values['token']:
+            return values['token'] + ':x-oauth-basic@' + v
+        else:
+            return v
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -149,7 +165,10 @@ class MetaGitHook(BaseHook):
         if len(git_parts) == 2:
             return f"{git_parts[0]}/{git_parts[1]}"
         else:
-            print(f"Malformed repo name '{v}' in '{self.key}' key. Skipping.")
+            from tackle.utils.dicts import get_key_from_key_path
+
+            key = get_key_from_key_path(self.key_path_)
+            print(f"Malformed repo name '{v}' in '{key}' key. Skipping.")
 
     def prompt_repo_choices(self):
         """Prompt the user to select which items to operate on."""
@@ -204,10 +223,10 @@ class MetaGitHook(BaseHook):
                 self.command = "branch " + prompt([question])['tmp']
 
         else:
-            print(
-                f"No command given in mete_hook for key = {self.key}.  "
-                f"Defaults to clone."
-            )
+            # print(
+            #     f"No command given in mete_hook for key = {self.key}.  "
+            #     f"Defaults to clone."
+            # )
             self.command = 'clone'
 
     def execute(self):

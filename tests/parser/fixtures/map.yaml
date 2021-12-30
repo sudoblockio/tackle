@@ -1,0 +1,23 @@
+that: something
+
+foo:
+  expanded:
+    ->: var
+    input: that
+
+  mixed:
+    ->: var that
+    if: foo.expanded == 'something'
+
+  compact->: var that --if "foo.mixed == 'something'"
+
+bar:
+  expanded:
+    ->: var
+    input: that
+
+  mixed:
+    ->: var that
+    if: bar.expanded == 'something'
+
+  compact->: var that --if "foo.compact == 'something'"

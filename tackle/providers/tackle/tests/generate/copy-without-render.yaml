@@ -1,0 +1,12 @@
+stuff: things
+
+init->: isdir output
+
+cleanup->: remove output --if init
+
+expanded:
+  ->: generate render_src output
+  copy_without_render:
+    - ./render_src/.hidden.yaml
+    - ./render_src/no-render/*
+

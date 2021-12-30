@@ -1,0 +1,10 @@
+that: something
+foo:
+  expanded: something
+  mixed: something
+  compact: something
+
+bar:
+  expanded: something
+  mixed: something
+  compact: something

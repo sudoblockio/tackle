@@ -1,0 +1,25 @@
+stuff: things
+
+should_be_missing_>: print Stuff and things
+
+foo:
+  expanded:
+    _>: var
+    input: stuff
+
+  mixed:
+    _>: var stuff
+    if: foo.expanded == 'things'
+
+  compact_>: var stuff --if "foo.mixed == 'things'"
+
+bar:
+  expanded:
+    ->: var
+    input: stuff
+
+  mixed:
+    ->: var stuff
+    if: foo.expanded == 'things'
+
+  compact->: var stuff --if "foo.compact == 'things'"

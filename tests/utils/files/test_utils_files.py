@@ -1,0 +1,19 @@
+import pytest
+
+from tackle.utils.files import read_config_file
+from tackle.exceptions import ContextDecodingException, UnsupportedBaseFileTypeException
+
+
+def test_read_config_file(change_curdir_fixtures):
+    assert read_config_file('documents.yaml') == [{'this': 'that'}, {'this': 'that'}]
+    assert read_config_file('document.yaml') == {'this': 'that'}
+    assert read_config_file('file.yaml') == {'this': 'that'}
+
+    with pytest.raises(ContextDecodingException):
+        read_config_file('bad.json')
+
+    with pytest.raises(UnsupportedBaseFileTypeException):
+        read_config_file('bad.things')
+
+    with pytest.raises(FileNotFoundError):
+        read_config_file('bad')

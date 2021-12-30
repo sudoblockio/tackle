@@ -1,4 +1,4 @@
 
 read:
-  type: toml
+  ->: toml
   path: working.toml

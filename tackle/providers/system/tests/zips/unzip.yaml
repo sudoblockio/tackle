@@ -1,3 +1,3 @@
 dir:
-  type: unzipfile
+  ->: unzipfile
   input: stuff.zip

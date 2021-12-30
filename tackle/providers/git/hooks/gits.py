@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-
 """Meta hooks."""
-from __future__ import unicode_literals
-from __future__ import print_function
-
 from git import Repo
 import logging
 from tackle.models import BaseHook
@@ -39,7 +34,7 @@ class GitCloneHook(BaseHook):
             All remaining keyword arguments are given to the git-clone command
     """
 
-    type: str = 'git_clone'
+    hook_type: str = 'git_clone'
     url: str = None
     to_path: str = None
     progress: Optional[str] = None

@@ -1,1 +1,0 @@
-Testing that generate_file was {{ cookiecutter.generate_file }}

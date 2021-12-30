@@ -1,5 +1,5 @@
 stuff: things
 
 things:
-  type: yaml
+  ->: yaml
   path: append.yaml

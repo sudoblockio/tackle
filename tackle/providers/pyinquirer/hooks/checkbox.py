@@ -1,12 +1,8 @@
-# -*- coding: utf-8 -*-
-
 """Checkbox hook."""
-from __future__ import unicode_literals
-from __future__ import print_function
-
 import logging
 from PyInquirer import prompt
 from typing import Union, List, Any, Dict
+from pydantic import Field
 
 from tackle.models import BaseHook
 
@@ -30,14 +26,22 @@ class InquirerCheckboxHook(BaseHook):
     :return: List of answers
     """
 
-    type: str = 'checkbox'
+    hook_type: str = 'checkbox'
 
-    index: bool = False
-    default: Any = None
-    choices: Union[List[str], List[Dict]]
-    checked: bool = False
+    message: str = Field(None, description="String message to show when prompting.")
+    index: bool = Field(
+        False, description="Boolean to return the output in a list."
+    )  # TODO: Fix this?
+    default: Any = Field([], description="Default for the return value")
+    choices: Union[List[str], List[Dict]] = Field(
+        ..., description="Either a list of strings or dictionary ."
+    )
+    checked: bool = Field(
+        False, description="Boolean if the default choices should all be checked."
+    )
     name: str = 'tmp'
-    message: str = None
+
+    _args: list = ['message']
 
     def execute(self) -> list:
         if self.no_input:
@@ -55,10 +59,10 @@ class InquirerCheckboxHook(BaseHook):
             ]
 
             answer = self._run_prompt()
-            if self.index:
-                return self.choices.index(answer)
-            else:
-                return answer
+            # if self.index:
+            #     return self.choices.index(answer)
+            # else:
+            return answer
 
         elif choices_type == dict:
             # This is the normal input to the Hook ie
@@ -93,7 +97,7 @@ class InquirerCheckboxHook(BaseHook):
 
     def _run_prompt(self):
         question = {
-            'type': self.type,
+            'type': 'checkbox',
             'name': self.name,
             'message': self.message,
             'choices': self.choices,

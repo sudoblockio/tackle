@@ -1,0 +1,9 @@
+stuff: things
+
+init->: isdir output
+
+compact->: generate render_src output/src
+
+after->: isfile output/src/models/stuff-things.yaml
+
+cleanup->: remove output

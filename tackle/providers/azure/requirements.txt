@@ -1,8 +1,0 @@
-azure-mgmt-compute>=18.0.0
-azure-mgmt-subscription>=0.6.0
-# azure-mgmt-storage
-# azure-mgmt-resource
-# azure-keyvault-secrets
-# azure-storage-blob
-# msrestazure
-# azure-cli-core

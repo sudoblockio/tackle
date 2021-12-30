@@ -1,0 +1,18 @@
+a_list:
+  - 1
+  - foo
+  - bar
+
+loop->: var {{item}} --for a_list
+
+hook_list:
+  - ->: var a_list
+  - foo:
+      ->: var a_list
+  - foo->: var a_list
+
+hook_list_loops:
+  - ->: var {{index}} --for a_list
+  - foo:
+      ->: var {{index}} --for a_list --if 'index != 1'
+  - foo->: var {{item}} --for a_list

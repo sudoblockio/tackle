@@ -1,0 +1,90 @@
+stuff: things
+
+a_list:
+  - stuff
+  - things
+
+no_block:
+  ->: print A {{item}} --for a_list
+  if: stuff == 'things'
+
+a_block->:
+  if: stuff == 'things'
+  a_item->: print A {{item}} --for a_list
+  b_item->: print B {{index}} --for a_list
+
+
+b_block_false->:
+  if: stuff != 'things'  # Not possible
+  foo:
+    bar:
+      baz:
+        - 1
+        - 2
+    bing: bang
+
+b_block_private_>:
+  foo:
+    bar:
+      baz:
+        - 1
+        - 2
+    bing: bang
+
+
+b_block->:
+  foo:
+    bar:
+      baz:
+        - 1
+        - 2
+    bing: bang
+
+d_block->:
+  for: a_list
+  one:
+    foo:
+      bar:
+        baz->:
+          - "{{index}}"
+          - "{{item}}"
+      bing: bang
+
+
+e_block->:
+  for: a_list
+  stuff->: "{{stuff}}"
+  one:
+    foo->:
+      for: a_list
+      bar:
+        baz->: "{{item}}"
+      bing: bang
+
+list_render->:
+  - "{{ stuff }}"
+  - "{{ stuff }}"
+
+
+#f_block->:
+#  for: a_list
+#  one:
+#    foo->:
+#      for: a_list
+#      bar:
+#        baz->:
+#          - "{{index}}"
+#          - "{{item}}"
+#      bing: bang
+
+#g_block->:
+#  for: a_list
+#  one:
+#    foo->:
+#      for: a_list
+#      bar->:
+#        if: stuff == 'things'
+#        baz:
+#          - "{{index}}"
+#          - "{{item}}"
+#      bing: bang

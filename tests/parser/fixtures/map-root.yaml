@@ -1,0 +1,11 @@
+this: that
+
+expanded:
+  ->: var
+  input: this
+
+mixed:
+  ->: var this
+  if: expanded == 'that'
+
+compact->: var this --if "mixed == 'that'"

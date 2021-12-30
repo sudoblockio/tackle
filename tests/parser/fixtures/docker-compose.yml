@@ -1,0 +1,105 @@
+version: "3.7"
+
+x-env: &env
+  NAME: "contracts"
+  NETWORK_NAME: "mainnet"
+
+  # Ports
+  PORT: "8000"
+  HEALTH_PORT: "8000"
+  METRICS_PORT: "9400"
+
+  # Prefix
+  REST_PREFIX: "/api/v1"
+  WEBSOCKET_PREFIX: "/ws/v1"
+  HEALTH_PREFIX: "/health"
+  METRICS_PREFIX: "/metrics"
+
+  CORS_ALLOW_ORIGINS: "*"
+
+  # Monitoring
+  HEALTH_POLLING_INTERVAL: "60"
+
+  # Logging
+  LOG_LEVEL: "INFO"
+  LOG_TO_FILE: "false"
+  LOG_FILE_NAME: "contracts.log"
+  LOG_FORMAT: "string"
+
+  # Kafka
+  KAFKA_BROKER_URL: "kafka:9092"
+  SCHEMA_REGISTRY_URL: "http://schemaregistry:8081"
+  KAFKA_GROUP_ID: "contracts-service"
+
+  # Topics
+  CONSUMER_GROUP: "contracts-consumer-group"
+  SCHEMA_NAME_TOPICS: "contracts-ws:block"
+
+  CONSUMER_TOPIC_BLOCKS: "blocks"
+  CONSUMER_TOPIC_TRANSACTIONS: "transactions"
+  CONSUMER_TOPIC_LOGS: "logs"
+
+  # DB
+  POSTGRES_USER: "postgres"
+  POSTGRES_PASSWORD: "changeme"
+#  POSTGRES_SERVER: "127.0.0.1"
+  POSTGRES_SERVER: "postgres"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DATABASE: "postgres"
+
+  # Endpoints
+  MAX_PAGE_SIZE: "100"
+
+  # Redis
+  REDIS_HOST: "redis"
+  REDIS_PORT: "6379"
+  REDIS_PASSWORD: ""
+  REDIS_CHANNEL: "contracts"
+  REDIS_SENTINEL_CLIENT_MODE: "false"
+  REDIS_SENTINEL_CLIENT_MASTER_NAME: "master"
+
+services:
+  contracts-api:
+    build:
+      context: ${GOVERNANCE_CONTEXT:-.}
+      target: ${GOVERNANCE_TARGET:-prod}
+      args:
+        - SERVICE_NAME=api
+    ports:
+      - "8000:8000"     # API
+      - "8180:8180"     # Health
+      - "9400:9400"     # Prometheus
+    security_opt:
+      - "seccomp:unconfined"
+    cap_add:
+      - SYS_PTRACE
+    volumes:
+      - ${GOVERNANCE_CONTEXT:-.}/icon_contracts:/app
+    environment:
+      <<: *env
+
+  contracts-worker:
+    build:
+      context: ${GOVERNANCE_CONTEXT:-.}
+      target: ${GOVERNANCE_TARGET:-prod}
+      args:
+        - SERVICE_NAME=worker
+    ports:
+      - "8181:8181"     # Health
+      - "9401:9401"     # Prometheus
+    security_opt:
+      - "seccomp:unconfined"
+    cap_add:
+      - SYS_PTRACE
+    volumes:
+      - ${GOVERNANCE_CONTEXT:-.}/icon_contracts:/app
+    environment:
+      <<: *env
+
+#  postgres:
+#    image: postgres
+#    environment:
+#      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+#      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+#    ports:
+#      - "5432:5432"

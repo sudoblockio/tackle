@@ -10,140 +10,81 @@
 * PyPI: [https://pypi.org/project/tackle-box/](https://pypi.org/project/tackle-box/)
 * Free and open source software: [BSD license](https://github.com/tackle-box/cookiecutter/blob/master/LICENSE)
 
-Tackle box is a DSL for easily creating CLIs, workflows, and generating code from templates. The framework is
-modular and empowered by a collection of hooks to easily extend functionality through a set of declarative plugins.
-Based off a fork of [cookiecutter](https://github.com/cookiecutter/cookiecutter), this tool preserves all the
-original functionality and extending it with a turing complete yaml based DSL for describing modular workflows.  
+Tackle box is a declarative DSL for building modular workflows and code generators. Tool is plugins based and can easily be extended by writing additional hooks or importing external providers creating a web of interoperable CLIs.
 
-### Quick Demo
+> WARNING - Project still alpha. Will be officially released shortly.
+
+### Demo
 
 ```
 pip3 install tackle-box
-tackle https://github.com/robcxyz/tackle-demos
+
+# General tour of tackle box
+tackle robcxyz/tackle-demos
+
+# Create a new provider in one minute
+tackle robcxyz/tackle-provider
+
+# Push to github and now you can call it
+tackle <your GH username>/tackle-your-provider
+# Or alternatively import/call it from another tackle file
 ```
+
+### Use Cases
+
+Tackle box has a wide variety of use cases. Here are a few for inspiration.
+
+- [Code generation]() - WIP
+- [Custom workflows]() - WIP
+- [Keeping configuration files dry]() - WIP
+- [Kubernetes]() - WIP
 
 ### Features
 
-All cookiecutter features are supported in addition to loops, conditionals, and plugins. These features are only
-available to supplied dictionary objects with a `type` key to trigger the associated [hook](tackle/models.py). Loops
-and conditionals are triggered by rendering [jinja](https://github.com/pallets/jinja) expressions per the example
-below. Other cookiecutters can be called from a single tackle box to knit together modularized components.
+- Declarative: Everything is in yaml with easy to use interfaces
+- Turing complete: Loops, conditionals and branching is supported
+- Extensible: New providers can be created or imported remotely
+- Lean: Tackle box has only 4 dependencies - core logic <1k LOC
 
-`tackle.yaml`
-```yaml
----
-name:
-  type: input # Input prompt which is stored in `name`
-  message: What is your name?
+### Basic Usage / Structure
 
-colors:
-  type: checkbox # Multi selector - returns a list
-  message: What are your favorite colors?
-  choices:
-    - blue
-    - green
-    - grey
+Tackle-box can be called against any yaml/json file or remote location by specifying the path to a repo / directory. By default, tackle looks for a `tackle.yaml` file in the target location which is parsed sequentially with each key traversed looking for hook calls indicated by an arrow (`->`). For instance given the following directory structure:
 
-outcome:
-  type: select # Single selector - returns a string
-  message: What is the airspeed velocity of an unladen swallow??
-  choices:
-    - flung-off-bridge: I donno # Map for choices interpretted as {key: question}
-    - walk-across-bridge: What do you mean? African or European swallow?
-
-bad_outcome:
-  type: print
-  statement: Wrong answer {{ name }}... # Render the `name` variable
-  when: "{{ outcome == 'flung-off-bridge' }}" # Conditionals need to evaluate as booleans
-
-color_essays:
-  type: input
-  message: Please tell me how much you like the color {{item}}?
-  default: Oh color {{item}}, you are so frickin cool...
-  loop: "{{ colors }}" # loops over colors
-  when: "{{ colors|length > 1 }}"
-  else: Who doesn't like colors?
-
-democmd:
-  type: command # Run arbitrary system commands and return stdout
-  command: pwd
-
-output:
-  type: pprint # Pretty print the output
-  output: "{{ this }}" # Special var that contains a dictionary of all the values
-
-branch:
-  type: tackle
-  template: https://github.com/audreyfeldroy/cookiecutter-pypackage # Call other cookiecutters
+```
+├── hooks
+│ └── stuff.py
+└── tackle.yaml
 ```
 
-Each hook is called via its `type` which, in the case of the `input` hook, can be looked up in the [docs]() or by looking at the [source code]() directly.
+With `stuff.py` looking like:
 
-Prompts are enhanced by extending the functionality from [PyInquirer](https://github.com/CITGuru/PyInquirer) as a set of hooks as noted by the types `input`, `select`, and `checkbox`. Writing new hooks is super simple as seen in the `print` hook:
-
-### Hooks
-
-[`tackle/providers/system/hooks/print.py`](tackle/providers/system/hooks/print.py)
 ```python
-from tackle.models import BaseHook
-from typing import Union
-
-class PrintOperator(BaseHook):
-    type: str = 'print'
-    out: Union[dict, list, str] = None
+class Stuff(BaseHook):
+    type: str = "do-stuff"
+    things: str
+    _args: list = ['things']
 
     def execute(self):
-        print(self.out)
-        return self.out
+        print(self.things)
+        return self.things
 ```
 
-Hooks are built with pydantic by inheriting from the [BaseHook](tackle/models.py) that makes a number of useful methods and attributes available.
-
-#### Base Methods
-
-A number of useful methods are available when executing any hook. Here is a brief example of all of them being used.
+One could run a tackle file that looks like this:
 
 ```yaml
-this:
-  type: a_hook
-  chdir: "/path/to/some/{{ item }}" # Changes to the dir before executing
-  loop: # Expects a list, creates `item` and `index` variables in loop
-    - foo
-    - bar
-    - baz
-  reverse: "{{ some_boolean_variable or condition }}" # Boolean to revers the loop
-  when: "{{ index >= 1 }}" # Jinja expression that evaluates to boolean to conditionally use the hook
-  else: "{{ some_other_var }}" # Fallback for `when` key if false.  Can also be another hook.  
-  merge: True # Merge the outputs to the upper level context.  Only for dict outputs.
+compact->: do-stuff All the things
+expanded:
+  ->: do-stuff
+  things: All the things
 ```
 
-#### Providers
+Which when run would print out "All the things" twice and result in the following context:
 
-Collections of hooks are made available through lazy loaded providers each with their own dependencies. Each provider has the following directory structure.
-
-```bash
-├── hooks
-│   ├── <package>.py  # Any filename is fine
-│   └── __init__.py  # Optional - Use this file to specify hook names if the provider is to be lazy loaded
-├── requirements.txt
+```yaml
+compact: All the things
+expanded: All the things
 ```
 
-Providers can either force the user to install the dependencies in the `requirements.txt` when tackle is called or by inserting `hook_types = ["your_hook_name"]` into the `__init__.py` to defer initialization of the provider until it is called.  Provider requirements are then installed if they are called from a tackle script.  This was done to allow users access to a variety of hooks without them needing to install every possible dependency.  It can also be a security concern with future versions dealing with this and also exposing additional features like `commands` and `templates` to extend custom actions.
+Which you can use to then generate code, print out to file, or do any number of custom actions with additional hook calls.
 
-Check out the providers in `tackle/providers` to get a sense of how to build them. They are really easy to build and test.
-
-### Hooks
-
-Around 50 different hooks are currently available with more coming down the line. To understand how to use them, please refer to the [API Docs](https://robcxyz.github.io/tackle-box/docs/_build/html/cookiecutter.operators.html#submodules).
-
-The main type of operators are derivations of [PyInquirer](https://github.com/CITGuru/PyInquirer) which greatly enhanced the capabilities of the original cookiecutter due to the ability to use multi-select inputs that return lists. Please inspect the [PyInquirer](https://github.com/CITGuru/PyInquirer) API docs to understand the interface. All features are supported except for `validation` and `filter` which is not supported and `when` which is implemented in jinja.
-
-To see a number of good examples of the types of interfaces available for each operator, consider downloading the demo above and walking through the syntax.
-
-## Note to Users and Developers
-
-This is a very early WIP but has long term ambitions of being a sort of swiss army knife for management of configuration files and boilerplate. Please consider contributing or leaving your comments in the issues section on where you see this project going and what features you would like added.
-
-This project intends on being an edge release of `cookiecutter` and .  Development in this repository is meant to be a proving ground for features that could be implemented and merged into the original `cookiecutter` repository. Please consider supporting both projects.
-
-This project would not have been possible were it not for the orginal authors of cookiecutter.
+> WIP

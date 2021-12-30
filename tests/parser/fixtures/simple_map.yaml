@@ -1,0 +1,15 @@
+this:
+  that: boo
+  one:
+    two:
+      three:
+        four:
+          five: 2
+        six:
+    three: 4
+foo:
+  barr:
+    baz: 2
+    bing: six
+  bang: foo
+brang: foo

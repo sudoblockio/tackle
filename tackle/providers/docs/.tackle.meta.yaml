@@ -1,0 +1,16 @@
+name: Documentation Provider
+
+description: This provider builds the documentation for tackle providers.
+
+examples:
+  - name: Basic
+    description: The most minimal implementation
+    content:
+      example:
+        type: provider_docs
+        chdir: ".."
+        provider: docs
+
+  - name: All options
+    description: The most minimal implementation
+    <content: tests/tackle.yaml

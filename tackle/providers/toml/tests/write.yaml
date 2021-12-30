@@ -1,5 +1,5 @@
 input:
-  type: var
+  ->: var
   input:
     foo: bar
     baz:
@@ -7,6 +7,6 @@ input:
       - ding
 
 write:
-  type: toml
+  ->: toml
   path: writing.toml
   contents: "{{ input }}"

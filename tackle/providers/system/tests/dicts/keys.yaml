@@ -1,0 +1,6 @@
+
+a_map:
+  stuff: bing
+  things: blu
+
+arg_1->: keys {{a_map}}

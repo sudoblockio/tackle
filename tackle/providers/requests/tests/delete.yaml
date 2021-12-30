@@ -1,3 +1,3 @@
 simple:
-  type: delete
+  ->: delete
   url: https://reqres.in/api/users/2

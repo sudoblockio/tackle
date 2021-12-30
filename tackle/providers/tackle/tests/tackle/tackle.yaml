@@ -1,6 +1,5 @@
-shell:
-  type: tackle
-  template: https://github.com/robcxyz/tackle-box
+tackle:
+  ->: tackle https://github.com/robcxyz/tackle-box
   directory: tackle/providers/tackle/tests/tackle
   context_file: local.yaml
   existing_context:

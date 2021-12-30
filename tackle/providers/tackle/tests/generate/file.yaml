@@ -1,0 +1,9 @@
+stuff: things
+
+init->: isfile output
+
+compact->: generate file.yaml output/file.yaml
+
+after->: isfile output/file.yaml
+
+cleanup->: remove output

@@ -1,12 +1,8 @@
-# -*- coding: utf-8 -*-
-
 """."""
-from __future__ import unicode_literals
-from __future__ import print_function
-
 import logging
 from PyInquirer import prompt
 from typing import Any
+from pydantic import Field
 
 from tackle.models import BaseHook
 
@@ -25,15 +21,17 @@ class InquirerEditorHook(BaseHook):
         inserting into parent key
     """
 
-    type: str = 'editor'
-    default: bool = True
-    name: str = 'tmp'
-    message: str = None
+    hook_type: str = 'editor'
+    default: Any = Field(None, description="Default selection.")
+    name: str = Field('tmp', description="Extra key to embed into. Artifact of API.")
+    message: str = Field(None, description="String message to show when prompting.")
+
+    _args: list = ['message', 'default']
 
     def __init__(self, **data: Any):
         super().__init__(**data)
         if not self.message:
-            self.message = ''.join([self.key, " >> "])
+            self.message = ''.join([self.key_, " >> "])
 
     def execute(self) -> bool:
         if not self.no_input:

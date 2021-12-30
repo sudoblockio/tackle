@@ -1,0 +1,17 @@
+outer:
+
+  stuff: things
+
+  more_things: lots of things
+
+  foo:
+    - bar
+    - baz
+
+  foo_items:
+    - bar
+    - baz
+
+  foo_index:
+    - 0
+    - 1

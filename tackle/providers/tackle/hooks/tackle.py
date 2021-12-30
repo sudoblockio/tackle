@@ -1,22 +1,13 @@
-# -*- coding: utf-8 -*-
-
 """Tackle hooks."""
-from __future__ import unicode_literals
-from __future__ import print_function
-
 import tackle as tkl
-import logging
-from typing import List, Any
 from pydantic import SecretStr
 
-from tackle.models import BaseHook
-
-logger = logging.getLogger(__name__)
+from tackle.models import BaseHook, Field
 
 
 class TackleHook(BaseHook):
     """
-    Hook  for calling external tackle / cookiecutters.
+    Hook  for calling external tackle.
 
     :param template: A directory containing a project template,
         or a URL to a git repository.
@@ -42,78 +33,50 @@ class TackleHook(BaseHook):
     :return: Dictionary of output
     """
 
-    type: str = 'tackle'
+    hook_type: str = 'tackle'
 
-    template: Any = '.'
-    templates: List[Any] = None
-    checkout: str = None
-    # no_input: bool = False
-    context_file: str = None
-    context_files: List = None
-    # overwrite_inputs: Dict = None
-    # existing_context: Dict = None
-    # replay: bool = None
-    overwrite_if_exists: bool = False
-    output_dir: str = '.'
-    config_file: str = None
-    default_config: str = None
-    password: SecretStr = None
-    directory: str = None
-    directories: List = None
-    skip_if_file_exists: bool = False
+    # fmt: off
+
+    input_string: str = Field(
+        None, description="The input can be one of repo, file path, directory with tackle.yaml, zip file, or if left blank parent tackle file.")
+    checkout: str = Field(None, description="The branch or version to checkout for repo type inputs_strings.")
+    context_file: str = Field(None, description="The file to run inside a repo input.")
+    additional_context: dict = Field(
+        None, description="Any additional context to use when calling the hook. Like existing context.")
+    context: dict = Field(None, description="A context to use that overrides the current context.")
+    password: SecretStr = Field(None, description="A password to use for repo inputs.")
+    directory: str = Field(None, description="The directory to run inside for repo inputs.")
+
+    # fmt: on
+
+    _args = ['input_string']
 
     def execute(self):
 
-        #  Run all the loops
-        if not self.templates and not self.directories and not self.context_files:
-            return self._run_tackle()
+        # if self.existing_context in (None, {}):
+        #     existing_context = self.output_dict
+        # else:
+        #     existing_context = self.existing_context
 
-        output = {}
-        if self.templates:
-            for i in self.templates:
-                self.template = i
-                output.update({i: self._run_tackle()})
-
-        if self.directories:
-            for i in self.directories:
-                self.directory = i
-                output.update({i: self._run_tackle()})
-
-        if self.context_files:
-            for i in self.context_files:
-                self.context_file = i
-                output.update({i: self._run_tackle()})
-
-        return output
-
-    def _run_tackle(self):
-
-        # Populate defaults.
-        # Default because passing the render context from tackle to tackle is
-        # super common.
-        if 'existing_context' in self.hook_dict:
-            existing_context = self.existing_context
+        if self.context:
+            existing_context = self.context
         else:
-            existing_context = self.output_dict
+            existing_context = self.output_dict.copy()
+            existing_context.update(self.existing_context)
+
+            if self.additional_context:
+                existing_context.update(self.additional_context)
 
         output_context = tkl.main.tackle(
-            template=self.template,
+            self.input_string,
             checkout=self.checkout,
-            no_input=self.no_input,
-            context_file=self.context_file,
-            context_key=self.context_key,
-            overwrite_inputs=self.overwrite_inputs,
-            existing_context=existing_context,
-            replay=self.replay,
-            rerun=self.rerun,
-            record=self.record,
-            overwrite_if_exists=self.overwrite_if_exists,
-            output_dir=self.output_dir,
-            config_file=self.config_file,
-            default_config=self.default_config,
             password=self.password,
             directory=self.directory,
-            skip_if_file_exists=self.skip_if_file_exists,
+            # Evaluated
+            existing_context=existing_context,
+            # Implicit
+            providers=self.providers_,
+            no_input=self.no_input,
         )
 
         return dict(output_context)

@@ -1,12 +1,8 @@
-# -*- coding: utf-8 -*-
-
 """Select hook."""
-from __future__ import unicode_literals
-from __future__ import print_function
-
 import logging
 from PyInquirer import prompt
 from typing import Any, List, Union
+from pydantic import Field
 
 from tackle.models import BaseHook
 
@@ -25,22 +21,29 @@ class InquirerListHook(BaseHook):
     :param choices: A list of strings or list of k/v pairs per above description
     :param name: A key to insert the output value to. If not provided defaults to
         inserting into parent key
-    :param index: Boolean to return the index instead of the answer
+    :param index:
     :return: String for answer
     """
 
-    type: str = 'select'
+    hook_type: str = 'select'
 
-    index: bool = False
-    default: Any = None
-    choices: Union[List[str], List[dict]]
-    name: str = 'tmp'
-    message: str = None
+    message: str = Field(None, description="String message to show when prompting.")
+    default: Any = Field(None, description="Default choice.")
+    name: str = Field('tmp', description="Extra key to embed into. Artifact of API.")
+    choices: Union[List[str], List[dict]] = Field(
+        ...,
+        description="List of strings or dicts with keys as output and values as display.",
+    )
+    index: bool = Field(
+        False, description="Boolean to return the index instead of the answer"
+    )
+
+    _args: list = ['message']
 
     def __init__(self, **data: Any):
         super().__init__(**data)
         if not self.message:
-            self.message = ''.join([self.key, " >> "])
+            self.message = ''.join([self.key_, " >> "])
 
     def execute(self) -> str:
         # Figure out what type of dictionary it is

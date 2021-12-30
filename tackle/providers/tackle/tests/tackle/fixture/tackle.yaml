@@ -1,20 +1,9 @@
-foo:
-  type: var
-  input: bar
-  when: "{{ foo is not defined }}"
+foo: bar
+
+stuff:
+  ->: print {{foo}}
+  if: foo == 'bar'
 
 read_stuff:
-  type: yaml
+  ->: yaml
   path: example.yaml
-
-
-var:
-  type: var
-  input: kjlk
-#  statement: "{{ this }}"
-#  blah: ldskjl
-
-
-print:
-  type: print
-  out: "{{ this }}"

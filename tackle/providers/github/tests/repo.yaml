@@ -1,7 +1,0 @@
-repos:
-  type: github_repo_names
-  user: robcxyz
-
-repos_org:
-  type: github_repo_names
-  org: robcxyz

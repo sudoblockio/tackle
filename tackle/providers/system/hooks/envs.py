@@ -1,22 +1,63 @@
-# -*- coding: utf-8 -*-
-
 """Environment variable hooks."""
-from __future__ import unicode_literals
-from __future__ import print_function
-
 import os
 import logging
-from typing import Union
+import platform
 
-from tackle.models import BaseHook
-from tackle.exceptions import HookCallException
+from tackle.models import BaseHook, Field
 
 logger = logging.getLogger(__name__)
 
 
+class GetEnvHook(BaseHook):
+    """Hook for getting environment variables."""
+
+    hook_type: str = 'get_env'
+    environment_variable: str = Field(
+        None,
+        description="Dict for setting and string for getting environment variables",
+    )
+    fallback: str = Field(None, description="A fallback for getting.")
+
+    _args: list = ['environment_variable', 'fallback']
+
+    def execute(self):
+        """Set env vars."""
+        if platform.system() == 'Windows':
+            from tackle.exceptions import ContributionNeededException
+
+            raise ContributionNeededException()
+            # robcxyz - Not working on windows support but would love PRs
+        else:
+            return os.getenv(self.environment_variable, self.fallback)
+
+
 class EnvironmentVariableHook(BaseHook):
+    """Hook for setting environment variables."""
+
+    hook_type: str = 'set_env'
+    environment_variable: str = Field(
+        ..., description="The name of the environment variable to set."
+    )
+    value: str = Field(None, description="The value to set it.")
+
+    _args: list = ['environment_variable', 'value']
+
+    def execute(self):
+        """Get or set env vars."""
+        if platform.system() == 'Windows':
+            from tackle.exceptions import ContributionNeededException
+
+            raise ContributionNeededException()
+            # robcxyz - Not working on windows support but would love PRs
+        else:
+            # TODO: Implement parsing for strings to set -> export THING=stuff
+            os.environ[self.environment_variable] = self.value
+            return self.value
+
+
+class ExportHook(BaseHook):
     """
-    Hook for setting / getting environment variables.
+    Hook for setting environment variables that returns None
 
     Sets with input dict. Gets with input string.
 
@@ -25,19 +66,44 @@ class EnvironmentVariableHook(BaseHook):
     :return: input
     """
 
-    type: str = 'env_var'
-    input: Union[dict, str]
-    fallback: str = None
+    hook_type: str = 'export'
+    environment_variable: str = Field(
+        ..., description="The name of the environment variable to set."
+    )
+    value: str = Field(None, description="The value to set it.")
+
+    _args: list = ['environment_variable', 'value']
+
+    # TODO: Implement parsing for strings to set -> <: export THING=stuff
+    def execute(self):
+        """Set env vars."""
+        if platform.system() == 'Windows':
+            from tackle.exceptions import ContributionNeededException
+
+            raise ContributionNeededException()
+            # robcxyz - Not working on windows support but would love PRs
+        else:
+            os.environ[self.environment_variable] = self.value
+        return
+
+
+class UnsetHook(BaseHook):
+    """Hook for unsetting environment variables."""
+
+    hook_type: str = 'unset'
+    environment_variable: str = Field(
+        ..., description="The name of the environment variable to set."
+    )
+
+    _args: list = ['environment_variable']
 
     def execute(self):
-        """Get or set env vars."""
-        if self.fallback is not None and isinstance(self.input, dict):
-            raise HookCallException("Can't have `fallback` with input of type dict.")
+        """Set env vars."""
+        if platform.system() == 'Windows':
+            from tackle.exceptions import ContributionNeededException
 
-        if isinstance(self.input, dict):
-            for k, v in self.input.items():
-                os.environ[k] = v
-            return self.input
-
-        if isinstance(self.input, str):
-            return os.getenv(self.input, self.fallback)
+            raise ContributionNeededException()
+            # robcxyz - Not working on windows support but would love PRs
+        else:
+            os.unsetenv(self.environment_variable)
+        return

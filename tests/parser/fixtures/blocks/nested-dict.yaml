@@ -1,0 +1,15 @@
+stuff: things
+
+a_list:
+  - stuff
+  - things
+
+e_block->:
+  for: a_list
+  stuff->: "{{stuff}}"
+  one:
+    foo->:
+      for: a_list
+      bar:
+        baz->: "{{item}}"
+      bing: bang

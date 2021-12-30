@@ -1,8 +1,7 @@
 stuff: things
 
-things:
-  type: var
-  input:
+remove_str:
+  things:
     - stuff
     - things
     - _stuff
@@ -11,7 +10,7 @@ things:
     - _bar
 
 out:
-  type: yaml
+  ->: yaml
   contents: "{{ remove_str.things }}"
   path: output.yaml
   remove: "^_"

@@ -1,48 +1,58 @@
-# -*- coding: utf-8 -*-
-
 """Block hook."""
-from __future__ import unicode_literals
-from __future__ import print_function
-
-import logging
-from _collections import OrderedDict
-from typing import Dict
-
-from tackle.models import BaseHook, Context, Mode, Source
-import tackle as tkl
-
-
-logger = logging.getLogger(__name__)
+from tackle.models import BaseHook, Context, Field
 
 
 class BlockHook(BaseHook):
     """
-    Hook  for blocks of hooks.
+    Hook for blocks of hooks.
 
     This is a special case where the hooks input variables are not rendered
-    until it is later executed.
+    until it is later executed. Each `item` is looped over and parsed like a
+    normal pass. Useful if you have a block of hooks that should be grouped
+    into a single conditional / looped execution.
+
+    Render context is a little different than normal where both the context
+    from outside of the hook and within the hook are made available. For
+    instance in this contrived example:
+
+    ```
+    stuff: things
+    block->:
+      merge: true
+      stuff->: print other_things
+      things->: print "{{ stuff }}" --if "{{ stuff == 'things' }}"
+    ```
+
+    The output would be:
+
+    ```
+    stuff: other_things
+    ```
+
+    Because the higher level `stuff` takes precidance where as
+
 
     :param items: Map of inputs
     """
 
-    type: str = 'block'
-    items: Dict
+    hook_type: str = 'block'
+    items: dict = Field(..., description="Items to be parsed like a normal input.")
+
+    _render_exclude = {'items'}
 
     def execute(self):
-        context = Context(
-            input_dict=OrderedDict({self.context_key: self.items}),
-            output_dict=OrderedDict(self.output_dict),
-            overwrite_inputs=self.overwrite_inputs,
-            override_inputs=self.override_inputs,
-            context_key=self.context_key,
-        )
-        mode = Mode(no_input=self.no_input)
-        source = Source()
+        from tackle.parser import walk_sync
 
-        output = tkl.parser.context.parse_context(
-            context=context,
-            mode=mode,
-            source=source,
-        )
+        existing_context = self.output_dict.copy()
+        existing_context.update(self.existing_context)
 
-        return dict(output.output_dict)
+        tmp_context = Context(
+            providers=self.providers_,
+            existing_context=existing_context,
+            output_dict={},
+            input_dict=self.items,
+            key_path=[],
+            no_input=self.no_input,
+        )
+        walk_sync(context=tmp_context, element=self.items.copy())
+        return tmp_context.output_dict

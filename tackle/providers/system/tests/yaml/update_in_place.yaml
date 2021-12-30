@@ -1,21 +1,21 @@
 write:
-  type: yaml
+  ->: yaml
   path: output_update_in_place.yaml
   contents:
     prod:
     dev:
     stage:
 
-_a_list:
+a_list:
   - prod
   - dev
   - stage
 
 update:
-  type: yaml
-  loop: "{{ update_in_place._a_list }}"
+  ->: yaml
+  for: a_list
   path: output_update_in_place.yaml
   in_place: true
   update:
-    "{{ update_in_place.item }}":
+    "{{ item }}":
       stuff: things

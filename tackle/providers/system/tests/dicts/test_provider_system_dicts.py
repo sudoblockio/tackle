@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Tests dict input objects for `tackle.providers.system.hooks.dicts` module."""
 import os
 from tackle.main import tackle
@@ -15,21 +13,30 @@ def clean_outputs():
         os.remove(f)
 
 
-def test_provider_system_hook_dicts_merge(change_dir, clean_outputs):
+def test_provider_system_hook_dicts_merge(change_dir):
     """Verify the hook call works properly."""
-    output = tackle('.', context_file='merge.yaml', no_input=True)
-    assert output['merge_map']['stuff'] == 'blah'
-    assert len(output['merge_map']) == 3
+    output = tackle('merge.yaml')
+    assert output['merge_map']['stuff'] == 'bing'
 
 
-def test_provider_system_hook_dicts_update(change_dir, clean_outputs):
+def test_provider_system_hook_dicts_update(change_dir):
     """Verify the hook call works properly."""
-    output = tackle('.', context_file='update.yaml', no_input=True)
-    assert len(output['update_map']['stuff']) == 2
+    output = tackle('update.yaml')
+    assert output['update_map'] == output['arg']
+    assert output['update_map2'] == output['arg2']
 
 
 def test_provider_system_hook_dicts_pop(change_dir, clean_outputs):
     """Verify the hook call works properly."""
-    output = tackle('.', context_file='pop.yaml', no_input=True)
+    output = tackle('pop.yaml')
     assert 'stuff' not in output['pop_map']
     assert 'things' not in output['pop_maps']
+    assert output['arg_1'] == ['stuff']
+    assert 'foo' not in output['arg_2']
+    assert 'baz' in output['arg_2']
+
+
+def test_provider_system_hook_dicts_keys(change_dir, clean_outputs):
+    """Verify the hook call works properly."""
+    output = tackle('keys.yaml')
+    assert output['arg_1'] == ['stuff', 'things']

@@ -1,33 +1,10 @@
 stuff: things
 
-blocker:
-  type: block
+blocker->:
   merge: true
-  items:
-    blah: zz
 
-    furry:
-      type: confirm
-      message: Are our friends furry?
-
-    beer:
-      type: pprint
-      statement: "{{ embedded_blocks }}"
-
-    things:
-      type: print
-      statement: "{{ stuff }}"
-
-    friend: dog
-
-    test_block:
-      type: block
-      items:
-        my_dog:
-          type: var
-          input: Penny
-          when: "{{ friend == 'dog' }}"
-
-    foo:
-      type: print
-      statement: bar
+  furry->: confirm Are our friends furry?
+  things->: print "{{ stuff }}"
+  friend: dog
+  test_block->:
+    my_dog->: print Penny --if "friend == 'dog'"

@@ -1,12 +1,8 @@
-# -*- coding: utf-8 -*-
-
 """Confirm hook."""
-from __future__ import unicode_literals
-from __future__ import print_function
-
 import logging
 from PyInquirer import prompt
 from typing import Any
+from pydantic import Field
 
 from tackle.models import BaseHook
 
@@ -14,26 +10,20 @@ logger = logging.getLogger(__name__)
 
 
 class InquirerConfirmHook(BaseHook):
-    """
-    Hook for PyInquirer `confirm` type prompts.
+    """Hook to confirm with a message and return a boolean."""
 
-    :param message: String message to show when prompting.
-    :param choices: A list of strings or list of k/v pairs per above description
-    :param name: A key to insert the output value to. If not provided defaults to
-    inserting into parent key
-    :return: Boolean
-    """
+    hook_type: str = 'confirm'
 
-    type: str = 'confirm'
+    default: Any = Field(True, description="Default choice.")
+    message: str = Field(None, description="String message to show when prompting.")
+    name: str = Field('tmp', description="Extra key to embed into. Artifact of API.")
 
-    default: bool = True
-    name: str = 'tmp'
-    message: str = None
+    _args: list = ['message']
 
-    def __init__(self, **data: Any):
-        super().__init__(**data)
-        if not self.message:
-            self.message = ''.join([self.key, " >> "])
+    # def __init__(self, **data: Any):
+    #     super().__init__(**data)
+    #     if not self.message:
+    #         self.message = ''.join([self.key_, " >> "])
 
     def execute(self) -> bool:
         if not self.no_input:
@@ -43,7 +33,6 @@ class InquirerConfirmHook(BaseHook):
                 'message': self.message,
                 'default': self.default,
             }
-
             response = prompt([question])
             if self.name != 'tmp':
                 return response

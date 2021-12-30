@@ -1,88 +1,60 @@
-# -*- coding: utf-8 -*-
-
 """Print hooks."""
-from __future__ import unicode_literals
-from __future__ import print_function
-
-import logging
 from pprint import pprint
-from typing import Union, Dict, List
+from typing import Any
 
-from tackle.models import BaseHook
-from rich import print
-from rich.console import Console
-from rich.markdown import Markdown
-
-logger = logging.getLogger(__name__)
+from tackle import BaseHook, Field
 
 
 class PrintHook(BaseHook):
-    """
+    r"""
     Hook  for printing an input and returning the output.
 
-    :param statement: The thing to print
+    Follows: https://docs.python.org/3/library/functions.html#print
+
+    print(*objects, sep=' ', end='\n', file=sys.stdout, flush=False)
     """
 
-    type: str = 'print'
-    statement: Union[Dict, List, str] = None
-    out: Union[Dict, List, str] = None
-    input: Union[Dict, List, str] = None
-    style: str = None
+    hook_type: str = 'print'
+
+    objects: Any = Field(None, description="The objects to print.")
+    sep: str = Field(' ', description="Separator between printed objects.")
+    end: str = Field('\n', description="What to print at the end")
+    flush: bool = Field(False, description="No clue.")
+
+    _args: list = ['objects']
 
     def execute(self):
-        if self.statement:
-            print(self.statement)
-        if self.out:
-            print(self.out)
-        if self.input:
-            print(self.input)
-        return self.statement or self.out or self.input
+        print(self.objects, sep=self.sep, end=self.end, flush=self.flush)
+        return self.objects
 
 
 class PprintHook(BaseHook):
     """
-    Hook  for pretty printing an input and returning the output.
+    Wraps python pprint builtin.
 
-    :param statement: The thing to print
+    https://docs.python.org/3/library/pprint.html#pprint.PrettyPrinter
     """
 
-    type: str = 'pprint'
-    out: Union[Dict, List, str] = None
-    input: Union[Dict, List, str] = None
-    statement: Union[Dict, List, str] = None
+    hook_type: str = 'pprint'
+
+    objects: Any = None
+    indent: int = 1
+    width: int = 80
+    depth: int = None
+    compact: bool = False
+    sort_dicts: bool = True
+    underscore_numbers: bool = False
+
+    _args: list = ['objects']
 
     def execute(self):
-        if self.statement:
-            pprint(self.statement)
-        if self.out:
-            pprint(self.out)
-        if self.input:
-            pprint(self.input)
-
-        return self.statement or self.out or self.input
-
-
-class MarkdownPrintHook(BaseHook):
-    """
-    Hook for printing makrdown and returning the output.
-
-    :param statement: The thing to print
-    :param out: The thing to print
-    :param input: The thing to print
-    """
-
-    type: str = 'markdown'
-    statement: Union[Dict, List, str] = None
-    out: Union[Dict, List, str] = None
-    input: Union[Dict, List, str] = None
-    style: str = None
-
-    def execute(self):
-        console = Console()
-        if self.statement:
-            console.print(Markdown(self.statement))
-        if self.out:
-            console.print(Markdown(self.out))
-        if self.input:
-            console.print(Markdown(self.input))
-        return self.statement or self.out or self.input
+        pprint(
+            self.objects,
+            indent=self.indent,
+            width=self.width,
+            # stream=self.stream,
+            compact=self.compact,
+            sort_dicts=self.sort_dicts,
+            underscore_numbers=self.underscore_numbers,
+        )
+        return

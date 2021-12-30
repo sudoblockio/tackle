@@ -1,16 +1,17 @@
 a_list:
-  type: split
+  ->: split
   separator: .
-  input:
+  input: "{{item}}"
+  for:
     - stuff.thing
     - things.stuffs
 
 a_str:
-  type: split
+  ->: split
   separator: .
   input: things.stuffs
 
 join_a_str:
-  type: join
+  ->: join
   separator: .
   input: "{{ a_str }}"

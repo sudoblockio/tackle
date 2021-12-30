@@ -67,20 +67,11 @@ def get_provider_requirements():
 
 
 INSTALL_REQUIREMENTS = [
-    'binaryornot>=0.4.4',
     'Jinja2<3.0.0',
-    'click>=7.0',
-    'poyo>=0.5.0',
-    'jinja2-time>=0.2.0',
-    'python-slugify>=4.0.0',
-    'requests>=2.23.0',
+    # 'requests>=2.23.0',  # This would be needed if we allowed url sources
+    'pydantic>=1.6.0',
     'PyInquirer>=1.0.3',
     'PyYAML>=5.3',
-    'oyaml>=v1.0',
-    'pyhcl>=0.4.4',
-    'distro>=1.5.0',
-    'rich>=3.3.0',
-    'pydantic>=1.6.0',
 ]
 
 if sys.argv[-1] == 'readme':
@@ -91,9 +82,10 @@ setup(
     name='tackle-box',
     version=get_version(os.path.join('tackle', '__init__.py')),
     description=(
-        'Declarative DSL for creating workflows, CLIs, and generating code. '
-        'Extends cookiecutter templates with modules, loops, conditionals, '
-        'and plugins to perform a wide array of actions.'
+        'Tackle box is a declarative DSL for building modular workflows and code '
+        'generators. Tool is plugins based and can easily be extended by writing '
+        'additional hooks or importing external providers creating a web of '
+        'interoperable CLIs.'
     ),
     long_description=readme,
     long_description_content_type='text/markdown',
@@ -102,7 +94,7 @@ setup(
     url='https://github.com/robcxyz/tackle-box',
     packages=find_packages(exclude=['tests*', 'logo*', 'docs*', '.github*']),
     package_dir={'tackle': 'tackle'},
-    entry_points={'console_scripts': ['tackle = tackle.__main__:main']},
+    entry_points={'console_scripts': ['tackle = tackle.cli:main']},
     extras_require=get_provider_requirements(),
     include_package_data=True,
     python_requires='>=3.6',
@@ -128,6 +120,9 @@ setup(
     keywords=[
         "cookiecutter",
         "tackle",
+        "tackle-box",
+        "tacklebox",
+        "tackle box",
         "Python",
         "projects",
         "project templates",
@@ -137,5 +132,6 @@ setup(
         "project directory",
         "package",
         "packaging",
+        "kubernetes",
     ],
 )

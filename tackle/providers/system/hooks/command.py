@@ -1,21 +1,14 @@
-# -*- coding: utf-8 -*-
-
 """Command hook."""
-from __future__ import unicode_literals
-from __future__ import print_function
-
 import sys
-
-# import re
 import logging
 import subprocess
 import errno
 import struct
 import shutil
 import os
-import click
 from itertools import chain
 from select import select
+from pydantic import Field
 
 from tackle.models import BaseHook
 from tackle.exceptions import HookCallException
@@ -31,20 +24,14 @@ logger = logging.getLogger(__name__)
 
 
 class CommandHook(BaseHook):
-    """
-    `command` hook for system calls.
+    """System calls."""
 
-    Hides streaming output. To view streaming output of command use the `shell`
-    hook.
+    hook_type: str = 'command'
 
-    :param command: The command to run on the host
-    :return: String output of command
-    """
+    command: str = Field(..., description="A shell command.")
+    ignore_error: bool = Field(False, description="Ignore errors.")
 
-    type: str = 'command'
-
-    command: str
-    ignore_error: bool = False
+    _args: list = ['command']
 
     def execute(self):
         p = subprocess.Popen(
@@ -70,10 +57,12 @@ class ShellHook(BaseHook):
     :return: String output of command
     """
 
-    type: str = 'shell'
+    hook_type: str = 'shell'
 
     command: str
     ignore_error: bool = False
+
+    _args: list = ['command']
 
     def _set_size(self, fd):
         """Found at: https://stackoverflow.com/a/6420070."""
@@ -121,9 +110,9 @@ class ShellHook(BaseHook):
                                 del readable[fd]
                             else:
                                 if fd == masters[0]:  # We caught stdout
-                                    click.echo(data.rstrip())
+                                    print(data.rstrip())
                                 else:  # We caught stderr
-                                    click.echo(data.rstrip(), err=True)
+                                    print(data.rstrip(), err=True)
                                 readable[fd].flush()
             for fd in masters:
                 os.close(fd)

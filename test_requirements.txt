@@ -5,3 +5,5 @@ freezegun
 flake8
 ptyprocess
 tox
+
+pytest-asyncio

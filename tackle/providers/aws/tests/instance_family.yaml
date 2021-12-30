@@ -1,6 +1,0 @@
-instance_types:
-  type: aws_ec2_types
-  region: us-east-1
-  instance_families:
-    - a1
-    - c5

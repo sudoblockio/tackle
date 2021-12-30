@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
-
 """Utility functions for handling and fetching repo archives in zip format."""
 import os
 import tempfile
+
 from zipfile import BadZipFile, ZipFile
 
 import requests
@@ -12,6 +11,7 @@ from PyInquirer import prompt
 from tackle.exceptions import InvalidZipRepository
 from tackle.utils.prompts import prompt_and_delete
 from tackle.utils.paths import make_sure_path_exists
+from tackle.utils.paths import is_repo_url
 
 logger = logging.getLogger(__name__)
 
@@ -26,14 +26,13 @@ def read_repo_password(question):
     return prompt([question])['tmp']
 
 
-def unzip(zip_uri, is_url, clone_to_dir='.', no_input=False, password=None):
+def unzip(zip_uri, clone_to_dir='.', no_input=False, password=None):
     """Download and unpack a zipfile at a given URI.
 
     This will download the zipfile to the tackle repository,
     and unpack into a temporary directory.
 
     :param zip_uri: The URI for the zipfile.
-    :param is_url: Is the zip URI a URL or a file?
     :param clone_to_dir: The tackle repository directory
         to put the archive into.
     :param no_input: Suppress any prompts
@@ -43,7 +42,7 @@ def unzip(zip_uri, is_url, clone_to_dir='.', no_input=False, password=None):
     clone_to_dir = os.path.expanduser(clone_to_dir)
     make_sure_path_exists(clone_to_dir)
 
-    if is_url:
+    if is_repo_url(zip_uri):
         # Build the name of the cached zipfile,
         # and prompt to delete if it already exists.
         identifier = zip_uri.rsplit('/', 1)[1]

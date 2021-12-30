@@ -1,12 +1,8 @@
-# -*- coding: utf-8 -*-
-
 """Password hook."""
-from __future__ import unicode_literals
-from __future__ import print_function
-
 import logging
 from PyInquirer import prompt
 from typing import Any
+from pydantic import Field
 
 from tackle.models import BaseHook
 
@@ -14,20 +10,15 @@ logger = logging.getLogger(__name__)
 
 
 class InquirerPasswordHook(BaseHook):
-    """
-    Hook for PyInquirer `password` type prompts.
+    """Hook for PyInquirer `password` type prompts."""
 
-    :param message: String message to show when prompting.
-    :param choices: A list of strings or list of k/v pairs per above description
-    :param name: A key to insert the output value to. If not provided defaults to
-        inserting into parent key
-    :return:
-    """
+    hook_type: str = 'password'
 
-    type: str = 'password'
-    default: bool = True
-    name: str = 'tmp'
-    message: str = None
+    default: Any = Field(None, description="Default choice.")
+    message: str = Field(None, description="String message to show when prompting.")
+    name: str = Field('tmp', description="Extra key to embed into. Artifact of API.")
+
+    _args: list = ['message', 'default']
 
     def __init__(self, **data: Any):
         super().__init__(**data)

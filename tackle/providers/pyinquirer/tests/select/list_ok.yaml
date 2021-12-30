@@ -1,7 +1,7 @@
 stuff: things
 
 choices:
-  type: select
+  <: select
   message: You foo?
   default: bar
   choices:

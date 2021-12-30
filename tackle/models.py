@@ -1,148 +1,146 @@
-"""Models for the whole project."""
-from collections import OrderedDict
+"""Models for the project."""
 import os
-from enum import Enum
+from pathlib import Path
+from pydantic import BaseModel, SecretStr, Field, Extra, validator
+from typing import Any, Union, Optional
 
-from pydantic import BaseModel, SecretStr, BaseSettings, Extra
-from typing import Dict, Any, Union, Type, List, Optional
-
-from tackle.render.environment import StrictEnvironment
-from tackle.utils.paths import expand_path
-from tackle.utils.context_manager import work_in
-
-USER_CONFIG_PATH = os.path.expanduser('~/.tacklerc')
-
-DEFAULT_ABBREVIATIONS: Dict = {
-    'gh': 'https://github.com/{0}.git',
-    'gl': 'https://gitlab.com/{0}.git',
-    'bb': 'https://bitbucket.org/{0}',
-}
-
-
-class Settings(BaseSettings):
-    """Base settings for run."""
-
-    tackle_dir: str = '~/.tackle'
-    replay_dir: str = os.path.join(tackle_dir, 'replay')
-
-    rerun_file_suffix: str = 'rerun.yml'
-
-    abbreviations: Dict = {}
-    default_context: Dict = OrderedDict([])
-
-    config_path: str = None
-
-    extra_providers: list = None
-    dump_output: str = 'yaml'
-
-    class Config:
-        env_prefix = 'TACKLE_'
-        env_file_encoding = 'utf-8'
-
-    def __init__(self, **values: Any):
-        super().__init__(**values)
-        self.abbreviations.update(DEFAULT_ABBREVIATIONS)
-
-        self.tackle_dir = expand_path(self.tackle_dir)
-        self.replay_dir = expand_path(self.replay_dir)
-
-
-class TackleGen(str, Enum):
-    """Tackel generation, placeholder for successive parsers."""
-
-    cookiecutter = 'cookiecutter'
-    tackle = 'tackle'
-
-
-class Mode(BaseModel):
-    """Mode in which the project is run."""
-
-    no_input: bool = False
-    replay: Union[bool, str] = None
-    record: Union[bool, str] = None
-    rerun: Union[bool, str] = None
-
-
-class Source(BaseModel):
-    """Source attributes model."""
-
-    template: str = "."
-    template_name: str = None
-    checkout: str = None
-    context_file: str = None
-    cleanup: bool = False
-    tackle_gen: str = None  # This attr is copied over to 'Context' for convenience
-
-    password: SecretStr = None
-    directory: str = None
-    repo: str = None
-
-    repo_dir: str = None
-
-    def __init__(self, **data: Any):
-        super().__init__(**data)
-        if self.context_file:
-            self.context_file = os.path.expanduser(
-                os.path.expandvars(self.context_file)
-            )
-
-
-class Provider(BaseModel):
-    """Base provider."""
-
-    path: str = None
-    hooks_path: str = None
-    hook_types: list = []
-    hook_modules: list = []
-
-    name: str = None  # defaults to os.path.basename(path)
-
-    src: str = None
-    version: str = None
-    requirements: list = []
+from tackle.utils.paths import work_in
+from tackle.providers import ProviderList
+from tackle.render import wrap_jinja_braces
 
 
 class Context(BaseModel):
     """The main object that is being modified by parsing."""
 
-    # context_file: str = None
-    context_key: str = None
-    key: str = None
+    # Mode
+    no_input: bool = False
+    verbose: bool = False
 
-    input_dict: OrderedDict = OrderedDict([])
-    output_dict: OrderedDict = None
+    # Source
+    password: SecretStr = None
+    directory: str = None
 
-    existing_context: Union[Dict, OrderedDict] = None
+    # Inputs
+    input_string: str = None
+    input_dir: Path = None
+    input_file: str = None
+    version: str = Field(
+        None,
+        description="For inputs referencing remote repos, this refers to "
+        "a branch or tag.",
+    )
+    existing_context: dict = {}
     overwrite_inputs: Union[dict, str] = None
-    override_inputs: Union[Dict, str] = None
 
-    hook_dict: OrderedDict = None
-    post_gen_hooks: List[Any] = []
+    input_dict: dict = {}
+    output_dict: dict = {}
+    keys_to_remove: list = []
 
-    calling_directory: str = None
-    rerun_path: str = None
-    tackle_gen: str = None
+    # Internal
+    key_path: list = []
+    providers: ProviderList = None
+    calling_directory: str = os.path.abspath(os.path.curdir)
+    env: Any = None
 
-    providers: List[Provider] = []
-    imported_hook_types: List[str] = []
+    global_args: list = None
+    global_kwargs: dict = None
+    global_flags: list = None
+
+    # post_exec_handlers: list = []
+
+    def __init__(self, **data: Any):
+        super().__init__(**data)
+        # Allows for passing the providers between tackle runtimes
+        if self.providers is None:
+            # Native and settings.extra_providers initialized
+            self.providers = ProviderList()
 
 
-class BaseHook(Context, Mode):
-    """Base hook mixin class."""
+class BaseHook(BaseModel):
+    """
+    Base hook class from which all other hooks inherit from to be discovered. There are
+    a number of reserved keys that are used for logic such as `if` and `for` that are
+    aliased to `if_` and `for_` to not collide with python reserved key words. We also
+    append underscores to
 
-    chdir: Optional[str] = None
-    merge: Optional[bool] = False
-    post_gen_hook: Optional[bool] = False
-    confirm: Optional[str] = False
+    """
+
+    hook_type: str = Field(..., description="Name of the hook.")
+
+    # TODO: Serialize the access modifier earlier in parsing - Could store the arrow in
+    #  key_path as boolean. Would have big changes to tackle.utils.dicts
+    # access_modifier: Literal['public', 'private'] = None
+
+    if_: Union[str, bool] = Field(None, render_by_default=True)
+    else_: Union[str, bool] = Field(None, render_by_default=True)
+    for_: Union[str, list] = Field(None, render_by_default=True)
+    reverse: Union[str, bool] = Field(None, render_by_default=True)
+
+    while_: Union[str, bool] = None  # TODO
+    match_: Any = None  # TODO
+    case_: list = None  # TODO
+
+    callback: str = None
+    chdir: Optional[str] = Field(None, description="Name of the hook.")
+    merge: Union[bool, str] = None
+    confirm: Optional[Any] = None
+
+    # context: Context
+    input_dict: Union[dict, list] = None
+    output_dict: Union[dict, list] = {}
+    existing_context: dict = None
+    no_input: bool = None
+
+    providers_: ProviderList = None  # TODO: RM? - Not really needed
+    key_path_: list = None
+
+    # Placeholder until help can be fully worked out
+    help: str = None
+
+    _args: list = []
+    _kwargs: dict = {}
+    _flags: list = []
+    # Fields that should not be rendered by default
+    _render_exclude_default: set = {'input_dict', 'output_dict', 'hook_type'}
+    _render_exclude: set = {}
+    _render_by_default: list = []
+
+    @validator('if_', 'else_', 'reverse', 'for_', 'merge')
+    def wrap_bool_if_string(cls, v):
+        return wrap_jinja_braces(v)
+
+    # Per https://github.com/samuelcolvin/pydantic/issues/1577
+    # See below
+    def __setattr__(self, key, val):
+        """Override method to alias input fields."""
+        if key in self.__config__.alias_to_fields:
+            key = self.__config__.alias_to_fields[key]
+        super().__setattr__(key, val)
 
     class Config:
         arbitrary_types_allowed = True
         extra = Extra.forbid
-        # orm_mode = True
+        validate_assignment = True
+        fields = {
+            'if_': 'if',
+            'else_': 'else',
+            'match_': 'match',
+            'case_': 'case',
+            'for_': 'for',
+            'while_': 'while',
+            'enumerate_': 'enumerate',
+        }
+        # Per https://github.com/samuelcolvin/pydantic/issues/1577
+        # This is an issue until pydantic 1.9 is released and items can be set with
+        # properties which will override the internal __setattr__ method that
+        # disregards aliased fields
+        alias_to_fields = {v: k for k, v in fields.items()}
+
+    def __init__(self, **data: Any):
+        super().__init__(**data)
 
     def execute(self) -> Any:
-        """Abstract method."""
-        raise NotImplementedError()
+        raise NotImplementedError("Every hook needs an execute method.")
 
     def call(self) -> Any:
         """
@@ -150,23 +148,15 @@ class BaseHook(Context, Mode):
 
         Handles `chdir` method.
         """
-        if self.chdir and os.path.isdir(
-            os.path.abspath(os.path.expanduser(self.chdir))
-        ):
-            # Use contextlib to switch dirs and come back out
-            with work_in(os.path.abspath(os.path.expanduser(self.chdir))):
-                return self.execute()
+        if self.chdir:
+            path = os.path.abspath(os.path.expanduser(self.chdir))
+            if os.path.isdir(path):
+                # Use contextlib to switch dirs
+                with work_in(os.path.abspath(os.path.expanduser(self.chdir))):
+                    return self.execute()
+            else:
+                raise NotADirectoryError(
+                    f"The specified path='{path}' to change to was not found."
+                )
         else:
             return self.execute()
-
-
-class Output(BaseModel):
-    """Output model."""
-
-    output_dir: str = '.'
-    overwrite_if_exists: bool = False
-    skip_if_file_exists: bool = False
-    accept_hooks: bool = True
-    unrendered_dir: str = None
-    env: Type[StrictEnvironment] = None
-    infile: str = None

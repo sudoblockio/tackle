@@ -1,0 +1,52 @@
+
+__modules:
+  - <: tackle org-name/repo
+
+<foo:
+  type: select
+  question: what ?
+  choices:
+    - thing
+    - that
+
+that:
+  <: get www.thi.com --when foo == thing
+  url: this
+  loop:
+    - this
+    - thisa
+  when: foo == thing
+
+this:
+  that: fool
+  one:
+    two:
+      <three:
+  duh:
+    bur:
+      - merr
+      - gerr:
+          her:
+            - fur
+            - rur
+  alist:
+    - stuff
+    - bax
+    - foo:
+        bar: bing
+    - bling
+    - blah:
+        bli:
+          blo:
+            blap: 1
+            blip: blep
+
+  amap:
+    inner:
+    <this: append {{ this.duh.bur }} [1,2]
+    <: template.yaml
+bing:
+  baz: boo
+
+
+tackle that

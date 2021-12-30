@@ -1,0 +1,24 @@
+- this:
+    that: fool
+    one:
+      two:
+        <three:
+    duh:
+      bur:
+        - merr
+        - gerr:
+            her:
+              - fur
+              - rur
+- this2:
+    that: fool
+    one:
+      two:
+        <three:
+    duh:
+      bur:
+        - merr
+        - gerr:
+            her:
+              - fur
+              - rur

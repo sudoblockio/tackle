@@ -1,0 +1,20 @@
+__import:
+  - inner_tackle.yaml
+  - github.com/robcxyz/tackle-demos
+
+render__:
+  templates:
+    - {{dir}}
+    - embedded:
+        {{dir}}: dir
+    - output-dir: dir
+    - embedded:
+        within-dir: dir
+    - embedded:
+        within-dir: file.py
+
+kubectl__:
+  - k8s-deployment.yaml
+  - k8s
+
+dir: src

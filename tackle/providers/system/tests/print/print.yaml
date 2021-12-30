@@ -1,21 +1,9 @@
 this:
-  type: print
-  out: this
+  ->: print this and that
 
 multiline:
-  type: print
-  out: |
-    this
+  ->: |
+    print
 
-md:
-  type: markdown
-  out: |
-    # Title
+    this and that
 
-    Stuff + things
-
-    | This | Stuff |
-    | :--- | :--- |
-    | 1 | 2 |
-    | 1 | 2 |
-    | 1 | 2 |

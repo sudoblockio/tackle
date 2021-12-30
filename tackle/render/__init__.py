@@ -1,76 +1,108 @@
 """Main entrypoint for rendering."""
 import ast
 import re
-import six
+from jinja2 import meta
+from inspect import signature
 
+from tackle.render.special_vars import special_variables
 from tackle.render.environment import StrictEnvironment
-from tackle.render.special_vars import get_vars
+from tackle.exceptions import UnknownTemplateVariableException
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from tackle.models import Context
 
 
-def build_render_context(context: 'Context'):
-    """Depending on the generation build a context.
+def wrap_braces_if_not_exist(value):
+    """Wrap with braces if they don't exist."""
+    if '{{' in value and '}}' in value:
+        # Already templated
+        return value
+    return '{{' + value + '}}'
 
-    For cookiecutter, enforce standards ie '{{ cookiecutter.var }}' but for tackle,
-    support both ie '{{ cookiecutter.var }}' and '{{ var }}'.
-    """
-    # TODO: get_vars should be instantiated earlier...
-    special_variables = get_vars(context)
-    if context.tackle_gen == 'cookiecutter':
-        render_context = {'cookiecutter': context.output_dict}
-        render_context.update(special_variables)
-    else:
-        render_context = dict(
-            context.output_dict, **{context.context_key: dict(context.output_dict)}
-        )
-        render_context.update(special_variables)
-    return render_context
+
+def wrap_jinja_braces(value):
+    """Wrap a string with braces so it can be templated."""
+    if isinstance(value, str):
+        return wrap_braces_if_not_exist(value)
+    # Nothing else can be wrapped
+    return value
 
 
 def render_variable(context: 'Context', raw: Any):
-    """Render the next variable to be displayed in the user prompt.
+    """
+    Render the raw input. Does recursion with dict and list inputs, otherwise renders
+    string.
 
-    Inside the prompting taken from the cookiecutter.json file, this renders
-    the next variable. For example, if a project_name is "Peanut Butter
-    Cookie", the repo_name could be be rendered with:
-
-        `{{ cookiecutter.project_name.replace(" ", "_") }}`.
-
-    This is then presented to the user as the default.
-
-    :param Environment env: A Jinja2 Environment object.
-    :param raw: The next value to be prompted for by the user.
-    :param dict cc_dict: The current context as it's gradually
-        being populated with variables.
-    :return: The rendered value for the default variable.
+    :param raw: The value to be rendered.
+    :return: The rendered value as literal type.
     """
     if raw is None:
         return None
+    elif isinstance(raw, str):
+        render_string(context, raw)
     elif isinstance(raw, dict):
         return {
-            render_variable(context, k): render_variable(context, v)
+            render_string(context, k): render_variable(context, v)
             for k, v in raw.items()
         }
     elif isinstance(raw, list):
         return [render_variable(context, v) for v in raw]
-    elif not isinstance(raw, six.string_types):
-        raw = str(raw)
+    else:
+        return raw
+
+    return render_string(context, raw)
+
+
+def render_string(context: 'Context', raw: str):
+    """
+    Render strings by first extracting renderable variables, build render context from
+    the output_dict, then existing context, and last looks up special variables.
+
+    :param raw: A renderable string
+    :return: The literal value if the output is a string / list / dict / float / int
+    """
+    if '{{' not in raw:
+        return raw
 
     env = StrictEnvironment(context=context.input_dict)
     template = env.from_string(raw)
+    # Extract variables
+    variables = meta.find_undeclared_variables(env.parse(raw))
 
-    # Build both the {{ cookiecutter.var }} and {{ var }} contexts
-    render_context = build_render_context(context)
-    rendered_template = template.render(render_context)
+    # Build a render context by inspecting the renderable variables
+    render_context = {}
+    unknown_variable = []
+    for v in variables:
+        # Variables in the current output_dict take precedence
+        if v in context.output_dict:
+            render_context.update({v: context.output_dict[v]})
+        elif v in context.existing_context:
+            render_context.update({v: context.existing_context[v]})
+        elif v in special_variables:
+            # If it is a special variable we need to check if the call requires
+            # arguments, only context supported now.
+            argments = list(signature(special_variables[v]).parameters)
+            if len(argments) == 0:
+                render_context.update({v: special_variables[v]()})
+            elif 'context' in argments:
+                render_context.update({v: special_variables[v](context)})
+            else:
+                raise ValueError("This should never happen.")
+        else:
+            unknown_variable.append(v)
 
-    # Tackle evaluates dicts, lists, and bools as literals where as cookiecutter
-    # renders them to string
-    if context.tackle_gen == 'cookiecutter':
-        return rendered_template
+    try:
+        rendered_template = template.render(render_context)
+    except Exception as e:
+        if len(unknown_variable) != 0:
+            raise UnknownTemplateVariableException(
+                f"Variable {unknown_variable} unknown."
+            )
+        raise e
 
+    # ast.literal_eval fails on string like objects so qualifying first
+    # This might be dumb but works
     REGEX = [
         r'^\[.*\]$',  # List
         r'^\{.*\}$',  # Dict
@@ -79,11 +111,7 @@ def render_variable(context: 'Context', raw: Any):
         r'^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$',  # Float
     ]
     for r in REGEX:
-        try:
-            if bool(re.search(r, rendered_template)):
-                """If variable looks like list, return literal list"""
-                return ast.literal_eval(rendered_template)
-        except ValueError as e:
-            raise e
+        if bool(re.search(r, rendered_template)):
+            return ast.literal_eval(rendered_template)
 
     return rendered_template

@@ -1,25 +1,25 @@
 blocker:
   items:
     stuff:
+      ->: print
       statement:
         here: there
-      type: print
     things:
+      ->: print
       statement:
         fun: '{{ foo }}'
-      type: print
   merge: true
-  type: block
+  ->: block
 foo: bar
 jinja:
   extra_context: '{{ this }}'
   output_path: things.py
   template_path: templates/things.py.j2
-  type: jinja
+  ->: jinja
 output:
   contents: '{{ this }}'
   path: output.yaml
-  type: yaml
+  ->: yaml
 stuff:
   here: there
 things:

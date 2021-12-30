@@ -1,8 +1,0 @@
-stuff: things
-foo:
-  - bar
-  - bax
-  - bin
-
-bing: "{{ foo }}"
-bing2: "{{ tackle.foo }}"

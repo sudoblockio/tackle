@@ -4,34 +4,17 @@ alist:
     - stuff
     - things
 
-blocker:
-  type: block
-  loop: "{{ alist }}"
-  items:
-    first:
-      type: tackle
-      template: .
-      chdir: fake-tackle
+blocker->:
+  for: alist
+  first:
+    ->: tackle
+    chdir: fake-tackle
 
-    print:
-      type: print
-      statement: "{{ first }}"
+  print->: print "{{ first }}"
 
-blocker2:
-  type: block
-  loop: "{{ alist }}"
-  items:
-    thing: false
-    print:
-      type: print
-      when: "{{ thing }}"
-      statement: this
+blocker2->:
+  for: alist
+  thing: false
+  print->: print this --if "{{ thing }}"
 
-output:
-  type: print
-  statement: "{{ this }}"
-
-empty:
-  type: var
-  loop: []
-  input: this
+output->: print "{{ this }}"

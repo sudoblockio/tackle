@@ -1,13 +1,9 @@
-# -*- coding: utf-8 -*-
-
 """Input hook."""
-from __future__ import unicode_literals
-from __future__ import print_function
-
 import logging
 from PyInquirer import prompt
+from pydantic import Field
 
-from typing import Union, List, Dict
+from typing import Any
 from tackle.models import BaseHook
 
 logger = logging.getLogger(__name__)
@@ -25,11 +21,13 @@ class InquirerInputHook(BaseHook):
     :return: String answer
     """
 
-    type: str = 'input'
+    hook_type: str = 'input'
 
-    default: Union[Dict, List[str], str] = None
-    name: str = 'tmp'
-    message: str = None
+    default: Any = Field(None, description="Default choice.")
+    message: str = Field(None, description="String message to show when prompting.")
+    name: str = Field('tmp', description="Extra key to embed into. Artifact of API.")
+
+    _args: list = ['message']
 
     def execute(self):
         if not self.no_input:

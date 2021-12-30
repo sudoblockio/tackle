@@ -1,7 +1,6 @@
-* Tackle version:
-* Template project url:
-* Python version:
-* Operating System:
+* Tackle version: [latest]
+* Python version: [3.x]
+* Operating System: [linux]
 
 ### Description:
 
@@ -10,6 +9,6 @@
 ### What I've run:
 
 ```
-// REPLACE ME: Paste a log of command(s) you ran and cookiecutter's output, tracebacks, etc, here
+// REPLACE ME: Paste a log of command(s) you ran and tackle's output, tracebacks, etc, here
 ```
 

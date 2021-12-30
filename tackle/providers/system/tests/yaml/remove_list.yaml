@@ -1,18 +1,16 @@
 stuff: things
 
 things:
-  type: var
-  input:
-    - stuff
-    - things
-    - _stuff
-    - _thing
-    - _foo
-    - bar_
+  - stuff
+  - things
+  - _stuff
+  - _thing
+  - _foo
+  - bar_
 
 out:
-  type: yaml
-  contents: "{{ remove_list.things }}"
+  ->: yaml
+  contents: "{{ things }}"
   path: output.yaml
   remove:
    - ^_

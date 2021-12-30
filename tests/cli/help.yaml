@@ -1,0 +1,18 @@
+
+
+stuff<-:
+  help: Do stuff to things
+  args:
+    things:
+      type: str
+      description: The things
+      render_by_default: true
+  execute:
+
+
+
+stuff:
+  help: Do stuff to things
+
+
+

@@ -26,8 +26,7 @@ class ExtensionLoaderMixin(object):
         default_extensions = [
             'tackle.render.extensions.JsonifyExtension',
             'tackle.render.extensions.RandomStringExtension',
-            'tackle.render.extensions.SlugifyExtension',
-            'jinja2_time.TimeExtension',
+            # 'jinja2_time.TimeExtension',
         ]
         extensions = default_extensions + self._read_extensions(context)
 
@@ -43,7 +42,7 @@ class ExtensionLoaderMixin(object):
         list instead.
         """
         try:
-            extensions = context['cookiecutter']['_extensions']
+            extensions = context['_extensions']
         except (KeyError, TypeError):
             return []
         else:

@@ -3,9 +3,9 @@ a_map:
   foo: bar
 
 things:
-  type: yaml
+  ->: yaml
   path: before.yaml
-  contents: "{{ filter.a_map }}"
+  contents: "{{ a_map }}"
   filter:
     - foo
     - things

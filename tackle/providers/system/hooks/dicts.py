@@ -1,62 +1,53 @@
-# -*- coding: utf-8 -*-
-
 """Dict hooks."""
-from __future__ import unicode_literals
-from __future__ import print_function
-
 import logging
 from typing import Union, Dict, List
 
-from tackle.models import BaseHook
+from tackle import BaseHook, Field
 from tackle.utils import merge_configs
 
 logger = logging.getLogger(__name__)
 
 
 class DictUpdateHook(BaseHook):
-    """
-    Hook  for updating dict objects with items.
+    """Hook for updating dict objects with items."""
 
-    :param src: The input dict to update
-    :param input: A dict or list of dicts to update the input `src`
-    :return: An updated dict object.
-    """
+    hook_type: str = 'update'
 
-    type: str = 'update'
+    src: dict = Field(description="A dict or list of dicts to update the input `src`")
+    input: dict = Field(description="A dict or list of dicts to update the input `src`")
 
-    input: Union[Dict, List[Dict]]
-    src: Dict
+    _args: list = ['src', 'input']
 
     def execute(self):
-        if isinstance(self.input, list):
-            for i in self.input:
-                self.src.update(i)
-        else:
-            self.src.update(self.input)
-
+        self.src.update(self.input)
         return self.src
 
 
 class DictMergeHook(BaseHook):
     """
-    Hook  for recursively merging dict objects with input maps.
+    Hook for recursively merging dict objects with input maps.
 
     :param src: The input dict to update
     :param input: A dict or list of dicts to update the input `dict`
     :return: An updated dict object.
     """
 
-    type: str = 'merge'
-    input: Union[Dict, List[Dict]]
-    src: Dict
+    hook_type: str = 'merge'
+    inputs: list = Field(
+        ...,
+        description="A list of dictionaries to merge together.",
+        render_by_default=True,
+    )
+    # pairs: Union[dict, list] = Field(..., description="")
+
+    _args: list = ['inputs']
+    _render_by_default = ['pairs']
 
     def execute(self):
-        if isinstance(self.input, list):
-            for i in self.input:
-                self.src = merge_configs(self.src, i)
-            return self.src
-        else:
-            return merge_configs(self.src, self.input)
+        output = {}
+        for i in self.inputs:
+            output = merge_configs(output, i)
+        return output
 
 
 class DictPopHook(BaseHook):
@@ -68,32 +59,38 @@ class DictPopHook(BaseHook):
     :return: An updated dict object.
     """
 
-    type: str = 'pop'
+    hook_type: str = 'pop'
 
-    item: Union[Dict, List[str], str]
-    src: Dict
+    src: Union[dict, list] = None
+    item: Union[Dict, List[str], str] = None
+
+    _args: list = ['src', 'item']
 
     def execute(self):
-        if isinstance(self.item, list):
+        if self.item is None:
+            self.src.pop()
+        elif isinstance(self.item, list):
             for i in self.item:
                 self.src.pop(i)
-            return self.src
         else:
             self.src.pop(self.item)
-            return self.src
+
+        return self.src
 
 
 class DictKeysHook(BaseHook):
     """
-    Hook  for returning the keys of a dict.
+    Hook  for returning the keys of a dict as a list.
 
     :param src: The input dict or list of dicts return the keys for
     :return: List of keys or list of list of keys if input is list
     """
 
-    type: str = 'dict_keys'
+    hook_type: str = 'keys'
 
-    src: Union[Dict, List[Dict]]
+    src: dict = None
+
+    _args: list = ['src']
 
     def execute(self):
         if isinstance(self.src, list):
@@ -102,4 +99,4 @@ class DictKeysHook(BaseHook):
                 keys.append(i.keys())
             return keys
         else:
-            return self.src.keys()
+            return list(self.src.keys())

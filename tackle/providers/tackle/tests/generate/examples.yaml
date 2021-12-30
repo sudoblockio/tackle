@@ -1,0 +1,17 @@
+generate__: file.yaml output/
+
+stuff: things
+
+compact->: generate file.yaml output/
+
+lists:
+  ->: generate
+  templates:
+    - file.yaml
+    - stuff-{{stuff}}.yaml
+  output: output
+
+string:
+  ->: generate
+  templates: templates
+  output: output/src

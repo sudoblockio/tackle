@@ -1,6 +1,0 @@
-azs:
-  type: azure_regions
-
-print:
-  type: print
-  statement: "{{ azs }}"

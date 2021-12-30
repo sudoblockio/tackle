@@ -1,0 +1,11 @@
+dirs->: mkdir output
+
+paths:
+  - output
+  - foo
+
+join->: path_join {{paths}}
+
+dirs2:
+  ->: mkdir
+  path: "{{ join }}"

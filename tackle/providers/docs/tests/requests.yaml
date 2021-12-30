@@ -1,0 +1,13 @@
+doc:
+  ->: provider_docs
+  chdir: "../../requests"
+
+print:
+  ->: pprint
+  input: "{{ doc['hooks'][0] }}"
+
+hook_doc:
+  ->: jinja
+  template_path: hook-doc2.md
+  output_path: hook.md
+  extra_context: "{{ doc['hooks'][0] }}"

@@ -1,0 +1,6 @@
+stuff: things
+foo: {}
+bar:
+  expanded: things
+  mixed: things
+  compact: things

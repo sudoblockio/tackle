@@ -1,0 +1,38 @@
+stuff: things
+
+a_list:
+  - stuff
+  - things
+
+a_block->:
+  if: stuff == 'things'
+  a_item->: print A {{item}} --for a_list
+  b_item->: print B {{index}} --for a_list
+
+b_block_false->:
+  if: stuff != 'things'  # Not possible
+  foo:
+    bar:
+      baz:
+        - 1
+        - 2
+    bing: bang
+
+
+#b_block_private_>:
+#  foo:
+#    bar:
+#      baz:
+#        - 1
+#        - 2
+#    bing: bang
+#
+#b_block_private_verify->: "{{b_block_private}}"
+
+b_block->:
+  foo:
+    bar:
+      baz:
+        - 1
+        - 2
+    bing: bang

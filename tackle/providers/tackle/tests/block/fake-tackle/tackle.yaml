@@ -1,13 +1,6 @@
 inner: innertings
 
-blocker:
-  type: block
+blocker->:
   merge: true
-  items:
-    stuff:
-      type: print
-      statement: here
-    things:
-      type: print
-      statement: "{{ stuff }}"
-
+  stuff->: print here
+  things->: print "{{ stuff }}"

@@ -5,9 +5,10 @@ from pathlib import Path
 
 import pytest
 
-import tackle.utils.context_manager
+import tackle.utils.files
 import tackle.utils.paths
-import tackle.utils.reader
+
+# import tackle.utils.reader
 import tackle
 
 
@@ -83,7 +84,7 @@ def test_work_in(tmp_path):
     assert ch_to != Path.cwd()
 
     # Under context manager we should work in tmp_path.
-    with tackle.utils.context_manager.work_in(ch_to):
+    with tackle.utils.paths.work_in(ch_to):
         assert ch_to == Path.cwd()
 
     # Make sure we return to the correct folder
@@ -239,7 +240,7 @@ def test_prompt_should_not_ask_if_no_input_and_rm_repo_file(mocker, tmp_path):
         ]
     ),
 )
-def test_valid_read_config_file(valid_config_file, change_dir_main_fixtures):
+def test_valid_read_config_file(valid_config_file, change_curdir_fixtures):
     """Validate generic reader works properly."""
-    output = tackle.utils.reader.read_config_file(valid_config_file)
+    output = tackle.utils.files.read_config_file(valid_config_file)
     assert output == {'project_slug': 'best_eva', 'stuff': 'things'}
