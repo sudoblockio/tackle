@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """Tests dict input objects for `cookiecutter.parser.providers` module."""
+import os
+
 import pytest
 from tackle.main import tackle
 import subprocess
@@ -50,7 +52,8 @@ def test_parser_provider_hook_add(change_curdir_fixtures):
     Validate that you can give a `__provider` key to point to
     additional providers and make them available as a type.
     """
-    o = tackle(context_file='context_provider.yaml')
+    os.chdir('test-provider')
+    o = tackle('context_provider.yaml')
     assert o['things'] == 'bar'
 
 
@@ -60,6 +63,6 @@ def test_parser_provider_hook_add_list(change_curdir_fixtures):
     Validate that you can give multiple `__provider` keys to point to
     additional providers and make them available as a types.
     """
-    o = tackle(context_file='context_provider_list.yaml')
+    o = tackle('context_provider_list.yaml')
     assert o['things'] == 'bar'
     assert o['stuff'] == 'bar'
