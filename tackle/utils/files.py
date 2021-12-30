@@ -1,6 +1,5 @@
 """Utilities mainly used in helping `modes` like replay and others."""
 import json
-from collections import OrderedDict
 import oyaml as yaml
 import os
 import logging
@@ -63,7 +62,8 @@ def read_config_file(file, file_extension=None):
     try:
         if file_extension == 'json':
             with open(file) as f:
-                config = json.load(f, object_pairs_hook=OrderedDict)
+                # config = json.load(f, object_pairs_hook=OrderedDict)
+                config = json.load(f)
             return config
         elif file_extension in ('yaml', 'yml'):
             try:

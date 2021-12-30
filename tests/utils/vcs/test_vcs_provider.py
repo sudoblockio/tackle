@@ -1,3 +1,4 @@
+"""Test tackle.utils.vcs."""
 import os
 import pytest
 
@@ -7,10 +8,9 @@ from tackle.utils.vcs import (
     get_repo_version,
     get_default_branch,
     get_repo_source,
-    clone_to_dir,
+    # clone_to_dir,
     get_latest_release,
 )
-from tackle.exceptions import UnknownRepoType
 
 DEMO_INPUTS = [
     "https://github.com/robcxyz/tackle-demos",
@@ -21,15 +21,11 @@ DEMO_INPUTS = [
 
 @pytest.mark.parametrize("repo_input", DEMO_INPUTS)
 def test_parse_repo_ref(repo_input):
+    """Test parsing the repo reference."""
     repo_url, organization, provider_name = parse_repo_ref(repo_input)
     assert repo_url == "https://github.com/robcxyz/tackle-demos"
     assert organization == "robcxyz"
     assert provider_name == "tackle-demos"
-
-
-def test_asssert_error_unknown_repo():
-    with pytest.raises(UnknownRepoType):
-        clone_to_dir('https://github.com/robcxyz/tackle-THINGS', 'foo')
 
 
 DEMO_INPUTS = [
@@ -47,6 +43,7 @@ DEMO_INPUTS = [
 def test_get_repo_source(
     tmp_move_tackle_dir, repo_input, repo_version, expected_version
 ):
+    """Test getting the repo and cloning it to the providers dir returning the path."""
     get_repo_source(repo=repo_input, repo_version=repo_version)
     assert os.listdir(settings.provider_dir) == ['robcxyz']
     assert (
@@ -56,15 +53,18 @@ def test_get_repo_source(
 
 
 def test_get_repo_version(change_dir_base):
+    """Test get_repo_version."""
     version = get_repo_version('.')
     assert len(version) > 3
 
 
 def test_get_default_branch(change_dir_base):
+    """Test getting the default branch of current repo."""
     branch = get_default_branch('.')
     assert branch == 'main'
 
 
 def test_get_latest_release(change_dir_base):
+    """Get the latest release in repo."""
     release = get_latest_release('.')
     assert len(release) > 4

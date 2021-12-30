@@ -3,7 +3,6 @@ import logging
 import os
 import subprocess
 from shutil import which
-from git import Repo, GitCommandError
 
 from tackle.exceptions import (
     RepositoryCloneFailed,
@@ -125,6 +124,7 @@ def is_vcs_installed(repo_type):
 
 
 def get_default_branch(repo_path):
+    """Get the default branch from a repo / provider."""
     cmd = "git remote show origin"
     with work_in(repo_path):
         p = subprocess.Popen(
@@ -144,6 +144,7 @@ def get_default_branch(repo_path):
 
 
 def get_latest_release(repo_path):
+    """Checkout the latest release."""
     cmd = "git ls-remote --tags --exit-code --refs origin"
     with work_in(repo_path):
         p = subprocess.Popen(
@@ -157,11 +158,12 @@ def get_latest_release(repo_path):
         if p.returncode == 0:
             # last line is the latest release
             return stdout.strip().splitlines()[-1].decode('utf-8').split('/')[-1]
-        else:
-            raise ValueError("No idea why this would not work....")
+        elif p.returncode == 2:
+            return None
 
 
 def get_repo_version(repo_path):
+    """Get the current repo version / branch."""
     with work_in(repo_path):
         with open('.git/HEAD') as f:
             ref = f.read()
@@ -172,6 +174,7 @@ def get_repo_version(repo_path):
 
 
 def checkout_version(repo_path, version):
+    """Checkout a version / branch."""
     cmd = f"git checkout {version}"
     with work_in(repo_path):
         p = subprocess.Popen(
@@ -189,6 +192,7 @@ def checkout_version(repo_path, version):
 
 
 def parse_repo_ref(repo):
+    """Parse the repo string into parts."""
     # If starts with https
     organization = None
     provider_name = None
@@ -224,16 +228,8 @@ def parse_repo_ref(repo):
     return repo_url, organization, provider_name
 
 
-def clone_to_dir(git_url, clone_dir):
-    try:
-        Repo.clone_from(git_url, clone_dir)
-    except GitCommandError as e:
-        if "Repository not found." in e.stderr:
-            raise UnknownRepoType(f"Cloud not find repo {git_url}")
-        raise e
-
-
 def get_repo_source(repo: str, repo_version: str = None) -> str:
+    """Clone a provider into the providers dir with checkout out the right version."""
     repo_url, organization, provider_name = parse_repo_ref(repo)
     # provider_dir = os.path.join(settings.provider_dir, organization, provider_name)
     org_dir = os.path.join(settings.provider_dir, organization)
@@ -254,7 +250,7 @@ def get_repo_source(repo: str, repo_version: str = None) -> str:
             checkout_version(repo_path=provider_dir, version=repo_version)
     else:
         latest_release = get_latest_release(repo_path=provider_dir)
-        if version != latest_release:
+        if version != latest_release and latest_release is not None:
             checkout_version(repo_path=provider_dir, version=latest_release)
 
     return provider_dir

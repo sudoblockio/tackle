@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*-
-
 """Utility functions for handling and fetching repo archives in zip format."""
 import os
 import tempfile
 
-# from zipfile import BadZipFile, ZipFile
+from zipfile import BadZipFile, ZipFile
 
 import requests
 import logging

@@ -26,7 +26,7 @@ def unpack_input_string(input_string: str) -> (list, dict, list):
             for i in range(1, len(args)):
                 if '}}' in args[i]:
                     joined_template = ' '.join(args[: (i + 1)])
-                    other_args = args[(i + 1):]
+                    other_args = args[(i + 1) :]
                     args = ['var'] + [joined_template] + other_args
                     break
 

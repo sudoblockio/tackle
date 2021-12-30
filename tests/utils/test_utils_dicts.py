@@ -1,3 +1,4 @@
+"""Tests for tackle.utils.dicts"""
 import pytest
 
 from tackle.utils.dicts import (
@@ -6,16 +7,18 @@ from tackle.utils.dicts import (
     nested_set,
     nested_get,
     nested_delete,
+    # set_key,
 )
 
 ZERO_INDEX = encode_list_index(0)
 
 
 def test_index_encoding():
+    """Test encoding function."""
     assert decode_list_index(encode_list_index(1)) == 1
 
 
-SET_KEY_PATHS = [
+NESTED_SET_FIXTURES = [
     ({}, ['foo'], {'foo': True}),
     ({}, ['one', 'two', 'three'], {'one': {'two': {'three': True}}}),
     ({}, ['this', 'lists', ZERO_INDEX], {'this': {'lists': [True]}}),
@@ -72,13 +75,14 @@ SET_KEY_PATHS = [
 ]
 
 
-@pytest.mark.parametrize("output,key_path,expected_output", SET_KEY_PATHS)
+@pytest.mark.parametrize("output,key_path,expected_output", NESTED_SET_FIXTURES)
 def test_nested_append_bytes(output, key_path, expected_output):
+    """Test setting elements in list."""
     nested_set(output, key_path, True)
     assert output == expected_output
 
 
-GET_KEY_PATHS = [
+NESTED_GET_FIXTURES = [
     ({'foo': 1}, ['foo'], 1),
     (
         {'this': {'that': {'foo': [{'one': 1}, {'one': 'foo'}]}}},
@@ -95,13 +99,14 @@ GET_KEY_PATHS = [
 ]
 
 
-@pytest.mark.parametrize("input,key_path,expected_output", GET_KEY_PATHS)
+@pytest.mark.parametrize("input,key_path,expected_output", NESTED_GET_FIXTURES)
 def test_nested_get(input, key_path, expected_output):
+    """Test getting based on key path."""
     output = nested_get(input, key_path)
     assert output == expected_output
 
 
-DELETE_KEY_PATHS = [
+NESTED_DELETE_FIXTURES = [
     ({'foo': 1}, ['foo'], {}),
     ({'foo': 1, 'bar': 1}, ['foo'], {'bar': 1}),
     ({'foo': 'baz', 'bar': 1}, ['foo', 'baz'], {'foo': None, 'bar': 1}),
@@ -149,7 +154,18 @@ DELETE_KEY_PATHS = [
 ]
 
 
-@pytest.mark.parametrize("input,key_path,expected_output", DELETE_KEY_PATHS)
+@pytest.mark.parametrize("input,key_path,expected_output", NESTED_DELETE_FIXTURES)
 def test_nested_delete(input, key_path, expected_output):
+    """Test deletion based on key path."""
     nested_delete(input, key_path)
     assert input == expected_output
+
+
+# SET_KEY_FIXTURES = [
+#     ({},['->'], )
+# ]
+#
+# @pytest.mark.parametrize("input,key_path,expected_output", SET_KEY_FIXTURES)
+# def test_set_key(input, key_path, expected_output):
+#     set_key(input, key_path, True, [])
+#     assert input == expected_output
