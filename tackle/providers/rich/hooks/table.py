@@ -1,12 +1,9 @@
 """Table hook."""
-import logging
 from rich.console import Console
 from rich.table import Table
 from typing import List, Any
 
 from tackle.models import BaseHook, Field
-
-logger = logging.getLogger(__name__)
 
 
 class TableHook(BaseHook):

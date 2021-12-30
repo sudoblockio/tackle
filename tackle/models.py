@@ -94,7 +94,9 @@ class BaseHook(BaseModel):
     providers_: ProviderList = None  # TODO: RM? - Not really needed
     key_path_: list = None
 
-    _help: str = None
+    # Placeholder until help can be fully worked out
+    help: str = None
+
     _args: list = []
     _kwargs: dict = {}
     _flags: list = []

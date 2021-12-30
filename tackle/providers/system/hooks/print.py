@@ -1,15 +1,8 @@
 """Print hooks."""
-import logging
 from pprint import pprint
 from typing import Any
 
-from rich import print
-from rich.console import Console
-from rich.markdown import Markdown
-
 from tackle import BaseHook, Field
-
-logger = logging.getLogger(__name__)
 
 
 class PrintHook(BaseHook):
@@ -65,17 +58,3 @@ class PprintHook(BaseHook):
             underscore_numbers=self.underscore_numbers,
         )
         return
-
-
-class MarkdownPrintHook(BaseHook):
-    """Hook for printing markdown and returning the output."""
-
-    hook_type: str = 'markdown'
-    text: str = None
-
-    _args: list = ['text']
-
-    def execute(self):
-        console = Console()
-        console.print(Markdown(self.text))
-        return self.text

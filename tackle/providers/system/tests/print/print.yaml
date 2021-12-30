@@ -7,29 +7,3 @@ multiline:
 
     this and that
 
-md:
-  ->: |
-    markdown
-    # Title
-    Stuff + things
-    | This | Stuff |
-    | :--- | :--- |
-    | 1 | 2 |
-    | 1 | 2 |
-    | 1 | 2 |
-
-
-slide:
-  ->: markdown
-  text: |
-    #### This
-
-    This is freakin cool.
-
-    # Title
-    Stuff + things
-    | This | Stuff |
-    | :--- | :--- |
-    | 1 | 2 |
-    | 1 | 2 |
-    | 1 | 2 |

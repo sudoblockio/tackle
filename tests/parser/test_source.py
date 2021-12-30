@@ -6,7 +6,7 @@ from tackle.models import Context
 
 INPUT_SOURCES = [
     # "github.com/robcxyz/tackle-demo"
-    "robcxyz/tackle-demo"
+    "robcxyz/tackle-demos"
 ]
 
 

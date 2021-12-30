@@ -13,7 +13,7 @@ def clean_up_outputs():
 
 def test_provider_system_hook_symlink_overwrite(change_dir, clean_up_outputs):
     """Verify the hook call works properly."""
-    output = tackle(context_file='tackle.yaml', no_input=True)
+    output = tackle('tackle.yaml', no_input=True)
 
     assert output['read'] == {'foo': 'bar'}
     assert output['read_dir'] == {'foo': 'bar'}

@@ -1,0 +1,24 @@
+column_names:
+  - stuff
+  - things
+
+data_split:
+  - foo-bar
+  - here-there
+
+table_split:
+  ->: table
+  column_names: "{{ column_names }}"
+  contents_split: "{{ data_split }}"
+  separator: "-"
+
+data:
+  - ['foo', 'bar']
+  - ['here', 1]
+
+print1->: print "{{ this }}"
+
+table:
+  ->: table
+  column_names: "{{ column_names }}"
+  contents: "{{ data }}"

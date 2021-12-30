@@ -1,14 +1,11 @@
 """Command hook."""
 import sys
-
-# import re
 import logging
 import subprocess
 import errno
 import struct
 import shutil
 import os
-import click
 from itertools import chain
 from select import select
 from pydantic import Field
@@ -113,9 +110,9 @@ class ShellHook(BaseHook):
                                 del readable[fd]
                             else:
                                 if fd == masters[0]:  # We caught stdout
-                                    click.echo(data.rstrip())
+                                    print(data.rstrip())
                                 else:  # We caught stderr
-                                    click.echo(data.rstrip(), err=True)
+                                    print(data.rstrip(), err=True)
                                 readable[fd].flush()
             for fd in masters:
                 os.close(fd)

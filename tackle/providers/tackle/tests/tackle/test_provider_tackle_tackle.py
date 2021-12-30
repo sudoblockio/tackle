@@ -12,11 +12,11 @@ def clean_outputs():
     shutil.rmtree('output')
 
 
-def test_provider_system_hook_tackle(change_dir):
-    """Verify the hook call works properly."""
-    # TODO Build example repo
-    context = tackle('tackle.yaml', no_input=True)
-    assert context
+# def test_provider_system_hook_tackle(change_dir):
+#     """Verify the hook call works properly."""
+#     # TODO Build example repo
+#     context = tackle('tackle.yaml', no_input=True)
+#     assert context
 
 
 def test_provider_tackle_local(change_dir):
