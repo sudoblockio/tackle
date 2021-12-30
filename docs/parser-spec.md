@@ -1,14 +1,12 @@
 
+# Tackle Box Specification
 
-The following document outlines the specification to write tackle scripts.
+## Introduction
 
-
-
-```yaml
-<:
-
-<2: this
+Tackle-box is a configuration language and declarative CLI aimed at making modular declarative CLI's and code generators.  This specification is both an introduction to the configuration language and
 
 
 
-```
+
+
+

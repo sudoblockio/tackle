@@ -20,7 +20,7 @@ If you create a Cookiecutter template, submit a pull request adding it to README
 
 ### Report Bugs
 
-Report bugs at [https://github.com/cookiecutter/cookiecutter/issues](https://github.com/cookiecutter/cookiecutter/issues).
+Report bugs at [https://github.com/robcxyz/tackle-box/issues](https://github.com/robcxyz/tackle-box/issues).
 
 If you are reporting a bug, please include:
 
@@ -56,7 +56,7 @@ This will compile the documentation, open it in your browser and start watching 
 
 ### Submit Feedback
 
-The best way to send feedback is to file an issue at [https://github.com/cookiecutter/cookiecutter/issues](https://github.com/cookiecutter/cookiecutter/issues).
+The best way to send feedback is to file an issue at [https://github.com/robcxyz/tackle-box/issues](https://github.com/robcxyz/tackle-box/issues).
 
 If you are proposing a feature:
 
@@ -66,20 +66,21 @@ If you are proposing a feature:
 
 ## Setting Up the Code for Local Development
 
-Here's how to set up `cookiecutter` for local development.
+Here's how to set up `tackle` for local development.
 
-1. Fork the `cookiecutter` repo on GitHub.
+1. Fork the `tackle-box` repo on GitHub.
 2. Clone your fork locally:
 
 ```bash
-git clone git@github.com:your_name_here/cookiecutter.git
+git clone git@github.com:your_name_here/tackle-box.git
 ```
 
 3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development:
 
 ```bash
-mkvirtualenv cookiecutter
-cd cookiecutter/
+cd tackle-box/
+python3 -m venv env
+source env/bin/activate
 python setup.py develop
 ```
 
@@ -214,7 +215,7 @@ Core committers, use this section to:
 
 #### Command-Line Accessible
 
-* Provides a command-line utility that creates projects from cookiecutters
+* Provides a command-line utility that creates projects from tackle-boxes
 * Extremely easy to use without having to think too hard
 * Flexible for more complex use via optional arguments
 
@@ -237,19 +238,10 @@ Being extendable by people with different ideas for Jinja2-based project templat
 * Aim for statelessness
 * Lets anyone write more opinionated tools
 
-Freedom for Cookiecutter users to build and extend.
+Freedom for tackle-box users to build and extend.
 
-* No officially-maintained cookiecutter templates, only ones by individuals
-* Commercial project-friendly licensing, allowing for private cookiecutters and private Cookiecutter-based tools
-
-#### Fast and Focused
-
-Cookiecutter is designed to do one thing, and do that one thing very well.
-
-* Cover the use cases that the core committers need, and as little as possible beyond that :)
-* Generates project templates from the command-line or API, nothing more
-* Minimize internal line of code (LOC) count
-* Ultra-fast project generation for high performance downstream tools
+* No officially-maintained tackle-box providers, only ones by individuals
+* Commercial project-friendly licensing, allowing for private tackle-box and private tackle-box-based tools
 
 #### Inclusive
 
@@ -266,7 +258,7 @@ Cookiecutter is designed to do one thing, and do that one thing very well.
 
 #### VCS-Hosted Templates
 
-Cookiecutter project templates are intentionally hosted VCS repos as-is.
+Tackle-box providers are intentionally hosted VCS repos as-is.
 
 * They are easily forkable
 * It's easy for users to browse forks and files
