@@ -10,8 +10,11 @@ class HclHook(BaseHook):
 
     path: str = Field(..., description="The file path to read hcl file from.")
 
+    _args = ['path']
+
     def execute(self):
 
         with open(self.path) as f:
-            output = pygohcl.loads(f)
+            contents = f.read()
+            output = pygohcl.loads(contents)
         return output

@@ -1,1 +1,1 @@
-read<-: hcl working.toml
+read->: hcl example.hcl

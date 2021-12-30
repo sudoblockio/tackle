@@ -1,6 +1,6 @@
 """YAML hook."""
 import logging
-import oyaml as yaml
+import yaml
 import re
 import os
 from pydantic import Field

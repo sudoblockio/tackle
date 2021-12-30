@@ -1,6 +1,6 @@
 """Utilities mainly used in helping `modes` like replay and others."""
 import json
-import oyaml as yaml
+import yaml
 import os
 import logging
 from yaml.composer import ComposerError

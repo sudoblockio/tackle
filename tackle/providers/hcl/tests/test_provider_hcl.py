@@ -3,7 +3,7 @@ from tackle.main import tackle
 import json
 
 
-def test_provider_toml_hook_read(change_dir):
+def test_provider_hcl_hook_read(change_dir):
     """Verify the hook call works successfully."""
     o = tackle('read.yaml')
 
