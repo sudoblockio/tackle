@@ -110,37 +110,58 @@ def expand_abbreviations(template, abbreviations) -> str:
     return template
 
 
-def is_repo_url(value):
-    """Return True if value is a repository URL."""
+def is_repo_url(value) -> bool:
+    """
+    Return True if value is a repository URL. Also checks if it is of the form
+    org/repo ie robcxyz/tackle-demos and checks if that is a local directory before
+    returning true.
+    """
     REPO_REGEX = re.compile(
         r"""
     # something like git:// ssh:// file:// etc.
     ((((git|hg)\+)?(git|ssh|file|https?):(//)?)
-     |                                      # or
-     (\w+@[\w\.]+)                          # something like user@...
+     |
+     (^(github.com|gitlab.com)+\/[\w,\-,\_]+\/[\w,\-,\_]+$)
     )
     """,
         re.VERBOSE,
     )
-    return bool(REPO_REGEX.match(value))
+    if not bool(REPO_REGEX.match(value)):
+        # We also need to catch refs of type robcxyz/tackle-demo but need to first see
+        # if the path
+        REPO_REGEX = re.compile(
+            r"""^[\w,\-,\_]+\/[\w,\-,\_]+$""",
+            re.VERBOSE,
+        )
+        if bool(REPO_REGEX.match(value)):
+            if os.path.exists(value):
+                return False
+            else:
+                return True
+        else:
+            return False
+
+    return True
+    # return bool(REPO_REGEX.match(value))
 
 
-def is_file(value):
+def is_directory_with_tackle(value) -> bool:
+    """Return true if directory."""
+    if os.path.isdir(value):
+        contents = os.listdir(value)
+        for i in CONTEXT_FILES:
+            if i in contents:
+                return True
+    return False
+
+
+def is_file(value) -> bool:
     """Return True if the input looks like a file."""
     FILE_REGEX = re.compile(
         r"""^.*\.(yaml|yml|json)$""",
         re.VERBOSE,
     )
     return bool(FILE_REGEX.match(value))
-
-
-def is_multi_part_command(value):
-    """Return True if the input looks like a file."""
-    SPACE_REGEX = re.compile(
-        r"""/\s/""",
-        re.VERBOSE,
-    )
-    return bool(SPACE_REGEX.match(value))
 
 
 def find_tackle_file(provider_dir) -> str:
@@ -150,7 +171,7 @@ def find_tackle_file(provider_dir) -> str:
         if i in CONTEXT_FILES:
             return os.path.join(provider_dir, i)
 
-    raise InvalidConfiguration
+    raise InvalidConfiguration(f"Can't find tackle file in {provider_dir}")
 
 
 def find_in_parent(dir, targets, fallback=None, fallback_call=None):
