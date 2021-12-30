@@ -1,0 +1,21 @@
+stuff: things
+
+defined:
+  ->: var
+  input: stuff
+  if: stuff is defined
+
+not_defined:
+  ->: var
+  input: stuff
+  if: stuff is not defined
+
+not_defined_again:
+  ->: var
+  input: stuff
+  if: not_defined is defined
+
+defined_again:
+  ->: var
+  input: stuff
+  if: not_defined is not defined

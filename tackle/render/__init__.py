@@ -72,6 +72,7 @@ def render_string(context: 'Context', raw: str):
 
     # Build a render context by inspecting the renderable variables
     render_context = {}
+    unknown_variable = []
     for v in variables:
         # Variables in the current output_dict take precedence
         if v in context.output_dict:
@@ -89,12 +90,15 @@ def render_string(context: 'Context', raw: str):
             else:
                 raise ValueError("This should never happen.")
         else:
-            raise UnknownTemplateVariableException(f"Variable {v} unknown.")
+            unknown_variable.append(v)
 
     try:
         rendered_template = template.render(render_context)
     except Exception as e:
-        print(e)
+        if len(unknown_variable) != 0:
+            raise UnknownTemplateVariableException(
+                f"Variable {unknown_variable} unknown."
+            )
         raise e
 
     # ast.literal_eval fails on string like objects so qualifying first
