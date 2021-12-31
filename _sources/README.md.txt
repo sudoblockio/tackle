@@ -2,7 +2,8 @@
 
 [![pypi](https://img.shields.io/pypi/v/tackle-box.svg)](https://pypi.python.org/pypi/tackle-box)
 [![python](https://img.shields.io/pypi/pyversions/tackle-box.svg)](https://pypi.python.org/pypi/tackle-box)
-[![codecov](https://codecov.io/gh/robcxyz/tackle-box/branch/master/graphs/badge.svg?branch=master)](https://codecov.io/github/robcxyz/tackle-box?branch=master)
+[![codecov](https://codecov.io/gh/robcxyz/tackle-box/branch/main/graphs/badge.svg?branch=main)](https://codecov.io/github/robcxyz/tackle-box?branch=main)
+![example workflow](https://github.com/robcxyz/tackle-box/actions/workflows/main.yml/badge.svg)
 
 * Tackle Box Documentation: [https://robcxyz.github.io/tackle-box](https://robcxyz.github.io/tackle-box)
     * [API Docs](https://robcxyz.github.io/tackle-box/docs/_build/html/cookiecutter.operators.html#submodules) # WIP
