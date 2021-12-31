@@ -27,9 +27,6 @@ jobs:
           - "macos-py37"
           - "macos-py38"
           - "macos-py39"
-          - "windows-py36"
-          - "windows-py37"
-          - "windows-py38"
 
         include:
           - name: "linting"
@@ -71,18 +68,6 @@ jobs:
           - name: "macos-py39"
             python: "3.8"
             os: macos-latest
-            tox_env: "py38"
-          - name: "windows-py36"
-            python: "3.6"
-            os: windows-latest
-            tox_env: "py36"
-          - name: "windows-py37"
-            python: "3.7"
-            os: windows-latest
-            tox_env: "py37"
-          - name: "windows-py38"
-            python: "3.8"
-            os: windows-latest
             tox_env: "py38"
 
     steps:
