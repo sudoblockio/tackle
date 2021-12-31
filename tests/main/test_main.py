@@ -30,7 +30,7 @@ def test_main_cli_call_empty(change_curdir_fixtures, mocker):
         assert mock.call_args.args[0].input_string == local_tackle
     # test was failing in 3.7/6
     else:
-        assert mock.call_args.args.input_string == local_tackle
+        assert mock.call_args[0][0].input_string == local_tackle
 
 
 def test_main_cli_call_empty_no_parent_tackle_raises(chdir, mocker):
