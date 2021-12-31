@@ -53,10 +53,15 @@ class GenerateHook(BaseHook):
         if isinstance(self.copy_without_render, str):
             self.copy_without_render = [self.copy_without_render]
 
+        self.output = os.path.expanduser(os.path.expandvars(self.output))
         if 'nt' in os.name:
             self.file_path_separator_ = '\\'
+            if not self.output.startswith('\\'):
+                self.output = os.path.join(self.calling_directory, self.output)
         else:
             self.file_path_separator_ = '/'
+            if not self.output.startswith('/'):
+                self.output = os.path.join(self.calling_directory, self.output)
 
     def execute(self):
         """Generate files / directories."""

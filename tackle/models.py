@@ -90,6 +90,7 @@ class BaseHook(BaseModel):
     output_dict: Union[dict, list] = {}
     existing_context: dict = None
     no_input: bool = None
+    calling_directory: Path = None
 
     providers_: ProviderList = None  # TODO: RM? - Not really needed
     key_path_: list = None

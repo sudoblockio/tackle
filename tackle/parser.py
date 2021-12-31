@@ -22,6 +22,7 @@ from tackle.utils.command import unpack_args_kwargs_string, unpack_input_string
 from tackle.utils.vcs import get_repo_source
 from tackle.utils.files import read_config_file
 from tackle.utils.paths import (
+    work_in,
     is_repo_url,
     is_directory_with_tackle,
     is_file,
@@ -207,6 +208,7 @@ def parse_hook(
                     output_dict=context.output_dict,
                     existing_context=context.existing_context,
                     no_input=context.no_input,
+                    calling_directory=context.calling_directory,
                     providers_=context.providers,
                     key_path_=context.key_path,
                 )
@@ -669,5 +671,10 @@ def update_source(context: 'Context'):
             )
         args.insert(0, first_arg)
 
-    # Main parsing logic
-    run_source(context, args, kwargs, flags)
+    context.calling_directory = Path('.').absolute()
+
+    # We always change directory into the source that is being called. Needs to be this
+    # or would be very confusing if writing a provider to always refer to it's own path.
+    with work_in(context.input_dir):
+        # Main parsing logic
+        run_source(context, args, kwargs, flags)
