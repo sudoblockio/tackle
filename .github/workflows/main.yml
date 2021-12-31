@@ -22,9 +22,9 @@ jobs:
           - "ubuntu-py37"
           - "ubuntu-py38"
           - "ubuntu-pypy3"
-          - "macos-py36"
           - "macos-py37"
           - "macos-py38"
+          - "macos-py39"
           - "windows-py36"
           - "windows-py37"
           - "windows-py38"
@@ -34,7 +34,6 @@ jobs:
             python: "3.8"
             os: ubuntu-latest
             tox_env: "lint"
-
           - name: "ubuntu-py36"
             python: "3.6"
             os: ubuntu-latest
