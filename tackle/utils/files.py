@@ -3,7 +3,6 @@ import json
 import yaml
 import os
 import logging
-from yaml.composer import ComposerError
 
 from tackle.exceptions import ContextDecodingException, UnsupportedBaseFileTypeException
 from tackle.utils.paths import make_sure_path_exists
@@ -66,6 +65,9 @@ def read_config_file(file, file_extension=None):
                 config = json.load(f)
             return config
         elif file_extension in ('yaml', 'yml'):
+            # This was tripping up building the docs for some reason so moving in class
+            from yaml.composer import ComposerError
+
             try:
                 with open(file, encoding='utf-8') as f:
                     config = yaml.safe_load(f)
