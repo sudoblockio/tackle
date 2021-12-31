@@ -213,7 +213,6 @@ def parse_hook(
                     key_path_=context.key_path,
                 )
             except ValidationError as e:
-                print()
                 raise e
 
             # Normal hook run
