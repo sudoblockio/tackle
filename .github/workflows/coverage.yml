@@ -1,4 +1,4 @@
-name: Coverage reporter
+name: coverage-ci
 
 on:
   push:

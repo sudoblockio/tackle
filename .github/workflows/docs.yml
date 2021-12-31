@@ -1,4 +1,4 @@
-name: "Documentation build check"
+name: documentation-ci
 on:
   pull_request:
     branches:
