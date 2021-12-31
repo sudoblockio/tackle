@@ -34,14 +34,15 @@ def get_readable_key_path(key_path: list) -> str:
     """Take key_path and return the nearest key from end removing arrows."""
     readable_key_path = []
     for i in key_path:
+        if i in ('->', '_>'):
+            return '.'.join(readable_key_path)
+        elif i[-2:] in ('->', '_>'):
+            readable_key_path.append(i[:-2])
+            return '.'.join(readable_key_path)
         if isinstance(i, bytes):
             readable_key_path.append(decode_list_index(i))
         else:
             readable_key_path.append(i)
-    if readable_key_path[-1][-2:] in ('->', '_>'):
-        readable_key_path[-1] = readable_key_path[-1][:-2]
-
-    return '.'.join(readable_key_path)
 
 
 def nested_delete(element, keys):
@@ -230,13 +231,8 @@ def set_key(element, keys: list, value, append_hook_value: bool = False):
         nested_set(element, keys[:-1], value)
     elif keys[-1].endswith('->'):  # Compact public hook call
         nested_set(element, keys[:-1] + [keys[-1][:-2]], value)
-        # nested_delete(element, keys)  # Delete the old key containing the arrow
     elif keys[-1] == '_>':  # Expanded private hook call
         nested_set(element, keys[:-1], value)
-        # keys_to_delete.append(keys[:-1])
     elif keys[-1].endswith('_>'):  # Compact private hook call
         key_path = keys[:-1] + [keys[-1][:-2]]
         nested_set(element, key_path, value)
-        # nested_delete(element, keys)  # Delete the old key containing the arrow
-        # nested_set(element, keys[:-1], {keys[-1][:-2]: value})
-        # keys_to_delete.append(key_path)
