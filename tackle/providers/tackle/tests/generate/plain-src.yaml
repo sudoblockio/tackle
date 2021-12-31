@@ -1,8 +1,12 @@
 stuff: things
 
-init->: isdir output
+target: output
+input: plain_src
 
-compact->: generate plain_src output
+init->: isdir {{target}}
+
+compact:
+  ->: generate {{input}} {{target}}
 
 after->: isdir output/models
 

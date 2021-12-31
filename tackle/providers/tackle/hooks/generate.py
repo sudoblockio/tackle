@@ -46,7 +46,7 @@ class GenerateHook(BaseHook):
     file_path_separator_: str = None  # / for mac / linux - \ for win
 
     _args = ['templates', 'output']
-    _render_exclude = ['templates']
+    # _render_exclude = ['templates']
 
     def __init__(self, **data: Any):
         super().__init__(**data)
