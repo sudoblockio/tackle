@@ -6,9 +6,9 @@
 
 * Tackle Box Documentation: [https://robcxyz.github.io/tackle-box](https://robcxyz.github.io/tackle-box)
     * [API Docs](https://robcxyz.github.io/tackle-box/docs/_build/html/cookiecutter.operators.html#submodules) # WIP
-* GitHub: [https://github.com/robcxyz/tackle-box](https://github.com/cookiecutter/cookiecutter)
+* GitHub: [https://github.com/robcxyz/tackle-box](https://github.com/robcxyz/tackle-box)
 * PyPI: [https://pypi.org/project/tackle-box/](https://pypi.org/project/tackle-box/)
-* Free and open source software: [BSD license](https://github.com/tackle-box/cookiecutter/blob/master/LICENSE)
+* Free and open source software: [BSD license](https://github.com/robcyxz/tackle-box/blob/master/LICENSE)
 
 Tackle box is a declarative DSL for building modular workflows and code generators. Tool is plugins based and can easily be extended by writing additional hooks or importing external providers creating a web of interoperable CLIs.
 
