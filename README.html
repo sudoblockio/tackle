@@ -1,74 +1,35 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Tackle Box &mdash; tackle-box 0.1.0-alpha.1 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+  <title>Tackle Box &mdash; tackle-box 0.1.2-alpha.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Overview" href="overview.html" />
-    <link rel="prev" title="Tackle Box" href="index.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="index.html" class="icon icon-home"> tackle-box
-          
-
-          
           </a>
-
-          
-            
-            
               <div class="version">
-                0.1.0-alpha.1
+                0.1.2-alpha.1
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -76,286 +37,149 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Tackle Box</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#quick-demo">Quick Demo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#features">Features</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#hooks-and-providers">Hooks and Providers</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#base-methods">Base Methods</a></li>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Tackle Box</a><ul>
+<li><a class="reference internal" href="#demo">Demo</a></li>
+<li><a class="reference internal" href="#features">Features</a></li>
+<li><a class="reference internal" href="#basic-usage-structure">Basic Usage / Structure</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#providers">Providers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#hooks">Hooks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#note-to-users-and-developers">Note to Users and Developers</a></li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demos.html">Demos</a></li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Additional Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial1.html">Getting to Know Tackle Box</a></li>
-<li class="toctree-l1"><a class="reference internal" href="advanced/index.html">Advanced Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="tackle.providers.html">tackle.providers package</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="tackle.html">tackle package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tackle.cli.html">tackle.cli package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tackle.parser.html">tackle.parser package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tackle.render.html">tackle.render package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tackle.utils.html">tackle.utils package</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="HISTORY.html">History</a></li>
-</ul>
-
-            
-          
+</div>
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">tackle-box</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
       <li>Tackle Box</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="_sources/README.md.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="tackle-box">
-<h1>Tackle Box<a class="headerlink" href="#tackle-box" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference external" href="https://pypi.python.org/pypi/tackle-box"><img alt="pypi" src="https://img.shields.io/pypi/v/tackle-box.svg" /></a>
-<a class="reference external" href="https://pypi.python.org/pypi/tackle-box"><img alt="python" src="https://img.shields.io/pypi/pyversions/tackle-box.svg" /></a>
-<a class="reference external" href="https://travis-ci.org/robcxyz/tackle-box"><img alt="Build Status" src="https://travis-ci.org/robcxyz/tackle-box.svg?branch=master" /></a>
-<a class="reference external" href="https://codecov.io/github/robcxyz/tackle-box?branch=master"><img alt="codecov" src="https://codecov.io/gh/robcxyz/tackle-box/branch/master/graphs/badge.svg?branch=master" /></a></p>
+             
+  <section id="tackle-box">
+<h1>Tackle Box<a class="headerlink" href="#tackle-box" title="Permalink to this headline"></a></h1>
+<a class="reference external image-reference" href="https://pypi.python.org/pypi/tackle-box"><img alt="pypi" src="https://img.shields.io/pypi/v/tackle-box.svg" /></a>
+<a class="reference external image-reference" href="https://pypi.python.org/pypi/tackle-box"><img alt="python" src="https://img.shields.io/pypi/pyversions/tackle-box.svg" /></a>
+<a class="reference external image-reference" href="https://codecov.io/github/robcxyz/tackle-box?branch=master"><img alt="codecov" src="https://codecov.io/gh/robcxyz/tackle-box/branch/master/graphs/badge.svg?branch=master" /></a>
 <ul class="simple">
 <li><p>Tackle Box Documentation: <a class="reference external" href="https://robcxyz.github.io/tackle-box">https://robcxyz.github.io/tackle-box</a></p>
 <ul>
-<li><p><a class="reference external" href="https://robcxyz.github.io/tackle-box/docs/_build/html/cookiecutter.operators.html#submodules">API Docs</a></p></li>
+<li><p><a class="reference external" href="https://robcxyz.github.io/tackle-box/docs/_build/html/cookiecutter.operators.html#submodules">API Docs</a> # WIP</p></li>
 </ul>
 </li>
 <li><p>GitHub: <a class="reference external" href="https://github.com/cookiecutter/cookiecutter">https://github.com/robcxyz/tackle-box</a></p></li>
 <li><p>PyPI: <a class="reference external" href="https://pypi.org/project/tackle-box/">https://pypi.org/project/tackle-box/</a></p></li>
 <li><p>Free and open source software: <a class="reference external" href="https://github.com/tackle-box/cookiecutter/blob/master/LICENSE">BSD license</a></p></li>
 </ul>
-<p>Tackle box is a DSL for easily creating CLIs, workflows, and generating code from templates. The framework is modular and empowered by a collection of hooks to easily extend functionality. Based off a fork of <a class="reference external" href="https://github.com/cookiecutter/cookiecutter">cookiecutter</a>, this tool evolved from being a code generator to connecting git repositories into a web of CLIs.</p>
-<div class="section" id="quick-demo">
-<h2>Quick Demo<a class="headerlink" href="#quick-demo" title="Permalink to this headline">¶</a></h2>
-<!--  TODO: Refactor --><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="n">tackle</span><span class="o">-</span><span class="n">box</span>
-<span class="n">tackle</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">robcxyz</span><span class="o">/</span><span class="n">tackle</span><span class="o">-</span><span class="n">demos</span>
+<p>Tackle box is a declarative DSL for building modular workflows and code generators. Tool is plugins based and can easily be extended by writing additional hooks or importing external providers creating a web of interoperable CLIs.</p>
+<blockquote>
+<div><p>WARNING - Project still alpha. Will be officially released shortly.</p>
+</div></blockquote>
+<section id="demo">
+<h2>Demo<a class="headerlink" href="#demo" title="Permalink to this headline"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="n">tackle</span><span class="o">-</span><span class="n">box</span>
+
+<span class="c1"># General tour of tackle box</span>
+<span class="n">tackle</span> <span class="n">robcxyz</span><span class="o">/</span><span class="n">tackle</span><span class="o">-</span><span class="n">demos</span>
+
+<span class="c1"># Create a new provider in one minute</span>
+<span class="n">tackle</span> <span class="n">robcxyz</span><span class="o">/</span><span class="n">tackle</span><span class="o">-</span><span class="n">provider</span>
+
+<span class="c1"># Push to github and now you can call it</span>
+<span class="n">tackle</span> <span class="o">&lt;</span><span class="n">your</span> <span class="n">GH</span> <span class="n">username</span><span class="o">&gt;/</span><span class="n">tackle</span><span class="o">-</span><span class="n">your</span><span class="o">-</span><span class="n">provider</span>
+<span class="c1"># Or alternatively import/call it from another tackle file</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="features">
-<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
-<p>All cookiecutter features are supported in addition to loops, conditionals, and plugins. These features are only available to supplied dictionary objects with a <code class="docutils literal notranslate"><span class="pre">type</span></code> key to trigger the associated <a class="reference external" href="tackle/models.py">hook</a>. Loops and conditionals are triggered by rendering <a class="reference external" href="https://github.com/pallets/jinja">jinja</a> expressions per the example below. Other cookiecutters can be called from a single tackle box to knit together modularized components.</p>
-<p><code class="docutils literal notranslate"><span class="pre">tackle.yaml</span></code></p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span>
-<span class="nt">name</span><span class="p">:</span>
-  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">input</span> <span class="c1"># Input prompt which is stored in `name`</span>
-  <span class="nt">message</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">What is your name?</span>
-
-<span class="nt">colors</span><span class="p">:</span>
-  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">checkbox</span> <span class="c1"># Multi selector - returns a list</span>
-  <span class="nt">message</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">What are your favorite colors?</span>
-  <span class="nt">choices</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">blue</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">green</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">grey</span>
-
-<span class="nt">outcome</span><span class="p">:</span>
-  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">select</span> <span class="c1"># Single selector - returns a string</span>
-  <span class="nt">message</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">What is the airspeed velocity of an unladen swallow??</span>
-  <span class="nt">choices</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="nt">flung-off-bridge</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">I donno</span> <span class="c1"># Map for choices interpretted as {key: question}</span>
-    <span class="p p-Indicator">-</span> <span class="nt">walk-across-bridge</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">What do you mean? African or European swallow?</span>
-
-<span class="nt">bad_outcome</span><span class="p">:</span>
-  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">print</span>
-  <span class="nt">statement</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Wrong answer {{ name }}...</span> <span class="c1"># Render the `name` variable</span>
-  <span class="nt">when</span><span class="p">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">outcome</span><span class="nv"> </span><span class="s">==</span><span class="nv"> </span><span class="s">&#39;flung-off-bridge&#39;</span><span class="nv"> </span><span class="s">}}&quot;</span> <span class="c1"># Conditionals need to evaluate as booleans</span>
-
-<span class="nt">color_essays</span><span class="p">:</span>
-  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">input</span>
-  <span class="nt">message</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Please tell me how much you like the color {{item}}?</span>
-  <span class="nt">default</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Oh color {{item}}, you are so frickin cool...</span>
-  <span class="nt">loop</span><span class="p">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">colors</span><span class="nv"> </span><span class="s">}}&quot;</span> <span class="c1"># loops over colors</span>
-  <span class="nt">when</span><span class="p">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">colors|length</span><span class="nv"> </span><span class="s">&gt;</span><span class="nv"> </span><span class="s">1</span><span class="nv"> </span><span class="s">}}&quot;</span>
-
-<span class="nt">democmd</span><span class="p">:</span>
-  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">command</span> <span class="c1"># Run arbitrary system commands and return stdout</span>
-  <span class="nt">command</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pwd</span>
-
-<span class="nt">output</span><span class="p">:</span>
-  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pprint</span> <span class="c1"># Pretty print the output</span>
-  <span class="nt">output</span><span class="p">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">}}&quot;</span> <span class="c1"># Special var that contains a dictionary of all the value</span>
+</section>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p>Declarative: Everything is in yaml with easy to use interfaces</p></li>
+<li><p>Turing complete: Loops, conditionals and branching is supported</p></li>
+<li><p>Extensible: New providers can be created or imported remotely</p></li>
+<li><p>Lean: Tackle box has only 4 dependencies - core logic &lt;1k LOC</p></li>
+</ul>
+</section>
+<section id="basic-usage-structure">
+<h2>Basic Usage / Structure<a class="headerlink" href="#basic-usage-structure" title="Permalink to this headline"></a></h2>
+<p>Tackle-box can be called against any yaml/json file or remote location by specifying the path to a repo / directory. By default, tackle looks for a <code class="docutils literal notranslate"><span class="pre">tackle.yaml</span></code> file in the target location which is parsed sequentially with each key traversed looking for hook calls indicated by an arrow (<code class="docutils literal notranslate"><span class="pre">-&gt;</span></code>). For instance given the following directory structure:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>├── hooks
+│ └── stuff.py
+└── tackle.yaml
 </pre></div>
 </div>
-<p>Each hook is called via its <code class="docutils literal notranslate"><span class="pre">type</span></code> which, in the case of the <code class="docutils literal notranslate"><span class="pre">input</span></code> hook, can be looked up in the <a class="reference external" href="#">docs</a> or by looking at the <a class="reference external" href="#">source code</a> directly.</p>
-<p>Prompts are enhanced by extending the functionality from <a class="reference external" href="https://github.com/CITGuru/PyInquirer">PyInquirer</a> as a set of hooks as noted by the types <code class="docutils literal notranslate"><span class="pre">input</span></code>, <code class="docutils literal notranslate"><span class="pre">select</span></code>, and <code class="docutils literal notranslate"><span class="pre">checkbox</span></code>. Writing new hooks is super simple as seen in the <code class="docutils literal notranslate"><span class="pre">print</span></code> hook:</p>
-</div>
-<div class="section" id="hooks-and-providers">
-<h2>Hooks and Providers<a class="headerlink" href="#hooks-and-providers" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="tackle/operators/print.py"><code class="docutils literal notranslate"><span class="pre">cookiecuttuer/providers/hooks/print.py</span></code></a></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tackle.models</span> <span class="kn">import</span> <span class="n">BaseHook</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
-
-<span class="k">class</span> <span class="nc">PrintOperator</span><span class="p">(</span><span class="n">BaseHook</span><span class="p">):</span>
-    <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;print&#39;</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<p>With <code class="docutils literal notranslate"><span class="pre">stuff.py</span></code> looking like:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Stuff</span><span class="p">(</span><span class="n">BaseHook</span><span class="p">):</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;do-stuff&quot;</span>
+    <span class="n">things</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">_args</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;things&#39;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">out</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">things</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">things</span>
 </pre></div>
 </div>
-<p>Hooks are built with pydantic by inheriting from the <a class="reference external" href="tackle/models.py">BaseHook</a> that makes a number of useful methods and attributes available.</p>
-<div class="section" id="base-methods">
-<h3>Base Methods<a class="headerlink" href="#base-methods" title="Permalink to this headline">¶</a></h3>
-<p>A number of useful methods are available when executing any hook. Here is a breif example of all of them being used.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">this</span><span class="p">:</span>
-  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">a_hook</span>
-  <span class="nt">chdir</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/path/to/some/dir</span> <span class="c1"># Changes to the dir before executing</span>
-  <span class="nt">loop</span><span class="p">:</span> <span class="c1"># Expects a list, creates `item` and `index` variables in loop</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">foo</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">bar</span>
-  <span class="nt">when</span><span class="p">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">==</span><span class="nv"> </span><span class="s">&#39;foo&#39;</span><span class="nv"> </span><span class="s">}}&quot;</span> <span class="c1"># Jinja expression that evaluates to boolean</span>
-  <span class="nt">merge</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span> <span class="c1"># Merge the outputs to the upper level context</span>
+<p>One could run a tackle file that looks like this:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">do-stuff All the things</span><span class="w"></span>
+<span class="nt">expanded</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">do-stuff</span><span class="w"></span>
+<span class="w">  </span><span class="nt">things</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All the things</span><span class="w"></span>
 </pre></div>
 </div>
-<p>For further documentation on base methods, see check out <a class="reference external" href="#">the docs</a>.</p>
+<p>Which when run would print out “All the things” twice and result in the following context:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">compact</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All the things</span><span class="w"></span>
+<span class="nt">expanded</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All the things</span><span class="w"></span>
+</pre></div>
 </div>
-</div>
-<div class="section" id="providers">
-<h2>Providers<a class="headerlink" href="#providers" title="Permalink to this headline">¶</a></h2>
-<p>Providers are groups of hooks and templates to</p>
-</div>
-<div class="section" id="hooks">
-<h2>Hooks<a class="headerlink" href="#hooks" title="Permalink to this headline">¶</a></h2>
-<p>Around 50 different hooks are currently available with more coming down the line. To understand how to use them, please refer to the <a class="reference external" href="https://robcxyz.github.io/tackle-box/docs/_build/html/cookiecutter.operators.html#submodules">API Docs</a>.</p>
-<p>The main type of operators are derivations of <a class="reference external" href="https://github.com/CITGuru/PyInquirer">PyInquirer</a> which greatly enhanced the capabilities of the original cookiecutter due to the ability to use multi-select inputs that return lists. Please inspect the <a class="reference external" href="https://github.com/CITGuru/PyInquirer">PyInquirer</a> API docs to understand the interface. All features are supported except for <code class="docutils literal notranslate"><span class="pre">validation</span></code> and <code class="docutils literal notranslate"><span class="pre">filter</span></code> which is not supported and <code class="docutils literal notranslate"><span class="pre">when</span></code> which is implemented in jinja.</p>
-<p>To see a number of good examples of the types of interfaces available for each operator, consider downloading the demo above and walking through the syntax.</p>
-</div>
-<div class="section" id="note-to-users-and-developers">
-<h2>Note to Users and Developers<a class="headerlink" href="#note-to-users-and-developers" title="Permalink to this headline">¶</a></h2>
-<p>This is a very early WIP but has long term ambitions of being a sort of swiss army knife for management of configuration files and boilerplate. Please consider contributing or leaving your comments in the issues section on where you see this project going and what features you would like added.</p>
-<p>This project intends on being an edge release of <code class="docutils literal notranslate"><span class="pre">cookiecutter</span></code> and would not have been possible were it not for the orginal maintainers of that repository.  Development in this repository is meant to be a proving ground for features that could be implemented and merged into the original <code class="docutils literal notranslate"><span class="pre">cookiecutter</span></code> repository. Please consider supporting both projects.</p>
-<p>Windows will not have first class support. Several operators are built for POSIX systems.  PRs welcome to build in full support.  Basic features like PyInquirer style prompts are supported.</p>
-</div>
-</div>
+<p>Which you can use to then generate code, print out to file, or do any number of custom actions with additional hook calls.</p>
+<blockquote>
+<div><p>WIP</p>
+</div></blockquote>
+</section>
+</section>
 
 
            </div>
-           
           </div>
           <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="overview.html" class="btn btn-neutral float-right" title="Overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="index.html" class="btn btn-neutral float-left" title="Tackle Box" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-    </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2020-2021, Rob Cannon.
-
-    </p>
+    <p>&#169; Copyright 2020-2021, Rob Cannon.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

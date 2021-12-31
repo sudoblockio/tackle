@@ -1,74 +1,35 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Template Extensions &mdash; tackle-box 0.1.0-alpha.1 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+  <title>Template Extensions &mdash; tackle-box 0.1.2-alpha.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Organizing cookiecutters in directories (1.7+)" href="directories.html" />
-    <link rel="prev" title="Dictionary Variables (1.5+)" href="dict_variables.html" /> 
+    <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../index.html" class="icon icon-home"> tackle-box
-          
-
-          
           </a>
-
-          
-            
-            
               <div class="version">
-                0.1.0-alpha.1
+                0.1.2-alpha.1
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -76,144 +37,52 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../README.html">Tackle Box</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../demos.html">Demos</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Additional Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorial1.html">Getting to Know Tackle Box</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">Advanced Usage</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="hooks.html">Hooks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hooks.html#context-hooks">Context Hooks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hooks.html#using-pre-post-generate-hooks">Using Pre/Post-Generate Hooks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user_config.html">User Config (0.7.0+)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="calling_from_python.html">Calling Cookiecutter Functions From Python</a></li>
-<li class="toctree-l2"><a class="reference internal" href="injecting_context.html">Injecting Extra Context</a></li>
-<li class="toctree-l2"><a class="reference internal" href="suppressing_prompts.html">Suppressing Command-Line Prompts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="templates_in_context.html">Templates in Context Values</a></li>
-<li class="toctree-l2"><a class="reference internal" href="private_variables.html">Private Variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="copy_without_render.html">Copy without Render</a></li>
-<li class="toctree-l2"><a class="reference internal" href="replay.html">Replay Project Generation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cli_options.html">Command Line Options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="choice_variables.html">Choice Variables (1.1+)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dict_variables.html">Dictionary Variables (1.5+)</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Template Extensions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#jsonify-extension">Jsonify extension</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#random-string-extension">Random string extension</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#slugify-extension">Slugify extension</a></li>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Template Extensions</a><ul>
+<li><a class="reference internal" href="#jsonify-extension">Jsonify extension</a></li>
+<li><a class="reference internal" href="#random-string-extension">Random string extension</a></li>
+<li><a class="reference internal" href="#slugify-extension">Slugify extension</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="directories.html">Organizing cookiecutters in directories (1.7+)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="new_line_characters.html">Working with line-ends special symbols LF/CRLF</a></li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Troubleshooting</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../tackle.providers.html">tackle.providers package</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../tackle.html">tackle package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tackle.cli.html">tackle.cli package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tackle.parser.html">tackle.parser package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tackle.render.html">tackle.render package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tackle.utils.html">tackle.utils package</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../HISTORY.html">History</a></li>
-</ul>
-
-            
-          
+</div>
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">tackle-box</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="index.html">Advanced Usage</a> &raquo;</li>
-        
       <li>Template Extensions</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../_sources/advanced/template_extensions.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="template-extensions">
-<span id="id1"></span><h1>Template Extensions<a class="headerlink" href="#template-extensions" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="template-extensions">
+<span id="id1"></span><h1>Template Extensions<a class="headerlink" href="#template-extensions" title="Permalink to this headline"></a></h1>
 <p><em>New in Cookiecutter 1.4</em></p>
 <p>A template may extend the Cookiecutter environment with custom <a class="reference external" href="http://jinja.pocoo.org/docs/latest/extensions/">Jinja2 extensions</a>,
 that can add extra filters, tests, globals or even extend the parser.</p>
 <p>To do so, a template author must specify the required extensions in <code class="docutils literal notranslate"><span class="pre">tackle.yaml</span></code> as follows:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="nt">&quot;project_slug&quot;</span><span class="p">:</span> <span class="s2">&quot;Foobar&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;year&quot;</span><span class="p">:</span> <span class="s2">&quot;{% now &#39;utc&#39;, &#39;%Y&#39; %}&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;_extensions&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;jinja2_time.TimeExtension&quot;</span><span class="p">]</span>
-<span class="p">}</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;project_slug&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Foobar&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;year&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{% now &#39;utc&#39;, &#39;%Y&#39; %}&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;_extensions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;jinja2_time.TimeExtension&quot;</span><span class="p">]</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <p>On invocation Cookiecutter tries to import the extensions and add them to its environment respectively.</p>
@@ -228,20 +97,20 @@ running Cookiecutter on a template that requires custom Jinja2 extensions.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">cookiecutter.extensions.RandomStringExtension</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">jinja2_time.TimeExtension</span></code></p></li>
 </ul>
-<div class="section" id="jsonify-extension">
-<h2>Jsonify extension<a class="headerlink" href="#jsonify-extension" title="Permalink to this headline">¶</a></h2>
+<section id="jsonify-extension">
+<h2>Jsonify extension<a class="headerlink" href="#jsonify-extension" title="Permalink to this headline"></a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">cookiecutter.extensions.JsonifyExtension</span></code> extension provides a <code class="docutils literal notranslate"><span class="pre">jsonify</span></code> filter in templates
 that converts a Python object to JSON:</p>
 <div class="highlight-jinja notranslate"><div class="highlight"><pre><span></span><span class="x">{% {&#39;a&#39;: True} | jsonify %}</span>
 </pre></div>
 </div>
 <p>Would output:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">}</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="random-string-extension">
-<h2>Random string extension<a class="headerlink" href="#random-string-extension" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="random-string-extension">
+<h2>Random string extension<a class="headerlink" href="#random-string-extension" title="Permalink to this headline"></a></h2>
 <p><em>New in Cookiecutter 1.7</em></p>
 <p>The <code class="docutils literal notranslate"><span class="pre">cookiecutter.extensions.RandomStringExtension</span></code> extension provides a <code class="docutils literal notranslate"><span class="pre">random_ascii_string</span></code>
 method in templates that generates a random fixed-length string, optionally with punctuation.</p>
@@ -262,9 +131,9 @@ method in templates that generates a random fixed-length string, optionally with
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>fQupUkY}W!)!
 </pre></div>
 </div>
-</div>
-<div class="section" id="slugify-extension">
-<h2>Slugify extension<a class="headerlink" href="#slugify-extension" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="slugify-extension">
+<h2>Slugify extension<a class="headerlink" href="#slugify-extension" title="Permalink to this headline"></a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">cookiecutter.extensions.SlugifyExtension</span></code> extension provides a <code class="docutils literal notranslate"><span class="pre">slugify</span></code> filter in templates
 that converts string into its underscored (“slugified”) version:</p>
 <div class="highlight-jinja notranslate"><div class="highlight"><pre><span></span><span class="x">{% &quot;It&#39;s a random version&quot; | slugify %}</span>
@@ -279,55 +148,35 @@ such as <cite>‘</cite> in the example above. The function accepts all argument
 the <cite>slugify</cite> function of python-slugify. For example to change the output from
 <cite>it-s-a-random-version</cite> to <cite>it_s_a_random_version</cite>, the parameter <cite>separator=’_’</cite> would
 be passed to <cite>slugify()</cite>.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
           <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="directories.html" class="btn btn-neutral float-right" title="Organizing cookiecutters in directories (1.7+)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="dict_variables.html" class="btn btn-neutral float-left" title="Dictionary Variables (1.5+)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-    </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2020-2021, Rob Cannon.
-
-    </p>
+    <p>&#169; Copyright 2020-2021, Rob Cannon.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

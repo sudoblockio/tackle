@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calling Tackle-box &mdash; tackle-box 0.1.2-alpha.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> tackle-box
+          </a>
+              <div class="version">
+                0.1.2-alpha.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Calling Tackle-box</a><ul>
+<li><a class="reference internal" href="#targets">Targets</a><ul>
+<li><a class="reference internal" href="#file">File</a></li>
+<li><a class="reference internal" href="#directory">Directory</a></li>
+<li><a class="reference internal" href="#repository">Repository</a></li>
+<li><a class="reference internal" href="#zipfile">Zipfile</a></li>
+<li><a class="reference internal" href="#no-argument-supplied">No argument supplied</a></li>
+<li><a class="reference internal" href="#argument-matches-parent-tackle-file-s-key">Argument matches parent tackle file’s key</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#additional-arguments-keys-flags">Additional Arguments / Keys / Flags</a><ul>
+<li><a class="reference internal" href="#extra-arguments">Extra Arguments</a></li>
+<li><a class="reference internal" href="#extra-key-values-and-flags">Extra Key Values and Flags</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">tackle-box</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Calling Tackle-box</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/calling-tackle.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="calling-tackle-box">
+<h1>Calling Tackle-box<a class="headerlink" href="#calling-tackle-box" title="Permalink to this headline"></a></h1>
+<p>Tackle-box is extremely flexible on the inputs that it accepts to run against. Basically any file, directory, or repo are acceptable inputs or no input at all. This document describes the logic behind how tackle takes in inputs including how additional args, kwargs, and flags are interpreted from the command line.</p>
+<section id="targets">
+<h2>Targets<a class="headerlink" href="#targets" title="Permalink to this headline"></a></h2>
+<p>Targets are the first argument in any tackle call. For instance:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tackle TARGET arg1 arg2 --key value --flag
+</pre></div>
+</div>
+<section id="file">
+<h3>File<a class="headerlink" href="#file" title="Permalink to this headline"></a></h3>
+<p>Tackle can be called against any yaml file or json. Tackle runs the file as if it is in the current directory.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tackle some/file/location.yaml
+</pre></div>
+</div>
+</section>
+<section id="directory">
+<h3>Directory<a class="headerlink" href="#directory" title="Permalink to this headline"></a></h3>
+<p>Tackle can be called against any directory and looks for a “tackle file”, a file that matches <code class="docutils literal notranslate"><span class="pre">tackle.yaml/yml/json</span></code> or <code class="docutils literal notranslate"><span class="pre">.tackle.yaml/yml/json</span></code> and runs against that.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tackle some/directory/location
+</pre></div>
+</div>
+</section>
+<section id="repository">
+<h3>Repository<a class="headerlink" href="#repository" title="Permalink to this headline"></a></h3>
+<p>Tackle can be called against any repository looking input which similar to a directory input, looks for a “tackle file” and runs against that.</p>
+<p>Repository sources can be abbreviated such that the following items are equivalent.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/robcxyz/tackle-provider">https://github.com/robcxyz/tackle-provider</a></p></li>
+<li><p><a class="reference external" href="https://github.com/robcxyz/tackle-provider">github.com/robcxyz/tackle-provider</a></p></li>
+<li><p><a class="reference external" href="https://github.com/robcxyz/tackle-provider">robcxyz/tackle-provider</a></p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tackle robcxyz/tackle-provider
+</pre></div>
+</div>
+</section>
+<section id="zipfile">
+<h3>Zipfile<a class="headerlink" href="#zipfile" title="Permalink to this headline"></a></h3>
+<p>Tackle can also run against a zip file.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tackle path/to/some/zipfile.zip
+</pre></div>
+</div>
+</section>
+<section id="no-argument-supplied">
+<h3>No argument supplied<a class="headerlink" href="#no-argument-supplied" title="Permalink to this headline"></a></h3>
+<p>When no input argument is supplied, tackle by default looks in the parent directories for the nearest tackle file and runs that. This is useful if you want to store a collection of calls that</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tackle
+</pre></div>
+</div>
+</section>
+<section id="argument-matches-parent-tackle-file-s-key">
+<h3>Argument matches parent tackle file’s key<a class="headerlink" href="#argument-matches-parent-tackle-file-s-key" title="Permalink to this headline"></a></h3>
+<p>When an input is supplied but it does not match any of the above criteria, by default tackle checks if there is a key in the parent directory and runs from that key. This is logic on the next section’s logic.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tackle a-key  <span class="c1"># In the parent tackle file</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="additional-arguments-keys-flags">
+<h2>Additional Arguments / Keys / Flags<a class="headerlink" href="#additional-arguments-keys-flags" title="Permalink to this headline"></a></h2>
+<p>Preceeding section described how targets are handled but tackle can also take in arbitrary args, key value pairs, and flags which are interpreted.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tackle target ARGs --KEYs VALUEs --FLAGs
+</pre></div>
+</div>
+<section id="extra-arguments">
+<h3>Extra Arguments<a class="headerlink" href="#extra-arguments" title="Permalink to this headline"></a></h3>
+<p>Additional arguments are interpeted as the user doesn’t want to run an entire tackle file but run a specific set of keys. So for instance given the following tackle file:</p>
+<p>File:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">key_a-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print Key A</span><span class="w"></span>
+<span class="nt">key_b-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print Key B</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Command:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tackle file.yaml key_a
+</pre></div>
+</div>
+<p>Only <code class="docutils literal notranslate"><span class="pre">key_a</span></code> would be run.</p>
+<p>This is useful if you want to only run a subsection of a tackle file or jump straight to a command.</p>
+</section>
+<section id="extra-key-values-and-flags">
+<h3>Extra Key Values and Flags<a class="headerlink" href="#extra-key-values-and-flags" title="Permalink to this headline"></a></h3>
+<p>Additional key value pairs and flags are interpreted by command line calls as being overrides to the context. For instance given the following tackle file and call:</p>
+<p>File:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">key_a-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">input What to set `key_a`?</span><span class="w"></span>
+<span class="nt">key_b-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print &quot;{{key_a}}&quot;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Command:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tackle file.yaml --key_a <span class="s2">&quot;stuff and things&quot;</span>
+</pre></div>
+</div>
+<p>Would result in no prompt and “stuff and things” printed to the user.</p>
+<p>Flags are the same as key value pairs but override with True.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2021, Rob Cannon.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

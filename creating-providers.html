@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tackle-box Docs &mdash; tackle-box 0.1.2-alpha.1 documentation</title>
+  <title>Creating Providers &mdash; tackle-box 0.1.2-alpha.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -25,7 +25,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="#" class="icon icon-home"> tackle-box
+            <a href="index.html" class="icon icon-home"> tackle-box
           </a>
               <div class="version">
                 0.1.2-alpha.1
@@ -40,7 +40,10 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <!-- Local TOC -->
               <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Tackle-box Docs</a></li>
+<li><a class="reference internal" href="#">Creating Providers</a><ul>
+<li><a class="reference internal" href="#create-a-provider-from-a-provider">Create a provider from a provider</a></li>
+</ul>
+</li>
 </ul>
 </div>
         </div>
@@ -49,17 +52,17 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">tackle-box</a>
+          <a href="index.html">tackle-box</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
-      <li>Tackle-box Docs</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Creating Providers</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/index.md.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/creating-providers.md.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -67,21 +70,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="tackle-box-docs">
-<h1>Tackle-box Docs<a class="headerlink" href="#tackle-box-docs" title="Permalink to this headline"></a></h1>
-<p>Tackle box is a declarative DSL for building modular workflows and code generators. Tool is plugins based and can easily be extended by writing additional hooks or importing external providers creating a web of interoperable CLIs.</p>
+  <section id="creating-providers">
+<h1>Creating Providers<a class="headerlink" href="#creating-providers" title="Permalink to this headline"></a></h1>
+<p>This document covers all aspects of creating providers including the semantics of the file structure and dependencies.  For writing hooks which are contained within providers, check out the <a class="reference internal" href="writing-hooks.html"><span class="doc">writing hooks</span></a> document.</p>
 <blockquote>
-<div><p>WIP - These docs are very incomplete and will be completed before the official launch.</p>
+<div><p>WIP</p>
 </div></blockquote>
-<ul class="simple">
-<li><p><a class="reference internal" href="README.html"><span class="doc">ReadMe</span></a></p></li>
-<li><p><a class="reference internal" href="installation.html"><span class="doc">Installation</span></a></p></li>
-<li><p><a class="reference internal" href="calling-tackle.html"><span class="doc">Calling Tackle-boxes</span></a></p></li>
-<li><p><a class="reference internal" href="creating-providers.html"><span class="doc">Creating Providers</span></a></p></li>
-<li><p><a class="reference internal" href="writing-hooks.html"><span class="doc">Writing Hooks</span></a></p></li>
-<li><p>[ ] Code generate provider docs</p></li>
-<li><p>[ ] Code generate API docs</p></li>
-</ul>
+<section id="create-a-provider-from-a-provider">
+<h2>Create a provider from a provider<a class="headerlink" href="#create-a-provider-from-a-provider" title="Permalink to this headline"></a></h2>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tackle robcxyz/tackle-provider
+</pre></div>
+</div>
+</section>
 </section>
 
 

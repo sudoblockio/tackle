@@ -2,7 +2,12 @@
 
 ## Tackle Box Devs
 
+### Development Leads
+
 * Rob Cannon ([@robcxyz](https://github.com/robcxyz))
+
+### Contributors
+
 * Richard Mah ([@shinyfoil](https://github.com/shinyfoil))
 
 ## Cookiecutter Devs

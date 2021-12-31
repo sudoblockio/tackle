@@ -3,5 +3,8 @@
 Command Line Options
 --------------------
 
-.. click:: cookiecutter.__main__:main
-  :prog: cookiecutter
+..
+.. click:: tackle.__main__:main
+  :prog: tackle
+  :commands: .
+  :nested: none
