@@ -1,7 +1,10 @@
 """Debug hook."""
 import logging
 from PyInquirer import prompt
+from pprint import pprint
+
 from tackle.models import BaseHook
+
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +16,10 @@ class DebugHook(BaseHook):
 
     def execute(self):
         """Run the hook."""
-        print(dict(self.output_dict))
+        print("Existing context")
+        pprint(dict(self.existing_context))
+        print("Local context")
+        pprint(dict(self.output_dict))
         if not self.no_input:
             question = {
                 'type': 'confirm',
