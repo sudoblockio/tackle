@@ -38,6 +38,8 @@ def get_readable_key_path(key_path: list) -> str:
             readable_key_path.append(decode_list_index(i))
         else:
             readable_key_path.append(i)
+    if readable_key_path[-1][-2:] in ('->', '_>'):
+        readable_key_path[-1] = readable_key_path[-1][:-2]
 
     return '.'.join(readable_key_path)
 

@@ -4,6 +4,7 @@ from pydantic import Field
 
 from typing import Any
 from tackle.models import BaseHook
+from tackle.utils.dicts import get_readable_key_path
 
 
 class InquirerRawListHook(BaseHook):
@@ -25,6 +26,11 @@ class InquirerRawListHook(BaseHook):
     name: str = Field('tmp', description="Extra key to embed into. Artifact of API.")
 
     _args: list = ['message', 'default']
+
+    def __init__(self, **data: Any):
+        super().__init__(**data)
+        if self.message is None:
+            self.message = get_readable_key_path(self.key_path_) + ' >>>'
 
     def execute(self):
         if not self.no_input:

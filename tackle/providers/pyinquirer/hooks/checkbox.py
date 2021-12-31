@@ -5,6 +5,7 @@ from typing import Union, List, Any, Dict
 from pydantic import Field
 
 from tackle.models import BaseHook
+from tackle.utils.dicts import get_readable_key_path
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +43,11 @@ class InquirerCheckboxHook(BaseHook):
     name: str = 'tmp'
 
     _args: list = ['message']
+
+    def __init__(self, **data: Any):
+        super().__init__(**data)
+        if self.message is None:
+            self.message = get_readable_key_path(self.key_path_) + ' >>>'
 
     def execute(self) -> list:
         if self.no_input:

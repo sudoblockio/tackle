@@ -5,6 +5,7 @@ from typing import Any, List, Union
 from pydantic import Field
 
 from tackle.models import BaseHook
+from tackle.utils.dicts import get_readable_key_path
 
 logger = logging.getLogger(__name__)
 
@@ -42,8 +43,8 @@ class InquirerListHook(BaseHook):
 
     def __init__(self, **data: Any):
         super().__init__(**data)
-        if not self.message:
-            self.message = ''.join([self.key_, " >> "])
+        if self.message is None:
+            self.message = get_readable_key_path(self.key_path_) + ' >>>'
 
     def execute(self) -> str:
         # Figure out what type of dictionary it is

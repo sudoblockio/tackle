@@ -5,6 +5,7 @@ from typing import Any
 from pydantic import Field
 
 from tackle.models import BaseHook
+from tackle.utils.dicts import get_readable_key_path
 
 logger = logging.getLogger(__name__)
 
@@ -20,10 +21,10 @@ class InquirerConfirmHook(BaseHook):
 
     _args: list = ['message']
 
-    # def __init__(self, **data: Any):
-    #     super().__init__(**data)
-    #     if not self.message:
-    #         self.message = ''.join([self.key_, " >> "])
+    def __init__(self, **data: Any):
+        super().__init__(**data)
+        if self.message is None:
+            self.message = get_readable_key_path(self.key_path_) + ' >>>'
 
     def execute(self) -> bool:
         if not self.no_input:
