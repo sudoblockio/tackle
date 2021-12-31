@@ -2,6 +2,7 @@
 import pytest
 import yaml
 import shutil
+import os
 
 from tackle.main import tackle
 from jinja2.exceptions import TemplateNotFound
@@ -43,7 +44,7 @@ def test_provider_system_hook_generate_error(change_dir, fixture, error):
 def test_provider_system_hook_copy_without_render(change_dir):
     """Verify the hook call works properly."""
     tackle("copy-without-render.yaml")
-    with open('output/.hidden.yaml') as f:
+    with open(os.path.join('output', '.hidden.yaml')) as f:
         hidden = yaml.safe_load(f)
 
     with open('output/no-render/dir/foo.yaml') as f:

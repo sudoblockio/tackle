@@ -41,8 +41,9 @@ class GenerateHook(BaseHook):
     )
 
     base_dir: Path = None
-    env: Any = None
-    file_system_loader: Any = None
+    env_: Any = None
+    file_system_loader_: Any = None
+    file_path_separator_: str = None  # / for mac / linux - \ for win
 
     _args = ['templates', 'output']
     _render_exclude = ['templates']
@@ -51,6 +52,11 @@ class GenerateHook(BaseHook):
         super().__init__(**data)
         if isinstance(self.copy_without_render, str):
             self.copy_without_render = [self.copy_without_render]
+
+        if 'nt' in os.name:
+            self.file_path_separator_ = '\\'
+        else:
+            self.file_path_separator_ = '/'
 
     def execute(self):
         """Generate files / directories."""
@@ -61,8 +67,8 @@ class GenerateHook(BaseHook):
         else:
             self.render_context = self.input_dict
 
-        self.env = StrictEnvironment(context=self.render_context)
-        self.env.loader = FileSystemLoader('.')
+        self.env_ = StrictEnvironment(context=self.render_context)
+        self.env_.loader = FileSystemLoader('.')
 
         if isinstance(self.templates, str):
             self.generate_target(self.templates)
@@ -108,12 +114,12 @@ class GenerateHook(BaseHook):
         :param input_file: Input file to generate from
         :param output_path: Output file to generate to
         """
-        if output_path.endswith('/'):
+        if output_path.endswith(self.file_path_separator_):
             output_path = os.path.join(output_path, os.path.basename(input_file))
 
         # Render the path right away as templating mangles things later - also logical
         # to render file names.  Who wants to generate files with templates in the name?
-        file_name_template = self.env.from_string(str(output_path))
+        file_name_template = self.env_.from_string(str(output_path))
         output_path = file_name_template.render(self.output_dict)
 
         # Make the parent directories by default
@@ -125,7 +131,15 @@ class GenerateHook(BaseHook):
             shutil.copyfile(input_file, output_path)
             return
 
-        file_contents_template = self.env.get_template(input_file)
+        try:
+            file_contents_template = self.env_.get_template(input_file)
+        except UnicodeDecodeError:
+            # Catch binary files with this hack and copy them over
+            # TODO: Perhaps improve? In cookiecutter they used a package binary-or-not
+            # or something like that but we are staying lean on dependencies in this
+            # project.
+            shutil.copyfile(input_file, output_path)
+            return
 
         try:
             rendered_contents = file_contents_template.render(self.render_context)
@@ -168,10 +182,6 @@ class GenerateHook(BaseHook):
             if fnmatch.fnmatch(path, dont_render):
                 return True
             # TODO: Make this more logical - cookiecutter allowed without `./`
-            if os.name != 'nt':
-                if fnmatch.fnmatch(path, './' + dont_render):
-                    return True
-            else:
-                if fnmatch.fnmatch(path, '.\\' + dont_render):
-                    return True
+            if fnmatch.fnmatch(path, f'.{self.file_path_separator_}' + dont_render):
+                return True
         return False
