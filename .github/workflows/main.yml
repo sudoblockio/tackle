@@ -18,17 +18,13 @@ jobs:
       matrix:
         name:
           - "linting"
-
           - "ubuntu-py36"
           - "ubuntu-py37"
           - "ubuntu-py38"
           - "ubuntu-pypy3"
-
           - "macos-py36"
           - "macos-py37"
           - "macos-py38"
-          - "macos-pypy3.8"
-
           - "windows-py36"
           - "windows-py37"
           - "windows-py38"
