@@ -633,9 +633,8 @@ def update_source(context: 'Context'):
         import_local_provider_source(context, unzipped_dir)
     # Repo
     elif is_repo_url(first_arg):
-        import_local_provider_source(
-            context, get_repo_source(first_arg, context.version)
-        )
+        provider_dir = get_repo_source(first_arg, context.version)
+        import_local_provider_source(context, provider_dir)
     # Directory
     elif is_directory_with_tackle(first_arg):
         # Special case where the input is a path to a directory. Need to override some

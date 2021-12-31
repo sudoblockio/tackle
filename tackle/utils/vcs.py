@@ -7,7 +7,6 @@ from shutil import which
 from tackle.exceptions import (
     RepositoryCloneFailed,
     RepositoryNotFound,
-    UnknownRepoType,
     VCSNotInstalled,
     VersionNotFoundError,
 )
@@ -24,28 +23,28 @@ BRANCH_ERRORS = [
 ]
 
 
-def identify_repo(repo_url):
-    """Determine if `repo_url` should be treated as a URL to a git or hg repo.
-
-    Repos can be identified by prepending "hg+" or "git+" to the repo URL.
-
-    :param repo_url: Repo URL of unknown type.
-    :returns: ('git', repo_url), ('hg', repo_url), or None.
-    """
-    repo_url_values = repo_url.split('+')
-    if len(repo_url_values) == 2:
-        repo_type = repo_url_values[0]
-        if repo_type in ["git", "hg"]:
-            return repo_type, repo_url_values[1]
-        else:
-            raise UnknownRepoType
-    else:
-        if 'git' in repo_url:
-            return 'git', repo_url
-        elif 'bitbucket' in repo_url:
-            return 'hg', repo_url
-        else:
-            raise UnknownRepoType
+# def identify_repo(repo_url):
+#     """Determine if `repo_url` should be treated as a URL to a git or hg repo.
+#
+#     Repos can be identified by prepending "hg+" or "git+" to the repo URL.
+#
+#     :param repo_url: Repo URL of unknown type.
+#     :returns: ('git', repo_url), ('hg', repo_url), or None.
+#     """
+#     repo_url_values = repo_url.split('+')
+#     if len(repo_url_values) == 2:
+#         repo_type = repo_url_values[0]
+#         if repo_type in ["git", "hg"]:
+#             return repo_type, repo_url_values[1]
+#         else:
+#             raise UnknownRepoType
+#     else:
+#         if 'git' in repo_url:
+#             return 'git', repo_url
+#         elif 'bitbucket' in repo_url:
+#             return 'hg', repo_url
+#         else:
+#             raise UnknownRepoType
 
 
 # def prompt_and_delete(path, no_input=False):
@@ -101,20 +100,17 @@ def clone(repo_url, checkout=None, clone_to_dir='.', no_input=False):
     make_sure_path_exists(clone_to_dir)
 
     # identify the repo_type
-    repo_type, repo_url = identify_repo(repo_url)
+    # repo_type, repo_url = identify_repo(repo_url)
 
     # check that the appropriate VCS for the repo_type is installed
-    if not is_vcs_installed(repo_type):
-        msg = "'{0}' is not installed.".format(repo_type)
+    if not is_vcs_installed('git'):
+        msg = "git is not installed."
         raise VCSNotInstalled(msg)
 
     repo_url = repo_url.rstrip('/')
     repo_name = os.path.split(repo_url)[1]
-    if repo_type == 'git':
-        repo_name = repo_name.split(':')[-1].rsplit('.git')[0]
-        repo_dir = os.path.normpath(os.path.join(clone_to_dir, repo_name))
-    elif repo_type == 'hg':
-        repo_dir = os.path.normpath(os.path.join(clone_to_dir, repo_name))
+    repo_name = repo_name.split(':')[-1].rsplit('.git')[0]
+    repo_dir = os.path.normpath(os.path.join(clone_to_dir, repo_name))
     logger.debug('repo_dir is {0}'.format(repo_dir))
 
     if os.path.isdir(repo_dir):
@@ -125,13 +121,13 @@ def clone(repo_url, checkout=None, clone_to_dir='.', no_input=False):
     if clone:
         try:
             subprocess.check_output(
-                [repo_type, 'clone', repo_url],
+                ['git', 'clone', repo_url],
                 cwd=clone_to_dir,
                 stderr=subprocess.STDOUT,
             )
             if checkout is not None:
                 subprocess.check_output(
-                    [repo_type, 'checkout', checkout],
+                    ['git', 'checkout', checkout],
                     cwd=repo_dir,
                     stderr=subprocess.STDOUT,
                 )
@@ -273,13 +269,23 @@ def get_repo_source(repo: str, repo_version: str = None) -> str:
     org_dir = os.path.join(settings.provider_dir, organization)
     provider_dir = os.path.join(org_dir, provider_name)
 
+    logger.debug(f"Repo {repo_url} found for org {organization}, name {provider_name}.")
+
     if not os.path.exists(provider_dir):
         # Clone if dir does not exist (new provider)
         clone(repo_url, clone_to_dir=org_dir)
+    else:
+        subprocess.check_output(
+            ['git', 'fetch'],
+            cwd=provider_dir,
+            stderr=subprocess.STDOUT,
+        )
 
     # Get the default branch of the repo
     # If a version is specified, then check that first
     version = get_repo_version(provider_dir)
+    logger.debug(f"Version for {provider_name} equal to {version}.")
+
     if repo_version:
         if repo_version == 'latest':
             default_branch = get_default_branch(repo_path=provider_dir)
