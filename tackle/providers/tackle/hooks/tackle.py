@@ -72,6 +72,7 @@ class TackleHook(BaseHook):
             checkout=self.checkout,
             password=self.password,
             directory=self.directory,
+            calling_directory=self.calling_directory,
             # Evaluated
             existing_context=existing_context,
             # Implicit

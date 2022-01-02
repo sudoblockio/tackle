@@ -39,7 +39,7 @@ class Context(BaseModel):
     # Internal
     key_path: list = []
     providers: ProviderList = None
-    calling_directory: str = None
+    calling_directory: Path = None
     env: Any = None
 
     global_args: list = None
