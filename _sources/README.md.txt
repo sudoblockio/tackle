@@ -3,7 +3,7 @@
 [![pypi](https://img.shields.io/pypi/v/tackle-box.svg)](https://pypi.python.org/pypi/tackle-box)
 [![python](https://img.shields.io/pypi/pyversions/tackle-box.svg)](https://pypi.python.org/pypi/tackle-box)
 [![codecov](https://codecov.io/gh/robcxyz/tackle-box/branch/main/graphs/badge.svg?branch=main)](https://codecov.io/github/robcxyz/tackle-box?branch=main)
-![example workflow](https://github.com/robcxyz/tackle-box/actions/workflows/main.yml/badge.svg)
+![main-tests](https://github.com/robcxyz/tackle-box/actions/workflows/main.yml/badge.svg)
 
 * Tackle Box Documentation: [https://robcxyz.github.io/tackle-box](https://robcxyz.github.io/tackle-box)
     * [API Docs](https://robcxyz.github.io/tackle-box/docs/_build/html/cookiecutter.operators.html#submodules) # WIP
@@ -52,7 +52,9 @@ tackle <your GH username>/tackle-your-provider
 
 ### Basic Usage / Structure
 
-Tackle-box can be called against any yaml/json file or remote location by specifying the path to a repo / directory. By default, tackle looks for a `tackle.yaml` file in the target location which is parsed sequentially with each key traversed looking for hook calls indicated by an arrow (`->`). For instance given the following directory structure:
+Tackle-box can be called against any yaml/json file or remote location by specifying the path to a repo / directory. By default, tackle looks for a `tackle.yaml` file in the target location which is parsed sequentially with each key traversed looking for hook calls indicated by an arrow (`->`). Tackle box ships with ~70 hooks to do basic prompting / code generation / system operations but can easily be extended by writing additional hooks.
+
+For instance given the following directory structure:
 
 ```
 ├── hooks
@@ -76,8 +78,9 @@ class Stuff(BaseHook):
 One could run a tackle file that looks like this:
 
 ```yaml
-compact->: do-stuff All the things
-expanded:
+a-key->: do-stuff do-things
+b-key:
+  if: a-key == 'do-things'
   ->: do-stuff
   things: All the things
 ```
@@ -91,4 +94,17 @@ expanded: All the things
 
 Which you can use to then generate code, print out to file, or do any number of custom actions with additional hook calls.
 
-> WIP
+### Road Map
+
+The main challenge with this project is going to be reaching a stable syntax that people can reliably build on. Until that happens any feedback is welcome that could help make any of the interfaces, both in the core parsing logic / hook interfaces, is welcome. A place outside of github issues will be made to better accommodate those conversations.
+
+### Code of Conduct
+
+Everyone interacting in the Cookiecutter project's codebases, issue trackers,
+chat rooms, and mailing lists is expected to follow the
+[PyPA Code of Conduct](https://www.pypa.io/en/latest/code-of-conduct/).
+
+## Credit
+
+Special thanks to the [cookiecutter](https://github.com/cookiecutter/cookiecutter) community for creating the inspiration for this project.
+

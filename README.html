@@ -44,6 +44,11 @@
 <li><a class="reference internal" href="#demo">Demo</a></li>
 <li><a class="reference internal" href="#features">Features</a></li>
 <li><a class="reference internal" href="#basic-usage-structure">Basic Usage / Structure</a></li>
+<li><a class="reference internal" href="#road-map">Road Map</a></li>
+<li><a class="reference internal" href="#code-of-conduct">Code of Conduct</a><ul>
+<li><a class="reference internal" href="#credit">Credit</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -77,7 +82,7 @@
 <a class="reference external image-reference" href="https://pypi.python.org/pypi/tackle-box"><img alt="pypi" src="https://img.shields.io/pypi/v/tackle-box.svg" /></a>
 <a class="reference external image-reference" href="https://pypi.python.org/pypi/tackle-box"><img alt="python" src="https://img.shields.io/pypi/pyversions/tackle-box.svg" /></a>
 <a class="reference external image-reference" href="https://codecov.io/github/robcxyz/tackle-box?branch=main"><img alt="codecov" src="https://codecov.io/gh/robcxyz/tackle-box/branch/main/graphs/badge.svg?branch=main" /></a>
-<a class="reference external image-reference" href="https://github.com/robcxyz/tackle-box/actions/workflows/main.yml/badge.svg"><img alt="example workflow" src="https://github.com/robcxyz/tackle-box/actions/workflows/main.yml/badge.svg" /></a>
+<a class="reference external image-reference" href="https://github.com/robcxyz/tackle-box/actions/workflows/main.yml/badge.svg"><img alt="main-tests" src="https://github.com/robcxyz/tackle-box/actions/workflows/main.yml/badge.svg" /></a>
 <ul class="simple">
 <li><p>Tackle Box Documentation: <a class="reference external" href="https://robcxyz.github.io/tackle-box">https://robcxyz.github.io/tackle-box</a></p>
 <ul>
@@ -119,7 +124,8 @@
 </section>
 <section id="basic-usage-structure">
 <h2>Basic Usage / Structure<a class="headerlink" href="#basic-usage-structure" title="Permalink to this headline"></a></h2>
-<p>Tackle-box can be called against any yaml/json file or remote location by specifying the path to a repo / directory. By default, tackle looks for a <code class="docutils literal notranslate"><span class="pre">tackle.yaml</span></code> file in the target location which is parsed sequentially with each key traversed looking for hook calls indicated by an arrow (<code class="docutils literal notranslate"><span class="pre">-&gt;</span></code>). For instance given the following directory structure:</p>
+<p>Tackle-box can be called against any yaml/json file or remote location by specifying the path to a repo / directory. By default, tackle looks for a <code class="docutils literal notranslate"><span class="pre">tackle.yaml</span></code> file in the target location which is parsed sequentially with each key traversed looking for hook calls indicated by an arrow (<code class="docutils literal notranslate"><span class="pre">-&gt;</span></code>). Tackle box ships with ~70 hooks to do basic prompting / code generation / system operations but can easily be extended by writing additional hooks.</p>
+<p>For instance given the following directory structure:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>├── hooks
 │ └── stuff.py
 └── tackle.yaml
@@ -137,8 +143,9 @@
 </pre></div>
 </div>
 <p>One could run a tackle file that looks like this:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">do-stuff All the things</span><span class="w"></span>
-<span class="nt">expanded</span><span class="p">:</span><span class="w"></span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">a-key-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">do-stuff do-things</span><span class="w"></span>
+<span class="nt">b-key</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">a-key == &#39;do-things&#39;</span><span class="w"></span>
 <span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">do-stuff</span><span class="w"></span>
 <span class="w">  </span><span class="nt">things</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All the things</span><span class="w"></span>
 </pre></div>
@@ -149,9 +156,20 @@
 </pre></div>
 </div>
 <p>Which you can use to then generate code, print out to file, or do any number of custom actions with additional hook calls.</p>
-<blockquote>
-<div><p>WIP</p>
-</div></blockquote>
+</section>
+<section id="road-map">
+<h2>Road Map<a class="headerlink" href="#road-map" title="Permalink to this headline"></a></h2>
+<p>The main challenge with this project is going to be reaching a stable syntax that people can reliably build on. Until that happens any feedback is welcome that could help make any of the interfaces, both in the core parsing logic / hook interfaces, is welcome. A place outside of github issues will be made to better accommodate those conversations.</p>
+</section>
+<section id="code-of-conduct">
+<h2>Code of Conduct<a class="headerlink" href="#code-of-conduct" title="Permalink to this headline"></a></h2>
+<p>Everyone interacting in the Cookiecutter project’s codebases, issue trackers,
+chat rooms, and mailing lists is expected to follow the
+<a class="reference external" href="https://www.pypa.io/en/latest/code-of-conduct/">PyPA Code of Conduct</a>.</p>
+<section id="credit">
+<h3>Credit<a class="headerlink" href="#credit" title="Permalink to this headline"></a></h3>
+<p>Special thanks to the <a class="reference external" href="https://github.com/cookiecutter/cookiecutter">cookiecutter</a> community for creating the inspiration for this project.</p>
+</section>
 </section>
 </section>
 
