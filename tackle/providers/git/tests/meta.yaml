@@ -1,7 +1,7 @@
 
 this:
   ->: meta_repo
-  git_org: geometry-labs
+  git_org: robcxyz
   repo_tree:
     services:
       thing: robcxyz/tackle-pypackage
@@ -14,7 +14,7 @@ this:
           src: https://github.com/robcxyz/tackle-pypackage
           branch: dev
         gh:
-          src: robcxyz/tackle-pypackage
+          src: tackle-pypackage
           branch: master
         gh-branch:
           src: robcxyz/tackle-pypackage
