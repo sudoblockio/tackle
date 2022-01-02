@@ -39,14 +39,12 @@ class Context(BaseModel):
     # Internal
     key_path: list = []
     providers: ProviderList = None
-    calling_directory: str = os.path.abspath(os.path.curdir)
+    calling_directory: str = None
     env: Any = None
 
     global_args: list = None
     global_kwargs: dict = None
     global_flags: list = None
-
-    # post_exec_handlers: list = []
 
     def __init__(self, **data: Any):
         super().__init__(**data)
@@ -54,6 +52,10 @@ class Context(BaseModel):
         if self.providers is None:
             # Native and settings.extra_providers initialized
             self.providers = ProviderList()
+        if self.calling_directory is None:
+            # Can be carried over from another context. Should only be initialized when
+            # called from CLI.
+            self.calling_directory = os.path.abspath(os.path.curdir)
 
 
 class BaseHook(BaseModel):
@@ -92,7 +94,7 @@ class BaseHook(BaseModel):
     no_input: bool = None
     calling_directory: Path = None
 
-    providers_: ProviderList = None  # TODO: RM? - Not really needed
+    providers_: ProviderList = None
     key_path_: list = None
 
     # Placeholder until help can be fully worked out

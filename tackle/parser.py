@@ -278,12 +278,12 @@ def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
 
 def run_hook(context: 'Context'):
     """
-    Run either a hook or a function. In this context the args are associated with
-    arguments in
+    Run the hook by qualifying the input argument and matching the input params with the
+    with the hook's `_args` which are then overlayed into a hook kwargs. Also interprets
+    special cases where you have a string or list input of renderable variables.
     """
     if isinstance(context.input_string, str):
         args, kwargs, flags = unpack_input_string(context.input_string)
-        # args, kwargs, flags = unpack_args_kwargs_string(context.input_string)
         first_arg = args[0]
         # Remove first args it will be consumed and no longer relevant
         args.pop(0)

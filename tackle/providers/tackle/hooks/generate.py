@@ -23,7 +23,8 @@ class GenerateHook(BaseHook):
     hook_type: str = 'generate'
     templates: Union[str, list] = Field(
         ...,
-        description="Path to a templatable directory or file to recursively render the contents.",
+        description="Path or list of paths to a templatable directory or file to "
+        "recursively render the contents.",
     )
     output: str = Field('.', description="Path to put the output file(s).")
     copy_without_render: Union[str, list] = []
@@ -68,9 +69,16 @@ class GenerateHook(BaseHook):
         if self.render_context is not None:
             pass
         elif self.additional_context is not None:
-            self.render_context = {**self.input_dict, **self.additional_context}
+            self.render_context = {
+                **self.output_dict,
+                **self.additional_context,
+                **self.existing_context,
+            }
         else:
-            self.render_context = self.input_dict
+            self.render_context = {
+                **self.output_dict,
+                **self.existing_context,
+            }
 
         self.env_ = StrictEnvironment(context=self.render_context)
         self.env_.loader = FileSystemLoader('.')
@@ -97,7 +105,7 @@ class GenerateHook(BaseHook):
         else:
             self.base_dir = Path(target).parent.absolute()
 
-        target_path = os.path.join(self.base_dir, os.path.basename(target))
+        target_path = os.path.join(self.base_dir, target)
 
         # Expand the target path
         self.output = os.path.expanduser(os.path.expandvars(self.output))

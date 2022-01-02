@@ -1,0 +1,12 @@
+stuff: things
+
+init->: isdir output
+
+a_block->:
+  if: stuff == 'things'
+  foo: bar
+  gen->: generate plain_src output
+
+after->: isdir output/models
+
+cleanup->: remove output

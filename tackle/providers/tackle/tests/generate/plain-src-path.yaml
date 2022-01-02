@@ -1,0 +1,14 @@
+stuff: things
+
+init->: isdir output
+
+dir: plain_src
+
+a_block->:
+  if: stuff == 'things'
+  foo->: print bar
+  gen->: generate {{dir}}/app.py output/app.py
+
+after->: isfile output/app.py
+
+cleanup->: remove output

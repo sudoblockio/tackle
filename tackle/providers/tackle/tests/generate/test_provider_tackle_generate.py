@@ -10,6 +10,8 @@ from jinja2.exceptions import TemplateNotFound
 FIXTURES = [
     "file.yaml",
     "plain-src.yaml",
+    "plain-src-block.yaml",
+    "plain-src-path.yaml",
     "render-file.yaml",
     "render-dir-file.yaml",
     "render-dir-file-base.yaml",
