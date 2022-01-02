@@ -3,13 +3,12 @@
 [![pypi](https://img.shields.io/pypi/v/tackle-box.svg)](https://pypi.python.org/pypi/tackle-box)
 [![python](https://img.shields.io/pypi/pyversions/tackle-box.svg)](https://pypi.python.org/pypi/tackle-box)
 [![codecov](https://codecov.io/gh/robcxyz/tackle-box/branch/main/graphs/badge.svg?branch=main)](https://codecov.io/github/robcxyz/tackle-box?branch=main)
-![main-tests](https://github.com/robcxyz/tackle-box/actions/workflows/main.yml/badge.svg)
+[![main-tests](https://github.com/robcxyz/tackle-box/actions/workflows/main.yml/badge.svg)](https://github.com/robcxyz/tackle-box/actions)
 
-* Tackle Box Documentation: [https://robcxyz.github.io/tackle-box](https://robcxyz.github.io/tackle-box)
-    * [API Docs](https://robcxyz.github.io/tackle-box/docs/_build/html/cookiecutter.operators.html#submodules) # WIP
+* Tackle Box Documentation: [https://robcxyz.github.io/tackle-box](https://robcxyz.github.io/tackle-box)-> WIP
 * GitHub: [https://github.com/robcxyz/tackle-box](https://github.com/robcxyz/tackle-box)
 * PyPI: [https://pypi.org/project/tackle-box/](https://pypi.org/project/tackle-box/)
-* Free and open source software: [BSD license](https://github.com/robcyxz/tackle-box/blob/master/LICENSE)
+* Free and open source software: [BSD license](LICENSE)
 
 Tackle box is a declarative DSL for building modular workflows and code generators. Tool is plugins based and can easily be extended by writing additional hooks or importing external providers creating a web of interoperable CLIs.
 
