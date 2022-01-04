@@ -50,6 +50,8 @@ class YamlHook(BaseHook):
     )
     write: bool = Field(None, description="")
 
+    _args = ['path', 'contents']
+
     def __init__(self, **data: Any):
         super().__init__(**data)
         self.path = os.path.expanduser(os.path.expandvars(self.path))
