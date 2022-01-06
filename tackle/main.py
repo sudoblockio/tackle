@@ -11,6 +11,15 @@ from tackle.utils.dicts import nested_delete
 from tackle.exceptions import NoInputOrParentTackleException
 
 
+def get_global_kwargs(kwargs):
+    """Check for unknown kwargs and return so they can be consumed later."""
+    global_kwargs = {}
+    for k, v in kwargs.items():
+        if k not in Context.__fields__:
+            global_kwargs.update({k: v})
+    return global_kwargs
+
+
 def tackle(
     *args,
     **kwargs,
@@ -47,6 +56,11 @@ def tackle(
 
     # Initialize context
     context = Context(**kwargs)
+    if 'global_kwargs' not in kwargs:
+        # When tackle is called from the cli it already has the kwargs.  This is hack
+        # to get this function to accept dicts the same as they would be for use as
+        # package - ie tackle('input-file.yaml', **some_override_dict)
+        context.global_kwargs = get_global_kwargs(kwargs)
 
     # Synchronous execution
     update_source(context)

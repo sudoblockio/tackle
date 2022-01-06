@@ -33,7 +33,7 @@ def test_main_cli_call_empty(change_curdir_fixtures, mocker):
         assert mock.call_args[0][0].input_string == local_tackle
 
 
-def test_main_cli_call_empty_no_parent_tackle_raises(chdir, mocker):
+def test_main_cli_call_empty_no_parent_tackle_raises(chdir):
     """
     Check that when no arg is given that we find the closes tackle file which
     could be in the parent directory.
@@ -44,3 +44,23 @@ def test_main_cli_call_empty_no_parent_tackle_raises(chdir, mocker):
         chdir('\\')
     with pytest.raises(NoInputOrParentTackleException):
         tackle()
+
+
+def test_main_input_dict(change_curdir_fixtures):
+    """
+    Test bringing in an input dict along with a target which should be interpreted as
+    overriding keys to the target.
+    """
+    input_dict = {
+        'this': 1,
+        'that': 2,
+    }
+
+    output = tackle('dict-input.yaml', **input_dict)
+    assert output['this'] == 1
+
+
+def test_main_from_cli_input_dict(change_curdir_fixtures, capsys):
+    """Test same as above but from command line."""
+    main(["dict-input.yaml", "--this", "1", "--that", "2", "--print"])
+    assert 'this' in capsys.readouterr().out
