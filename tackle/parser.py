@@ -501,6 +501,19 @@ def run_handler(context, handler_key, handler_value):
         raise UnknownHookTypeException()
 
 
+def update_input_dict_with_kwargs(context: 'Context', kwargs: dict):
+    """
+    Update the input dict with kwargs which in this context are treated as overriding
+    the keys. Takes into account if the key is a hook and replaces that.
+    """
+    for k, v in kwargs.items():
+        if k in context.input_dict:
+            context.input_dict.update({k: v})
+        elif f"{k}->" in context.input_dict:
+            context.input_dict.pop(f"{k}->")
+            context.input_dict.update({k: v})
+
+
 def run_source(context: 'Context', args: list, kwargs: dict, flags: list):
     """
     Take the input dict and impose global args/kwargs/flags with the following logic:
@@ -529,9 +542,7 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list):
         kwargs.update({i: True for i in context.global_flags})
         context.global_kwargs = None
 
-    for k, v in kwargs:
-        # Process kwargs as an overriding key
-        context.input_dict.update({k: v})
+    update_input_dict_with_kwargs(context=context, kwargs=kwargs)
 
     for i in flags:
         # Process flags by setting key to true
