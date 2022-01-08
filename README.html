@@ -95,10 +95,8 @@
 </div></blockquote>
 <section id="demo">
 <h2>Demo<a class="headerlink" href="#demo" title="Permalink to this headline"></a></h2>
+<p>More demos coming - tackle-box is still early alpha.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="n">tackle</span><span class="o">-</span><span class="n">box</span>
-
-<span class="c1"># General tour of tackle box</span>
-<span class="n">tackle</span> <span class="n">robcxyz</span><span class="o">/</span><span class="n">tackle</span><span class="o">-</span><span class="n">demos</span>
 
 <span class="c1"># Create a new provider in one minute</span>
 <span class="n">tackle</span> <span class="n">robcxyz</span><span class="o">/</span><span class="n">tackle</span><span class="o">-</span><span class="n">provider</span>
@@ -128,7 +126,9 @@
 </pre></div>
 </div>
 <p>With <code class="docutils literal notranslate"><span class="pre">stuff.py</span></code> looking like:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Stuff</span><span class="p">(</span><span class="n">BaseHook</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tackle</span> <span class="kn">import</span> <span class="n">BaseHook</span>
+
+<span class="k">class</span> <span class="nc">Stuff</span><span class="p">(</span><span class="n">BaseHook</span><span class="p">):</span>
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;do-stuff&quot;</span>
     <span class="n">things</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">_args</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;things&#39;</span><span class="p">]</span>
@@ -155,7 +155,7 @@
 </section>
 <section id="road-map">
 <h2>Road Map<a class="headerlink" href="#road-map" title="Permalink to this headline"></a></h2>
-<p>The main challenge with this project is going to be reaching a stable syntax that people can reliably build on. Until that happens any feedback is welcome that could help make any of the interfaces, both in the core parsing logic / hook interfaces, is welcome. A place outside of github issues will be made to better accommodate those conversations.</p>
+<p>The main challenge with this project is going to be reaching a stable syntax that people can reliably build on. Until that happens any feedback is welcome on the core interfaces, both in the core parsing logic / hook interfaces. A place outside of github issues will be made to better accommodate those conversations.</p>
 </section>
 <section id="code-of-conduct">
 <h2>Code of Conduct<a class="headerlink" href="#code-of-conduct" title="Permalink to this headline"></a></h2>
