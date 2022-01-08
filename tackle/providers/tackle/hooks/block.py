@@ -53,6 +53,7 @@ class BlockHook(BaseHook):
             input_dict=self.items,
             key_path=[],
             no_input=self.no_input,
+            calling_directory=self.calling_directory,
         )
         walk_sync(context=tmp_context, element=self.items.copy())
         return tmp_context.output_dict
