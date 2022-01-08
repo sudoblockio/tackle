@@ -16,11 +16,10 @@ Tackle box is a declarative DSL for building modular workflows and code generato
 
 ### Demo
 
+More demos coming - tackle-box is still early alpha.
+
 ```
 pip3 install tackle-box
-
-# General tour of tackle box
-tackle robcxyz/tackle-demos
 
 # Create a new provider in one minute
 tackle robcxyz/tackle-provider
@@ -34,13 +33,13 @@ tackle <your GH username>/tackle-your-provider
 
 [comment]: <> (Tackle box has a wide variety of use cases. Here are a few for inspiration.)
 
-[comment]: <> (- [Code generation]&#40;&#41; - WIP)
+[comment]: <> (- [Code generation]() - WIP)
 
-[comment]: <> (- [Custom workflows]&#40;&#41; - WIP)
+[comment]: <> (- [Custom workflows]() - WIP)
 
-[comment]: <> (- [Keeping configuration files dry]&#40;&#41; - WIP)
+[comment]: <> (- [Keeping configuration files dry]() - WIP)
 
-[comment]: <> (- [Kubernetes]&#40;&#41; - WIP)
+[comment]: <> (- [Kubernetes]() - WIP)
 
 ### Features
 
@@ -64,6 +63,8 @@ For instance given the following directory structure:
 With `stuff.py` looking like:
 
 ```python
+from tackle import BaseHook
+
 class Stuff(BaseHook):
     type: str = "do-stuff"
     things: str
@@ -95,7 +96,7 @@ Which you can use to then generate code, print out to file, or do any number of 
 
 ### Road Map
 
-The main challenge with this project is going to be reaching a stable syntax that people can reliably build on. Until that happens any feedback is welcome that could help make any of the interfaces, both in the core parsing logic / hook interfaces, is welcome. A place outside of github issues will be made to better accommodate those conversations.
+The main challenge with this project is going to be reaching a stable syntax that people can reliably build on. Until that happens any feedback is welcome on the core interfaces, both in the core parsing logic / hook interfaces. A place outside of github issues will be made to better accommodate those conversations.
 
 ### Code of Conduct
 
