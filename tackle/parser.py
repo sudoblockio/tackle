@@ -681,8 +681,6 @@ def update_source(context: 'Context'):
             )
         args.insert(0, first_arg)
 
-    context.calling_directory = Path('.').absolute()
-
     # We always change directory into the source that is being called. Needs to be this
     # or would be very confusing if writing a provider to always refer to it's own path.
     with work_in(context.input_dir):

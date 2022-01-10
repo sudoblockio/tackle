@@ -1,0 +1,17 @@
+
+# Fixture to test embedded lists - asserted against itself
+
+stuff:
+  - things
+  -
+    - this
+    - that
+
+things:
+  - things
+  -
+    - this
+    - foo:
+        bar:
+          - baz
+          - foo
