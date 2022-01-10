@@ -47,9 +47,15 @@ class TackleHook(BaseHook):
     password: SecretStr = Field(None, description="A password to use for repo inputs.")
     directory: str = Field(None, description="The directory to run inside for repo inputs.")
 
+    override: dict = Field(None, description="A dictionary of keys to override.")
     # fmt: on
 
     _args = ['input_string']
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        if self.override is None:
+            self.override = {}
 
     def execute(self):
 
@@ -78,6 +84,7 @@ class TackleHook(BaseHook):
             # Implicit
             providers=self.providers,
             no_input=self.no_input,
+            global_kwargs=self.override,
         )
 
         return dict(output_context)

@@ -67,7 +67,7 @@ class ImportHook(BaseHook):
         if isinstance(self.src, str):
             # Get the provider path eith local or remote.
             provider_path = self.get_dir_or_repo(self.src, self.version)
-            self.providers_.import_paths([provider_path])
+            self.providers.import_paths([provider_path])
 
         elif isinstance(self.src, list):
             provider_dirs = []
@@ -81,7 +81,7 @@ class ImportHook(BaseHook):
                         self.get_dir_or_repo(repo_source.src, repo_source.version)
                     )
 
-            self.providers_.import_paths(provider_dirs)
+            self.providers.import_paths(provider_dirs)
 
         elif isinstance(self.src, dict):
             # Don't even check if path is directory as one would never use a dict here
@@ -89,7 +89,7 @@ class ImportHook(BaseHook):
             provider_dir = get_repo_source(
                 repo=repo_source.src, repo_version=repo_source.version
             )
-            self.providers_.import_paths([provider_dir])
+            self.providers.import_paths([provider_dir])
 
     def get_dir_or_repo(self, src, version):
         """Check if there is a path that matches input otherwise try as repo."""

@@ -15,13 +15,14 @@ FIXTURES = [
     "render-file.yaml",
     "render-dir-file.yaml",
     "render-dir-file-base.yaml",
+    "tackle-provider-remote.yaml",
 ]
 
 
 @pytest.mark.parametrize("fixture", FIXTURES)
 def test_provider_system_hook_generate_fixtures(change_dir, fixture):
     """Verify the hook call works properly."""
-    output = tackle(fixture)
+    output = tackle(fixture, no_input=True)
     assert not output['init']
 
     if isinstance(output['after'], list):
