@@ -29,18 +29,6 @@ tackle <your GH username>/tackle-your-provider
 # Or alternatively import/call it from another tackle file
 ```
 
-[comment]: <> (### Use Cases)
-
-[comment]: <> (Tackle box has a wide variety of use cases. Here are a few for inspiration.)
-
-[comment]: <> (- [Code generation]() - WIP)
-
-[comment]: <> (- [Custom workflows]() - WIP)
-
-[comment]: <> (- [Keeping configuration files dry]() - WIP)
-
-[comment]: <> (- [Kubernetes]() - WIP)
-
 ### Features
 
 - Declarative: Everything is in yaml with easy to use interfaces
