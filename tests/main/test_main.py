@@ -54,6 +54,8 @@ def test_main_input_dict(change_curdir_fixtures):
     input_dict = {
         'this': 1,
         'that': 2,
+        'stuff': 'things',  # Missing key
+        'foo': 2,  # Non-hook key
     }
 
     output = tackle('dict-input.yaml', **input_dict)
