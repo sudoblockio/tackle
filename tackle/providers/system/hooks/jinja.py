@@ -21,8 +21,30 @@ class JinjaHook(BaseHook):
     output_path: str = Field(..., description="Path to the output file")
     context: Union[dict, str] = Field(None, description="")
     extra_context: dict = Field({}, description="A dict to use to render")
+    render_context: dict = Field(
+        None, description="A render context that invalidates the default context."
+    )
+    additional_context: dict = Field(
+        None, description="A map to use as additional context when rendering."
+    )
 
     _args: list = ['template_path', 'output_path']
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        if self.render_context is not None:
+            pass
+        elif self.additional_context is not None:
+            self.render_context = {
+                **self.output_dict,
+                **self.additional_context,
+                **self.existing_context,
+            }
+        else:
+            self.render_context = {
+                **self.output_dict,
+                **self.existing_context,
+            }
 
     def execute(self) -> dict:
         env = StrictEnvironment(context=self.input_dict)

@@ -24,7 +24,7 @@ class InquirerPasswordHook(BaseHook):
     def __init__(self, **data: Any):
         super().__init__(**data)
         if self.message is None:
-            self.message = get_readable_key_path(self.key_path_) + ' >>>'
+            self.message = get_readable_key_path(self.key_path) + ' >>>'
 
     def execute(self) -> bool:
         if not self.no_input:

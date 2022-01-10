@@ -166,7 +166,7 @@ class MetaGitHook(BaseHook):
         else:
             from tackle.utils.dicts import get_key_from_key_path
 
-            key = get_key_from_key_path(self.key_path_)
+            key = get_key_from_key_path(self.key_path)
             print(f"Malformed repo name '{v}' in '{key}' key. Skipping.")
 
     def prompt_repo_choices(self):
