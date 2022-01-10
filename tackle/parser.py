@@ -209,8 +209,8 @@ def parse_hook(
                     existing_context=context.existing_context,
                     no_input=context.no_input,
                     calling_directory=context.calling_directory,
-                    providers_=context.providers,
-                    key_path_=context.key_path,
+                    providers=context.providers,
+                    key_path=context.key_path,
                 )
             except ValidationError as e:
                 raise e
@@ -248,6 +248,7 @@ def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
         if i + 1 == len(Hook._args):
             # We are at the last argument mapping so we need to join the remaining
             # arguments as a single string if it is not a list of another map.
+            # TODO: Validate that we can put Any here as it is too open
             if Hook.__fields__[Hook._args[i]].type_ in (str, float, int, bool, Any):
                 # Was parsed on spaces so reconstructed.
                 value = ' '.join(args[i:])
@@ -291,7 +292,7 @@ def run_hook(context: 'Context'):
     else:
         # Rare case when an arrow is used to indicate rendering of a list.
         # Only qualified when input is of form `key->: [{{var}},{{var}},...]
-        # In this case we need to set the key a as an empty list
+        # In this case we need to set the key as an empty list
         nested_set(
             element=context.output_dict,
             keys=context.key_path[:-1] + [context.key_path[-1][:-2]],

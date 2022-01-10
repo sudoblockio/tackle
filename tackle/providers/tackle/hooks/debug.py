@@ -1,12 +1,8 @@
 """Debug hook."""
-import logging
 from PyInquirer import prompt
 from pprint import pprint
 
 from tackle.models import BaseHook
-
-
-logger = logging.getLogger(__name__)
 
 
 class DebugHook(BaseHook):

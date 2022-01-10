@@ -78,10 +78,6 @@ class BaseHook(BaseModel):
     for_: Union[str, list] = Field(None, render_by_default=True)
     reverse: Union[str, bool] = Field(None, render_by_default=True)
 
-    while_: Union[str, bool] = None  # TODO
-    match_: Any = None  # TODO
-    case_: list = None  # TODO
-
     callback: str = None
     chdir: Optional[str] = Field(None, description="Name of the hook.")
     merge: Union[bool, str] = None
@@ -94,8 +90,8 @@ class BaseHook(BaseModel):
     no_input: bool = None
     calling_directory: Path = None
 
-    providers_: ProviderList = None
-    key_path_: list = None
+    providers: ProviderList = None
+    key_path: list = None
 
     # Placeholder until help can be fully worked out
     help: str = None

@@ -76,7 +76,7 @@ class TackleHook(BaseHook):
             # Evaluated
             existing_context=existing_context,
             # Implicit
-            providers=self.providers_,
+            providers=self.providers,
             no_input=self.no_input,
         )
 

@@ -1,5 +1,6 @@
 """Block hook."""
 from tackle.models import BaseHook, Context, Field
+from tackle.parser import walk_sync
 
 
 class BlockHook(BaseHook):
@@ -41,13 +42,11 @@ class BlockHook(BaseHook):
     _render_exclude = {'items'}
 
     def execute(self):
-        from tackle.parser import walk_sync
-
         existing_context = self.output_dict.copy()
         existing_context.update(self.existing_context)
 
         tmp_context = Context(
-            providers=self.providers_,
+            providers=self.providers,
             existing_context=existing_context,
             output_dict={},
             input_dict=self.items,
