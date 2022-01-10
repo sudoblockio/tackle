@@ -15,6 +15,7 @@ TEMPLATES = [
     ('foo bar --foo bar --bing --baz bling', 2, 2, 1),
     ('foo --bar baz blah --bling', 2, 1, 1),
     ('this --if "expanded == \'that\'"', 1, 1, 0),
+    # These should all have `var` prepended to the args as it is indicative of a render
     ('"{{foo}}" bar baz', 4, 0, 0),
     ('{{ foo }} bar baz', 4, 0, 0),
     ('{{ foo }} bar baz bing', 5, 0, 0),
@@ -37,6 +38,7 @@ def test_unpack_args_kwargs(template, len_args, len_kwargs, len_flags):
 
 
 FIXTURES = [
+    # input_string, args, kwargs, flags
     ("this --if \"expanded == 'that'\"", ["this"], {"if": "expanded == 'that'"}, []),
     (
         "this that --if \"expanded == 'that'\"",

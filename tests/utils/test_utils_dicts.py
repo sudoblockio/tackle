@@ -19,8 +19,9 @@ def test_index_encoding():
 
 
 NESTED_SET_FIXTURES = [
-    ({}, ['foo'], {'foo': True}),
-    ({}, ['one', 'two', 'three'], {'one': {'two': {'three': True}}}),
+    # Indexed as output, key_path, expected_output
+    # ({}, ['foo'], {'foo': True}),
+    # ({}, ['one', 'two', 'three'], {'one': {'two': {'three': True}}}),
     ({}, ['this', 'lists', ZERO_INDEX], {'this': {'lists': [True]}}),
     (
         {},
@@ -41,6 +42,22 @@ NESTED_SET_FIXTURES = [
     ({'bar': 2}, ['one', 'two', 'three'], {'bar': 2, 'one': {'two': {'three': True}}}),
     ({'bar': 2}, ['this', 'lists', ZERO_INDEX], {'bar': 2, 'this': {'lists': [True]}}),
     (
+        {},
+        ['this', ZERO_INDEX, 'one', 'two', ZERO_INDEX],
+        {'this': [{'one': {'two': [True]}}]},
+    ),
+    ({}, ['this', ZERO_INDEX, 'one'], {'this': [{'one': True}]}),
+    (
+        {},
+        ['this', 'that', 'foo', ZERO_INDEX, 'one'],
+        {'this': {'that': {'foo': [{'one': True}]}}},
+    ),
+    (
+        {'this': {'that': {'foo': [{'one': 1}]}}},
+        ['this', 'that', 'foo', encode_list_index(1), 'two'],
+        {'this': {'that': {'foo': [{'one': 1}, {'two': True}]}}},
+    ),
+    (
         {'this': {'lists': [{'one': {'two': 1}}]}},
         ['this', 'lists', ZERO_INDEX, 'one', 'three'],
         {'this': {'lists': [{'one': {'two': 1, 'three': True}}]}},
@@ -51,27 +68,42 @@ NESTED_SET_FIXTURES = [
         {'this': {'lists': [{'one': {'two': 1}}, {'one': {'three': True}}]}},
     ),
     (
+        {'foo': ['bar'], 'this': [{'foo': []}]},
+        ['this', encode_list_index(0), 'foo', encode_list_index(0), 'one'],
+        {'foo': ['bar'], 'this': [{'foo': [{'one': True}]}]},
+    ),
+    (
         {'this': {'lists': [{'one': {'two': 1}}]}},
         ['this', 'lists', encode_list_index(1), 'one', 'three'],
         {'this': {'lists': [{'one': {'two': 1}}, {'one': {'three': True}}]}},
     ),
-    (
-        {},
-        ['this', ZERO_INDEX, 'one', 'two', ZERO_INDEX],
-        {'this': [{'one': {'two': [True]}}]},
-    ),
     ({}, ['this', ZERO_INDEX, 'one', ZERO_INDEX], {'this': [{'one': [True]}]}),
-    ({}, ['this', ZERO_INDEX, 'one'], {'this': [{'one': True}]}),
     (
         {},
-        ['this', 'that', 'foo', ZERO_INDEX, 'one'],
-        {'this': {'that': {'foo': [{'one': True}]}}},
+        ['this', encode_list_index(0), 'foo', encode_list_index(0), 'one'],
+        {'this': [{'foo': [{'one': True}]}]},
     ),
     (
-        {'this': {'that': {'foo': [{'one': 1}]}}},
-        ['this', 'that', 'foo', encode_list_index(1), 'one'],
-        {'this': {'that': {'foo': [{'one': 1}, {'one': True}]}}},
+        {},
+        ['this', encode_list_index(0), 'foo', 'one'],
+        {'this': [{'foo': {'one': True}}]},
     ),
+    (
+        {},
+        ['this', ZERO_INDEX, ZERO_INDEX, 'foo'],
+        {'this': [[{'foo': True}]]},
+    ),
+    (
+        {'stuff': ['things']},
+        ['stuff', encode_list_index(1), encode_list_index(0)],
+        {'stuff': ['things', [True]]},
+    ),
+    # # This test is breaking
+    # (
+    #     {'stuff': ['things', [{'foo': ['bar', ['baz']]}]]},
+    #     ['stuff', encode_list_index(1), encode_list_index(0), 'foo', encode_list_index(1)],
+    #     {'stuff': ['things', [{'foo': ['bar', True]}]]},
+    # ),
 ]
 
 
@@ -103,6 +135,7 @@ NESTED_GET_FIXTURES = [
 def test_nested_get(input, key_path, expected_output):
     """Test getting based on key path."""
     output = nested_get(input, key_path)
+
     assert output == expected_output
 
 
