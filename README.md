@@ -54,7 +54,7 @@ With `stuff.py` looking like:
 from tackle import BaseHook
 
 class Stuff(BaseHook):
-    type: str = "do-stuff"
+    hook_type: str = "do-stuff"
     things: str
     _args: list = ['things']
 
@@ -66,21 +66,21 @@ class Stuff(BaseHook):
 One could run a tackle file that looks like this:
 
 ```yaml
-a-key->: do-stuff do-things
-b-key:
-  if: a-key == 'do-things'
+compact->: do-stuff A string
+expanded:
+  if: compact == 'A string'
   ->: do-stuff
-  things: All the things
+  things: "{{compact}} that renders"
 ```
 
-Which when run would print out "All the things" twice and result in the following context:
+Which when run would print out the values and result in the following context:
 
 ```yaml
-compact: All the things
-expanded: All the things
+compact: A string
+expanded: A string that renders
 ```
 
-Which you can use to then generate code, print out to file, or do any number of custom actions with additional hook calls.
+Which you can use to then generate code, print out to file, or do any number of custom actions with additional hook calls or calls to other tackle providers.
 
 ### Road Map
 
