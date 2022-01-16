@@ -63,7 +63,7 @@ class GetKeyHook(BaseHook):
     # fmt: off
     path: Any = Field(..., description="A list or string with a separator for the path to the value you want to update with strings for keys and ints for indexes in the list.")
     sep: str = Field('/', description="For string paths, a separator for key path.")
-    _args = ['path', 'value']
+    _args = ['path']
     # fmt: on
 
     def __init__(self, **data: Any):
@@ -89,7 +89,7 @@ class DeleteKeyHook(BaseHook):
     # fmt: off
     path: Any = Field(..., description="A list or string with a separator for the path to the value you want to update with strings for keys and ints for indexes in the list.")
     sep: str = Field('/', description="For string paths, a separator for key path.")
-    _args = ['path', 'value']
+    _args = ['path']
     # fmt: on
 
     def __init__(self, **data: Any):
