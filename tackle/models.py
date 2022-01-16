@@ -24,10 +24,9 @@ class Context(BaseModel):
     input_string: str = None
     input_dir: Path = None
     input_file: str = None
-    version: str = Field(
+    checkout: str = Field(
         None,
-        description="For inputs referencing remote repos, this refers to "
-        "a branch or tag.",
+        description="For inputs referencing remote repos, refers to a branch or tag.",
     )
     existing_context: dict = {}
     overwrite_inputs: Union[dict, str] = None

@@ -219,8 +219,21 @@ def checkout_version(repo_path, version):
             shell=True,
         )
         stdout, stderr = p.communicate()
+
+        if 'Your branch is behind' in str(stdout):
+            cmd = 'git pull'
+            p = subprocess.Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                stdin=subprocess.PIPE,
+                shell=True,
+            )
+            p.communicate()
+
         if p.returncode == 0:
-            return stdout.strip()
+            return
+            # return stdout.strip()
         else:
             raise VersionNotFoundError()
 
@@ -290,7 +303,7 @@ def get_repo_source(repo: str, repo_version: str = None) -> str:
         if repo_version == 'latest':
             default_branch = get_default_branch(repo_path=provider_dir)
             checkout_version(repo_path=provider_dir, version=default_branch)
-        elif repo_version != version:
+        else:
             checkout_version(repo_path=provider_dir, version=repo_version)
     else:
         latest_release = get_latest_release(repo_path=provider_dir)
