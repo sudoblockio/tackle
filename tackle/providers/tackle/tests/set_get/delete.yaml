@@ -1,0 +1,26 @@
+one:
+  - that:
+      stuff: things
+two:
+  - that:
+      stuff: things
+three:
+  - that:
+      stuff: things
+
+deleter_list:
+  ->: delete_key
+  path:
+    - one
+    - 0
+    - that
+    - stuff
+
+deleter_str:
+  ->: delete_key
+  path: two/0/that/stuff
+
+deleter_str_sep:
+  ->: delete_key
+  path: three.0.that.stuff
+  sep: .
