@@ -37,7 +37,7 @@ class GenerateHook(BaseHook):
     render_context: dict = Field(
         None, description="A render context that invalidates the default context."
     )
-    additional_context: dict = Field(
+    additional_context: Union[dict, list] = Field(
         None, description="A map to use as additional context when rendering."
     )
 
@@ -64,24 +64,35 @@ class GenerateHook(BaseHook):
             if not self.output.startswith('/'):
                 self.output = os.path.join(self.calling_directory, self.output)
 
-    def execute(self):
-        """Generate files / directories."""
+        # Update the render_context that will be used
         if self.render_context is not None:
             pass
         elif self.additional_context is not None:
-            self.render_context = {
-                **self.output_dict,
-                **self.additional_context,
-                **self.existing_context,
-            }
+            if isinstance(self.additional_context, list):
+                self.render_context = {
+                    **self.output_dict,
+                    **self.existing_context,
+                }
+                for i in self.additional_context:
+                    self.render_context.update(i)
+            else:
+                self.render_context = {
+                    **self.output_dict,
+                    **self.additional_context,
+                    **self.existing_context,
+                }
         else:
             self.render_context = {
                 **self.output_dict,
                 **self.existing_context,
             }
 
+    def execute(self):
+        """Generate files / directories."""
         self.env_ = StrictEnvironment(context=self.render_context)
-        self.env_.loader = FileSystemLoader('.')
+        # https://stackoverflow.com/questions/42368678/jinja-environment-is-not-supporting-absolute-paths
+        # Need to add root to support absolute paths
+        self.env_.loader = FileSystemLoader(['.', '/'])
 
         if isinstance(self.templates, str):
             self.generate_target(self.templates)
@@ -133,7 +144,7 @@ class GenerateHook(BaseHook):
         # Render the path right away as templating mangles things later - also logical
         # to render file names.  Who wants to generate files with templates in the name?
         file_name_template = self.env_.from_string(str(output_path))
-        output_path = file_name_template.render(self.output_dict)
+        output_path = file_name_template.render(self.render_context)
 
         # Make the parent directories by default
         parent_dir = Path(output_path).parent.absolute()
@@ -145,7 +156,7 @@ class GenerateHook(BaseHook):
             return
 
         try:
-            file_contents_template = self.env_.get_template(input_file)
+            file_contents_template = self.env_.get_template(os.path.abspath(input_file))
         except UnicodeDecodeError:
             # Catch binary files with this hack and copy them over
             # TODO: Perhaps improve? In cookiecutter they used a package binary-or-not

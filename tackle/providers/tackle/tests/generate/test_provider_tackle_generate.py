@@ -13,6 +13,7 @@ FIXTURES = [
     "plain-src-block.yaml",
     "plain-src-path.yaml",
     "render-file.yaml",
+    "render-file-additional-context.yaml",
     "render-dir-file.yaml",
     "render-dir-file-base.yaml",
     "tackle-provider-remote.yaml",
