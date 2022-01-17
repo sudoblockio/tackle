@@ -1,4 +1,0 @@
-this:
-  ->: provider_docs
-  chdir: ".."
-  provider: docs
