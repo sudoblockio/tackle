@@ -1,0 +1,26 @@
+#name: Tackle Provider
+
+description: Hooks that interface with tackle's parser and context. Core to most tackle scripts.
+
+examples:
+  - name: Basic
+    description: The most minimal implementation
+    content: |
+      example:
+        type: provider_docs
+        chdir: ".."
+        provider: docs
+
+#  - name: All options
+#    description: The most minimal implementation
+#    content->: tests/file
+
+hook_examples:
+  tackle:
+    - name: Basic
+      description: The most minimal implementation
+      content: |
+        example:
+          type: provider_docs
+          chdir: ".."
+          provider: docs

@@ -1,0 +1,56 @@
+
+providers:
+  - requests
+  - pyinquirer
+  - rich
+  - git
+  - toml
+  - system
+  - tackle
+
+provider_docs_directory->: "{{ calling_directory }}/../../docs/providers"
+
+#debug->: debug
+
+gen->:
+  # Iterate through the providers
+  for: providers
+  chdir: "{{item}}"
+  print->: print "Generating {{item}} provider"
+  provider->: "{{ item }}"
+
+  # Get the provider metadata
+  render_context->: provider_docs
+
+  is_tackle_meta->: isfile .tackle.meta.yaml
+
+  list->: listdir .
+  provider_meta:
+    ->: tackle .tackle.meta.yaml
+    if: is_tackle_meta
+    else: {}
+
+
+  Render hook templates from the tackle provider:
+    ->: generate {{calling_directory}}/tackle/templates/hook-doc.md {{provider_docs_directory}}/{{provider}}/{{ item.hook_type }}.md
+    for: render_context['hooks']
+    additional_context:
+      - "{{ item }}"
+      - "{{ provider_meta }}"
+
+#  debug->: debug
+
+  Render provider template:
+    ->: generate {{calling_directory}}/tackle/templates/provider-doc.md {{provider_docs_directory}}/{{provider}}/index.md
+    additional_context:
+      - "{{ render_context }}"
+      - "{{ provider_meta }}"
+
+#  Render provider index rst template:
+#    ->: generate {{calling_directory}}/tackle/templates/provider-index.rst {{provider_docs_directory}}/{{provider}}/index.rst
+#    additional_context:
+#      - "{{ render_context }}"
+#      - "{{ provider_meta }}"
+
+Render all providers template:
+  ->: generate {{calling_directory}}/tackle/templates/all-provider-index.rst {{provider_docs_directory}}/index.rst
