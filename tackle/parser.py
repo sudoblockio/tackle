@@ -313,7 +313,7 @@ def run_hook(context: 'Context'):
     Hook = get_hook(first_arg, context, suppress_error=True)
 
     if Hook is None:
-        raise UnknownHookTypeException
+        raise UnknownHookTypeException(f"Hook type {first_arg} unknown.")
 
     if context.key_path[-1] in ('->', '_>'):
         # We have a expanded or mixed (with args) hook expression and so there will be
