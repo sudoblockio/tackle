@@ -104,15 +104,26 @@ class MetaGitHook(BaseHook):
 
     def get_git_command(self, branch, repo, folder_name):
         """Build string to run git command."""
-        if not branch:
-            return (
-                f"git {self.command} {self.get_repo_prefix(repo)}{repo} {folder_name}"
-            )
-        else:
-            return (
-                f"git {self.command} {self.get_repo_prefix(repo)}{repo} "
-                f"{folder_name} -b {branch}"
-            )
+        if self.command == 'clone':
+            if not branch:
+                return f"git {self.command} {self.get_repo_prefix(repo)}{repo} {folder_name}"
+            else:
+                return (
+                    f"git {self.command} {self.get_repo_prefix(repo)}{repo} "
+                    f"{folder_name} -b {branch}"
+                )
+        elif self.command == 'pull':
+            return f"git {self.command}"
+
+        # if not branch:
+        #     return (
+        #         f"git {self.command} {self.get_repo_prefix(repo)}{repo} {folder_name}"
+        #     )
+        # else:
+        #     return (
+        #         f"git {self.command} {self.get_repo_prefix(repo)}{repo} "
+        #         f"{folder_name} -b {branch}"
+        #     )
 
     def execute_git_command(self, branch, repo, folder_name):
         """Execute the git command."""

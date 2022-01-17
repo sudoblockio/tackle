@@ -5,3 +5,8 @@ simple:
     name: Rob Cannon
     job: Parkour Specialist
 
+input_json:
+  name: Rob Cannon
+  job: Parkour Specialist
+
+args->: patch https://reqres.in/api/users/2 input_json

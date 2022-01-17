@@ -112,7 +112,7 @@ class ShellHook(BaseHook):
                                 if fd == masters[0]:  # We caught stdout
                                     print(data.rstrip())
                                 else:  # We caught stderr
-                                    print(data.rstrip(), err=True)
+                                    print(data.rstrip())
                                 readable[fd].flush()
             for fd in masters:
                 os.close(fd)

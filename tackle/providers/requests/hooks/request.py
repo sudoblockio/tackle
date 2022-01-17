@@ -3,9 +3,9 @@ import os
 import json
 import logging
 import requests
-from typing import Optional, Dict, List, Union
+from typing import Union, Any
 
-from tackle.models import BaseHook
+from tackle.models import BaseHook, Field
 
 logger = logging.getLogger(__name__)
 
@@ -29,19 +29,21 @@ def process_content(r: requests.Response):
 class RequestsGetHook(BaseHook):
     """
     Hook for Requests 'get' type prompts.
-
-    :param message: String message to show when prompting.
-    :return: Response of request in a dict
+    [Link](https://docs.python-requests.org/en/latest/api/#requests.get)
     """
 
     hook_type: str = 'get'
-    no_exit: bool = False
 
-    url: str = None
-    kwargs: dict = {}
-    params: dict = None
-    # Requests API docs call for additional functionality not for yaml
-    # params: Union[Dict, List[tuple], bytes] = None
+    # fmt: off
+    url: str = Field(..., description="URL for the new Request object.")
+    kwargs: Union[str, dict] = Field(
+        {}, description="Optional arguments that request takes.",
+        render_by_default=True
+    )
+    params: dict = Field(None,
+                         description="Dictionary, list of tuples or bytes to send in the query string for the Request.")
+    no_exit: bool = Field(False, description="Whether to exit on non-200 response.")
+    # fmt: on
 
     _args: list = [
         'url',
@@ -58,21 +60,26 @@ class RequestsGetHook(BaseHook):
 class RequestsPostHook(BaseHook):
     """
     Hook for Requests 'post' type prompts.
-
-    :param message: String message to show when prompting.
-    :return: Response of request in a dict
+    [Link](https://docs.python-requests.org/en/latest/api/#requests.post)
     """
 
     hook_type: str = 'post'
-    no_exit: bool = False
 
-    url: str
-    kwargs: dict = {}
-
+    # fmt: off
+    url: str = Field(..., description="URL for the new Request object.")
+    kwargs: Union[str, dict] = Field(
+        {}, description="Optional arguments that request takes.",
+        render_by_default=True
+    )
     # Requests API docs call for additional functionality not for yaml
-    data: Union[dict, list, str] = None
-    # data: Optional[Union[Dict, List[tuple], bytes, str]]
+    data: Any = Field(
+        None,
+        description="Dictionary, list of tuples, bytes, or file-like object to send in the body of the Request.",
+        render_by_default=True
+    )
     input_json: dict = None
+    no_exit: bool = Field(False, description="Whether to exit on non-200 response.")
+    # fmt: on
 
     _args: list = ['url', 'data', 'kwargs']
 
@@ -93,29 +100,32 @@ class RequestsPostHook(BaseHook):
 class RequestsPutHook(BaseHook):
     """
     Hook for Requests 'put' type prompts.
-
-    :param message: String message to show when prompting.
-    :return: Response of request in a dict
+    [Link](https://docs.python-requests.org/en/latest/api/#requests.put)
     """
 
     hook_type: str = 'put'
-    no_exit: bool = False
 
-    url: str
-    kwargs: Dict = {}
-    data: Optional[Union[Dict, List[tuple], bytes, str]]
-    input_json: Optional[dict] = None
+    # fmt: on
+    url: str = Field(..., description="URL for the new Request object.")
+    kwargs: Union[str, dict] = Field(
+        {}, description="Optional arguments that request takes.",
+        render_by_default=True
+    )
+    data: Any = Field(
+        None,
+        description="Dictionary, list of tuples, bytes, or file-like object to send in the body of the Request.",
+        render_by_default=True
+    )
+    input_json: dict = Field(
+        None,
+        description="Json data to send in the body of the Request.",
+    )
+    no_exit: bool = Field(False, description="Whether to exit on non-200 response.")
+    # fmt: off
 
     _args: list = ['url', 'data', 'kwargs']
 
     def execute(self):
-        if isinstance(self.data, str):
-            if not os.path.exists(self.data):
-                raise FileNotFoundError(
-                    f"For the requests patch method, data fields must be a "
-                    f"reference to a file path, not {self.data}."
-                )
-
         r = requests.put(self.url, data=self.data, json=self.input_json, **self.kwargs)
         exit_none_200(r, self.no_exit, self.url)
 
@@ -125,29 +135,32 @@ class RequestsPutHook(BaseHook):
 class RequestsPatchHook(BaseHook):
     """
     Hook for Requests 'patch' type prompts.
-
-    :param message: String message to show when prompting.
-    :return: Response of request in a dict
+    [Link](https://docs.python-requests.org/en/latest/api/#requests.patch)
     """
 
     hook_type: str = 'patch'
-    no_exit: bool = False
 
-    url: str
-    kwargs: Dict = {}
-    data: Optional[Union[Dict, List[tuple], bytes, str]]
-    input_json: Optional[dict] = None
+    # fmt: off
+    url: str = Field(..., description="URL for the new Request object.")
+    kwargs: Union[str, dict] = Field(
+        {}, description="Optional arguments that request takes.",
+        render_by_default=True
+    )
+    data: Any = Field(
+        None,
+        description="Dictionary, list of tuples, bytes, or file-like object to send in the body of the Request.",
+        render_by_default=True
+    )
+    input_json: dict = Field(
+        None,
+        description="Json data to send in the body of the Request.",
+    )
+    no_exit: bool = Field(False, description="Whether to exit on non-200 response.")
+    # fmt: off
 
     _args: list = ['url', 'data', 'kwargs']
 
     def execute(self):
-        if isinstance(self.data, str):
-            if not os.path.exists(self.data):
-                raise FileNotFoundError(
-                    f"For the requests patch method, data fields must be a "
-                    f"reference to a file path, not {self.data}."
-                )
-
         r = requests.patch(
             self.url, data=self.data, json=self.input_json, **self.kwargs
         )
@@ -159,16 +172,21 @@ class RequestsPatchHook(BaseHook):
 class RequestsDeleteHook(BaseHook):
     """
     Hook for Requests 'delete' type prompts.
-
-    Wraps https://docs.python-requests.org/en/latest/api/
+    [Link](https://docs.python-requests.org/en/latest/api/#requests.delete)
     """
 
     hook_type: str = 'delete'
-    url: str
-    kwargs: Dict = {}
-    no_exit: bool = False
 
-    _args: list = ['url', 'kwargs', 'params']
+    # fmt: off
+    url: str = Field(..., description="URL for the new Request object.")
+    kwargs: Union[str, dict] = Field(
+        {}, description="Optional arguments that request takes.",
+        render_by_default=True
+    )
+    no_exit: bool = Field(False, description="Whether to exit on non-200 response.")
+    # fmt: on
+
+    _args: list = ['url', 'kwargs']
 
     def execute(self):
         r = requests.delete(self.url, **self.kwargs)

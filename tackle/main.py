@@ -38,7 +38,7 @@ def tackle(
     :param password: The password to use when extracting the repository.
     :param directory: Relative path to a cookiecutter template in a repository.
 
-    :return Dictionary of the output
+    :return: Dictionary of the output
     """
     if args:
         kwargs['input_string'] = args[0]
