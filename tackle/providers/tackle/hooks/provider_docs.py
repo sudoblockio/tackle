@@ -3,13 +3,18 @@
 docs hooks.
 """
 import os
+import sys
 import importlib.machinery
 
 import json
 import inspect
 from pydantic import BaseModel, Field
 from typing import List, get_type_hints, Any
-from typing import _GenericAlias
+
+try:
+    from typing import _GenericAlias
+except ImportError:
+    pass
 
 from tackle.utils.paths import listdir_absolute
 from tackle.models import BaseHook
@@ -21,7 +26,6 @@ class HookDocField(BaseModel):
     name: str
     required: str
     type: str
-    # default: Union[str, dict, bool, list] = ""
     default: Any = ""
     description: str = ""
 
@@ -50,13 +54,6 @@ class ProviderDocs(BaseModel):
     hooks: List[HookDoc] = []
     requirements: list = []
     description: str = None
-
-
-# if 'anyOf' in v:
-#     type = ", ".join([i['hook_type'] for i in v['anyOf']])
-# else:
-#     type = v['hook_type']
-#
 
 
 def get_hook_properties(schema: dict) -> List[HookDocField]:
@@ -133,6 +130,11 @@ class ProviderDocsHook(BaseHook):
     # fmt: on
 
     _args: list = ['path', 'output']
+
+    def check_python_version(self):
+        """Doesn't work on py3.6."""
+        if sys.version_info.minor <= 6:
+            raise Exception("Can't run provider_docs hook in a py version < 3.7.")
 
     def execute(self) -> dict:
         """Build the docs."""
