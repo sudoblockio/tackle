@@ -6,7 +6,6 @@ from tackle.parser import walk_sync
 class BlockHook(BaseHook):
     """
     Hook for blocks of hooks.
-
     This is a special case where the hooks input variables are not rendered
     until it is later executed. Each `item` is looped over and parsed like a
     normal pass. Useful if you have a block of hooks that should be grouped
@@ -41,7 +40,7 @@ class BlockHook(BaseHook):
 
     _render_exclude = {'items'}
 
-    def execute(self):
+    def execute(self) -> dict:
         existing_context = self.output_dict.copy()
         existing_context.update(self.existing_context)
 

@@ -38,3 +38,9 @@ def test_provider_system_hook_block_block(change_dir):
 
     assert output['block']['things'] == 'here'
     assert output['block']['foo'] == 'bar'
+
+
+def test_provider_system_hook_block_list(change_dir):
+    """Complex block."""
+    output = tackle('list.yaml')
+    assert 'private' not in output

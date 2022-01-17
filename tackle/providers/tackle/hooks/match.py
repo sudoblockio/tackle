@@ -1,4 +1,6 @@
 """Match hook."""
+from typing import Union
+
 from tackle.models import BaseHook, Context, Field
 from tackle.parser import walk_sync
 
@@ -20,7 +22,7 @@ class MatchHook(BaseHook):
 
     _args = ['value']
 
-    def execute(self):
+    def execute(self) -> Union[dict, list]:
         # Condition catches everything except expanded hook calls and blocks (ie key->)
         if self.value in self.case:
             return self.run_key()[self.value]

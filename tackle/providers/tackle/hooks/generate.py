@@ -37,8 +37,10 @@ class GenerateHook(BaseHook):
     render_context: dict = Field(
         None, description="A render context that invalidates the default context."
     )
-    additional_context: Union[dict, list] = Field(
-        None, description="A map to use as additional context when rendering."
+    additional_context: Union[str, dict, list] = Field(
+        None,
+        description="A map to use as additional context when rendering.",
+        render_by_default=True,
     )
 
     base_dir: Path = None
@@ -47,7 +49,6 @@ class GenerateHook(BaseHook):
     file_path_separator_: str = None  # / for mac / linux - \ for win
 
     _args = ['templates', 'output']
-    # _render_exclude = ['templates']
 
     def __init__(self, **data: Any):
         super().__init__(**data)
