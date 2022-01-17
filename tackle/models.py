@@ -73,7 +73,7 @@ class BaseHook(BaseModel):
     # access_modifier: Literal['public', 'private'] = None
 
     if_: Union[str, bool] = Field(None, render_by_default=True)
-    else_: Union[str, bool] = Field(None, render_by_default=True)
+    else_: Any = Field(None, render_by_default=True)
     for_: Union[str, list] = Field(None, render_by_default=True)
     reverse: Union[str, bool] = Field(None, render_by_default=True)
 
