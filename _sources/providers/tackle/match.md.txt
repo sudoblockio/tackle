@@ -1,0 +1,25 @@
+# match
+
+
+Hooks that interface with tackle's parser and context. Core to most tackle scripts.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| value | string |  |  |  |
+| case | object |  |  | A dictionary where the keys are cases to be matched. Runs hooks if present. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | value | str |
+
+
+## Output
+
+union 
+ 

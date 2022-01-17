@@ -1,0 +1,30 @@
+# jinja
+
+
+Hook for jinja templates. Returns string path to the output file.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| file_system_loader | string | . | X |  |
+| template_path | string |  |  | Path to the template to render |
+| output_path | string |  |  | Path to the output file |
+| context | Any |  |  |  |
+| extra_context | object | {} | X | A dict to use to render |
+| render_context | object |  |  | A render context that invalidates the default context. |
+| additional_context | object |  |  | A map to use as additional context when rendering. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | template_path | str |
+ | 2 | output_path | str |
+
+
+## Output
+
+dict 

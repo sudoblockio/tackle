@@ -1,0 +1,25 @@
+# find_in_parent
+
+
+Hook to find the absolute path to a file or directory in parent directories.:return: string: Absolute path to the target file
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| target | string |  |  | The name of the file to find the absolute path to |
+| fallback | Any |  |  | String to fallback on if the target is not found. |
+| starting_dir | string | . | X | The starting directory to search from. Defaults to current working directory. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | target | str |
+
+
+## Output
+
+None 

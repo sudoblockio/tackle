@@ -1,0 +1,25 @@
+# input
+
+
+Hook for PyInquirer 'input' type prompts.Example: https://github.com/CITGuru/PyInquirer/blob/master/examples/input.py:param message: String message to show when prompting.:param choices: A list of strings or list of k/v pairs per above description:param name: A key to insert the output value to. If not provided defaults to    inserting into parent key:return: String answer
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| default | Any |  |  | Default choice. |
+| message | string |  |  | String message to show when prompting. |
+| name | string | tmp | X | Extra key to embed into. Artifact of API. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | message | str |
+
+
+## Output
+
+None 

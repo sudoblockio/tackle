@@ -1,0 +1,27 @@
+# print
+
+
+Hook  for printing an input and returning the output.Follows: https://docs.python.org/3/library/functions.html#printprint(*objects, sep=' ', end='\n', file=sys.stdout, flush=False)
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| objects | Any |  |  | The objects to print. |
+| sep | string |   | X | Separator between printed objects. |
+| end | string | 
+ | X | What to print at the end |
+| flush | boolean | False | X | No clue. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | objects | any |
+
+
+## Output
+
+None 

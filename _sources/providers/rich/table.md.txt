@@ -1,0 +1,26 @@
+# table
+
+
+Hook for creating tables with rich - github.com/willmcgugan/rich.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| column_names | array | [] | X | List of column names |
+| sort | boolean | False | X | Boolean to sort contents or contents_split |
+| contents | Any |  |  | List of lists to put into columns / rows |
+| contents_split | array |  |  | List of strings to separate into columns based on `separator` |
+| separator | string |  |  | A string to separate the strings in the contents |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+ 
+
+## Output
+
+None 

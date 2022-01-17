@@ -1,0 +1,53 @@
+# system
+
+None
+
+### Hooks  
+
+| Type | Description | Return |
+| :--- | :--- | :--- |
+| [chmod](chmod.md) | Hook removing a file or directory.:param src: String or list of sources, either directories or files:param dst: String for path to copy to:param create_path: Boolean to create the directory path if it does not exist.    Defaults to true:return: None | | 
+| [copy](copy.md) | Hook coying a file/files or directory/directories to a location.:param src: String or list of sources, either a directories or files:param dst: String for path to copy to:param create_path: Boolean to create the directory path if it does not exist.    Defaults to true:return: None | | 
+| [create_file](create_file.md) | Hook to create an empty file - like touch.:param path: String or list of paths to create. | | 
+| [file](file.md) | Hook to read and write to a file. | | 
+| [move](move.md) | Hook  for moving a directory or directories to a location.:param src: String or list of sources, either directories or files:param dst: String for path to copy to:param create_path: Boolean to create the directory path if it does not exist.    Defaults to true:return: None | | 
+| [remove](remove.md) | Hook for removing a directory or directories.:param path: String or list of paths to remove:return: None | | 
+| [shred](shred.md) | Hook for shredding file/files.:param src: String or list of sources, either directories or files:param dst: String for path to copy to:param create_path: Boolean to create the directory path if it does not exist.    Defaults to true:return: None | | 
+| [type](type.md) | Hook for getting the type of a variable. | | 
+| [var](var.md) | Hook for rendering a variable based on an input. Only useful for rendering asotherwise you wouldn't need this hook at all.Alternatively just use:```yamlkey->: {{some_other_key}}```Which under the hood is just rewriting the input before processing as this:```yamlkey->: var "{{some_other_key}}"```For unrendered values you would omit any hook logic. | | 
+| [mkdir](mkdir.md) | Hook creating a directory. | | 
+| [pprint](pprint.md) | Wraps python pprint builtin.https://docs.python.org/3/library/pprint.html#pprint.PrettyPrinter | | 
+| [print](print.md) | Hook  for printing an input and returning the output.Follows: https://docs.python.org/3/library/functions.html#printprint(*objects, sep=' ', end='\n', file=sys.stdout, flush=False) | | 
+| [symlink](symlink.md) | Hook creating symlinks wrapping `os.symlink` functionality. | | 
+| [json](json.md) | Hook for json. If no `contents` is provided, the hook reads from path. Otherwise it writes the `contents`. When writing, returns path. When reading, returns dict. | | 
+| [random_hex](random_hex.md) | Hook  for `random_hex`. Lists the contents of a directory. | | 
+| [random_string](random_string.md) | Hook  for `random_string`. Lists the contents of a directory. | | 
+| [find_in_child](find_in_child.md) | Hook to find the absolute path to a file or directory in child directories.:return: string: Absolute path to the target file | | 
+| [find_in_parent](find_in_parent.md) | Hook to find the absolute path to a file or directory in parent directories.:return: string: Absolute path to the target file | | 
+| [path_exists](path_exists.md) | Hook for os package 'path.exists'. | | 
+| [isdir](isdir.md) | Hook for os package 'path.isdir'. | | 
+| [isfile](isfile.md) | Hook for os package 'path.isfile'. | | 
+| [path_join](path_join.md) | Hook joining paths. | | 
+| [concat](concat.md) | Hook to concatenate a list of items.:param inputs: A list append to:param item: A list or string to append to `input` list:return: An appended list object. | | 
+| [append](append.md) | Hook for updating dict objects with items. | | 
+| [list_from_dict](list_from_dict.md) | Hook generating a list from a dict based on the keys.:param input: A list append to:param item: A list or string to append to `input` list:return: An appended list object. | | 
+| [list_remove](list_remove.md) | Hook  for updating dict objects with items.:param input: A list append to:param item: A list or string to remove to `input` list:param filter: A regex to remove items from list with:return: A list without removed objects objects. | | 
+| [jinja](jinja.md) | Hook for jinja templates. Returns string path to the output file. | | 
+| [listdir](listdir.md) | Hook  for `listdir`. Lists the contents of a directory.:return: A list of contents of the `path` if input is string,    A map with keys of items if input `path` is list. | | 
+| [webbrowser](webbrowser.md) | Hook for registering a variable based on an input. Useful with rendering. | | 
+| [command](command.md) | System calls. | | 
+| [shell](shell.md) | `shell` hook for system calls.Streams the output of the process.:param command: The command to run on the host:return: String output of command | | 
+| [yaml](yaml.md) | Hook for yaml. | | 
+| [join](join.md) | Join a list of strings with a separator. | | 
+| [split](split.md) | Hook for splitting a string into as list based on a separator. | | 
+| [set_env](set_env.md) | Hook for setting environment variables. | | 
+| [export](export.md) | Hook for setting environment variables that returns NoneSets with input dict. Gets with input string.:param input: Dict for setting and string for getting environment variables:param fallback: A fallback for getting.:return: input | | 
+| [get_env](get_env.md) | Hook for getting environment variables. | | 
+| [unset](unset.md) | Hook for unsetting environment variables. | | 
+| [keys](keys.md) | Hook  for returning the keys of a dict as a list.:param src: The input dict or list of dicts return the keys for:return: List of keys or list of list of keys if input is list | | 
+| [merge](merge.md) | Hook for recursively merging dict objects with input maps.:param src: The input dict to update:param input: A dict or list of dicts to update the input `dict`:return: An updated dict object. | | 
+| [pop](pop.md) | Hook  for recursively merging dict objects with input maps.:param src: The input dict to update:param item: A list or string of items to remove from a dictionary or list:return: An updated dict object. | | 
+| [update](update.md) | Hook for updating dict objects with items. | | 
+| [unzipfile](unzipfile.md) | Hook to unzip a file. | | 
+| [zipfile](zipfile.md) | Hook to zip a file or directory. | | 
+ 

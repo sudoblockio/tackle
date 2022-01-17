@@ -1,0 +1,23 @@
+# isfile
+
+
+Hook for os package 'path.isfile'.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| path | string |  |  | The path to a file |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | path | str |
+
+
+## Output
+
+bool 

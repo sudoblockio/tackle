@@ -1,0 +1,21 @@
+# requests
+
+None
+
+### Hooks  
+
+| Type | Description | Return |
+| :--- | :--- | :--- |
+| [delete](delete.md) | Hook for Requests 'delete' type prompts.[Link](https://docs.python-requests.org/en/latest/api/#requests.delete) | | 
+| [get](get.md) | Hook for Requests 'get' type prompts.[Link](https://docs.python-requests.org/en/latest/api/#requests.get) | | 
+| [patch](patch.md) | Hook for Requests 'patch' type prompts.[Link](https://docs.python-requests.org/en/latest/api/#requests.patch) | | 
+| [post](post.md) | Hook for Requests 'post' type prompts.[Link](https://docs.python-requests.org/en/latest/api/#requests.post) | | 
+| [put](put.md) | Hook for Requests 'put' type prompts.[Link](https://docs.python-requests.org/en/latest/api/#requests.put) | | 
+
+### Requirements
+
+| Requirement |  
+| :--- | 
+| requests | 
+
+ 

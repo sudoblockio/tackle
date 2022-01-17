@@ -1,0 +1,36 @@
+# tackle
+
+Hooks that interface with tackle's parser and context. Core to most tackle scripts.
+
+### Hooks  
+
+| Type | Description | Return |
+| :--- | :--- | :--- |
+| [tackle](tackle.md) | Hook for calling external tackle providers. | | 
+| [assert](assert.md) | Hook for asserting an input is equal to a value. | | 
+| [debug](debug.md) | Hook for debugging that prints the output context and pauses runtime. | | 
+| [block](block.md) | Hook for blocks of hooks.This is a special case where the hooks input variables are not rendereduntil it is later executed. Each `item` is looped over and parsed like anormal pass. Useful if you have a block of hooks that should be groupedinto a single conditional / looped execution.Render context is a little different than normal where both the contextfrom outside of the hook and within the hook are made available. Forinstance in this contrived example:```stuff: thingsblock->:  merge: true  stuff->: print other_things  things->: print "{{ stuff }}" --if "{{ stuff == 'things' }}"```The output would be:```stuff: other_things```Because the higher level `stuff` takes precidance where as:param items: Map of inputs | | 
+| [match](match.md) | Hook for match / case statements. Takes a dict where the keys are matched to avalue. If the value has an arrow in it (ie key->: ... ) the arrow is stripped away.All matched values are ran as hooks. | | 
+| [delete_key](delete_key.md) | Hook for getting a key based on a key path which is a list with keys and numbersfor indexes in a list. | | 
+| [get_key](get_key.md) | Hook for getting a key based on a key path which is a list with keys and numbersfor indexes in a list. | | 
+| [set_key](set_key.md) | Hook for setting a key based on a key path which is a list with keys and numbersfor indexes in a list. | | 
+| [generate](generate.md) | Hook for generating project outputs. Recursively renders all files and folders in agiven target directory to an output. If there is a "templates" directory and a fileor directory that matches the `templates` input param, use that as target. | | 
+| [provider_docs](provider_docs.md) | Hook building provider docs. | | 
+| [import](import.md) | Hook for importing external tackle-box providers. Does not actually execute thebase tackle in the provider but merely makes the hooks and functions available tobe used in the context. Takes any type as an argument to to build `src` and`version` import targets.### ExampleExpanded strings - Used as a private hook call where key is deleted post exec```arbitrary key:  _>: input  src: robcxyz/tackle-demo  version: v0.1.0``` | | 
+ 
+### Examples
+
+
+#### Basic
+
+The most minimal implementation
+
+```yaml
+example:
+  type: provider_docs
+  chdir: ".."
+  provider: docs
+
+```
+
+

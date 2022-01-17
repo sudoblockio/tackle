@@ -1,0 +1,25 @@
+# listdir
+
+
+Hook  for `listdir`. Lists the contents of a directory.:return: A list of contents of the `path` if input is string,    A map with keys of items if input `path` is list.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| ignore_hidden_files | boolean |  |  | Boolean to ignore hidden files |
+| path | Any |  |  | String or list to directories to list |
+| sort | boolean | False | X | Boolean to sort the output |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | path | union |
+
+
+## Output
+
+None 

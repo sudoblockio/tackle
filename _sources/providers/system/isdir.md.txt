@@ -1,0 +1,23 @@
+# isdir
+
+
+Hook for os package 'path.isdir'.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| path | string |  |  | The path to a directory |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | path | str |
+
+
+## Output
+
+bool 

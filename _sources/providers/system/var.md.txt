@@ -1,0 +1,23 @@
+# var
+
+
+Hook for rendering a variable based on an input. Only useful for rendering asotherwise you wouldn't need this hook at all.Alternatively just use:```yamlkey->: {{some_other_key}}```Which under the hood is just rewriting the input before processing as this:```yamlkey->: var "{{some_other_key}}"```For unrendered values you would omit any hook logic.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| input | Any |  |  | Any variable input. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | input | any |
+
+
+## Output
+
+None 

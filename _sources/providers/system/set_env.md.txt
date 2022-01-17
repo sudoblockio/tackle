@@ -1,0 +1,25 @@
+# set_env
+
+
+Hook for setting environment variables.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| environment_variable | string |  |  | The name of the environment variable to set. |
+| value | string |  |  | The value to set it. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | environment_variable | str |
+ | 2 | value | str |
+
+
+## Output
+
+None 

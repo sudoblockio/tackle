@@ -1,0 +1,24 @@
+# copy
+
+
+Hook coying a file/files or directory/directories to a location.:param src: String or list of sources, either a directories or files:param dst: String for path to copy to:param create_path: Boolean to create the directory path if it does not exist.    Defaults to true:return: None
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| src | Any |  |  | String or list of sources, either a directories or files |
+| dst | string |  |  |  |
+| create_path | boolean | True | X |  |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+ 
+
+## Output
+
+NoneType 

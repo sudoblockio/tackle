@@ -1,0 +1,44 @@
+# tackle
+
+
+Hooks that interface with tackle's parser and context. Core to most tackle scripts.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| input_string | string |  |  | The input can be one of repo, file path, directory with tackle.yaml, zip file, or if left blank parent tackle file. |
+| checkout | string |  |  | The branch or version to checkout for repo type inputs_strings. |
+| context_file | string |  |  | The file to run inside a repo input. |
+| additional_context | object |  |  | Any additional context to use when calling the hook. Like existing context. |
+| context | object |  |  | A context to use that overrides the current context. |
+| password | string |  |  | A password to use for repo inputs. |
+| directory | string |  |  | The directory to run inside for repo inputs. |
+| override | object |  |  | A dictionary of keys to override. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | input_string | str |
+
+
+## Output
+
+dict 
+
+## Examples
+
+### Basic
+
+The most minimal implementation
+
+```yaml
+example:
+  type: provider_docs
+  chdir: ".."
+  provider: docs
+```
+  

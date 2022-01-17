@@ -1,0 +1,24 @@
+# join
+
+
+Join a list of strings with a separator.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| input | array |  |  | A list of strings to join. |
+| separator | string | . | X | String separator. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | input | str |
+
+
+## Output
+
+None 

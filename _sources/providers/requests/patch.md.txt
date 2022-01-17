@@ -1,0 +1,29 @@
+# patch
+
+
+Hook for Requests 'patch' type prompts.[Link](https://docs.python-requests.org/en/latest/api/#requests.patch)
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| url | string |  |  | URL for the new Request object. |
+| kwargs | Any | {} | X | Optional arguments that request takes. |
+| data | Any |  |  | Dictionary, list of tuples, bytes, or file-like object to send in the body of the Request. |
+| input_json | object |  |  | Json data to send in the body of the Request. |
+| no_exit | boolean | False | X | Whether to exit on non-200 response. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | url | str |
+ | 2 | data | any |
+ | 3 | kwargs | union |
+
+
+## Output
+
+None 

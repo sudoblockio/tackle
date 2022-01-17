@@ -1,0 +1,23 @@
+# markdown
+
+
+Hook for printing markdown and returning the output.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| text | string |  |  |  |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | text | str |
+
+
+## Output
+
+None 

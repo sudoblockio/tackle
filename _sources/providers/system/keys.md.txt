@@ -1,0 +1,23 @@
+# keys
+
+
+Hook  for returning the keys of a dict as a list.:param src: The input dict or list of dicts return the keys for:return: List of keys or list of list of keys if input is list
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| src | object |  |  |  |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | src | dict |
+
+
+## Output
+
+None 

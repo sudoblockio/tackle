@@ -1,0 +1,25 @@
+# pop
+
+
+Hook  for recursively merging dict objects with input maps.:param src: The input dict to update:param item: A list or string of items to remove from a dictionary or list:return: An updated dict object.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| src | Any |  |  |  |
+| item | Any |  |  |  |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | src | union |
+ | 2 | item | union |
+
+
+## Output
+
+None 

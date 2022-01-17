@@ -1,0 +1,25 @@
+# update
+
+
+Hook for updating dict objects with items.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| src | object |  |  | A dict or list of dicts to update the input `src` |
+| input | object |  |  | A dict or list of dicts to update the input `src` |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | src | dict |
+ | 2 | input | dict |
+
+
+## Output
+
+None 

@@ -1,0 +1,23 @@
+# unset
+
+
+Hook for unsetting environment variables.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| environment_variable | string |  |  | The name of the environment variable to set. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | environment_variable | str |
+
+
+## Output
+
+None 

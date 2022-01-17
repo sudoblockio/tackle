@@ -1,0 +1,22 @@
+# create_file
+
+
+Hook to create an empty file - like touch.:param path: String or list of paths to create.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| path | Any |  |  |  |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+ 
+
+## Output
+
+union 

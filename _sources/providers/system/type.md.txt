@@ -1,0 +1,23 @@
+# type
+
+
+Hook for getting the type of a variable.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| input | Any |  |  | Any variable input. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | input | any |
+
+
+## Output
+
+None 

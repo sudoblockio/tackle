@@ -1,0 +1,23 @@
+# block
+
+
+Hooks that interface with tackle's parser and context. Core to most tackle scripts.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| items | object |  |  | Items to be parsed like a normal input. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+ 
+
+## Output
+
+dict 
+ 

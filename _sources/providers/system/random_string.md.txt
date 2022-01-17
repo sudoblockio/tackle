@@ -1,0 +1,25 @@
+# random_string
+
+
+Hook  for `random_string`. Lists the contents of a directory.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| string_case | string | lower | X | Case of output, one of `upper` or `lower` |
+| length | integer | 8 | X | Length of the random string. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | length | int |
+ | 2 | string_case | str |
+
+
+## Output
+
+None 

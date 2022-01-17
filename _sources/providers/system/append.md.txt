@@ -1,0 +1,25 @@
+# append
+
+
+Hook for updating dict objects with items.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| input | array |  |  | A list append to. |
+| item | Any |  |  | A list or string to append to `input` list. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | input | list |
+ | 2 | item | union |
+
+
+## Output
+
+None 

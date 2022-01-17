@@ -1,0 +1,17 @@
+# pyinquirer
+
+None
+
+### Hooks  
+
+| Type | Description | Return |
+| :--- | :--- | :--- |
+| [checkbox](checkbox.md) | Hook for PyInquirer type prompts.Takes in three forms of `choices` inputs.1. list of string2. list of maps with all keys = `name`3. list of maps with the key as the output, the value as displayed question:param message: String message to show when prompting.:param choices: A list of strings or list of k/v pairs per above description:param name: A key to insert the output value to. If not provided defaults to    inserting into parent key:param qmark: A marker to select with like 😃:return: List of answers | | 
+| [confirm](confirm.md) | Hook to confirm with a message and return a boolean. | | 
+| [expand](expand.md) | Hook for PyInquirer `expand` type prompt.Example: https://github.com/CITGuru/PyInquirer/blob/master/examples/expand.py:param message: String message to show when prompting.:param choices: A list of strings or list of k/v pairs per above description:param name: A key to insert the output value to. If not provided defaults    to inserting into parent key:return: List of answers | | 
+| [password](password.md) | Hook for PyInquirer `password` type prompts. | | 
+| [rawlist](rawlist.md) | Hook for PyInquirer 'rawlist' type prompts.Example: https://github.com/CITGuru/PyInquirer/blob/master/examples/rawlist.py:param message: String message to show when prompting.:param choices: A list of strings or list of k/v pairs per above description:param name: A key to insert the output value to. If not provided defaults to    inserting into parent key:return: String for the answer | | 
+| [select](select.md) | Hook for PyInquirer 'list' type prompts.Takes in two forms of `choices` inputs.1. list of string2. list of maps with the key as the output, the value as displayed question:param message: String message to show when prompting.:param choices: A list of strings or list of k/v pairs per above description:param name: A key to insert the output value to. If not provided defaults to    inserting into parent key:param index::return: String for answer | | 
+| [editor](editor.md) | Hook for PyInquirer `editor` type prompts.https://github.com/CITGuru/PyInquirer/blob/master/examples/expand.py:param message: String message to show when prompting.:param choices: A list of strings or list of k/v pairs per above description:param name: A key to insert the output value to. If not provided defaults to    inserting into parent key | | 
+| [input](input.md) | Hook for PyInquirer 'input' type prompts.Example: https://github.com/CITGuru/PyInquirer/blob/master/examples/input.py:param message: String message to show when prompting.:param choices: A list of strings or list of k/v pairs per above description:param name: A key to insert the output value to. If not provided defaults to    inserting into parent key:return: String answer | | 
+ 

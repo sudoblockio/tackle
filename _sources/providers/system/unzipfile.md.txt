@@ -1,0 +1,23 @@
+# unzipfile
+
+
+Hook to unzip a file.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| input | string |  |  | Input path |
+| output | string | . | X | Output path, default to current directory |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+ 
+
+## Output
+
+None 

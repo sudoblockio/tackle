@@ -1,0 +1,26 @@
+# assert
+
+
+Hooks that interface with tackle's parser and context. Core to most tackle scripts.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| input | Any |  |  |  |
+| value | Any |  |  |  |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | input | any |
+ | 2 | value | any |
+
+
+## Output
+
+None 
+ 

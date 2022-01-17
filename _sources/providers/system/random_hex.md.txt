@@ -1,0 +1,23 @@
+# random_hex
+
+
+Hook  for `random_hex`. Lists the contents of a directory.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| length | integer | 8 | X | Number for number of digits - default 8 |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | length | int |
+
+
+## Output
+
+str 

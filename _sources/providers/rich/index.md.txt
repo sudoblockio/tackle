@@ -1,0 +1,18 @@
+# rich
+
+None
+
+### Hooks  
+
+| Type | Description | Return |
+| :--- | :--- | :--- |
+| [table](table.md) | Hook for creating tables with rich - github.com/willmcgugan/rich. | | 
+| [markdown](markdown.md) | Hook for printing markdown and returning the output. | | 
+
+### Requirements
+
+| Requirement |  
+| :--- | 
+| rich | 
+
+ 

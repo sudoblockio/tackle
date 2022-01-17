@@ -1,0 +1,25 @@
+# confirm
+
+
+Hook to confirm with a message and return a boolean.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| default | Any | True | X | Default choice. |
+| message | string |  |  | String message to show when prompting. |
+| name | string | tmp | X | Extra key to embed into. Artifact of API. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | message | str |
+
+
+## Output
+
+bool 

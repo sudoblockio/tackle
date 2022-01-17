@@ -1,0 +1,28 @@
+# get
+
+
+Hook for Requests 'get' type prompts.[Link](https://docs.python-requests.org/en/latest/api/#requests.get)
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| url | string |  |  | URL for the new Request object. |
+| kwargs | Any | {} | X | Optional arguments that request takes. |
+| params | object |  |  | Dictionary, list of tuples or bytes to send in the query string for the Request. |
+| no_exit | boolean | False | X | Whether to exit on non-200 response. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | url | str |
+ | 2 | kwargs | union |
+ | 3 | params | dict |
+
+
+## Output
+
+dict 

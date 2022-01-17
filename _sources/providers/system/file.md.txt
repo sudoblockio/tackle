@@ -1,0 +1,25 @@
+# file
+
+
+Hook to read and write to a file.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| path | string |  |  | Path to read or write file. |
+| contents | Any |  |  | If writing to file, the contents to write. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | path | str |
+ | 2 | contents | any |
+
+
+## Output
+
+union 

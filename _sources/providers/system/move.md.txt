@@ -1,0 +1,26 @@
+# move
+
+
+Hook  for moving a directory or directories to a location.:param src: String or list of sources, either directories or files:param dst: String for path to copy to:param create_path: Boolean to create the directory path if it does not exist.    Defaults to true:return: None
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| src | Any |  |  |  |
+| create_path | boolean | True | X |  |
+| dst | string |  |  |  |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | src | union |
+ | 2 | dst | str |
+
+
+## Output
+
+NoneType 

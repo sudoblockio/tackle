@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyinquirer &mdash; tackle-box 0.2.0-alpha.6 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> tackle-box
+          </a>
+              <div class="version">
+                0.2.0-alpha.6
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">pyinquirer</a><ul>
+<li><a class="reference internal" href="#hooks">Hooks</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">tackle-box</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>pyinquirer</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/providers/pyinquirer/index.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pyinquirer">
+<h1>pyinquirer<a class="headerlink" href="#pyinquirer" title="Permalink to this headline"></a></h1>
+<p>None</p>
+<section id="hooks">
+<h2>Hooks<a class="headerlink" href="#hooks" title="Permalink to this headline"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Return</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="checkbox.html"><span class="doc">checkbox</span></a></p></td>
+<td><p>Hook for PyInquirer type prompts.Takes in three forms of <code class="docutils literal notranslate"><span class="pre">choices</span></code> inputs.1. list of string2. list of maps with all keys = <code class="docutils literal notranslate"><span class="pre">name</span></code>3. list of maps with the key as the output, the value as displayed question:param message: String message to show when prompting.:param choices: A list of strings or list of k/v pairs per above description:param name: A key to insert the output value to. If not provided defaults to    inserting into parent key:param qmark: A marker to select with like 😃:return: List of answers</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="confirm.html"><span class="doc">confirm</span></a></p></td>
+<td><p>Hook to confirm with a message and return a boolean.</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="expand.html"><span class="doc">expand</span></a></p></td>
+<td><p>Hook for PyInquirer <code class="docutils literal notranslate"><span class="pre">expand</span></code> type prompt.Example: <a class="reference external" href="https://github.com/CITGuru/PyInquirer/blob/master/examples/expand.py:param">https://github.com/CITGuru/PyInquirer/blob/master/examples/expand.py:param</a> message: String message to show when prompting.:param choices: A list of strings or list of k/v pairs per above description:param name: A key to insert the output value to. If not provided defaults    to inserting into parent key:return: List of answers</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="password.html"><span class="doc">password</span></a></p></td>
+<td><p>Hook for PyInquirer <code class="docutils literal notranslate"><span class="pre">password</span></code> type prompts.</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="rawlist.html"><span class="doc">rawlist</span></a></p></td>
+<td><p>Hook for PyInquirer ‘rawlist’ type prompts.Example: <a class="reference external" href="https://github.com/CITGuru/PyInquirer/blob/master/examples/rawlist.py:param">https://github.com/CITGuru/PyInquirer/blob/master/examples/rawlist.py:param</a> message: String message to show when prompting.:param choices: A list of strings or list of k/v pairs per above description:param name: A key to insert the output value to. If not provided defaults to    inserting into parent key:return: String for the answer</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="select.html"><span class="doc">select</span></a></p></td>
+<td><p>Hook for PyInquirer ‘list’ type prompts.Takes in two forms of <code class="docutils literal notranslate"><span class="pre">choices</span></code> inputs.1. list of string2. list of maps with the key as the output, the value as displayed question:param message: String message to show when prompting.:param choices: A list of strings or list of k/v pairs per above description:param name: A key to insert the output value to. If not provided defaults to    inserting into parent key:param index::return: String for answer</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="editor.html"><span class="doc">editor</span></a></p></td>
+<td><p>Hook for PyInquirer <code class="docutils literal notranslate"><span class="pre">editor</span></code> type prompts.https://github.com/CITGuru/PyInquirer/blob/master/examples/expand.py:param message: String message to show when prompting.:param choices: A list of strings or list of k/v pairs per above description:param name: A key to insert the output value to. If not provided defaults to    inserting into parent key</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="input.html"><span class="doc">input</span></a></p></td>
+<td><p>Hook for PyInquirer ‘input’ type prompts.Example: <a class="reference external" href="https://github.com/CITGuru/PyInquirer/blob/master/examples/input.py:param">https://github.com/CITGuru/PyInquirer/blob/master/examples/input.py:param</a> message: String message to show when prompting.:param choices: A list of strings or list of k/v pairs per above description:param name: A key to insert the output value to. If not provided defaults to    inserting into parent key:return: String answer</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2021, Rob Cannon.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

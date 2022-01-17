@@ -1,0 +1,23 @@
+# path_exists
+
+
+Hook for os package 'path.exists'.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| path | string |  |  | The path to file or directory |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | path | str |
+
+
+## Output
+
+bool 

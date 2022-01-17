@@ -1,0 +1,25 @@
+# symlink
+
+
+Hook creating symlinks wrapping `os.symlink` functionality.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| src | string |  |  | String or list of sources, either a directories or files |
+| dst | string |  |  | String for path to copy to |
+| target_is_directory | boolean | False | X | The default value of this parameter is False. If the specified target path is directory then its value should be True. |
+| overwrite | boolean | False | X | Overwrite the destination. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+ 
+
+## Output
+
+NoneType 

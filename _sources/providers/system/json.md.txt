@@ -1,0 +1,25 @@
+# json
+
+
+Hook for json. If no `contents` is provided, the hook reads from path. Otherwise it writes the `contents`. When writing, returns path. When reading, returns dict.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| path | string |  |  | The path to write the file. |
+| contents | object |  |  | A dict to write |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | path | str |
+ | 2 | contents | dict |
+
+
+## Output
+
+union 

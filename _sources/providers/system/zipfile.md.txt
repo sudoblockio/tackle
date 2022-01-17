@@ -1,0 +1,23 @@
+# zipfile
+
+
+Hook to zip a file or directory.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| input | string |  |  | Input path |
+| output | string |  |  | Output path |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+ 
+
+## Output
+
+None 

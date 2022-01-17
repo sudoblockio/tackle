@@ -1,0 +1,35 @@
+# generate
+
+
+Hooks that interface with tackle's parser and context. Core to most tackle scripts.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| templates | Any |  |  | Path or list of paths to a templatable directory or file to recursively render the contents. |
+| output | string | . | X | Path to put the output file(s). |
+| copy_without_render | Any | [] | X |  |
+| overwrite_if_exists | boolean | False | X | Overwrite the output if exists. |
+| skip_if_file_exists | boolean | False | X | Skip creating if path exists. |
+| render_context | object |  |  | A render context that invalidates the default context. |
+| additional_context | Any |  |  | A map to use as additional context when rendering. |
+| base_dir | string |  |  |  |
+| env_ | Any |  |  |  |
+| file_system_loader_ | Any |  |  |  |
+| file_path_separator_ | string |  |  |  |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | templates | union |
+ | 2 | output | str |
+
+
+## Output
+
+None 
+ 

@@ -1,0 +1,22 @@
+# webbrowser
+
+
+Hook for registering a variable based on an input. Useful with rendering.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| url | string |  |  | String url to open in browser. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+ 
+
+## Output
+
+None 

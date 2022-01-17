@@ -1,0 +1,30 @@
+# provider_docs
+
+
+Hooks that interface with tackle's parser and context. Core to most tackle scripts.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| path | string | . | X | The path to the provider. |
+| output | string | . | X | The path to output the docs to. |
+| provider | string |  |  | The provider name. |
+| templates_dir | string |  |  | A path to a directory with `hook-doc.md` and `provider-doc.md`. |
+| hooks_dir | string | hooks | X | Directory hooks are in. |
+| meta_file | string | .tackle.meta.yaml | X | A file to keep metadata about the provider. Is renedered like a tackle file. See examples. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | path | str |
+ | 2 | output | str |
+
+
+## Output
+
+dict 
+ 

@@ -1,0 +1,24 @@
+# remove
+
+
+Hook for removing a directory or directories.:param path: String or list of paths to remove:return: None
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| path | Any |  |  |  |
+| fail_silently | boolean | False | X |  |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | path | union |
+
+
+## Output
+
+NoneType 

@@ -1,0 +1,23 @@
+# merge
+
+
+Hook for recursively merging dict objects with input maps.:param src: The input dict to update:param input: A dict or list of dicts to update the input `dict`:return: An updated dict object.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| inputs | array |  |  | A list of dictionaries to merge together. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | inputs | list |
+
+
+## Output
+
+None 

@@ -1,0 +1,25 @@
+# get_env
+
+
+Hook for getting environment variables.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| environment_variable | string |  |  | Dict for setting and string for getting environment variables |
+| fallback | string |  |  | A fallback for getting. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | environment_variable | str |
+ | 2 | fallback | str |
+
+
+## Output
+
+None 

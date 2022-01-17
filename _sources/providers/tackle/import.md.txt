@@ -1,0 +1,25 @@
+# import
+
+
+Hooks that interface with tackle's parser and context. Core to most tackle scripts.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| src | Any |  |  | A str/list/dict as above. |
+| version | string |  |  | Version of src for remote imports. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | src | any |
+
+
+## Output
+
+None 
+ 

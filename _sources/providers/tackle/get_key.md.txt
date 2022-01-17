@@ -1,0 +1,25 @@
+# get_key
+
+
+Hooks that interface with tackle's parser and context. Core to most tackle scripts.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| path | Any |  |  | A list or string with a separator for the path to the value you want to update with strings for keys and ints for indexes in the list. |
+| sep | string | / | X | For string paths, a separator for key path. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | path | any |
+
+
+## Output
+
+None 
+ 

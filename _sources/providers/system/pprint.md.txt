@@ -1,0 +1,29 @@
+# pprint
+
+
+Wraps python pprint builtin.https://docs.python.org/3/library/pprint.html#pprint.PrettyPrinter
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| objects | Any |  |  |  |
+| indent | integer | 1 | X |  |
+| width | integer | 80 | X |  |
+| depth | integer |  |  |  |
+| compact | boolean | False | X |  |
+| sort_dicts | boolean | True | X |  |
+| underscore_numbers | boolean | False | X |  |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | objects | any |
+
+
+## Output
+
+None 

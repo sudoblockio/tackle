@@ -1,0 +1,23 @@
+# path_join
+
+
+Hook joining paths.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| paths | array |  |  | List of items in a path to file or directory. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | paths | list |
+
+
+## Output
+
+None 

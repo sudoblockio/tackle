@@ -1,0 +1,25 @@
+# list_remove
+
+
+Hook  for updating dict objects with items.:param input: A list append to:param item: A list or string to remove to `input` list:param filter: A regex to remove items from list with:return: A list without removed objects objects.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| input | array |  |  | A list to append to. |
+| item | Any |  |  | A list or string to append to `input` list. |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | input | list |
+ | 2 | item | union |
+
+
+## Output
+
+None 

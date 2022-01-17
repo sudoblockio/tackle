@@ -1,0 +1,34 @@
+# yaml
+
+
+Hook for yaml.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| remove | Any |  |  | Parameter or regex to remove from list or dict. |
+| contents | Any |  |  | Supplied dictionary or list to write. |
+| update | object |  |  | Use the python `update` dict method on `contents` before writing |
+| filter | array |  |  | List or string to values to. |
+| path | string |  |  | The file path to put read or write to. |
+| merge_dict | object |  |  | Dict input that recursively overwrites the `contents`. |
+| in_place | boolean | False | X | Boolean to read the contents of the `path` and then write after modifications. |
+| append_items | Any |  |  | List to append to `append_key` key. |
+| append_keys | Any |  |  | String or list of hierarchical keys to append item to. Defaults |
+| mode | string |  |  | The mode that the file should write. Defaults to write 'w'. See https://docs.python.org/3/library/functions.html#open |
+| write | boolean |  |  |  |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | path | str |
+ | 2 | contents | union |
+
+
+## Output
+
+None 

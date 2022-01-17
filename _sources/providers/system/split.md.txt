@@ -1,0 +1,24 @@
+# split
+
+
+Hook for splitting a string into as list based on a separator.
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| input | string |  |  | A list of string to split or just a string |
+| separator | string | . | X | String separator |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | input | str |
+
+
+## Output
+
+None 

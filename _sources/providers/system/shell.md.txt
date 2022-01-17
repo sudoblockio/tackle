@@ -1,0 +1,24 @@
+# shell
+
+
+`shell` hook for system calls.Streams the output of the process.:param command: The command to run on the host:return: String output of command
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| command | string |  |  |  |
+| ignore_error | boolean | False | X |  |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+  | 1 | command | str |
+
+
+## Output
+
+None 

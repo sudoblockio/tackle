@@ -1,0 +1,31 @@
+# meta_repo
+
+
+Hook to create meta repo.:param command: Des...
+
+
+## Inputs
+
+| Name | Type | Default | Required | Description |
+| :--- | :---: |:---:| :---: | :--- |
+| command | string |  |  |  |
+| repos | object |  |  |  |
+| repo_tree | object |  |  |  |
+| select | boolean | True | X |  |
+| protocol | string | https | X |  |
+| token | string |  |  |  |
+| base_url | string | github.com | X |  |
+| git_org | string |  |  |  |
+| base_dir | string | /home/runner/work/tackle-box/tackle-box/tackle/providers/git | X |  |
+| repo_tree_overrides | array |  |  |  |
+
+
+## Arguments
+
+| Position                 | Argument | Type |
+|:-------------------------| :---: | :---: |
+ 
+
+## Output
+
+None 
