@@ -84,10 +84,10 @@
 <a class="reference external image-reference" href="https://codecov.io/github/robcxyz/tackle-box?branch=main"><img alt="codecov" src="https://codecov.io/gh/robcxyz/tackle-box/branch/main/graphs/badge.svg?branch=main" /></a>
 <a class="reference external image-reference" href="https://github.com/robcxyz/tackle-box/actions"><img alt="main-tests" src="https://github.com/robcxyz/tackle-box/actions/workflows/main.yml/badge.svg" /></a>
 <ul class="simple">
-<li><p>Tackle Box Documentation: <a class="reference external" href="https://robcxyz.github.io/tackle-box">https://robcxyz.github.io/tackle-box</a>-&gt; WIP</p></li>
-<li><p>GitHub: <a class="reference external" href="https://github.com/robcxyz/tackle-box">https://github.com/robcxyz/tackle-box</a></p></li>
-<li><p>PyPI: <a class="reference external" href="https://pypi.org/project/tackle-box/">https://pypi.org/project/tackle-box/</a></p></li>
-<li><p>Free and open source software: <span class="xref std std-doc">BSD license</span></p></li>
+<li><p><a class="reference external" href="https://robcxyz.github.io/tackle-box">Documentation</a> -&gt; WIP</p></li>
+<li><p><a class="reference external" href="https://github.com/robcxyz/tackle-box">GitHub</a></p></li>
+<li><p><a class="reference external" href="https://pypi.org/project/tackle-box/">PyPI</a></p></li>
+<li><p><span class="xref std std-doc">BSD license</span></p></li>
 </ul>
 <p>Tackle box is a declarative DSL for building modular workflows and code generators. Tool is plugins based and can easily be extended by writing additional hooks or importing external providers creating a web of interoperable CLIs.</p>
 <blockquote>
@@ -96,13 +96,13 @@
 <section id="demo">
 <h2>Demo<a class="headerlink" href="#demo" title="Permalink to this headline"></a></h2>
 <p>More demos coming - tackle-box is still early alpha.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="n">tackle</span><span class="o">-</span><span class="n">box</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip3 install tackle-box
 
 <span class="c1"># Create a new provider in one minute</span>
-<span class="n">tackle</span> <span class="n">robcxyz</span><span class="o">/</span><span class="n">tackle</span><span class="o">-</span><span class="n">provider</span>
+tackle robcxyz/tackle-provider
 
 <span class="c1"># Push to github and now you can call it</span>
-<span class="n">tackle</span> <span class="o">&lt;</span><span class="n">your</span> <span class="n">GH</span> <span class="n">username</span><span class="o">&gt;/</span><span class="n">tackle</span><span class="o">-</span><span class="n">your</span><span class="o">-</span><span class="n">provider</span>
+tackle &lt;your GH username&gt;/tackle-your-provider
 <span class="c1"># Or alternatively import/call it from another tackle file</span>
 </pre></div>
 </div>
@@ -112,50 +112,54 @@
 <ul class="simple">
 <li><p>Declarative: Everything is in yaml with easy to use interfaces</p></li>
 <li><p>Turing complete: Loops, conditionals and branching is supported</p></li>
-<li><p>Extensible: New providers can be created or imported remotely</p></li>
+<li><p>Modular: New providers can be created or imported remotely</p></li>
 <li><p>Lean: Tackle box has only 4 dependencies - core logic &lt;1k LOC</p></li>
 </ul>
 </section>
 <section id="basic-usage-structure">
 <h2>Basic Usage / Structure<a class="headerlink" href="#basic-usage-structure" title="Permalink to this headline"></a></h2>
-<p>Tackle-box can be called against any yaml/json file or remote location by specifying the path to a repo / directory. By default, tackle looks for a <code class="docutils literal notranslate"><span class="pre">tackle.yaml</span></code> file in the target location which is parsed sequentially with each key traversed looking for hook calls indicated by an arrow (<code class="docutils literal notranslate"><span class="pre">-&gt;</span></code>). Tackle box ships with ~70 hooks to do basic prompting / code generation / system operations but can easily be extended by writing additional hooks.</p>
+<p>Tackle-box can be called against any yaml/json file or remote location by specifying the path to a repo / directory. By default, tackle looks for a <code class="docutils literal notranslate"><span class="pre">tackle.yaml</span></code> file in the target location which is parsed sequentially with each key / value or item in a list traversed, parsed, and rendered on hook calls indicated by an arrow (<code class="docutils literal notranslate"><span class="pre">-&gt;</span></code>). Tackle box ships with ~70 hooks to do basic prompting / code generation / system operations but can easily be extended by writing additional hooks.</p>
 <p>For instance given the following directory structure:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>├── hooks
 │ └── stuff.py
 └── tackle.yaml
 </pre></div>
 </div>
-<p>With <code class="docutils literal notranslate"><span class="pre">stuff.py</span></code> looking like:</p>
+<p>With <a href="#id1"><span class="problematic" id="id2">**</span></a><code class="docutils literal notranslate"><span class="pre">stuff.py</span></code>** looking like:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tackle</span> <span class="kn">import</span> <span class="n">BaseHook</span>
 
 <span class="k">class</span> <span class="nc">Stuff</span><span class="p">(</span><span class="n">BaseHook</span><span class="p">):</span>
-    <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;do-stuff&quot;</span>
+    <span class="n">hook_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;do-stuff&quot;</span>
     <span class="n">things</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">_args</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;things&#39;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">things</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">things</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">things</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>One could run a tackle file that looks like this:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">a-key-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">do-stuff do-things</span><span class="w"></span>
-<span class="nt">b-key</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">a-key == &#39;do-things&#39;</span><span class="w"></span>
+<p>One could write a <a href="#id3"><span class="problematic" id="id4">**</span></a><code class="docutils literal notranslate"><span class="pre">tackle.yaml</span></code>** that looks like this:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">do-stuff a string</span><span class="w"></span>
+<span class="nt">expanded</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compact == &#39;A String&#39;</span><span class="w"></span>
 <span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">do-stuff</span><span class="w"></span>
-<span class="w">  </span><span class="nt">things</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All the things</span><span class="w"></span>
+<span class="w">  </span><span class="nt">things</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{compact}}</span><span class="nv"> </span><span class="s">That</span><span class="nv"> </span><span class="s">Renders!&quot;</span><span class="w"></span>
 </pre></div>
 </div>
-<p>Which when run would print out “All the things” twice and result in the following context:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">compact</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All the things</span><span class="w"></span>
-<span class="nt">expanded</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">All the things</span><span class="w"></span>
+<p>Which if you call <code class="docutils literal notranslate"><span class="pre">tackle</span></code> in that directory would result in the following context:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">compact</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">A String</span><span class="w"></span>
+<span class="nt">expanded</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">A String That Renders!</span><span class="w"></span>
 </pre></div>
 </div>
-<p>Which you can use to then generate code, print out to file, or do any number of custom actions with additional hook calls.</p>
+<p>Which you can use to then generate code, print out to file, or do any number of custom actions with additional hook calls or calls to other tackle providers. For instance if you wanted to use it in another tackle provider and generate code, you would use:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">remote_call-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tackle robcxyz/tackle-do-stuff</span><span class="w">  </span><span class="c1"># Fictitious repo</span><span class="w"></span>
+<span class="nt">gen-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">generate path/to/jinja/templates output/path</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Which would result in the same context embedded under the <code class="docutils literal notranslate"><span class="pre">remote_call</span></code> key and would be used to generate files / directories of templates to the output path.</p>
 </section>
 <section id="road-map">
 <h2>Road Map<a class="headerlink" href="#road-map" title="Permalink to this headline"></a></h2>
-<p>The main challenge with this project is going to be reaching a stable syntax that people can reliably build on. Until that happens any feedback is welcome on the core interfaces, both in the core parsing logic / hook interfaces. A place outside of github issues will be made to better accommodate those conversations.</p>
+<p>The main challenge with this project is going to be reaching a stable syntax that people can reliably build on. Until that happens any feedback is welcome both on the core parsing logic or hook interfaces. A place outside of github issues will be made to better accommodate those conversations.</p>
 </section>
 <section id="code-of-conduct">
 <h2>Code of Conduct<a class="headerlink" href="#code-of-conduct" title="Permalink to this headline"></a></h2>
