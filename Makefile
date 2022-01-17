@@ -63,8 +63,12 @@ coverage: ## Check code coverage quickly with the default Python
 	@tox -e cov-report
 	@$(BROWSER) htmlcov/index.html
 
+
+provider-docs: ## Generate Sphinx HTML documentation, including API docs
+	@cd tackle/providers && tackle docs-gen.yaml
+
 .PHONY: docs
-docs: ## Generate Sphinx HTML documentation, including API docs
+docs: provider-docs ## Generate Sphinx HTML documentation, including API docs
 	@echo "+ $@"
 	@rm -f docs/tackle.rst
 #	@rm -f docs/hooks/*
