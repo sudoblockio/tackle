@@ -1,0 +1,5 @@
+
+read->: file remove.yaml
+
+write->: file rm.txt "stuff things"
+

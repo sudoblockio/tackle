@@ -62,3 +62,11 @@ def test_provider_system_hook_file_remove(change_dir, fix_file_perms):
     assert not o['not_file']
     assert o['if_files']
     assert not o['not_files']
+
+
+def test_provider_system_hook_file_file(change_dir):
+    """Verify file hook can read and write."""
+    o = tackle('file.yaml')
+    assert os.path.exists('rm.txt')
+    os.remove('rm.txt')
+    assert 'command' in o['read']

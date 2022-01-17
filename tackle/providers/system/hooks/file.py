@@ -5,7 +5,7 @@ from pathlib import Path
 import logging
 import shutil
 from distutils.dir_util import copy_tree
-from typing import List, Union, Any
+from typing import List, Union, Any, Optional
 
 from tackle.models import BaseHook, Field
 from tackle.exceptions import HookCallException
@@ -96,7 +96,7 @@ class MoveHook(BaseHook):
     create_path: bool = True
     dst: str
 
-    _args: list = ['environment_variable', 'value']
+    _args: list = ['src', 'dst']
 
     def __init__(self, **data: Any):
         super().__init__(**data)
@@ -256,3 +256,29 @@ class CreateFileHook(BaseHook):
             Path(i).touch()
 
         return self.path
+
+
+class FileHook(BaseHook):
+    """Hook to read and write to a file."""
+
+    hook_type: str = 'file'
+    path: str = Field(..., description="Path to read or write file.")
+    contents: Any = Field(
+        None, description="If writing to file, the contents to write."
+    )
+
+    _args = ['path', 'contents']
+
+    def __init__(self, **data: Any):
+        super().__init__(**data)
+        self.path = expand_path(self.path)
+
+    def execute(self) -> Optional[str]:
+        if self.contents is None:
+            with open(self.path) as f:
+                contents = f.read()
+            return contents
+        else:
+            with open(self.path, 'w') as f:
+                f.write(self.contents)
+            return
