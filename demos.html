@@ -17,7 +17,9 @@
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Providers" href="providers/index.html" />
+    <link rel="prev" title="Tackle Box" href="README.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -38,17 +40,19 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Demos</a><ul>
-<li><a class="reference internal" href="#monty-python">Monty Python</a></li>
-<li><a class="reference internal" href="#gallery-of-cookiecutters">Gallery of Cookiecutters</a></li>
-<li><a class="reference internal" href="#all-operators">All Operators</a></li>
-<li><a class="reference internal" href="#jinja-patterns">Jinja Patterns</a></li>
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="README.html">Tackle Box</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Demos</a></li>
 </ul>
-</li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="providers/index.html">Providers</a></li>
 </ul>
-</div>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="AUTHORS.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HISTORY.html">History</a></li>
+</ul>
+
         </div>
       </div>
     </nav>
@@ -77,47 +81,23 @@
 <h1>Demos<a class="headerlink" href="#demos" title="Permalink to this headline"></a></h1>
 <p>In this section we will go over a number of demos of Tackle Box along with the main takeaways.</p>
 <p>To walk through all the demos, run:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tackle</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">robcxyz</span><span class="o">/</span><span class="n">tackle</span><span class="o">-</span><span class="n">demos</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tackle</span> <span class="n">robcxyz</span><span class="o">/</span><span class="n">tackle</span><span class="o">-</span><span class="n">demo</span>
 </pre></div>
 </div>
-<section id="monty-python">
-<h2>Monty Python<a class="headerlink" href="#monty-python" title="Permalink to this headline"></a></h2>
-<hr class="docutils" />
-<p>The most basic demo, this is supposed to show off some of the core functionality of tackle box’s syntax which allows for loops and conditionals.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tackle</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">robcxyz</span><span class="o">/</span><span class="n">tackle</span><span class="o">-</span><span class="n">demos</span> <span class="o">--</span><span class="n">directory</span> <span class="n">demos</span><span class="o">/</span><span class="n">monty</span><span class="o">-</span><span class="n">python</span>
-</pre></div>
-</div>
-</section>
-<section id="gallery-of-cookiecutters">
-<h2>Gallery of Cookiecutters<a class="headerlink" href="#gallery-of-cookiecutters" title="Permalink to this headline"></a></h2>
-<hr class="docutils" />
-<p>This demo is supposed to show users a variety of selected popular cookiecutters in use today. There are around 5k existing open source cookiecutters today which can easily be connected by tackle.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tackle</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">robcxyz</span><span class="o">/</span><span class="n">tackle</span><span class="o">-</span><span class="n">demos</span> <span class="o">--</span><span class="n">directory</span> <span class="n">demos</span><span class="o">/</span><span class="n">gallery</span>
-</pre></div>
-</div>
-</section>
-<section id="all-operators">
-<h2>All Operators<a class="headerlink" href="#all-operators" title="Permalink to this headline"></a></h2>
-<hr class="docutils" />
-<p>A tutorial of all the operators available and how to use them.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tackle</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">robcxyz</span><span class="o">/</span><span class="n">tackle</span><span class="o">-</span><span class="n">demos</span> <span class="o">--</span><span class="n">directory</span> <span class="n">demos</span><span class="o">/</span><span class="nb">all</span><span class="o">-</span><span class="n">operators</span>
-</pre></div>
-</div>
-</section>
-<section id="jinja-patterns">
-<h2>Jinja Patterns<a class="headerlink" href="#jinja-patterns" title="Permalink to this headline"></a></h2>
-<hr class="docutils" />
-<p>A tutorial on using jinja templating and patterns that could be useful in building dynamic decision trees.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tackle</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">robcxyz</span><span class="o">/</span><span class="n">tackle</span><span class="o">-</span><span class="n">demos</span> <span class="o">--</span><span class="n">directory</span> <span class="n">demos</span><span class="o">/</span><span class="n">jinja</span><span class="o">-</span><span class="n">forrest</span>
-</pre></div>
-</div>
-</section>
+<p><span class="raw-html-m2r"><a href="#" title="``</span>”&gt;//&lt;/a&gt;`: # ()</p>
+<p><span class="raw-html-m2r"><a href="#" title="``</span>”&gt;//&lt;/a&gt;`: # ()</p>
+<p><span class="raw-html-m2r"><a href="#" title="``</span>”&gt;//&lt;/a&gt;`: # ()</p>
+<p><span class="raw-html-m2r"><a href="#" title="``</span>”&gt;//&lt;/a&gt;`: # ()</p>
+<p><span class="raw-html-m2r"><a href="#" title="``</span>”&gt;//&lt;/a&gt;`: # ()</p>
 </section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="README.html" class="btn btn-neutral float-left" title="Tackle Box" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="providers/index.html" class="btn btn-neutral float-right" title="Providers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 
