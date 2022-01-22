@@ -511,8 +511,12 @@ def update_input_dict_with_kwargs(context: 'Context', kwargs: dict):
         if k in context.input_dict:
             context.input_dict.update({k: v})
         elif f"{k}->" in context.input_dict:
-            context.input_dict.pop(f"{k}->")
-            context.input_dict.update({k: v})
+            # Replace the keys and value in the same position it was in
+            context.input_dict = {
+                key if key != f"{k}->" else k: value if key != f"{k}->" else v
+                for key, value in context.input_dict.items()
+            }
+            print()
 
 
 def run_source(context: 'Context', args: list, kwargs: dict, flags: list):
