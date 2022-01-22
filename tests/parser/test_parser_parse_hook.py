@@ -19,6 +19,7 @@ FIXTURES = [
     ('k8s-deployment.yaml', 'k8s-deployment.yaml'),
     ('docker-compose.yml', 'docker-compose.yml'),
     ('list-list.yaml', 'list-list.yaml'),
+    ('var-hook.yaml', 'var-hook-output.yaml'),
 ]
 
 

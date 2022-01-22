@@ -27,8 +27,17 @@ class VarHook(BaseHook):
     input: Any = Field(..., description="Any variable input.", render_by_default=True)
     _args: list = ['input']
 
+    def _render_var(self, input):
+        from tackle.render import render_variable
+
+        output = render_variable(self, input)
+        if output == input:
+            return output
+        else:
+            return self._render_var(output)
+
     def execute(self):
-        return self.input
+        return self._render_var(self.input)
 
 
 class TypeHook(BaseHook):

@@ -47,9 +47,10 @@ def test_parser_render_hook_input(change_curdir_fixtures):
     Show that when the first argument is a renderable that you just render that with the
     context and logic.
     """
-    output = tackle('render-hook-input.yaml', no_input=True)
+    output = tackle('var-hook.yaml', no_input=True)
     for k, v in output.items():
-        assert v == 'things'
+        if k.startswith('stuff'):
+            assert v == 'things'
 
 
 # TODO: When help is done

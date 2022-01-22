@@ -1,0 +1,13 @@
+stuff: things
+
+stuff_arg: things
+
+stuff_expanded: things
+
+stuff_expanded_logic: things
+
+a_map:
+  stuff: "{{stuff}}"
+
+a_map_rendered:
+  stuff: things

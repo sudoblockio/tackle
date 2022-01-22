@@ -9,3 +9,7 @@ stuff_expanded_logic:
   ->: "{{stuff}}"
   if: stuff == 'things'
 
+a_map:
+  stuff: "{{stuff}}"
+
+a_map_rendered->: "{{ a_map }}"
