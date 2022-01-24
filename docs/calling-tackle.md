@@ -50,23 +50,23 @@ tackle path/to/some/zipfile.zip
 
 ### No argument supplied
 
-When no input argument is supplied, tackle by default looks in the parent directories for the nearest tackle file and runs that. This is useful if you want to store a collection of calls that
+When no input argument is supplied, tackle by default looks in the parent directories for the nearest tackle file and runs that. This is useful if you want to store a collection of calls at some location that you want to use from your present directory.
 
 ```shell
 tackle
 ```
 
-### Argument matches parent tackle file's key
+### Argument matches tackle file's key
 
-When an input is supplied but it does not match any of the above criteria, by default tackle checks if there is a key in the parent directory and runs from that key. This is logic on the next section's logic.
+When an input is supplied but it does not match any of the above criteria, by default tackle checks if there is a key in the parent directory and runs from that key. Logic is described in the next section.
 
 ```shell
-tackle a-key  # In the parent tackle file
+tackle a-tackle-file.yaml a-key  # a-key is a key in the tackle file
 ```
 
 ## Additional Arguments / Keys / Flags
 
-Preceeding section described how targets are handled but tackle can also take in arbitrary args, key value pairs, and flags which are interpreted.  
+The preceding section described how targets are handled but tackle can also take in arbitrary args, key value pairs, and flags which are interpreted.  
 
 ```shell
 tackle target ARGs --KEYs VALUEs --FLAGs

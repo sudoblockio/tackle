@@ -12,11 +12,11 @@ Contributions are welcome, and they are greatly appreciated! Every little bit he
 
 You can contribute in many ways:
 
-### Create Cookiecutter Templates
+### Create Tackle Providers
 
-Some other Cookiecutter templates to list in the [README](README.md) would be great.
+Some providers to list in the [README](https://github.com/robcxyz/tackle-box) would be great.
 
-If you create a Cookiecutter template, submit a pull request adding it to README.md.
+If you create a tackle provider, submit a pull request adding it to README.md.
 
 ### Report Bugs
 
@@ -39,17 +39,15 @@ Look through the GitHub issues for features. Anything tagged with "enhancement" 
 
 Please do not combine multiple feature enhancements into a single pull request.
 
-Note: this project is very conservative, so new features that aren't tagged with "please-help" might not get into core. We're trying to keep the code base small, extensible, and streamlined. Whenever possible, it's best to try and implement feature ideas as separate projects outside of the core codebase.
-
 ### Write Documentation
 
-Cookiecutter could always use more documentation, whether as part of the official Cookiecutter docs, in docstrings, or even on the web in blog posts, articles, and such.
+Tackle-box could always use more documentation, whether as part of the official tackle-box docs, in docstrings, or even on the web in blog posts, articles, and such.
 
 If you want to review your changes on the documentation locally, you can do:
 
 ```bash
 pip install -r docs/requirements.txt
-make servedocs
+mkdoc serve
 ```
 
 This will compile the documentation, open it in your browser and start watching the files for changes, recompiling as you save.
@@ -139,7 +137,7 @@ Before you submit a pull request, check that it meets these guidelines:
 ### Coding Standards
 
 * PEP8
-* Functions over classes except in tests
+* Functions over class methods
 * Quotes via [http://stackoverflow.com/a/56190/5549](http://stackoverflow.com/a/56190/5549)
 
   * Use double quotes around strings that are used for interpolation or that are natural language messages
@@ -228,7 +226,7 @@ Core committers, use this section to:
 
 * Sets a standard baseline for project template creators, facilitating reuse
 * Minimizes the learning curve for those who already use Flask or Django
-* Minimizes scope of Cookiecutter codebase
+* Minimizes scope of tackle-box codebase
 
 #### Extensible
 
@@ -262,7 +260,7 @@ Tackle-box providers are intentionally hosted VCS repos as-is.
 
 * They are easily forkable
 * It's easy for users to browse forks and files
-* They are searchable via standard Github/Bitbucket/other search interface
+* They are searchable via standard Github search interface
 * Minimizes the need for packaging-related cruft files
 * Easy to create a public project template and host it for free
 * Easy to collaborate
@@ -284,7 +282,6 @@ How to prioritize pull requests, from most to least important:
 * Major edits to docs.
 * Features.
 
-Ensure that each pull request meets all requirements in [checklist](https://gist.github.com/audreyr/4feef90445b9680475f2).
 
 ### Process: Issues
 
@@ -297,7 +294,7 @@ New features require a +1 from 2 other core committers (besides yourself).
 
 ### Process: Roadmap
 
-The roadmap located [here](https://github.com/cookiecutter/cookiecutter/milestones?direction=desc&sort=due_date&state=open)
+The roadmap located [here](https://github.com/robcxyz/tackle-box/milestones?direction=desc&sort=due_date&state=open)
 
 Due dates are flexible. Core committers can change them as needed. Note that GitHub sort on them is buggy.
 
@@ -367,7 +364,7 @@ Exceptions:
 
 Contributors may be given core commit privileges. Preference will be given to those with:
 
-1. Past contributions to Cookiecutter and other open-source projects. Contributions to Cookiecutter include both code (both accepted and pending) and friendly participation in the issue tracker. Quantity and quality are considered.
+1. Past contributions to cookiecutter or tackle-box and other open-source projects. Contributions to tackle-box include both code (both accepted and pending) and friendly participation in the issue tracker. Quantity and quality are considered.
 2. A coding style that the other core committers find simple, minimal, and clean.
 3. Access to resources for cross-platform development and testing.
 4. Time to devote to the project regularly.

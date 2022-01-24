@@ -10,7 +10,7 @@
 * [PyPI](https://pypi.org/project/tackle-box/)
 * [BSD license](LICENSE)
 
-Tackle box is a declarative DSL for building modular workflows and code generators. Tool is plugins based and can easily be extended by writing additional hooks or importing external providers creating a web of interoperable CLIs.
+Tackle box is a declarative DSL for building modular utilities and code generators. Tool is plugins based and can easily be extended by writing additional hooks or importing external providers creating a web of interoperable CLIs.
 
 > WARNING - Project still alpha. Will be officially released shortly.
 
@@ -33,7 +33,7 @@ tackle <your GH username>/tackle-your-provider
 
 - Declarative: Everything is in yaml with easy to use interfaces
 - Turing complete: Loops, conditionals and branching is supported
-- Modular: New providers can be created or imported remotely
+- Modular: New providers / hooks can be created or imported remotely
 - Lean: Tackle box has only 4 dependencies - core logic <1k LOC
 
 ### Basic Usage / Structure

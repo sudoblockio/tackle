@@ -1,4 +1,3 @@
-
 providers:
   - requests
   - pyinquirer
@@ -8,15 +7,21 @@ providers:
   - system
   - tackle
 
-provider_docs_directory->: "{{ calling_directory }}/../../docs/providers"
+provider_dir->: "{{ cwd }}/../tackle/providers"
+provider_docs_dir->: "{{ cwd }}/providers"
+templates_dir->: "{{ cwd }}/templates"
+
+remove old provider docs dir->: remove "{{ provider_docs_dir }}"
 
 #debug->: debug
 
 gen->:
   # Iterate through the providers
   for: providers
-  chdir: "{{item}}"
+  chdir: "{{ provider_dir }}/{{ item }}"
   print->: print "Generating {{item}} provider"
+
+  # Embedded for loops need to have the iterand `item` dereferenced if being used in inner loops
   provider->: "{{ item }}"
 
   # Get the provider metadata
@@ -24,15 +29,13 @@ gen->:
 
   is_tackle_meta->: isfile .tackle.meta.yaml
 
-  list->: listdir .
   provider_meta:
     ->: tackle .tackle.meta.yaml
     if: is_tackle_meta
     else: {}
 
-
   Render hook templates from the tackle provider:
-    ->: generate {{calling_directory}}/tackle/templates/hook-doc.md {{provider_docs_directory}}/{{provider}}/{{ item.hook_type }}.md
+    ->: generate {{templates_dir}}/hook-doc.md {{provider_docs_dir}}/{{provider}}/{{ item.hook_type }}.md
     for: render_context['hooks']
     additional_context:
       - "{{ item }}"
@@ -41,16 +44,10 @@ gen->:
 #  debug->: debug
 
   Render provider template:
-    ->: generate {{calling_directory}}/tackle/templates/provider-doc.md {{provider_docs_directory}}/{{provider}}/index.md
+    ->: generate {{templates_dir}}/provider-doc.md {{provider_docs_dir}}/{{provider}}/index.md
     additional_context:
       - "{{ render_context }}"
       - "{{ provider_meta }}"
 
-#  Render provider index rst template:
-#    ->: generate {{calling_directory}}/tackle/templates/provider-index.rst {{provider_docs_directory}}/{{provider}}/index.rst
-#    additional_context:
-#      - "{{ render_context }}"
-#      - "{{ provider_meta }}"
-
 Render all providers template:
-  ->: generate {{calling_directory}}/tackle/templates/all-provider-index.rst {{provider_docs_directory}}/index.rst
+  ->: generate {{templates_dir}}/all-provider-index.md {{provider_docs_dir}}/index.md

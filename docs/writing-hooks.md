@@ -1,13 +1,13 @@
 
 # Creating Hooks
 
-This document covers all aspects of writing hooks focusing on the API and it's semantics for how it can be used within tackle files. For creating providers and creating dependencies, please check out the [creating providers](creating-providers.md) section.
+This document covers all aspects of writing hooks in python focusing on the API and it's semantics for how it can be used within tackle files. For creating providers and creating dependencies, please check out the [creating providers](creating-providers.md) section.
 
 ## Overview
 
 Tackle box hooks are any object located within the `hooks` directory that extends a BaseHook object and implement an `execute` method as the entrypoint to calling the hook. BaseHook objects are [pydantic](https://github.com/samuelcolvin/pydantic) objects as well such that their attributes need to include type annotations. All of these attributes are then made accessible when calling the hook from a yaml file.
 
-There are couple other semantics that will be described in this document such as mapping arguments, excluding from rendering, and auto-generating documentation for your hooks that will be covered later in this document.
+There are couple other semantics that will be described in this document such as mapping arguments, excluding from rendering, and auto-generating documentation for your hooks.
 
 ## Basic Example
 
@@ -17,17 +17,17 @@ If we had a file structure like this:
 
 ```
 ├── hooks
-   └── do_stuff.py  # Name of file doesn't matter
+   └── do_stuff.py  # Name of file doesn't matter
 └── tackle.yaml  # Not needed
 ```
 
-We could have a file `do_stuff.py` that has an object `DoStuffHook` that extends the `BaseHook` and implements an `execute` method which in this case both prints and returns the `things` attribute. Additionally there is a private `_args` attribute which can be used to map positional arguments to an attribute, in this case `things` (more on this later).
+We could have a file `do_stuff.py` that has an object `DoStuffHook` that extends the `BaseHook` and implements an `execute` method which in this case both prints and returns the `things` attribute. Additionally, there is a private `_args` attribute which can be used to map positional arguments to an attribute, in this case `things` (more on this later).
 
 ```python
 from tackle import BaseHook, Field
 
 class DoStuffHook(BaseHook):
-    type: str = "do-stuff"
+    hook_type: str = "do-stuff"
     things: str = Field(None, description="All the things.")
     _args: list = ['things']
 
@@ -54,18 +54,18 @@ expanded-expression: All the things
 
 ## Concepts
 
-### Pydantic and Types / Fields
+### Pydantic and Types
 
 Pydantic has some idioms to be aware of when writing hooks specifically around types and fields. Every attribute needs to be declared with a type in pydantic and will throw an error if the type is not explicitly declared within the attribute's definition or if the wrong type is fed into the field. Because everything that is output from a hook needs to serializable (i.e. it can't return python objects), many [pydantic types](https://pydantic-docs.helpmanual.io/usage/types/) aren't usable unless they can be directly serialized back into a structured data format (i.e. a string, int, float, list, or dict).  
 
 Multiple types for attributes are allowed by use of the `Union` or `Optional` types ([see difference](https://stackoverflow.com/a/51710151/15781389)) so that within the execute statement one can qualify the type and process it appropriately. For instance:
 
 ```python
-from tackle import BaseHook, Field
+from tackle import BaseHook
 from typing import Union
 
 class DoStuffHook(BaseHook):
-    type: str = "do-stuff"
+    hook_type: str = "do-stuff"
     things: Union[str] = None
     _args: list = ['things']
 
@@ -77,11 +77,6 @@ class DoStuffHook(BaseHook):
             print(self.things)
         return self.things
 ```
-****
-
-- [ ] TODO
--
-
 
 ### Arguments
 
@@ -89,7 +84,7 @@ As you may have noticed, tackle-box supports two general types of hook calls, co
 
 ```python
 class DoStuffHook(BaseHook):
-    type: str = "do-stuff"
+    hook_type: str = "do-stuff"
     things: str = None
     more_things: str = None
     _args: list = ['things', 'more_things']
@@ -127,11 +122,107 @@ expanded-expression:
 
 ##### Arguments with list and dict types
 
-- [ ] TODO
+Input arguments can be of any type though in practical terms, the only way to input list/map types is through rendering variable inputs. For instance given this hook:
+
+```python
+class DoStuffHook(BaseHook):
+    hook_type: str = "do-stuff"
+    things: dict = None
+    more_things: list = None
+    _args: list = ['things', 'more_things']
+```
+
+One could use input args per the following tackle file:
+
+```yaml
+a_map:
+  stuff: things
+a_list:
+  - stuff
+  - things
+do->: do-stuff "{{ a_map }}" "{{ a_list }}"
+```
 
 ### Controlling Rendering of Fields
 
+Sometimes it only makes sense to have inputs be maps or lists so for convenience sake there is a parameter to render strings by default so that users don't need to wrap with braces. For instance in this hook:
 
+```python
+from tackle import BaseHook, Field
 
+class DoStuffHook(BaseHook):
+    hook_type: str = "do-stuff"
+    things: dict = Field(None, render_by_default=True)
+```
 
-> As of the time of this writing, `validator` objects are not supported but hopefully will be in the future
+You can see the extra Field function which when passing `render_by_default` into it, the string is automatically wrapped with jinja braces and rendered. On top of setting this on a per field basis, one could specify a list of fields like so:
+
+```python
+from tackle import BaseHook
+
+class DoStuffHook(BaseHook):
+    hook_type: str = "do-stuff"
+    things: dict = None
+
+    _render_by_default: list = ['things']
+```
+
+Which when ran in a tackle file would be:
+
+```yaml
+a_map:
+  stuff: things
+
+do-1:
+  ->: do-stuff a_map
+do-2:
+  ->: do-stuff "{{ a_map }}"
+# Validates both are equivalent
+test->: assert "{{ do-1 }}" "{{ do-2 }}"
+```
+
+### Validators and `__init__`
+
+While not a tackle specific functionality, pydantic validators and `__init__` special methods are supported.
+
+```python
+from pydantic import validator
+from tackle import BaseHook
+
+class DoStuffHook(BaseHook):
+    hook_type: str = "a_hook"
+    things: dict = None
+    more_things: list = None
+    _args: list = ['things', 'more_things']
+
+    @validator('things')
+    def validate(cls, value):
+        # Check if the input is valid - throw error otherwise
+        ...
+        return value
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        # Initialize the object
+        ...
+
+    def execute(self):
+        ...
+```
+
+### Autogenerated Documentation
+
+Documentation can be autogenerated for hooks and providers that looks the same as the official documentation. There are two areas where documentation happens within a hook, in the docstring and within fields themselves.
+
+```python
+from tackle import BaseHook, Field
+
+class DoStuffHook(BaseHook):
+    """Put your hooks description here. Will be rendered as markdown."""
+    hook_type: str = "do-stuff"
+    things: dict = Field(None, description="Put the field's description here.")
+
+    _render_by_default: list = ['things']
+```
+
+More specifics on autogenerated docs can be found in the [creating providers](creating-providers.md#autogenerated-docs) docs.

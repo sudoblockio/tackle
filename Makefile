@@ -65,7 +65,7 @@ coverage: ## Check code coverage quickly with the default Python
 
 
 provider-docs: ## Generate Sphinx HTML documentation, including API docs
-	@cd tackle/providers && tackle docs-gen.yaml
+	@tackle docs/docs-gen.yaml
 
 .PHONY: docs
 docs: provider-docs ## Generate Sphinx HTML documentation, including API docs

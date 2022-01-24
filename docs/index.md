@@ -1,13 +1,17 @@
 # Tackle-box Docs
 
-Tackle box is a declarative DSL for building modular workflows and code generators. Tool is plugins based and can easily be extended by writing additional hooks or importing external providers creating a web of interoperable CLIs.
+Tackle box is a declarative DSL for building modular utilities and code generators. Tool is plugins based and can easily be extended by writing additional hooks or importing external providers creating a web of interoperable CLIs.
 
-> WIP - These docs are very incomplete and will be completed before the official launch.  
-
-- [ReadMe](README.md)
 - [Installation](installation.md)
-- [Calling Tackle-boxes](calling-tackle.md)
+- [Use Cases](use-cases.md)
+- [Project Structure](structure.md)
+- [Calling from Command Line](command-line-options.md)
 - [Creating Providers](creating-providers.md)
+- [Using Providers](using-providers.md)
+- [Writing Tackle Files](writing-tackle-files.md)
+- [Hook Methods](hook-methods.md)
 - [Writing Hooks](writing-hooks.md)
-- [ ] Code generate provider docs
-- [ ] Code generate API docs
+- [Testing Providers](testing-providers.md)
+- [Tackle File Examples](examples/index.md)
+- [Tutorials](tutorials/index.md)
+- [Provider Docs](providers/index.md)

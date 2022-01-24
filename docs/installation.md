@@ -6,6 +6,10 @@ Tackle-box aims to be cross-platform (linux, windows, mac) and can be installed 
 pip install tackle-box
 ```
 
+> Binary versions coming soon
+
+> Windows users: Tackle-box strives to be fully functional on windows but has some [incompatibilities](https://github.com/robcxyz/tackle-box/actions/workflows/main-windows.yml).  Accepting PRs.
+
 Tackle-box has the capability to install additional package dependencies from hooks. If you wish to keep your system python interpreter clean of packages, you should use a virtual environment.
 
 ```shell
