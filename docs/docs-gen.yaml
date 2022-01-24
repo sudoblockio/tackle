@@ -11,7 +11,7 @@ provider_dir->: "{{ cwd }}/../tackle/providers"
 provider_docs_dir->: "{{ cwd }}/providers"
 templates_dir->: "{{ cwd }}/templates"
 
-remove old provider docs dir->: remove "{{ provider_docs_dir }}"
+remove old provider docs dir->: remove "{{ provider_docs_dir }}" --fail_silently true
 
 #debug->: debug
 
