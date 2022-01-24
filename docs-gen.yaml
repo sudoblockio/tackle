@@ -1,0 +1,51 @@
+providers:
+  - requests
+  - pyinquirer
+  - rich
+  - git
+  - toml
+  - system
+  - tackle
+
+provider_dir->: "{{ cwd }}/../tackle/providers"
+provider_docs_dir->: "{{ cwd }}/providers"
+templates_dir->: "{{ cwd }}/templates"
+
+remove old provider docs dir->: remove "{{ provider_docs_dir }}" --fail_silently true
+
+#debug->: debug
+
+gen->:
+  # Iterate through the providers
+  for: providers
+  chdir: "{{ provider_dir }}/{{ item }}"
+  print->: print "Generating {{item}} provider"
+
+  # Embedded for loops need to have the iterand `item` dereferenced if being used in inner loops
+  provider->: "{{ item }}"
+
+  # Get the provider metadata
+  render_context->: provider_docs
+
+  is_tackle_meta->: isfile .tackle.meta.yaml
+
+  provider_meta:
+    ->: tackle .tackle.meta.yaml
+    if: is_tackle_meta
+    else: {}
+
+  Render hook templates from the tackle provider:
+    ->: generate {{templates_dir}}/hook-doc.md {{provider_docs_dir}}/{{provider}}/{{ item.hook_type }}.md
+    for: render_context['hooks']
+    additional_context:
+      - "{{ item }}"
+      - "{{ provider_meta }}"
+
+#  debug->: debug
+
+  Render provider template:
+    ->: generate {{templates_dir}}/provider-doc.md {{provider_docs_dir}}/{{provider}}/index.md
+    additional_context:
+      - "{{ render_context }}"
+      - "{{ provider_meta }}"
+
