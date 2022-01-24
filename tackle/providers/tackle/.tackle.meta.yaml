@@ -1,5 +1,3 @@
-#name: Tackle Provider
-
 description: Hooks that interface with tackle's parser and context. Core to most tackle scripts.
 
 examples:
@@ -10,10 +8,6 @@ examples:
         type: provider_docs
         chdir: ".."
         provider: docs
-
-#  - name: All options
-#    description: The most minimal implementation
-#    content->: tests/file
 
 hook_examples:
   tackle:

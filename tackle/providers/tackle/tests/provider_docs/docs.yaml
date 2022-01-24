@@ -1,16 +1,9 @@
-#this:
-#  ->: provider_docs
-#  chdir: ".."
-
-
 render_context:
   ->: provider_docs
   chdir: "../.."
 
-list->: listdir ../../templates
-
 Render provider template:
-  ->: generate ../../templates/provider-doc.md index.md
+  ->: generate ../../../../../docs/templates/provider-doc.md index.md
   render_context: "{{render_context}}"
 
 rm->: remove index.md
