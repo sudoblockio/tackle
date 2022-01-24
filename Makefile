@@ -70,24 +70,12 @@ provider-docs: ## Generate Sphinx HTML documentation, including API docs
 .PHONY: docs
 docs: provider-docs ## Generate Sphinx HTML documentation, including API docs
 	@echo "+ $@"
-	@rm -f docs/tackle.rst
-#	@rm -f docs/hooks/*
-#	@find tackle/providers -type d -name hooks -exec sphinx-apidoc -o docs/hooks {} \;
-#	@#sphinx-apidoc -o docs/ `ls | grep -Ev '\.(txt|pdf)$' | column`
-	@$(MAKE) -C docs clean
-	@$(MAKE) -C docs html
-	@$(BROWSER) docs/_build/html/index.html
+	@mkdocs build
 
 .PHONY: servedocs
 servedocs: docs ## Rebuild docs automatically
 	@echo "+ $@"
-	@watchmedo shell-command -p '*.rst' -c '$(MAKE) -C docs html' -R -D .
-
-.PHONY: submodules
-submodules: ## Pull and update git submodules recursively
-	@echo "+ $@"
-	@git pull --recurse-submodules
-	@git submodule update --init --recursive
+	@mkdocs serve
 
 .PHONY: release
 release: clean ## Package and upload release

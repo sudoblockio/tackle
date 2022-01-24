@@ -11,6 +11,7 @@ docs/_build/*
 # All API docs generated in CI
 docs/hooks
 !docs/hooks/.gitkeep
+site
 
 # Distribution / packaging
 .Python

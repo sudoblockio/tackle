@@ -33,7 +33,7 @@ nav:
   - Installation: installation.md
   - Use Cases: use-cases.md
   - Project Structure: project-structure.md
-  - Command Line Options: command-line-options.md
+  - Command Line: command-line.md
   - Creating Providers: creating-providers.md
   - Using Providers: using-providers.md
   - Writing Tackle Files: writing-tackle-files.md
@@ -60,6 +60,7 @@ nav:
     - TOML: providers/toml/index.md
   - Contributing: contributing.md
   - Development Roadmap: development-roadmap.md
+  - Authors: authors.md
 
 markdown_extensions:
 - toc:

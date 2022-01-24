@@ -1,6 +1,8 @@
-# Calling Tackle-box
+# Command Line
 
 Tackle-box is extremely flexible on the inputs that it accepts to run against. Basically any file, directory, or repo are acceptable inputs or no input at all. This document describes the logic behind how tackle takes in inputs including how additional args, kwargs, and flags are interpreted from the command line.  
+
+Calling tackle from the command line and from within a tackle file with a [tackle hook](providers/tackle/tackle.md) is the same except for how additional arguments are interpreted.
 
 ## Targets
 
@@ -110,3 +112,12 @@ Would result in no prompt and "stuff and things" printed to the user.
 
 Flags are the same as key value pairs but override with True.
 
+## Additional Command Line Arguments
+
+### print
+
+When the print flag is specified, the context after parsing is printed out to the screen which can then be piped to a file.
+
+```shell
+tackle --print TARGET
+```

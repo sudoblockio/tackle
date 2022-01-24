@@ -1,15 +1,3 @@
-watchdog>=0.10.2
-sphinx-rtd-theme>=0.4.3
-sphinx-click>=2.3.2
-
-
-sphinx-jsonschema==1.15
-sphinx-pydantic
-
-# Using m2r2 now
-# recommonmark>=0.6.0
-m2r2
-
-# Fix bug with keyring - https://github.com/dcos/dcos-e2e/issues/1643
-# https://github.com/dcos/dcos-e2e/pull/1812/commits/27859e3d297eb2a40a3724ce4d400486acdae73f
-# keyrings.alt==3.1.1
+mkdocs>="1.2.1"
+mkdocs-material>="8.1.4"
+mdx-include>="1.4.1"

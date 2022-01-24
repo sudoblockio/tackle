@@ -2,7 +2,7 @@
 
 ### From the command line
 
-Providers can be called directly from the command line per the [calling tackle](command-line-options.md) documentation.
+Providers can be called directly from the command line per the [calling tackle](command-line.md) documentation.
 
 For instance:
 ```shell
@@ -20,7 +20,7 @@ Within a tackle file, another provider can be called which would run the tackle 
 call another tackle->: tackle path/to/local/or/remote/provider
 ```
 
-Note that at this time additional arguments / keys / flags do not work the same as when calling from the [command line](command-line-options.md#additional-arguments-keys-flags) and instead act like additional arguments / keys / flags for hooks and instead behave like [normal hook calls](writing-tackle-files.md#hook-call-forms).
+Note that at this time additional arguments / keys / flags do not work the same as when calling from the [command line](command-line.md#additional-arguments-keys-flags) and instead act like additional arguments / keys / flags for hooks and instead behave like [normal hook calls](writing-tackle-files.md#hook-call-forms).
 
 ### Importing hooks from a provider
 

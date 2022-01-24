@@ -49,5 +49,3 @@ gen->:
       - "{{ render_context }}"
       - "{{ provider_meta }}"
 
-Render all providers template:
-  ->: generate {{templates_dir}}/all-provider-index.md {{provider_docs_dir}}/index.md

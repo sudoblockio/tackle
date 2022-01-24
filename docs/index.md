@@ -5,7 +5,7 @@ Tackle box is a declarative DSL for building modular utilities and code generato
 - [Installation](installation.md)
 - [Use Cases](use-cases.md)
 - [Project Structure](structure.md)
-- [Calling from Command Line](command-line-options.md)
+- [Calling from Command Line](command-line.md)
 - [Creating Providers](creating-providers.md)
 - [Using Providers](using-providers.md)
 - [Writing Tackle Files](writing-tackle-files.md)
