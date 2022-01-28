@@ -2,14 +2,12 @@
 from jinja2.exceptions import UndefinedError
 from jinja2 import FileSystemLoader
 
-import logging
 from typing import Union
 
 from tackle import BaseHook, Field
 from tackle.exceptions import UndefinedVariableInTemplate
 from tackle.render.environment import StrictEnvironment
-
-logger = logging.getLogger(__name__)
+from tackle.utils.dicts import get_readable_key_path
 
 
 class JinjaHook(BaseHook):
@@ -46,7 +44,7 @@ class JinjaHook(BaseHook):
                 **self.existing_context,
             }
 
-    def execute(self) -> dict:
+    def execute(self) -> str:
         env = StrictEnvironment(context=self.input_dict)
         env.loader = FileSystemLoader(self.file_system_loader)
         template = env.get_template(self.template_path)
@@ -63,7 +61,7 @@ class JinjaHook(BaseHook):
             output_from_parsed_template = template.render(**jinja_context)
 
         except UndefinedError as err:
-            msg = f"The Jinja hook for '{self.key}' failed to render"
+            msg = f"The Jinja hook for '{get_readable_key_path(self.key_path)}' failed to render"
             raise UndefinedVariableInTemplate(msg, err, self.output_dict)
 
         with open(self.output_path, 'w') as fh:

@@ -84,8 +84,8 @@ class ShellHook(BaseHook):
         # cmds = self.command.split('\n')
         # for cmd in cmds:
         # TODO: Fix multi-line calls
-
-        cmd = self.command.replace('\n', ' ; ').split()
+        # https://github.com/robcxyz/tackle-box/issues/14
+        cmd = self.command.replace(';', ' ;').replace('\n', ' ; ').split()
 
         try:
             with subprocess.Popen(
@@ -98,6 +98,10 @@ class ShellHook(BaseHook):
                         masters[1]: sys.stderr.buffer,
                     }
                 while readable:
+                    # TODO: Session is not interactive and fails below when interactive
+                    #  prompts are displayed
+                    # https://github.com/robcxyz/tackle-box/issues/13
+                    # x = select(readable, [], [])[0]
                     for fd in select(readable, [], [])[0]:
                         try:
                             data = os.read(fd, 1024)  # read available
@@ -110,9 +114,10 @@ class ShellHook(BaseHook):
                                 del readable[fd]
                             else:
                                 if fd == masters[0]:  # We caught stdout
-                                    print(data.rstrip())
+                                    # TODO: Interactive prompts
+                                    print(data.rstrip().decode('utf-8'))
                                 else:  # We caught stderr
-                                    print(data.rstrip())
+                                    print(data.rstrip().decode('utf-8'))
                                 readable[fd].flush()
             for fd in masters:
                 os.close(fd)

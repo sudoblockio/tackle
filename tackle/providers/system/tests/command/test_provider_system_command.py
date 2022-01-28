@@ -52,3 +52,10 @@ def test_provider_system_hook_command_exit_ignore(change_dir):
     """Verify the hook call works properly."""
     o = tackle('command-exit-ignore.yaml')
     assert o
+
+
+# def test_provider_system_hook_interactive_shell(chdir):
+# # https://github.com/robcxyz/tackle-box/issues/14
+# # https://github.com/robcxyz/tackle-box/issues/13
+#     o = tackle('interactive.yaml')
+#     assert o
