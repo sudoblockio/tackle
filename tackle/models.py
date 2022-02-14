@@ -51,6 +51,9 @@ class Context(BaseModel):
         if self.providers is None:
             # Native and settings.extra_providers initialized
             self.providers = ProviderList()
+
+            # self.providers = ProviderDict()
+
         if self.calling_directory is None:
             # Can be carried over from another context. Should only be initialized when
             # called from CLI.
@@ -103,6 +106,17 @@ class BaseHook(BaseModel):
     _render_exclude: set = {}
     _render_by_default: list = []
 
+    # Used when rendering docs
+    _doc_tags: list = []
+    # For linking issues in the docs so others can potentially contribute
+    _issue_numbers: list = []
+    # Additional callout sections to be included at the top of the docs
+    _notes: list = []
+    # Allow hooks to be sorted in the docs
+    _docs_order: int = 10  # Arbitrary high number so hooks can be sorted high or low
+    # Parameterized return type description for docs
+    _return_description: str = None
+
     @validator('if_', 'else_', 'reverse', 'for_', 'merge')
     def wrap_bool_if_string(cls, v):
         return wrap_jinja_braces(v)
@@ -122,11 +136,8 @@ class BaseHook(BaseModel):
         fields = {
             'if_': 'if',
             'else_': 'else',
-            'match_': 'match',
-            'case_': 'case',
             'for_': 'for',
-            'while_': 'while',
-            'enumerate_': 'enumerate',
+            # 'while_': 'while',
         }
         # Per https://github.com/samuelcolvin/pydantic/issues/1577
         # This is an issue until pydantic 1.9 is released and items can be set with
