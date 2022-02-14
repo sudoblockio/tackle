@@ -1,0 +1,14 @@
+
+empty:
+empty_list: []
+empty_dict: {}
+
+a_dict:
+  empty:
+  empty_list: []
+  empty_dict: {}
+
+a_list:
+  - empty:
+  - empty_list: []
+  - empty_dict: {}

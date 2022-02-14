@@ -1,7 +1,31 @@
-this: that
-foo:
-  - bar
-  - baz
+##int: 1
+##foo:
+##  - bar
+##  - 1
+##
+##again->: "{{ int }}"
+#
+#list:
+#  - stuff
+#  - things
+#new_list->: pop "{{list}}" 1
+#assert->: assert "{{new_list}}" ['stuff']
+#
+#
+##debug->: debug
 
 
-debug: "{{ debug }}"
+list:
+  - stuff
+  - things
+
+dict:
+  stuff: 1
+  things: foo
+
+new_dict->: pop "{{dict}}" things
+
+assert:
+  ->: assert "{{new_dict}}"
+  value:
+    things: foo

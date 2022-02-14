@@ -1,0 +1,18 @@
+a_list:
+  - 1
+  - foo
+  - bar
+
+foo->: var {{index}} --for a_list --if 'index != 1'
+
+bar->:
+  - stuff
+  - "{{a_list}}"
+
+an_int: 1
+
+int->: "{{ an_int }}"
+
+a_string_int: "1"
+
+string_int->: "{{ an_int }}"

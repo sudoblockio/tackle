@@ -1,12 +1,12 @@
 """Test the input source part of the parser."""
 import pytest
 
-from tackle.exceptions import EmptyTackleFileException
+from tackle.exceptions import EmptyTackleFileException, UnknownArgumentException
 from tackle.cli import main
 
 INPUT_SOURCES = [
     ("empty.yaml", EmptyTackleFileException),
-    # ("")
+    ("exceptions/out-of-range-arg.yaml", UnknownArgumentException),
 ]
 
 

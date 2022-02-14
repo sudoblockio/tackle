@@ -1,7 +1,42 @@
 """Test for tackle.utils.command"""
 import pytest
 
-from tackle.utils.command import unpack_args_kwargs_string, unpack_input_string
+from tackle.utils.command import unpack_args_kwargs_string, split_input_string
+
+INPUT_STRINGS = [
+    ('this --if "expanded == \'that\'"', ['this', '--if', "expanded == 'that'"]),
+    ('this that', ['this', 'that']),
+    ('this ["foo","bar"]', ['this', ["foo", "bar"]]),
+    ('this {"foo":"bar"}', ['this', {"foo": "bar"}]),
+    ('{"foo":"bar"} this', [{"foo": "bar"}, 'this']),
+    (
+        '["this"] --if "expanded == \'that\'"',
+        [["this"], '--if', "expanded == \'that\'"],
+    ),
+    (
+        '["this","and","that"] --if "expanded == \'that\'"',
+        [["this", "and", "that"], '--if', "expanded == \'that\'"],
+    ),
+    (
+        '{"this":"and"} --if "expanded == \'that\'"',
+        [{"this": "and"}, '--if', "expanded == \'that\'"],
+    ),
+    (
+        '{"this":"and","that":"and"} --if "expanded == \'that\'"',
+        [{"this": "and", "that": "and"}, '--if', "expanded == \'that\'"],
+    ),
+    (
+        "{'this':'and','that':'and'} --if 'expanded == \"that\"'",
+        [{"this": "and", "that": "and"}, '--if', "expanded == \"that\""],
+    ),
+]
+
+
+@pytest.mark.parametrize("input_string,expected_output", INPUT_STRINGS)
+def test_utils_command_split_input_string(input_string, expected_output):
+    output = split_input_string(input_string)
+    assert output == expected_output
+
 
 TEMPLATES = [
     ('foo bar baz', 3, 0, 0),
@@ -15,22 +50,16 @@ TEMPLATES = [
     ('foo bar --foo bar --bing --baz bling', 2, 2, 1),
     ('foo --bar baz blah --bling', 2, 1, 1),
     ('this --if "expanded == \'that\'"', 1, 1, 0),
-    # These should all have `var` prepended to the args as it is indicative of a render
-    ('"{{foo}}" bar baz', 4, 0, 0),
-    ('{{ foo }} bar baz', 4, 0, 0),
-    ('{{ foo }} bar baz bing', 5, 0, 0),
-    ('{{ foo}} bar baz', 4, 0, 0),
-    ('{{foo }} bar baz', 4, 0, 0),
-    ('{{ foo }}-foo bar baz', 4, 0, 0),
-    ('bar-{{ foo }}-foo', 2, 0, 0),
-    ('bar-{{ foo in var }}-foo', 2, 0, 0),
+    ('["this"] --if "expanded == \'that\'"', 1, 1, 0),
+    ('["this"] ["this"] --if "expanded == \'that\'"', 2, 1, 0),
+    ('["this"] --for ["this"] --if "expanded == \'that\'"', 1, 2, 0),
 ]
 
 
 @pytest.mark.parametrize("template,len_args,len_kwargs,len_flags", TEMPLATES)
 def test_unpack_args_kwargs(template, len_args, len_kwargs, len_flags):
     """Validate the count of each input arg/kwarg/flag."""
-    args, kwargs, flags = unpack_input_string(template)
+    args, kwargs, flags = unpack_args_kwargs_string(template)
 
     assert len_args == len(args)
     assert len_kwargs == len(kwargs)

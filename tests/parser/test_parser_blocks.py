@@ -1,4 +1,3 @@
-"""Test hook block rewrite logic in tackle.parser handle_empty_blocks()."""
 import pytest
 import os
 import yaml

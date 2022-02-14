@@ -1,0 +1,21 @@
+a_list:
+  - 1
+  - foo
+  - bar
+
+foo:
+  - 0
+  - 2
+
+bar:
+  - stuff
+  -
+    - 1
+    - foo
+    - bar
+
+an_int: 1
+int: 1
+
+a_string_int: "1"
+string_int: 1
