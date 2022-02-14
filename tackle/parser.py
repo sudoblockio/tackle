@@ -5,7 +5,7 @@ from pathlib import Path
 import os
 import inspect
 import warnings
-from typing import Type, Any
+from typing import Type
 from pydantic.main import ModelMetaclass, ValidationError
 
 from tackle.providers import import_with_fallback_install
@@ -18,7 +18,7 @@ from tackle.utils.dicts import (
     set_key,
     get_readable_key_path,
 )
-from tackle.utils.command import unpack_args_kwargs_string, unpack_input_string
+from tackle.utils.command import unpack_args_kwargs_string
 from tackle.utils.vcs import get_repo_source
 from tackle.utils.files import read_config_file
 from tackle.utils.paths import (
@@ -119,6 +119,7 @@ def evaluate_if(hook_dict: dict, context: 'Context', append_hook_value: bool) ->
         return True
     if hook_dict.get('if', None) is None:
         return True
+
     return render_variable(context, wrap_jinja_braces(hook_dict['if']))
 
 
@@ -248,14 +249,19 @@ def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
         if i + 1 == len(Hook._args):
             # We are at the last argument mapping so we need to join the remaining
             # arguments as a single string if it is not a list of another map.
-            # TODO: Validate that we can put Any here as it is too open
-            if Hook.__fields__[Hook._args[i]].type_ in (str, float, int, bool, Any):
+            if not isinstance(args[i], (str, float)):
+                # Catch list dict and ints - strings floats and bytes caught later
+                value = args[i]
+            elif Hook.__fields__[Hook._args[i]].type_ in (str, float, int):
                 # Was parsed on spaces so reconstructed.
                 value = ' '.join(args[i:])
             # fmt: skip
             elif isinstance(Hook.__fields__[Hook._args[i]], list):
                 # If list then all the remaining items
                 value = args[i:]
+            elif isinstance(v, (str, float, int)):
+                # Make assumption the rest of the args can be reconstructed as above
+                value = ' '.join(args[i:])
             else:
                 # Only thing left is a dict
                 if len(args[i:]) > 1:
@@ -263,8 +269,6 @@ def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
                         f"Can't specify multiple arguments for map argument "
                         f"{Hook.__fields__[Hook._args[i]]}."
                     )
-                # Join everything up as a list as it doesn't make sense to do anything
-                # else at this point.
                 value = args[i]
 
             hook_dict[Hook._args[i]] = value
@@ -274,7 +278,29 @@ def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
             try:
                 hook_dict[Hook._args[i]] = v
             except IndexError:
-                raise UnknownArgumentException(f"Unknown argument {Hook._args[i]}.")
+                raise UnknownArgumentException(f"Unknown argument {i}.")
+
+
+def handle_leading_brackets(args) -> list:
+    """
+    Handler for cases where we have a hook call with a renderable string as the first
+    argument which we rewrite as a var hook. For instance `foo->: foo-{{ bar }}-baz`
+    would be rewritten as `foo->: var foo-{{bar}}-baz`.
+    """
+    if '{{' in args[0]:
+        # We split up the string before based on whitespace so eval individually
+        if '}}' in args[0]:
+            # This is single templatable string -> key->: "{{this}}" => args: ['this']
+            args.insert(0, 'var')
+        else:
+            # Situation where we have key->: "{{ this }}" => args: ['{{', 'this' '}}']
+            for i in range(1, len(args)):
+                if '}}' in args[i]:
+                    joined_template = ' '.join(args[: (i + 1)])
+                    other_args = args[(i + 1) :]
+                    args = ['var'] + [joined_template] + other_args
+                    break
+    return args
 
 
 def run_hook(context: 'Context'):
@@ -284,7 +310,8 @@ def run_hook(context: 'Context'):
     special cases where you have a string or list input of renderable variables.
     """
     if isinstance(context.input_string, str):
-        args, kwargs, flags = unpack_input_string(context.input_string)
+        args, kwargs, flags = unpack_args_kwargs_string(context.input_string)
+        args = handle_leading_brackets(args)
         first_arg = args[0]
         # Remove first args it will be consumed and no longer relevant
         args.pop(0)
@@ -313,7 +340,7 @@ def run_hook(context: 'Context'):
     Hook = get_hook(first_arg, context, suppress_error=True)
 
     if Hook is None:
-        raise UnknownHookTypeException(f"Hook type {first_arg} unknown.")
+        raise UnknownHookTypeException(f"Hook type-> \"{first_arg}\" unknown.")
 
     if context.key_path[-1] in ('->', '_>'):
         # We have a expanded or mixed (with args) hook expression and so there will be
@@ -340,6 +367,8 @@ def run_hook(context: 'Context'):
     # Add any kwargs
     for k, v in kwargs.items():
         hook_dict[k] = v
+    for i in flags:
+        hook_dict[i] = True
 
     # Main parser
     parse_hook(hook_dict, Hook, context)
@@ -448,6 +477,9 @@ def walk_sync(context: 'Context', element):
             context.key_path.pop()
             context.keys_to_remove.append(context.key_path.copy())
             return
+        elif element == {}:
+            nested_set(element=context.output_dict, keys=context.key_path, value={})
+            return
 
         for k, v in element.copy().items():
             context.key_path.append(k)
@@ -465,10 +497,16 @@ def walk_sync(context: 'Context', element):
 
     # Non-hook calls recurse through inputs
     elif isinstance(element, list):
-        for i, v in enumerate(element.copy()):
-            context.key_path.append(encode_list_index(i))
-            walk_sync(context, v)
-            context.key_path.pop()
+        # Handle empty lists
+        if len(element) == 0:
+            nested_set(
+                element=context.output_dict, keys=context.key_path, value=element
+            )
+        else:
+            for i, v in enumerate(element.copy()):
+                context.key_path.append(encode_list_index(i))
+                walk_sync(context, v)
+                context.key_path.pop()
     else:
         nested_set(element=context.output_dict, keys=context.key_path, value=element)
 
