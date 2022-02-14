@@ -1,19 +1,25 @@
-providers:
-  - requests
-  - pyinquirer
-  - rich
-  - git
-  - toml
-  - system
-  - tackle
+problem_hooks:
+  - print  # Has "\n" as a default value which messes up table
+
+# Directories / files to ignore inside the `tackle/providers` directory
+provider_ignore:
+  - __init__.py
+  - __pycache__
+  - .gitignore
 
 provider_dir->: "{{ cwd }}/../tackle/providers"
 provider_docs_dir->: "{{ cwd }}/providers"
 templates_dir->: "{{ cwd }}/templates"
+schemas_dir->: "{{ cwd }}/schemas"
 
-remove old provider docs dir->: remove "{{ provider_docs_dir }}" --fail_silently true
+provider_list->: listdir "{{ provider_dir }}"
+# List comprehension to get the providers
+providers->: var "{{ provider_list | reject('in', provider_ignore) | list }}"
 
-#debug->: debug
+# mkdocs.yml navigation sidebar options - Empty list that will be appended to
+mkdocs_nav_list: []
+
+remove old provider docs dir->: remove "{{ item }}" --fail_silently true --for ['provider_docs_dir','schemas_dir']
 
 gen->:
   # Iterate through the providers
@@ -21,11 +27,14 @@ gen->:
   chdir: "{{ provider_dir }}/{{ item }}"
   print->: print "Generating {{item}} provider"
 
-  # Embedded for loops need to have the iterand `item` dereferenced if being used in inner loops
+  # Embedded for loops need to have the iterand `item` referenced if being used in inner loops
   provider->: "{{ item }}"
 
-  # Get the provider metadata
+  # Get the provider metadata and schemas
   render_context->: provider_docs
+  schemas->: provider_docs --output_schemas
+
+  Put schemas in schema directory_>: json {{schemas_dir}}/{{provider}}.json {{schemas}}
 
   is_tackle_meta->: isfile .tackle.meta.yaml
 
@@ -34,18 +43,42 @@ gen->:
     if: is_tackle_meta
     else: {}
 
-  Render hook templates from the tackle provider:
-    ->: generate {{templates_dir}}/hook-doc.md {{provider_docs_dir}}/{{provider}}/{{ item.hook_type }}.md
-    for: render_context['hooks']
-    additional_context:
-      - "{{ item }}"
-      - "{{ provider_meta }}"
+  # Build the provider navigation for mkdocs
+  provider_mkdocs_nav_list:
+    - Index->: providers/{{ provider | title }}/index.md
+  append multiple hooks providers:
+    _>: append provider_mkdocs_nav_list
+    for: render_context.hooks
+    item:
+      "{{item.hook_type}}": providers/{{ provider | title }}/{{ item.hook_type }}.md
+  append to mkdocs_nav_list:
+    _>: append mkdocs_nav_list
+    item:
+      "{{provider|title}}": "{{provider_mkdocs_nav_list}}"
 
-#  debug->: debug
+  source_code_link_stub->: https://github.com/robcxyz/tackle-box/blob/main/tackle/providers/{{provider}}/hooks
+  Generate single hook provider as a single page->:
+    if: render_context['hooks'] | length == 1
+    Render hook templates from the tackle provider:
+      ->: generate {{templates_dir}}/hook-doc.md.tpl {{provider_docs_dir}}/{{provider|title }}/index.md
+      extra_context:
+        - "{{ provider_meta }}"
+        - "{{ render_context.hooks[0] }}"
 
-  Render provider template:
-    ->: generate {{templates_dir}}/provider-doc.md {{provider_docs_dir}}/{{provider}}/index.md
-    additional_context:
-      - "{{ render_context }}"
-      - "{{ provider_meta }}"
+  Generate multiple ->:
+    if: render_context['hooks'] | length != 1
+    Render hook templates from the tackle provider:
+      ->: generate {{templates_dir}}/hook-doc.md.tpl {{provider_docs_dir}}/{{provider|title }}/{{ item.hook_type }}.md
+      for: render_context['hooks']
+      if: item.hook_type not in problem_hooks
+      extra_context:
+        - "{{ provider_meta }}"
+        - "{{ item }}"
 
+    Render provider template:
+      ->: generate {{templates_dir}}/provider-doc.md.tpl {{provider_docs_dir}}/{{provider|title }}/index.md
+      extra_context:
+        - "{{ render_context }}"
+        - "{{ provider_meta }}"
+
+Regenerate mkdocs->: tackle ../mkdocs.tackle.yml
