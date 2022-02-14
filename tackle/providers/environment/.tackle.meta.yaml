@@ -1,0 +1,72 @@
+name: Environment Provider
+
+description: Operate to environment variables
+
+examples:
+  - name: "[get_env](get_env.md)"
+    description: Get environment variables
+    content: |
+      compact->: get_env ENV_VAR
+      expanded:
+        ->: get_env
+        environment_variable: ENV_VAR
+
+  - name: "[set_env](set_env.md)"
+    description: Set environment variables
+    content: |
+      compact->: set_env ENV_VAR VALUE
+      expanded:
+        ->: set_env
+        environment_variable: ENV_VAR
+        value: VALUE
+
+  - name: "[unset](unset.md)"
+    description: Unset environment variables
+    content: |
+      compact->: unset ENV_VAR
+      expanded:
+        ->: unset
+        environment_variable: ENV_VAR
+
+  - name: "[export](export.md)"
+    description: Setting / getting environment variables
+    content: |
+      compact->: export ENV_VAR VALUE
+      expanded:
+        ->: export
+        environment_variable: ENV_VAR
+        value: VALUE
+
+hook_examples:
+  get_env:
+    - name: Basic implementation
+      content: |
+        compact->: get_env ENV_VAR
+        expanded:
+          ->: get_env
+          environment_variable: ENV_VAR
+
+  set_env:
+    - name: Basic implementation
+      content: |
+        compact->: get_env ENV_VAR
+        expanded:
+          ->: get_env
+          environment_variable: ENV_VAR
+
+  unset:
+    - name: Basic implementation
+      content: |
+        compact->: unset ENV_VAR
+        expanded:
+          ->: unset
+          environment_variable: ENV_VAR
+
+  export:
+    - name: export
+      content: |
+        compact->: export ENV_VAR VALUE
+        expanded:
+          ->: export
+          environment_variable: ENV_VAR
+          value: VALUE

@@ -1,0 +1,242 @@
+name: Context Provider
+
+description: |
+  Hooks that change the context, ie the portion of the tackle file that has been parsed sequentially. Allows referencing of nested keys.
+
+examples:
+  - name: "[set](set.md)"
+    description: Set a previous key based on a key path
+    content: |
+      stuff:
+        and: things
+      set_>: set stuff/and other-stuff
+    output: |
+      stuff:
+        and: other-stuff
+
+  - name: "[get](get.md)"
+    description: Get a previous key based on a key path
+    content: |
+      stuff:
+        and: things
+      get->: get stuff/and
+    output: |
+      stuff:
+        and: things
+      get: things
+
+  - name: "[delete](delete.md)"
+    description: Delete a previous key based on a key path
+    content: |
+      stuff:
+        and: things
+      delete_>: delete stuff/and/things
+    output: |
+      stuff:
+        and:
+
+  - name: "[pop](pop.md)"
+    description: Removes an item from a list or key from a map in place based or with a result
+    content: |
+      path:
+        to:
+          list:
+            - stuff
+            - things
+      result->: pop {{path.to.list}}
+      remove in place_>: pop path/to/list 0
+
+    output: |
+      path:
+        to:
+          list:
+            - things
+      result:
+        - stuff
+
+  - name: "[append](append.md)"
+    description: Appends an item to a list in place or with a result
+    content: |
+      list:
+        - stuff
+      result->: append {{path.to.list}} things
+      append in place_>: append path/to/list 0
+
+    output: |
+      list:
+        - stuff
+        - things
+      result:
+        - stuff
+        - things
+
+  - name: "[keys](keys.md)"
+    description: Get the keys from a dict
+    content: |
+      path:
+        to:
+          map:
+            stuff: 1
+            things: 2
+      map_keys->: keys path/to/map
+    output: |
+      path:
+        to:
+          map:
+            stuff: things
+            foo: bar
+      map_keys:
+        - stuff
+        - things
+
+hook_examples:
+  append:
+    - description: Taking a literal input
+      content: |
+        list:
+          - stuff
+        result->: append {{path.to.list}} things
+
+      output: |
+        list:
+          - stuff
+        result:
+          - stuff
+          - things
+
+    - description: Or modifying the context
+      content: |
+        list:
+          - stuff
+        append in place_>: append path/to/list 0
+
+      output: |
+        list:
+          - stuff
+          - things
+
+    - description: Expanded in place
+      content: |
+        list:
+          - stuff
+        append in place:
+          _>: append
+          src: path/to/list
+          item: things
+      output: |
+        list:
+          - stuff
+          - things
+
+
+    - description: Expanded literal
+      content: |
+        list:
+          - stuff
+        appended:
+          _>: append
+          src: "{{list}}"
+          item: things
+
+      output: |
+        list:
+          - stuff
+        appended:
+          - stuff
+          - things
+
+  set_key:
+    - description: Set a key based on a key path
+      content: |
+        stuff:
+          and: things
+        set->: set_key stuff/and other-stuff
+      output: |
+        stuff:
+          and: other-stuff
+
+  get:
+    - description: Get a key based on a key path
+      content: |
+        stuff:
+          and: things
+        get->: get stuff/and
+      output: |
+        stuff:
+          and: things
+        get: things
+
+  delete:
+    - description: Delete a key based on a key path
+      content->: file tests/delete.yaml
+
+  update:
+    - description: Update a map with a string and a map in place
+      content: |
+        input:
+          map:
+            stuff: things
+        update with string in place_>: update input/map "more things"
+        update with map in place_>: update input/map {'foo':'bar'}
+      output: |
+        input:
+          map:
+            stuff: more things
+            foo: bar
+
+    - name: Update a map with another map in place
+      content: |
+        input:
+          map:
+            stuff: things
+        update in place_>: update input/map {'foo':'bar'}
+      output: |
+        input:
+          map:
+            stuff: things
+            foo: bar
+
+  pop:
+    - description: Removes an item from a list
+      content: |
+        list:
+          - stuff
+          - things
+        new_list->: pop "{{list}}" 1
+      output: |
+        list:
+          - stuff
+          - things
+        new_list:
+          - stuff
+
+    - description: Removes an item from a list in place based on a path
+      content: |
+        path:
+          to:
+            list:
+              - stuff
+              - things
+        remove in place_>: pop path/to/list 0
+      output: |
+        path:
+          to:
+            list:
+              - things
+
+    - description: List pop in place expanded
+      content: |
+        path:
+          to:
+            list:
+              - stuff
+              - things
+        remove in place:
+          _>: pop
+          src: path/to/list
+          item: 0
+      output: |
+        path:
+          to:
+            list:
+              - things

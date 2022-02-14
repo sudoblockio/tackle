@@ -8,7 +8,7 @@ block->:
     ->: tackle fake-tackle
 
   things:
-    ->: print "{{ beer.things }}"
+    ->: var "{{ beer.things }}"
 
   test_block:
     ->: block
@@ -18,4 +18,4 @@ block->:
         input: friend
         if: friend == 'dog'
 
-  foo->: print bar
+  foo: bar

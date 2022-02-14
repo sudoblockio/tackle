@@ -1,0 +1,7 @@
+selection:
+  ->: checkbox
+  message: What you do?
+  index: true
+  choices:
+    - stuff
+    - things

@@ -1,0 +1,23 @@
+
+find_in_child:
+  ->: find_in_child
+  target: thing.yaml
+
+path:
+  ->: path_join
+  paths:
+    - a-path
+    - path1
+
+find_in_child_starting_dir:
+  ->: find_in_child
+  target: thing.yaml
+  starting_dir: "{{path}}"
+
+find_in_child_fallback:
+  ->: find_in_child
+  target: something-not-right
+  fallback: fallback.yaml
+
+isfile:
+  ->: isfile child.yaml

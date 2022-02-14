@@ -1,0 +1,10 @@
+input_json:
+  stuff: things
+
+compact->: http_post https://reqres.in/api/users input_json
+
+expanded:
+  ->: http_post
+  url: https://reqres.in/api/users
+  input_json:
+    stuff: things

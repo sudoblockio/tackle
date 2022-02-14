@@ -1,0 +1,25 @@
+name: JSON Provider
+
+description: Wraps json library to read and write json.
+
+examples:
+  - name: Read json
+    description: Read a json file into a key
+    content: |
+      compact->: json path/to/file.json
+      expanded:
+        ->: json
+        path: path/to/file.json
+
+  - name: Write json
+    description: Read a json file into a key
+    content: |
+      stuff:
+        and: things
+      compact->: json path/to/file.json "{{stuff}}"
+      expanded:
+        ->: json
+        path: path/to/file.json
+        contents: "{{ stuff }}"
+
+#hook_examples->: "{{examples}}"

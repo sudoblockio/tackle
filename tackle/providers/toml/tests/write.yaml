@@ -9,4 +9,4 @@ input:
 write:
   ->: toml
   path: writing.toml
-  contents: "{{ input }}"
+  data: "{{ input }}"

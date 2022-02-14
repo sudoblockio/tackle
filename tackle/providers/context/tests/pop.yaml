@@ -1,0 +1,42 @@
+
+list:
+  - stuff
+  - things
+
+embedded:
+  list:
+    - stuff
+    - things
+
+a_dict:
+  stuff: 1
+  things: foo
+
+new_dict->: pop "{{a_dict}}" things
+
+assert:
+  ->: assert "{{new_dict}}"
+  value:
+    stuff: 1
+
+a_list:
+  - stuff
+  - foo
+
+arg_1->: pop {{a_list}}
+
+a_map:
+  stuff: bing
+  things: blu
+  foo: bar
+  baz: grrr
+
+arg_2->: pop {{a_map}} foo
+
+pop_map:
+  ->: pop
+  src: "{{ a_map }}"
+  item: stuff
+
+pop list_>: pop list 0
+pop embedded list_>: pop embedded/list

@@ -1,0 +1,77 @@
+#compact->: checkbox "What do you want?" ['stuff','things']
+
+compact->: split stuff-and-things "-"
+#expanded:
+#  ->: split
+#  input: stuff-and-things
+#  separator: "-"
+
+
+#stuff: things
+#block hook:
+#  ->: block
+#  merge: true
+#  items:
+#    stuff: other things
+#    things->: print more things --if "{{ stuff == 'other things' }}"
+
+
+
+#expanded:
+#  ->: checkbox
+#  choices:
+#    - stuff
+#    - things
+
+#compact_implicit->: input
+#compact_with_question->: input A question that will appear
+#input-expanded:
+#  ->: input
+#  message: A question?
+#  default: things
+
+##stuff:
+##  and: things
+##compact->: pprint "{{stuff}}"
+#
+#stuff: things
+##assertion->: assert {{stuff}} not-things  # Would assert
+##2->: "{{stuff=='things'}}"
+#
+#macro_version->:
+#  if: stuff == 'things'
+#  stuff->: print other_things
+#  things->: print "{{stuff}}" --if "{{stuff=='things'}}"
+#
+##expanded:
+##  ->: markdown
+##  text: |
+##    # A title
+##    Section with things
+#
+##md:
+##  ->: markdown
+##  text: |
+##    # A header
+##
+##    And some text.
+##
+##    ## Section 2
+##
+##    Other text
+##
+##column_names:
+##  - stuff
+##  - things
+##
+##data:
+##  - [ 'foo', 'bar' ]
+##  - [ 'here', 1 ]
+##
+##table:
+##  ->: table
+##  column_names: "{{ column_names }}"
+##  contents: "{{ data }}"
+#
+##command_example->: shell echo stuff and things
+##print_output->: print "{{command_example}}"

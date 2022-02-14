@@ -1,0 +1,88 @@
+name: Paths Provider
+
+description: Hooks for file path operations including symlinking
+
+examples:
+  - name: "[mkdir](mkdir.md)"
+    description: Make a directory
+    content: |
+      compact->: mkdir path/to/dir
+      expanded:
+        ->: mkdir
+        path: path/to/dir
+
+  - name: "[listdir](listdir.md)"
+    description: List the contents of a directory
+    content: |
+      compact->: listdir path/to/dir
+      expanded:
+        ->: listdir
+        path: path/to/dir
+
+  - name: "[symlink](symlink.md)"
+    description: Create a symlink
+    content: |
+      compact->: symlink path/to/source path/to/destination
+      expanded:
+        ->: symlink
+        src: path/to/source
+        dst: path/to/destination
+        target_is_directory: true
+
+  - name: "[path_exists](path_exists.md)"
+    description: Check if a path exists
+    content: |
+      compact->: path_exists path/to/file/or/dir
+      expanded:
+        ->: path_exists
+        path: path/to/file/or/dir
+
+  - name: "[isdir](isdir.md)"
+    description: Check if a path exists
+    content: |
+      compact->: isdir path/to/dir
+      expanded:
+        ->: isdir
+        path: path/to/dir
+
+  - name: "[isfile](isfile.md)"
+    description: Check if a path exists
+    content: |
+      compact->: isfile path/to/dir
+      expanded:
+        ->: isfile
+        path: path/to/dir
+
+  - name: "[path_join](path_join.md)"
+    description: Check if a path exists
+    content: |
+      compact->: path_join ['path','to','dir']
+      expanded:
+        ->: path_join
+        paths:
+          - path
+          - to
+          - dir
+    output: |
+      compact: path/to/dir  # \ for windows
+      expanded: path/to/dir
+
+  - name: "[find_in_parent](find_in_parent.md)"
+    description: Return the path to a target file in a parent directory
+    content: |
+      compact->: find_in_parent a-file.yaml
+      expanded:
+        ->: find_in_parent
+        target: a-file.yaml
+
+  - name: "[find_in_child](find_in_child.md)"
+    description: Get a list of paths to a target file in child directories
+    content: |
+      compact->: find_in_child a-file.yaml
+      expanded:
+        ->: find_in_child
+        target: a-file.yaml
+
+hook_examples:
+  mkdir->:
+    - "{{examples[0]}}"

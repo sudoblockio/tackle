@@ -1,0 +1,29 @@
+name: Git Provider
+
+description: Hooks that run git commands and manage [meta repos](https://notes.burke.libbey.me/metarepo/#:~:text=a%20%E2%80%9CMetarepo%E2%80%9D.-,Metarepo%20Architecture,branch%20commit%20for%20each%20repository.).
+
+examples:
+  - name: "[git_clone](git_clone.md)"
+    description: Clone a repo - wraps [gitpython `clone_from`](https://gitpython.readthedocs.io/en/stable/reference.html#git.repo.base.Repo.clone_from)
+    content: |
+      compact->: git_clone https://github.com/robcxyz/tackle-provider
+      expanded:
+        ->: git_clone
+        url: https://github.com/robcxyz/tackle-pypackage
+        to_path: output/path
+
+  - name: "[meta_repo](meta_repo.md)"
+    description: Create a meta repo out of many other repos. Allows flexible references to repos on github.
+    content->: file tests/meta.yaml
+
+hook_examples:
+  git_clone:
+    - content: |
+        compact->: git_clone https://github.com/robcxyz/tackle-provider
+        expanded:
+          ->: git_clone
+          url: https://github.com/robcxyz/tackle-pypackage
+          to_path: output/path
+
+  meta_repo:
+    - content->: file tests/meta.yaml

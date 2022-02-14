@@ -1,0 +1,27 @@
+a_list:
+  - stuff
+  - things
+
+another_list:
+  ->: var
+  input:
+    - dogs
+    - cats
+
+rendered_list:
+  ->: var
+  input:
+    - dogs
+    - cats
+
+short->: "{{a_list}}"
+
+tpl: "{{a_var_that_doesnt_exist}}"
+
+embed->: var tpl --no_recursion
+
+list_of_lists:
+  ->: var
+  input:
+    - [1,2]
+    - [3,4]

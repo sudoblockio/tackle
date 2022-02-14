@@ -1,0 +1,18 @@
+str: that
+list:
+  - stuff
+  - things
+a_dict:
+  stuff: things
+dict_list:
+  stuff:
+    - things
+    - more things
+list_dict:
+  - stuff: things
+
+str_type->: type str
+list_type->: type list
+a_dict_type->: type a_dict
+dict_list_type->: type dict_list
+list_dict_type->: type list_dict

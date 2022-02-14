@@ -1,5 +1,0 @@
-shell_exit:
-  ->: shell
-  command: |
-    sleep 3
-    garbage

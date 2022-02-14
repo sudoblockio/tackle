@@ -1,0 +1,7 @@
+
+stuff:
+  ->: while
+  condition: hook_name != 'things'
+  run:
+    hook_name->: input What is the hook name?
+    hook_type->: input What is the hook_type?

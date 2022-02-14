@@ -1,0 +1,8 @@
+this:
+  ->: print this and that
+
+multiline:
+  ->: print
+  objects: |
+    this and that
+    foo and bar

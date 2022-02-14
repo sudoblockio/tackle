@@ -1,0 +1,31 @@
+name: Command Provider
+
+description: Hooks that run system commands.
+
+#examples:
+#  - name: Basic
+#    description: The most minimal implementation
+#    content: |
+#      shell_example->: shell echo stuff and things
+
+
+hook_examples:
+  command:
+    - name: Basic
+      description: The most minimal implementation.
+      content: |
+        command_example->: command echo 'here'
+
+  shell:
+    - name: Basic
+      description: The most minimal implementation.
+      content: |
+        compact->: shell echo stuff and things
+        expanded:
+          ->: command
+          command: echo stuff and things
+          ignore_error: true
+
+      output: |
+        compact: stuff and things
+        expanded: stuff and things

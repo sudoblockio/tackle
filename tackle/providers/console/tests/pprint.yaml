@@ -1,0 +1,6 @@
+stuff:
+  and: things
+
+this:
+  ->: pprint "{{stuff}}"
+

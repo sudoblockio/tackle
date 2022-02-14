@@ -1,0 +1,24 @@
+column_names:
+  - stuff
+  - things
+
+data:
+  - ['foo', 'bar']
+  - ['here', 1]
+
+data_bigger:
+  - ['foo', 'bar']
+  - ['here', 1]
+  - ['here', 2]
+  - ['here', 3]
+  - ['here', 4]
+
+table:
+  ->: table
+  column_names: "{{ column_names }}"
+  contents: "{{ data }}"
+
+table_bigger:
+  ->: table
+  column_names: "{{ column_names }}"
+  contents: "{{ data_bigger }}"

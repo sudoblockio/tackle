@@ -1,0 +1,29 @@
+
+name: YAML Provider
+
+description: Wraps yaml library to read and write yaml.
+
+examples:
+  - name: Read yaml
+    description: Read a yaml file into a key
+    content: |
+      compact->: yaml path/to/file.yaml
+      expanded:
+        ->: yaml
+        path: path/to/file.yaml
+
+  - name: Write yaml
+    description: Read a yaml file into a key
+    content: |
+      stuff:
+        and: things
+      compact->: yaml path/to/file.yaml "{{stuff}}"
+      expanded:
+        ->: yaml
+        path: path/to/file.yaml
+        contents: "{{ stuff }}"
+
+hook_examples:
+  yaml:
+    - ->: var "{{examples[0]}}" --no_recursion
+    - ->: var "{{examples[1]}}" --no_recursion

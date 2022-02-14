@@ -1,0 +1,5 @@
+compact->: split stuff-and-things "-"
+expanded:
+  ->: split
+  input: stuff-and-things
+  separator: "-"

@@ -2,8 +2,14 @@ render_context:
   ->: provider_docs
   chdir: "../.."
 
-Render provider template:
-  ->: generate ../../../../../docs/templates/provider-doc.md index.md
-  render_context: "{{render_context}}"
+schemas:
+  ->: provider_docs --output_schemas
+  chdir: "../.."
 
-rm->: remove index.md
+#  chdir: "../../../yaml"
+
+#Render provider template:
+#  ->: generate ../../../../../docs/templates/provider-doc.md index.md
+#  render_context: "{{render_context}}"
+#
+#rm->: remove index.md

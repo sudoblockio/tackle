@@ -1,7 +1,0 @@
-simple:
-  ->: put
-  url: https://reqres.in/api/users/2
-  input_json:
-    name: Rob Cannon
-    job: Parkour Specialist
-

@@ -1,0 +1,4 @@
+compact->: http_delete https://reqres.in/api/users/2
+expanded:
+  ->: http_delete
+  url: https://reqres.in/api/users/2

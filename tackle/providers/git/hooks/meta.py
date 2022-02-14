@@ -2,17 +2,14 @@
 import pathlib
 import os
 import re
-import logging
 import subprocess
 from collections import MutableMapping
 from PyInquirer import prompt
-
 from pydantic import BaseModel, ValidationError, validator
-from tackle.utils.paths import work_in
-from tackle.models import BaseHook
-from typing import Dict, Optional
+from typing import Optional
 
-logger = logging.getLogger(__name__)
+from tackle.utils.paths import work_in
+from tackle.models import BaseHook, Field
 
 
 class Repo(BaseModel):
@@ -21,12 +18,6 @@ class Repo(BaseModel):
     src: str
     branch: Optional[str] = None
     tag: Optional[str] = None
-
-    # @validator("src")
-    # def va(cls, v):
-
-    def clone(self):
-        pass
 
 
 # https://stackoverflow.com/a/6027615/12642712
@@ -51,28 +42,43 @@ def flatten_repo_tree(d, parent_key=''):
 
 
 class MetaGitHook(BaseHook):
-    """Hook to create meta repo.
-
-    :param command: Des...
+    """
+    Hook to create meta repo, ie a repo that has many other repos within it. See
+     [meta repo definition.](https://notes.burke.libbey.me/metarepo/#:~:text=a%20%E2%80%9CMetarepo%E2%80%9D.-,Metarepo%20Architecture,branch%20commit%20for%20each%20repository.)
+     Describe the repo structure with a map and when this hook is called, it allows the
+     users to operate git commands on that repo structure.
     """
 
     __slots__ = ('first_run',)
     # Per https://github.com/samuelcolvin/pydantic/issues/655 for private vars
 
     hook_type: str = 'meta_repo'
-    command: str = None
+    command: str = Field(None, description="The git command to run.")
+    repo_tree: dict = Field(
+        None,
+        description="A map of repos to clone with the keys indicating the path "
+        "and values for the repo targets. See examples.",
+    )
+    protocol: str = Field(
+        "https",
+        description="Either https or ssh. Useful when using abbreviated repo "
+        "references.",
+    )
+    token: str = Field(
+        None, description="A token to use with https abbreviated repo references."
+    )
+    base_url: str = Field(
+        "github.com",
+        description="The base url to use with https abbreviated repo " "references.",
+    )
+    git_org: str = Field(
+        None,
+        description="The git org to override with https abbreviated repo "
+        "references.",
+    )
 
-    repos: Dict = None
-    repo_tree: Dict = None
-    select: bool = True
-
-    protocol: str = "https"
-    token: str = None
-    base_url: str = "github.com"
-    git_org: str = None
-
-    base_dir: str = os.path.abspath(os.path.curdir)
-    repo_tree_overrides: list = None
+    _doc_tags: list = ["experimental"]
+    _issue_numbers: list = []
 
     @validator('token')
     def no_token_with_ssh_protocol(cls, v, values, **kwargs):
@@ -250,8 +256,8 @@ class MetaGitHook(BaseHook):
         if self.repo_tree:
             self.repo_tree = flatten_repo_tree(self.repo_tree)
 
-        # Select is a bool that can override whether to prompt (basically
-        if self.select and not self.no_input:
+        # Select is a bool that can override whether to prompt
+        if not self.no_input:
             self.prompt_repo_choices()
 
         # Parse flattened repo tree from above

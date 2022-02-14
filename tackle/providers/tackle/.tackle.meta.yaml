@@ -1,20 +1,124 @@
-description: Hooks that interface with tackle's parser and context. Core to most tackle scripts.
+name: Tackle Provider
+
+description: Hooks that interface with tackle's parser. Core to most tackle scripts.
 
 examples:
-  - name: Basic
-    description: The most minimal implementation
+  - name: "[debug](debug.md)"
+    description: Hook to debug the context. Prints the context and holds the execution for user input.
+    content: |
+      d->: debug
+
+  - name: "[tackle](tackle.md)"
+    description: Run other tackle providers / tackle files
+    content: |
+      compact_provider->: tackle robcxyz/tackle-provider
+      compact_file->: tackle path/to/tackle/file.yaml
+      expanded:
+        ->: tackle
+        input_string: robcxyz/tackle-provider
+        checkout: dev  # Branch / version to checkout
+        context_file: path/to/file.yaml  # Path to a file within a remote provider
+        extra_context:  # Additional context to be brought in when running the tackle provider
+          stuff: things
+
+  - name: "[import](import.md)"
+    description: Import other tackle providers to allow use of other hooks. Typically run privately - ie `_>` to keep a clean context
+    content: |
+      compact_>: import robcxyz/tackle-provider
+      expanded:
+        ->: tackle
+        src: robcxyz/tackle-provider
+        version: dev  # Branch / version to checkout
+
+  - name: "[block](block.md)"
+    description: Run a block of tackle calls so that logic methods (ie `if`, `for`) can be run on a group of keys. Block hooks are common so there is a macro form of this hook (ie no explicit hook call).
+    content: |
+      stuff: things
+      macro_version->:
+        if: stuff == 'things'
+        stuff->: print other_things
+        things->: print "{{ stuff }}" --if "{{ stuff == 'things' }}"
+
+      # Equivalent to
+      expanded:
+        ->: block
+        items:
+          merge: true
+          stuff->: print other_things
+          things->: print "{{ stuff }}" --if "{{ stuff == 'things' }}"
+
+  - name: "[var](var.md)"
+    description: Hook to render a variable. `var` hooks are common so there is a macro form of this hook (ie no explicit hook call).
+    content: |
+      stuff: things
+      macro_version->: "{{stuff}}"  # Any hook call that starts with `{{` is considered a var hook
+      compact->: var "{{stuff}}"
+      expanded:
+        ->: var
+        input: "{{stuff}}"
+        # input's are rendered recursively so this flag only does one level of rendering
+        # Useful when the input is itself a template and you don't want it to be rendered
+        no_recursion: true
+
+  - name: "[provider_docs](provider_docs.md)"
+    description: Extract metadata about the provider
     content: |
       example:
         type: provider_docs
         chdir: ".."
         provider: docs
 
+
 hook_examples:
   tackle:
     - name: Basic
-      description: The most minimal implementation
+      description: The most minimal implementation. Call is same as how you would call tackle from command line.
+      content: |
+        example->: tackle path/to/dir/or/github
+
+    - name: With context
+      description: Sometimes you want to ship a specific context in when calling the other tackle.
       content: |
         example:
-          type: provider_docs
-          chdir: ".."
-          provider: docs
+          ->: tackle path/to/dir/or/github
+          extra_context:
+            stuff: things
+
+    - name: Remote providers
+      description: Providers are often remote so additional parameters are relevant in this setting.
+      content: |
+        example:
+          ->: tackle
+          input_string: robcxyz/tackle-provider
+          checkout: dev  # Branch / version to checkout
+          context_file: path/to/file.yaml  # Path to a file within a remote provider
+
+  block:
+    - name: Full form
+      description: This is the full form of block and generally is not advised. See short form example.
+      content: |
+        stuff: things
+        block hook:
+          ->: block
+          items:
+            stuff: other things
+            things->: print more things --if "{{ stuff == 'other things' }}"
+      output: |
+        stuff: things
+        block hook:
+          stuff: other things
+          things: more things
+
+    - name: Short form
+      description: Because block hooks are so common, there is a re-write / short form of this hook.
+      content: |
+        stuff: things
+        block hook:
+          ->: block
+          merge: true  # This flags merges the output up
+          items:
+            stuff: other things
+            things->: print more things --if "{{ stuff == 'other things' }}"
+      output: |
+        stuff: other things
+        things: more things

@@ -1,6 +1,0 @@
-choices:
-  <: checkbox
-  message: You foo?
-  choices:
-    - foo: ya foo?
-    - bar: you bar?

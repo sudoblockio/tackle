@@ -1,3 +1,0 @@
-simple:
-  ->: delete
-  url: https://reqres.in/api/users/2

@@ -1,9 +1,0 @@
-stuff: things
-
-choices:
-  <: select
-  message: You foo?
-  default: bar
-  choices:
-    - ya foo
-    - bar

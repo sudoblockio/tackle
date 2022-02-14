@@ -1,0 +1,22 @@
+init->: isdir output
+
+ctx:
+  foo: bar
+  stuff: things
+
+compact:
+  ->: generate render_src output/src
+  extra_context:
+    - "{{ ctx }}"
+
+#compact2:
+#  ->: generate render_src output/src
+#  extra_context:
+#    - foo: bar
+#    - stuff: things
+
+
+
+after->: isfile output/src/models/stuff-things.yaml
+
+cleanup->: remove output

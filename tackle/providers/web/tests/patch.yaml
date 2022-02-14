@@ -1,0 +1,10 @@
+input_json:
+  stuff: things
+
+compact->: http_patch https://reqres.in/api/users/2 input_json
+
+expanded:
+  ->: http_patch
+  url: https://reqres.in/api/users/2
+  input_json:
+    stuff: things

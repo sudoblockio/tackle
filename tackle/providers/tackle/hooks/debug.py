@@ -1,4 +1,3 @@
-"""Debug hook."""
 from PyInquirer import prompt
 from pprint import pprint
 
@@ -10,7 +9,7 @@ class DebugHook(BaseHook):
 
     hook_type: str = 'debug'
 
-    def execute(self):
+    def execute(self) -> None:
         """Run the hook."""
         print("Existing context")
         pprint(dict(self.existing_context))

@@ -1,0 +1,72 @@
+
+name: String Provider
+
+description: String manipulation and random string generators.
+
+examples:
+  - name: "[split](split.md)"
+    description: Splits a string into a list based on a separator
+    content: |
+      compact->: split stuff-and-things -
+      expanded:
+        ->: split
+        input: stuff-and-things
+        separator: "-"
+    output: |
+      compact:
+        - stuff
+        - and
+        - things
+      expanded:
+        - stuff
+        - and
+        - things
+
+  - name: "[join](join.md)"
+    description: Joins a list of strings into a single string
+    content: |
+      compact->: join ['stuff','and','things']
+      expanded:
+        ->: join
+        input:
+          - stuff
+          - and
+          - things
+        separator: -
+    output: |
+      compact: stuff/and/things
+      expanded: stuff-and-things
+
+  - name: "[random_string](random_string.md)"
+    description: Creates a random string of letters and digits
+    content: |
+      compact->: random_string
+      expanded:
+        ->: random_string
+        length: 4
+        case: upper
+    output: |
+      compact: ab7dhfo0
+      expanded: AB7D
+
+  - name: "[random_hex](random_hex.md)"
+    description: Creates a random hex of letters and digits
+    content: |
+      compact->: random_hex 4
+      expanded:
+        ->: random_hex
+        length: 4
+    output: |
+      compact: a01f
+      expanded: a01f
+
+
+hook_examples:
+  split->:
+    - "{{examples[0]}}"
+  join->:
+    - "{{examples[1]}}"
+  random_string->:
+    - "{{examples[2]}}"
+  random_hex->:
+    - "{{examples[3]}}"

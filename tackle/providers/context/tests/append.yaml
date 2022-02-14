@@ -1,0 +1,36 @@
+
+stuff:
+  - things
+
+block append_>:
+  app->: append stuff more-things
+
+_list:
+  - stuff
+  - things
+  - foo
+  - bar
+
+appended_list:
+  ->: append
+  src: "{{ _list }}"
+  item: donkey
+
+appended_list_arg:
+  ->: append "{{ _list }}" donkey
+
+list:
+  - stuff
+  - things
+
+path:
+  to:
+    list:
+      - stuff
+      - things
+
+output->: append {{list}} foo
+
+output_list->: append {{list}} ['foo']
+
+in place_>: append path/to/list foo

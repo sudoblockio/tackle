@@ -1,0 +1,32 @@
+input:
+  map:
+    stuff: things
+#update with string in place_>: update input/map "more things"
+update with map in place_>: update input/map {'foo':'bar'}
+
+
+input_map:
+  stuff: blah
+  sturf: blu
+
+dict_map:
+  foo: bing
+  bar: blu
+
+update_map:
+  ->: update
+  src: "{{ input_map }}"
+  input: "{{ dict_map }}"
+
+update_map2:
+  ->: update
+  src: "{{ input_map }}"
+  input:
+    stuff: "{{ dict_map }}"
+
+arg->: update "{{ input_map }}" "{{ dict_map }}"
+
+arg2->: update {{input_map}} {'stuff':{{dict_map}}}
+
+update in place_>: update dict_map/foo bar
+update in place list_>: update ['dict_map','bar'] bar

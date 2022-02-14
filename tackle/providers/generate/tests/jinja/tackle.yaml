@@ -1,0 +1,6 @@
+foo: bar
+
+jinja:
+  ->: jinja
+  template: templates/things.py.j2
+  output: things.py

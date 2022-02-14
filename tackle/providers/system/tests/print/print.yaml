@@ -1,9 +1,0 @@
-this:
-  ->: print this and that
-
-multiline:
-  ->: |
-    print
-
-    this and that
-

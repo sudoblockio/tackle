@@ -1,0 +1,7 @@
+selection:
+  ->: select
+  message: What you do?
+  index: true
+  choices:
+    - I do stuff: stuff
+    - I do things: things

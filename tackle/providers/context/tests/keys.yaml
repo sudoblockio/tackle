@@ -1,0 +1,16 @@
+a_map:
+  stuff: foo
+  things: bar
+
+output->: keys {{a_map}}
+
+check->: assert {{output}} ["stuff","things"]
+
+another_map:
+  key:
+    stuff: foo
+    things: bar
+
+key_path_>: keys another_map/key
+
+check_key_path->: assert {{key_path}} ["stuff","things"]

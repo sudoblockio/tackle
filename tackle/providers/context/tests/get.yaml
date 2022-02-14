@@ -1,0 +1,26 @@
+one:
+  - that:
+      stuff: things
+two:
+  - that:
+      stuff: things
+three:
+  - that:
+      stuff: things
+
+getter_list:
+  ->: get
+  path:
+    - one
+    - 0
+    - that
+    - stuff
+
+getter_str:
+  ->: get
+  path: two/0/that/stuff
+
+getter_str_sep:
+  ->: get
+  path: three.0.that.stuff
+  sep: .

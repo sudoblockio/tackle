@@ -1,0 +1,15 @@
+this: that
+
+assert_true->: assert {{this}} that
+assert_false->: assert {{this}} fooo --exit_on_failure false
+
+assert->:
+  if: assert_true
+  foo: bar
+
+no_exist->:
+  if: assert_false
+  foo: bar
+
+assert_lhs->: assert "{{this}}"
+assert_lhs_false->: assert False --exit_on_failure False

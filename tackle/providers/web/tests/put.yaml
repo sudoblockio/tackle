@@ -1,0 +1,11 @@
+input_json:
+  stuff: things
+
+compact->: http_put https://reqres.in/api/users input_json
+compact_2->: http_put https://reqres.in/api/users {'stuff':'things'}
+
+expanded:
+  ->: http_put
+  url: https://reqres.in/api/users/2
+  input_json:
+    stuff: things

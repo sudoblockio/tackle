@@ -1,0 +1,126 @@
+
+name: Prompt Provider
+
+description: Wraps [PyInquirer](https://github.com/CITGuru/PyInquirer) python package for basic prompting.
+
+# Input common
+input_content: |
+  compact_implicit->: input
+  compact_with_question->: input Ask a question?
+  input_expanded:
+    ->: input
+    message: A question?
+    default: things
+input_output_text: |
+  ```shell
+  ? compact_implicit >>>
+  ? Ask a question?
+  ? A question?  things
+  ```
+input_output: |
+  compact_implicit: <user input>
+  compact_with_question: <user input>
+  input_expanded: <user input>
+
+# Select common
+select_content: |
+  compact->: select "What do you want?" ['stuff','things']
+  expanded:
+    ->: select
+    choices:
+      - stuff
+      - things
+select_output_text: |
+  ```shell
+  ? What do you want?  stuff
+  ? expanded >>>  (Use arrow keys)
+     stuff
+   ❯ things
+  ```
+select_output: |
+  compact: stuff
+  expanded: things
+
+# Checkbox common
+checkbox_content: |
+  compact->: checkbox "What do you want?" ['stuff','things']
+  expanded:
+    ->: checkbox
+    choices:
+      - stuff
+      - things
+checkbox_output_text: |
+  ```shell
+  ? What do you want?  done (2 selections)
+  ? expanded >>>  (<up>, <down> to move, <space> to select, <a> to toggle, <i> to invert)
+   ❯○ stuff
+    ● things
+  ```
+checkbox_output: |
+  compact:
+    - stuff
+    - things
+  expanded:
+    - things
+
+examples:
+  - name: "[input](input.md)"
+    description: Prompt that allows user to input a field.
+    content->: "{{input_content}}"
+    output_text->: "{{input_output_text}}"
+    output->: "{{input_output}}"
+
+  - name: "[select](select.md)"
+    description: A selector that limits the input to a list of choices. Generally this is written in expanded form.
+    content->: "{{select_content}}"
+    output_text->: "{{select_output_text}}"
+    output->: "{{select_output}}"
+
+  - name: "[checkbox](checkbox.md)"
+    description: A checkbox that allow the user to chose multiple choices and returns a list of those choices.
+    content: |
+      checkbox-minimal:
+        ->: input
+        choices:
+          - stuff
+          - things
+
+hook_examples:
+  input:
+    - description: The `input` hook can be called in a number of ways
+      content->: "{{input_content}}"
+      output_text->: "{{input_output_text}}"
+      output->: "{{input_output}}"
+
+  select:
+    - description: The basic versions of the `select` can be called in these ways
+      content->: "{{select_content}}"
+      output_text->: "{{select_output_text}}"
+      output->: "{{select_output}}"
+
+    - description: Other versions can use custom prompts for the choices
+      content->: file tests/checkbox/map.yaml
+      output: |
+        ? What you do?  (<up>, <down> to move, <space> to select, <a> to toggle, <i> to invert)
+         ❯● I do stuff
+          ● I do things
+
+    - description: Can also take the APIs normal form
+      content->: file tests/checkbox/map_normal.yaml
+      output: |
+        ? What you do?  (<up>, <down> to move, <space> to select, <a> to toggle, <i> to invert)
+         ❯○ stuff
+          ● things
+
+  checkbox:
+    - description: The basic versions of the `select` can be called in these ways
+      content->: "{{select_content}}"
+      output_text->: "{{select_output_text}}"
+      output->: "{{select_output}}"
+
+    - description: Other versions can use custom prompts for the choices
+      content->: file tests/checkbox/map.yaml
+      output: |
+        ? What you do?  (Use arrow keys)
+         ❯ I do stuff
+           I do things

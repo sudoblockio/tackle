@@ -1,0 +1,6 @@
+#https://github.com/robcxyz/tackle-box/issues/14
+shell:
+  ->: command
+  command: |
+    ls ;
+    echo stuff

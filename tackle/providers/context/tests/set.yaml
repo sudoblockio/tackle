@@ -1,0 +1,29 @@
+one:
+  - that:
+      stuff: things
+two:
+  - that:
+      stuff: things
+three:
+  - that:
+      stuff: things
+
+setter_list:
+  ->: set
+  path:
+    - one
+    - 0
+    - that
+    - stuff
+  value: more things
+
+setter_str:
+  ->: set
+  path: two/0/that/stuff
+  value: more things
+
+setter_str_sep:
+  ->: set
+  path: three.0.that.stuff
+  value: more things
+  sep: .

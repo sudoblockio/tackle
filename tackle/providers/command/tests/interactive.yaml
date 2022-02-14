@@ -1,0 +1,4 @@
+#https://github.com/robcxyz/tackle-box/issues/13
+#https://github.com/robcxyz/tackle-box/issues/14
+
+run->: command "echo 'here' && echo -n 'this'"

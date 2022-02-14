@@ -1,0 +1,39 @@
+#values:
+#  ->: match value
+#  case:
+#    value: True
+
+dict:
+  ->: match dict
+  case:
+    dict:
+      stuff: things
+    list:
+      - stuff
+      - things
+    hook-dict:
+      dict:
+        stuff: things
+      list:
+        - stuff
+        - things
+      hook-expanded:
+        ->: print expanded
+      hook-compact->: print compact
+
+    hook-expanded:
+      ->: print expanded
+    hook-compact->: print compact
+#    block->:
+#      for:
+#        - stuff
+#        - things
+#      value: True
+#      dict:
+#        stuff->: "{{item}}"
+#      list:
+#        - stuff
+#        - things
+#      hook-expanded:
+#        ->: print expanded
+#      hook-compact->: print compact

@@ -1,0 +1,84 @@
+name: Generate Provider
+
+description: Hooks that generate files through jinja templating.
+
+examples:
+  - name: "[jinja](jinja.md)"
+    description: Render a single file
+    content: |
+      compact->: jinja path/to/template/file.tpl output/path.py
+      expanded:
+        ->: jinja
+        template: path/to/template/file.tpl
+        ouput: output/path.py
+
+  - name: "[generate](generate.md)"
+    description: Recursively render a directory of template or a single file
+    content: |
+      compact->: jinja path/to/template/file/or/dir output/path
+      expanded:
+        ->: jinja
+        templates: path/to/template/file/or/dir
+        ouput: output/path
+
+hook_examples:
+  generate:
+    - name: Basic
+      description: The most minimal implementation.
+      content: |
+        stuff: things
+        generate_example->: generate path/to/template/file/or/dir output/path
+
+    - name: With specific context
+      content: |
+        generate with specific context:
+          _>: generate
+          templates: path/to/template/file/or/dir
+          output: output/path
+          render_context:
+            stuff: things
+
+    - name: With extra context
+      content: |
+        stuff: things
+        generate with specific context:
+          _>: generate
+          templates: path/to/template/file/or/dir
+          output: output/path
+          extra_context:
+            foo: bar
+
+    - name: Copy without render
+      description: In case you don't want to render a file (for example a template), you can copy without rendering.
+      content: |
+        expanded:
+          ->: generate render_src output
+          copy_without_render:
+            - ./render_src/.hidden.yaml
+            - ./render_src/no-render/*
+
+  jinja:
+    - name: Basic
+      description: The most minimal implementation.
+      content: |
+        stuff: things
+        jinja_example->: jinja path/to/template/file.tpl output/path.py
+
+    - name: With specific context
+      content: |
+        jinja with specific context:
+          _>: jinja
+          templates: path/to/template/file.tpl
+          output: output/path.py
+          render_context:
+            stuff: things
+
+    - name: With extra context
+      content: |
+        stuff: things
+        jinja with specific context:
+          _>: jinja
+          templates: path/to/template/file.tpl
+          output: output/path.py
+          extra_context:
+            foo: bar

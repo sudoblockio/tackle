@@ -1,0 +1,4 @@
+compact->: http_get https://jsonplaceholder.typicode.com/todos/1
+expanded:
+  ->: http_get
+  url: https://jsonplaceholder.typicode.com/todos/1

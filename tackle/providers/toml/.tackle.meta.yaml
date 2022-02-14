@@ -1,0 +1,26 @@
+
+name: TOML Provider
+
+description: Reading and writing toml files.
+
+examples:
+
+hook_examples:
+  toml:
+    - name: Read toml
+      description: Read a toml file into a key
+      content: |
+        expanded:
+          ->: toml
+          path: path/to/toml/file.toml
+        compact->: toml path/to/toml/file.toml
+    - name: Write toml
+      description: Write a toml file from a key
+      content: |
+        stuff:
+          and: things
+        expanded:
+          ->: toml
+          path: path/to/toml/file.toml
+          contents:  "{{ stuff }}"
+        compact->: toml path/to/toml/file.toml "{{ this }}"

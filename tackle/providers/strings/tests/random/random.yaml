@@ -1,0 +1,17 @@
+
+random_string_upper:
+  ->: random_string
+  case: upper
+
+random_string->: random_string
+
+
+random_hex:
+  ->: random_hex
+random_hex_arg->: random_hex 4
+
+random_string_upper_arg->: random_string 4 upper
+
+random_string_arg->: random_string 6
+
+random_string_arg_upper->: random_string 6 --upper

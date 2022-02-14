@@ -1,0 +1,7 @@
+this:
+  ->: confirm
+  message: this?
+
+that:
+  ->: confirm
+  default: False

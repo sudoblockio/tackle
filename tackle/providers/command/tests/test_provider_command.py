@@ -1,0 +1,46 @@
+import os
+import pytest
+from tackle.exceptions import HookCallException
+
+from tackle.main import tackle
+
+if os.name == 'nt':
+    pytest.skip("Skipping when run from windows.", allow_module_level=True)
+
+
+# No idea why this fails - same command...
+# def test_provider_system_hook_command(change_dir):
+#     context = tackle('list-dir.yaml')
+#     assert context['cmd'] == context['cmd_arg']
+
+
+# TODO: https://github.com/robcxyz/tackle-box/issues/14
+# def test_provider_system_hook_command_multi_line(change_dir):
+#     context = tackle('multi-line-cmd.yaml')
+#     assert 'No such file' not in context['shell']
+
+
+# TODO: https://github.com/robcxyz/tackle-box/issues/13
+# def test_provider_system_hook_interactive_shell(chdir):
+#     o = tackle('interactive.yaml')
+#     assert o
+
+
+def test_provider_system_hook_shell_exit(change_dir):
+    with pytest.raises(FileNotFoundError):
+        tackle('exit.yaml')
+
+
+def test_provider_system_hook_shell_exit_long(change_dir):
+    with pytest.raises(HookCallException):
+        tackle('exit-long.yaml')
+
+
+def test_provider_system_hook_shell_exit_ignore(change_dir):
+    o = tackle('exit-ignore.yaml')
+    assert o
+
+
+def test_provider_system_hook_command_exit_ignore(change_dir):
+    o = tackle('exit-ignore.yaml')
+    assert o

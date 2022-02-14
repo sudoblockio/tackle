@@ -1,0 +1,54 @@
+name: Web Provider
+
+description: Allows access to web resources such as http requests and opening a web browser to a url. Wraps functionality of python [requests](https://docs.python-requests.org/en/master/) library.
+
+examples:
+  - name: "[webbrowser](webbrowser.md)"
+    description: Open a web browser. Wraps python's [webbrowser](https://docs.python.org/3/library/webbrowser.html#browser-controller-objects) module.
+    content->: file tests/get.yaml
+
+  - name: "[http_get](http_get.md)"
+    description: Make get request and store output in key
+    content->: file tests/get.yaml
+
+  - name: "[http_put](http_put.md)"
+    description: Make [put](https://docs.python-requests.org/en/latest/api/#requests.put) request and store output in key
+    content->: file tests/post.yaml
+
+  - name: "[http_post](http_post.md)"
+    description: Make post request and store output in key
+    content->: file tests/post.yaml
+
+  - name: "[http_delete](http_delete.md)"
+    description: Make delete request and store response code in key
+    content->: file tests/delete.yaml
+
+  - name: "[http_patch](http_patch.md)"
+    description: Make patch request and store response code in key
+    content->: file tests/patch.yaml
+
+hook_examples:
+  webbrowser:
+    - description: Open a web browser. Wraps python's [webbrowser](https://docs.python.org/3/library/webbrowser.html#browser-controller-objects) module.
+      content: |
+        open browser_>: webbrowser https://robc.xyz
+
+  http_get:
+    - description: Make get request and store output in key
+      content->: file tests/get.yaml
+
+  http_put:
+    - description: Make [put](https://docs.python-requests.org/en/latest/api/#requests.put) request and store output in key
+      content->: file tests/post.yaml
+
+  http_post:
+    - description: Make post request and store output in key
+      content->: file tests/post.yaml
+
+  http_delete:
+    - description: Make delete request and store response code in key
+      content->: file tests/delete.yaml
+
+  http_patch:
+    - description: Make patch request and store response code in key
+      content->: file tests/patch.yaml

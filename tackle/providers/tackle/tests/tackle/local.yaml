@@ -8,6 +8,6 @@ shell:
 additional_context:
   ->: tackle local.yaml
   chdir: fixture
-  additional_context:
+  extra_context:
     foo: bing
     bar: baz

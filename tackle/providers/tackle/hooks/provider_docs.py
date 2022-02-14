@@ -1,15 +1,12 @@
-"""
-`provider_docs` hooks which gets metadata about the provider so it can be rendered in
-docs hooks.
-"""
 import os
 import sys
+import random
+import string
 import importlib.machinery
-
 import json
-import inspect
 from pydantic import BaseModel, Field
-from typing import List, get_type_hints, Any
+import inspect
+from typing import List, get_type_hints, Any, Union, Optional
 
 try:
     from typing import _GenericAlias
@@ -44,7 +41,13 @@ class HookDoc(BaseModel):
     description: str = ""
     properties: List[HookDocField]
     arguments: List[HookArgField]
-    output: str = None
+    return_type: Optional[str]
+    return_description: Optional[str]
+    hook_file_name: str
+    doc_tags: list
+    issue_numbers: list
+    notes: list
+    order: int
 
 
 class ProviderDocs(BaseModel):
@@ -56,31 +59,47 @@ class ProviderDocs(BaseModel):
     description: str = None
 
 
-def get_hook_properties(schema: dict) -> List[HookDocField]:
+def hook_type_to_string(type_) -> str:
+    """Convert hook ModelField type_ to string."""
+    if type_ == Any:
+        output = 'any'
+    elif isinstance(type_, _GenericAlias):
+        if isinstance(type_, List):
+            output = 'list'
+        else:
+            output = 'union'
+    else:
+        output = type_.__name__
+    return output
+
+
+def get_hook_properties(hook) -> List[HookDocField]:
     """Get the input params for a hook."""
-    basehook_properties = json.loads(BaseHook(hook_type='tmp').schema_json())[
-        'properties'
-    ]
+    # Get the base properties like `for` and `if` so they can be ignored
+    basehook_properties = BaseHook(hook_type='tmp').__fields__
 
     output = []
-    for k, v in schema['properties'].items():
+    for k, v in hook.__fields__.items():
+        # Ignored properties
         if k in basehook_properties:
-            continue
-
-        # Bypass any refs
-        if "$ref" in v:
             continue
 
         # Type is dealt with elsewhere
         if k == 'hook_type':
             continue
 
+        # Skip properties ending with "_" as these don't need documentation
+        if k.endswith("_"):
+            continue
+
         hook_doc = HookDocField(
             name=k,
-            required="X" if 'default' in v else "",
-            type=v['type'] if 'type' in v else "Any",
-            default=v['default'] if 'default' in v else "",
-            description=v['description'] if 'description' in v else "",
+            required=v.required,
+            type=hook_type_to_string(v.type_),
+            default=v.default,
+            description=v.field_info.description
+            if v.field_info.description is not None
+            else "",
         )
         output.append(hook_doc)
     return output
@@ -91,18 +110,10 @@ def get_hook_arguments(hook) -> List[HookArgField]:
     output = []
 
     for i in hook._args:
-
-        if hook.__fields__[i].type_ == Any:
-            type = 'any'
-        elif isinstance(hook.__fields__[i].type_, _GenericAlias):
-            type = 'union'
-        else:
-            type = hook.__fields__[i].type_.__name__
-
         output.append(
             HookArgField(
                 argument=i,
-                type=type,
+                type=hook_type_to_string(hook.__fields__[i].type_),
             )
         )
 
@@ -110,41 +121,36 @@ def get_hook_arguments(hook) -> List[HookArgField]:
 
 
 class ProviderDocsHook(BaseHook):
-    """Hook building provider docs."""
+    """Hook for extracting provider metadata for building docs."""
 
     hook_type: str = "provider_docs"
 
     # fmt: off
     path: str = Field(".", description="The path to the provider.")
     output: str = Field(".", description="The path to output the docs to.")
-
     provider: str = Field(None, description="The provider name.")
     hooks_dir = Field("hooks", description="Directory hooks are in.")
-    meta_file = Field(".tackle.meta.yaml",
-                      description="A file to keep metadata about the provider. Is renedered like a tackle file. See examples.")
-
-    templates_dir: str = Field(
-        None,
-        description="A path to a directory with `hook-doc.md` and `provider-doc.md`."
-    )
+    output_schemas: bool = Field(False, description="Output the json schema instead.")
     # fmt: on
 
     _args: list = ['path', 'output']
+    _doc_tags: list = ["experimental"]
+    _docs_order = 11
+    _return_description = (
+        "Returns a dictionary with metadata about a provider and "
+        "it's hooks or a list of schemas when run with "
+        "`output_schemas`."
+    )
 
     def check_python_version(self):
         """Doesn't work on py3.6."""
         if sys.version_info.minor <= 6:
             raise Exception("Can't run provider_docs hook in a py version < 3.7.")
 
-    def execute(self) -> dict:
+    def execute(self) -> Union[dict, list]:
         """Build the docs."""
         if not self.provider:
             self.provider = os.path.basename(os.path.abspath(self.path))
-
-        if self.templates_dir is None:
-            self.templates_dir = os.path.join(
-                os.path.dirname(__file__), '..', 'templates'
-            )
 
         requirements = []
         if os.path.exists('requirements.txt'):
@@ -162,10 +168,15 @@ class ProviderDocsHook(BaseHook):
         # Loop through python files
         importable_files = [i for i in listdir_absolute(path) if
                             i.endswith("py") and not i.endswith('__init__.py')]
-        for f in importable_files:
+        schema_list = []
+        for i, f in enumerate(importable_files):
             # Extract out the objects that are derived from the BaseHook
-            loader = importlib.machinery.SourceFileLoader(fullname=f,
-                                                          path=f)  # Don't really care about fullname
+            # We generate a random name because we run this multiple times and getting
+            # overlapping pydantic validator config error otherwise.
+            random_name = ''.join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
+            loader = importlib.machinery.SourceFileLoader(fullname=random_name,
+                                                          path=f)
             module_classes = inspect.getmembers(loader.load_module(), inspect.isclass)
             hooks = [
                 i[1]
@@ -175,32 +186,41 @@ class ProviderDocsHook(BaseHook):
             # fmt: on
 
             for h in hooks:
-                # Generate the json schema
-                schema = json.loads(h.schema_json())
-
                 return_type = get_type_hints(h.execute)
                 if 'return' in return_type:
-                    return_type = return_type['return']
-                    if isinstance(return_type, _GenericAlias):
-                        # TODO: Improve to inspect union types
-                        output = 'union'
-                    elif return_type == Any:
-                        output = Any
-                    else:
-                        output = return_type.__name__
+                    return_type = hook_type_to_string(return_type['return'])
                 else:
-                    output = None
+                    return_type = None
 
-                # Generate the docs object
-                hook_doc = HookDoc(
-                    properties=get_hook_properties(schema),
-                    arguments=get_hook_arguments(h),
-                    hook_type=inspect.signature(h).parameters['hook_type'].default,
-                    description=schema['description'].replace("\n", "")
-                    if 'description' in schema
-                    else "",
-                    output=output,
-                )
-                docs.hooks.append(hook_doc)
+                # Generate the json schema
+                schema = json.loads(h.schema_json())
+                if self.output_schemas:
+                    schema_list.append(schema)
+                else:
+                    # Generate the docs object
+                    hook_doc = HookDoc(
+                        properties=get_hook_properties(h),
+                        arguments=get_hook_arguments(h),
+                        hook_type=inspect.signature(h).parameters['hook_type'].default,
+                        # In markdown tables, new lines get messed up so replace with html
+                        description=schema['description'].replace("\n\n",
+                                                                  "<br />").replace(
+                            "\n", "")
+                        if 'description' in schema
+                        else "",
+                        return_type=return_type,
+                        return_description=h._return_description,
+                        hook_file_name=os.path.basename(f),
+                        doc_tags=h._doc_tags,
+                        issue_numbers=h._issue_numbers,
+                        notes=h._notes,
+                        order=h._docs_order,
+                    )
+                    docs.hooks.append(hook_doc)
 
-        return docs.dict()
+        docs.hooks = sorted(docs.hooks, key=lambda d: d.order)
+
+        if self.output_schemas:
+            return schema_list
+        else:
+            return docs.dict()

@@ -1,0 +1,175 @@
+name: Console Provider
+
+description: Hooks that print things to the console like tables and markdown via [rich] or print.
+
+examples:
+  - name: "[print](print.md)"
+    description: Print to console
+    content: |
+      compact->: print stuff and things
+
+  - name: "[print](print.md)"
+    description: Print to console
+    content: |
+      stuff:
+        and: things
+      compact->: pprint "{{ stuff }}"
+
+  - name: "[markdown](markdown.md)"
+    description: Print markdown to console
+    content: |
+      compact->: |
+        markdown "# A title"
+        Section with things
+      expanded:
+        ->: markdown
+        text: |
+          # Another title
+          More sections with things
+    output_text: |
+      ╔══════════════════════════════════════════════════════════════════════╗
+      ║                            A title                                   ║
+      ╚══════════════════════════════════════════════════════════════════════╝
+      Section with things
+      ╔══════════════════════════════════════════════════════════════════════╗
+      ║                         Another title                                ║
+      ╚══════════════════════════════════════════════════════════════════════╝
+      More sections with things
+
+  - name: "[table](table.md)"
+    description: Print a table to the console
+    content: |
+      column_names:
+        - stuff
+        - things
+
+      data:
+        - [ 'foo', 'bar' ]
+        - [ 'here', 1 ]
+
+      table:
+        ->: table
+        column_names: "{{ column_names }}"
+        contents: "{{ data }}"
+    output_text: |
+      ┏━━━━━━━┳━━━━━━━━┓
+      ┃ stuff ┃ things ┃
+      ┡━━━━━━━╇━━━━━━━━┩
+      │ foo   │ bar    │
+      │ here  │ 1      │
+      └───────┴────────┘
+
+
+hook_examples:
+  print:
+    - name: Compact print - most common use
+      content: |
+        compact->: print stuff and things
+    - name: Expanded print
+      content: |
+        expanded:
+          ->: print
+          objects: stuff and
+          end: " "
+        compact->: print things
+      output_text: |
+        stuff and things
+
+  pprint:
+    - name: Basic pprint
+#      description: Basic
+      content: |
+        stuff:
+          and: things
+        pprint->: pprint "{{ stuff }}" # Will pretty print `and: things`
+
+  markdown:
+    - name: Basic markdown
+      description: Markdown doesn't render perfectly in the terminal but it is real markdown.
+      content: |
+        compact->: |
+          markdown "# A title"
+          Section with things
+        expanded:
+          ->: markdown
+          text: |
+            # Another title
+            More sections with things
+      output: |
+        ╔═════════════════════════════════╗
+        ║              A title            ║
+        ╚═════════════════════════════════╝
+        Section with things
+        ╔═════════════════════════════════╗
+        ║           Another title         ║
+        ╚═════════════════════════════════╝
+        More sections with things
+
+    - name: All section types with markdown
+      description: |
+        Example with with many section headers.
+
+        > Note output headers will have additional formatting in console.
+      content: |
+        expanded:
+          ->: markdown
+          text: |
+            # Header
+            Stuff and things
+            ## Second header
+            Stuff and things
+            ### Third header
+            Stuff and things
+            #### Fourth header
+            Stuff and things
+            ##### Fifth header
+            Stuff and things
+
+      output: |
+        ╔═════════════════════════════════════════════════════════════════╗
+        ║                           Header                                ║
+        ╚═════════════════════════════════════════════════════════════════╝
+
+        Stuff and things
+
+
+                                Second header
+
+        Stuff and things
+
+                                 Third header
+
+        Stuff and things
+
+                                Fourth header
+
+        Stuff and things
+
+                                 Fifth header
+
+        Stuff and things
+
+  table:
+    - name: Basic table
+      description: Creating a table example that shows in the terminal
+      content: |
+        column_names:
+          - stuff
+          - things
+
+        data:
+          - [ 'foo', 'bar' ]
+          - [ 'here', 1 ]
+
+        table:
+          ->: table
+          column_names: "{{ column_names }}"
+          contents: "{{ data }}"
+      output: |
+        ┏━━━━━━━┳━━━━━━━━┓
+        ┃ stuff ┃ things ┃
+        ┡━━━━━━━╇━━━━━━━━┩
+        │ foo   │ bar    │
+        │ here  │ 1      │
+        └───────┴────────┘
+

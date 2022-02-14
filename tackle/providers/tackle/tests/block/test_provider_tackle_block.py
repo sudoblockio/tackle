@@ -1,4 +1,3 @@
-"""Tests dict input objects for `tackle.providers.tackle.block` module."""
 from tackle.main import tackle
 
 
@@ -29,7 +28,6 @@ def test_provider_system_hook_block_block_merge(change_dir):
     output = tackle('block_merge.yaml', no_input=True)
 
     assert output['things'] == 'here'
-    assert output['foo'] == 'bar'
 
 
 def test_provider_system_hook_block_block(change_dir):

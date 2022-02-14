@@ -1,0 +1,61 @@
+name: Logic Provider
+
+description: Hooks for various logical operations such as match/case, assert, and while loops.
+
+match_content: |
+  # Stand in for some kind of thing to match against
+  selection:
+    ->: select What to do?
+    choices: ['agree','disagree']
+
+  matcher:
+    ->: match {{selection}}
+    case:
+      agree: Some value
+      disagree->: # Run some tackle context
+        ...
+
+examples:
+  - name: "[match](match.md)"
+    description: The `match` hook mimics common match/case statements
+    content->: var "{{match_content}}" --no_recursion
+
+  - name: "[assert](assert.md)"
+    description: Hook to assert if two items are equal. Can also easily be done with jinja but with this hook you can exit based on the assertion.
+    content: |
+      stuff: things
+      assertion->: assert {{stuff}} things  # Would exit otherwise
+      with-jinja->: {{stuff!='things'}}  # Equivalent and would not exit
+    output: |
+      stuff: things
+      assertion: true
+      with-jinja: false
+
+  - name: "[type](type.md)"
+    description: Hook to get type of variable.
+    content: |
+      stuff: things
+      map:
+        stuff: things
+      stuff_type->: type stuff  # rendered by default
+      map_type->: type map
+    output: |
+      stuff: things
+      map:
+        stuff: things
+      stuff_type: str
+      map_type: dict
+
+hook_examples:
+  match->:
+    - "{{examples[0]}}"
+  assert:
+    - description: Assert if two items are equal. Can also easily be done with jinja but with this hook you can exit based on the assertion.
+      content: |
+        stuff: things
+        assertion->: assert {{stuff}} things  # Would exit otherwise
+        with-jinja->: {{stuff!='things'}}  # Equivalent and would not exit
+      output: |
+        stuff: things
+        assertion: true
+        with-jinja: false
