@@ -1,0 +1,196 @@
+edit_uri: ''
+extra:
+  analytics:
+    property: UA-205713594-2
+    provider: google
+  social:
+    - icon: fontawesome/brands/github-alt
+      link: https://github.com/tiangolo/sqlmodel
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/tiangolo
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/tiangolo
+    - icon: fontawesome/brands/dev
+      link: https://dev.to/tiangolo
+    - icon: fontawesome/brands/medium
+      link: https://medium.com/@tiangolo
+    - icon: fontawesome/solid/globe
+      link: https://tiangolo.com
+extra_css:
+  - css/termynal.css
+  - css/custom.css
+extra_javascript:
+  - js/termynal.js
+  - js/custom.js
+markdown_extensions:
+  - toc:
+      permalink: true
+  - markdown.extensions.codehilite:
+      guess_lang: false
+  - admonition
+  - codehilite
+  - extra
+  - pymdownx.superfences:
+      custom_fences:
+        - class: mermaid
+          format: '!!python/name:pymdownx.superfences.fence_code_format '''''
+          name: mermaid
+  - pymdownx.tabbed:
+      alternate_style: true
+  - mdx_include
+nav:
+  - Index: index.md
+  - Installation: installation.md
+  - Use Cases: use-cases.md
+  - Project Structure: project-structure.md
+  - Command Line: command-line.md
+  - Creating Providers: creating-providers.md
+  - Using Providers: using-providers.md
+  - Writing Tackle Files: writing-tackle-files.md
+  - Hook Methods: hook-methods.md
+  - Writing Hooks: writing-hooks.md
+  - Examples: examples/index.md
+  - Examples:
+      - Index: examples/index.md
+      - Prompting: examples/prompting.md
+      - Reading and Writing Data: examples/reading-writing-data.md
+      - Context Manipulation: examples/context-manipulation.md
+      - Complex Logic: examples/complex-logic.md
+      - Generating Code: examples/generating-code.md
+      - Tutorials:
+          - Code Generation: tutorials/code-generation.md
+          - Kubernetes: tutorials/kubernetes.md
+          - Utilities: tutorials/utilities.md
+  - Provider Docs:
+      - Console:
+          - Index: providers/Console/index.md
+          - pprint: providers/Console/pprint.md
+          - print: providers/Console/print.md
+          - markdown: providers/Console/markdown.md
+          - table: providers/Console/table.md
+      - Files:
+          - Index: providers/Files/index.md
+          - unzipfile: providers/Files/unzipfile.md
+          - zipfile: providers/Files/zipfile.md
+          - chmod: providers/Files/chmod.md
+          - copy: providers/Files/copy.md
+          - create_file: providers/Files/create_file.md
+          - file: providers/Files/file.md
+          - move: providers/Files/move.md
+          - remove: providers/Files/remove.md
+          - shred: providers/Files/shred.md
+      - Command:
+          - Index: providers/Command/index.md
+          - shell: providers/Command/shell.md
+      - Json:
+          - Index: providers/Json/index.md
+          - json: providers/Json/json.md
+      - Strings:
+          - Index: providers/Strings/index.md
+          - split: providers/Strings/split.md
+          - join: providers/Strings/join.md
+          - random_string: providers/Strings/random_string.md
+          - random_hex: providers/Strings/random_hex.md
+      - Generate:
+          - Index: providers/Generate/index.md
+          - generate: providers/Generate/generate.md
+          - jinja: providers/Generate/jinja.md
+      - Web:
+          - Index: providers/Web/index.md
+          - http_delete: providers/Web/http_delete.md
+          - http_get: providers/Web/http_get.md
+          - http_patch: providers/Web/http_patch.md
+          - http_post: providers/Web/http_post.md
+          - http_put: providers/Web/http_put.md
+          - webbrowser: providers/Web/webbrowser.md
+      - Logic:
+          - Index: providers/Logic/index.md
+          - match: providers/Logic/match.md
+          - assert: providers/Logic/assert.md
+          - type: providers/Logic/type.md
+      - Git:
+          - Index: providers/Git/index.md
+          - git_clone: providers/Git/git_clone.md
+          - meta_repo: providers/Git/meta_repo.md
+      - Yaml:
+          - Index: providers/Yaml/index.md
+          - yaml: providers/Yaml/yaml.md
+      - Paths:
+          - Index: providers/Paths/index.md
+          - mkdir: providers/Paths/mkdir.md
+          - listdir: providers/Paths/listdir.md
+          - symlink: providers/Paths/symlink.md
+          - find_in_child: providers/Paths/find_in_child.md
+          - find_in_parent: providers/Paths/find_in_parent.md
+          - path_exists: providers/Paths/path_exists.md
+          - isdir: providers/Paths/isdir.md
+          - isfile: providers/Paths/isfile.md
+          - path_join: providers/Paths/path_join.md
+      - Tackle:
+          - Index: providers/Tackle/index.md
+          - tackle: providers/Tackle/tackle.md
+          - debug: providers/Tackle/debug.md
+          - import: providers/Tackle/import.md
+          - block: providers/Tackle/block.md
+          - var: providers/Tackle/var.md
+          - provider_docs: providers/Tackle/provider_docs.md
+      - Environment:
+          - Index: providers/Environment/index.md
+          - set_env: providers/Environment/set_env.md
+          - export: providers/Environment/export.md
+          - get_env: providers/Environment/get_env.md
+          - unset: providers/Environment/unset.md
+      - Context:
+          - Index: providers/Context/index.md
+          - keys: providers/Context/keys.md
+          - set: providers/Context/set.md
+          - pop: providers/Context/pop.md
+          - append: providers/Context/append.md
+          - update: providers/Context/update.md
+          - delete: providers/Context/delete.md
+          - get: providers/Context/get.md
+      - Toml:
+          - Index: providers/Toml/index.md
+          - toml: providers/Toml/toml.md
+      - Prompts:
+          - Index: providers/Prompts/index.md
+          - input: providers/Prompts/input.md
+          - select: providers/Prompts/select.md
+          - checkbox: providers/Prompts/checkbox.md
+          - confirm: providers/Prompts/confirm.md
+          - editor: providers/Prompts/editor.md
+          - password: providers/Prompts/password.md
+          - rawlist: providers/Prompts/rawlist.md
+          - expand: providers/Prompts/expand.md
+  - Development:
+      - Contributing: contributing.md
+      - Development Roadmap: development-roadmap.md
+      - Authors: authors.md
+repo_name: robcxyz/tackle-box
+repo_url: https://github.com/robcxyz/tackle-box
+site_description: Declarative DSL for building modular workflows and code generators.
+site_name: tackle-box
+site_url: https://robcxyz.github.io/tackle-box
+theme:
+  features:
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - navigation.sections
+  icon:
+    repo: fontawesome/brands/github-alt
+  language: en
+  name: material
+  palette:
+    - accent: amber
+      primary: deep purple
+      scheme: default
+      toggle:
+        icon: material/lightbulb
+        name: Switch to dark mode
+    - accent: amber
+      primary: deep purple
+      scheme: slate
+      toggle:
+        icon: material/lightbulb-outline
+        name: Switch to light mode
