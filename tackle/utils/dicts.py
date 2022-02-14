@@ -2,6 +2,7 @@
 Utils for modifying complex dictionaries generally based on an encoded key_path which is
 a list of strings for key value lookups and byte encoded integers for items in a list.
 """
+from typing import Union
 
 
 def encode_list_index(list_index: int) -> bytes:
@@ -14,10 +15,30 @@ def decode_list_index(list_index: bytes) -> int:
     return int.from_bytes(list_index, byteorder='big')
 
 
-def remove_dead_leaves():
-    """Traverse up a generic element and removing empty elements."""
-    # TODO: Implement?
-    pass
+def encode_key_path(path: Union[list, str], sep: str = "/") -> list:
+    """
+    Take a list or string key_path and encode it with bytes for items in a list. Strings
+    are split up based on a separator, ie path/to/key.
+    """
+    if isinstance(path, str):
+        path = path.split(sep)
+        for i, v in enumerate(path):
+            try:
+                # Try to convert strings to ints
+                path[i] = int(v)
+            except ValueError:
+                pass
+        path = [i if not isinstance(i, int) else encode_list_index(i) for i in path]
+
+    # Need to encode keys into bytes as that is how internally the parser works so
+    # it doesn't jam up on any integer key. This hook will fail if the key is an
+    # int.
+    path = [i if not isinstance(i, int) else encode_list_index(i) for i in path]
+    if isinstance(path, dict):
+        # Could have key path expressed as dict?
+        raise NotImplementedError
+
+    return path
 
 
 def get_key_from_key_path(key_path: list) -> str:
@@ -134,7 +155,6 @@ def nested_set(element, keys, value, index: int = 0):
             element[keys[-1]] = value
         return
 
-    # Check if the element is a dict and
     if isinstance(element, dict):
         # Look ahead if the next item is a list
         if isinstance(keys[index + 1], bytes):
