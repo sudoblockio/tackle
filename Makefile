@@ -1,18 +1,10 @@
 PYPI_SERVER = pypitest
 
-define BROWSER_PYSCRIPT
-import os, webbrowser, sys
-try:
-	from urllib import pathname2url
-except:
-	from urllib.request import pathname2url
-
-webbrowser.open("file://" + pathname2url(os.path.abspath(sys.argv[1])))
-endef
-export BROWSER_PYSCRIPT
-BROWSER := python -c "$$BROWSER_PYSCRIPT"
-
 .DEFAULT_GOAL := help
+
+install:  ## Install all the requirements
+	@echo "+ $@"
+	@pip install -e .\[all\] -r requirements-dev.txt -r docs/requirements.txt
 
 .PHONY: clean-tox
 clean-tox: ## Remove tox testing artifacts
