@@ -3,7 +3,8 @@ Utils for handling command arguments along with unpacking hook arguments. Used i
 to unpack input args/kwargs and in parser to unpack hook calls -
 i.e. key->: hook arg --kwarg thing
 """
-import shlex
+import ast
+import re
 
 
 def strip_dashes(raw_arg: str) -> str:
@@ -13,30 +14,50 @@ def strip_dashes(raw_arg: str) -> str:
     return raw_arg
 
 
-def unpack_input_string(input_string: str) -> (list, dict, list):
-    """Unpack args and"""
-    args, kwargs, flags = unpack_args_kwargs_string(input_string)
-    if '{{' in args[0]:
-        # We split up the string before based on whitespace so eval individually
-        if '}}' in args[0]:
-            # This is single templatable string -> key->: "{{this}}" => args: ['this']
-            args.insert(0, 'var')
-        else:
-            # Situation where we have key->: "{{ this }}" => args: ['{{', 'this' '}}']
-            for i in range(1, len(args)):
-                if '}}' in args[i]:
-                    joined_template = ' '.join(args[: (i + 1)])
-                    other_args = args[(i + 1) :]
-                    args = ['var'] + [joined_template] + other_args
-                    break
+def split_input_string(input_string: str) -> list:
+    """
+    Split first on whitespace then regex each item to qualify if it needs to be
+    intepreted as literal (ast).
+    """
+    # Inspired from https://stackoverflow.com/a/524796/12642712
+    # input_list = [p for p in re.split("( |(?<!\{|\[)\\\"(?!\,|\:).*?\\\"(?!\}|\])|'.*?')", input_string) if p.strip()]
 
-    return args, kwargs, flags
+    # Split on whitespace
+    # When quotes are preceded by `,:{[`, ignore
+    # Don't split between quotes with `,:]}`
+    # Otherwise split on quotes
+    # Repeated for single quotes
+    input_list = [
+        p
+        for p in re.split(
+            "( |(?<!\,|\:|\{|\[)\\\"(?!\,|\:|\}|\]).*?\\\"(?!\}|\])|(?<!\,|\:|\{|\[)'(?!\,|\:|\}|\]).*?'(?!\}|\]))",
+            input_string,
+        )
+        if p.strip()
+    ]
+
+    output = []
+    for i in input_list:
+        try:
+            output.append(ast.literal_eval(i))
+        except (ValueError, SyntaxError):
+            output.append(i)
+    return output
 
 
 def unpack_args_kwargs_string(input_string: str) -> (list, dict, list):
     """Split up based on whitespace input args and pass to unpack_args_kwargs_list."""
-    input_list = shlex.split(input_string)
+    # input_list = shlex.split(input_string)
+    input_list = split_input_string(input_string)
     return unpack_args_kwargs_list(input_list)
+
+
+def assert_if_flag(arg: str):
+    FLAG_REGEX = re.compile(
+        r"""^[\-|\-\-]+[a-zA-Z0-9]""",
+        re.VERBOSE,
+    )
+    return bool(FLAG_REGEX.match(arg))
 
 
 def unpack_args_kwargs_list(input_list: list) -> (list, dict, list):
@@ -53,25 +74,36 @@ def unpack_args_kwargs_list(input_list: list) -> (list, dict, list):
     i = 0
     while i < input_list_length:
         raw_arg = input_list[i]
+
+        # Look ahead for if the last item is a flag
         if i + 1 < input_list_length:
             next_raw_arg = input_list[i + 1]
         else:
-            # Allows logic for if last item has `--` in it then it is a flag
-            next_raw_arg = "-"
+            # Hack for asserting if a flag - two items starting with a dash or last item
+            next_raw_arg = "--hack"
 
-        if (
-            raw_arg.startswith('--') or raw_arg.startswith('-')
-        ) and not next_raw_arg.startswith('-'):
-            # Field is a kwarg
-            kwargs.update({strip_dashes(raw_arg): input_list[i + 1]})
-            i += 1
-        elif (
-            raw_arg.startswith('--') or raw_arg.startswith('-')
-        ) and next_raw_arg.startswith('-'):
-            # Field is a flag
-            flags.append(strip_dashes(raw_arg))
+        if isinstance(raw_arg, str):
+            # if raw_arg.startswith('-'):
+            if assert_if_flag(raw_arg):
+                if isinstance(next_raw_arg, str):
+                    # if next_raw_arg.startswith('-'):
+                    if assert_if_flag(next_raw_arg):
+                        # Field is a flag
+                        flags.append(strip_dashes(raw_arg))
+                    else:
+                        # Field is a kwarg
+                        kwargs.update({strip_dashes(raw_arg): input_list[i + 1]})
+                        i += 1
+                else:
+                    # Field is a kwarg
+                    kwargs.update({strip_dashes(raw_arg): input_list[i + 1]})
+                    i += 1
+            else:
+                # Field is an argument
+                args.append(raw_arg)
         else:
             # Field is an argument
-            args.append(strip_dashes(raw_arg))
+            args.append(raw_arg)
+
         i += 1
     return args, kwargs, flags
