@@ -1,6 +1,5 @@
 """Main entrypoint for rendering."""
 import ast
-import re
 from jinja2 import meta
 from inspect import signature
 
@@ -56,10 +55,11 @@ def render_variable(context: 'Context', raw: Any):
 
 def render_string(context: 'Context', raw: str):
     """
-    Render strings by first extracting renderable variables, build render context from
-    the output_dict, then existing context, and last looks up special variables.
+    Render strings by first extracting renderable variables then build a render context
+    from the output_dict, then existing context, and last looks up special variables.
+    After the value has been rendered it is returned as literal so as to preserve the
+    original type of the value.
 
-    :param raw: A renderable string
     :return: The literal value if the output is a string / list / dict / float / int
     """
     if '{{' not in raw:
@@ -69,6 +69,17 @@ def render_string(context: 'Context', raw: str):
     template = env.from_string(raw)
     # Extract variables
     variables = meta.find_undeclared_variables(env.parse(raw))
+
+    if len(variables) == 0:
+        for i in env.globals.keys():
+            if i in raw:
+                # TODO: Perhaps change this into a search to see if `for i in globals in raw`
+                raise Exception(
+                    f"No renderable variables found in {raw}. Could be "
+                    f"because there is a collision with a global variable "
+                    f"{','.join(list(env.globals.keys()))}. See "
+                    f"https://github.com/pallets/jinja/issues/1580"
+                )
 
     # Build a render context by inspecting the renderable variables
     render_context = {}
@@ -101,17 +112,8 @@ def render_string(context: 'Context', raw: str):
             )
         raise e
 
-    # ast.literal_eval fails on string like objects so qualifying first
-    # This might be dumb but works
-    REGEX = [
-        r'^\[.*\]$',  # List
-        r'^\{.*\}$',  # Dict
-        r'^True$|^False$',  # Boolean
-        r'^\d+$',  # Integer
-        r'^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$',  # Float
-    ]
-    for r in REGEX:
-        if bool(re.search(r, rendered_template)):
-            return ast.literal_eval(rendered_template)
-
-    return rendered_template
+    try:
+        # This will error on strings
+        return ast.literal_eval(rendered_template)
+    except (ValueError, SyntaxError):
+        return rendered_template
