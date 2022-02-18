@@ -36,7 +36,14 @@ class InquirerRawListHook(BaseHook):
                 question.update({'default': self.default})
 
             response = prompt([question])
-            return response['tmp']
+
+            # Handle keyboard exit
+            try:
+                return response['tmp']
+            except KeyError:
+                import sys
+
+                sys.exit(0)
         elif self.default:
             return self.default
         else:

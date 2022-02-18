@@ -28,7 +28,7 @@ class InquirerCheckboxHook(BaseHook):
         False, description="Boolean to return the index instead of the answer"
     )
 
-    _args: list = ['message', 'choices']
+    _args: list = ['message']
     _docs_order: int = 2
 
     def __init__(self, **data: Any):
@@ -117,4 +117,10 @@ class InquirerCheckboxHook(BaseHook):
         #     question.update({'default': self.default})
         response = prompt([question])
 
-        return response['tmp']
+        # Handle keyboard exit
+        try:
+            return response['tmp']
+        except KeyError:
+            import sys
+
+            sys.exit(0)

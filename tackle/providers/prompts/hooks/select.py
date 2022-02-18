@@ -5,7 +5,7 @@ from tackle.models import BaseHook, Field
 from tackle.utils.dicts import get_readable_key_path
 
 
-class InquirerListHook(BaseHook):
+class InquirerListHook(BaseHook, smart_union=True):
     """
     Hook for PyInquirer 'list' type prompts, a single selector that returns a string.
      Takes in two forms of `choices` inputs, list of string or list of maps with the
@@ -24,7 +24,7 @@ class InquirerListHook(BaseHook):
         False, description="Boolean to return the index instead of the answer"
     )
 
-    _args: list = ['message', 'choices']
+    _args: list = ['message']
     _docs_order = 1
 
     def __init__(self, **data: Any):
@@ -72,7 +72,13 @@ class InquirerListHook(BaseHook):
             }
             response = prompt([question])
 
-            return response['tmp']
+            # Handle keyboard exit
+            try:
+                return response['tmp']
+            except KeyError:
+                import sys
+
+                sys.exit(0)
         elif isinstance(self.choices[0], str):
             return self.choices[0]
         elif isinstance(self.choices[0], dict):

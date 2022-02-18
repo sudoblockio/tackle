@@ -15,7 +15,6 @@ class InquirerPasswordHook(BaseHook):
 
     default: Any = Field(None, description="Default choice.")
     message: str = Field(None, description="String message to show when prompting.")
-    name: str = Field('tmp', description="Extra key to embed into. Artifact of API.")
 
     _args: list = ['message', 'default']
 
@@ -28,16 +27,20 @@ class InquirerPasswordHook(BaseHook):
         if not self.no_input:
             question = {
                 'type': self.hook_type,
-                'name': self.name,
+                'name': 'tmp',
                 'message': self.message,
                 'default': self.default,
             }
 
             response = prompt([question])
-            if self.name != 'tmp':
-                return response
-            else:
+
+            # Handle keyboard exit
+            try:
                 return response['tmp']
+            except KeyError:
+                import sys
+
+                sys.exit(0)
         elif self.default:
             return self.default
         else:
