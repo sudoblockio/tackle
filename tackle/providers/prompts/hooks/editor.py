@@ -1,3 +1,4 @@
+import sys
 from PyInquirer import prompt
 from typing import Any
 
@@ -37,8 +38,6 @@ class InquirerEditorHook(BaseHook):
             try:
                 return response['tmp']
             except KeyError:
-                import sys
-
                 sys.exit(0)
         elif self.default:
             return self.default

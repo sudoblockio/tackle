@@ -1,3 +1,4 @@
+import sys
 from PyInquirer import prompt
 from typing import Union, List, Any, Dict
 
@@ -121,6 +122,4 @@ class InquirerCheckboxHook(BaseHook):
         try:
             return response['tmp']
         except KeyError:
-            import sys
-
             sys.exit(0)
