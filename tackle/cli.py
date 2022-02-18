@@ -116,8 +116,9 @@ def main(raw_args=None):
         print('{}'.format(undefined_err.message))
         print('Error message: {}'.format(undefined_err.error.message))
 
-        context_str = json.dumps(undefined_err.context, indent=4, sort_keys=True)
-        print('Context: {}'.format(context_str))
+        if args.verbose:
+            context_str = json.dumps(undefined_err.context, indent=4, sort_keys=True)
+            print('Context: {}'.format(context_str))
         sys.exit(1)
 
 
