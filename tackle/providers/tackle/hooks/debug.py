@@ -1,3 +1,4 @@
+import sys
 from PyInquirer import prompt
 from pprint import pprint
 
@@ -21,4 +22,8 @@ class DebugHook(BaseHook):
                 'name': 'tmp',
                 'message': 'CONTINUE',
             }
-            prompt([question])
+            response = prompt([question])
+
+            # Catch keyboard exits with return an empty dict
+            if response == {}:
+                sys.exit(0)
