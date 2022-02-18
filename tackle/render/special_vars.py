@@ -69,6 +69,10 @@ def _calling_directory(context: 'Context'):
     return context.calling_directory
 
 
+def _calling_file(context: 'Context'):
+    return context.calling_file
+
+
 def _this(context: 'Context'):
     return dict(context.output_dict)
 
@@ -87,6 +91,7 @@ special_variables = {
     'architecture': _architecture,
     'lsb_release': get_linux_distribution,
     'calling_directory': _calling_directory,
+    'calling_file': _calling_file,
     'this': _this,
     'output': _output,
 }

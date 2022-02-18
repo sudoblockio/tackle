@@ -1,4 +1,3 @@
-"""Models for the project."""
 import os
 from pathlib import Path
 from pydantic import BaseModel, SecretStr, Field, Extra, validator
@@ -38,7 +37,8 @@ class Context(BaseModel):
     # Internal
     key_path: list = []
     providers: ProviderList = None
-    calling_directory: Path = None
+    calling_directory: str = None
+    calling_file: str = None
     env: Any = None
 
     global_args: list = None
@@ -51,8 +51,6 @@ class Context(BaseModel):
         if self.providers is None:
             # Native and settings.extra_providers initialized
             self.providers = ProviderList()
-
-            # self.providers = ProviderDict()
 
         if self.calling_directory is None:
             # Can be carried over from another context. Should only be initialized when
@@ -85,12 +83,13 @@ class BaseHook(BaseModel):
     merge: Union[bool, str] = None
     confirm: Optional[Any] = None
 
-    # context: Context
+    # context parameters - must be same type as context
     input_dict: Union[dict, list] = None
     output_dict: Union[dict, list] = {}
     existing_context: dict = None
     no_input: bool = None
-    calling_directory: Path = None
+    calling_directory: str = None
+    calling_file: str = None
 
     providers: ProviderList = None
     key_path: list = None

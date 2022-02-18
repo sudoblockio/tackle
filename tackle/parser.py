@@ -210,6 +210,7 @@ def parse_hook(
                     existing_context=context.existing_context,
                     no_input=context.no_input,
                     calling_directory=context.calling_directory,
+                    calling_file=context.calling_file,
                     providers=context.providers,
                     key_path=context.key_path,
                 )
@@ -243,10 +244,25 @@ def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
     Associate hook arguments provided in the call with hook attributes. Parses the
     hook's `_args` attribute to know how to map arguments are mapped to where and
     deal with rendering by default.
+
+    TODO: This needs to be re-thought. Right now we parse the inputs without regard
+     for the types of the argument mapping. What could be better is if we know the types
+     of the arg mapping ahead of time and they try to assemble the most logical mapping
+     afterwards. So if the mapping consists of a [str, list], then the if the first
+     args are strs then we can ignore the list part. Right now it would just join all
+     the strings together if they are part of last arg mapping.
+
+    Solutions:
+    - First try to infer type from arg
+        - Single types then into unions?
+    - If type cannot be infered (ie Any) then do ast as literal
     """
     for i, v in enumerate(args):
         # Iterate over the input args
         if i + 1 == len(Hook._args):
+
+            # arg_type = Hook.__fields__[Hook._args[i]].type_
+
             # We are at the last argument mapping so we need to join the remaining
             # arguments as a single string if it is not a list of another map.
             if not isinstance(args[i], (str, float)):
@@ -438,7 +454,7 @@ def handle_empty_blocks(context: 'Context', block_value):
     # Finally check if the `items` key exists in the input_dict.  If not then we have
     # an empty hook which will cause an ambiguous ValidationError for missing field
     if 'items' not in nested_get(context.input_dict, base_key_path + new_key):
-        key = get_readable_key_path(base_key_path + new_key)
+        key = get_readable_key_path(context.key_path)
         raise EmptyBlockException(f"Empty hook in key path = {key}")
 
 
@@ -623,11 +639,20 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list):
 def extract_base_file(context: 'Context'):
     """Read the tackle file and initialize input_dict."""
     path = os.path.join(context.input_dir, context.input_file)
-    input_dict = read_config_file(path)
-    context.input_dict = input_dict
 
-    if input_dict is None:
+    # Preserve the callling file which should be carried over from tackle calls
+    if context.calling_file is None:
+        context.calling_file = context.input_file
+
+    context.input_dict = read_config_file(path)
+    if context.input_dict is None:
         raise EmptyTackleFileException(f"No tackle file found at {path}.")
+
+    # Check if there is a hooks directory in the provider being run and import the hooks
+    input_dir_contents = os.listdir(context.input_dir)
+    if 'hooks' in input_dir_contents:
+        with work_in(context.input_dir):
+            context.providers.import_paths([context.input_dir])
 
     # TODO: Experimental feature that could be integrated later
     # # Extract handlers
@@ -641,8 +666,6 @@ def extract_base_file(context: 'Context'):
     #         # TODO: Execute post exec handlers
     #         context.post_exec_handlers.append({k[:-2]: v})
     #         input_dict.pop(k)
-
-    context.input_dict = input_dict
 
 
 def import_local_provider_source(context: 'Context', provider_dir: str):
