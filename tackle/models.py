@@ -78,6 +78,7 @@ class BaseHook(BaseModel):
     else_: Any = Field(None, render_by_default=True)
     for_: Union[str, list] = Field(None, render_by_default=True)
     reverse: Union[str, bool] = Field(None, render_by_default=True)
+    try_: Union[str, bool] = Field(None, render_by_default=True)
 
     callback: str = None
     chdir: Optional[str] = Field(None, description="Name of the hook.")
@@ -137,6 +138,7 @@ class BaseHook(BaseModel):
             'if_': 'if',
             'else_': 'else',
             'for_': 'for',
+            'try_': 'try',
             # 'while_': 'while',
         }
         # Per https://github.com/samuelcolvin/pydantic/issues/1577

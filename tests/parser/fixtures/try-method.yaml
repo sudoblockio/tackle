@@ -1,0 +1,5 @@
+
+compact->: tackle foobar.yaml --try
+expanded:
+  ->: tackle foobar.yaml
+  try: true

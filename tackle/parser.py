@@ -218,8 +218,14 @@ def parse_hook(
             except ValidationError as e:
                 raise e
 
-            # Normal hook run
-            hook_output_value = hook.call()
+            if hook.try_:
+                try:
+                    hook_output_value = hook.call()
+                except Exception:
+                    return
+            else:
+                # Normal hook run
+                hook_output_value = hook.call()
 
             if hook.merge:
                 evaluate_merge(hook_output_value, context, append_hook_value)
