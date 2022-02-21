@@ -10,6 +10,13 @@ COMMANDS = [
 
 @pytest.mark.parametrize("command,expected_output", COMMANDS)
 def test_cli_commands(change_curdir_fixtures, command, expected_output, capsys):
-    """Asser output comes out of cli."""
+    """Assert output comes out of cli."""
     main(command)
     assert expected_output in capsys.readouterr().out
+
+
+def test_cli_command_find_in_parent(chdir_fixture, capsys):
+    """Check that we can change into a child dir and find a file in parent with flag."""
+    chdir_fixture('dir')
+    main(['global-kwarg.yaml', '--key_a', '"stuff and things"', '--find-in-parent'])
+    assert 'stuff and things' in capsys.readouterr().out
