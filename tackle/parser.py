@@ -28,6 +28,7 @@ from tackle.utils.paths import (
     is_file,
     find_tackle_file,
     find_nearest_tackle_file,
+    find_in_parent,
 )
 from tackle.utils.zipfile import unzip
 from tackle.models import Context, BaseHook
@@ -638,7 +639,10 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list):
 
 def extract_base_file(context: 'Context'):
     """Read the tackle file and initialize input_dict."""
-    path = os.path.join(context.input_dir, context.input_file)
+    if context.find_in_parent:
+        path = find_in_parent(context.input_dir, context.input_file)
+    else:
+        path = os.path.join(context.input_dir, context.input_file)
 
     # Preserve the callling file which should be carried over from tackle calls
     if context.calling_file is None:
@@ -716,7 +720,8 @@ def update_source(context: 'Context'):
     # Directory
     elif is_directory_with_tackle(first_arg):
         # Special case where the input is a path to a directory. Need to override some
-        # settings that would normally get populated by zip / repo refs
+        # settings that would normally get populated by zip / repo refs. Does not need
+        # a file reference as otherwise would be given absolute path to tackle file.
         context.input_file = os.path.basename(find_tackle_file(first_arg))
         context.input_dir = Path(first_arg).absolute()
 

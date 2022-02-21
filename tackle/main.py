@@ -57,8 +57,8 @@ def tackle(
     # Initialize context
     context = Context(**kwargs)
     if 'global_kwargs' not in kwargs:
-        # When tackle is called from the cli it already has the kwargs.  This is hack
-        # to get this function to accept dicts the same as they would be for use as
+        # When tackle is called from the cli it already has the kwargs.  This is a hack
+        # to get this function to accept dicts the same as they would be for use as a
         # package - ie tackle('input-file.yaml', **some_override_dict)
         context.global_kwargs = get_global_kwargs(kwargs)
 

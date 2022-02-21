@@ -75,6 +75,12 @@ def main(raw_args=None):
         help="The file to run. Only relevent for remote sources as otherwise you can just give full path to file as input.",
     )
     parser.add_argument(
+        '--find-in-parent',
+        '-fp',
+        action='store_true',
+        help="Search for target in parent directory. Only relevant for local targets.",
+    )
+    parser.add_argument(
         '--version', action='version', version=f'tackle-box {__version__}'
     )
 

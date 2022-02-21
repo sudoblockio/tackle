@@ -24,6 +24,9 @@ class TackleHook(BaseHook):
     password: SecretStr = Field(None, description="A password to use for repo inputs.")
     directory: str = Field(None,
                            description="The directory to run inside for repo inputs.")
+    find_in_parent: bool = Field(
+        False, description="Search for target in parent directory. Only relevant for "
+                           "local targets.")
 
     override: dict = Field({}, description="A dictionary of keys to override.")
     # fmt: on
@@ -41,18 +44,22 @@ class TackleHook(BaseHook):
             if self.extra_context:
                 existing_context.update(self.extra_context)
 
+        print(self.find_in_parent)
+
         output_context = tkl.main.tackle(
             self.input_string,
             checkout=self.checkout,
             password=self.password,
             directory=self.directory,
             calling_directory=self.calling_directory,
+            calling_file=self.calling_file,
             # Evaluated
             existing_context=existing_context,
             # Implicit
             providers=self.providers,
             no_input=self.no_input,
             global_kwargs=self.override,
+            find_in_parent=self.find_in_parent,
         )
 
         return dict(output_context)

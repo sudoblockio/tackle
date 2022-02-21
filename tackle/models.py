@@ -18,6 +18,7 @@ class Context(BaseModel):
     # Source
     password: SecretStr = None
     directory: str = None
+    find_in_parent: bool = False
 
     # Inputs
     input_string: str = None
