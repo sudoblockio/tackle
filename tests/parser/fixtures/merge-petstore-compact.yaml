@@ -1,0 +1,2 @@
+# This fixture should equal petstore.yaml
+compact->: tackle petstore.yaml --merge

@@ -136,7 +136,7 @@ def evaluate_merge(
         key_path = context.key_path[:-2] + [context.key_path[-1]]
     else:
         # Compact key
-        key_path = context.key_path[:-1] + [context.key_path[-1][:-2]]
+        key_path = context.key_path[:-1] + [context.key_path[-1][-2:]]
 
     # Can't merge into top level keys without merging k/v individually
     if len(key_path) == 1:

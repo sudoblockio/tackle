@@ -1,5 +1,6 @@
 import pytest
 
+from tackle import tackle
 from tackle.parser import handle_leading_brackets
 from tackle.utils.command import unpack_args_kwargs_string
 
@@ -27,3 +28,11 @@ def test_unpack_args_kwargs_handle_leading_brackets(
     assert len_args == len(args)
     assert len_kwargs == len(kwargs)
     assert len_flags == len(flags)
+
+
+def test_parser_types(change_curdir_fixtures):
+    output = tackle('types.yaml')
+    assert isinstance(output['int'], int)
+    # TODO:
+    # assert isinstance(output['float'], float)
+    assert isinstance(output['bool'], bool)
