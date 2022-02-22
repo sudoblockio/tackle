@@ -1,0 +1,9 @@
+this:
+  ->: password
+  message: this?
+
+that:
+  ->: password
+  default: False
+
+compact->: password

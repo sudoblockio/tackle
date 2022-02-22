@@ -30,7 +30,7 @@ class InquirerPasswordHook(BaseHook):
                 'type': self.hook_type,
                 'name': 'tmp',
                 'message': self.message,
-                'default': self.default,
+                # 'default': self.default,
             }
 
             response = prompt([question])
