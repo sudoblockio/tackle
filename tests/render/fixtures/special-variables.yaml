@@ -12,3 +12,6 @@ architecture->: "{{ architecture }}"
 #linux_codename->: "{{ linux_codename }}"
 calling_directory->: "{{ calling_directory }}"
 lsb_release->: "{{ lsb_release }}"
+
+current_directory->: "{{ current_directory }}"
+current_file->: "{{ current_file }}"

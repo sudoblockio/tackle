@@ -73,6 +73,14 @@ def _calling_file(context: 'Context'):
     return context.calling_file
 
 
+def _current_file(context: 'Context'):
+    return context.input_file
+
+
+def _current_directory(context: 'Context'):
+    return context.input_dir
+
+
 def _this(context: 'Context'):
     return dict(context.output_dict)
 
@@ -92,6 +100,8 @@ special_variables = {
     'lsb_release': get_linux_distribution,
     'calling_directory': _calling_directory,
     'calling_file': _calling_file,
+    'current_file': _current_file,
+    'current_directory': _current_directory,
     'this': _this,
     'output': _output,
 }
