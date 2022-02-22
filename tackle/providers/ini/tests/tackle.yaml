@@ -1,0 +1,8 @@
+
+section:
+  stuff: things
+
+write->: ini output.ini {{this}}
+
+
+read->: ini output.ini
