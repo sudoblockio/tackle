@@ -20,6 +20,7 @@ class IniHook(BaseHook):
         "{section:{key1:value1, key2:value2}}.",
         render_by_default=True,
     )
+    allow_no_value: bool = Field(True, description="Whether to allow a no values.")
     _args = ['path', 'data']
 
     def execute(self) -> Union[dict, str, list]:
@@ -28,13 +29,16 @@ class IniHook(BaseHook):
         if not os.path.exists(os.path.dirname(self.path)) and self.data:
             os.makedirs(os.path.dirname(self.path))
 
-        config = configparser.ConfigParser()
+        config = configparser.ConfigParser(allow_no_value=self.allow_no_value)
 
         if self.data:
             for section, items in self.data.items():
                 config.add_section(section)
                 for k, v in items.items():
-                    config.set(section, k, str(v))
+                    if v is None and self.allow_no_value:
+                        config.set(section, k)
+                    else:
+                        config.set(section, k, str(v))
             with open(self.path, 'w') as f:
                 config.write(f)
 

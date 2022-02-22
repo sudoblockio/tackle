@@ -19,3 +19,4 @@ def test_provider_ini_read(change_dir, clean_outputs):
     output = tackle()
     assert os.path.exists('output.ini')
     assert output['read']['section']['stuff'] == 'things'
+    assert output['read']['another']['foo'] is None

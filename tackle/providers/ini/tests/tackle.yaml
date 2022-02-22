@@ -1,10 +1,13 @@
 
-section:
-  stuff: things
-  bool: false
-  int: 2
+ini_data:
+  section:
+    stuff: things
+    bool: false
+    int: 2
+  another:
+    foo:
+    bar:
 
-write->: ini output.ini {{this}}
-
+write->: ini output.ini {{ini_data}}
 
 read->: ini output.ini
