@@ -1,0 +1,3 @@
+
+base->: basename {{calling_directory}}
+dir->: dirname {{calling_directory}}

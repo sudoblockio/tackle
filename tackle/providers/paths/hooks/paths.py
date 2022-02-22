@@ -53,3 +53,35 @@ class PathJoinHook(BaseHook):
 
     def execute(self):
         return os.path.join(*self.paths)
+
+
+class PathBasenameHook(BaseHook):
+    """Hook for getting the basename from a path."""
+
+    hook_type: str = 'basename'
+    path: str = Field(
+        ...,
+        description="Path to the file/directory to get the basename of.",
+        render_by_default=True,
+    )
+
+    _args: list = ['path']
+
+    def execute(self):
+        return os.path.basename(self.path)
+
+
+class PathDirNameHook(BaseHook):
+    """Hook for getting the basename from a path."""
+
+    hook_type: str = 'dirname'
+    path: str = Field(
+        ...,
+        description="Path to the file/directory to get the directory name of.",
+        render_by_default=True,
+    )
+
+    _args: list = ['path']
+
+    def execute(self):
+        return os.path.dirname(self.path)

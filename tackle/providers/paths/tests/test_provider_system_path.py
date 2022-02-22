@@ -21,3 +21,10 @@ def test_provider_system_hook_path_child(change_dir):
     assert len(context['find_in_child_starting_dir']) == 1
     assert context['find_in_child_fallback'] == 'fallback.yaml'
     assert context['isfile']
+
+
+def test_provider_paths_base_dir_name(change_dir):
+    output = tackle('base-dir-name.yaml')
+
+    assert output['base'] == 'tests'
+    assert 'paths' in output['dir']
