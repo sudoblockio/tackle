@@ -1,6 +1,13 @@
 #https://github.com/robcxyz/tackle-box/issues/14
-shell:
+multiline:
+  ->: command
+  multiline: true
+  command: |
+    echo
+    stuff and things
+
+singleline:
   ->: command
   command: |
-    ls ;
-    echo stuff
+    echo stuff and things
+    echo foo and bar

@@ -15,9 +15,10 @@ if os.name == 'nt':
 
 
 # TODO: https://github.com/robcxyz/tackle-box/issues/14
-# def test_provider_system_hook_command_multi_line(change_dir):
-#     context = tackle('multi-line-cmd.yaml')
-#     assert 'No such file' not in context['shell']
+def test_provider_system_hook_command_multi_line(change_dir):
+    output = tackle('multi-line-cmd.yaml')
+    assert output['multiline'].startswith('stuff and thing')
+    assert output['singleline'].startswith('stuff and thing')
 
 
 # TODO: https://github.com/robcxyz/tackle-box/issues/13

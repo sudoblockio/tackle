@@ -23,6 +23,14 @@ if os.name != 'nt':
 logger = logging.getLogger(__name__)
 
 
+class CommandFailedException(Exception):
+    """Exception to stop crazy stack traces everytime an errored command is run."""
+
+    def __init__(self, message=None):
+        sys.tracebacklimit = 0
+        self.message = message
+
+
 class ShellHook(BaseHook):
     """Run system commands."""
 
@@ -30,6 +38,7 @@ class ShellHook(BaseHook):
 
     command: str = Field(..., description="A shell command.")
     ignore_error: bool = Field(False, description="Ignore errors.")
+    multiline: bool = Field(False, description="Don't automatically breakup lines")
 
     _args: list = ['command']
 
@@ -43,64 +52,78 @@ class ShellHook(BaseHook):
         fcntl.ioctl(fd, termios.TIOCSWINSZ, size)
 
     def execute(self) -> Any:
-        # Copied from
-        # https://terminallabs.com/blog/a-better-cli-passthrough-in-python/
-        masters, slaves = zip(pty.openpty(), pty.openpty())
-        for fd in chain(masters, slaves):
-            self._set_size(fd)
-
-        # cmd = re.findall(r'\S+|\n', self.command)
-        # cmds = self.command.split('\n')
-        # for cmd in cmds:
         # TODO: Fix multi-line calls
         # https://github.com/robcxyz/tackle-box/issues/14
-        cmd = self.command.replace(';', ' ;').replace('\n', ' ; ').split()
-        data = bytes()
-        try:
-            with subprocess.Popen(
-                cmd, stdin=slaves[0], stdout=slaves[0], stderr=slaves[1]
-            ) as p:
-                for fd in slaves:
-                    os.close(fd)  # no input
-                    readable = {
-                        masters[0]: sys.stdout.buffer,  # store buffers seperately
-                        masters[1]: sys.stderr.buffer,
-                    }
-                while readable:
-                    # TODO: Session is not interactive and fails below when interactive
-                    #  prompts are displayed
-                    # https://github.com/robcxyz/tackle-box/issues/13
-                    # x = select(readable, [], [])[0]
-                    for fd in select(readable, [], [])[0]:
-                        try:
-                            data = os.read(fd, 1024)  # read available
-                        except OSError as e:
-                            if e.errno != errno.EIO:
-                                raise  # XXX cleanup
-                            del readable[fd]  # EIO means EOF on some systems
-                        else:
-                            if not data:  # EOF
-                                del readable[fd]
-                            else:
-                                if fd == masters[0]:  # We caught stdout
-                                    # TODO: Interactive prompts
-                                    print(data.rstrip().decode('utf-8'))
-                                else:  # We caught stderr
-                                    print(data.rstrip().decode('utf-8'))
-                                readable[fd].flush()
-            for fd in masters:
-                os.close(fd)
-            logger.debug("Process exited with %s return code." % p.returncode)
-            if p.returncode != 0 and not self.ignore_error:
-                raise HookCallException(data.decode('utf-8'))
-            else:
-                return data.decode("utf-8")
+        if self.multiline:
+            commands = [self.command.replace('\n', ' ').split()]
+        else:
+            commands = [i.split() for i in self.command.split('\n')]
+            if commands[-1] == []:
+                commands.pop()
 
-        except Exception as e:
-            if self.ignore_error:
-                return e
-            else:
-                raise e
+        data = bytes()
+        output = []
+        for cmd in commands:
+            masters, slaves = zip(pty.openpty(), pty.openpty())
+            for fd in chain(masters, slaves):
+                self._set_size(fd)
+
+            try:
+                with subprocess.Popen(
+                    cmd, stdin=slaves[0], stdout=slaves[0], stderr=slaves[1]
+                ) as p:
+                    for fd in slaves:
+                        os.close(fd)  # no input
+                        readable = {
+                            masters[0]: sys.stdout.buffer,  # store buffers seperately
+                            masters[1]: sys.stderr.buffer,
+                        }
+                    while readable:
+                        # TODO: Session is not interactive and fails below when interactive
+                        #  prompts are displayed
+                        # https://github.com/robcxyz/tackle-box/issues/13
+                        # x = select(readable, [], [])[0]
+                        for fd in select(readable, [], [])[0]:
+                            try:
+                                data = os.read(fd, 1024)  # read available
+                            except OSError as e:
+                                if e.errno != errno.EIO:
+                                    raise  # XXX cleanup
+                                del readable[fd]  # EIO means EOF on some systems
+                            else:
+                                if not data:  # EOF
+                                    del readable[fd]
+                                else:
+                                    if fd == masters[0]:  # We caught stdout
+                                        # TODO: Interactive prompts
+                                        print(data.rstrip().decode('utf-8'))
+                                    else:  # We caught stderr
+                                        print(data.rstrip().decode('utf-8'))
+                                    readable[fd].flush()
+                # for fd in masters:
+                #     os.close(fd)
+                logger.debug("Process exited with %s return code." % p.returncode)
+                if p.returncode != 0 and not self.ignore_error:
+                    if self.verbose:
+                        raise HookCallException(data.decode('utf-8'))
+                    else:
+                        # Exception already printed
+                        raise CommandFailedException()
+                else:
+                    # return data.decode("utf-8")
+                    output.append(data.decode("utf-8"))
+
+            except Exception as e:
+                if self.ignore_error:
+                    return e
+                else:
+                    raise e
+
+        for fd in masters:
+            os.close(fd)
+
+        return '\n'.join(output)
+
 
 # class CommandHook(BaseHook):
 #     """System commands."""
