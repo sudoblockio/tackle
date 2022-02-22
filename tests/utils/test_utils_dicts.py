@@ -20,8 +20,8 @@ def test_index_encoding():
 
 NESTED_SET_FIXTURES = [
     # Indexed as output, key_path, expected_output
-    # ({}, ['foo'], {'foo': True}),
-    # ({}, ['one', 'two', 'three'], {'one': {'two': {'three': True}}}),
+    ({}, ['foo'], {'foo': True}),
+    ({}, ['one', 'two', 'three'], {'one': {'two': {'three': True}}}),
     ({}, ['this', 'lists', ZERO_INDEX], {'this': {'lists': [True]}}),
     (
         {},
@@ -97,6 +97,21 @@ NESTED_SET_FIXTURES = [
         {'stuff': ['things']},
         ['stuff', encode_list_index(1), encode_list_index(0)],
         {'stuff': ['things', [True]]},
+    ),
+    (
+        [{'stuff': False}],
+        [encode_list_index(1), 'stuff', encode_list_index(0)],
+        [{'stuff': False}, {'stuff': [True]}],
+    ),
+    (
+        [],
+        [encode_list_index(0), 'stuff', encode_list_index(0)],
+        [{'stuff': [True]}],
+    ),
+    (
+        [],
+        [encode_list_index(0), 'stuff', encode_list_index(0)],
+        [{'stuff': [True]}],
     ),
     # # This test is breaking
     # (
