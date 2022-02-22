@@ -22,3 +22,11 @@ def test_provider_system_hook_jinja(change_dir, clean_things):
     with open('things.py') as f:
         output = yaml.load(f, yaml.SafeLoader)
     assert output == "x = 'bar'"
+
+
+def test_provider_system_hook_jinja_existing_context(change_dir, clean_things):
+    context = tackle('existing-context.yaml')
+    assert context['foo'] == 'bar'
+    with open('things.py') as f:
+        output = yaml.load(f, yaml.SafeLoader)
+    assert output == "x = 'bar'"

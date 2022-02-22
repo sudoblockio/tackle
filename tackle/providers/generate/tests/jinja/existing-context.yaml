@@ -1,0 +1,11 @@
+
+foo: bar
+
+manifest->:
+  if: true
+  do->:
+    rendered_manifest->: jinja templates/things.py.j2 things.py
+
+
+
+
