@@ -1,6 +1,8 @@
 
 section:
   stuff: things
+  bool: false
+  int: 2
 
 write->: ini output.ini {{this}}
 

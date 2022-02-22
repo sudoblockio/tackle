@@ -34,7 +34,7 @@ class IniHook(BaseHook):
             for section, items in self.data.items():
                 config.add_section(section)
                 for k, v in items.items():
-                    config.set(section, k, v)
+                    config.set(section, k, str(v))
             with open(self.path, 'w') as f:
                 config.write(f)
 
