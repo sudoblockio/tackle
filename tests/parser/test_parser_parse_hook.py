@@ -12,17 +12,19 @@ FIXTURES = [
     ('empty-elements.yaml', 'empty-elements.yaml'),
     ('private-context.yaml', 'private-context-output.yaml'),
     ('map-root.yaml', 'map-root-output.yaml'),
-    ('outer-tackle.yaml', 'outer-tackle-output.yaml'),
     ('private-hooks.yaml', 'private-hooks-output.yaml'),
-    # ('document-hooks.yaml', 'outer_tackle_expected.yaml'),
     ('outer-tackle.yaml', 'outer-tackle-output.yaml'),
+    ('outer-tackle-list.yaml', 'outer-tackle-list-output.yaml'),
     ('merge-simple.yaml', 'merge-simple-output.yaml'),
     ('merge-petstore-compact.yaml', 'petstore.yaml'),
     # # Non tackle things
     ('k8s-deployment.yaml', 'k8s-deployment.yaml'),
+    ('ansible-playbook.yaml', 'ansible-playbook.yaml'),
     ('docker-compose.yml', 'docker-compose.yml'),
     ('list-list.yaml', 'list-list.yaml'),
     ('var-hook.yaml', 'var-hook-output.yaml'),
+    # # Broken
+    # ('document-hooks.yaml', 'outer_tackle_expected.yaml'),
 ]
 
 
@@ -33,4 +35,4 @@ def test_main_expected_output(change_curdir_fixtures, fixture, expected_output):
         expected_output = yaml.safe_load(f)
 
     output = tackle(fixture)
-    assert dict(output) == expected_output
+    assert output == expected_output

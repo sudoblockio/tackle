@@ -661,6 +661,10 @@ def extract_base_file(context: 'Context'):
     if context.input_dict is None:
         raise EmptyTackleFileException(f"No tackle file found at {path}.")
 
+    if isinstance(context.input_dict, list):
+        # Change output to empty list
+        context.output_dict = []
+
     # Check if there is a hooks directory in the provider being run and import the hooks
     input_dir_contents = os.listdir(context.input_dir)
     if 'hooks' in input_dir_contents:

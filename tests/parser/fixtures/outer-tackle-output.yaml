@@ -15,3 +15,5 @@ outer:
   foo_index:
     - 0
     - 1
+
+  calling_file: outer-tackle.yaml

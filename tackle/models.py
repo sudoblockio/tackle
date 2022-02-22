@@ -92,6 +92,7 @@ class BaseHook(BaseModel):
     no_input: bool = None
     calling_directory: str = None
     calling_file: str = None
+    verbose: bool = False
 
     providers: ProviderList = None
     key_path: list = None

@@ -1,0 +1,17 @@
+
+- stuff: things
+
+  # TODO: Figure out what the right way to do refs within a list
+#  more_things->: var "lots of {{[0]stuff}}" -if "stuff == 'things'"
+#
+#  foo:
+#    - bar
+#    - baz
+#
+#  foo_items->: var item -for foo
+#  foo_index->: var index -for foo
+
+  calling_file->: "{{calling_file}}"
+
+  #inner:
+  #  type: print this
