@@ -214,6 +214,7 @@ def parse_hook(
                     calling_file=context.calling_file,
                     providers=context.providers,
                     key_path=context.key_path,
+                    verbose=context.verbose,
                 )
             except ValidationError as e:
                 raise e
@@ -647,6 +648,8 @@ def extract_base_file(context: 'Context'):
     """Read the tackle file and initialize input_dict."""
     if context.find_in_parent:
         path = find_in_parent(context.input_dir, context.input_file)
+        context.input_file = os.path.basename(path)
+        context.input_dir = os.path.dirname(path)
     else:
         path = os.path.join(context.input_dir, context.input_file)
 
