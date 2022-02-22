@@ -35,3 +35,9 @@ def test_parser_raises_exceptions(chdir, input_file, exception):
     chdir(os.path.join("fixtures", "blocks"))
     with pytest.raises(exception):
         tackle(input_file)
+
+
+def test_parser_calling_directory_preserve(change_curdir_fixtures):
+    """Validate that the calling_directory param is carried over from hook calls."""
+    output = tackle('calling-context.yaml')
+    assert output['call']['call']['calling_file'] == 'calling-context.yaml'
