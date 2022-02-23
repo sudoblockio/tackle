@@ -6,6 +6,7 @@ import shutil
 import stat
 import logging
 import re
+from typing import Optional
 
 from tackle.exceptions import ContextFileNotFound, InvalidConfiguration
 
@@ -174,7 +175,7 @@ def find_tackle_file(provider_dir) -> str:
     raise InvalidConfiguration(f"Can't find tackle file in {provider_dir}")
 
 
-def find_in_parent(dir, targets, fallback=None):
+def find_in_parent(dir, targets, fallback=None) -> str:
     """Recursively search in parent directories for a path to a target file."""
     for i in os.listdir(dir):
         if i in targets:
@@ -194,7 +195,7 @@ def find_in_parent(dir, targets, fallback=None):
     )
 
 
-def find_nearest_tackle_file():
+def find_nearest_tackle_file() -> Optional[str]:
     """
     Find the nearest tackle file from a set of default tackle files.
     :return: Path or None if not found
