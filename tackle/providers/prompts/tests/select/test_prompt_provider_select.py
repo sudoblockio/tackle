@@ -1,4 +1,12 @@
-from tackle.main import tackle
+from tackle import tackle
+
+
+def test_provider_select_list_this(change_dir, mocker):
+    mocker.patch(
+        'tackle.providers.prompts.hooks.select.prompt', return_value={"tmp": "things"}
+    )
+    output = tackle('test.yaml')
+    assert output['selection'] == 'things'
 
 
 def test_provider_select_list(change_dir, mocker):
