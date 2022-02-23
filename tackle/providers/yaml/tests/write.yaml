@@ -1,0 +1,3 @@
+stuff: things
+
+compact->: yaml output.yaml {{this}}

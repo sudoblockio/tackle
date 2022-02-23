@@ -22,6 +22,18 @@ def test_provider_system_hook_yaml_read(change_dir, clean_outputs):
     assert read['stuff'] == 'things'
 
 
+def test_provider_system_hook_yaml_write(change_dir, clean_outputs):
+    tackle('write.yaml', no_input=True)
+    with open('output.yaml', 'r') as f:
+        written = yaml.safe_load(f)
+    assert written == {'stuff': 'things'}
+
+
+# def test_provider_system_hook_yaml_raw(chdir):
+#     read = tackle('raw.yaml', no_input=True)
+#     assert read['stuff'] == 'things'
+
+
 # TODO: When in place yaml hooks are a thing
 # def test_provider_system_hook_yaml_update(change_dir, clean_outputs):
 #     tackle('update.yaml', no_input=True)

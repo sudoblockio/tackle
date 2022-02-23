@@ -1,0 +1,7 @@
+
+#read_raw->: file read.yaml
+read_raw->: file list_yaml.yaml
+
+convert:
+  ->: yaml "{{read_raw}}"
+  raw: true
