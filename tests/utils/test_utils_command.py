@@ -53,6 +53,7 @@ TEMPLATES = [
     ('["this"] --if "expanded == \'that\'"', 1, 1, 0),
     ('["this"] ["this"] --if "expanded == \'that\'"', 2, 1, 0),
     ('["this"] --for ["this"] --if "expanded == \'that\'"', 1, 2, 0),
+    ('"this --if" --if "expanded == \'that\'"', 1, 1, 0),
 ]
 
 

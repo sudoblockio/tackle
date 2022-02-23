@@ -1,0 +1,8 @@
+stuff: things
+
+jsonify:
+  ->: var
+  input: |
+    json
+    "{{this | jsonify}}"
+rand->: "{{ random_ascii_string(12) }}"

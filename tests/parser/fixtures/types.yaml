@@ -1,0 +1,7 @@
+
+
+
+int->: literal 1
+#float->: literal 1.0
+bool->: literal true
+

@@ -4,7 +4,7 @@
 # python -m art fonts
 
 out:
-  type: text2art
+  ->: text2art
   text: This is cool!
 
 font:
