@@ -44,8 +44,6 @@ class TackleHook(BaseHook):
             if self.extra_context:
                 existing_context.update(self.extra_context)
 
-        print(self.find_in_parent)
-
         output_context = tkl.main.tackle(
             self.input_string,
             checkout=self.checkout,
@@ -62,4 +60,4 @@ class TackleHook(BaseHook):
             find_in_parent=self.find_in_parent,
         )
 
-        return dict(output_context)
+        return output_context
