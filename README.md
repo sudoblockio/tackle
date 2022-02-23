@@ -5,18 +5,14 @@
 [![codecov](https://codecov.io/gh/robcxyz/tackle-box/branch/main/graphs/badge.svg?branch=main)](https://codecov.io/github/robcxyz/tackle-box?branch=main)
 [![main-tests](https://github.com/robcxyz/tackle-box/actions/workflows/main.yml/badge.svg)](https://github.com/robcxyz/tackle-box/actions)
 
-* [Documentation](https://robcxyz.github.io/tackle-box) -> WIP
+* [Documentation](https://robcxyz.github.io/tackle-box) (WIP)
 * [GitHub](https://github.com/robcxyz/tackle-box)
 * [PyPI](https://pypi.org/project/tackle-box/)
-* [BSD license](LICENSE)
+* [BSD License](LICENSE)
 
-Tackle box is a declarative DSL for building modular utilities and code generators. Tool is plugins based and can easily be extended by writing additional hooks or importing external providers creating a web of interoperable CLIs.
-
-> WARNING - Project still alpha. Will be officially released shortly.
+Tackle box is a DSL for turning static configuration files into dynamic workflows. Tool is plugins based and can easily be extended by writing additional hooks or importing external providers.
 
 ### Demo
-
-More demos coming - tackle-box is still early alpha.
 
 ```shell
 pip3 install tackle-box
@@ -24,21 +20,30 @@ pip3 install tackle-box
 # Create a new provider in one minute
 tackle robcxyz/tackle-provider
 
-# Push to github and now you can call it
-tackle <your GH username>/tackle-your-provider
-# Or alternatively import/call it from another tackle file
+# Push to github and now you can call it directly
+tackle <your GH username>/<tackle-your-provider>
+
+# Or alternatively create a tackle file
+echo '
+name->: input What is your name?
+print->: print Hi {{name}}, lets make a provider now!
+call->: tackle robcxyz/tackle-provider
+' > tackle.yaml
+tackle
 ```
 
 ### Features
 
+- Modular: New providers / hooks can be created or imported remotely
 - Declarative: Everything is in yaml with easy to use interfaces
 - Turing complete: Loops, conditionals and branching is supported
-- Modular: New providers / hooks can be created or imported remotely
 - Lean: Tackle box has only 4 dependencies - core logic <1k LOC
 
-### Basic Usage / Structure
+### Usage
 
-Tackle-box can be called against any yaml/json file or remote location by specifying the path to a repo / directory. By default, tackle looks for a `tackle.yaml` file in the target location which is parsed sequentially with each key / value or item in a list traversed, parsed, and rendered on hook calls indicated by an arrow (`->`). Tackle box ships with ~70 hooks to do basic prompting / code generation / system operations but can easily be extended by writing additional hooks.
+Tackle-box in its simplest form is a structured data parser taking in arbitrary yaml or json and only applying logic with keys ending in an arrow (ie '->'). By default, tackle looks for a `tackle.yaml` file in the target location which is parsed sequentially with each key / value or item in a list traversed, parsed, and rendered on hook calls indicated by an arrow (`->`). Tackle box ships with ~70 hooks to do basic prompting / code generation / system operations but can easily be extended by writing additional hooks or importing other providers.
+
+### Provider Structure
 
 For instance given the following directory structure:
 
@@ -100,4 +105,4 @@ chat rooms, and mailing lists is expected to follow the
 
 ## Credit
 
-Special thanks to the [cookiecutter](https://github.com/cookiecutter/cookiecutter) community for creating the inspiration for this project.
+Special thanks to the [cookiecutter](https://github.com/cookiecutter/cookiecutter) community for laying the basis for this project.
