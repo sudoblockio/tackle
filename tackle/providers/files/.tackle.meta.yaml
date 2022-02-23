@@ -1,17 +1,16 @@
-name: Generate Provider
+name: File Provider
 
-description: Hooks that generate files through jinja templating.
+description: Hooks that operate on the files.
 
 examples:
-  - name: "[jinja](jinja.md)"
-    description: Render a single file
+  - name: "[copy](copy.md)"
+    description: Copy a file or directory single file
     content: |
-      stuff: things  # Put render context above
-      compact->: jinja path/to/template/file.tpl output/path.py
+      compact->: copy path/to/file output/path
       expanded:
         ->: jinja
-        template: path/to/template/file.tpl
-        output: output/path.py
+        template: path/to/file
+        output: output/path
 
   - name: "[generate](generate.md)"
     description: Recursively render a directory

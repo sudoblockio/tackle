@@ -51,6 +51,8 @@ class CopyHook(BaseHook):
     dst: str = Field(..., description="")
     create_path: bool = True
 
+    _args = ['src', 'dst']
+
     def __init__(self, **data: Any):
         super().__init__(**data)
         if isinstance(self.src, str):
