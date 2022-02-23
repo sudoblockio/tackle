@@ -1,5 +1,5 @@
 stuff:
-  ->: print {{foo}}
+  ->: var {{foo}}
   if: foo == 'bing'
 
 read_stuff:

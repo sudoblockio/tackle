@@ -43,6 +43,13 @@ class MatchHook(BaseHook):
     def run_key(self):
         case_value = {self.value: self.case[self.value]}
 
+        # TODO: Make the context dependent on type.
+        #  https://github.com/robcxyz/tackle-box/issues/26
+        # If the matched case is a string - Run that -- Will need change to above
+        # If it is a dict / list - Parse that directly without indenting with the case
+        # if isinstance(self.case[self.value], (str, int, float)):
+        #     pass
+
         # Bring in the current input dict
         existing_context = self.output_dict.copy()
         existing_context.update(self.existing_context)
