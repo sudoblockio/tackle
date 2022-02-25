@@ -9,17 +9,13 @@ class MakeDirectoryHook(BaseHook):
 
     hook_type: str = 'mkdir'
     path: str = Field(..., description="The path to file or directory")
-    tmp: bool
 
     _args: list = ['path']
     _docs_order = 1
 
     def execute(self) -> str:
-        if self.tmp:
-            return tempfile.mkdtemp()
-        else:
-            pathlib.Path(self.path).mkdir(parents=True, exist_ok=True)
-            return self.path
+        pathlib.Path(self.path).mkdir(parents=True, exist_ok=True)
+        return self.path
 
 
 class MakeTempDirectoryHook(BaseHook):
