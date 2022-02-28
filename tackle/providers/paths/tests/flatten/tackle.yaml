@@ -1,24 +1,53 @@
+paths:
+  one:
+    baz: stuff.yaml
+    bar: thing.yaml
+  two:
+    baz: stuff.yaml
+    bar: thing.yaml
+  foo: stuff.yaml
+  alist:
+    - stuff.py
+    - things.py
+  complex:
+    alist:
+      - foo: stuff.py
+      - another_list:
+          - stuff.py
+          - things.py
+      - things.py
 
 flattened:
   ->: flatten_paths
-  paths:
-    one:
-      baz: stuff.yaml
-      bar: thing.yaml
-    two:
-      baz: stuff.yaml
-      bar: thing.yaml
-    foo: stuff.yaml
-
+  paths: "{{ paths }}"
 
 flattened_base:
   ->: flatten_paths
   base_path: base/path
-  paths:
-    one:
-      baz: stuff.yaml
-      bar: thing.yaml
-    two:
-      baz: stuff.yaml
-      bar: thing.yaml
-    foo: stuff.yaml
+  paths: "{{ paths }}"
+
+path_list:
+  - foo: bar.py
+  - paths:
+      one:
+        baz: stuff.yaml
+        bar: thing.yaml
+      two:
+        baz: stuff.yaml
+        bar: thing.yaml
+      foo: stuff.yaml
+      alist:
+        - stuff.py
+        - things.py
+      complex:
+        alist:
+          - foo: stuff.py
+          - another_list:
+              - stuff.py
+              - things.py
+          - things.py
+
+flattened_base_list:
+  ->: flatten_paths
+  base_path: base/path
+  paths: "{{ path_list }}"
