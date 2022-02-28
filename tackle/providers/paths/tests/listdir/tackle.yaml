@@ -16,6 +16,7 @@ string_input_hidden:
 
 list_input:
   ->: listdir
-  path:
+  for:
     - dirs/dir1
     - dirs/dir2
+  path: "{{ item }}"

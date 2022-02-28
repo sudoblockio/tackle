@@ -22,12 +22,17 @@ class ExtensionLoaderMixin(object):
         3. Attempts to load the extensions. Provides useful error if fails.
         """
         context = kwargs.pop('context', {})
-
         default_extensions = [
+            'tackle.providers.paths.hooks.dirs.MakeTempDirectoryHook',
             'tackle.render.extensions.JsonifyExtension',
             'tackle.render.extensions.RandomStringExtension',
-            # 'jinja2_time.TimeExtension',
         ]
+        # 'tackle.providers.console.printer.PrintHook',
+        # PrintHook,
+        # 'jinja2_time.TimeExtension',
+        # 'tackle.providers.console.markdown.MarkdownPrintHook',
+        # 'tackle.providers.console.printer.PrintHook',
+
         extensions = default_extensions + self._read_extensions(context)
 
         try:
@@ -35,6 +40,7 @@ class ExtensionLoaderMixin(object):
         except ImportError as err:
             raise UnknownExtension('Unable to load extension: {}'.format(err))
 
+    # TODO: Disable this until a pattern is settled on in tackle - legacy
     def _read_extensions(self, context):
         """Return list of extensions as str to be passed on to the Jinja2 env.
 

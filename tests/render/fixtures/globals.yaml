@@ -1,0 +1,15 @@
+globals_raw->:
+  - "{{ range }}"
+  - "{{ dict }}"
+  - "{{ lipsum }}"
+  - "{{ cycler }}"
+  - "{{ joiner }}"
+  - "{{ namespace }}"
+
+globals_call->:
+  - "{{ range() }}"
+  - "{{ dict() }}"
+  - "{{ lipsum() }}"
+  - "{{ cycler() }}"
+  - "{{ joiner() }}"
+  - "{{ namespace() }}"

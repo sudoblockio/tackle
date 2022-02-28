@@ -1,15 +1,88 @@
-"""Main entrypoint for rendering."""
 import ast
-from jinja2 import meta
+from jinja2 import Environment, StrictUndefined, meta
 from inspect import signature
+from pydantic.main import ModelMetaclass
+from typing import TYPE_CHECKING, Any
 
 from tackle.render.special_vars import special_variables
 from tackle.render.environment import StrictEnvironment
 from tackle.exceptions import UnknownTemplateVariableException
-from typing import TYPE_CHECKING, Any
+from tackle.exceptions import UnknownExtension
 
 if TYPE_CHECKING:
     from tackle.models import Context
+
+
+class ExtensionLoaderMixin(object):
+    """Mixin providing sane loading of extensions specified in a given context.
+
+    The context is being extracted from the keyword arguments before calling
+    the next parent class in line of the child.
+    """
+
+    def __init__(self, **kwargs):
+        """Initialize the Jinja2 Environment object while loading extensions.
+
+        Does the following:
+
+        1. Establishes default_extensions (currently just a Time feature)
+        2. Reads extensions set in the cookiecutter.json _extensions key.
+        3. Attempts to load the extensions. Provides useful error if fails.
+        """
+        context: Context = kwargs.pop('context', {})
+
+        provider_extensions = [
+            v.identifier
+            for _, v in context.provider_hooks.items()
+            if isinstance(v, ModelMetaclass)
+        ]
+
+        default_extensions = [
+            'tackle.providers.paths.hooks.dirs.MakeTempDirectoryHook',
+            'tackle.render.extensions.JsonifyExtension',
+            'tackle.render.extensions.RandomStringExtension',
+        ]
+        # 'tackle.providers.console.printer.PrintHook',
+        # PrintHook,
+        # 'jinja2_time.TimeExtension',
+        # 'tackle.providers.console.markdown.MarkdownPrintHook',
+        # 'tackle.providers.console.printer.PrintHook',
+
+        extensions = provider_extensions  # + self._read_extensions(context)
+
+        try:
+            super(ExtensionLoaderMixin, self).__init__(extensions=extensions, **kwargs)
+        except ImportError as err:
+            raise UnknownExtension('Unable to load extension: {}'.format(err))
+
+    # TODO: Disable this until a pattern is settled on in tackle - legacy
+    def _read_extensions(self, context):
+        """Return list of extensions as str to be passed on to the Jinja2 env.
+
+        If context does not contain the relevant info, return an empty
+        list instead.
+        """
+        try:
+            extensions = context['_extensions']
+        except (KeyError, TypeError):
+            return []
+        else:
+            return [str(ext) for ext in extensions]
+
+
+class StrictEnvironment(ExtensionLoaderMixin, Environment):
+    """Create strict Jinja2 environment.
+
+    Jinja2 environment will raise error on undefined variable in template-
+    rendering context.
+    """
+
+    def __init__(self, **kwargs):
+        """Set the standard Tackle StrictEnvironment.
+
+        Also loading extensions defined in cookiecutter.json's _extensions key.
+        """
+        super(StrictEnvironment, self).__init__(undefined=StrictUndefined, **kwargs)
 
 
 def wrap_braces_if_not_exist(value):
@@ -66,7 +139,7 @@ def render_string(context: 'Context', raw: str):
         return raw
 
     if context.env is None:
-        context.env = StrictEnvironment(context=context.input_dict)
+        context.env = StrictEnvironment(context=context)
 
     template = context.env.from_string(raw)
     # Extract variables
