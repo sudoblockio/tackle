@@ -1,0 +1,5 @@
+encode->: base64_encode "Stuff and things"
+decode->: base64_decode {{encode}}
+
+encoded: "U3R1ZmYgYW5kIHRoaW5ncw=="
+decoded->: base64_decode {{encoded}}
