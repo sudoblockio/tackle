@@ -1,0 +1,3 @@
+context->: k8s_current_context
+context_list->: k8s_context_list
+context_map->: k8s_context_map

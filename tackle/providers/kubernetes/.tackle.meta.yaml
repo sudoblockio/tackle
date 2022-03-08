@@ -1,0 +1,34 @@
+name: Console Provider
+
+description: Hooks that print things to the console like tables and markdown via [rich] or print.
+
+examples:
+  - name: "[k8s_context_map](context.md)"
+    description: Get a map with keys of kubernetes context names and values with details from KUBECONFIG environment variable.
+    content: |
+      compact->: k8s_current_context
+  - name: "[k8s_context_list](context.md)"
+    description: Get a list of kubernetes contexts from KUBECONFIG environment variable.
+    content: |
+      compact->: k8s_context_list
+  - name: "[k8s_context_map](context.md)"
+    description: Get a map with keys of kubernetes context names and values with details from KUBECONFIG environment variable.
+    content: |
+      compact->: k8s_context_map
+
+
+hook_examples:
+#  print:
+#    - name: Compact print - most common use
+#      content: |
+#        compact->: print stuff and things
+#    - name: Expanded print
+#      content: |
+#        expanded:
+#          ->: print
+#          objects: stuff and
+#          end: " "
+#        compact->: print things
+#      output_text: |
+#        stuff and things
+
