@@ -38,3 +38,9 @@ def test_render_hooks_no_args(change_curdir_fixtures):
     """Verify that we can call hooks without args."""
     output = tackle('hooks.yaml')
     assert 'tmp' in output['file']
+
+
+def test_render_hooks_with_args(change_curdir_fixtures):
+    """Verify that we can call hooks without args."""
+    output = tackle('hooks-args.yaml')
+    assert output

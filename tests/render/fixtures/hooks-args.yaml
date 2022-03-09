@@ -1,0 +1,6 @@
+
+stuff:
+  and: things
+
+print->: "{{print('things')}}"
+#get->: "{{get('stuff/and')}}"
