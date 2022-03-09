@@ -1,17 +1,14 @@
-import logging
 from rich.console import Console
 from rich.markdown import Markdown
 
-from tackle import BaseHook
-
-logger = logging.getLogger(__name__)
+from tackle import BaseHook, Field
 
 
 class MarkdownPrintHook(BaseHook):
     """Hook for printing markdown and returning the output."""
 
     hook_type: str = 'markdown'
-    text: str = None
+    text: str = Field(..., description="The text to render as markdown.")
 
     _args: list = ['text']
 
