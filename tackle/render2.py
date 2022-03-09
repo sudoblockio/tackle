@@ -51,6 +51,7 @@ class ExtensionLoaderMixin(object):
         extensions = provider_extensions  # + self._read_extensions(context)
 
         try:
+            # , output_dict=context.output_dict
             super(ExtensionLoaderMixin, self).__init__(extensions=extensions, **kwargs)
         except ImportError as err:
             raise UnknownExtension('Unable to load extension: {}'.format(err))
