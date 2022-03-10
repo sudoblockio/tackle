@@ -1,7 +1,7 @@
 
 cases:
   - value
-  - dict
+  - a_dict
   - list
   - hook-dict
   - hook-expanded
@@ -14,13 +14,13 @@ matches:
   value: "{{item}}"
   case:
     value: True
-    dict:
+    a_dict:
       stuff: things
     list:
       - stuff
       - things
     hook-dict:
-      dict:
+      a_dict:
         stuff: things
       list:
         - stuff
@@ -30,14 +30,14 @@ matches:
       hook-compact->: print compact
 
     hook-expanded:
-      ->: print expanded
-    hook-compact->: print compact
+      ->: literal expanded
+    hook-compact->: literal compact
     block->:
       for:
         - stuff
         - things
       value: True
-      dict:
+      a_dict:
         stuff->: "{{item}}"
       list:
         - stuff
@@ -53,7 +53,7 @@ expected:
   -
     - stuff
     - things
-  - dict:
+  - a_dict:
       stuff: things
     list:
       - stuff
@@ -81,4 +81,4 @@ expected:
       hook-expanded: expanded
       hook-compact: compact
 
-assert->: assert "{{matches}}" "{{expected}}"
+#assert->: assert "{{matches}}" "{{expected}}"

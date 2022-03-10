@@ -22,26 +22,41 @@ class MatchHook(BaseHook):
         "if present.",
     )
 
+    _render_exclude = {'case'}
     _args = ['value']
     _docs_order = 3
 
     def execute(self) -> Union[dict, list]:
         # Condition catches everything except expanded hook calls and blocks (ie key->)
-        if self.value in self.case:
-            return self.run_key()[self.value]
-        else:
-            # Iterate through keys and find keys matching value without arrow (->, _>)
-            for k, v in self.case.items():
-                if self.value == k[:-2]:
-                    # Rewrite the value to match the key
-                    self.value = k
-                    output_dict = self.run_key()
-                    # Return the value indexed without arrow
-                    return output_dict[k[:-2]]
-            raise Exception(f"Value `{self.value}` not found in {self.case.keys()}")
+        import re
 
-    def run_key(self):
-        case_value = {self.value: self.case[self.value]}
+        for k, v in self.case.items():
+            if re.match(k, self.value):
+                return self.run_key(k, v)[k]
+            elif re.match(k[:-2], self.value) and k[-2:] in ('->', '_>'):
+                # Rewrite the value to match the key
+                self.value = k
+                output_dict = self.run_key(k, v)
+                # Return the value indexed without arrow
+                return output_dict[self.value[:-2]]
+
+        raise Exception(f"Value `{self.value}` not found in {self.case.keys()}")
+
+        # if self.value in self.case:
+        #     return self.run_key()[self.value]
+        # else:
+        #     # Iterate through keys and find keys matching value without arrow (->, _>)
+        #     for k, v in self.case.items():
+        #         if self.value == k[:-2]:
+        #             # Rewrite the value to match the key
+        #             self.value = k
+        #             output_dict = self.run_key()
+        #             # Return the value indexed without arrow
+        #             return output_dict[k[:-2]]
+        #     raise Exception(f"Value `{self.value}` not found in {self.case.keys()}")
+
+    def run_key(self, key, value):
+        case_value = {key: value}
 
         # TODO: Make the context dependent on type.
         #  https://github.com/robcxyz/tackle-box/issues/26

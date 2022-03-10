@@ -1,39 +1,21 @@
-#values:
-#  ->: match value
-#  case:
-#    value: True
+a_dict: nothing
 
-dict:
-  ->: match dict
+fallback_dict:
+  ->: match a_dict
   case:
-    dict:
-      stuff: things
-    list:
-      - stuff
-      - things
-    hook-dict:
-      dict:
-        stuff: things
-      list:
-        - stuff
-        - things
-      hook-expanded:
-        ->: print expanded
-      hook-compact->: print compact
-
     hook-expanded:
       ->: print expanded
     hook-compact->: print compact
-#    block->:
-#      for:
-#        - stuff
-#        - things
-#      value: True
-#      dict:
-#        stuff->: "{{item}}"
-#      list:
-#        - stuff
-#        - things
-#      hook-expanded:
-#        ->: print expanded
-#      hook-compact->: print compact
+    '^foo': this
+    '.*': foo
+
+b_dict: foobar
+
+matched_dict:
+  ->: match b_dict
+  case:
+    hook-expanded:
+      ->: print expanded
+    hook-compact->: print compact
+    '^foo': this
+    '.*': foo
