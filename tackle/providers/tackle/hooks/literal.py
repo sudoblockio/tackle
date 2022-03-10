@@ -7,7 +7,7 @@ class LiteralHook(BaseHook):
     """Literally return the input."""
 
     hook_type: str = 'literal'
-    input: Any = Field(..., description="Any variable input.", render_by_default=True)
+    input: Any = Field(..., description="Any variable input.")
 
     _args: list = ['input']
 
