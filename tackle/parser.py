@@ -116,12 +116,13 @@ def evaluate_for(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
 def evaluate_if(hook_dict: dict, context: 'Context', append_hook_value: bool) -> bool:
     """Evaluate the if/when condition and return bool."""
     if hook_dict.get('when', None) is not None:
-        return render_variable(context, wrap_jinja_braces(hook_dict['when']))
-
-    if hook_dict.get('for', False) and not append_hook_value:
+        result = render_variable(context, wrap_jinja_braces(hook_dict['when']))
+        hook_dict.pop('when')
+        return result
+    if hook_dict.get('for', None) is not None and not append_hook_value:
         # We qualify `if` conditions within for loop logic
         return True
-    if hook_dict.get('if', None) is not None:
+    if hook_dict.get('if', None) is None:
         return True
 
     return render_variable(context, wrap_jinja_braces(hook_dict['if']))
