@@ -1,0 +1,9 @@
+
+stuff:
+  - foo
+  - bar
+
+expanded->:
+  for: stuff
+  when: false
+  do->: print "{{item}}"

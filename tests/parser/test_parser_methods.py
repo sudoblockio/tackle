@@ -12,5 +12,11 @@ def test_parser_methods_merge(change_curdir_fixtures):
 
 def test_parser_methods_try(change_curdir_fixtures):
     """Use try which should not have any output"""
-    output = tackle('try-method.yaml')
+    output = tackle('method-try.yaml')
     assert output == {}
+
+
+def test_parser_methods_when(change_curdir_fixtures):
+    """Use try which should not have any output"""
+    output = tackle('method-when.yaml')
+    assert 'expanded' not in output
