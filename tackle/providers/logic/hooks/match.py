@@ -1,5 +1,6 @@
 """Match hook."""
 from typing import Union
+import re
 
 from tackle.models import BaseHook, Context, Field
 from tackle.parser import walk_sync
@@ -28,42 +29,24 @@ class MatchHook(BaseHook):
 
     def execute(self) -> Union[dict, list]:
         # Condition catches everything except expanded hook calls and blocks (ie key->)
-        import re
-
         for k, v in self.case.items():
             if re.match(k, self.value):
+                # Dicts that are not expanded hooks themselves
+                if isinstance(v, dict) and not ('->' in v or '_>' in v):
+                    return self.run_key(v)
                 return self.run_key(k, v)[k]
+
             elif re.match(k[:-2], self.value) and k[-2:] in ('->', '_>'):
-                # Rewrite the value to match the key
-                self.value = k
-                output_dict = self.run_key(k, v)
                 # Return the value indexed without arrow
-                return output_dict[self.value[:-2]]
+                return self.run_key(k, v)[k[:-2]]
 
         raise Exception(f"Value `{self.value}` not found in {self.case.keys()}")
 
-        # if self.value in self.case:
-        #     return self.run_key()[self.value]
-        # else:
-        #     # Iterate through keys and find keys matching value without arrow (->, _>)
-        #     for k, v in self.case.items():
-        #         if self.value == k[:-2]:
-        #             # Rewrite the value to match the key
-        #             self.value = k
-        #             output_dict = self.run_key()
-        #             # Return the value indexed without arrow
-        #             return output_dict[k[:-2]]
-        #     raise Exception(f"Value `{self.value}` not found in {self.case.keys()}")
-
-    def run_key(self, key, value):
-        case_value = {key: value}
-
-        # TODO: Make the context dependent on type.
-        #  https://github.com/robcxyz/tackle-box/issues/26
-        # If the matched case is a string - Run that -- Will need change to above
-        # If it is a dict / list - Parse that directly without indenting with the case
-        # if isinstance(self.case[self.value], (str, int, float)):
-        #     pass
+    def run_key(self, key, value=None):
+        if value:
+            case_value = {key: value}
+        else:
+            case_value = key
 
         # Bring in the current input dict
         existing_context = self.output_dict.copy()

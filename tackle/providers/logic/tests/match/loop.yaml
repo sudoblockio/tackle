@@ -26,8 +26,8 @@ matches:
         - stuff
         - things
       hook-expanded:
-        ->: print expanded
-      hook-compact->: print compact
+        ->: literal expanded
+      hook-compact->: literal compact
 
     hook-expanded:
       ->: literal expanded
