@@ -243,12 +243,26 @@ def parse_hook(
                 )
 
     elif 'else' in hook_dict:
-        set_key(
-            element=context.output_dict,
-            keys=context.key_path,
-            value=render_variable(context, wrap_jinja_braces(hook_dict['else'])),
-            append_hook_value=append_hook_value,
-        )
+        if isinstance(hook_dict['else'], str):
+            set_key(
+                element=context.output_dict,
+                keys=context.key_path,
+                value=render_variable(context, hook_dict['else']),
+                append_hook_value=append_hook_value,
+            )
+            return
+        context.key_path.pop()  # Remove the prior hook call
+        walk_sync(context, element=hook_dict['else'])
+        context.key_path.append('hack')  #
+    elif 'else->' in hook_dict:
+        if isinstance(hook_dict['else->'], str):
+            context.key_path[-1] = '->'
+            # Issue is we need to maintain a consistent render context during exec
+            raise NotImplementedError("Compact else not implemented.")
+        raise NotImplementedError("Compact else not implemented.")
+        # context.key_path.pop()  # Remove the prior hook call
+        # walk_sync(context, element=hook_dict['else->'])
+        # context.key_path.append('hack')
 
 
 def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):

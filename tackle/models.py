@@ -76,7 +76,11 @@ class BaseHook(BaseModel):
 
     if_: Union[str, bool] = Field(None, render_by_default=True)
     when: Union[str, bool] = Field(None, render_by_default=True)
-    else_: Any = Field(None, render_by_default=True)
+
+    else_: Any = Field(None)
+    else_public: Any = Field(None)
+    else_private: Any = Field(None)
+
     for_: Union[str, list] = Field(None, render_by_default=True)
     reverse: Union[str, bool] = Field(None, render_by_default=True)
     try_: Union[str, bool] = Field(None, render_by_default=True)
@@ -105,7 +109,7 @@ class BaseHook(BaseModel):
     _kwargs: dict = {}
     _flags: list = []
     # Fields that should not be rendered by default
-    _render_exclude_default: set = {'input_dict', 'output_dict', 'hook_type'}
+    _render_exclude_default: set = {'input_dict', 'output_dict', 'hook_type', 'else'}
     _render_exclude: set = {}
     _render_by_default: list = []
 
@@ -120,7 +124,7 @@ class BaseHook(BaseModel):
     # Parameterized return type description for docs
     _return_description: str = None
 
-    @validator('if_', 'else_', 'reverse', 'for_', 'merge')
+    @validator('if_', 'reverse', 'for_', 'merge')
     def wrap_bool_if_string(cls, v):
         return wrap_jinja_braces(v)
 
@@ -139,6 +143,8 @@ class BaseHook(BaseModel):
         fields = {
             'if_': 'if',
             'else_': 'else',
+            'else_public': 'else->',
+            'else_private': 'else_>',
             'for_': 'for',
             'try_': 'try',
             # 'while_': 'while',
