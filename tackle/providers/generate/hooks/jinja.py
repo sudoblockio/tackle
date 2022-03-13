@@ -6,7 +6,7 @@ from typing import Union
 
 from tackle import BaseHook, Field
 from tackle.exceptions import UndefinedVariableInTemplate
-from tackle.render.environment import StrictEnvironment
+from tackle.render import StrictEnvironment
 from tackle.utils.dicts import get_readable_key_path
 
 

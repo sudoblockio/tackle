@@ -34,3 +34,33 @@ class JsonHook(BaseHook):
             with open(self.path, 'r') as f:
                 data = json.load(f)
             return data
+
+
+class JsonifyHook(BaseHook):
+    """
+    Hook for reading and writing json. Hook reads from `path` if no `data` field is
+     provided, otherwise it writes the `data` to `path`.
+    """
+
+    hook_type: str = 'jsonify'
+    path: str = Field(..., description="The file path to put read or write to.")
+    data: Union[dict, list, str] = Field(
+        None,
+        description="Map/list or renderable string to a map/list key to write.",
+        render_by_default=True,
+    )
+    _args = ['data', 'path']
+
+    def execute(self) -> Union[dict, str]:
+        if self.path:
+            self.path = os.path.abspath(
+                os.path.expanduser(os.path.expandvars(self.path))
+            )
+            # Make path if it does not exist
+            if not os.path.exists(os.path.dirname(self.path)) and self.data:
+                os.makedirs(os.path.dirname(self.path))
+            with open(self.path, 'w') as f:
+                json.dump(self.data, f)
+            return self.path
+        else:
+            return json.dumps(self.data)

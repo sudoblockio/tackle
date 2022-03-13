@@ -56,7 +56,7 @@ class MatchHook(BaseHook):
 
         # Create a temporary context
         tmp_context = Context(
-            providers=self.providers,
+            provider_hooks=self.provider_hooks,
             existing_context=existing_context,
             output_dict={},
             input_dict=case_value,

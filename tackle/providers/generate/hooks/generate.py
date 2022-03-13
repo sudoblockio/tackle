@@ -10,7 +10,7 @@ import shutil
 from typing import List
 
 from tackle.models import BaseHook
-from tackle.render.environment import StrictEnvironment
+from tackle.render import StrictEnvironment
 from tackle.exceptions import UndefinedVariableInTemplate
 
 

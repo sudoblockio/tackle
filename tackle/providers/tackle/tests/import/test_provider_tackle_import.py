@@ -19,9 +19,9 @@ FIXTURES = [
 def test_provider_system_hook_import(change_dir, target):
     """Run the source and check that the hooks imported the demo module."""
     context = Context(input_string=target)
-    num_providers = len(context.providers.hook_types)
+    num_providers = len(context.provider_hooks.keys())
     update_source(context)
-    assert num_providers < len(context.providers.hook_types)
+    assert num_providers < len(context.provider_hooks.keys())
     # assert 'tackle.providers.tackle-demos' in context.providers.hook_types
 
 

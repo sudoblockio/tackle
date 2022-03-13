@@ -27,7 +27,7 @@ class BlockHook(BaseHook):
         existing_context.update(self.existing_context)
 
         tmp_context = Context(
-            providers=self.providers,
+            provider_hooks=self.provider_hooks,
             existing_context=existing_context,
             output_dict={},
             input_dict=self.items,
