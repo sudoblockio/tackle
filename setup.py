@@ -76,7 +76,7 @@ INSTALL_REQUIREMENTS = [
     # 'requests>=2.23.0',  # This would be needed if we allowed url sources
     'pydantic>=1.8.0',
     'PyInquirer>=1.0.3',
-    'PyYAML>=5.3',
+    'ruamel.yaml>=0.17.0',
 ]
 
 if sys.argv[-1] == 'readme':
