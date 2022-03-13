@@ -3,7 +3,6 @@ from __future__ import print_function
 import logging
 from pathlib import Path
 import os
-import inspect
 import warnings
 from typing import Type
 from pydantic.main import ModelMetaclass, ValidationError
@@ -71,7 +70,7 @@ def get_hook(hook_type, context: 'Context', suppress_error: bool = False):
     if h is None:
         # Show this without verbose:
         available_hooks = (
-            f"Run the application with `--verbose` to see available hook types."
+            "Run the application with `--verbose` to see available hook types."
         )
         if context.verbose:
             available_hooks = 'Available hooks = ' + ' '.join(
@@ -614,7 +613,6 @@ def update_input_dict_with_kwargs(context: 'Context', kwargs: dict):
                 key if key != f"{k}->" else k: value if key != f"{k}->" else v
                 for key, value in context.input_dict.items()
             }
-            print()
 
 
 def run_source(context: 'Context', args: list, kwargs: dict, flags: list):

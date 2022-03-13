@@ -4,3 +4,5 @@ stuff:
 
 get->: "{{get('stuff/and')}}"
 get_sep->: "{{get('stuff-and', sep='-')}}"
+
+jsonify->: "{{stuff | jsonify}}"

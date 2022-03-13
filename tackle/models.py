@@ -83,7 +83,11 @@ class PartialModelMetaclass(ModelMetaclass):
                     if value.__class__.__class__ is PartialModelMetaclass:
                         kwargs[kwarg] = value.dict()
                 # Validation is performed in __init__, for which all fields are now optional
-                cls_init(self, *args, **kwargs)
+                if args:
+                    for i, v in enumerate(args):
+                        kwargs[self._args[i]] = v
+                cls_init(self, **kwargs)
+                # cls_init(self, *args, **kwargs)
                 # Restore requiredness
                 optionalize(fields, restore=True)
 
@@ -273,26 +277,30 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
     #             return obj
     #         data['environment'].filters[self.hook_type] = f
 
-    def __init__(self, environment=None, *args: Any, **data: Any):
-        # TODO: Checkout https://github.com/samuelcolvin/pydantic/issues/1223#issuecomment-998160737
-        #  to support partial instantiation. Would need to modify base class
-        super().__init__(environment=environment, **data)
-
-        if not self.is_hook_call and self.environment:
-            environment.globals[self.hook_type] = self.wrapped_exec
-            # setattr(self.environment.globals, self.hook_type, self.execute)
+    # def __init__(self, environment=None, *args: Any, **data: Any):
+    #     # TODO: Checkout https://github.com/samuelcolvin/pydantic/issues/1223#issuecomment-998160737
+    #     #  to support partial instantiation. Would need to modify base class
+    #     super().__init__(environment=environment, **data)
+    #
+    #     if not self.is_hook_call and self.environment:
+    #         environment.globals[self.hook_type] = self.wrapped_exec
+    # setattr(self.environment.globals, self.hook_type, self.execute)
 
     def execute(self) -> Any:
         raise NotImplementedError("Every hook needs an execute method.")
 
     def wrapped_exec(self, *args, **kwargs):
         # Map args / kwargs
-        for i, v in enumerate(self._args):
-            setattr(self, v, args[i])
-        if len(args) > len(self._args):
-            raise Exception(
-                f"Too many arguments in {get_readable_key_path(self.key_path)}"
-            )
+        if args:
+            num_args = len(args)
+            for i, v in enumerate(self._args):
+                if i >= num_args:
+                    break
+                setattr(self, v, args[i])
+            if len(args) > len(self._args):
+                raise Exception(
+                    f"Too many arguments in {get_readable_key_path(self.key_path)}"
+                )
         for k, v in kwargs.items():
             setattr(self, k, v)
         return self.execute()

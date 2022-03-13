@@ -9,7 +9,8 @@ from secrets import choice
 from typing import TYPE_CHECKING, Any
 
 from tackle.render.special_vars import special_variables
-from tackle.render.environment import StrictEnvironment
+
+# from tackle.render.environment import StrictEnvironment
 from tackle.exceptions import UnknownTemplateVariableException
 from tackle.exceptions import UnknownExtension
 
@@ -67,7 +68,7 @@ class ExtensionLoaderMixin(object):
         """
 
         provider_extensions = [
-            'tackle.render.extensions.JsonifyExtension',
+            # 'tackle.render.extensions.JsonifyExtension',
             'tackle.render.extensions.RandomStringExtension',
         ]
 
@@ -103,12 +104,14 @@ class StrictEnvironment(ExtensionLoaderMixin, Environment):
     rendering context.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, provider_hooks: dict, **kwargs):
         """Set the standard Tackle StrictEnvironment.
 
         Also loading extensions defined in cookiecutter.json's _extensions key.
         """
         super(StrictEnvironment, self).__init__(undefined=StrictUndefined, **kwargs)
+        for k, v in provider_hooks.items():
+            self.filters[k] = v().wrapped_exec
 
 
 def wrap_braces_if_not_exist(value):
@@ -165,7 +168,7 @@ def render_string(context: 'Context', raw: str):
         return raw
 
     if context.env is None:
-        context.env = StrictEnvironment()
+        context.env = StrictEnvironment(context.provider_hooks)
 
     template = context.env.from_string(raw)
     # Extract variables
