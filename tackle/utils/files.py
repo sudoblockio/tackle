@@ -35,19 +35,6 @@ def dump(output_dir, output_name, output_dict, dump_output='yaml'):
             yaml.dump(output_dict, f)
 
 
-def load(replay_dir, template_name, context_key):
-    """Read json data from file."""
-    replay_file = get_file_name(replay_dir, template_name)
-    yaml = YAML()
-    with open(replay_file, 'r') as infile:
-        context = yaml.load(infile)
-
-    if context_key not in context:
-        raise ValueError('Context does not contain the context_key %s' % context_key)
-
-    return context
-
-
 def read_config_file(file, file_extension=None):
     """Read files into objects."""
     if not file_extension:

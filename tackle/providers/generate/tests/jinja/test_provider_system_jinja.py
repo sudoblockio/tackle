@@ -1,6 +1,5 @@
-"""Tests dict input objects for `tackle.providers.system.hooks.jinja` module."""
 import os
-import yaml
+from ruamel.yaml import YAML
 
 from tackle.main import tackle
 import pytest
@@ -19,14 +18,16 @@ def clean_things():
 def test_provider_system_hook_jinja(change_dir, clean_things):
     context = tackle()
     assert context['foo'] == 'bar'
+    yaml = YAML()
     with open('things.py') as f:
-        output = yaml.load(f, yaml.SafeLoader)
+        output = yaml.load(f)
     assert output == "x = 'bar'"
 
 
 def test_provider_system_hook_jinja_existing_context(change_dir, clean_things):
     context = tackle('existing-context.yaml')
     assert context['foo'] == 'bar'
+    yaml = YAML()
     with open('things.py') as f:
-        output = yaml.load(f, yaml.SafeLoader)
+        output = yaml.load(f)
     assert output == "x = 'bar'"

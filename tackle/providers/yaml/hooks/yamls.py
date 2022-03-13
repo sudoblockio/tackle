@@ -1,4 +1,4 @@
-import yaml
+from ruamel.yaml import YAML
 import os
 from typing import Union
 
@@ -26,6 +26,7 @@ class YamlHook(BaseHook):
         if not os.path.exists(os.path.dirname(self.path)) and self.data:
             os.makedirs(os.path.dirname(self.path))
 
+        yaml = YAML()
         if self.data:
             with open(self.path, 'w') as f:
                 yaml.dump(self.data, f)
@@ -33,5 +34,5 @@ class YamlHook(BaseHook):
 
         else:
             with open(self.path, 'r') as f:
-                data = yaml.safe_load(f)
+                data = yaml.load(f)
             return data

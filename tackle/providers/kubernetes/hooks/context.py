@@ -1,5 +1,5 @@
 import os
-import yaml
+from ruamel.yaml import YAML
 import subprocess
 
 from tackle.models import BaseHook, Field
@@ -15,9 +15,9 @@ class K8sCurrentContextHook(BaseHook):
 
         if kubeconfig_locations is None:
             raise Exception("KUBECONFIG not set, exiting...")
-
+        yaml = YAML()
         with open(kubeconfig_locations.split(':')[0]) as f:
-            context = yaml.safe_load(f)
+            context = yaml.load(f)
 
         return context['current-context']
 
@@ -34,9 +34,10 @@ class K8sContextListHook(BaseHook):
             raise Exception("KUBECONFIG not set, exiting...")
 
         output_contexts = []
+        yaml = YAML()
         for c in kubeconfig_locations.split(':'):
             with open(c) as f:
-                context = yaml.safe_load(f)
+                context = yaml.load(f)
 
             for i in context['contexts']:
 
@@ -57,9 +58,10 @@ class K8sContextMapHook(BaseHook):
             raise Exception("KUBECONFIG not set, exiting...")
 
         output_contexts = {}
+        yaml = YAML()
         for c in kubeconfig_locations.split(':'):
             with open(c) as f:
-                context = yaml.safe_load(f)
+                context = yaml.load(f)
 
             for i in context['contexts']:
                 if i['name'] not in output_contexts.keys():

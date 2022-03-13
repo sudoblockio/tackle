@@ -1,5 +1,6 @@
 import os
-import yaml
+from ruamel.yaml import YAML
+
 import pytest
 from tackle.main import tackle
 
@@ -24,8 +25,9 @@ def test_provider_system_hook_yaml_read(change_dir, clean_outputs):
 
 def test_provider_system_hook_yaml_write(change_dir, clean_outputs):
     tackle('write.yaml', no_input=True)
+    yaml = YAML()
     with open('output.yaml', 'r') as f:
-        written = yaml.safe_load(f)
+        written = yaml.load(f)
     assert written == {'stuff': 'things'}
 
 
