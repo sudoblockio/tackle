@@ -8,7 +8,7 @@ import string
 from secrets import choice
 from typing import TYPE_CHECKING, Any
 
-from tackle.render.special_vars import special_variables
+from tackle.special_vars import special_variables
 
 # from tackle.render.environment import StrictEnvironment
 from tackle.exceptions import UnknownTemplateVariableException
@@ -59,17 +59,17 @@ class ExtensionLoaderMixin(object):
     """
 
     def __init__(self, **kwargs):
-        """Initialize the Jinja2 Environment object while loading extensions.
+        """
+        Initialize the Jinja2 Environment object while loading extensions.
         Does the following:
 
         1. Establishes default_extensions (currently just a Time feature)
         2. Reads extensions set in the cookiecutter.json _extensions key.
         3. Attempts to load the extensions. Provides useful error if fails.
         """
-
         provider_extensions = [
-            # 'tackle.render.extensions.JsonifyExtension',
-            'tackle.render.extensions.RandomStringExtension',
+            # JsonifyExtension,
+            RandomStringExtension,
         ]
 
         # TODO: Mild area for improvement here

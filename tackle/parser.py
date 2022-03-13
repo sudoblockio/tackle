@@ -7,15 +7,8 @@ import warnings
 from typing import Type
 from pydantic.main import ModelMetaclass, ValidationError
 
-# from tackle.providers import import_with_fallback_install
-
-# from tackle.imports import import_with_fallback_install
 from tackle.import_dict import import_with_fallback_install
-
-# from tackle.render import render_variable, wrap_jinja_braces
-from tackle.render2 import render_variable, wrap_jinja_braces
-
-
+from tackle.render import render_variable, wrap_jinja_braces
 from tackle.utils.dicts import (
     nested_get,
     nested_delete,
