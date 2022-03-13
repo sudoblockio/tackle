@@ -29,6 +29,14 @@ INPUT_STRINGS = [
         "{'this':'and','that':'and'} --if 'expanded == \"that\"'",
         [{"this": "and", "that": "and"}, '--if', "expanded == \"that\""],
     ),
+    (
+        "{{get('stuff-and')}}",
+        ["{{get(\'stuff-and\')}}"],
+    ),
+    (
+        "{{get('stuff-and',sep='-')}}",
+        ["{{get(\'stuff-and\',sep=\'-\')}}"],
+    ),
 ]
 
 
