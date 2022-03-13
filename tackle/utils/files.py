@@ -1,6 +1,7 @@
 """Utilities mainly used in helping `modes` like replay and others."""
 import json
-import yaml
+from ruamel.yaml import YAML
+from ruamel.yaml.composer import ComposerError
 import os
 import logging
 
@@ -28,16 +29,18 @@ def dump(output_dir, output_name, output_dict, dump_output='yaml'):
         with open(replay_file, 'w') as f:
             json.dump(output_dict, f, indent=2)
     if dump_output in ['yaml', 'yml']:
+        yaml = YAML()
+        yaml.indent(mapping=2, sequence=4, offset=2)
         with open(replay_file, 'w') as f:
-            yaml.dump(output_dict, f, indent=2)
+            yaml.dump(output_dict, f)
 
 
 def load(replay_dir, template_name, context_key):
     """Read json data from file."""
     replay_file = get_file_name(replay_dir, template_name)
-
+    yaml = YAML()
     with open(replay_file, 'r') as infile:
-        context = yaml.load(infile, yaml.SafeLoader)
+        context = yaml.load(infile)
 
     if context_key not in context:
         raise ValueError('Context does not contain the context_key %s' % context_key)
@@ -61,21 +64,19 @@ def read_config_file(file, file_extension=None):
     try:
         if file_extension == 'json':
             with open(file) as f:
-                # config = json.load(f, object_pairs_hook=OrderedDict)
                 config = json.load(f)
             return config
         elif file_extension in ('yaml', 'yml'):
-            # This was tripping up building the docs for some reason so moving in class
-            from yaml.composer import ComposerError
-
+            # Try normal and then for documents that will output as list
+            yaml = YAML()
             try:
                 with open(file, encoding='utf-8') as f:
-                    config = yaml.safe_load(f)
+                    config = yaml.load(f)
                 return config
             except ComposerError:
                 output = []
                 with open(file, encoding='utf-8') as f:
-                    for doc in yaml.safe_load_all(f.read()):
+                    for doc in yaml.load_all(f.read()):
                         output.append(doc)
                 return output
         else:
