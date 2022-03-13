@@ -1,3 +1,4 @@
+import re
 import ast
 from jinja2 import Environment, StrictUndefined, meta
 from inspect import signature
@@ -182,6 +183,15 @@ def render_string(context: 'Context', raw: str):
 
     try:
         rendered_template = template.render(render_context)
+        # Check for ambigous globals like `namespace` tackle-box/issues/19
+        match = re.search(r'\<class \'(.+?)\'>', rendered_template)
+        if match:
+            ambiguous_key = match.group(1).split('.')[-1].lower()
+            if ambiguous_key in context.output_dict:
+                rendered_template = context.output_dict[ambiguous_key]
+            elif match.group(1) in context.existing_context:
+                rendered_template = context.existing_context[ambiguous_key]
+
     except Exception as e:
         if len(unknown_variable) != 0:
             raise UnknownTemplateVariableException(

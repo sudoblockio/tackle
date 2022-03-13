@@ -10,6 +10,9 @@ def test_render_extensions_base(change_curdir_fixtures):
 def test_render_globals_base(change_curdir_fixtures):
     """Test rendering globals."""
     output = tackle('globals.yaml')
+
+    for i in output['globals_raw']:
+        assert i == 'stuff'
     assert output
 
 
