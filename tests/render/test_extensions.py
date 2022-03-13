@@ -46,7 +46,8 @@ def test_render_hooks_no_args(change_curdir_fixtures):
 def test_render_hooks_with_args(change_curdir_fixtures):
     """Verify that we can call hooks without args."""
     output = tackle('hooks-args.yaml')
-    assert output
+    assert output['get'] == 'things'
+    assert output['get_sep'] == 'things'
 
 
 def test_render_hooks_with_args_too_many(change_curdir_fixtures):
