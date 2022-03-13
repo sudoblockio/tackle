@@ -1,3 +1,5 @@
+import pytest
+
 from tackle import tackle
 
 
@@ -10,10 +12,8 @@ def test_render_extensions_base(change_curdir_fixtures):
 def test_render_globals_base(change_curdir_fixtures):
     """Test rendering globals."""
     output = tackle('globals.yaml')
-
     for i in output['globals_raw']:
         assert i == 'stuff'
-    assert output
 
 
 # https://github.com/robcxyz/tackle-box/issues/19
@@ -47,3 +47,9 @@ def test_render_hooks_with_args(change_curdir_fixtures):
     """Verify that we can call hooks without args."""
     output = tackle('hooks-args.yaml')
     assert output
+
+
+def test_render_hooks_with_args_too_many(change_curdir_fixtures):
+    """Verify exception raised with too many args."""
+    with pytest.raises(Exception):
+        tackle('hooks-args-too-many-args.yaml')

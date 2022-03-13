@@ -1,8 +1,11 @@
 import re
 import ast
 from jinja2 import Environment, StrictUndefined, meta
+from jinja2.ext import Extension
 from inspect import signature
-from pydantic.main import ModelMetaclass
+import json
+import string
+from secrets import choice
 from typing import TYPE_CHECKING, Any
 
 from tackle.render.special_vars import special_variables
@@ -14,6 +17,39 @@ if TYPE_CHECKING:
     from tackle.models import Context
 
 
+#  TODO: Remove - tackle-box/issues/41
+class JsonifyExtension(Extension):
+    """Jinja2 extension to convert a Python object to JSON."""
+
+    def __init__(self, environment):
+        """Initialize the extension with the given environment."""
+        super(JsonifyExtension, self).__init__(environment)
+
+        def jsonify(obj):
+            return json.dumps(obj, sort_keys=True, indent=4)
+
+        environment.filters['jsonify'] = jsonify
+
+
+#  TODO: Remove - tackle-box/issues/41
+class RandomStringExtension(Extension):
+    """Jinja2 extension to create a random string."""
+
+    def __init__(self, environment):
+        """Jinja2 Extension Constructor."""
+        super(RandomStringExtension, self).__init__(environment)
+
+        def random_ascii_string(length, punctuation=False):
+            if punctuation:
+                corpus = "".join((string.ascii_letters, string.punctuation))
+            else:
+                corpus = string.ascii_letters
+            return "".join(choice(corpus) for _ in range(length))
+
+        environment.globals.update(random_ascii_string=random_ascii_string)
+
+
+#  TODO: Remove - tackle-box/issues/41
 class ExtensionLoaderMixin(object):
     """Mixin providing sane loading of extensions specified in a given context.
 
@@ -23,55 +59,43 @@ class ExtensionLoaderMixin(object):
 
     def __init__(self, **kwargs):
         """Initialize the Jinja2 Environment object while loading extensions.
-
         Does the following:
 
         1. Establishes default_extensions (currently just a Time feature)
         2. Reads extensions set in the cookiecutter.json _extensions key.
         3. Attempts to load the extensions. Provides useful error if fails.
         """
-        context: Context = kwargs.pop('context', {})
 
         provider_extensions = [
-            v.identifier
-            for _, v in context.provider_hooks.items()
-            if isinstance(v, ModelMetaclass)
-        ]
-
-        default_extensions = [
-            'tackle.providers.paths.hooks.dirs.MakeTempDirectoryHook',
             'tackle.render.extensions.JsonifyExtension',
             'tackle.render.extensions.RandomStringExtension',
         ]
-        # 'tackle.providers.console.printer.PrintHook',
-        # PrintHook,
-        # 'jinja2_time.TimeExtension',
-        # 'tackle.providers.console.markdown.MarkdownPrintHook',
-        # 'tackle.providers.console.printer.PrintHook',
 
+        # TODO: Mild area for improvement here
+        # context: Context = kwargs.pop('context', {})
         extensions = provider_extensions  # + self._read_extensions(context)
 
         try:
-            # , output_dict=context.output_dict
             super(ExtensionLoaderMixin, self).__init__(extensions=extensions, **kwargs)
         except ImportError as err:
             raise UnknownExtension('Unable to load extension: {}'.format(err))
 
-    # TODO: Disable this until a pattern is settled on in tackle - legacy
-    def _read_extensions(self, context):
-        """Return list of extensions as str to be passed on to the Jinja2 env.
+    # # TODO: Disable this until a pattern is settled on in tackle - legacy
+    # def _read_extensions(self, context):
+    #     """Return list of extensions as str to be passed on to the Jinja2 env.
+    #
+    #     If context does not contain the relevant info, return an empty
+    #     list instead.
+    #     """
+    #     try:
+    #         extensions = context['_extensions']
+    #     except (KeyError, TypeError):
+    #         return []
+    #     else:
+    #         return [str(ext) for ext in extensions]
 
-        If context does not contain the relevant info, return an empty
-        list instead.
-        """
-        try:
-            extensions = context['_extensions']
-        except (KeyError, TypeError):
-            return []
-        else:
-            return [str(ext) for ext in extensions]
 
-
+#  TODO: Remove - tackle-box/issues/41
 class StrictEnvironment(ExtensionLoaderMixin, Environment):
     """Create strict Jinja2 environment.
 
@@ -141,27 +165,15 @@ def render_string(context: 'Context', raw: str):
         return raw
 
     if context.env is None:
-        context.env = StrictEnvironment(context=context)
+        context.env = StrictEnvironment()
 
     template = context.env.from_string(raw)
     # Extract variables
     variables = meta.find_undeclared_variables(context.env.parse(raw))
 
-    # if len(variables) == 0:
-    #     for i in env.globals.keys():
-    #         if i in raw:
-    #             # TODO: Perhaps change this into a search to see if `for i in globals in raw`
-    #             # TODO: Convert to compiling regex for searching for globals
-    #             raise Exception(
-    #                 f"No renderable variables found in {raw}. Could be "
-    #                 f"because there is a collision with a global variable "
-    #                 f"{','.join(list(env.globals.keys()))}. See "
-    #                 f"https://github.com/pallets/jinja/issues/1580"
-    #             )
-
     # Build a render context by inspecting the renderable variables
     render_context = {}
-    unknown_variable = []
+    unknown_variables = []
     for v in variables:
         # Variables in the current output_dict take precedence
         if v in context.output_dict:
@@ -179,8 +191,25 @@ def render_string(context: 'Context', raw: str):
             else:
                 raise ValueError("This should never happen.")
         else:
-            unknown_variable.append(v)
+            unknown_variables.append(v)
 
+    # Evaluate any hooks and insert into jinja environment globals
+    if len(unknown_variables) != 0:
+        # Unknown variables can be real unknown variables, preloaded jinja globals or
+        # hooks which need to be inserted into the global env so that they can be called
+        for i in unknown_variables:
+            if i in context.provider_hooks:
+                context.env.globals[i] = context.provider_hooks[i](
+                    input_dict=context.input_dict,
+                    output_dict=context.output_dict,
+                    existing_context=context.existing_context,
+                    no_input=context.no_input,
+                    calling_directory=context.calling_directory,
+                    calling_file=context.calling_file,
+                    provider_hooks=context.provider_hooks,
+                    key_path=context.key_path,
+                    verbose=context.verbose,
+                ).wrapped_exec
     try:
         rendered_template = template.render(render_context)
         # Check for ambigous globals like `namespace` tackle-box/issues/19
@@ -193,9 +222,9 @@ def render_string(context: 'Context', raw: str):
                 rendered_template = context.existing_context[ambiguous_key]
 
     except Exception as e:
-        if len(unknown_variable) != 0:
+        if len(unknown_variables) != 0:
             raise UnknownTemplateVariableException(
-                f"Variable {unknown_variable} unknown."
+                f"Variable{'s' if len(unknown_variables) != 1 else ''} {' '.join(unknown_variables)} unknown."
             )
         raise e
 

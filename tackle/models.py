@@ -3,45 +3,29 @@ import logging
 import subprocess
 import sys
 import importlib.machinery
-from pathlib import Path
 from pydantic import BaseModel, SecretStr, Field, Extra, validator, ConfigError
 from pydantic.main import ModelMetaclass
+from pydantic.fields import UndefinedType, ModelField
 from jinja2.ext import Extension
-from typing import Any, Union, Optional
+from typing import Any, Union, Optional, Dict, Type, Tuple
+import threading
+import inspect
 
 from tackle.utils.paths import work_in
-
-# from tackle.providers import ProviderList
-# from tackle.imports import ProviderList
-# from tackle.import_dict import import_native_providers
-
+from tackle.utils.dicts import get_readable_key_path
 from tackle.render import wrap_jinja_braces
 from tackle.utils.paths import listdir_absolute
 
 
 logger = logging.getLogger(__name__)
 
-from typing import Dict, Type, Tuple
-import threading
-import inspect
-from pydantic.fields import UndefinedType, ModelField
 
-# https://github.com/samuelcolvin/pydantic/issues/1223#issuecomment-998160737
-
-# Change
-# class BaseHook(Context, metaclass=PartialModelMetaclass):
-# smart_union=True
 class PartialModelMetaclass(ModelMetaclass):
-    # def __new__(
-    #     meta: Type["PartialModelMetaclass"], smart_union: bool, *args: Any, **kwargs: Any
-    # ) -> "PartialModelMetaclass":
     def __new__(
         meta: Type["PartialModelMetaclass"], *args: Any, **kwargs: Any
     ) -> "PartialModelMetaclass":
-        try:
-            cls = super(PartialModelMetaclass, meta).__new__(meta, *args, **kwargs)
-        except Exception as e:
-            print()
+        """See https://github.com/samuelcolvin/pydantic/issues/1223#issuecomment-998160737"""
+        cls = super(PartialModelMetaclass, meta).__new__(meta, *args, **kwargs)
         cls_init = cls.__init__
         # Because the class will be modified temporarily, need to lock __init__
         init_lock = threading.Lock()
@@ -99,10 +83,7 @@ class PartialModelMetaclass(ModelMetaclass):
                     if value.__class__.__class__ is PartialModelMetaclass:
                         kwargs[kwarg] = value.dict()
                 # Validation is performed in __init__, for which all fields are now optional
-                try:
-                    cls_init(self, *args, **kwargs)
-                except Exception as e:
-                    print()
+                cls_init(self, *args, **kwargs)
                 # Restore requiredness
                 optionalize(fields, restore=True)
 
@@ -295,21 +276,11 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
     def __init__(self, environment=None, *args: Any, **data: Any):
         # TODO: Checkout https://github.com/samuelcolvin/pydantic/issues/1223#issuecomment-998160737
         #  to support partial instantiation. Would need to modify base class
-
-        # if self.is_hook_call:
-        #     super().__init__(**data)
-        # else:
-        #     super().__init__(environment=environment, **data)
-
-        try:
-            super().__init__(environment=environment, **data)
-        except Exception:
-            print()
+        super().__init__(environment=environment, **data)
 
         if not self.is_hook_call and self.environment:
             environment.globals[self.hook_type] = self.wrapped_exec
             # setattr(self.environment.globals, self.hook_type, self.execute)
-            # print()
 
     def execute(self) -> Any:
         raise NotImplementedError("Every hook needs an execute method.")
@@ -318,9 +289,13 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
         # Map args / kwargs
         for i, v in enumerate(self._args):
             setattr(self, v, args[i])
+        if len(args) > len(self._args):
+            raise Exception(
+                f"Too many arguments in {get_readable_key_path(self.key_path)}"
+            )
         for k, v in kwargs.items():
             setattr(self, k, v)
-        self.execute()
+        return self.execute()
 
     def call(self) -> Any:
         """

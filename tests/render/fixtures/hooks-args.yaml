@@ -2,5 +2,5 @@
 stuff:
   and: things
 
-print->: "{{print('things')}}"
-#get->: "{{get('stuff/and')}}"
+get->: "{{get('stuff/and')}}"
+get_sep->: "{{get('stuff-and', sep='-')}}"
