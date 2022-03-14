@@ -7,7 +7,7 @@ import warnings
 from typing import Type
 from pydantic.main import ModelMetaclass, ValidationError
 
-from tackle.import_dict import import_with_fallback_install
+# from tackle.imports import import_with_fallback_install
 from tackle.render import render_variable, wrap_jinja_braces
 from tackle.utils.dicts import (
     nested_get,
@@ -44,9 +44,10 @@ from tackle.settings import settings
 logger = logging.getLogger(__name__)
 
 
-def get_hook(hook_type, context: 'Context', suppress_error: bool = False):
+def get_hook(hook_type, context: 'Context'):
     """
-    Get the hook from available providers.
+    Get the hook from available providers and install hook requirements if they haven't
+    been already.
 
     This function does the following to return the hook:
     1. Check if hook hasn't been imported already
@@ -54,11 +55,6 @@ def get_hook(hook_type, context: 'Context', suppress_error: bool = False):
     `hook_types` field.
     3. Try to import it then fall back on installing the requirements.txt file
     """
-    # for h in BaseHook.__subclasses__():
-    #     if hook_type == inspect.signature(h).parameters['hook_type'].default:
-    #         return h
-
-    # h = context.provider_hooks[hook_type]
     h = context.provider_hooks.get(hook_type, None)
     if h is None:
         # Show this without verbose:
@@ -74,34 +70,22 @@ def get_hook(hook_type, context: 'Context', suppress_error: bool = False):
             + available_hooks
         )
 
+    # LazyImportHook in hook ref when declared in provider __init__.hook_types
     if isinstance(h, LazyImportHook):
-        # Install the requirements
-        import_with_fallback_install(
-            provider_hook_dict=context.provider_hooks,
+        # Install the requirements which will convert all the provider
+        context.provider_hooks.import_with_fallback_install(
+            # provider_hook_dict=context.provider_hooks,
             mod_name=h.mod_name,
             path=h.hooks_path,
         )
+
+        # import_with_fallback_install(
+        #     provider_hook_dict=context.provider_hooks,
+        #     mod_name=h.mod_name,
+        #     path=h.hooks_path,
+        # )
         h = context.provider_hooks[hook_type]
     return h
-
-    # for p in context.providers:
-    #     if hook_type in p.hook_types:
-    #         import_with_fallback_install(p.name, p.path)
-    #
-    # for h in BaseHook.__subclasses__():
-    #     if hook_type == inspect.signature(h).parameters['hook_type'].default:
-    #         return h
-    #
-    # avail_hook_types = [
-    #     inspect.signature(i).parameters['hook_type'].default
-    #     for i in BaseHook.__subclasses__()
-    # ]
-    # logger.debug(f"Available hook types = {avail_hook_types}")
-    # if not suppress_error:
-    #     raise UnknownHookTypeException(
-    #         f"The hook type=\"{hook_type}\" is not available in the providers. "
-    #         f"Run the application with `--verbose` to see available hook types."
-    #     )
 
 
 def evaluate_for(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
@@ -230,7 +214,6 @@ def parse_hook(
 
             try:
                 hook = Hook(
-                    # None,
                     **hook_dict,
                     input_dict=context.input_dict,
                     output_dict=context.output_dict,
@@ -238,7 +221,6 @@ def parse_hook(
                     no_input=context.no_input,
                     calling_directory=context.calling_directory,
                     calling_file=context.calling_file,
-                    # providers=context.providers,
                     provider_hooks=context.provider_hooks,
                     key_path=context.key_path,
                     verbose=context.verbose,
@@ -389,7 +371,7 @@ def run_hook(context: 'Context'):
         return
 
     # Look up the hook from the imported providers
-    Hook = get_hook(first_arg, context, suppress_error=True)
+    Hook = get_hook(first_arg, context)
 
     if Hook is None:
         raise UnknownHookTypeException(f"Hook type-> \"{first_arg}\" unknown.")

@@ -7,10 +7,9 @@ import json
 import string
 from secrets import choice
 from typing import TYPE_CHECKING, Any
+from pydantic import ValidationError
 
 from tackle.special_vars import special_variables
-
-# from tackle.render.environment import StrictEnvironment
 from tackle.exceptions import UnknownTemplateVariableException
 from tackle.exceptions import UnknownExtension
 
@@ -141,7 +140,7 @@ def render_variable(context: 'Context', raw: Any):
     if raw is None:
         return None
     elif isinstance(raw, str):
-        render_string(context, raw)
+        return render_string(context, raw)
     elif isinstance(raw, dict):
         return {
             render_string(context, k): render_variable(context, v)
@@ -151,8 +150,6 @@ def render_variable(context: 'Context', raw: Any):
         return [render_variable(context, v) for v in raw]
     else:
         return raw
-
-    return render_string(context, raw)
 
 
 def render_string(context: 'Context', raw: str):
@@ -213,6 +210,7 @@ def render_string(context: 'Context', raw: str):
                     key_path=context.key_path,
                     verbose=context.verbose,
                 ).wrapped_exec
+
     try:
         rendered_template = template.render(render_context)
         # Check for ambigous globals like `namespace` tackle-box/issues/19
@@ -223,6 +221,10 @@ def render_string(context: 'Context', raw: str):
                 rendered_template = context.output_dict[ambiguous_key]
             elif match.group(1) in context.existing_context:
                 rendered_template = context.existing_context[ambiguous_key]
+
+    except ValidationError as e:
+        # For pydantic validation errors
+        raise e
 
     except Exception as e:
         if len(unknown_variables) != 0:
