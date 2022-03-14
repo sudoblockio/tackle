@@ -2,7 +2,7 @@ import os
 from typing import Any
 from pydantic import BaseModel, Field
 
-from tackle.models import BaseHook
+from tackle.models import BaseHook, import_from_path
 from tackle.utils.vcs import get_repo_source
 
 
@@ -28,23 +28,26 @@ class ImportHook(BaseHook):
 
     def execute(self) -> None:
         if isinstance(self.src, str):
-            # Get the provider path eith local or remote.
+            # Get the provider path either local or remote.
             provider_path = self.get_dir_or_repo(self.src, self.version)
-            self.providers.import_paths([provider_path])
+            import_from_path(self.provider_hooks, provider_path)
 
         elif isinstance(self.src, list):
-            provider_dirs = []
             for i in self.src:
                 if isinstance(i, str):
-                    provider_dirs.append(self.get_dir_or_repo(i, None))
+                    import_from_path(
+                        provider_hook_dict=self.provider_hooks,
+                        provider_path=self.get_dir_or_repo(i, None),
+                    )
                 if isinstance(i, dict):
                     # dict types validated above and transposed through same logic
                     repo_source = RepoSource(**i)
-                    provider_dirs.append(
-                        self.get_dir_or_repo(repo_source.src, repo_source.version)
+                    import_from_path(
+                        provider_hook_dict=self.provider_hooks,
+                        provider_path=self.get_dir_or_repo(
+                            repo_source.src, repo_source.version
+                        ),
                     )
-
-            self.providers.import_paths(provider_dirs)
 
         elif isinstance(self.src, dict):
             # Don't even check if path is directory as one would never use a dict here
@@ -52,7 +55,9 @@ class ImportHook(BaseHook):
             provider_dir = get_repo_source(
                 repo=repo_source.src, repo_version=repo_source.version
             )
-            self.providers.import_paths([provider_dir])
+            import_from_path(
+                provider_hook_dict=self.provider_hooks, provider_path=provider_dir
+            )
 
     def get_dir_or_repo(self, src, version):
         """Check if there is a path that matches input otherwise try as repo."""
