@@ -9,8 +9,8 @@ FIXTURES = [
     # # Handlers are experimental features
     # 'handler-str.yaml',
     # 'handler-list-compact.yaml',
-    'expanded-string.yaml',
-    'expanded-list-dict.yaml',
+    # 'expanded-string.yaml',
+    # 'expanded-list-dict.yaml',
     'local.yaml',
 ]
 
