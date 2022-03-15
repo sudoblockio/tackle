@@ -8,9 +8,9 @@ from typing import Dict, List, Union, Any
 
 TYPE_FIXTURES = [
     (dict, "dict"),
-    (Dict, "dict"),
+    # (Dict, "dict"),
     (list, "list"),
-    (List, "list"),
+    # (List, "list"),
     (Union[dict, list], "union"),
     (Any, "any"),
 ]
