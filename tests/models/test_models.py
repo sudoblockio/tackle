@@ -1,14 +1,11 @@
 import pytest
-import os
-from tackle.main import tackle
 import subprocess
 import sys
 
 from tackle.models import (
     BaseHook,
     LazyImportHook,
-    import_with_fallback_install,
-    import_native_providers,
+    ProviderHooks,
 )
 
 
@@ -72,12 +69,10 @@ def test_imports_import_native_providers(temporary_uninstall):
     with a fallback install with the requirements and be imported directly.
     """
     temporary_uninstall('requests')
-    pd = {}
-    import_native_providers(pd)
+    pd = ProviderHooks()
     assert isinstance(pd['http_get'], LazyImportHook)
     lazy_hook = pd['http_get']
-    import_with_fallback_install(
-        provider_hook_dict=pd,
+    pd.import_with_fallback_install(
         mod_name=lazy_hook.mod_name,
         path=lazy_hook.hooks_path,
     )
