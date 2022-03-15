@@ -25,3 +25,19 @@ list_of_lists:
   input:
     - [1,2]
     - [3,4]
+
+stuff: things
+
+stuff_arg->: "{{stuff}}"
+
+stuff_expanded:
+  ->: "{{stuff}}"
+
+stuff_expanded_logic:
+  ->: "{{stuff}}"
+  if: stuff == 'things'
+
+a_map:
+  stuff: "{{stuff}}"
+
+a_map_rendered->: "{{ a_map }}"

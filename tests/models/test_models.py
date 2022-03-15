@@ -26,21 +26,6 @@ def test_base_hook_init():
     assert isinstance(h.merge, bool)
 
 
-# def test_hook_dict_match_case(caplog):
-#     inp = {
-#         'match': 'foo',
-#         'case': ['bar', '_'],
-#     }
-#     h = BaseHook(**inp)
-#     if sys.version_info[1] >= 10:
-#         assert h.match_ == 'foo'
-#
-#     if sys.version_info[1] <= 10:
-#         assert h.match_ is None
-#
-#     # TODO: Fix this test
-# log_output = caplog.text
-# assert 'Must be using Python' in caplog.text
 @pytest.fixture()
 def temporary_uninstall():
     """Fixture to uninstall a package and install it after the test."""

@@ -228,7 +228,7 @@ def parse_hook(
                     provider_hooks=context.provider_hooks,
                     key_path=context.key_path,
                     verbose=context.verbose,
-                    env_=context.env,
+                    env_=context.env_,
                     is_hook_call=True,
                 )
             except ValidationError as e:

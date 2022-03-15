@@ -336,7 +336,7 @@ class Context(BaseModel):
 
     calling_directory: str = None
     calling_file: str = None
-    env: Any = None
+    env_: Any = None
 
     global_args: list = None
     global_kwargs: dict = None
@@ -348,8 +348,8 @@ class Context(BaseModel):
         if self.provider_hooks is None:
             self.provider_hooks = ProviderHooks()
 
-        if self.env is None:
-            self.env = StrictEnvironment(self.provider_hooks)
+        if self.env_ is None:
+            self.env_ = StrictEnvironment(self.provider_hooks)
 
         if self.calling_directory is None:
             # Can be carried over from another context. Should only be initialized when

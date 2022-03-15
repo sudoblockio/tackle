@@ -2,5 +2,5 @@
 two_args: foo bar
 
 three_args:
-  ->: print foo bar baz
+  ->: literal foo bar baz
   if: two_args == "foo bar"

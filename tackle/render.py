@@ -63,9 +63,9 @@ def render_string(context: 'Context', raw: str):
     if '{{' not in raw:
         return raw
 
-    template = context.env.from_string(raw)
+    template = context.env_.from_string(raw)
     # Extract variables
-    variables = meta.find_undeclared_variables(context.env.parse(raw))
+    variables = meta.find_undeclared_variables(context.env_.parse(raw))
 
     # Build a render context by inspecting the renderable variables
     render_context = {}
@@ -95,7 +95,7 @@ def render_string(context: 'Context', raw: str):
         # hooks which need to be inserted into the global env so that they can be called
         for i in unknown_variables:
             if i in context.provider_hooks:
-                context.env.globals[i] = context.provider_hooks[i](
+                context.env_.globals[i] = context.provider_hooks[i](
                     input_dict=context.input_dict,
                     output_dict=context.output_dict,
                     existing_context=context.existing_context,
