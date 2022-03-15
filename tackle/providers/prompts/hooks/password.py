@@ -19,12 +19,10 @@ class InquirerPasswordHook(BaseHook):
 
     _args: list = ['message', 'default']
 
-    def __init__(self, **data: Any):
-        super().__init__(**data)
+    def execute(self) -> str:
         if self.message is None:
             self.message = get_readable_key_path(self.key_path) + ' >>>'
 
-    def execute(self) -> str:
         if not self.no_input:
             question = {
                 'type': self.hook_type,

@@ -19,12 +19,10 @@ class InquirerExpandHook(BaseHook):
 
     _args: list = ['message', 'default']
 
-    def __init__(self, **data: Any):
-        super().__init__(**data)
+    def execute(self) -> list:
         if self.message is None:
             self.message = get_readable_key_path(self.key_path) + ' >>>'
 
-    def execute(self) -> list:
         if not self.no_input:
             question = {
                 'type': self.hook_type,

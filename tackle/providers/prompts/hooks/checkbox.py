@@ -1,6 +1,6 @@
 import sys
 from PyInquirer import prompt
-from typing import Union, List, Any, Dict
+from typing import Union, List, Dict
 
 from tackle.models import BaseHook, Field
 from tackle.utils.dicts import get_readable_key_path
@@ -32,12 +32,10 @@ class InquirerCheckboxHook(BaseHook):
     _args: list = ['message']
     _docs_order: int = 2
 
-    def __init__(self, **data: Any):
-        super().__init__(**data)
+    def execute(self) -> list:
         if self.message is None:
             self.message = get_readable_key_path(self.key_path) + ' >>>'
 
-    def execute(self) -> list:
         if self.no_input:
             return []
 

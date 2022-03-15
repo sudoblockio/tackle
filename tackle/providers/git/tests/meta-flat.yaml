@@ -2,7 +2,7 @@
 
 this:
   ->: meta_repo
-  git_org: geometry-labs
+  git_org: sudoblock
   repo_tree:
     services: robcxyz/tackle-pypackage
     foo: robcxyz/tackle-pypackage

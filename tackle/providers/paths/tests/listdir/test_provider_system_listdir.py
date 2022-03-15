@@ -7,4 +7,4 @@ def test_provider_system_hook_listdir(change_dir):
 
     assert len(output['string_input']) == 3
     assert len(output['string_input_sorted']) == 2
-    assert len(output['list_input']['dirs/dir1']) == 2
+    assert len(output['list_input']) == 2

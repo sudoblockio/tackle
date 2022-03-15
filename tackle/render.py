@@ -1,12 +1,12 @@
-"""Main entrypoint for rendering."""
+import re
 import ast
 from jinja2 import meta
 from inspect import signature
-
-from tackle.render.special_vars import special_variables
-from tackle.render.environment import StrictEnvironment
-from tackle.exceptions import UnknownTemplateVariableException
 from typing import TYPE_CHECKING, Any
+from pydantic import ValidationError
+
+from tackle.special_vars import special_variables
+from tackle.exceptions import UnknownTemplateVariableException
 
 if TYPE_CHECKING:
     from tackle.models import Context
@@ -39,7 +39,7 @@ def render_variable(context: 'Context', raw: Any):
     if raw is None:
         return None
     elif isinstance(raw, str):
-        render_string(context, raw)
+        return render_string(context, raw)
     elif isinstance(raw, dict):
         return {
             render_string(context, k): render_variable(context, v)
@@ -49,8 +49,6 @@ def render_variable(context: 'Context', raw: Any):
         return [render_variable(context, v) for v in raw]
     else:
         return raw
-
-    return render_string(context, raw)
 
 
 def render_string(context: 'Context', raw: str):
@@ -65,25 +63,13 @@ def render_string(context: 'Context', raw: str):
     if '{{' not in raw:
         return raw
 
-    env = StrictEnvironment(context=context.input_dict)
-    template = env.from_string(raw)
+    template = context.env.from_string(raw)
     # Extract variables
-    variables = meta.find_undeclared_variables(env.parse(raw))
-
-    if len(variables) == 0:
-        for i in env.globals.keys():
-            if i in raw:
-                # TODO: Perhaps change this into a search to see if `for i in globals in raw`
-                raise Exception(
-                    f"No renderable variables found in {raw}. Could be "
-                    f"because there is a collision with a global variable "
-                    f"{','.join(list(env.globals.keys()))}. See "
-                    f"https://github.com/pallets/jinja/issues/1580"
-                )
+    variables = meta.find_undeclared_variables(context.env.parse(raw))
 
     # Build a render context by inspecting the renderable variables
     render_context = {}
-    unknown_variable = []
+    unknown_variables = []
     for v in variables:
         # Variables in the current output_dict take precedence
         if v in context.output_dict:
@@ -101,14 +87,45 @@ def render_string(context: 'Context', raw: str):
             else:
                 raise ValueError("This should never happen.")
         else:
-            unknown_variable.append(v)
+            unknown_variables.append(v)
+
+    # Evaluate any hooks and insert into jinja environment globals
+    if len(unknown_variables) != 0:
+        # Unknown variables can be real unknown variables, preloaded jinja globals or
+        # hooks which need to be inserted into the global env so that they can be called
+        for i in unknown_variables:
+            if i in context.provider_hooks:
+                context.env.globals[i] = context.provider_hooks[i](
+                    input_dict=context.input_dict,
+                    output_dict=context.output_dict,
+                    existing_context=context.existing_context,
+                    no_input=context.no_input,
+                    calling_directory=context.calling_directory,
+                    calling_file=context.calling_file,
+                    provider_hooks=context.provider_hooks,
+                    key_path=context.key_path,
+                    verbose=context.verbose,
+                ).wrapped_exec
 
     try:
         rendered_template = template.render(render_context)
+        # Check for ambiguous globals like `namespace` tackle-box/issues/19
+        match = re.search(r'\<class \'(.+?)\'>', rendered_template)
+        if match:
+            ambiguous_key = match.group(1).split('.')[-1].lower()
+            if ambiguous_key in context.output_dict:
+                rendered_template = context.output_dict[ambiguous_key]
+            elif match.group(1) in context.existing_context:
+                rendered_template = context.existing_context[ambiguous_key]
+
+    except ValidationError as e:
+        # For pydantic validation errors
+        raise e
+
     except Exception as e:
-        if len(unknown_variable) != 0:
+        if len(unknown_variables) != 0:
             raise UnknownTemplateVariableException(
-                f"Variable {unknown_variable} unknown."
+                f"Variable{'s' if len(unknown_variables) != 1 else ''} {' '.join(unknown_variables)} unknown."
             )
         raise e
 

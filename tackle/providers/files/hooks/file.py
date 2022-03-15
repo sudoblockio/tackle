@@ -53,22 +53,17 @@ class CopyHook(BaseHook):
 
     _args = ['src', 'dst']
 
-    def __init__(self, **data: Any):
-        super().__init__(**data)
-        if isinstance(self.src, str):
-            self.src = os.path.abspath(os.path.expanduser(self.src))
-        if isinstance(self.src, list):
-            self.src = [os.path.abspath(os.path.expanduser(f)) for f in self.src]
-        # Fix to abs path
+    def execute(self) -> None:
         self.dst = os.path.abspath(self.dst)
 
-    def execute(self) -> None:
         if self.create_path:
             create_directory_tree(self.src, self.dst)
 
         if isinstance(self.src, str):
+            self.src = os.path.abspath(os.path.expanduser(self.src))
             self._copy_file_or_dir(self.src, self.dst)
         elif isinstance(self.src, list):
+            self.src = [os.path.abspath(os.path.expanduser(f)) for f in self.src]
             for i in self.src:
                 self._copy_file_or_dir(i, os.path.join(self.dst, os.path.basename(i)))
 
@@ -100,21 +95,17 @@ class MoveHook(BaseHook):
 
     _args: list = ['src', 'dst']
 
-    def __init__(self, **data: Any):
-        super().__init__(**data)
-        if isinstance(self.src, str):
-            self.src = os.path.abspath(os.path.expanduser(self.src))
-        if isinstance(self.src, list):
-            self.src = [os.path.abspath(os.path.expanduser(f)) for f in self.src]
+    def execute(self) -> None:
         self.dst = os.path.abspath(self.dst)
 
-    def execute(self) -> None:
         if self.create_path:
             create_directory_tree(self.src, self.dst)
 
         if isinstance(self.src, str):
+            self.src = os.path.abspath(os.path.expanduser(self.src))
             shutil.move(self.src, self.dst)
         elif isinstance(self.src, list):
+            self.src = [os.path.abspath(os.path.expanduser(f)) for f in self.src]
             for i in self.src:
                 shutil.move(i, os.path.join(self.dst, os.path.basename(i)))
 
@@ -135,13 +126,6 @@ class RemoveHook(BaseHook):
 
     _args: list = ['path']
 
-    def __init__(self, **data: Any):
-        super().__init__(**data)
-        if isinstance(self.path, str):
-            self.path = os.path.abspath(os.path.expanduser(self.path))
-        if isinstance(self.path, list):
-            self.path = [os.path.abspath(os.path.expanduser(f)) for f in self.path]
-
     def remove_file_or_dir(self, path):
         if os.path.isfile(path):
             os.remove(path)
@@ -153,8 +137,10 @@ class RemoveHook(BaseHook):
 
     def execute(self) -> None:
         if isinstance(self.path, str):
+            self.path = os.path.abspath(os.path.expanduser(self.path))
             self.remove_file_or_dir(self.path)
         elif isinstance(self.path, list):
+            self.path = [os.path.abspath(os.path.expanduser(f)) for f in self.path]
             for i in self.path:
                 self.remove_file_or_dir(i)
         return None
@@ -192,17 +178,12 @@ class ShredHook(BaseHook):
     src: Union[List, str]
     passes: int = 10
 
-    def __init__(self, **data: Any):
-        super().__init__(**data)
-        if isinstance(self.src, str):
-            self.src = os.path.abspath(os.path.expanduser(self.src))
-        if isinstance(self.src, list):
-            self.src = [os.path.abspath(os.path.expanduser(f)) for f in self.src]
-
     def execute(self) -> None:
         if isinstance(self.src, str):
+            self.src = os.path.abspath(os.path.expanduser(self.src))
             self.src = [self.src]
         for i in self.src:
+            self.src = [os.path.abspath(os.path.expanduser(f)) for f in self.src]
             wipe(i, self.passes)
 
 
@@ -221,17 +202,12 @@ class ChmodHook(BaseHook):
     path: Union[str, list]
     mode: str
 
-    def __init__(self, **data: Any):
-        super().__init__(**data)
-        self.path = expand_path(self.path)
-
     def execute(self) -> None:
-
         if isinstance(self.path, str):
             self.path = [self.path]
         for i in self.path:
             mode = int(self.mode, 8)
-            os.chmod(path=i, mode=mode)
+            os.chmod(path=expand_path(i), mode=mode)
 
         return None
 
@@ -246,12 +222,8 @@ class CreateFileHook(BaseHook):
     hook_type: str = 'create_file'
     path: Union[str, list]
 
-    def __init__(self, **data: Any):
-        super().__init__(**data)
-        self.path = expand_path(self.path)
-
     def execute(self) -> Union[str, list]:
-
+        self.path = expand_path(self.path)
         if isinstance(self.path, str):
             self.path = [self.path]
         for i in self.path:
@@ -271,11 +243,8 @@ class FileHook(BaseHook):
 
     _args = ['path', 'contents']
 
-    def __init__(self, **data: Any):
-        super().__init__(**data)
-        self.path = expand_path(self.path)
-
     def execute(self) -> Optional[str]:
+        self.path = expand_path(self.path)
         if self.contents is None:
             with open(self.path) as f:
                 contents = f.read()

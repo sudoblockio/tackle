@@ -23,14 +23,14 @@ def split_input_string(input_string: str) -> list:
     # input_list = [p for p in re.split("( |(?<!\{|\[)\\\"(?!\,|\:).*?\\\"(?!\}|\])|'.*?')", input_string) if p.strip()]
 
     # Split on whitespace
-    # When quotes are preceded by `,:{[`, ignore
-    # Don't split between quotes with `,:]}`
+    # When quotes are preceded by `,:{[(=`, ignore
+    # Don't split between quotes with `,:]})`
     # Otherwise split on quotes
     # Repeated for single quotes
     input_list = [
         p
         for p in re.split(
-            "( |(?<!\,|\:|\{|\[)\\\"(?!\,|\:|\}|\]).*?\\\"(?!\}|\])|(?<!\,|\:|\{|\[)'(?!\,|\:|\}|\]).*?'(?!\}|\]))",
+            "( |(?<!\,|\:|\(|\{|\[|=)\\\"(?!\,|\:|\)|\}|\]).*?\\\"(?!\}|\])|(?<!\,|\:|\(|\{|\[|=)'(?!\,|\:|\)|\}|\]).*?'(?!\}|\]))",  # noqa
             input_string,
         )
         if p.strip()

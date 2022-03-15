@@ -1,6 +1,5 @@
 import sys
 from PyInquirer import prompt
-from typing import Any
 
 from tackle.models import BaseHook, Field
 from tackle.utils.dicts import get_readable_key_path
@@ -20,12 +19,10 @@ class InquirerConfirmHook(BaseHook):
     _args: list = ['message']
     _docs_order = 4
 
-    def __init__(self, **data: Any):
-        super().__init__(**data)
+    def execute(self) -> bool:
         if self.message is None:
             self.message = get_readable_key_path(self.key_path) + ' >>>'
 
-    def execute(self) -> bool:
         if not self.no_input:
             question = {
                 'type': 'confirm',

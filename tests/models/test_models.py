@@ -1,8 +1,12 @@
-"""Test hook model."""
-from tackle.models import BaseHook
-import logging
+import pytest
+import subprocess
+import sys
 
-LOGGER = logging.getLogger(__name__)
+from tackle.models import (
+    BaseHook,
+    LazyImportHook,
+    ProviderHooks,
+)
 
 
 def test_base_hook_init():
@@ -37,3 +41,39 @@ def test_base_hook_init():
 #     # TODO: Fix this test
 # log_output = caplog.text
 # assert 'Must be using Python' in caplog.text
+@pytest.fixture()
+def temporary_uninstall():
+    """Fixture to uninstall a package and install it after the test."""
+
+    def f(package):
+        subprocess.check_call(
+            [
+                sys.executable,
+                "-m",
+                "pip",
+                "uninstall",
+                "--quiet",
+                "--disable-pip-version-check",
+                "-y",
+                package,
+            ]
+        )
+
+    return f
+
+
+def test_imports_import_native_providers(temporary_uninstall):
+    """
+    Validate that when we uninstall requests and import native providers that the
+    imported hook is a LazyImportHook, which when the hook is used will then trigger
+    with a fallback install with the requirements and be imported directly.
+    """
+    temporary_uninstall('requests')
+    pd = ProviderHooks()
+    assert isinstance(pd['http_get'], LazyImportHook)
+    lazy_hook = pd['http_get']
+    pd.import_with_fallback_install(
+        mod_name=lazy_hook.mod_name,
+        path=lazy_hook.hooks_path,
+    )
+    assert not isinstance(pd['http_get'], BaseHook)

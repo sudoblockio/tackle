@@ -20,12 +20,9 @@ class SetKeyHook(BaseHook):
     _args = ['path', 'value']
     # fmt: on
 
-    def __init__(self, **data: Any):
-        super().__init__(**data)
-        self.path = encode_key_path(self.path, self.sep)
-
     def execute(self):
         """Run the hook."""
+        self.path = encode_key_path(self.path, self.sep)
         nested_set(
             element=self.output_dict,
             keys=self.path,

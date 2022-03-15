@@ -18,12 +18,9 @@ class DictUpdateHook(BaseHook, smart_union=True):
 
     _args: list = ['src', 'input']
 
-    def __init__(self, **data: Any):
-        super().__init__(**data)
+    def execute(self) -> Optional[dict]:
         if isinstance(self.src, (str, list)):
             self.src = encode_key_path(self.src, self.sep)
-
-    def execute(self) -> Optional[dict]:
         if isinstance(self.src, list):
             nested_set(
                 element=self.output_dict,

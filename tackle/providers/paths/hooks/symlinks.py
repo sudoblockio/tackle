@@ -1,5 +1,4 @@
 import os
-from typing import Any
 
 from tackle.models import BaseHook, Field
 
@@ -26,12 +25,10 @@ class SymlinkHook(BaseHook):
     _args = ['src', 'dst']
     _docs_order = 3
 
-    def __init__(self, **data: Any):
-        super().__init__(**data)
+    def execute(self) -> None:
         self.src = os.path.abspath(os.path.expanduser(os.path.expandvars(self.src)))
         self.dst = os.path.abspath(os.path.expanduser(os.path.expandvars(self.dst)))
 
-    def execute(self) -> None:
         if self.overwrite and os.path.islink(self.dst):
             os.symlink(
                 self.src,

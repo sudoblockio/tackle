@@ -1,0 +1,3 @@
+
+# Missing choices should raise error
+check->: "{{ checkbox() }}"

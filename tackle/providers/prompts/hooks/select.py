@@ -27,12 +27,10 @@ class InquirerListHook(BaseHook, smart_union=True):
     _args: list = ['message']
     _docs_order = 1
 
-    def __init__(self, **data: Any):
-        super().__init__(**data)
+    def execute(self) -> Any:
         if self.message is None:
             self.message = get_readable_key_path(self.key_path) + ' >>>'
 
-    def execute(self) -> Any:
         # Figure out what type of dictionary it is
         choices_type = None
         for i, v in enumerate(self.choices):

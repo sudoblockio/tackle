@@ -9,8 +9,7 @@ from jinja2.exceptions import UndefinedError, TemplateNotFound
 import shutil
 from typing import List
 
-from tackle.models import BaseHook
-from tackle.render.environment import StrictEnvironment
+from tackle.models import BaseHook, StrictEnvironment
 from tackle.exceptions import UndefinedVariableInTemplate
 
 
@@ -52,8 +51,8 @@ class GenerateHook(BaseHook, smart_union=True):
 
     _args = ['templates', 'output']
 
-    def __init__(self, **data: Any):
-        super().__init__(**data)
+    def execute(self):
+        """Generate files / directories."""
         if isinstance(self.copy_without_render, str):
             self.copy_without_render = [self.copy_without_render]
 
@@ -90,8 +89,6 @@ class GenerateHook(BaseHook, smart_union=True):
                 **self.existing_context,
             }
 
-    def execute(self):
-        """Generate files / directories."""
         self.env_ = StrictEnvironment(context=self.render_context)
         # https://stackoverflow.com/questions/42368678/jinja-environment-is-not-supporting-absolute-paths
         # Need to add root to support absolute paths

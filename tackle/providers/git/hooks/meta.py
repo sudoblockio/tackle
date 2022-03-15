@@ -94,10 +94,6 @@ class MetaGitHook(BaseHook):
         else:
             return v
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        object.__setattr__(self, 'first_run', True)
-
     def get_repo_prefix(self, repo):
         """Return a string to prefix url."""
         if repo.startswith("https") or repo.startswith("git"):
@@ -247,6 +243,8 @@ class MetaGitHook(BaseHook):
 
     def execute(self):
         """Run the hook."""
+        object.__setattr__(self, 'first_run', True)
+
         if not self.command:
             self.get_command()
 

@@ -1,0 +1,38 @@
+range: stuff
+dict: stuff
+lipsum: stuff
+cycler: stuff
+joiner: stuff
+namespace: stuff
+
+indent:
+  range: stuff
+  dict: stuff
+  lipsum: stuff
+  cycler: stuff
+  joiner: stuff
+  namespace: stuff
+
+globals_raw->:
+  - "{{ range }}"
+  - "{{ dict }}"
+#  - "{{ lipsum }}"
+  - "{{ cycler }}"
+  - "{{ joiner }}"
+  - "{{ namespace }}"
+
+globals_indent_raw->:
+  - "{{ indent.range }}"
+  - "{{ indent.dict }}"
+  - "{{ indent.lipsum }}"
+  - "{{ indent.cycler }}"
+  - "{{ indent.joiner }}"
+  - "{{ indent.namespace }}"
+
+globals_call->:
+  - "{{ range(1) }}"
+  - "{{ dict() }}"
+  - "{{ lipsum() }}"
+  - "{{ cycler(globals_raw) }}"
+  - "{{ joiner() }}"
+  - "{{ namespace() }}"
