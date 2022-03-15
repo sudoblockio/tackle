@@ -13,13 +13,14 @@ examples:
         ouput: output/path.py
 
   - name: "[generate](generate.md)"
-    description: Recursively render a directory of template or a single file
+    description: Recursively render a directory
     content: |
-      compact->: jinja path/to/template/file/or/dir output/path
+      stuff: things  # Arbitrary context
+      compact->: generate path/to/template/file/or/dir output/path
       expanded:
         ->: jinja
-        templates: path/to/template/file/or/dir
-        ouput: output/path
+        template: path/to/template/file/or/dir
+        output: output/path
 
 hook_examples:
   generate:

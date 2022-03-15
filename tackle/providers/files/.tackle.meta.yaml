@@ -12,15 +12,9 @@ examples:
         template: path/to/file
         output: output/path
 
-  - name: "[generate](generate.md)"
-    description: Recursively render a directory
-    content: |
-      stuff: things
-      compact->: generate path/to/template/file/or/dir output/path
-      expanded:
-        ->: jinja
-        template: path/to/template/file/or/dir
-        output: output/path
+  - name: "[chmod](chmod.md)"
+    description: Change directory permissions
+    content->: file tests/file/chmod.yaml
 
 hook_examples:
   generate:

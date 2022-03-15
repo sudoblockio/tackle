@@ -1,5 +1,5 @@
-this:
+compact->: chmod tackle.yaml "0o600"
+expanded:
   ->: chmod
   path: tackle.yaml
-  mode: 0o600
-
+  mode: "0o600"

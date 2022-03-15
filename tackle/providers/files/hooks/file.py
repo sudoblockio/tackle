@@ -178,6 +178,8 @@ class ShredHook(BaseHook):
     src: Union[List, str]
     passes: int = 10
 
+    _args: list = ['src', 'passes']
+
     def execute(self) -> None:
         if isinstance(self.src, str):
             self.src = os.path.abspath(os.path.expanduser(self.src))
@@ -202,6 +204,8 @@ class ChmodHook(BaseHook):
     path: Union[str, list]
     mode: str
 
+    _args: list = ['path', 'mode']
+
     def execute(self) -> None:
         if isinstance(self.path, str):
             self.path = [self.path]
@@ -221,6 +225,8 @@ class CreateFileHook(BaseHook):
 
     hook_type: str = 'create_file'
     path: Union[str, list]
+
+    _args: list = ['path']
 
     def execute(self) -> Union[str, list]:
         self.path = expand_path(self.path)
