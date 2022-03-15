@@ -6,8 +6,8 @@ a_list:
 
 a_block->:
   if: stuff == 'things'
-  a_item->: print A {{item}} --for a_list
-  b_item->: print B {{index}} --for a_list
+  a_item->: var A {{item}} --for a_list
+  b_item->: var B {{index}} --for a_list
 
 b_block_false->:
   if: stuff != 'things'  # Not possible

@@ -5,7 +5,7 @@ a_list:
   - things
 
 no_block:
-  ->: print A {{item}} --for a_list
+  ->: var A {{item}} --for a_list
   if: stuff == 'things'
 
 d_block->:
