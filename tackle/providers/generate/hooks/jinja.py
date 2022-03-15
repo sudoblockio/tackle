@@ -5,8 +5,8 @@ from jinja2 import FileSystemLoader
 from typing import Union
 
 from tackle import BaseHook, Field
+from tackle.models import StrictEnvironment
 from tackle.exceptions import UndefinedVariableInTemplate
-from tackle.render import StrictEnvironment
 from tackle.utils.dicts import get_readable_key_path
 
 

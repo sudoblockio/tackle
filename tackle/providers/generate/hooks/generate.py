@@ -9,8 +9,7 @@ from jinja2.exceptions import UndefinedError, TemplateNotFound
 import shutil
 from typing import List
 
-from tackle.models import BaseHook
-from tackle.render import StrictEnvironment
+from tackle.models import BaseHook, StrictEnvironment
 from tackle.exceptions import UndefinedVariableInTemplate
 
 
