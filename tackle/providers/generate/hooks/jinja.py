@@ -49,8 +49,8 @@ class JinjaHook(BaseHook):
                 **self.existing_context,
             }
 
-        self.env.loader = FileSystemLoader(self.file_system_loader)
-        template = self.env.get_template(self.template)
+        self.env_.loader = FileSystemLoader(self.file_system_loader)
+        template = self.env_.get_template(self.template)
 
         jinja_context = self.render_context
 

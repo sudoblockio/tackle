@@ -93,9 +93,9 @@ class GenerateHook(BaseHook, smart_union=True):
         # https://stackoverflow.com/questions/42368678/jinja-environment-is-not-supporting-absolute-paths
         # Need to add root to support absolute paths
         if isinstance(self.file_system_loader, str):
-            self.env.loader = FileSystemLoader([self.file_system_loader, '/'])
+            self.env_.loader = FileSystemLoader([self.file_system_loader, '/'])
         else:
-            self.env.loader = FileSystemLoader(self.file_system_loader + ['/'])
+            self.env_.loader = FileSystemLoader(self.file_system_loader + ['/'])
 
         if isinstance(self.templates, str):
             self.generate_target(self.templates)
@@ -146,7 +146,7 @@ class GenerateHook(BaseHook, smart_union=True):
 
         # Render the path right away as templating mangles things later - also logical
         # to render file names.  Who wants to generate files with templates in the name?
-        file_name_template = self.env.from_string(str(output_path))
+        file_name_template = self.env_.from_string(str(output_path))
         output_path = file_name_template.render(self.render_context)
 
         # Make the parent directories by default
@@ -159,7 +159,7 @@ class GenerateHook(BaseHook, smart_union=True):
             return
 
         try:
-            file_contents_template = self.env.get_template(os.path.abspath(input_file))
+            file_contents_template = self.env_.get_template(os.path.abspath(input_file))
         except UnicodeDecodeError:
             # Catch binary files with this hack and copy them over
             # TODO: Perhaps improve? In cookiecutter they used a package binary-or-not
