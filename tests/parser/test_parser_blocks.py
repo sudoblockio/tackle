@@ -1,6 +1,6 @@
 import pytest
 import os
-import yaml
+from ruamel.yaml import YAML
 
 from tackle import tackle
 from tackle.exceptions import EmptyBlockException
@@ -16,8 +16,9 @@ FIXTURES = [
 def test_parser_blocks_validate_output(chdir, input, output):
     """Test blocks."""
     chdir(os.path.join("fixtures", "blocks"))
+    yaml = YAML()
     with open(output) as f:
-        expected_output = yaml.safe_load(f)
+        expected_output = yaml.load(f)
 
     tackle_output = tackle(input)
     assert tackle_output == expected_output

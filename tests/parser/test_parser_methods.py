@@ -1,10 +1,11 @@
-import yaml
+from ruamel.yaml import YAML
 from tackle import tackle
 
 
 def test_parser_methods_merge(change_curdir_fixtures):
+    yaml = YAML()
     with open('petstore.yaml') as f:
-        expected_output = yaml.safe_load(f)
+        expected_output = yaml.load(f)
 
     output = tackle('merge-petstore-compact.yaml')
     assert output == expected_output

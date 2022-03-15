@@ -1,6 +1,6 @@
 """High level tests for parser logic."""
 import pytest
-import yaml
+from ruamel.yaml import YAML
 
 from tackle.main import tackle
 
@@ -31,8 +31,9 @@ FIXTURES = [
 @pytest.mark.parametrize("fixture,expected_output", FIXTURES)
 def test_main_expected_output(change_curdir_fixtures, fixture, expected_output):
     """Input equals output."""
+    yaml = YAML()
     with open(expected_output) as f:
-        expected_output = yaml.safe_load(f)
+        expected_output = yaml.load(f)
 
     output = tackle(fixture)
     assert output == expected_output
