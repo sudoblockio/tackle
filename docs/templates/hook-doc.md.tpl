@@ -34,7 +34,7 @@
 {#Output#}
 ## Returns
 `{{ return_type }}`{% if return_description %} - {{ return_description }}{% endif %}
-{% if hook_examples is defined %}{% if hook_type in hook_examples %}
+{% if hook_examples is defined %}{% if hook_examples is mapping %}{% if hook_type in hook_examples %}
 {#Examples#}
 ## Examples
 {% for i in hook_examples[hook_type] %}{% if i.name is defined %}
@@ -48,7 +48,7 @@
 ```yaml
 {{i.output}}
 ```{% endif %}
-{% endfor %} {% endif %} {% endif %}
+{% endfor %} {% endif %} {% endif %} {% endif %}
 {#Issues#}
 {% if issue_numbers|length > 0 %}
 > Warning: Tracking issues relating to this hook
