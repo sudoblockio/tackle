@@ -696,7 +696,7 @@ def extract_base_file(context: 'Context'):
     input_dir_contents = os.listdir(context.input_dir)
     if 'hooks' in input_dir_contents:
         with work_in(context.input_dir):
-            context.providers.import_paths([context.input_dir])
+            context.provider_hooks.import_from_path(context.input_dir)
 
     # TODO: Experimental feature that could be integrated later
     # # Extract handlers
