@@ -1,6 +1,6 @@
 import re
 import ast
-from jinja2 import Environment, StrictUndefined, meta
+from jinja2 import meta
 from jinja2.ext import Extension
 from inspect import signature
 import json
@@ -95,22 +95,26 @@ class ExtensionLoaderMixin(object):
     #         return [str(ext) for ext in extensions]
 
 
-#  TODO: Remove - tackle-box/issues/41
-class StrictEnvironment(ExtensionLoaderMixin, Environment):
-    """Create strict Jinja2 environment.
-
-    Jinja2 environment will raise error on undefined variable in template-
-    rendering context.
-    """
-
-    def __init__(self, provider_hooks: dict, **kwargs):
-        """Set the standard Tackle StrictEnvironment.
-
-        Also loading extensions defined in cookiecutter.json's _extensions key.
-        """
-        super(StrictEnvironment, self).__init__(undefined=StrictUndefined, **kwargs)
-        for k, v in provider_hooks.items():
-            self.filters[k] = v().wrapped_exec
+# #  TODO: Remove - tackle-box/issues/41
+# class StrictEnvironment(ExtensionLoaderMixin, Environment):
+#     """Create strict Jinja2 environment.
+#
+#     Jinja2 environment will raise error on undefined variable in template-
+#     rendering context.
+#     """
+#
+#     def __init__(self, provider_hooks: dict, **kwargs):
+#         """Set the standard Tackle StrictEnvironment.
+#
+#         Also loading extensions defined in cookiecutter.json's _extensions key.
+#         """
+#         super(StrictEnvironment, self).__init__(undefined=StrictUndefined, **kwargs)
+#         for k, v in provider_hooks.items():
+#             # v.wrapped_exec()
+#             try:
+#                 self.filters[k] = v().wrapped_exec
+#             except Exception as e:
+#                 print()
 
 
 def wrap_braces_if_not_exist(value):
@@ -163,9 +167,6 @@ def render_string(context: 'Context', raw: str):
     """
     if '{{' not in raw:
         return raw
-
-    if context.env is None:
-        context.env = StrictEnvironment(context.provider_hooks)
 
     template = context.env.from_string(raw)
     # Extract variables

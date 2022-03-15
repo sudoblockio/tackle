@@ -15,6 +15,7 @@ from pydantic import (
 )
 from pydantic.main import ModelMetaclass
 from pydantic.fields import UndefinedType, ModelField
+from jinja2 import Environment, StrictUndefined
 from jinja2.ext import Extension
 from typing import Any, Union, Optional, Dict, Type, Tuple
 import logging
@@ -33,6 +34,16 @@ class LazyImportHook(BaseModel):
     mod_name: str
     provider_name: str
     hook_type: str
+
+    def wrapped_exec(self, *args, **kwargs):
+        if 'provider_hooks' in kwargs:
+            kwargs['provider_hooks'].import_with_fallback_install(
+                mod_name=self.mod_name,
+                path=self.hooks_path,
+            )
+            return kwargs['provider_hooks'][self.hook_type].wrapped_exec()
+        else:
+            print()
 
 
 class ProviderHooks(dict):
@@ -69,7 +80,14 @@ class ProviderHooks(dict):
         module = loader.load_module()
 
         for k, v in module.__dict__.items():
-            if isinstance(v, ModelMetaclass) and 'hook_type' in v.__fields__:
+            if (
+                isinstance(v, ModelMetaclass)
+                and 'hook_type' in v.__fields__
+                and k != 'BaseHook'
+                and v.__fields__['hook_type'].default is not None
+            ):
+                # if v.__fields__['hook_type'].default is None:
+                #     print()
                 self[v.__fields__['hook_type'].default] = v
 
     def import_hooks_from_dir(
@@ -260,6 +278,24 @@ class PartialModelMetaclass(ModelMetaclass):
         return cls
 
 
+class StrictEnvironment(Environment):
+    """Create strict Jinja2 environment.
+
+    Jinja2 environment will raise error on undefined variable in template-
+    rendering context.
+    """
+
+    def __init__(self, provider_hooks: dict, **kwargs):
+        super(StrictEnvironment, self).__init__(undefined=StrictUndefined, **kwargs)
+        # Import filters into environment
+        for k, v in provider_hooks.items():
+            if isinstance(v, LazyImportHook):
+                self.filters[k] = v.wrapped_exec
+            else:
+                # Filters don't receive any context (output_dict, etc)
+                self.filters[k] = v().wrapped_exec
+
+
 class Context(BaseModel):
     """The main object that is being modified by parsing."""
 
@@ -303,9 +339,10 @@ class Context(BaseModel):
         super().__init__(**data)
         # Allows for passing the providers between tackle runtimes
         if self.provider_hooks is None:
-            # self.provider_hooks = {}
-            # import_native_providers(self.provider_hooks)
             self.provider_hooks = ProviderHooks()
+
+        if self.env is None:
+            self.env = StrictEnvironment(self.provider_hooks)
 
         if self.calling_directory is None:
             # Can be carried over from another context. Should only be initialized when
@@ -462,61 +499,12 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
             return self.execute()
 
 
-# def import_hook_from_path(
-#         provider_hook_dict: dict,
-#         mod_name: str,
-#         file_path: str,
-# ):
-#     """Import a single hook from a path."""
-#     # Maintaining cookiecutter support here as it might have a `hooks` dir.
-#     excluded_file_names = ['pre_gen_project', 'post_gen_project', '__pycache__']
-#     excluded_file_extensions = ['pyc']
-#
-#     file_base = os.path.basename(file_path).split('.')
-#     if file_base[0] in excluded_file_names:
-#         return
-#     if file_base[-1] in excluded_file_extensions:
-#         return
-#
-#     if os.path.basename(file_path).split('.')[-1] != "py":
-#         # Only import python files
-#         return
-#
-#     loader = importlib.machinery.SourceFileLoader(
-#         mod_name + '.hooks.' + file_base[0], file_path
-#     )
-#
-#     module = loader.load_module()
-#
-#     for k, v in module.__dict__.items():
-#         if not isinstance(v, ModelMetaclass):
-#             continue
-#         if issubclass(v, BaseHook) and v != BaseHook:
-#             provider_hook_dict[v.__fields__['hook_type'].default] = v
-#
-#
-# def import_hooks_from_dir(
-#         provider_hook_dict: dict,
-#         mod_name: str,
-#         path: str,
-#         skip_on_error: bool = False,
-# ):
-#     """
-#     Import hooks from a directory. This is meant to be used by generically pointing to
-#      a hooks directory and importing all the relevant hooks into the context.
-#     """
-#     potential_hooks = listdir_absolute(path)
-#     for f in potential_hooks:
-#         if skip_on_error:
-#             try:
-#                 import_hook_from_path(provider_hook_dict, mod_name, f)
-#             except (ModuleNotFoundError, ConfigError):
-#                 logger.debug(f"Skipping importing {f}")
-#                 continue
-#         else:
-#             import_hook_from_path(provider_hook_dict, mod_name, f)
-
-
 if __name__ == '__main__':
     p = ProviderHooks()
+    p.import_from_path(
+        '/home/rob/go/src/github.com/robcxyz/tackle-box/tackle/providers/git'
+    )
+
+    assert 'meta_repo' in p
+
     print()
