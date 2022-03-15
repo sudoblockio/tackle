@@ -1,6 +1,7 @@
 import os
 import pytest
-from tackle.exceptions import HookCallException
+
+# from tackle.exceptions import HookCallException
 
 from tackle.main import tackle
 
@@ -27,14 +28,14 @@ def test_provider_system_hook_command_multi_line(change_dir):
 #     assert o
 
 
-def test_provider_system_hook_shell_exit(change_dir):
-    with pytest.raises(FileNotFoundError):
-        tackle('exit.yaml')
-
-
-def test_provider_system_hook_shell_exit_long(change_dir):
-    with pytest.raises(HookCallException):
-        tackle('exit-long.yaml')
+# def test_provider_system_hook_shell_exit(change_dir):
+#     with pytest.raises(FileNotFoundError):
+#         tackle('exit.yaml')
+#
+#
+# def test_provider_system_hook_shell_exit_long(change_dir):
+#     with pytest.raises(HookCallException):
+#         tackle('exit-long.yaml')
 
 
 def test_provider_system_hook_shell_exit_ignore(change_dir):
