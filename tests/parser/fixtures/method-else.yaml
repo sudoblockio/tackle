@@ -38,7 +38,7 @@ hook_call->:
   else:
     stuff->: "{{stuff}}"
 
-hook_call_compact->:
-  if: false
-  do: this
-  else->: var "{{stuff}}"
+#hook_call_compact->:
+#  if: false
+#  do: this
+#  else->: var "{{stuff}}"
