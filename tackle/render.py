@@ -1,120 +1,15 @@
 import re
 import ast
 from jinja2 import meta
-from jinja2.ext import Extension
 from inspect import signature
-import json
-import string
-from secrets import choice
 from typing import TYPE_CHECKING, Any
 from pydantic import ValidationError
 
 from tackle.special_vars import special_variables
 from tackle.exceptions import UnknownTemplateVariableException
-from tackle.exceptions import UnknownExtension
 
 if TYPE_CHECKING:
     from tackle.models import Context
-
-
-#  TODO: Remove - tackle-box/issues/41
-class JsonifyExtension(Extension):
-    """Jinja2 extension to convert a Python object to JSON."""
-
-    def __init__(self, environment):
-        """Initialize the extension with the given environment."""
-        super(JsonifyExtension, self).__init__(environment)
-
-        def jsonify(obj):
-            return json.dumps(obj, sort_keys=True, indent=4)
-
-        environment.filters['jsonify'] = jsonify
-
-
-#  TODO: Remove - tackle-box/issues/41
-class RandomStringExtension(Extension):
-    """Jinja2 extension to create a random string."""
-
-    def __init__(self, environment):
-        """Jinja2 Extension Constructor."""
-        super(RandomStringExtension, self).__init__(environment)
-
-        def random_ascii_string(length, punctuation=False):
-            if punctuation:
-                corpus = "".join((string.ascii_letters, string.punctuation))
-            else:
-                corpus = string.ascii_letters
-            return "".join(choice(corpus) for _ in range(length))
-
-        environment.globals.update(random_ascii_string=random_ascii_string)
-
-
-#  TODO: Remove - tackle-box/issues/41
-class ExtensionLoaderMixin(object):
-    """Mixin providing sane loading of extensions specified in a given context.
-
-    The context is being extracted from the keyword arguments before calling
-    the next parent class in line of the child.
-    """
-
-    def __init__(self, **kwargs):
-        """
-        Initialize the Jinja2 Environment object while loading extensions.
-        Does the following:
-
-        1. Establishes default_extensions (currently just a Time feature)
-        2. Reads extensions set in the cookiecutter.json _extensions key.
-        3. Attempts to load the extensions. Provides useful error if fails.
-        """
-        provider_extensions = [
-            # JsonifyExtension,
-            RandomStringExtension,
-        ]
-
-        # TODO: Mild area for improvement here
-        # context: Context = kwargs.pop('context', {})
-        extensions = provider_extensions  # + self._read_extensions(context)
-
-        try:
-            super(ExtensionLoaderMixin, self).__init__(extensions=extensions, **kwargs)
-        except ImportError as err:
-            raise UnknownExtension('Unable to load extension: {}'.format(err))
-
-    # # TODO: Disable this until a pattern is settled on in tackle - legacy
-    # def _read_extensions(self, context):
-    #     """Return list of extensions as str to be passed on to the Jinja2 env.
-    #
-    #     If context does not contain the relevant info, return an empty
-    #     list instead.
-    #     """
-    #     try:
-    #         extensions = context['_extensions']
-    #     except (KeyError, TypeError):
-    #         return []
-    #     else:
-    #         return [str(ext) for ext in extensions]
-
-
-# #  TODO: Remove - tackle-box/issues/41
-# class StrictEnvironment(ExtensionLoaderMixin, Environment):
-#     """Create strict Jinja2 environment.
-#
-#     Jinja2 environment will raise error on undefined variable in template-
-#     rendering context.
-#     """
-#
-#     def __init__(self, provider_hooks: dict, **kwargs):
-#         """Set the standard Tackle StrictEnvironment.
-#
-#         Also loading extensions defined in cookiecutter.json's _extensions key.
-#         """
-#         super(StrictEnvironment, self).__init__(undefined=StrictUndefined, **kwargs)
-#         for k, v in provider_hooks.items():
-#             # v.wrapped_exec()
-#             try:
-#                 self.filters[k] = v().wrapped_exec
-#             except Exception as e:
-#                 print()
 
 
 def wrap_braces_if_not_exist(value):
@@ -214,7 +109,7 @@ def render_string(context: 'Context', raw: str):
 
     try:
         rendered_template = template.render(render_context)
-        # Check for ambigous globals like `namespace` tackle-box/issues/19
+        # Check for ambiguous globals like `namespace` tackle-box/issues/19
         match = re.search(r'\<class \'(.+?)\'>', rendered_template)
         if match:
             ambiguous_key = match.group(1).split('.')[-1].lower()

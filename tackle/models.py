@@ -504,14 +504,3 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
                 )
         else:
             return self.execute()
-
-
-if __name__ == '__main__':
-    p = ProviderHooks()
-    p.import_from_path(
-        '/home/rob/go/src/github.com/robcxyz/tackle-box/tackle/providers/git'
-    )
-
-    assert 'meta_repo' in p
-
-    print()
