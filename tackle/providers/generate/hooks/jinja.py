@@ -5,7 +5,6 @@ from jinja2 import FileSystemLoader
 from typing import Union
 
 from tackle import BaseHook, Field
-from tackle.models import StrictEnvironment
 from tackle.exceptions import UndefinedVariableInTemplate
 from tackle.utils.dicts import get_readable_key_path
 
@@ -50,9 +49,8 @@ class JinjaHook(BaseHook):
                 **self.existing_context,
             }
 
-        env = StrictEnvironment(context=self.input_dict)
-        env.loader = FileSystemLoader(self.file_system_loader)
-        template = env.get_template(self.template)
+        self.env.loader = FileSystemLoader(self.file_system_loader)
+        template = self.env.get_template(self.template)
 
         jinja_context = self.render_context
 

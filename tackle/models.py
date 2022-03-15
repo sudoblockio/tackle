@@ -426,7 +426,7 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
     _docs_order: int = 10  # Arbitrary high number so hooks can be sorted high or low
     # Parameterized return type description for docs
     _return_description: str = None
-    environment: Any = None
+    env: Any = None
 
     @validator('if_', 'reverse', 'for_', 'merge')
     def wrap_bool_if_string(cls, v):

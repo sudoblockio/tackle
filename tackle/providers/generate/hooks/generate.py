@@ -1,7 +1,7 @@
 """Generate hook."""
 import os.path
 import fnmatch
-from typing import Union, Any
+from typing import Union
 from pydantic import Field
 from pathlib import Path
 from jinja2 import FileSystemLoader
@@ -9,7 +9,7 @@ from jinja2.exceptions import UndefinedError, TemplateNotFound
 import shutil
 from typing import List
 
-from tackle.models import BaseHook, StrictEnvironment
+from tackle.models import BaseHook
 from tackle.exceptions import UndefinedVariableInTemplate
 
 
@@ -45,7 +45,7 @@ class GenerateHook(BaseHook, smart_union=True):
     )
     file_system_loader: Union[str, list] = Field('.', description="List of paths or string path to directory with templates to load from. [Docs](https://jinja.palletsprojects.com/en/3.0.x/api/#jinja2.FileSystemLoader).")
     base_dir_: Path = None
-    env_: Any = None
+    # env_: Any = None
     file_path_separator_: str = None  # / for mac / linux - \ for win
     # fmt: on
 
@@ -89,13 +89,13 @@ class GenerateHook(BaseHook, smart_union=True):
                 **self.existing_context,
             }
 
-        self.env_ = StrictEnvironment(context=self.render_context)
+        # self.env_ = StrictEnvironment(provider_hooks=self.provider_hooks)
         # https://stackoverflow.com/questions/42368678/jinja-environment-is-not-supporting-absolute-paths
         # Need to add root to support absolute paths
         if isinstance(self.file_system_loader, str):
-            self.env_.loader = FileSystemLoader([self.file_system_loader, '/'])
+            self.env.loader = FileSystemLoader([self.file_system_loader, '/'])
         else:
-            self.env_.loader = FileSystemLoader(self.file_system_loader + ['/'])
+            self.env.loader = FileSystemLoader(self.file_system_loader + ['/'])
 
         if isinstance(self.templates, str):
             self.generate_target(self.templates)
@@ -146,7 +146,7 @@ class GenerateHook(BaseHook, smart_union=True):
 
         # Render the path right away as templating mangles things later - also logical
         # to render file names.  Who wants to generate files with templates in the name?
-        file_name_template = self.env_.from_string(str(output_path))
+        file_name_template = self.env.from_string(str(output_path))
         output_path = file_name_template.render(self.render_context)
 
         # Make the parent directories by default
@@ -159,7 +159,7 @@ class GenerateHook(BaseHook, smart_union=True):
             return
 
         try:
-            file_contents_template = self.env_.get_template(os.path.abspath(input_file))
+            file_contents_template = self.env.get_template(os.path.abspath(input_file))
         except UnicodeDecodeError:
             # Catch binary files with this hack and copy them over
             # TODO: Perhaps improve? In cookiecutter they used a package binary-or-not
