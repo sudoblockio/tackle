@@ -5,9 +5,8 @@ from pathlib import Path
 import os
 import warnings
 from typing import Type
-from pydantic.main import ModelMetaclass, ValidationError
+from pydantic.main import ModelMetaclass
 
-# from tackle.imports import import_with_fallback_install
 from tackle.render import render_variable, wrap_jinja_braces
 from tackle.utils.dicts import (
     nested_get,
@@ -216,23 +215,20 @@ def parse_hook(
             # Render the remaining hook variables
             render_hook_vars(hook_dict, Hook, context)
 
-            try:
-                hook = Hook(
-                    **hook_dict,
-                    input_dict=context.input_dict,
-                    output_dict=context.output_dict,
-                    existing_context=context.existing_context,
-                    no_input=context.no_input,
-                    calling_directory=context.calling_directory,
-                    calling_file=context.calling_file,
-                    provider_hooks=context.provider_hooks,
-                    key_path=context.key_path,
-                    verbose=context.verbose,
-                    env_=context.env_,
-                    is_hook_call=True,
-                )
-            except ValidationError as e:
-                raise e
+            hook = Hook(
+                **hook_dict,
+                input_dict=context.input_dict,
+                output_dict=context.output_dict,
+                existing_context=context.existing_context,
+                no_input=context.no_input,
+                calling_directory=context.calling_directory,
+                calling_file=context.calling_file,
+                provider_hooks=context.provider_hooks,
+                key_path=context.key_path,
+                verbose=context.verbose,
+                env_=context.env_,
+                is_hook_call=True,
+            )
 
             if hook.try_:
                 try:
