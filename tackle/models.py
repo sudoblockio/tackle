@@ -19,6 +19,8 @@ from jinja2 import Environment, StrictUndefined
 from jinja2.ext import Extension
 from typing import Any, Union, Optional, Dict, Type, Tuple
 import logging
+import random
+import string
 
 from tackle.utils.paths import work_in, listdir_absolute
 from tackle.utils.dicts import get_readable_key_path
@@ -35,15 +37,12 @@ class LazyImportHook(BaseModel):
     provider_name: str
     hook_type: str
 
-    def wrapped_exec(self, *args, **kwargs):
-        if 'provider_hooks' in kwargs:
-            kwargs['provider_hooks'].import_with_fallback_install(
-                mod_name=self.mod_name,
-                path=self.hooks_path,
-            )
-            return kwargs['provider_hooks'][self.hook_type].wrapped_exec()
-        else:
-            print()
+    def wrapped_exec(self, **kwargs):
+        kwargs['provider_hooks'].import_with_fallback_install(
+            mod_name=self.mod_name,
+            path=self.hooks_path,
+        )
+        return kwargs['provider_hooks'][self.hook_type].wrapped_exec()
 
 
 class ProviderHooks(dict):
@@ -51,6 +50,12 @@ class ProviderHooks(dict):
 
     def __init__(self, *args, **kwargs):
         super(ProviderHooks, self).__init__(*args, **kwargs)
+        # https://github.com/robcxyz/tackle-box/issues/43
+        # run_id used to make the namespace unique when running multiple runs of tackle
+        # as in running batches of tests to prevent duplicate validator import errors
+        self._run_id = ''.join(
+            random.choice(string.ascii_uppercase + string.digits) for _ in range(4)
+        )
         self.import_native_providers()
 
     def import_hook_from_path(
@@ -73,8 +78,10 @@ class ProviderHooks(dict):
             # Only import python files
             return
 
+        # Use a unique RUN_ID to prevent duplicate validator errors
+        # https://github.com/robcxyz/tackle-box/issues/43
         loader = importlib.machinery.SourceFileLoader(
-            mod_name + '.hooks.' + file_base[0], file_path
+            mod_name + '.hooks.' + file_base[0] + self._run_id, file_path
         )
 
         module = loader.load_module()
