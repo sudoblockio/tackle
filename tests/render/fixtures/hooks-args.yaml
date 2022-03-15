@@ -5,4 +5,7 @@ stuff:
 get->: "{{get('stuff/and')}}"
 get_sep->: "{{get('stuff-and', sep='-')}}"
 
+nested->: "{{yaml(path_join([temp_dir(), 'this']), stuff)}}"
+nested_test->: yaml "{{nested}}"
+
 jsonify->: "{{stuff | jsonify}}"
