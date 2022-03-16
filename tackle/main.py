@@ -23,7 +23,7 @@ def get_global_kwargs(kwargs):
 def tackle(
     *args,
     **kwargs,
-):
+) -> dict:
     """
     Run Tackle Box just as if using it from the command line.
 

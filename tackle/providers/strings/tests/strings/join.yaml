@@ -15,3 +15,11 @@ join_a_str:
   ->: join
   separator: .
   input: "{{ a_str }}"
+
+foo:
+  stuff:
+    - things
+    - more_things
+    - even_more_things
+
+inventory->: "{{ join(foo.stuff, ',') }}"
