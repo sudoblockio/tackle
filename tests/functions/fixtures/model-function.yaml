@@ -1,0 +1,18 @@
+extends: other_function
+schema:
+  full:
+    type: bool
+    description: A description
+    default: a-default
+  compact: a-default
+
+args:
+  - thing
+exec:
+  do->: print "{{thing}}"
+
+validators:
+  thing:
+
+methods:
+  foo:

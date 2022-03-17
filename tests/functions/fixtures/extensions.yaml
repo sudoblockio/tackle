@@ -1,33 +1,21 @@
-stuff: things
-
-jsonify:
-  ->: var
-  input: |
-    json
-    "{{this | jsonify}}"
-
-
-rand->: "{{ file(random_str(12) + '.py') }}"
-
-thing:
-  ->: hook
-  if: rand == 'thing'
-  for: "{{listdir()}}"
-
-thing->: hook --if rand == 'thing' --for "{{listdir()}}"
 
 do_thing:
   <-: function / class
   extends: other_function
   schema:
-    thing:
+    full:
       type: bool
-      description:
-# tackle man,yaml do_thing --thing
+      description: A description
+      default: a-default
+    compact: a-default
+
   args:
     - thing
   exec:
     do->: print "{{thing}}"
+
+  validators:
+    thing:
 
   methods:
     foo:
