@@ -10,7 +10,7 @@ class DebugHook(BaseHook):
 
     hook_type: str = 'debug'
 
-    def execute(self) -> None:
+    def exec(self) -> None:
         """Run the hook."""
         print("Existing context")
         pprint(dict(self.existing_context))

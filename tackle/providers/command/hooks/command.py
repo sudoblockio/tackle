@@ -51,7 +51,7 @@ class ShellHook(BaseHook):
         size = struct.pack("HHHH", _ROWS, _COLUMNS, 0, 0)
         fcntl.ioctl(fd, termios.TIOCSWINSZ, size)
 
-    def execute(self) -> Any:
+    def exec(self) -> Any:
         # TODO: Fix multi-line calls
         # https://github.com/robcxyz/tackle-box/issues/14
         if self.multiline:
@@ -135,7 +135,7 @@ class ShellHook(BaseHook):
 #
 #     _args: list = ['command']
 #
-#     def execute(self) -> Any:
+#     def exec(self) -> Any:
 #         p = subprocess.Popen(
 #             self.command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
 #         )

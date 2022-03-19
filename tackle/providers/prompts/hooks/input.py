@@ -20,7 +20,7 @@ class InquirerInputHook(BaseHook):
     _args: list = ['message']
     _docs_order = 0
 
-    def execute(self) -> str:
+    def exec(self) -> str:
         if self.message is None:
             self.message = get_readable_key_path(self.key_path) + ' >>>'
 

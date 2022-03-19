@@ -19,7 +19,7 @@ class PrintHook(BaseHook):
 
     _args: list = ['objects']
 
-    def execute(self) -> None:
+    def exec(self) -> None:
         print(self.objects, sep=self.sep, end=self.end, flush=self.flush)
 
 
@@ -68,7 +68,7 @@ class PprintHook(BaseHook):
 
     _args: list = ['objects']
 
-    def execute(self) -> None:
+    def exec(self) -> None:
         try:
             if sys.version_info.minor < 8:
                 pprint(

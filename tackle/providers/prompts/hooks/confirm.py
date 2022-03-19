@@ -19,7 +19,7 @@ class InquirerConfirmHook(BaseHook):
     _args: list = ['message']
     _docs_order = 4
 
-    def execute(self) -> bool:
+    def exec(self) -> bool:
         if self.message is None:
             self.message = get_readable_key_path(self.key_path) + ' >>>'
 

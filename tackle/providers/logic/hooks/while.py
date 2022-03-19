@@ -22,5 +22,5 @@
 #
 #     _args = ['condition']
 #
-#     def execute(self) -> Union[dict, list]:
+#     def exec(self) -> Union[dict, list]:
 #         raise NotImplementedError

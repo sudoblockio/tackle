@@ -12,7 +12,7 @@ class Base64EncodeHook(BaseHook):
     _args: list = ['input']
     _docs_order = 8
 
-    def execute(self) -> str:
+    def exec(self) -> str:
         sample_string_bytes = self.input.encode("utf-8")
         base64_bytes = base64.b64encode(sample_string_bytes)
         base64_string = base64_bytes.decode("utf-8")
@@ -28,5 +28,5 @@ class Base64DecodeHook(BaseHook):
     _args: list = ['input']
     _docs_order = 9
 
-    def execute(self) -> str:
+    def exec(self) -> str:
         return str(base64.b64decode(self.input).decode("utf-8"))

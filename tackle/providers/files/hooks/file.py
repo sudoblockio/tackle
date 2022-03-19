@@ -53,7 +53,7 @@ class CopyHook(BaseHook):
 
     _args = ['src', 'dst']
 
-    def execute(self) -> None:
+    def exec(self) -> None:
         self.dst = os.path.abspath(self.dst)
 
         if self.create_path:
@@ -95,7 +95,7 @@ class MoveHook(BaseHook):
 
     _args: list = ['src', 'dst']
 
-    def execute(self) -> None:
+    def exec(self) -> None:
         self.dst = os.path.abspath(self.dst)
 
         if self.create_path:
@@ -135,7 +135,7 @@ class RemoveHook(BaseHook):
             if not self.fail_silently:
                 raise HookCallException(f"Can't find path {path}.")
 
-    def execute(self) -> None:
+    def exec(self) -> None:
         if isinstance(self.path, str):
             self.path = os.path.abspath(os.path.expanduser(self.path))
             self.remove_file_or_dir(self.path)
@@ -180,7 +180,7 @@ class ShredHook(BaseHook):
 
     _args: list = ['src', 'passes']
 
-    def execute(self) -> None:
+    def exec(self) -> None:
         if isinstance(self.src, str):
             self.src = os.path.abspath(os.path.expanduser(self.src))
             self.src = [self.src]
@@ -206,7 +206,7 @@ class ChmodHook(BaseHook):
 
     _args: list = ['path', 'mode']
 
-    def execute(self) -> None:
+    def exec(self) -> None:
         if isinstance(self.path, str):
             self.path = [self.path]
         for i in self.path:
@@ -228,7 +228,7 @@ class CreateFileHook(BaseHook):
 
     _args: list = ['path']
 
-    def execute(self) -> Union[str, list]:
+    def exec(self) -> Union[str, list]:
         self.path = expand_path(self.path)
         if isinstance(self.path, str):
             self.path = [self.path]
@@ -249,7 +249,7 @@ class FileHook(BaseHook):
 
     _args = ['path', 'contents']
 
-    def execute(self) -> Optional[str]:
+    def exec(self) -> Optional[str]:
         self.path = expand_path(self.path)
         if self.contents is None:
             with open(self.path) as f:

@@ -32,7 +32,7 @@ class InquirerCheckboxHook(BaseHook):
     _args: list = ['message']
     _docs_order: int = 2
 
-    def execute(self) -> list:
+    def exec(self) -> list:
         if self.message is None:
             self.message = get_readable_key_path(self.key_path) + ' >>>'
 

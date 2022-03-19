@@ -130,7 +130,7 @@
 #                 for i in self.append_items:
 #                     self._append_each_item(i)
 #
-#     def execute(self) -> Union[str, dict]:
+#     def exec(self) -> Union[str, dict]:
 #         # Load the path into contents unless it already exists
 #         self._load_contents()
 #         # Run all the modifiers

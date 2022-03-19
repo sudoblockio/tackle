@@ -17,7 +17,7 @@ class AssertHook(BaseHook):
     _args = ['input', 'value']
     _docs_order = 5
 
-    def execute(self) -> bool:
+    def exec(self) -> bool:
         """Runs for both if the value is present or full assertion."""
         if self.value is None:
             if not self.exit_on_failure:

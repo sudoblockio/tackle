@@ -51,7 +51,7 @@ class GenerateHook(BaseHook, smart_union=True):
 
     _args = ['templates', 'output']
 
-    def execute(self):
+    def exec(self):
         """Generate files / directories."""
         if isinstance(self.copy_without_render, str):
             self.copy_without_render = [self.copy_without_render]

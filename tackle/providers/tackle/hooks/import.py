@@ -28,7 +28,7 @@ class ImportHook(BaseHook):
     version: str = Field(None, description="Version of src for remote imports.")
     _args = ['src']
 
-    def execute(self) -> None:
+    def exec(self) -> None:
         if isinstance(self.src, str):
             # Get the provider path either local or remote.
             provider_path = self.get_dir_or_repo(self.src, self.version)

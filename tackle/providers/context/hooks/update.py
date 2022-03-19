@@ -18,7 +18,7 @@ class DictUpdateHook(BaseHook, smart_union=True):
 
     _args: list = ['src', 'input']
 
-    def execute(self) -> Optional[dict]:
+    def exec(self) -> Optional[dict]:
         if isinstance(self.src, (str, list)):
             self.src = encode_key_path(self.src, self.sep)
         if isinstance(self.src, list):

@@ -22,7 +22,7 @@ class BlockHook(BaseHook):
 
     _render_exclude = {'items'}
 
-    def execute(self) -> Union[dict, list]:
+    def exec(self) -> Union[dict, list]:
         existing_context = self.output_dict.copy()
         existing_context.update(self.existing_context)
 

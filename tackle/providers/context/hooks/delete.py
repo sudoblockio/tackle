@@ -20,7 +20,7 @@ class DeleteKeyHook(BaseHook):
     _args = ['path']
     # fmt: on
 
-    def execute(self) -> None:
+    def exec(self) -> None:
         """Run the hook."""
         self.path = encode_key_path(self.path, self.sep)
         nested_delete(

@@ -11,7 +11,7 @@ class PathExistsListHook(BaseHook):
 
     _args: list = ['path']
 
-    def execute(self) -> bool:
+    def exec(self) -> bool:
         return os.path.exists(self.path)
 
 
@@ -23,7 +23,7 @@ class PathIsDirListHook(BaseHook):
 
     _args: list = ['path']
 
-    def execute(self) -> bool:
+    def exec(self) -> bool:
         return os.path.isdir(self.path)
 
 
@@ -35,7 +35,7 @@ class PathIsFileListHook(BaseHook):
 
     _args: list = ['path']
 
-    def execute(self) -> bool:
+    def exec(self) -> bool:
         return os.path.isfile(self.path)
 
 
@@ -51,7 +51,7 @@ class PathJoinHook(BaseHook):
 
     _args: list = ['paths']
 
-    def execute(self):
+    def exec(self):
         return os.path.join(*self.paths)
 
 
@@ -67,7 +67,7 @@ class PathBasenameHook(BaseHook):
 
     _args: list = ['path']
 
-    def execute(self):
+    def exec(self):
         return os.path.basename(self.path)
 
 
@@ -83,5 +83,5 @@ class PathDirNameHook(BaseHook):
 
     _args: list = ['path']
 
-    def execute(self):
+    def exec(self):
         return os.path.dirname(self.path)

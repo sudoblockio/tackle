@@ -21,7 +21,7 @@ class TableHook(BaseHook):
         None, description="A string to separate the strings in the contents"
     )
 
-    def execute(self):
+    def exec(self):
         if self.sort:
             if self.contents:
                 self.contents.sort()

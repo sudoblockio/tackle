@@ -16,7 +16,7 @@ class ListdirHook(BaseHook):
     _args: list = ['path']
     _docs_order = 2
 
-    def execute(self) -> list:
+    def exec(self) -> list:
         files = os.listdir(os.path.expanduser(self.path))
         if self.sort:
             files.sort()

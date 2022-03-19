@@ -50,7 +50,7 @@ class RequestsGetHook(BaseHook):
         'params',
     ]
 
-    def execute(self) -> dict:
+    def exec(self) -> dict:
         r = requests.get(self.url, params=self.params, **self.kwargs)
         exit_none_200(r, self.no_exit, self.url)
         return process_content(r)
@@ -82,7 +82,7 @@ class RequestsPostHook(BaseHook):
 
     _args: list = ['url', 'data', 'kwargs']
 
-    def execute(self) -> dict:
+    def exec(self) -> dict:
         if isinstance(self.data, str):
             if not os.path.exists(self.data):
                 raise FileNotFoundError(
@@ -124,7 +124,7 @@ class RequestsPutHook(BaseHook):
 
     _args: list = ['url', 'data', 'kwargs']
 
-    def execute(self):
+    def exec(self):
         r = requests.put(self.url, data=self.data, json=self.input_json, **self.kwargs)
         exit_none_200(r, self.no_exit, self.url)
 
@@ -159,7 +159,7 @@ class RequestsPatchHook(BaseHook):
 
     _args: list = ['url', 'data', 'kwargs']
 
-    def execute(self):
+    def exec(self):
         r = requests.patch(
             self.url, data=self.data, json=self.input_json, **self.kwargs
         )
@@ -187,7 +187,7 @@ class RequestsDeleteHook(BaseHook):
 
     _args: list = ['url', 'kwargs']
 
-    def execute(self):
+    def exec(self):
         r = requests.delete(self.url, **self.kwargs)
         exit_none_200(r, self.no_exit, self.url)
 

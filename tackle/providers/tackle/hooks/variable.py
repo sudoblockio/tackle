@@ -26,7 +26,7 @@ class VarHook(BaseHook):
         else:
             return self._render_var(output)
 
-    def execute(self) -> Any:
+    def exec(self) -> Any:
         if self.no_recursion:
             # Input is already rendered so only need to pass back
             return self.input

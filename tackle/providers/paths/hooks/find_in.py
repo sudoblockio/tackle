@@ -24,7 +24,7 @@ class FindInParentHook(BaseHook):
 
     _args: list = ['target']
 
-    def execute(self) -> str:
+    def exec(self) -> str:
         return find_in_parent(
             dir=self.starting_dir, targets=[self.target], fallback=self.fallback
         )
@@ -47,7 +47,7 @@ class FindInChildHook(BaseHook):
 
     _args: list = ['target']
 
-    def execute(self) -> list:
+    def exec(self) -> list:
         files = []
         for (dirpath, dirnames, filenames) in os.walk(self.starting_dir):
             files += [

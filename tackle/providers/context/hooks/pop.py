@@ -34,7 +34,7 @@ class DictPopHook(BaseHook, smart_union=True):
         else:
             self.src.pop(self.item)
 
-    def execute(self) -> Union[dict, list, None]:
+    def exec(self) -> Union[dict, list, None]:
         """
         Check if the src is a ref to a key in the context or a literal value that will
         be returned.

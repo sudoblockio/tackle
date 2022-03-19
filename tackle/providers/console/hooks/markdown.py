@@ -12,7 +12,7 @@ class MarkdownPrintHook(BaseHook):
 
     _args: list = ['text']
 
-    def execute(self):
+    def exec(self):
         console = Console()
         console.print(Markdown(self.text))
         return self.text

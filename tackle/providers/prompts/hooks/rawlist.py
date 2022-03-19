@@ -20,7 +20,7 @@ class InquirerRawListHook(BaseHook):
 
     _args: list = ['message', 'default']
 
-    def execute(self) -> list:
+    def exec(self) -> list:
         if self.message is None:
             self.message = get_readable_key_path(self.key_path) + ' >>>'
 

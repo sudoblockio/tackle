@@ -11,5 +11,5 @@ class LiteralHook(BaseHook):
 
     _args: list = ['input']
 
-    def execute(self) -> Any:
+    def exec(self) -> Any:
         return self.input

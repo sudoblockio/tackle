@@ -48,7 +48,7 @@ class GitCloneHook(BaseHook):
 
     _args = ['url', 'to_path']
 
-    def execute(self):
+    def exec(self):
         if not self.to_path:
             self.to_path = self.url.split('/')[-1].split('.')[0]
         if self.url:

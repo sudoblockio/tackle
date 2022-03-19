@@ -27,7 +27,7 @@ class MatchHook(BaseHook):
     _args = ['value']
     _docs_order = 3
 
-    def execute(self) -> Union[dict, list]:
+    def exec(self) -> Union[dict, list]:
         # Condition catches everything except expanded hook calls and blocks (ie key->)
         for k, v in self.case.items():
             if re.match(k, self.value):

@@ -13,5 +13,5 @@ class TypeHook(BaseHook):
 
     _args: list = ['input']
 
-    def execute(self) -> str:
+    def exec(self) -> str:
         return type(self.input).__name__

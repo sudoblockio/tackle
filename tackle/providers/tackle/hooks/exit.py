@@ -9,5 +9,5 @@ class ExitHook(BaseHook):
 
     _args: list = ['code']
 
-    def execute(self) -> None:
+    def exec(self) -> None:
         exit(self.code)

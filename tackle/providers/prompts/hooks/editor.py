@@ -18,7 +18,7 @@ class InquirerEditorHook(BaseHook):
 
     _args: list = ['message', 'default']
 
-    def execute(self) -> bool:
+    def exec(self) -> bool:
         if self.message is None:
             self.message = get_readable_key_path(self.key_path) + ' >>>'
 

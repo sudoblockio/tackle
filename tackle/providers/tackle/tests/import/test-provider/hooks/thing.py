@@ -8,6 +8,6 @@ class ThingHook(BaseHook):
     hook_type: str = 'thing'
     stuff: str
 
-    def execute(self):
+    def exec(self):
         print(self.stuff)
         return self.stuff

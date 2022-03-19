@@ -34,7 +34,7 @@ class JinjaHook(BaseHook):
 
     _args: list = ['template', 'output']
 
-    def execute(self) -> str:
+    def exec(self) -> str:
         if self.render_context is not None:
             pass
         elif self.additional_context is not None:

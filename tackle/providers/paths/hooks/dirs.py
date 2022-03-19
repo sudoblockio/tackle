@@ -13,7 +13,7 @@ class MakeDirectoryHook(BaseHook):
     _args: list = ['path']
     _docs_order = 1
 
-    def execute(self) -> str:
+    def exec(self) -> str:
         pathlib.Path(self.path).mkdir(parents=True, exist_ok=True)
         return self.path
 
@@ -24,5 +24,5 @@ class MakeTempDirectoryHook(BaseHook):
     hook_type: str = 'temp_dir'
     _docs_order = 2
 
-    def execute(self) -> str:
+    def exec(self) -> str:
         return tempfile.mkdtemp()

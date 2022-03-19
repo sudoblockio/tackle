@@ -35,6 +35,6 @@ class FlattenPathHook(BaseHook):
 
         return output
 
-    def execute(self) -> list:
+    def exec(self) -> list:
         output = []
         return self.flatten_repo_tree(output, self.paths, self.base_path)

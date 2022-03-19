@@ -27,7 +27,7 @@ class RandomStringHook(BaseHook):
             )
         return v
 
-    def execute(self) -> str:
+    def exec(self) -> str:
         if self.upper:
             self.case = 'upper'
 
@@ -50,7 +50,7 @@ class RandomHexHook(BaseHook):
     _args: list = ['length']
     _docs_order = 7
 
-    def execute(self) -> str:
+    def exec(self) -> str:
         return ''.join(['%0', str(self.length), 'x']) % random.randrange(
             16 ** self.length
         )

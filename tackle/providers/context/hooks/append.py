@@ -23,7 +23,7 @@ class ListAppendHook(BaseHook):
 
     _args: list = ['src', 'item']
 
-    def execute(self) -> Optional[list]:
+    def exec(self) -> Optional[list]:
         if isinstance(self.src, str) or self.src_is_key_path:
             self.src = encode_key_path(self.src, self.sep)
             # When appending within a block, we try to append to output dict then

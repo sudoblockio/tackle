@@ -20,7 +20,7 @@ class SetKeyHook(BaseHook):
     _args = ['path', 'value']
     # fmt: on
 
-    def execute(self):
+    def exec(self):
         """Run the hook."""
         self.path = encode_key_path(self.path, self.sep)
         nested_set(

@@ -147,7 +147,7 @@ class ProviderDocsHook(BaseHook):
         if sys.version_info.minor <= 6:
             raise Exception("Can't run provider_docs hook in a py version < 3.7.")
 
-    def execute(self) -> Union[dict, list]:
+    def exec(self) -> Union[dict, list]:
         """Build the docs."""
         if not self.provider:
             self.provider = os.path.basename(os.path.abspath(self.path))

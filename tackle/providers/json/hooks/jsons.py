@@ -20,7 +20,7 @@ class JsonHook(BaseHook):
     )
     _args = ['path', 'data']
 
-    def execute(self) -> Union[dict, str]:
+    def exec(self) -> Union[dict, str]:
         self.path = os.path.abspath(os.path.expanduser(os.path.expandvars(self.path)))
         # Make path if it does not exist
         if not os.path.exists(os.path.dirname(self.path)) and self.data:
@@ -50,7 +50,7 @@ class JsonifyHook(BaseHook):
     )
     _args = ['data']
 
-    def execute(self) -> Union[dict, str]:
+    def exec(self) -> Union[dict, str]:
         return json.dumps(self.data)
         # if self.path:
         #     self.path = os.path.abspath(

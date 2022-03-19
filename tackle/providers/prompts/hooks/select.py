@@ -27,7 +27,7 @@ class InquirerListHook(BaseHook, smart_union=True):
     _args: list = ['message']
     _docs_order = 1
 
-    def execute(self) -> Any:
+    def exec(self) -> Any:
         if self.message is None:
             self.message = get_readable_key_path(self.key_path) + ' >>>'
 

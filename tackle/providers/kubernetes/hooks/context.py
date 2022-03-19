@@ -10,7 +10,7 @@ class K8sCurrentContextHook(BaseHook):
 
     hook_type: str = 'k8s_current_context'
 
-    def execute(self) -> str:
+    def exec(self) -> str:
         kubeconfig_locations = os.environ.get("KUBECONFIG", None)
 
         if kubeconfig_locations is None:
@@ -27,7 +27,7 @@ class K8sContextListHook(BaseHook):
 
     hook_type: str = 'k8s_context_list'
 
-    def execute(self) -> list:
+    def exec(self) -> list:
         kubeconfig_locations = os.environ.get("KUBECONFIG", None)
 
         if kubeconfig_locations is None:
@@ -51,7 +51,7 @@ class K8sContextMapHook(BaseHook):
 
     hook_type: str = 'k8s_context_map'
 
-    def execute(self) -> dict:
+    def exec(self) -> dict:
         kubeconfig_locations = os.environ.get("KUBECONFIG", None)
 
         if kubeconfig_locations is None:
@@ -75,7 +75,7 @@ class K8sUseContextHook(BaseHook):
     hook_type: str = 'k8s_use_context'
     context: str = Field(..., description="The context to use.")
 
-    def execute(self):
+    def exec(self):
         subprocess.run(
             ["kubectl", "config", "use-context", self.context], stdout=subprocess.PIPE
         )

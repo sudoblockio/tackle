@@ -17,7 +17,7 @@ class DictKeysHook(BaseHook):
 
     _args: list = ['src']
 
-    def execute(self) -> Optional[list]:
+    def exec(self) -> Optional[list]:
         """Convert to list then look up before lifting keys off a dict."""
         if isinstance(self.src, str):
             self.src = encode_key_path(self.src, self.sep)

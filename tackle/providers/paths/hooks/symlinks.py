@@ -25,7 +25,7 @@ class SymlinkHook(BaseHook):
     _args = ['src', 'dst']
     _docs_order = 3
 
-    def execute(self) -> None:
+    def exec(self) -> None:
         self.src = os.path.abspath(os.path.expanduser(os.path.expandvars(self.src)))
         self.dst = os.path.abspath(os.path.expanduser(os.path.expandvars(self.dst)))
 

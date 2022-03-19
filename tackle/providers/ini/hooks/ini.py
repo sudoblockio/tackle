@@ -23,7 +23,7 @@ class IniHook(BaseHook):
     allow_no_value: bool = Field(True, description="Whether to allow a no values.")
     _args = ['path', 'data']
 
-    def execute(self) -> Union[dict, str, list]:
+    def exec(self) -> Union[dict, str, list]:
         self.path = os.path.abspath(os.path.expanduser(os.path.expandvars(self.path)))
         # Make path if it does not exist
         if not os.path.exists(os.path.dirname(self.path)) and self.data:

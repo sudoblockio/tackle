@@ -19,5 +19,5 @@ class WebBrowserHook(BaseHook):
 
     _args = ['url']
 
-    def execute(self):
+    def exec(self):
         webbrowser.open(self.url, new=2)

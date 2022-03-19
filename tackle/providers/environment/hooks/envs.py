@@ -20,7 +20,7 @@ class GetEnvHook(BaseHook):
 
     _args: list = ['environment_variable', 'fallback']
 
-    def execute(self):
+    def exec(self):
         """Set env vars."""
         if platform.system() == 'Windows':
             from tackle.exceptions import ContributionNeededException
@@ -42,7 +42,7 @@ class EnvironmentVariableHook(BaseHook):
 
     _args: list = ['environment_variable', 'value']
 
-    def execute(self):
+    def exec(self):
         """Get or set env vars."""
         if platform.system() == 'Windows':
             from tackle.exceptions import ContributionNeededException
@@ -67,7 +67,7 @@ class ExportHook(BaseHook):
     _args: list = ['environment_variable', 'value']
 
     # TODO: Implement parsing for strings to set -> <: export THING=stuff
-    def execute(self):
+    def exec(self):
         """Set env vars."""
         if platform.system() == 'Windows':
             from tackle.exceptions import ContributionNeededException
@@ -89,7 +89,7 @@ class UnsetHook(BaseHook):
 
     _args: list = ['environment_variable']
 
-    def execute(self):
+    def exec(self):
         """Set env vars."""
         if platform.system() == 'Windows':
             from tackle.exceptions import ContributionNeededException

@@ -14,7 +14,7 @@ class SplitHook(BaseHook):
     _args: list = ['input', 'separator']
     _docs_order = 2
 
-    def execute(self):
+    def exec(self):
         return self.input.split(self.separator)
 
 
@@ -31,5 +31,5 @@ class JoinHook(BaseHook):
     _args: list = ['input', 'separator']
     _docs_order = 3
 
-    def execute(self):
+    def exec(self):
         return self.separator.join(self.input)

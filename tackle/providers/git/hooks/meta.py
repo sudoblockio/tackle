@@ -241,7 +241,7 @@ class MetaGitHook(BaseHook):
             # )
             self.command = 'clone'
 
-    def execute(self):
+    def exec(self):
         """Run the hook."""
         object.__setattr__(self, 'first_run', True)
 

@@ -20,7 +20,7 @@ class TomlHook(BaseHook):
     )
     _args = ['path', 'data']
 
-    def execute(self) -> Union[MutableMapping, str]:
+    def exec(self) -> Union[MutableMapping, str]:
         self.path = os.path.abspath(os.path.expanduser(os.path.expandvars(self.path)))
         # Make path if it does not exist
         if not os.path.exists(os.path.dirname(self.path)) and self.data:

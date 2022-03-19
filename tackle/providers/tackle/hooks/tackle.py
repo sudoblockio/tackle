@@ -34,7 +34,7 @@ class TackleHook(BaseHook):
     _args = ['input_string']
     _docs_order = 0
 
-    def execute(self) -> dict:
+    def exec(self) -> dict:
         if self.context:
             existing_context = self.context
         else:

@@ -20,7 +20,7 @@ class ZipHook(BaseHook):
     input: str = Field(..., description="Input path")
     output: str = Field(..., description="Output path")
 
-    def execute(self):
+    def exec(self):
         if os.path.isdir(self.input):
             zf = zipfile.ZipFile(self.output, "w", zipfile.ZIP_DEFLATED)
             for dirname, subdirs, files in os.walk(self.input):
@@ -43,7 +43,7 @@ class UnzipHook(BaseHook):
     input: str = Field(..., description="Input path")
     output: str = Field(".", description="Output path, default to current directory")
 
-    def execute(self):
+    def exec(self):
         if os.path.isfile(self.input):
             with zipfile.ZipFile(self.input, 'r') as zip_ref:
                 zip_ref.extractall(self.output)
