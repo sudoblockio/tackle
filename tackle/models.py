@@ -22,7 +22,7 @@ import logging
 import random
 import string
 
-from tackle.utils.paths import work_in, listdir_absolute
+from tackle.utils.paths import listdir_absolute
 from tackle.utils.dicts import get_readable_key_path
 from tackle.render import wrap_jinja_braces
 
@@ -318,8 +318,8 @@ class Context(BaseModel):
     # Inputs
     input_string: str = None
     input_dir: str = None
-
     input_file: str = None
+    # TODO: Change to version?
     checkout: str = Field(
         None,
         description="For inputs referencing remote repos, refers to a branch or tag.",
@@ -404,6 +404,7 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
     is_hook_call: bool = False
     skip_import: bool = False
     hooks_path: str = None
+    exec_: Any = None  # For storing exec from function
 
     # For tackle hook that needs to pass this expensive to instantiate object through
     provider_hooks: ProviderHooks = None
@@ -457,7 +458,7 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
         # disregards aliased fields
         alias_to_fields = {v: k for k, v in fields.items()}
 
-    def execute(self) -> Any:
+    def exec(self) -> Any:
         raise NotImplementedError("Every hook needs an execute method.")
 
     # https://github.com/samuelcolvin/pydantic/issues/1864#issuecomment-679044432
@@ -492,21 +493,34 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
         self.validate()
         return self.execute()
 
-    def call(self) -> Any:
-        """
-        Call main entrypoint to calling hook.
+    # def call(self) -> Any:
+    #     """
+    #     Call main entrypoint to calling hook.
+    #
+    #     Handles `chdir` method.
+    #     """
+    #     if self.chdir:
+    #         path = os.path.abspath(os.path.expanduser(self.chdir))
+    #         if os.path.isdir(path):
+    #             # Use contextlib to switch dirs
+    #             with work_in(os.path.abspath(os.path.expanduser(self.chdir))):
+    #                 return self.execute()
+    #         else:
+    #             raise NotADirectoryError(
+    #                 f"The specified path='{path}' to change to was not found."
+    #             )
+    #     else:
+    #         return self.execute()
 
-        Handles `chdir` method.
-        """
-        if self.chdir:
-            path = os.path.abspath(os.path.expanduser(self.chdir))
-            if os.path.isdir(path):
-                # Use contextlib to switch dirs
-                with work_in(os.path.abspath(os.path.expanduser(self.chdir))):
-                    return self.execute()
-            else:
-                raise NotADirectoryError(
-                    f"The specified path='{path}' to change to was not found."
-                )
-        else:
-            return self.execute()
+
+class Function(BaseModel):
+    """Function input model."""
+    fields: dict = None
+    render_exclude: list = []
+    args: list = None
+    exec: Any = None
+
+    validators: dict = None
+    methods: dict = None
+    public: bool = None
+    extends: str = None

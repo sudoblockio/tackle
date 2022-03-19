@@ -1,8 +1,5 @@
 
-stuff:
-  and: things
-
-foo: bar
+do_func->: some_function
 
 some_function<-:
   extends: other_function
@@ -15,7 +12,6 @@ some_function<-:
 
   args:
     - thing
-
   exec:
     do->: print "{{thing}}"
 

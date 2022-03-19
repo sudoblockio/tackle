@@ -1,10 +1,10 @@
-"""Main parsing module for walking down arbitrary data structures and executing hooks."""
-from __future__ import print_function
-import logging
-from pathlib import Path
 import os
+import re
+import logging
 import warnings
-from typing import Type
+from pathlib import Path
+from typing import Type, Any
+from pydantic import Field, create_model, BaseModel
 from pydantic.main import ModelMetaclass
 
 from tackle.render import render_variable, wrap_jinja_braces
@@ -29,7 +29,7 @@ from tackle.utils.paths import (
     find_in_parent,
 )
 from tackle.utils.zipfile import unzip
-from tackle.models import Context, BaseHook, LazyImportHook
+from tackle.models import Context, BaseHook, LazyImportHook, Function
 from tackle.exceptions import (
     HookCallException,
     UnknownHookTypeException,
@@ -73,16 +73,9 @@ def get_hook(hook_type, context: 'Context'):
     if isinstance(h, LazyImportHook):
         # Install the requirements which will convert all the provider
         context.provider_hooks.import_with_fallback_install(
-            # provider_hook_dict=context.provider_hooks,
             mod_name=h.mod_name,
             path=h.hooks_path,
         )
-
-        # import_with_fallback_install(
-        #     provider_hook_dict=context.provider_hooks,
-        #     mod_name=h.mod_name,
-        #     path=h.hooks_path,
-        # )
         h = context.provider_hooks[hook_type]
     return h
 
@@ -103,9 +96,9 @@ def evaluate_for(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
         return
 
     for i, l in (
-        enumerate(loop_targets)
-        if not render_variable(context, hook_dict.get('reverse', None))
-        else reversed(list(enumerate(loop_targets)))
+            enumerate(loop_targets)
+            if not render_variable(context, hook_dict.get('reverse', None))
+            else reversed(list(enumerate(loop_targets)))
     ):
         # Create temporary variables in the context to be used in the loop.
         context.existing_context.update({'index': i, 'item': l})
@@ -137,7 +130,7 @@ def evaluate_if(hook_dict: dict, context: 'Context', append_hook_value: bool) ->
 
 
 def evaluate_merge(
-    hook_output_value, context: 'Context', append_hook_value: bool = False
+        hook_output_value, context: 'Context', append_hook_value: bool = False
 ):
     """Merge the contents into it's top level set of keys."""
     if append_hook_value:
@@ -171,6 +164,39 @@ def evaluate_merge(
         )
 
 
+def run_hook_in_dir(
+        hook: Type[BaseHook]
+) -> Any:
+    if hook.chdir:
+        path = os.path.abspath(os.path.expanduser(hook.chdir))
+        if os.path.isdir(path):
+            # Use contextlib to switch dirs
+            with work_in(os.path.abspath(os.path.expanduser(hook.chdir))):
+                return hook.exec()
+        else:
+            raise NotADirectoryError(
+                f"The specified path='{path}' to change to was not found."
+            )
+    else:
+        return hook.exec()
+
+
+def run_hook_with_try(
+        hook: Type[BaseHook]
+) -> Any:
+    """Handle changing dir attribute."""
+    if hook.try_:
+        try:
+            return run_hook_in_dir(hook)
+            # hook_output_value = hook.call()
+        except Exception:
+            return
+    else:
+        # Normal hook run
+        # hook_output_value = hook.call()
+        return run_hook_in_dir(hook)
+
+
 def render_hook_vars(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
     """Render the hook variables."""
     for key, value in list(hook_dict.items()):
@@ -200,7 +226,8 @@ def render_hook_vars(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
 
 
 def parse_hook(
-    hook_dict, Hook: ModelMetaclass, context: 'Context', append_hook_value: bool = None
+        hook_dict, Hook: ModelMetaclass, context: 'Context',
+        append_hook_value: bool = None
 ):
     """Parse input dict for loop and when logic and calls hooks."""
     if evaluate_if(hook_dict, context, append_hook_value):
@@ -229,15 +256,7 @@ def parse_hook(
                 env_=context.env_,
                 is_hook_call=True,
             )
-
-            if hook.try_:
-                try:
-                    hook_output_value = hook.call()
-                except Exception:
-                    return
-            else:
-                # Normal hook run
-                hook_output_value = hook.call()
+            hook_output_value = run_hook_with_try(hook)
 
             if hook.merge:
                 evaluate_merge(hook_output_value, context, append_hook_value)
@@ -267,9 +286,6 @@ def parse_hook(
             # Issue is we need to maintain a consistent render context during exec
             raise NotImplementedError("Compact else not implemented.")
         raise NotImplementedError("Compact else not implemented.")
-        # context.key_path.pop()  # Remove the prior hook call
-        # walk_sync(context, element=hook_dict['else->'])
-        # context.key_path.append('hack')
 
 
 def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
@@ -346,7 +362,7 @@ def handle_leading_brackets(args) -> list:
             for i in range(1, len(args)):
                 if '}}' in args[i]:
                     joined_template = ' '.join(args[: (i + 1)])
-                    other_args = args[(i + 1) :]
+                    other_args = args[(i + 1):]
                     args = ['var'] + [joined_template] + other_args
                     break
     return args
@@ -379,8 +395,8 @@ def run_hook(context: 'Context'):
             nested_set(
                 element=context.output_dict,
                 keys=context.key_path[:-1]
-                + [context.key_path[-1][:-2]]
-                + [encode_list_index(i)],
+                     + [context.key_path[-1][:-2]]
+                     + [encode_list_index(i)],
                 value=render_variable(context, v),
             )
         return
@@ -392,7 +408,7 @@ def run_hook(context: 'Context'):
         raise UnknownHookTypeException(f"Hook type-> \"{first_arg}\" unknown.")
 
     if context.key_path[-1] in ('->', '_>'):
-        # We have a expanded or mixed (with args) hook expression and so there will be
+        # We have an expanded or mixed (with args) hook expression and so there will be
         # additional properties in adjacent keys
         hook_dict = nested_get(context.input_dict, context.key_path[:-1]).copy()
 
@@ -631,7 +647,7 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list):
 
     if context.global_flags is not None:
         kwargs.update({i: True for i in context.global_flags})
-        context.global_kwargs = None
+        context.global_flags = None
 
     update_input_dict_with_kwargs(context=context, kwargs=kwargs)
 
@@ -662,10 +678,66 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list):
                 context.key_path.append(i)
                 walk_sync(context, context.input_dict[i].copy())
                 context.key_path.pop()
+
+            elif i in context.provider_hooks:
+
+                raise NotImplementedError
             else:
                 raise ValueError(f"Argument {i} not found as key in input.")
         return
-    walk_sync(context, context.input_dict.copy())
+
+    if len(context.input_dict) == 0:
+        raise EmptyTackleFileException(
+            # TODO improve
+            f"Only functions are declared in {context.input_string} tackle file. Must"
+            f" provide an argument such as [] or run `tackle {context.input_string}"
+            f" help` to see more options.")
+    else:
+        walk_sync(context, context.input_dict.copy())
+
+
+def function_validators():
+    pass
+
+
+def function_exec(self: Type[BaseHook]):
+    walk_sync()
+    print()
+
+
+def create_function_model(func_name: str, func_dict: dict) -> Type[BaseModel]:
+    """Create a model from the function input dict."""
+    func = Function(**func_dict)
+    parsed_schema = {
+        'hook_type': func_name[:-2],
+        '_args': func.args,
+        '_render_exclude': func.render_exclude,
+        'exec_': func.exec,
+    }
+
+    for k, v in func.fields.items():
+        if isinstance(v, dict):
+            parsed_schema[k] = Field(**v)
+        if isinstance(v, (str, int, float, bool)):
+            parsed_schema[k] = v
+
+    if func_name.endswith('_>'):
+        parsed_schema['public_'] = False
+    else:
+        parsed_schema['public_'] = True
+
+    return create_model(func_name[:-2], __base__=BaseHook, **parsed_schema)
+
+
+def extract_functions(context: 'Context'):
+    for k, v in context.input_dict.copy().items():
+        if re.match(r'.*(<\-|<\_)$', k):
+            Function = create_function_model(k, v)
+            setattr(Function, 'exec', function_exec)
+            Function.Config.alias_to_fields = []
+
+            context.provider_hooks[k[:-2]] = Function
+            context.input_dict.pop(k)
 
 
 def extract_base_file(context: 'Context'):
@@ -688,6 +760,9 @@ def extract_base_file(context: 'Context'):
     if isinstance(context.input_dict, list):
         # Change output to empty list
         context.output_dict = []
+    else:
+        # TODO: Implement function extractor
+        extract_functions(context)
 
     # Check if there is a hooks directory in the provider being run and import the hooks
     input_dir_contents = os.listdir(context.input_dir)

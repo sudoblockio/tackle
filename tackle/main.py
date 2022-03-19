@@ -17,6 +17,8 @@ def get_global_kwargs(kwargs):
     for k, v in kwargs.items():
         if k not in Context.__fields__:
             global_kwargs.update({k: v})
+    if global_kwargs == {}:
+        return None
     return global_kwargs
 
 
@@ -42,13 +44,17 @@ def tackle(
     """
     if args:
         kwargs['input_string'] = args[0]
+        if len(args) != 1:
+            kwargs['global_args'] = []
+            for i in range(1, len(args)):
+                kwargs['global_args'].append(args[i])
 
     # Handle empty calls which fallback to finding the closest tackle file
     # in the parent directory
-    if 'input_string' not in kwargs:
+    if 'input_string' not in kwargs or kwargs['input_string'] is None:
         kwargs['input_string'] = find_nearest_tackle_file()
-    elif kwargs['input_string'] is None:
-        kwargs['input_string'] = find_nearest_tackle_file()
+    # elif kwargs['input_string'] is None:
+    #     kwargs['input_string'] = find_nearest_tackle_file()
 
     # Handle the exception if no tackle file is found in parent directory
     if kwargs['input_string'] is None:
