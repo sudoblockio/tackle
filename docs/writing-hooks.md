@@ -31,7 +31,7 @@ class DoStuffHook(BaseHook):
     things: str = Field(None, description="All the things.")
     _args: list = ['things']
 
-    def execute(self):
+    def exec(self):
         print(self.things)
         return self.things
 ```
@@ -69,7 +69,7 @@ class DoStuffHook(BaseHook):
     things: Union[str] = None
     _args: list = ['things']
 
-    def execute(self):
+    def exec(self):
         if isinstance(self.things, list):
             for i in self.things:
                 print(f"Thing = {i}")
@@ -206,7 +206,7 @@ class DoStuffHook(BaseHook):
         # Initialize the object
         ...
 
-    def execute(self):
+    def exec(self):
         ...
 ```
 
