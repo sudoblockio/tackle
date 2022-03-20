@@ -1,9 +1,13 @@
+
+stuff: out-block
 block->:
   furry:
     ->: confirm
     message: Are our friends furry?
   friend: dog
 
+# Writes block.beer to output_dict
+  stuff: in-block
   beer:
     ->: tackle fake-tackle
 

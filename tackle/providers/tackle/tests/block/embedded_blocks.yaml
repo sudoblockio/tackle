@@ -1,10 +1,8 @@
 stuff: things
 
 blocker->:
-  merge: true
-
   furry->: confirm Are our friends furry?
   things->: "{{ stuff }}"
   friend: dog
   test_block->:
-    my_dog->: print Penny --if "friend == 'dog'"
+    my_dog->: print Penny # --if "friend == 'dog'"

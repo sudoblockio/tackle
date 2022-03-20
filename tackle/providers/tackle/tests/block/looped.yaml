@@ -1,20 +1,22 @@
 alist:
-  type: var
-  input:
-    - stuff
-    - things
+  - stuff
+  - things
 
 blocker->:
   for: alist
-  first:
-    ->: tackle
-    chdir: fake-tackle
+  first->: "{{item}}"
 
-  print->: print "{{ first }}"
-
-blocker2->:
-  for: alist
-  thing: false
-  print->: print this --if "{{ thing }}"
-
-output->: print "{{ this }}"
+#blocker->:
+#  for: alist
+#  first:
+#    ->: tackle
+#    chdir: fake-tackle
+#
+#  print->: print "{{ first }}"
+#
+#blocker2->:
+#  for: alist
+#  thing: false
+#  print->: print this --if "{{ thing }}"
+#
+#output->: print "{{ this }}"
