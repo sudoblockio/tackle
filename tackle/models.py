@@ -332,6 +332,7 @@ class Context(BaseModel):
 
     # Internal
     key_path: list = []
+    key_path_block: list = []
     provider_hooks: ProviderHooks = None
 
     calling_directory: str = None
@@ -389,13 +390,12 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
     # context parameters - must be same type as context
     input_dict: Union[dict, list] = None
     output_dict: Union[dict, list] = {}
+    key_path: list = None
     existing_context: dict = None
     no_input: bool = None
     calling_directory: str = None
     calling_file: str = None
     verbose: bool = False
-
-    key_path: list = None
 
     # Placeholder until help can be fully worked out
     help: str = None
@@ -515,6 +515,7 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
 
 class Function(BaseModel):
     """Function input model."""
+
     fields: dict = None
     render_exclude: list = []
     args: list = None

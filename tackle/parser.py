@@ -96,9 +96,9 @@ def evaluate_for(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
         return
 
     for i, l in (
-            enumerate(loop_targets)
-            if not render_variable(context, hook_dict.get('reverse', None))
-            else reversed(list(enumerate(loop_targets)))
+        enumerate(loop_targets)
+        if not render_variable(context, hook_dict.get('reverse', None))
+        else reversed(list(enumerate(loop_targets)))
     ):
         # Create temporary variables in the context to be used in the loop.
         context.existing_context.update({'index': i, 'item': l})
@@ -129,19 +129,45 @@ def evaluate_if(hook_dict: dict, context: 'Context', append_hook_value: bool) ->
     return render_variable(context, wrap_jinja_braces(hook_dict['if']))
 
 
-def evaluate_merge(
-        hook_output_value, context: 'Context', append_hook_value: bool = False
+def merge_block_output(
+    hook_output_value: Any,
+    key_path: list,
+    output_dict: dict,
+    append_hook_value: bool = False,
+):
+    """
+    Block hooks have already written to the output dict so to merge, need to take the
+     keys from the key path and move them up one level.
+    """
+    if append_hook_value:
+        raise HookCallException("Can't merge from for loop.")
+
+    indexed_block_output = nested_get(element=hook_output_value, keys=key_path)
+    for k, v in indexed_block_output.items():
+        nested_set(
+            element=output_dict,
+            keys=[k] + key_path[:-1],
+            value=v,
+        )
+    nested_delete(element=output_dict, keys=key_path)
+
+
+def merge_output(
+    hook_output_value: Any,
+    key_path: list,
+    output_dict: dict,
+    append_hook_value: bool = False,
 ):
     """Merge the contents into it's top level set of keys."""
     if append_hook_value:
         raise HookCallException("Can't merge from for loop.")
 
-    if context.key_path[-1] in ('->', '_>'):
+    if key_path[-1] in ('->', '_>'):
         # Expanded key - Remove parent key from key path
-        key_path = context.key_path[:-2] + [context.key_path[-1]]
+        key_path = key_path[:-2] + [key_path[-1]]
     else:
         # Compact key
-        key_path = context.key_path[:-1] + [context.key_path[-1][-2:]]
+        key_path = key_path[:-1] + [key_path[-1][-2:]]
 
     # Can't merge into top level keys without merging k/v individually
     if len(key_path) == 1:
@@ -149,7 +175,7 @@ def evaluate_merge(
         if isinstance(hook_output_value, dict):
             for k, v in hook_output_value.items():
                 set_key(
-                    element=context.output_dict,
+                    element=output_dict,
                     keys=[k] + key_path,
                     value=v,
                 )
@@ -158,15 +184,13 @@ def evaluate_merge(
             raise HookCallException("Can't merge non maps into top level keys.")
     else:
         set_key(
-            element=context.output_dict,
+            element=output_dict,
             keys=key_path,
             value=hook_output_value,
         )
 
 
-def run_hook_in_dir(
-        hook: Type[BaseHook]
-) -> Any:
+def run_hook_in_dir(hook: Type[BaseHook]) -> Any:
     if hook.chdir:
         path = os.path.abspath(os.path.expanduser(hook.chdir))
         if os.path.isdir(path):
@@ -181,19 +205,15 @@ def run_hook_in_dir(
         return hook.exec()
 
 
-def run_hook_with_try(
-        hook: Type[BaseHook]
-) -> Any:
+def run_hook_with_try(hook: Type[BaseHook]) -> Any:
     """Handle changing dir attribute."""
     if hook.try_:
         try:
             return run_hook_in_dir(hook)
-            # hook_output_value = hook.call()
         except Exception:
             return
     else:
         # Normal hook run
-        # hook_output_value = hook.call()
         return run_hook_in_dir(hook)
 
 
@@ -226,8 +246,7 @@ def render_hook_vars(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
 
 
 def parse_hook(
-        hook_dict, Hook: ModelMetaclass, context: 'Context',
-        append_hook_value: bool = None
+    hook_dict, Hook: ModelMetaclass, context: 'Context', append_hook_value: bool = None
 ):
     """Parse input dict for loop and when logic and calls hooks."""
     if evaluate_if(hook_dict, context, append_hook_value):
@@ -256,14 +275,30 @@ def parse_hook(
                 env_=context.env_,
                 is_hook_call=True,
             )
+            # Main exec logic
             hook_output_value = run_hook_with_try(hook)
 
-            if hook.merge:
-                evaluate_merge(hook_output_value, context, append_hook_value)
+            if hook.hook_type == 'block':
+                if hook.merge:
+                    merge_block_output(
+                        hook_output_value=hook_output_value,
+                        key_path=context.key_path,
+                        output_dict=context.output_dict,
+                        append_hook_value=append_hook_value,
+                    )
+                return
+            elif hook.merge:
+                merge_output(
+                    hook_output_value=hook_output_value,
+                    key_path=context.key_path,
+                    output_dict=context.output_dict,
+                    append_hook_value=append_hook_value,
+                )
             else:
                 set_key(
                     element=context.output_dict,
                     keys=context.key_path,
+                    # keys=context.key_path[-len(context.key_path_block):],
                     value=hook_output_value,
                     append_hook_value=append_hook_value,
                 )
@@ -273,6 +308,7 @@ def parse_hook(
             set_key(
                 element=context.output_dict,
                 keys=context.key_path,
+                # keys=context.key_path[:-len(context.key_path_block)],
                 value=render_variable(context, hook_dict['else']),
                 append_hook_value=append_hook_value,
             )
@@ -362,7 +398,7 @@ def handle_leading_brackets(args) -> list:
             for i in range(1, len(args)):
                 if '}}' in args[i]:
                     joined_template = ' '.join(args[: (i + 1)])
-                    other_args = args[(i + 1):]
+                    other_args = args[(i + 1) :]
                     args = ['var'] + [joined_template] + other_args
                     break
     return args
@@ -395,8 +431,8 @@ def run_hook(context: 'Context'):
             nested_set(
                 element=context.output_dict,
                 keys=context.key_path[:-1]
-                     + [context.key_path[-1][:-2]]
-                     + [encode_list_index(i)],
+                + [context.key_path[-1][:-2]]
+                + [encode_list_index(i)],
                 value=render_variable(context, v),
             )
         return
@@ -410,22 +446,20 @@ def run_hook(context: 'Context'):
     if context.key_path[-1] in ('->', '_>'):
         # We have an expanded or mixed (with args) hook expression and so there will be
         # additional properties in adjacent keys
-        hook_dict = nested_get(context.input_dict, context.key_path[:-1]).copy()
-
+        hook_dict = nested_get(
+            context.input_dict, context.key_path[:-1][-len(context.key_path_block) :]
+        ).copy()
         # Need to replace arrow keys as for the time being (pydantic 1.8.2) - multiple
         # aliases for the same field (type) can't be specified so doing this hack
         if '->' in hook_dict:
-            hook_dict['hook_type'] = first_arg
             hook_dict.pop('->')
         else:
-            hook_dict['hook_type'] = first_arg
             hook_dict.pop('_>')
-
     else:
         # Hook is a compact expression - Can only be a string
         hook_dict = {}
         # hook_dict['hook_type'] = nested_get(context.input_dict, context.key_path)
-        hook_dict['hook_type'] = first_arg
+    hook_dict['hook_type'] = first_arg
 
     # Associate hook arguments provided in the call with hook attributes
     evaluate_args(args, hook_dict, Hook)
@@ -468,22 +502,24 @@ def handle_empty_blocks(context: 'Context', block_value):
     # Break up key paths
     base_key_path = context.key_path[:-1]
     new_key = [context.key_path[-1][:-2]]
+    # Handle embedded blocks which need to have thier key paths adjusted
+    key_path = (base_key_path + new_key)[-len(context.key_path_block) :]
 
     # Over-write the input with an expanded path (ie no arrow in key)
     nested_set(
         element=context.input_dict,
-        keys=base_key_path + new_key,
+        keys=key_path,
         value=block_value,
     )
     # Add back the arrow with the value set to `block` for the block hook
     arrow = [context.key_path[-1][-2:]]
     nested_set(
         element=context.input_dict,
-        keys=base_key_path + new_key + arrow,
+        keys=key_path + arrow,
         value='block',
     )
     # Remove the old key
-    nested_delete(context.input_dict, context.key_path)
+    nested_delete(context.input_dict, context.key_path[-len(context.key_path_block) :])
 
     # Iterate through the block keys except for the reserved keys like `for` or `if`
     aliases = [v.alias for _, v in BaseHook.__fields__.items()] + ['->', '_>']
@@ -492,17 +528,17 @@ def handle_empty_blocks(context: 'Context', block_value):
             # Set the keys under the `items` key per the block hook's input
             nested_set(
                 element=context.input_dict,
-                keys=base_key_path + new_key + ['items', k],
+                keys=key_path + ['items', k],
                 value=v,
             )
             # Remove the old key
-            nested_delete(context.input_dict, base_key_path + new_key + [k])
+            nested_delete(context.input_dict, key_path + [k])
         elif context.verbose:
             warnings.warn(f"Warning - skipping over {k} in block hook.")
 
     # Finally check if the `items` key exists in the input_dict.  If not then we have
     # an empty hook which will cause an ambiguous ValidationError for missing field
-    if 'items' not in nested_get(context.input_dict, base_key_path + new_key):
+    if 'items' not in nested_get(context.input_dict, key_path):
         key = get_readable_key_path(context.key_path)
         raise EmptyBlockException(f"Empty hook in key path = {key}")
 
@@ -554,7 +590,6 @@ def walk_sync(context: 'Context', element):
                 handle_empty_blocks(context, v)
                 context.key_path[-1] = k[:-2]
                 walk_sync(context, v)
-                context.key_path.pop()
             else:
                 # Recurse
                 walk_sync(context, v)
@@ -590,9 +625,6 @@ def run_handler(context, handler_key, handler_value):
 
     elif get_hook(handler_key, context, suppress_error=True):
         Hook = get_hook(handler_key, context)
-        # context.input_string('import ' + handler_value)
-        # run_hook_function(context)
-        # if isinstance()
         hook = Hook(
             **handler_value,
             input_dict=context.input_dict,
@@ -691,7 +723,8 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list):
             # TODO improve
             f"Only functions are declared in {context.input_string} tackle file. Must"
             f" provide an argument such as [] or run `tackle {context.input_string}"
-            f" help` to see more options.")
+            f" help` to see more options."
+        )
     else:
         walk_sync(context, context.input_dict.copy())
 
@@ -707,19 +740,22 @@ def function_exec(self: Type[BaseHook]):
 
 def create_function_model(func_name: str, func_dict: dict) -> Type[BaseModel]:
     """Create a model from the function input dict."""
+    # TODO: Change this?
     func = Function(**func_dict)
     parsed_schema = {
         'hook_type': func_name[:-2],
         '_args': func.args,
         '_render_exclude': func.render_exclude,
-        'exec_': func.exec,
+        'exec_': (Any, func.exec),
     }
 
     for k, v in func.fields.items():
         if isinstance(v, dict):
             parsed_schema[k] = Field(**v)
-        if isinstance(v, (str, int, float, bool)):
+        elif isinstance(v, (str, int, float, bool)):
             parsed_schema[k] = v
+        elif isinstance(v, list):
+            parsed_schema[k] = (list, v)
 
     if func_name.endswith('_>'):
         parsed_schema['public_'] = False

@@ -22,19 +22,54 @@ class BlockHook(BaseHook):
 
     _render_exclude = {'items'}
 
+    # def exec(self) -> Union[dict, list]:
+    #     existing_context = self.output_dict.copy()
+    #     existing_context.update(self.existing_context)
+    #
+    #     tmp_context = Context(
+    #         provider_hooks=self.provider_hooks,
+    #         existing_context=existing_context,
+    #         output_dict={},
+    #         input_dict=self.items,
+    #         key_path=[],
+    #         no_input=self.no_input,
+    #         calling_directory=self.calling_directory,
+    #         calling_file=self.calling_file,
+    #     )
+    #     walk_sync(context=tmp_context, element=self.items.copy())
+    #     return tmp_context.output_dict
+
     def exec(self) -> Union[dict, list]:
-        existing_context = self.output_dict.copy()
-        existing_context.update(self.existing_context)
+        # self.key_path = self.key_path[:-1]
+        # if isinstance(self.key_path[-1], bytes):
+        if self.key_path[-1] == b'\x00\x00':
+            self.key_path.pop(-2)
+        elif self.key_path[-1] in ('->', '_>'):
+            self.key_path.pop(-1)
+
+        # else:
+        #     self.key_path.pop(-1)
+        # key_path = self.key_path[:-1]
+
+        # if self.merge:
+        #     print()
+        #     self.key_path.pop()
 
         tmp_context = Context(
             provider_hooks=self.provider_hooks,
-            existing_context=existing_context,
-            output_dict={},
+            existing_context=self.existing_context,
+            output_dict=self.output_dict,
             input_dict=self.items,
-            key_path=[],
+            # key_path=self.key_path[:-1],
+            key_path=self.key_path,
+            key_path_block=self.key_path.copy(),
             no_input=self.no_input,
             calling_directory=self.calling_directory,
             calling_file=self.calling_file,
         )
         walk_sync(context=tmp_context, element=self.items.copy())
-        return tmp_context.output_dict
+
+        # for i in self.key_path[:-1]:
+        #     self.output_dict = self.output_dict[i]
+
+        return self.output_dict
