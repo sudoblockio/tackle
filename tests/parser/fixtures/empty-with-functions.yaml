@@ -1,0 +1,21 @@
+foo<-:
+  fields:
+    full:
+      type: str
+      description: A description
+      default: a-default
+    compact: a-default
+
+  args:
+    - full
+
+bar<_:
+  fields:
+    full:
+      type: str
+      description: A description
+      default: a-default
+    compact: a-default
+
+  args:
+    - full

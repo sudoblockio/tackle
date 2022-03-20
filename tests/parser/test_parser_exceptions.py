@@ -6,6 +6,7 @@ from tackle.cli import main
 
 INPUT_SOURCES = [
     ("empty.yaml", EmptyTackleFileException),
+    ("empty-with-functions.yaml", EmptyTackleFileException),
     ("exceptions/out-of-range-arg.yaml", UnknownArgumentException),
 ]
 
