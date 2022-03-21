@@ -734,19 +734,67 @@ def function_validators():
 
 
 def function_exec(self: Type[BaseHook]):
-    walk_sync()
+    """
+    Notes:
+        - Functions can perhaps have different namespace models depending on config
+        - Normally can act like blocks
+    """
+    if self.key_path[-1] not in ('->', '_>'):
+        last_key = self.key_path.pop(-1)
+        self.key_path += [last_key[:-2]] + [last_key[-2:]]
+
+    tmp_context = Context(
+        provider_hooks=self.provider_hooks,
+        existing_context=self.existing_context,
+        output_dict=self.output_dict,
+        input_dict=self.exec_,
+        # key_path=self.key_path[:-1],
+        key_path=self.key_path,
+        key_path_block=self.key_path.copy(),
+        no_input=self.no_input,
+        calling_directory=self.calling_directory,
+        calling_file=self.calling_file,
+    )
+    walk_sync(context=tmp_context, element=self.exec_.copy())
+
+    if self.return_:
+        print()
+
     print()
+    return 'foo'
 
 
 def create_function_model(func_name: str, func_dict: dict) -> Type[BaseModel]:
     """Create a model from the function input dict."""
-    # TODO: Change this?
+    # Function fields are handled individually
+    # if 'fields' in func_dict:
+    #     func_fields = func_dict['fields']
+    #     func_dict.pop('fields')
+    # else:
+    #     func_fields = {}
+    #
     func = Function(**func_dict)
+    #
+    # for k, v in func_fields.items():
+    #     if isinstance(v, dict):
+    #         setattr(func, k, v)
+    #         # func.k = Field(**v)
+    #     elif isinstance(v, (str, int, float, bool)):
+    #         func.k = v
+    #     elif isinstance(v, list):
+    #         func.k = (list, v)
+    #
+    # return create_model(func_name[:-2], __base__=BaseHook, **func.dict())
+
+    from typing import Union
+
+    # TODO: Change this?
     parsed_schema = {
         'hook_type': func_name[:-2],
         '_args': func.args,
         '_render_exclude': func.render_exclude,
         'exec_': (Any, func.exec),
+        'return_': (Union[str, list], func.return_),
     }
 
     for k, v in func.fields.items():

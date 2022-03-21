@@ -520,6 +520,7 @@ class Function(BaseModel):
     render_exclude: list = []
     args: list = None
     exec: Any = None
+    return_: Union[str, list] = None
 
     validators: dict = None
     methods: dict = None
