@@ -12,14 +12,14 @@ FIXTURES = [
 
 @pytest.mark.parametrize("fixture", FIXTURES)
 def test_function_model_extraction(change_curdir_fixtures, fixture):
-
     output = tackle(fixture)
-    print()
+    assert output
 
 
 FIXTURES_ARGS = [
     ('model-function.yaml', ['some_function']),
 ]
+
 
 @pytest.mark.parametrize("fixture,args", FIXTURES_ARGS)
 def test_function_arguments(change_curdir_fixtures, fixture, args):
@@ -32,6 +32,7 @@ def test_create_function_model(change_curdir_fixtures):
     yaml = YAML()
     with open('model-function.yaml') as f:
         model_fixture = yaml.load(f)
+    from tackle.parser import create_function_model
 
     output = create_function_model('foo', model_fixture['some_function<-'])
     print()

@@ -13,7 +13,9 @@ some_function<-:
   args:
     - thing
   exec:
+    foo: bar
     do->: print "{{thing}}"
+
 
   validators:
     thing:
