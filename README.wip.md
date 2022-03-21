@@ -1,4 +1,4 @@
-# Tackle Box
+# Tackle
 
 [![pypi](https://img.shields.io/pypi/v/tackle-box.svg)](https://pypi.python.org/pypi/tackle-box)
 [![python](https://img.shields.io/pypi/pyversions/tackle-box.svg)](https://pypi.python.org/pypi/tackle-box)
@@ -11,6 +11,107 @@
 * [BSD License](LICENSE)
 
 Tackle box is a DSL for turning static configuration files into dynamic workflows. Tool is plugins based and can easily be extended by writing additional hooks or importing external providers.
+
+Tackle box is a programmable configuration language and declarative CLI written in yaml and extended with importable providers. Tackle parsers arbitrary configuration files and reacts to keys ending in arrows ('->'/'<-') to take special actions. Make any configuration file dynamic, callable, or simply into a CLI with tackle.
+
+Tackle is a modular programmable configuration language and declarative CLI that can make any yaml/json file dynamic/callable.
+
+Tackle is a modular programmable configuration language and declarative CLI. Make any yaml/json file dynamic/callable.
+
+- Install
+- Use Cases
+- Hello worlds
+
+### Install
+
+```shell
+pip install tackle-box
+```
+
+### Use Cases
+
+- [Modular code generation]()
+- [Kubernetes management]()
+- [Declarative utilities]()
+
+### Hello worlds
+
+To call tackle, simply create a yaml file and call it with `tackle hello-world.yaml`
+
+Use the [print]() hook.
+```yaml
+p->: print Hello world!
+```
+
+Using [jinja templating](), hooks can be called in [four different ways]().
+```yaml
+hello: Hello world!
+jinja_extension->: "{{ print(hello) }}"
+jinja_filter->: "{{ hello | print }}"
+compact->: print {{hello}}
+expanded:
+  ->: print
+  object: "{{hello}}"
+```
+
+Interactive example with [prompt]() hooks.
+```yaml
+name->: input
+target:
+  ->: select Say hi to who?
+  choices:
+    - world
+    - universe
+hello_>: print My name is {{name}}. Hello {{target}}!
+```
+
+Hooks can have for [loops](), [conditionals](), and [other base methods]().
+```yaml
+words:
+  - Hello
+  - cruel
+  - world!
+hello_>: print {{item}} --for words --if "item != 'cruel'"
+```
+
+New hooks can be [declaratively created]() with tackle.
+```yaml
+greeter<-:
+  help: A thing that says hi!
+  fields:
+    target: str
+  exec:
+    hi->: print Hello {{target}}
+  args:
+    - target
+```
+
+Or hooks can be [written in python]().
+```python
+from tackle import BaseHook
+
+class Greeter(BaseHook):
+    hook_type: str = "greeter"
+    target: str
+    _args: list = ['target']
+
+    def exec(self):
+        print(f"Hello {self.target}")
+```
+
+```yaml
+say_hi->: greeter world!
+```
+
+Hooks and other tackle files can be imported and / or called.
+
+```yaml
+local-call->: tackle hello-world.yaml
+remote-call->: tackle robcxyz/tackle-hello-world
+# Or
+import-hello->: import robcxyz/tackle-hello-world
+call->: greeter world!
+```
 
 ### Demo
 
