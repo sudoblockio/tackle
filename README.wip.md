@@ -18,6 +18,8 @@ Tackle is a modular programmable configuration language and declarative CLI that
 
 Tackle is a modular programmable configuration language and declarative CLI. Make any yaml/json file dynamic/callable.
 
+> Warning: Language is very usable but in its early phases. It may never reach 1.x version as if it gets enough stars, it will be converted to a spec and re-written in rust.  
+
 - Install
 - Use Cases
 - Hello worlds
