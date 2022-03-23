@@ -5,4 +5,5 @@ blocker->:
   things->: "{{ stuff }}"
   friend: dog
   test_block->:
+    if: stuff == 'things'
     my_dog->: print Penny # --if "friend == 'dog'"

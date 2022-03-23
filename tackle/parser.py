@@ -445,9 +445,9 @@ def run_hook(context: 'Context'):
 
     if context.key_path[-1] in ('->', '_>'):
         # We have an expanded or mixed (with args) hook expression and so there will be
-        # additional properties in adjacent keys
+        # additional properties in adjacent keys. Trim key_path_block for blocks
         hook_dict = nested_get(
-            context.input_dict, context.key_path[:-1][-len(context.key_path_block) :]
+            context.input_dict, context.key_path[:-1][len(context.key_path_block) :]
         ).copy()
         # Need to replace arrow keys as for the time being (pydantic 1.8.2) - multiple
         # aliases for the same field (type) can't be specified so doing this hack
@@ -503,7 +503,10 @@ def handle_empty_blocks(context: 'Context', block_value):
     base_key_path = context.key_path[:-1]
     new_key = [context.key_path[-1][:-2]]
     # Handle embedded blocks which need to have thier key paths adjusted
-    key_path = (base_key_path + new_key)[-len(context.key_path_block) :]
+    # key_path = (base_key_path + new_key)[-len(context.key_path_block) :]
+    key_path = (base_key_path + new_key)[len(context.key_path_block) :]
+
+    old_key_path = context.key_path[len(context.key_path_block) :]
 
     # Over-write the input with an expanded path (ie no arrow in key)
     nested_set(
@@ -519,7 +522,7 @@ def handle_empty_blocks(context: 'Context', block_value):
         value='block',
     )
     # Remove the old key
-    nested_delete(context.input_dict, context.key_path[-len(context.key_path_block) :])
+    nested_delete(context.input_dict, old_key_path)
 
     # Iterate through the block keys except for the reserved keys like `for` or `if`
     aliases = [v.alias for _, v in BaseHook.__fields__.items()] + ['->', '_>']
@@ -749,7 +752,7 @@ def function_exec(self: Type[BaseHook]):
         output_dict=self.output_dict,
         input_dict=self.exec_,
         # key_path=self.key_path[:-1],
-        key_path=self.key_path,
+        key_path=self.key_path.copy(),
         key_path_block=self.key_path.copy(),
         no_input=self.no_input,
         calling_directory=self.calling_directory,

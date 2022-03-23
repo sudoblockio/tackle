@@ -1,6 +1,7 @@
 
 stuff: out-block
 block->:
+  if: true
   furry:
     ->: confirm
     message: Are our friends furry?
@@ -12,14 +13,14 @@ block->:
     ->: tackle fake-tackle
 
   things:
-    ->: var "{{ beer.things }}"
+    ->: var "{{ block.beer.things }}"
 
   test_block:
     ->: block
     items:
       my_dog:
         ->: var
-        input: friend
-        if: friend == 'dog'
+        input: block.friend
+        if: block.friend == 'dog'
 
   foo: bar

@@ -57,16 +57,20 @@ class BlockHook(BaseHook):
 
         tmp_context = Context(
             provider_hooks=self.provider_hooks,
-            existing_context=self.existing_context,
+            existing_context=self.existing_context.copy(),
             output_dict=self.output_dict,
             input_dict=self.items,
             # key_path=self.key_path[:-1],
-            key_path=self.key_path,
+            key_path=self.key_path.copy(),
             key_path_block=self.key_path.copy(),
             no_input=self.no_input,
             calling_directory=self.calling_directory,
             calling_file=self.calling_file,
         )
+        if len(self.key_path) > 0:
+            if self.key_path[0] == b'\x00\x01':
+                print()
+
         walk_sync(context=tmp_context, element=self.items.copy())
 
         # for i in self.key_path[:-1]:
