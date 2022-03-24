@@ -2,6 +2,7 @@
 #
 # # TODO: https://github.com/robcxyz/tackle-box/issues/46
 #
+#
 # def test_provider_select_list_this(change_dir, mocker):
 #     mocker.patch(
 #         'tackle.providers.prompts.hooks.select.prompt', return_value={"tmp": "things"}
@@ -42,3 +43,11 @@
 #     )
 #     output = tackle('map_index.yaml')
 #     assert output['selection'] == 1
+
+
+# def test_provider_select_no_msg(change_dir, mocker):
+#     mocker.patch(
+#         'tackle.providers.prompts.hooks.select.prompt', return_value={"tmp": "things"}
+#     )
+#     output = tackle('no-msg.yaml')
+#     assert output['selection'] == 'things'

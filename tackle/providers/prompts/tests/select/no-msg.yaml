@@ -1,0 +1,5 @@
+selection:
+  ->: select
+  choices:
+    - stuff
+    - things

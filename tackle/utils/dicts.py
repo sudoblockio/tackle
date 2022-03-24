@@ -56,14 +56,16 @@ def get_readable_key_path(key_path: list) -> str:
     readable_key_path = []
     for i in key_path:
         if i in ('->', '_>'):
-            return '.'.join(readable_key_path)
+            continue
+            # return '.'.join(readable_key_path)
         elif i[-2:] in ('->', '_>'):
             readable_key_path.append(i[:-2])
-            return '.'.join(readable_key_path)
+            continue
         if isinstance(i, bytes):
             readable_key_path.append(decode_list_index(i))
         else:
             readable_key_path.append(i)
+    return '.'.join(readable_key_path)
 
 
 def nested_delete(element, keys):
