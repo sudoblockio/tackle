@@ -62,7 +62,7 @@ def get_readable_key_path(key_path: list) -> str:
             readable_key_path.append(i[:-2])
             continue
         if isinstance(i, bytes):
-            readable_key_path.append(decode_list_index(i))
+            readable_key_path.append(str(decode_list_index(i)))
         else:
             readable_key_path.append(i)
     return '.'.join(readable_key_path)
