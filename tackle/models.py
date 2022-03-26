@@ -93,8 +93,6 @@ class ProviderHooks(dict):
                 and k != 'BaseHook'
                 and v.__fields__['hook_type'].default is not None
             ):
-                # if v.__fields__['hook_type'].default is None:
-                #     print()
                 self[v.__fields__['hook_type'].default] = v
 
     def import_hooks_from_dir(
@@ -327,7 +325,8 @@ class Context(BaseModel):
     existing_context: dict = {}
     overwrite_inputs: Union[dict, str] = None
     input_dict: dict = {}
-    output_dict: dict = {}
+    # output_dict: dict = {}
+    output_dict: Any = {}
     keys_to_remove: list = []
 
     # Internal
@@ -404,7 +403,9 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
     is_hook_call: bool = False
     skip_import: bool = False
     hooks_path: str = None
-    exec_: Any = None  # For storing exec from function
+
+    # exec_: Any = None  # For storing exec from function
+    # return_: Any = None  # Function return
 
     # For tackle hook that needs to pass this expensive to instantiate object through
     provider_hooks: ProviderHooks = None
@@ -459,7 +460,7 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
         alias_to_fields = {v: k for k, v in fields.items()}
 
     def exec(self) -> Any:
-        raise NotImplementedError("Every hook needs an execute method.")
+        raise NotImplementedError("Every hook needs an exec method.")
 
     # https://github.com/samuelcolvin/pydantic/issues/1864#issuecomment-679044432
     def validate(self, **kwargs):
@@ -491,38 +492,51 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
             setattr(self, k, v)
 
         self.validate()
-        return self.execute()
-
-    # def call(self) -> Any:
-    #     """
-    #     Call main entrypoint to calling hook.
-    #
-    #     Handles `chdir` method.
-    #     """
-    #     if self.chdir:
-    #         path = os.path.abspath(os.path.expanduser(self.chdir))
-    #         if os.path.isdir(path):
-    #             # Use contextlib to switch dirs
-    #             with work_in(os.path.abspath(os.path.expanduser(self.chdir))):
-    #                 return self.execute()
-    #         else:
-    #             raise NotADirectoryError(
-    #                 f"The specified path='{path}' to change to was not found."
-    #             )
-    #     else:
-    #         return self.execute()
+        return self.exec()
 
 
-class Function(BaseModel):
+class FunctionInput(BaseModel):
     """Function input model."""
 
-    fields: dict = None
-    render_exclude: list = []
+    # fields: dict = None
+    # render_exclude: list = []
     args: list = None
-    exec: Any = None
-    return_: Union[str, list] = None
+
+    # exec_: Any = Field(None, alias='exec')
+    # return_: Union[str, list] = Field(None, alias='return')
+    exec_: Any = Field(None)
+    return_: Union[str, list] = Field(None)
 
     validators: dict = None
     methods: dict = None
     public: bool = None
     extends: str = None
+
+
+class BaseFunction(BaseHook):
+    """Function input model."""
+
+    exec_: Any = None
+    return_: Union[str, list] = Field(None, alias='return')
+
+    function_fields: list
+
+    # def exec(self) -> Any:
+    #     return self.parsed_exec()
+    #
+    # def parsed_exec(self, input) -> Union[dict, list]:
+    #     existing_context = self.output_dict.copy()
+    #     existing_context.update(self.existing_context)
+    #
+    #     tmp_context = Context(
+    #         provider_hooks=self.provider_hooks,
+    #         existing_context=existing_context,
+    #         output_dict={},
+    #         input_dict=input,
+    #         key_path=[],
+    #         no_input=self.no_input,
+    #         calling_directory=self.calling_directory,
+    #         calling_file=self.calling_file,
+    #     )
+    #     walk_sync(context=tmp_context, element=input.copy())
+    #     return tmp_context.output_dict
