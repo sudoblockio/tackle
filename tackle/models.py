@@ -4,6 +4,8 @@ import inspect
 import threading
 import subprocess
 import importlib.machinery
+from abc import ABC
+
 from pydantic import (
     BaseModel,
     SecretStr,
@@ -498,45 +500,21 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
 class FunctionInput(BaseModel):
     """Function input model."""
 
-    # fields: dict = None
-    # render_exclude: list = []
-    args: list = None
-
-    # exec_: Any = Field(None, alias='exec')
-    # return_: Union[str, list] = Field(None, alias='return')
     exec_: Any = Field(None)
     return_: Union[str, list] = Field(None)
 
+    args: list = None
+    render_exclude: list = None
     validators: dict = None
     methods: dict = None
     public: bool = None
     extends: str = None
 
+    class Config:
+        extra = 'ignore'
 
-class BaseFunction(BaseHook):
+
+class BaseFunction(BaseHook, FunctionInput, ABC):
     """Function input model."""
 
-    exec_: Any = None
-    return_: Union[str, list] = Field(None, alias='return')
-
     function_fields: list
-
-    # def exec(self) -> Any:
-    #     return self.parsed_exec()
-    #
-    # def parsed_exec(self, input) -> Union[dict, list]:
-    #     existing_context = self.output_dict.copy()
-    #     existing_context.update(self.existing_context)
-    #
-    #     tmp_context = Context(
-    #         provider_hooks=self.provider_hooks,
-    #         existing_context=existing_context,
-    #         output_dict={},
-    #         input_dict=input,
-    #         key_path=[],
-    #         no_input=self.no_input,
-    #         calling_directory=self.calling_directory,
-    #         calling_file=self.calling_file,
-    #     )
-    #     walk_sync(context=tmp_context, element=input.copy())
-    #     return tmp_context.output_dict

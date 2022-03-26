@@ -743,43 +743,16 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list):
         walk_sync(context, context.input_dict.copy())
 
 
-def function_validators():
-    pass
-
-
-def function_exec(self: Type[BaseFunction], input_element: Union[list, dict]):
-    # def function_exec(self: Type[BaseFunction]):
+def function_walk(
+    self: Type[BaseFunction],
+    input_element: Union[list, dict],
+    return_: Union[list, dict] = None,
+) -> Any:
     """
-    Notes:
-        - Functions can perhaps have different namespace models depending on config
-        - Normally can act like blocks
+    Walk an input_element for a function and either return the whole context or one or
+    many returnable string keys. Function is meant to be implanted into a function
+    object and called either as `exec` or some other arbitrary method.
     """
-    # Remove the prior hook from the key path so it does not get used when writing
-    # if self.key_path[-1] == b'\x00\x00':
-    #     # If the key path is part of a list
-    #     self.key_path.pop(-2)
-    # elif self.key_path[-1] in ('->', '_>'):
-    #     # Normal
-    #     self.key_path.pop(-1)
-    #
-    # if self.key_path[-1] not in ('->', '_>'):
-    #     last_key = self.key_path.pop(-1)
-    #     self.key_path += [last_key[:-2]] + [last_key[-2:]]
-    #
-    # tmp_context = Context(
-    #     provider_hooks=self.provider_hooks,
-    #     existing_context=self.existing_context,
-    #     output_dict=self.output_dict,
-    #     input_dict=self.exec_,
-    #     # key_path=self.key_path[:-1],
-    #     key_path=self.key_path.copy(),
-    #     key_path_block=self.key_path.copy(),
-    #     no_input=self.no_input,
-    #     calling_directory=self.calling_directory,
-    #     calling_file=self.calling_file,
-    # )
-    # walk_sync(context=tmp_context, element=self.exec_.copy())
-
     existing_context = self.output_dict.copy()
     existing_context.update(self.existing_context)
 
@@ -791,22 +764,35 @@ def function_exec(self: Type[BaseFunction], input_element: Union[list, dict]):
         existing_context=existing_context,
         output_dict={},
         input_dict=input_element,
-        # input_dict=self.exec_,
         key_path=[],
         no_input=self.no_input,
         calling_directory=self.calling_directory,
         calling_file=self.calling_file,
     )
     walk_sync(context=tmp_context, element=input_element.copy())
-    # walk_sync(context=tmp_context, element=self.exec_.copy())
 
-    if self.return_ in self.output_dict:
-        return tmp_context.output_dict[self.return_]
-
+    if return_:
+        if isinstance(return_, str):
+            if return_ in self.output_dict:
+                return tmp_context.output_dict[self.return_]
+            else:
+                raise Exception(f"Return value '{return_}' is not found in output.")
+        elif isinstance(return_, list):
+            if isinstance(tmp_context, list):
+                raise Exception(f"Can't have list return {return_} for list output.")
+            output = {}
+            for i in return_:
+                # Can only return top level keys right now
+                if i in self.output_dict:
+                    output[i] = tmp_context.output_dict[i]
+                else:
+                    raise Exception(
+                        f"Return value '{i}' in return {return_} not found in output."
+                    )
+            return tmp_context.output_dict[self.return_]
+        else:
+            raise NotImplementedError(f"Return must be of list or string {return_}.")
     return tmp_context.output_dict
-
-
-# def make_function_parser(input_element: Union[list, dict]):
 
 
 def create_function_model(
@@ -817,64 +803,21 @@ def create_function_model(
         base_hook = context.provider_hooks[func_dict['extends']]
         func_dict = {**base_hook, **func_dict}
         func_dict.pop('extends')
-    # Function fields are handled individually
-    # if 'fields' in func_dict:
-    #     func_fields = func_dict['fields']
-    #     func_dict.pop('fields')
-    # else:
-    #     func_fields = {}
-    #
-    # func = Function(**func_dict)
-    #
-    # for k, v in func_fields.items():
-    #     if isinstance(v, dict):
-    #         setattr(func, k, v)
-    #         # func.k = Field(**v)
-    #     elif isinstance(v, (str, int, float, bool)):
-    #         func.k = v
-    #     elif isinstance(v, list):
-    #         func.k = (list, v)
-    #
-    # return create_model(func_name[:-2], __base__=BaseHook, **func.dict())
-    # TODO: Change this?
-    # parsed_schema = {
-    #     'hook_type': func_name[:-2],
-    #     '_args': func.args,
-    #     '_render_exclude': func.render_exclude,
-    #     'exec_': (Any, func.exec),
-    #     'return_': (Union[str, list], func.return_),
-    # }
-    # for k, v in func.fields.items():
-    #     if isinstance(v, dict):
-    #         parsed_schema[k] = Field(**v)
-    #     elif isinstance(v, (str, int, float, bool)):
-    #         parsed_schema[k] = v
-    #     elif isinstance(v, list):
-    #         parsed_schema[k] = (list, v)
-    #
-    # if func_name.endswith('_>'):
-    #     parsed_schema['public_'] = False
-    # else:
-    #     parsed_schema['public_'] = True
-    # return create_model(func_name[:-2], __base__=BaseHook, **parsed_schema)
-    # exec_ = func_dict.pop('exec') if 'exec' in func_dict else None
-    # return_ = func_dict.pop('return') if 'return' in func_dict else None
-    # args_ = func_dict.pop('args') if 'args' in func_dict else None
-    # validators_ = func_dict.pop('validators') if 'validators' in func_dict else None
-    # methods_ = func_dict.pop('methods') if 'methods' in func_dict else None
 
+    # fmt: off
+    # Validate raw input params against pydantic object where values will be used later
     function_input = FunctionInput(
         exec_=func_dict.pop('exec') if 'exec' in func_dict else None,
         return_=func_dict.pop('return') if 'return' in func_dict else None,
-        args=func_dict.pop('args') if 'args' in func_dict else None,
-        render_exclude=func_dict.pop('render_exclude')
-        if 'render_exclude' in func_dict
-        else None,
+        args=func_dict.pop('args') if 'args' in func_dict else [],
+        render_exclude=func_dict.pop('render_exclude') if 'render_exclude' in func_dict else [],
         # validators_=func_dict.pop('validators') if 'validators' in func_dict else None,
         # methods_=func_dict.pop('methods') if 'methods' in func_dict else None,
     )
+    # fmt: on
 
     new_func = {'hook_type': func_name, 'function_fields': []}
+    # Create function fields from anything left over in the function dict
     for k, v in func_dict.items():
         if isinstance(v, dict):
             new_func[k] = Field(**v)
@@ -884,9 +827,17 @@ def create_function_model(
             new_func[k] = (list, v)
         new_func['function_fields'].append(k)
 
-    Function = create_model(func_name[:-2], __base__=BaseFunction, **new_func)
-
-    setattr(Function, 'exec', partialmethod(function_exec, function_input.exec_))
+    Function = create_model(
+        func_name[:-2],
+        __base__=BaseFunction,
+        **new_func,
+        **function_input.dict(include={'args', 'render_exclude'}),
+    )
+    setattr(
+        Function,
+        'exec',
+        partialmethod(function_walk, function_input.exec_, function_input.return_),
+    )
 
     return Function
 
@@ -895,9 +846,6 @@ def extract_functions(context: 'Context'):
     for k, v in context.input_dict.copy().items():
         if re.match(r'.*(<\-|<\_)$', k):
             Function = create_function_model(context, k, v)
-            # setattr(Function, 'exec', function_exec)
-            # Function.Config.alias_to_fields = []
-
             context.provider_hooks[k[:-2]] = Function
             context.input_dict.pop(k)
 
