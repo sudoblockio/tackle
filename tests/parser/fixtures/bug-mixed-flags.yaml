@@ -1,0 +1,6 @@
+#https://github.com/robcxyz/tackle-box/issues/52
+id: foo
+
+namespace: bar
+
+kube-apply->: var "kubectl apply -f {{id}} -n {{namespace}}"
