@@ -9,7 +9,7 @@ class PathExistsListHook(BaseHook):
     hook_type: str = 'path_exists'
     path: str = Field(..., description="The path to file or directory")
 
-    _args: list = ['path']
+    args: list = ['path']
 
     def exec(self) -> bool:
         return os.path.exists(self.path)
@@ -21,7 +21,7 @@ class PathIsDirListHook(BaseHook):
     hook_type: str = 'isdir'
     path: str = Field(..., description="The path to a directory")
 
-    _args: list = ['path']
+    args: list = ['path']
 
     def exec(self) -> bool:
         return os.path.isdir(self.path)
@@ -33,7 +33,7 @@ class PathIsFileListHook(BaseHook):
     hook_type: str = 'isfile'
     path: str = Field(..., description="The path to a file")
 
-    _args: list = ['path']
+    args: list = ['path']
 
     def exec(self) -> bool:
         return os.path.isfile(self.path)
@@ -49,7 +49,7 @@ class PathJoinHook(BaseHook):
         render_by_default=True,
     )
 
-    _args: list = ['paths']
+    args: list = ['paths']
 
     def exec(self):
         return os.path.join(*self.paths)
@@ -65,7 +65,7 @@ class PathBasenameHook(BaseHook):
         render_by_default=True,
     )
 
-    _args: list = ['path']
+    args: list = ['path']
 
     def exec(self):
         return os.path.basename(self.path)
@@ -81,7 +81,7 @@ class PathDirNameHook(BaseHook):
         render_by_default=True,
     )
 
-    _args: list = ['path']
+    args: list = ['path']
 
     def exec(self):
         return os.path.dirname(self.path)

@@ -13,7 +13,7 @@ class ListdirHook(BaseHook):
         None, description="Boolean to ignore hidden files"
     )
 
-    _args: list = ['path']
+    args: list = ['path']
     _docs_order = 2
 
     def exec(self) -> list:

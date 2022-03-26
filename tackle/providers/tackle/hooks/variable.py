@@ -17,7 +17,7 @@ class VarHook(BaseHook):
         False, description="Don't recursively render embedded templates."
     )
 
-    _args: list = ['input']
+    args: list = ['input']
 
     def _render_var(self, input) -> Any:
         output = render_variable(self, input)

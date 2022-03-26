@@ -16,7 +16,7 @@ class GetKeyHook(BaseHook):
     # fmt: off
     path: Union[list, str] = Field(..., description="A list or string with a separator for the path to the value you want to update with strings for keys and ints for indexes in the list.")
     sep: str = Field('/', description="For string paths, a separator for key path.")
-    _args = ['path']
+    args: list = ['path']
     # fmt: on
 
     def exec(self):

@@ -10,7 +10,7 @@ class MakeDirectoryHook(BaseHook):
     hook_type: str = 'mkdir'
     path: str = Field(..., description="The path to file or directory")
 
-    _args: list = ['path']
+    args: list = ['path']
     _docs_order = 1
 
     def exec(self) -> str:

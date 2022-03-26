@@ -262,7 +262,7 @@ class PartialModelMetaclass(ModelMetaclass):
                 # Validation is performed in __init__, for which all fields are now optional
                 if args:
                     for i, v in enumerate(args):
-                        kwargs[self._args[i]] = v
+                        kwargs[self.args[i]] = v
                 # cls is always initialized with kwargs not args.
                 cls_init(self, **kwargs)
                 # Restore requiredness
@@ -412,9 +412,11 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
     # For tackle hook that needs to pass this expensive to instantiate object through
     provider_hooks: ProviderHooks = None
 
-    _args: list = []
-    _kwargs: dict = {}
-    _flags: list = []
+    args: list = []
+
+    # _kwargs: dict = {}
+    # _flags: list = []
+
     # Fields that should not be rendered by default
     _render_exclude_default: set = {'input_dict', 'output_dict', 'hook_type', 'else'}
     _render_exclude: set = {}
@@ -482,11 +484,11 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
         # Map args / kwargs
         if args:
             num_args = len(args)
-            for i, v in enumerate(self._args):
+            for i, v in enumerate(self.args):
                 if i >= num_args:
                     break
                 setattr(self, v, args[i])
-            if len(args) > len(self._args):
+            if len(args) > len(self.args):
                 raise Exception(
                     f"Too many arguments in {get_readable_key_path(self.key_path)}"
                 )

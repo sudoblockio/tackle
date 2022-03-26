@@ -26,7 +26,7 @@ class ImportHook(BaseHook):
     hook_type: str = 'import'
     src: Any = Field(..., description="A str/list/dict as above.")
     version: str = Field(None, description="Version of src for remote imports.")
-    _args = ['src']
+    args: list = ['src']
 
     def exec(self) -> None:
         if isinstance(self.src, str):

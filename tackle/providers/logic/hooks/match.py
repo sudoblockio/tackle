@@ -24,7 +24,7 @@ class MatchHook(BaseHook):
     )
 
     _render_exclude = {'case'}
-    _args = ['value']
+    args: list = ['value']
     _docs_order = 3
 
     def exec(self) -> Union[dict, list]:

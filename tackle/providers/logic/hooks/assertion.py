@@ -14,7 +14,7 @@ class AssertHook(BaseHook):
         True, description="Whether to exit on assertion error."
     )
 
-    _args = ['input', 'value']
+    args: list = ['input', 'value']
     _docs_order = 5
 
     def exec(self) -> bool:

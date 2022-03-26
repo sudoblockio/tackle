@@ -20,7 +20,7 @@
 #         description="A list or dictionary to parse same as tackle file.",
 #     )
 #
-#     _args = ['condition']
+#     args: list = ['condition']
 #
 #     def exec(self) -> Union[dict, list]:
 #         raise NotImplementedError

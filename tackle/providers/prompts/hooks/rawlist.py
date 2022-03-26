@@ -18,7 +18,7 @@ class InquirerRawListHook(BaseHook):
     message: str = Field(None, description="String message to show when prompting.")
     choices: list = Field(..., description="A list of choices.")
 
-    _args: list = ['message', 'default']
+    args: list = ['message', 'default']
 
     def exec(self) -> list:
         if self.message is None:

@@ -22,7 +22,7 @@ class FindInParentHook(BaseHook):
         description="The starting directory to search from. Defaults to current working directory.",
     )
 
-    _args: list = ['target']
+    args: list = ['target']
 
     def exec(self) -> str:
         return find_in_parent(
@@ -45,7 +45,7 @@ class FindInChildHook(BaseHook):
         description="The starting directory to search from. Defaults to current working directory.",
     )
 
-    _args: list = ['target']
+    args: list = ['target']
 
     def exec(self) -> list:
         files = []

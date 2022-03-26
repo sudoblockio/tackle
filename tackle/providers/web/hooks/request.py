@@ -44,7 +44,7 @@ class RequestsGetHook(BaseHook):
     no_exit: bool = Field(False, description="Whether to exit on non-200 response.")
     # fmt: on
 
-    _args: list = [
+    args: list = [
         'url',
         'kwargs',
         'params',
@@ -80,7 +80,7 @@ class RequestsPostHook(BaseHook):
     no_exit: bool = Field(False, description="Whether to exit on non-200 response.")
     # fmt: on
 
-    _args: list = ['url', 'data', 'kwargs']
+    args: list = ['url', 'data', 'kwargs']
 
     def exec(self) -> dict:
         if isinstance(self.data, str):
@@ -122,7 +122,7 @@ class RequestsPutHook(BaseHook):
     no_exit: bool = Field(False, description="Whether to exit on non-200 response.")
     # fmt: off
 
-    _args: list = ['url', 'data', 'kwargs']
+    args: list = ['url', 'data', 'kwargs']
 
     def exec(self):
         r = requests.put(self.url, data=self.data, json=self.input_json, **self.kwargs)
@@ -157,7 +157,7 @@ class RequestsPatchHook(BaseHook):
     no_exit: bool = Field(False, description="Whether to exit on non-200 response.")
     # fmt: off
 
-    _args: list = ['url', 'data', 'kwargs']
+    args: list = ['url', 'data', 'kwargs']
 
     def exec(self):
         r = requests.patch(
@@ -185,7 +185,7 @@ class RequestsDeleteHook(BaseHook):
     no_exit: bool = Field(False, description="Whether to exit on non-200 response.")
     # fmt: on
 
-    _args: list = ['url', 'kwargs']
+    args: list = ['url', 'kwargs']
 
     def exec(self):
         r = requests.delete(self.url, **self.kwargs)

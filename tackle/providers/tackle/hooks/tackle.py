@@ -31,7 +31,7 @@ class TackleHook(BaseHook):
     override: dict = Field({}, description="A dictionary of keys to override.")
     # fmt: on
 
-    _args = ['input_string']
+    args: list = ['input_string']
     _docs_order = 0
 
     def exec(self) -> dict:

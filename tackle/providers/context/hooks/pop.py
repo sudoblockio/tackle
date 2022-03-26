@@ -23,7 +23,7 @@ class DictPopHook(BaseHook, smart_union=True):
     sep: str = Field('/', description="For string src's, a separator for key path.")
     # fmt: on
 
-    _args: list = ['src', 'item']
+    args: list = ['src', 'item']
 
     def pop_item(self):
         if self.item is None:

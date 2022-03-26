@@ -17,7 +17,7 @@ class WebBrowserHook(BaseHook):
     autoraise: bool = Field(True, description="If autoraise is True, the window is raised if possible (note that under many window managers this will occur regardless of the setting of this variable).")
     # fmt: on
 
-    _args = ['url']
+    args: list = ['url']
 
     def exec(self):
         webbrowser.open(self.url, new=2)

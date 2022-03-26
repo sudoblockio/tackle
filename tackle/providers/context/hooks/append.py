@@ -21,7 +21,7 @@ class ListAppendHook(BaseHook):
     )
     # fmt: on
 
-    _args: list = ['src', 'item']
+    args: list = ['src', 'item']
 
     def exec(self) -> Optional[list]:
         if isinstance(self.src, str) or self.src_is_key_path:

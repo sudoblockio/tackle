@@ -16,7 +16,7 @@ class RandomStringHook(BaseHook):
     case: str = Field('lower', description="Case of output, one of `upper` or `lower`")
     upper: bool = Field(False, description="Flag for upper case. Overrides `case`.")
 
-    _args: list = ['length', 'case']
+    args: list = ['length', 'case']
     _docs_order = 6
 
     @validator('case')
@@ -47,7 +47,7 @@ class RandomHexHook(BaseHook):
     hook_type: str = 'random_hex'
     length: int = Field(8, description="Number for number of digits - default 8")
 
-    _args: list = ['length']
+    args: list = ['length']
     _docs_order = 7
 
     def exec(self) -> str:

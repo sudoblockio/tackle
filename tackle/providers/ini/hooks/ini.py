@@ -21,7 +21,7 @@ class IniHook(BaseHook):
         render_by_default=True,
     )
     allow_no_value: bool = Field(True, description="Whether to allow a no values.")
-    _args = ['path', 'data']
+    args: list = ['path', 'data']
 
     def exec(self) -> Union[dict, str, list]:
         self.path = os.path.abspath(os.path.expanduser(os.path.expandvars(self.path)))

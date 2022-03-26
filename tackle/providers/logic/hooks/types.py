@@ -11,7 +11,7 @@ class TypeHook(BaseHook):
 
     input: Any = Field(..., description="Any variable input.", render_by_default=True)
 
-    _args: list = ['input']
+    args: list = ['input']
 
     def exec(self) -> str:
         return type(self.input).__name__

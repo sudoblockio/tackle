@@ -59,7 +59,7 @@
 #     )
 #     write: bool = Field(None, description="")
 #
-#     _args = ['path', 'contents']
+#     args: list = ['path', 'contents']
 #
 #     def __init__(self, **data: Any):
 #         super().__init__(**data)

@@ -9,7 +9,7 @@ class Base64EncodeHook(BaseHook):
     hook_type: str = 'base64_encode'
     input: str = Field(..., description="A string to encode.")
 
-    _args: list = ['input']
+    args: list = ['input']
     _docs_order = 8
 
     def exec(self) -> str:
@@ -25,7 +25,7 @@ class Base64DecodeHook(BaseHook):
     hook_type: str = 'base64_decode'
     input: str = Field(..., description="A string to decode.")
 
-    _args: list = ['input']
+    args: list = ['input']
     _docs_order = 9
 
     def exec(self) -> str:

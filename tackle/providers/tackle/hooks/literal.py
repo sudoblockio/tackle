@@ -9,7 +9,7 @@ class LiteralHook(BaseHook):
     hook_type: str = 'literal'
     input: Any = Field(..., description="Any variable input.")
 
-    _args: list = ['input']
+    args: list = ['input']
 
     def exec(self) -> Any:
         return self.input

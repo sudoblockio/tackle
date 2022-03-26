@@ -16,7 +16,7 @@ class DictUpdateHook(BaseHook, smart_union=True):
     sep: str = Field('/', description="For string src's, a separator for key path.")
     # fmt: on
 
-    _args: list = ['src', 'input']
+    args: list = ['src', 'input']
 
     def exec(self) -> Optional[dict]:
         if isinstance(self.src, (str, list)):

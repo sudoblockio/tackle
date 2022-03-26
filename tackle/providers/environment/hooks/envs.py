@@ -18,7 +18,7 @@ class GetEnvHook(BaseHook):
     )
     fallback: str = Field(None, description="A fallback for getting.")
 
-    _args: list = ['environment_variable', 'fallback']
+    args: list = ['environment_variable', 'fallback']
 
     def exec(self):
         """Set env vars."""
@@ -40,7 +40,7 @@ class EnvironmentVariableHook(BaseHook):
     )
     value: str = Field(None, description="The value to set it.")
 
-    _args: list = ['environment_variable', 'value']
+    args: list = ['environment_variable', 'value']
 
     def exec(self):
         """Get or set env vars."""
@@ -64,7 +64,7 @@ class ExportHook(BaseHook):
     )
     value: str = Field(None, description="The value to set it.")
 
-    _args: list = ['environment_variable', 'value']
+    args: list = ['environment_variable', 'value']
 
     # TODO: Implement parsing for strings to set -> <: export THING=stuff
     def exec(self):
@@ -87,7 +87,7 @@ class UnsetHook(BaseHook):
         ..., description="The name of the environment variable to set."
     )
 
-    _args: list = ['environment_variable']
+    args: list = ['environment_variable']
 
     def exec(self):
         """Set env vars."""

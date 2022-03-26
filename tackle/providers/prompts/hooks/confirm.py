@@ -16,7 +16,7 @@ class InquirerConfirmHook(BaseHook):
     default: bool = Field(True, description="Default choice.")
     message: str = Field(None, description="String message to show when prompting.")
 
-    _args: list = ['message']
+    args: list = ['message']
     _docs_order = 4
 
     def exec(self) -> bool:

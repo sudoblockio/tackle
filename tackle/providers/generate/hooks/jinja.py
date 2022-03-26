@@ -32,7 +32,7 @@ class JinjaHook(BaseHook):
                     "from. [Docs](https://jinja.palletsprojects.com/en/3.0.x/api/#jinja2.FileSystemLoader).")
     # fmt: on
 
-    _args: list = ['template', 'output']
+    args: list = ['template', 'output']
 
     def exec(self) -> str:
         if self.render_context is not None:

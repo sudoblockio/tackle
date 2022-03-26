@@ -40,7 +40,7 @@ class ShellHook(BaseHook):
     ignore_error: bool = Field(False, description="Ignore errors.")
     multiline: bool = Field(False, description="Don't automatically breakup lines")
 
-    _args: list = ['command']
+    args: list = ['command']
 
     def _set_size(self, fd):
         """Found at: https://stackoverflow.com/a/6420070."""
@@ -133,7 +133,7 @@ class ShellHook(BaseHook):
 #     command: str = Field(..., description="A shell command.")
 #     ignore_error: bool = Field(False, description="Ignore errors.")
 #
-#     _args: list = ['command']
+#     args: list = ['command']
 #
 #     def exec(self) -> Any:
 #         p = subprocess.Popen(

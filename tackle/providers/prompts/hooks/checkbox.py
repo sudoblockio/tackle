@@ -29,7 +29,7 @@ class InquirerCheckboxHook(BaseHook):
         False, description="Boolean to return the index instead of the answer"
     )
 
-    _args: list = ['message']
+    args: list = ['message']
     _docs_order: int = 2
 
     def exec(self) -> list:

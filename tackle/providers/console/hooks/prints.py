@@ -17,7 +17,7 @@ class PrintHook(BaseHook):
     end: str = Field('\n', description="What to print at the end")
     flush: bool = Field(False, description="No clue.")
 
-    _args: list = ['objects']
+    args: list = ['objects']
 
     def exec(self) -> None:
         print(self.objects, sep=self.sep, end=self.end, flush=self.flush)
@@ -66,7 +66,7 @@ class PprintHook(BaseHook):
                     "are not displayed (the default).")
     # fmt: on
 
-    _args: list = ['objects']
+    args: list = ['objects']
 
     def exec(self) -> None:
         try:

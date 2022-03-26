@@ -49,7 +49,7 @@ class GenerateHook(BaseHook, smart_union=True):
     file_path_separator_: str = None  # / for mac / linux - \ for win
     # fmt: on
 
-    _args = ['templates', 'output']
+    args: list = ['templates', 'output']
 
     def exec(self):
         """Generate files / directories."""

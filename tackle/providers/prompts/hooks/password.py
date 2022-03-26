@@ -17,7 +17,7 @@ class InquirerPasswordHook(BaseHook):
     default: Any = Field(None, description="Default choice.")
     message: str = Field(None, description="String message to show when prompting.")
 
-    _args: list = ['message', 'default']
+    args: list = ['message', 'default']
 
     def exec(self) -> str:
         if self.message is None:

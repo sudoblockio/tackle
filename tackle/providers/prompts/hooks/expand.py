@@ -17,7 +17,7 @@ class InquirerExpandHook(BaseHook):
     default: Any = Field(None, description="Default selection.")
     message: str = Field(None, description="String message to show when prompting.")
 
-    _args: list = ['message', 'default']
+    args: list = ['message', 'default']
 
     def exec(self) -> list:
         if self.message is None:

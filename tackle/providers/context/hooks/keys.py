@@ -15,7 +15,7 @@ class DictKeysHook(BaseHook):
     sep: str = Field('/', description="For string src's, a separator for key path.")
     # fmt: on
 
-    _args: list = ['src']
+    args: list = ['src']
 
     def exec(self) -> Optional[list]:
         """Convert to list then look up before lifting keys off a dict."""

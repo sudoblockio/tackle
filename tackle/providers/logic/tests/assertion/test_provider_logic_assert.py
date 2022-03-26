@@ -1,8 +1,7 @@
-"""Tests `import` in the `tackle.providers.tackle.hooks.match` hook."""
 from tackle import tackle
 
 
-def test_provider_system_hook_match(change_dir):
+def test_provider_assert(change_dir):
     """Check assertions."""
     output = tackle('assert.yaml')
     assert 'assert' in output

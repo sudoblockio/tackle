@@ -51,7 +51,7 @@ class CopyHook(BaseHook):
     dst: str = Field(..., description="")
     create_path: bool = True
 
-    _args = ['src', 'dst']
+    args: list = ['src', 'dst']
 
     def exec(self) -> None:
         self.dst = os.path.abspath(self.dst)
@@ -93,7 +93,7 @@ class MoveHook(BaseHook):
     create_path: bool = True
     dst: str
 
-    _args: list = ['src', 'dst']
+    args: list = ['src', 'dst']
 
     def exec(self) -> None:
         self.dst = os.path.abspath(self.dst)
@@ -124,7 +124,7 @@ class RemoveHook(BaseHook):
     path: Union[List, str]
     fail_silently: bool = False
 
-    _args: list = ['path']
+    args: list = ['path']
 
     def remove_file_or_dir(self, path):
         if os.path.isfile(path):
@@ -178,7 +178,7 @@ class ShredHook(BaseHook):
     src: Union[List, str]
     passes: int = 10
 
-    _args: list = ['src', 'passes']
+    args: list = ['src', 'passes']
 
     def exec(self) -> None:
         if isinstance(self.src, str):
@@ -204,7 +204,7 @@ class ChmodHook(BaseHook):
     path: Union[str, list]
     mode: str
 
-    _args: list = ['path', 'mode']
+    args: list = ['path', 'mode']
 
     def exec(self) -> None:
         if isinstance(self.path, str):
@@ -226,7 +226,7 @@ class CreateFileHook(BaseHook):
     hook_type: str = 'create_file'
     path: Union[str, list]
 
-    _args: list = ['path']
+    args: list = ['path']
 
     def exec(self) -> Union[str, list]:
         self.path = expand_path(self.path)
@@ -247,7 +247,7 @@ class FileHook(BaseHook):
         None, description="If writing to file, the contents to write."
     )
 
-    _args = ['path', 'contents']
+    args: list = ['path', 'contents']
 
     def exec(self) -> Optional[str]:
         self.path = expand_path(self.path)

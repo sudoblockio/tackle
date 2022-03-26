@@ -133,7 +133,7 @@ class ProviderDocsHook(BaseHook):
     output_schemas: bool = Field(False, description="Output the json schema instead.")
     # fmt: on
 
-    _args: list = ['path', 'output']
+    args: list = ['path', 'output']
     _doc_tags: list = ["experimental"]
     _docs_order = 11
     _return_description = (
@@ -186,7 +186,7 @@ class ProviderDocsHook(BaseHook):
             # fmt: on
 
             for h in hooks:
-                return_type = get_type_hints(h.execute)
+                return_type = get_type_hints(h.exec)
                 if 'return' in return_type:
                     return_type = hook_type_to_string(return_type['return'])
                 else:

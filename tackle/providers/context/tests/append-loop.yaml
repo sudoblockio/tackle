@@ -1,0 +1,42 @@
+
+stack_versions:
+  v1:
+    - addresses
+    - blocks
+    - contracts
+    - etl
+    - governance
+    - logs
+    - metrics
+    - tracker-frontend
+    - transactions
+  v2:
+    - contracts
+    - etl
+    - extractor
+    - governance
+    - metrics
+    - tracker-frontend
+    - transformer
+
+databases: []
+dba_>:
+  for:
+    - version: v1
+      icon_networks:
+        - mainnet
+        - lisbon
+        - berlin
+    - version: v2
+      icon_networks:
+        - mainnet
+        - sejong
+        - lisbon
+        - berlin
+  icon_networks->: "{{item.icon_networks}}"
+  version->: "{{item.version}}"
+  append_>:
+    for: dba.app
+    ->: append databases {{stack_versions[dba.version]}}
+
+d->: debug

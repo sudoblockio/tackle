@@ -18,7 +18,7 @@ class JsonHook(BaseHook):
         description="Map/list or renderable string to a map/list key to write.",
         render_by_default=True,
     )
-    _args = ['path', 'data']
+    args: list = ['path', 'data']
 
     def exec(self) -> Union[dict, str]:
         self.path = os.path.abspath(os.path.expanduser(os.path.expandvars(self.path)))
@@ -48,7 +48,7 @@ class JsonifyHook(BaseHook):
         description="Map/list or renderable string to a map/list key to write.",
         render_by_default=True,
     )
-    _args = ['data']
+    args: list = ['data']
 
     def exec(self) -> Union[dict, str]:
         return json.dumps(self.data)

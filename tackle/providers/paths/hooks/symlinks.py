@@ -22,7 +22,7 @@ class SymlinkHook(BaseHook):
     )
     overwrite: bool = Field(False, description="Overwrite the destination.")
 
-    _args = ['src', 'dst']
+    args: list = ['src', 'dst']
     _docs_order = 3
 
     def exec(self) -> None:

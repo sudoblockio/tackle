@@ -7,7 +7,7 @@ class ExitHook(BaseHook):
     hook_type: str = 'exit'
     code: int = Field(0, description="The exit code.", render_by_default=True)
 
-    _args: list = ['code']
+    args: list = ['code']
 
     def exec(self) -> None:
         exit(self.code)

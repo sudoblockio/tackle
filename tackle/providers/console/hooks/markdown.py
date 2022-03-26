@@ -10,7 +10,7 @@ class MarkdownPrintHook(BaseHook):
     hook_type: str = 'markdown'
     text: str = Field(..., description="The text to render as markdown.")
 
-    _args: list = ['text']
+    args: list = ['text']
 
     def exec(self):
         console = Console()

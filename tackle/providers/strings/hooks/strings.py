@@ -11,7 +11,7 @@ class SplitHook(BaseHook):
     input: str = Field(..., description="A list of string to split or just a string")
     separator: str = Field("/", description="String separator")
 
-    _args: list = ['input', 'separator']
+    args: list = ['input', 'separator']
     _docs_order = 2
 
     def exec(self):
@@ -28,7 +28,7 @@ class JoinHook(BaseHook):
     )
     separator: str = Field('', description="String separator.")
 
-    _args: list = ['input', 'separator']
+    args: list = ['input', 'separator']
     _docs_order = 3
 
     def exec(self):

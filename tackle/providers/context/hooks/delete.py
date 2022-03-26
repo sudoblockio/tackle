@@ -17,7 +17,7 @@ class DeleteKeyHook(BaseHook):
                          "you want to update with strings for keys and ints for "
                          "indexes in the list.")
     sep: str = Field('/', description="For string paths, a separator for key path.")
-    _args = ['path']
+    args: list = ['path']
     # fmt: on
 
     def exec(self) -> None:
