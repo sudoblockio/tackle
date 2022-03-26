@@ -50,3 +50,9 @@ def test_provider_system_hook_block_list(change_dir):
     """Complex block."""
     output = tackle('list.yaml')
     assert 'private' not in output
+
+
+def test_provider_system_hook_block_logic(change_dir):
+    """Block with logic."""
+    output = tackle('block-logic.yaml')
+    assert output

@@ -1,0 +1,8 @@
+
+block->:
+  if: false
+  friend: dog
+
+block_true->:
+  if: true
+  friend: dog

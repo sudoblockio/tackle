@@ -42,9 +42,12 @@ class BlockHook(BaseHook):
     def exec(self) -> Union[dict, list]:
         # self.key_path = self.key_path[:-1]
         # if isinstance(self.key_path[-1], bytes):
+        # Remove the prior hook from the key path so it does not get used when writing
         if self.key_path[-1] == b'\x00\x00':
+            # If the key path is part of a list
             self.key_path.pop(-2)
         elif self.key_path[-1] in ('->', '_>'):
+            # Normal
             self.key_path.pop(-1)
 
         # else:
