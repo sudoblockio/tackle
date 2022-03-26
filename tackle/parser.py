@@ -773,8 +773,8 @@ def function_walk(
 
     if return_:
         if isinstance(return_, str):
-            if return_ in self.output_dict:
-                return tmp_context.output_dict[self.return_]
+            if return_ in tmp_context.output_dict:
+                return tmp_context.output_dict[return_]
             else:
                 raise Exception(f"Return value '{return_}' is not found in output.")
         elif isinstance(return_, list):
@@ -783,13 +783,13 @@ def function_walk(
             output = {}
             for i in return_:
                 # Can only return top level keys right now
-                if i in self.output_dict:
+                if i in tmp_context.output_dict:
                     output[i] = tmp_context.output_dict[i]
                 else:
                     raise Exception(
                         f"Return value '{i}' in return {return_} not found in output."
                     )
-            return tmp_context.output_dict[self.return_]
+            return tmp_context.output_dict[return_]
         else:
             raise NotImplementedError(f"Return must be of list or string {return_}.")
     return tmp_context.output_dict
