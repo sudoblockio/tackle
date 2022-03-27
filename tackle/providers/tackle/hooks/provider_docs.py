@@ -109,7 +109,7 @@ def get_hook_arguments(hook) -> List[HookArgField]:
     """Get the arguments for a hook."""
     output = []
 
-    for i in hook._args:
+    for i in hook.__fields__['args'].default:
         output.append(
             HookArgField(
                 argument=i,
