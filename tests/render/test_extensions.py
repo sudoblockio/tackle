@@ -1,6 +1,8 @@
 import pytest
+from pydantic import ValidationError
 
 from tackle import tackle
+from tackle.exceptions import UnknownTemplateVariableException
 
 
 def test_render_globals_base(change_curdir_fixtures):
@@ -36,7 +38,11 @@ def test_render_hooks_with_args_too_many(change_curdir_fixtures):
 
 def test_render_hooks_missing_args(change_curdir_fixtures):
     """Verify exception raised when hook is missing / has wrong args."""
-    from pydantic import ValidationError
-
     with pytest.raises(ValidationError):
         tackle('hooks-missing-args.yaml')
+
+
+def test_render_hooks_missing_ambiguous(change_curdir_fixtures):
+    """Handle dealing with unknown variables the same as hooks."""
+    with pytest.raises(UnknownTemplateVariableException):
+        tackle('hooks-ambiguous.yaml')

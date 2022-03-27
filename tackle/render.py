@@ -1,6 +1,7 @@
 import re
 import ast
 from jinja2 import meta
+from jinja2.exceptions import UndefinedError
 from inspect import signature
 from typing import TYPE_CHECKING, Any
 from pydantic import ValidationError
@@ -109,6 +110,10 @@ def render_string(context: 'Context', raw: str):
 
     try:
         rendered_template = template.render(render_context)
+        if rendered_template.startswith('<bound method BaseHook'):
+            # Handle unknown variables that are the same as hook_types issues/55
+            raise UndefinedError
+
         # Check for ambiguous globals like `namespace` tackle-box/issues/19
         match = re.search(r'\<class \'(.+?)\'>', rendered_template)
         if match:
@@ -122,7 +127,7 @@ def render_string(context: 'Context', raw: str):
         # For pydantic validation errors
         raise e
 
-    except Exception as e:
+    except UndefinedError as e:
         if len(unknown_variables) != 0:
             raise UnknownTemplateVariableException(
                 f"Variable{'s' if len(unknown_variables) != 1 else ''} {' '.join(unknown_variables)} unknown."
