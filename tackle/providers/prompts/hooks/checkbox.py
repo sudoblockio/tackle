@@ -32,12 +32,15 @@ class InquirerCheckboxHook(BaseHook):
     args: list = ['message']
     _docs_order: int = 2
 
+    def check_no_input(self, outputs):
+        if self.no_input:
+            if self.checked:
+                return outputs
+            return []
+
     def exec(self) -> list:
         if self.message is None:
             self.message = get_readable_key_path(self.key_path) + ' >>>'
-
-        if self.no_input:
-            return []
 
         choices_type = None
         for i, v in enumerate(self.choices):
@@ -46,6 +49,11 @@ class InquirerCheckboxHook(BaseHook):
             choices_type = type(v)
 
         if choices_type == str:
+            if self.no_input:
+                if self.checked:
+                    return self.choices
+                return []
+
             choice_list = self.choices.copy()
             self.choices = [
                 {'name': x} if isinstance(x, str) else x for x in self.choices
@@ -72,6 +80,11 @@ class InquirerCheckboxHook(BaseHook):
                     break
 
             if normal:
+                if self.no_input:
+                    if self.checked:
+                        return [i['name'] for i in self.choices]
+                    return []
+
                 if self.index:
                     # TODO: Fix this - low priority
                     raise Exception("Can't index checkbox calls in normal form.")
@@ -80,6 +93,13 @@ class InquirerCheckboxHook(BaseHook):
             # Otherwise we expect to reindex the key as the output per this:
             # choices = ['How much stuff?': 'stuff', 'How many things?': 'things']
             choices = []
+            if self.no_input:
+                if self.checked:
+                    for i in self.choices:
+                        choices.append(list(i.values())[0])
+                    return choices
+                return []
+
             for i in self.choices:
                 choices.append(list(i.keys())[0])
 
