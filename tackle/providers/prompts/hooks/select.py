@@ -19,6 +19,7 @@ class InquirerListHook(BaseHook, smart_union=True):
     choices: Union[List[str], List[dict]] = Field(
         ...,
         description="List of strings or dicts with keys as output and values as display.",
+        render_by_default=True,
     )
     index: bool = Field(
         False, description="Boolean to return the index instead of the answer"
@@ -58,7 +59,10 @@ class InquirerListHook(BaseHook, smart_union=True):
                     else:
                         return list(v.values())[0]
         else:
-            raise ValueError("Choices must be dict with ")
+            raise ValueError(
+                "Choices must be list of string or dict with displayed "
+                "choices as keys and output selection as the value."
+            )
 
     def _run_prompt(self):
         if not self.no_input:

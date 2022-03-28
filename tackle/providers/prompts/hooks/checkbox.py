@@ -20,7 +20,9 @@ class InquirerCheckboxHook(BaseHook):
     message: str = Field(None, description="String message to show when prompting.")
     # default: Any = Field([], description="Default for the return value")
     choices: Union[List[str], List[Dict]] = Field(
-        ..., description="Either a list of strings or dictionary ."
+        ...,
+        description="Either a list of strings or dictionary .",
+        render_by_default=True,
     )
     checked: bool = Field(
         False, description="Boolean if the default choices should all be checked."
