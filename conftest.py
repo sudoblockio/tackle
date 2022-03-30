@@ -1,6 +1,9 @@
 """pytest fixtures which are globally available throughout the suite."""
-import os
 import pytest
+import os
+import shutil
+
+from tackle.settings import settings
 
 
 @pytest.fixture(scope="function")
@@ -39,3 +42,12 @@ def chdir_fixture(request):
         os.chdir(os.path.join(request.fspath.dirname, 'fixtures', dir))
 
     return f
+
+
+@pytest.fixture()
+def tmp_move_tackle_dir():
+    """Fixture to temporarily move tackle dir where providers are stored."""
+    if os.path.isdir(settings.tackle_dir):
+        shutil.move(settings.tackle_dir, settings.tackle_dir + '.tmp')
+    yield
+    shutil.move(settings.tackle_dir + '.tmp', settings.tackle_dir)
