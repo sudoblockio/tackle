@@ -414,9 +414,6 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
 
     args: list = []
 
-    # _kwargs: dict = {}
-    # _flags: list = []
-
     # Fields that should not be rendered by default
     _render_exclude_default: set = {'input_dict', 'output_dict', 'hook_type', 'else'}
     _render_exclude: set = {}

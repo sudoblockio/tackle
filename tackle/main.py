@@ -1,9 +1,6 @@
-"""
-Main entry point for the `tacklebox` command.
+"""Main entry point."""
+from typing import Union
 
-The code in this module is also a good example of how to use Tackle as a
-library rather than a script.
-"""
 from tackle.models import Context
 from tackle.parser import update_source
 from tackle.utils.paths import find_nearest_tackle_file
@@ -25,7 +22,7 @@ def get_global_kwargs(kwargs):
 def tackle(
     *args,
     **kwargs,
-) -> dict:
+) -> Union[dict, list]:
     """
     Run Tackle Box just as if using it from the command line.
 
@@ -53,8 +50,6 @@ def tackle(
     # in the parent directory
     if 'input_string' not in kwargs or kwargs['input_string'] is None:
         kwargs['input_string'] = find_nearest_tackle_file()
-    # elif kwargs['input_string'] is None:
-    #     kwargs['input_string'] = find_nearest_tackle_file()
 
     # Handle the exception if no tackle file is found in parent directory
     if kwargs['input_string'] is None:

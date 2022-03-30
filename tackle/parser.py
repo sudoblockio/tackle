@@ -348,22 +348,21 @@ def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
         - Single types then into unions?
     - If type cannot be infered (ie Any) then do ast as literal
     """
+
+    hook_args: list = Hook.__fields__['args'].default
     for i, v in enumerate(args):
         # Iterate over the input args
-        if i + 1 == len(Hook._args):
-
-            # arg_type = Hook.__fields__[Hook._args[i]].type_
-
+        if i + 1 == len(hook_args):
             # We are at the last argument mapping so we need to join the remaining
             # arguments as a single string if it is not a list of another map.
             if not isinstance(args[i], (str, float)):
                 # Catch list dict and ints - strings floats and bytes caught later
                 value = args[i]
-            elif Hook.__fields__[Hook._args[i]].type_ in (str, float, int):
+            elif Hook.__fields__[hook_args[i]].type_ in (str, float, int):
                 # Was parsed on spaces so reconstructed.
                 value = ' '.join(args[i:])
             # fmt: skip
-            elif isinstance(Hook.__fields__[Hook._args[i]], list):
+            elif isinstance(Hook.__fields__[hook_args[i]], list):
                 # If list then all the remaining items
                 value = args[i:]
             elif isinstance(v, (str, float, int)):
@@ -374,16 +373,15 @@ def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
                 if len(args[i:]) > 1:
                     raise ValueError(
                         f"Can't specify multiple arguments for map argument "
-                        f"{Hook.__fields__[Hook._args[i]]}."
+                        f"{Hook.__fields__[hook_args[i]]}."
                     )
                 value = args[i]
-
-            hook_dict[Hook._args[i]] = value
+            hook_dict[hook_args[i]] = value
             return
         else:
             # The hooks arguments are indexed
             try:
-                hook_dict[Hook._args[i]] = v
+                hook_dict[hook_args[i]] = v
             except IndexError:
                 raise UnknownArgumentException(f"Unknown argument {i}.")
 
@@ -816,7 +814,7 @@ def create_function_model(
     )
     # fmt: on
 
-    new_func = {'hook_type': func_name, 'function_fields': []}
+    new_func = {'hook_type': func_name[:-2], 'function_fields': []}
     # Create function fields from anything left over in the function dict
     for k, v in func_dict.items():
         if isinstance(v, dict):
@@ -838,6 +836,11 @@ def create_function_model(
         'exec',
         partialmethod(function_walk, function_input.exec_, function_input.return_),
     )
+
+    context.env_.filters[func_name[:-2]] = Function(
+        existing_context={},
+        no_input=context.no_input,
+    ).wrapped_exec
 
     return Function
 
