@@ -1,7 +1,12 @@
 import sys
-from pprint import pprint
 from typing import Any
 from tackle import BaseHook, Field
+
+try:
+    from rich import print
+    from rich.pretty import pprint
+except ImportError:
+    from pprint import pprint
 
 
 class PrintHook(BaseHook):
@@ -71,29 +76,50 @@ class PprintHook(BaseHook):
     def exec(self) -> None:
         try:
             if sys.version_info.minor < 8:
-                pprint(
-                    self.objects,
-                    indent=self.indent,
-                    width=self.width,
-                    compact=self.compact,
-                )
+                if 'rich' in sys.modules:
+                    pprint(
+                        self.objects,
+                        max_length=self.width,
+                    )
+                else:
+                    pprint(
+                        self.objects,
+                        indent=self.indent,
+                        width=self.width,
+                        compact=self.compact,
+                    )
             elif sys.version_info.minor < 10:
-                pprint(
-                    self.objects,
-                    indent=self.indent,
-                    width=self.width,
-                    compact=self.compact,
-                    sort_dicts=self.sort_dicts,
-                )
+                if 'rich' in sys.modules:
+                    # TODO: Line up these docs
+                    # https://rich.readthedocs.io/en/stable/reference/pretty.html?highlight=pprint#rich.pretty.pprint
+                    # https://github.com/robcxyz/tackle-box/issues/57
+                    pprint(
+                        self.objects,
+                        max_length=self.width,
+                    )
+                else:
+                    pprint(
+                        self.objects,
+                        indent=self.indent,
+                        width=self.width,
+                        compact=self.compact,
+                        sort_dicts=self.sort_dicts,
+                    )
             elif sys.version_info.minor >= 10:
-                pprint(
-                    self.objects,
-                    indent=self.indent,
-                    width=self.width,
-                    compact=self.compact,
-                    sort_dicts=self.sort_dicts,
-                    underscore_numbers=self.underscore_numbers,
-                )
+                if 'rich' in sys.modules:
+                    pprint(
+                        self.objects,
+                        max_length=self.width,
+                    )
+                else:
+                    pprint(
+                        self.objects,
+                        indent=self.indent,
+                        width=self.width,
+                        compact=self.compact,
+                        sort_dicts=self.sort_dicts,
+                        underscore_numbers=self.underscore_numbers,
+                    )
         except TypeError as e:
             # TODO: Raise better exception?
             raise e
