@@ -35,4 +35,10 @@ class YamlHook(BaseHook):
         else:
             with open(self.path, 'r') as f:
                 data = yaml.load(f)
+
+            # TODO: Improve this - https://github.com/robcxyz/tackle-box/issues/56
+            import json
+
+            data = json.loads(json.dumps(data))
+
             return data
