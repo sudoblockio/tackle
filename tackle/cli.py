@@ -4,16 +4,6 @@ import sys
 import argparse
 
 from tackle import __version__
-from tackle.exceptions import (
-    FailedHookException,
-    InvalidModeException,
-    InvalidZipRepository,
-    OutputDirExistsException,
-    RepositoryCloneFailed,
-    RepositoryNotFound,
-    UndefinedVariableInTemplate,
-    UnknownExtension,
-)
 from tackle.utils.log import configure_logger
 from tackle.main import tackle
 from tackle.utils.command import unpack_args_kwargs_list
@@ -98,34 +88,14 @@ def main(raw_args=None):
         debug_file=getattr(args, "debug_file", None),
     )
 
-    try:
-        output_dict = tackle(
-            **vars(args),
-            global_args=global_args,
-            global_kwargs=global_kwargs,
-            global_flags=global_flags,
-        )
-        if print_enabled:
-            print(json.dumps(dict(output_dict)))
-    except (
-        OutputDirExistsException,
-        InvalidModeException,
-        FailedHookException,
-        UnknownExtension,
-        InvalidZipRepository,
-        RepositoryNotFound,
-        RepositoryCloneFailed,
-    ) as e:
-        print(e)
-        sys.exit(1)
-    except UndefinedVariableInTemplate as undefined_err:
-        print('{}'.format(undefined_err.message))
-        print('Error message: {}'.format(undefined_err.error.message))
-
-        if args.verbose:
-            context_str = json.dumps(undefined_err.context, indent=4, sort_keys=True)
-            print('Context: {}'.format(context_str))
-        sys.exit(1)
+    output_dict = tackle(
+        **vars(args),
+        global_args=global_args,
+        global_kwargs=global_kwargs,
+        global_flags=global_flags,
+    )
+    if print_enabled:
+        print(json.dumps(dict(output_dict)))
 
 
 if __name__ == "__main__":
