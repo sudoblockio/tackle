@@ -30,7 +30,7 @@ class ListAppendHook(BaseHook):
             # fallback on trying to append to the existing context
             try:
                 self.src = nested_get(
-                    element=self.output_dict,
+                    element=self.public_context,
                     keys=self.src,
                 )
             except KeyError:

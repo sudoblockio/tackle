@@ -24,7 +24,7 @@ class DictKeysHook(BaseHook):
 
         if isinstance(self.src, list):
             self.src = nested_get(
-                element=self.output_dict,
+                element=self.public_context,
                 keys=self.src,
             )
 

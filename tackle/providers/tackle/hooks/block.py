@@ -23,21 +23,21 @@ class BlockHook(BaseHook):
     _render_exclude = {'items'}
 
     # def exec(self) -> Union[dict, list]:
-    #     existing_context = self.output_dict.copy()
+    #     existing_context = self.public_context.copy()
     #     existing_context.update(self.existing_context)
     #
     #     tmp_context = Context(
     #         provider_hooks=self.provider_hooks,
     #         existing_context=existing_context,
-    #         output_dict={},
-    #         input_dict=self.items,
+    #         public_context={},
+    #         input_context=self.items,
     #         key_path=[],
     #         no_input=self.no_input,
     #         calling_directory=self.calling_directory,
     #         calling_file=self.calling_file,
     #     )
     #     walk_sync(context=tmp_context, element=self.items.copy())
-    #     return tmp_context.output_dict
+    #     return tmp_context.public_context
 
     def exec(self) -> Union[dict, list]:
         # self.key_path = self.key_path[:-1]
@@ -61,14 +61,15 @@ class BlockHook(BaseHook):
         tmp_context = Context(
             provider_hooks=self.provider_hooks,
             existing_context=self.existing_context.copy(),
-            output_dict=self.output_dict,
-            input_dict=self.items,
+            public_context=self.public_context,
+            input_context=self.items,
             # key_path=self.key_path[:-1],
             key_path=self.key_path.copy(),
             key_path_block=self.key_path.copy(),
             no_input=self.no_input,
             calling_directory=self.calling_directory,
             calling_file=self.calling_file,
+            verbose=self.verbose,
         )
         if len(self.key_path) > 0:
             if self.key_path[0] == b'\x00\x01':
@@ -77,6 +78,6 @@ class BlockHook(BaseHook):
         walk_sync(context=tmp_context, element=self.items.copy())
 
         # for i in self.key_path[:-1]:
-        #     self.output_dict = self.output_dict[i]
+        #     self.public_context = self.public_context[i]
 
-        return self.output_dict
+        return self.public_context

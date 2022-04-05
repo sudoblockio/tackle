@@ -7,7 +7,7 @@ block->:
     message: Are our friends furry?
   friend: dog
 
-# Writes block.beer to output_dict
+# Writes block.beer to public_context
   stuff: in-block
   beer:
     ->: tackle fake-tackle

@@ -42,7 +42,7 @@ class DictPopHook(BaseHook, smart_union=True):
         if isinstance(self.src, str) or self.src_is_key_path:
             self.src = encode_key_path(self.src, self.sep)
             self.src = nested_get(
-                element=self.output_dict,
+                element=self.public_context,
                 keys=self.src,
             )
             self.pop_item()

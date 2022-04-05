@@ -11,7 +11,8 @@ FIXTURES = [
     # 'handler-list-compact.yaml',
     # 'expanded-string.yaml',
     # 'expanded-list-dict.yaml',
-    'local.yaml',
+    # 'local.yaml',
+    'function-import.yaml',
 ]
 
 

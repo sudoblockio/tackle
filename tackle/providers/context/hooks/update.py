@@ -23,7 +23,7 @@ class DictUpdateHook(BaseHook, smart_union=True):
             self.src = encode_key_path(self.src, self.sep)
         if isinstance(self.src, list):
             nested_set(
-                element=self.output_dict,
+                element=self.public_context,
                 keys=self.src,
                 value=self.input,
             )

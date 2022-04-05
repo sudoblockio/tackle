@@ -38,7 +38,7 @@ class TackleHook(BaseHook):
         if self.context:
             existing_context = self.context
         else:
-            existing_context = self.output_dict.copy()
+            existing_context = self.public_context.copy()
             existing_context.update(self.existing_context)
 
             if self.extra_context:
@@ -58,6 +58,7 @@ class TackleHook(BaseHook):
             no_input=self.no_input,
             global_kwargs=self.override,
             find_in_parent=self.find_in_parent,
+            verbose=self.verbose,
         )
 
         return output_context

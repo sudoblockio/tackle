@@ -24,7 +24,7 @@ class SetKeyHook(BaseHook):
         """Run the hook."""
         self.path = encode_key_path(self.path, self.sep)
         nested_set(
-            element=self.output_dict,
+            element=self.public_context,
             keys=self.path,
             value=self.value,
         )

@@ -23,7 +23,7 @@ class GetKeyHook(BaseHook):
         """Run the hook."""
         self.path = encode_key_path(self.path, self.sep)
         value = nested_get(
-            element=self.output_dict,
+            element=self.public_context,
             keys=self.path,
         )
         return value

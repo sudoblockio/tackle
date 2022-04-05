@@ -49,7 +49,7 @@ class MatchHook(BaseHook):
             case_value = key
 
         # Bring in the current input dict
-        existing_context = self.output_dict.copy()
+        existing_context = self.public_context.copy()
         existing_context.update(self.existing_context)
 
         # Create a temporary context
@@ -65,4 +65,4 @@ class MatchHook(BaseHook):
         # Traverse the input and update the output dict
         walk_sync(tmp_context, element=case_value.copy())
         # Reindex the return based on self.value
-        return tmp_context.output_dict
+        return tmp_context.public_context

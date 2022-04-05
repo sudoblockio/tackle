@@ -1,0 +1,4 @@
+arbitrary key->: import test-provider
+
+stuff->: thing --stuff thing
+things->: a_func --input thing

@@ -1,6 +1,10 @@
 import sys
 from PyInquirer import prompt
-from pprint import pprint
+
+try:
+    from rich import pprint
+except ImportError:
+    from pprint import pprint
 
 from tackle.models import BaseHook
 
@@ -15,7 +19,7 @@ class DebugHook(BaseHook):
         print("Existing context")
         pprint(dict(self.existing_context))
         print("Local context")
-        pprint(dict(self.output_dict))
+        pprint(dict(self.public_context))
         if not self.no_input:
             question = {
                 'type': 'confirm',
