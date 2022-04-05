@@ -1,8 +1,19 @@
 """All exceptions used in the tackle box code base are defined here."""
 import inspect
 import os
+import sys
+from typing import TYPE_CHECKING
+
+from tackle.utils.dicts import get_readable_key_path
+
+if TYPE_CHECKING:
+    from typing import Type
+    from tackle.models import Context, BaseHook, BaseFunction
 
 
+#
+# Base exceptions - Ones that are subclassed later
+#
 class ContributionNeededException(Exception):
     """
     Special exception to point users (particularly of the windows variety) to contribute
@@ -16,7 +27,7 @@ class ContributionNeededException(Exception):
             f"Unimplemented / needs to be built "
             f"- PLEASE HELP -> "
             f"https://github.com/robcxyz/tackle-box/blob/main/{self.file_location()}"
-            + f"\n{self.extra_message}"
+            f"\n{self.extra_message}"
         )
         super().__init__(self.message)
 
@@ -40,6 +51,7 @@ class ContributionNeededException(Exception):
         return os.path.join(*github_path_list)
 
 
+# TODO: RM
 class TackleException(Exception):
     """
     Base exception class.
@@ -47,13 +59,115 @@ class TackleException(Exception):
     All Tackle-specific exceptions should subclass this class.
     """
 
-    # def __init__(self, message=None):
-    #     # self.path_to_code = link_to_code
-    #     self.message = message
-    #     super().__init__(self.message)
+
+class TackleFunctionCallException(Exception):
+    """Base hook call exception class."""
+
+    def __init__(self, extra_message: str, function: 'Type[BaseFunction]' = None):
+        if function:
+            self.message = (
+                f"Error parsing input_file='{function.calling_file}' at "
+                f"key_path='{get_readable_key_path(key_path=function.key_path)}' \n"
+                f"{extra_message}"
+            )
+            if not function.verbose:
+                sys.tracebacklimit = 0
+        else:
+            self.message = extra_message
+        super().__init__(self.message)
 
 
-class EmptyBlockException(TackleException):
+class TackleHookCallException(Exception):
+    """Base hook call exception class."""
+
+    def __init__(self, extra_message: str, hook: 'Type[BaseHook]' = None):
+        if hook:
+            self.message = (
+                f"Error parsing input_file='{hook.calling_file}' at "
+                f"key_path='{get_readable_key_path(key_path=hook.key_path)}' \n"
+                f"{extra_message}"
+            )
+            if not hook.verbose:
+                sys.tracebacklimit = 0
+        else:
+            self.message = extra_message
+        super().__init__(self.message)
+
+
+class TackleParserException(Exception):
+    """Base parser exception class."""
+
+    def __init__(self, extra_message: str, context: 'Context' = None):
+        if context:
+            self.message = (
+                f"Error parsing input_file='{context.current_file}' at "
+                f"key_path='{get_readable_key_path(key_path=context.key_path)}' \n"
+                f"{extra_message}"
+            )
+            if not context.verbose:
+                sys.tracebacklimit = 0
+        else:
+            self.message = extra_message
+        super().__init__(self.message)
+
+
+class TackleParserInputException(Exception):
+    """Base input parser exception class."""
+
+    def __init__(self, extra_message: str, context: 'Context' = None):
+        if context:
+            self.message = (
+                f"Error parsing input_file='{context.input_file}' \n" f"{extra_message}"
+            )
+            if not context.verbose:
+                sys.tracebacklimit = 0
+        else:
+            self.message = extra_message
+        super().__init__(self.message)
+
+
+#
+# Function call exceptions
+#
+class FunctionCallException(TackleFunctionCallException):
+    """
+    Exception for when walking a function input context.
+
+    Raised in function calls.
+    """
+
+
+#
+# Hook call exceptions
+#
+class HookCallException(TackleHookCallException):
+    """
+    Exception for an unknown field in a hook.
+
+    Raised when field has been provided not declared in the hook type.
+    """
+
+
+class HookUnknownChdirException(TackleHookCallException):
+    """
+    Exception for a hook call with a chdir method.
+
+    Raised when chdir is to an unknown directory.
+    """
+
+
+#
+# Parser exceptions
+#
+class AppendMergeException(TackleParserException):
+    """
+    Excpetion when user tries to merge from for loop (ie hook --for [] --merge).
+
+    Raised when handling empty blocks.
+    """
+
+
+class EmptyBlockException(TackleParserException):
     """
     Exception when a block (ie a compact hook without a hook type - key->: if:/for:)
     is declared without any contents.
@@ -62,38 +176,7 @@ class EmptyBlockException(TackleException):
     """
 
 
-class NonTemplatedInputDirException(TackleException):
-    """
-    Exception for when a project's input dir is not templated.
-
-    The name of the input directory should always contain a string that is
-    rendered to something else, so that input_dir != output_dir.
-    """
-
-
-class UnknownSourceException(TackleException):
-    """
-    Exception for ambiguous source.
-
-    Raised when tackle cannot determine which directory is the project
-    template, e.g. more than one dir appears to be a template dir.
-    """
-
-    # unused locally
-
-
-class MissingProjectDir(TackleException):
-    """
-    Exception for missing generated project directory.
-
-    Raised during cleanup when remove_repo() can't find a generated project
-    directory inside of a repo.
-    """
-
-    # unused locally
-
-
-class UnknownArgumentException(TackleException):
+class UnknownArgumentException(TackleParserException):
     """
     Exception unknown argument when supplied via a hook call.
 
@@ -102,7 +185,7 @@ class UnknownArgumentException(TackleException):
     """
 
 
-class NoInputOrParentTackleException(TackleException):
+class NoInputOrParentTackleException(TackleParserException):
     """
     Exception when no input has been given, nor is there a parent tackle.
 
@@ -111,7 +194,7 @@ class NoInputOrParentTackleException(TackleException):
     """
 
 
-class UnknownTemplateVariableException(TackleException):
+class UnknownTemplateVariableException(TackleParserException):
     """
     Exception an unknown templatable argument.
 
@@ -119,7 +202,18 @@ class UnknownTemplateVariableException(TackleException):
     """
 
 
-class EmptyTackleFileException(TackleException):
+class UnknownHookTypeException(TackleParserException):
+    """
+    Exception for unknown hook type.
+
+    Raised when a hook type is not available from the providers.
+    """
+
+
+#
+# Parser input exceptions
+#
+class EmptyTackleFileException(TackleParserInputException):
     """
     Exception when base tackle file is empty.
 
@@ -127,15 +221,18 @@ class EmptyTackleFileException(TackleException):
     """
 
 
-class ConfigDoesNotExistException(TackleException):
+class UnknownSourceException(TackleParserInputException):
     """
-    Exception for missing config file.
+    Exception for ambiguous source.
 
-    Raised when get_config() is passed a path to a config file, but no file
-    is found at that path.
+    Raised when tackle cannot determine which directory is the project
+    template, e.g. more than one dir appears to be a template dir.
     """
 
 
+#
+# Util exceptions
+#
 class InvalidConfiguration(TackleException):
     """
     Exception for invalid configuration file.
@@ -145,12 +242,12 @@ class InvalidConfiguration(TackleException):
     """
 
 
-class UnknownRepoType(TackleException):
-    """
-    Exception for unknown repo types.
-
-    Raised if a repo's type cannot be determined.
-    """
+# class UnknownRepoType(TackleException):
+#     """
+#     Exception for unknown repo types.
+#
+#     Raised if a repo's type cannot be determined.
+#     """
 
 
 class VCSNotInstalled(TackleException):
@@ -185,58 +282,6 @@ class ContextDecodingException(TackleException):
     """
 
 
-class OutputDirExistsException(TackleException):
-    """
-    Exception for existing output directory.
-
-    Raised when the output directory of the project exists already.
-    """
-
-
-class InvalidModeException(TackleException):
-    """
-    Exception for incompatible modes.
-
-    Raised when tackle is called with both `no_input==True` and
-    `replay==True` at the same time.
-    """
-
-
-class FailedHookException(TackleException):
-    """
-    Exception for hook failures.
-
-    Raised when a hook script fails.
-    """
-
-
-class UndefinedVariableInTemplate(TackleException):
-    """
-    Exception for out-of-scope variables.
-
-    Raised when a template uses a variable which is not defined in the
-    context.
-    """
-
-    def __init__(self, message, error, context):
-        """Exception for out-of-scope variables."""
-        self.message = message
-        self.error = error
-        self.context = context
-
-    def __str__(self):
-        """Text representation of UndefinedVariableInTemplate."""
-        return self.message
-
-
-class UnknownExtension(TackleException):
-    """
-    Exception for un-importable extention.
-
-    Raised when an environment is unable to import a required extension.
-    """
-
-
 class RepositoryNotFound(TackleException):
     """
     Exception for missing repo.
@@ -267,54 +312,4 @@ class InvalidZipRepository(TackleException):
 
     Raised when the specified tackle repository isn't a valid
     Zip archive.
-    """
-
-
-class InvalidOperatorType(TackleException):
-    """
-    Exception for bad zip repo.
-
-    Raised when the specified tackle repository isn't a valid
-    Zip archive.
-    """
-
-
-class EscapeOperatorException(TackleException):
-    """
-    Exception for bad zip repo.
-
-    Raised when the specified tackle repository isn't a valid
-    Zip archive.
-    """
-
-
-class HookCallException(TackleException):
-    """
-    Exception for when a unknown field in a hook.
-
-    Raised when field has been provided not declared in the hook type.
-    """
-
-
-class UnknownHookTypeException(TackleException):
-    """
-    Exception for unknown hook type.
-
-    Raised when a hook type is not available from the providers.
-    """
-
-
-class Exception(TackleException):
-    """
-    Exception for unknown hook type.
-
-    Raised when a hook type is not available from the providers.
-    """
-
-
-class EscapeHookException(TackleException):
-    """
-    Exception for when general hook errors.
-
-    Raised in hooks.
     """

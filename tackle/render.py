@@ -130,8 +130,9 @@ def render_string(context: 'Context', raw: str):
     except UndefinedError as e:
         if len(unknown_variables) != 0:
             raise UnknownTemplateVariableException(
-                f"Variable{'s' if len(unknown_variables) != 1 else ''} {' '.join(unknown_variables)} unknown."
-            )
+                f"Variable{'s' if len(unknown_variables) != 1 else ''} {' '.join(unknown_variables)} unknown.",
+                context=context,
+            ) from None
         raise e
 
     try:

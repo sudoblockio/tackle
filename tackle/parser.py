@@ -7,6 +7,7 @@ from functools import partialmethod
 from typing import Type, Any, Union
 from pydantic import Field, create_model
 from pydantic.main import ModelMetaclass
+from collections import OrderedDict
 
 from tackle.render import render_variable, wrap_jinja_braces
 from tackle.utils.dicts import (
@@ -38,6 +39,9 @@ from tackle.exceptions import (
     UnknownSourceException,
     EmptyTackleFileException,
     EmptyBlockException,
+    FunctionCallException,
+    HookUnknownChdirException,
+    AppendMergeException,
 )
 from tackle.settings import settings
 
@@ -132,8 +136,7 @@ def evaluate_if(hook_dict: dict, context: 'Context', append_hook_value: bool) ->
 
 def merge_block_output(
     hook_output_value: Any,
-    key_path: list,
-    output_dict: dict,
+    context: Context,
     append_hook_value: bool = False,
 ):
     """
@@ -141,51 +144,53 @@ def merge_block_output(
      keys from the key path and move them up one level.
     """
     if append_hook_value:
-        raise HookCallException("Can't merge from for loop.")
+        # raise HookCallException("Can't merge from for loop.", key_path=key_path)
+        raise AppendMergeException("Can't merge from for loop.", context=context)
 
-    indexed_block_output = nested_get(element=hook_output_value, keys=key_path)
+    indexed_block_output = nested_get(element=hook_output_value, keys=context.key_path)
     for k, v in indexed_block_output.items():
         nested_set(
-            element=output_dict,
-            keys=[k] + key_path[:-1],
+            element=context.output_dict,
+            keys=[k] + context.key_path[:-1],
             value=v,
         )
-    nested_delete(element=output_dict, keys=key_path)
+    nested_delete(element=context.output_dict, keys=context.key_path)
 
 
 def merge_output(
     hook_output_value: Any,
-    key_path: list,
-    output_dict: dict,
+    context: Context,
     append_hook_value: bool = False,
 ):
     """Merge the contents into it's top level set of keys."""
     if append_hook_value:
-        raise HookCallException("Can't merge from for loop.")
+        raise AppendMergeException("Can't merge from for loop.")
 
-    if key_path[-1] in ('->', '_>'):
+    if context.key_path[-1] in ('->', '_>'):
         # Expanded key - Remove parent key from key path
-        key_path = key_path[:-2] + [key_path[-1]]
+        key_path = context.key_path[:-2] + [context.key_path[-1]]
     else:
         # Compact key
-        key_path = key_path[:-1] + [key_path[-1][-2:]]
+        key_path = context.key_path[:-1] + [context.key_path[-1][-2:]]
 
     # Can't merge into top level keys without merging k/v individually
     if len(key_path) == 1:
         # This is only valid for dict output
-        if isinstance(hook_output_value, dict):
+        if isinstance(hook_output_value, (dict, OrderedDict)):
             for k, v in hook_output_value.items():
                 set_key(
-                    element=output_dict,
+                    element=context.output_dict,
                     keys=[k] + key_path,
                     value=v,
                 )
             return
         else:
-            raise HookCallException("Can't merge non maps into top level keys.")
+            raise HookCallException(
+                "Can't merge non maps into top level keys.",
+            )
     else:
         set_key(
-            element=output_dict,
+            element=context.output_dict,
             keys=key_path,
             value=hook_output_value,
         )
@@ -199,8 +204,9 @@ def run_hook_in_dir(hook: Type[BaseHook]) -> Any:
             with work_in(os.path.abspath(os.path.expanduser(hook.chdir))):
                 return hook.exec()
         else:
-            raise NotADirectoryError(
-                f"The specified path='{path}' to change to was not found."
+            raise HookUnknownChdirException(
+                f"The specified path='{path}' to change to was not found.",
+                hook=hook,
             )
     else:
         return hook.exec()
@@ -211,7 +217,9 @@ def run_hook_with_try(hook: Type[BaseHook]) -> Any:
     if hook.try_:
         try:
             return run_hook_in_dir(hook)
-        except Exception:
+        except Exception as e:
+            if hook.verbose:
+                print(e)
             return
     else:
         # Normal hook run
@@ -283,16 +291,14 @@ def parse_hook(
                 if hook.merge:
                     merge_block_output(
                         hook_output_value=hook_output_value,
-                        key_path=context.key_path,
-                        output_dict=context.output_dict,
+                        context=context,
                         append_hook_value=append_hook_value,
                     )
                 return
             elif hook.merge:
                 merge_output(
                     hook_output_value=hook_output_value,
-                    key_path=context.key_path,
-                    output_dict=context.output_dict,
+                    context=context,
                     append_hook_value=append_hook_value,
                 )
             else:
@@ -342,6 +348,8 @@ def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
      afterwards. So if the mapping consists of a [str, list], then the if the first
      args are strs then we can ignore the list part. Right now it would just join all
      the strings together if they are part of last arg mapping.
+
+    TODO: Improve error handling
 
     Solutions:
     - First try to infer type from arg
@@ -445,7 +453,9 @@ def run_hook(context: 'Context'):
     Hook = get_hook(first_arg, context)
 
     if Hook is None:
-        raise UnknownHookTypeException(f"Hook type-> \"{first_arg}\" unknown.")
+        raise UnknownHookTypeException(
+            f"Hook type-> \"{first_arg}\" unknown.", context=context
+        )
 
     if context.key_path[-1] in ('->', '_>'):
         # We have an expanded or mixed (with args) hook expression and so there will be
@@ -526,11 +536,7 @@ def handle_empty_blocks(context: 'Context', block_value):
         value='block',
     )
     # Remove the old key
-    try:
-        nested_delete(context.input_dict, old_key_path)
-    except Exception as e:
-        print()
-        raise e
+    nested_delete(context.input_dict, old_key_path)
 
     # Iterate through the block keys except for the reserved keys like `for` or `if`
     aliases = [v.alias for _, v in BaseHook.__fields__.items()] + ['->', '_>']
@@ -551,7 +557,7 @@ def handle_empty_blocks(context: 'Context', block_value):
     # an empty hook which will cause an ambiguous ValidationError for missing field
     if 'items' not in nested_get(context.input_dict, key_path):
         key = get_readable_key_path(context.key_path)
-        raise EmptyBlockException(f"Empty hook in key path = {key}")
+        raise EmptyBlockException(f"Empty hook in key path = {key}", context=context)
 
 
 def walk_sync(context: 'Context', element):
@@ -586,8 +592,8 @@ def walk_sync(context: 'Context', element):
             context.key_path.append('_>')
             context.input_string = element['_>']
             run_hook(context)
-            context.key_path.pop()
             context.keys_to_remove.append(context.key_path.copy())
+            context.key_path.pop()
             return
         elif element == {}:
             nested_set(element=context.output_dict, keys=context.key_path, value={})
@@ -646,7 +652,9 @@ def run_handler(context, handler_key, handler_value):
         )
         hook.call()
     else:
-        raise UnknownHookTypeException()
+        raise UnknownHookTypeException(
+            f"Unknown hook type={handler_key}.", context=context
+        )
 
 
 def update_input_dict_with_kwargs(context: 'Context', kwargs: dict):
@@ -732,10 +740,11 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list):
 
     if len(context.input_dict) == 0:
         raise EmptyTackleFileException(
-            # TODO improve
+            # TODO improve -> Should give help by default?
             f"Only functions are declared in {context.input_string} tackle file. Must"
             f" provide an argument such as [] or run `tackle {context.input_string}"
-            f" help` to see more options."
+            f" help` to see more options.",
+            context=context,
         )
     else:
         walk_sync(context, context.input_dict.copy())
@@ -774,18 +783,26 @@ def function_walk(
             if return_ in tmp_context.output_dict:
                 return tmp_context.output_dict[return_]
             else:
-                raise Exception(f"Return value '{return_}' is not found in output.")
+                raise FunctionCallException(
+                    f"Return value '{return_}' is not found " f"in output.",
+                    function=self,
+                )
         elif isinstance(return_, list):
             if isinstance(tmp_context, list):
-                raise Exception(f"Can't have list return {return_} for list output.")
+                # TODO: This is not implemented (ie list outputs)
+                raise FunctionCallException(
+                    f"Can't have list return {return_} for " f"list output.",
+                    function=self,
+                )
             output = {}
             for i in return_:
                 # Can only return top level keys right now
                 if i in tmp_context.output_dict:
                     output[i] = tmp_context.output_dict[i]
                 else:
-                    raise Exception(
-                        f"Return value '{i}' in return {return_} not found in output."
+                    raise FunctionCallException(
+                        f"Return value '{i}' in return {return_} not found in output.",
+                        function=self,
                     )
             return tmp_context.output_dict[return_]
         else:
@@ -862,13 +879,17 @@ def extract_base_file(context: 'Context'):
     else:
         path = os.path.join(context.input_dir, context.input_file)
 
-    # Preserve the callling file which should be carried over from tackle calls
+    # Preserve the calling file which should be carried over from tackle calls
     if context.calling_file is None:
         context.calling_file = context.input_file
+        # context.calling_file = path
+    context.current_file = path
 
     context.input_dict = read_config_file(path)
     if context.input_dict is None:
-        raise EmptyTackleFileException(f"No tackle file found at {path}.")
+        raise EmptyTackleFileException(
+            f"No tackle file found at {path}.", context=context
+        )
 
     if isinstance(context.input_dict, list):
         # Change output to empty list
@@ -964,16 +985,20 @@ def update_source(context: 'Context'):
         # does not exist so we don't have to catch it with context later.
         tackle_file = find_nearest_tackle_file()
         if tackle_file is None:
-            raise UnknownSourceException(f"Could not find source = {first_arg}")
+            raise UnknownSourceException(
+                f"Could not find source = {first_arg}", context=context
+            )
 
         context.input_file = os.path.basename(tackle_file)
         context.input_dir = Path(tackle_file).parent.absolute()
         extract_base_file(context)
 
         if first_arg not in context.input_dict:
+            context.input_file = first_arg
             raise UnknownSourceException(
                 f"Could not find source = {first_arg} or as "
-                f"key in parent tackle file."
+                f"key in parent tackle file.",
+                context=context,
             )
         args.insert(0, first_arg)
 
