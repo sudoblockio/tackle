@@ -555,6 +555,29 @@ def handle_empty_blocks(context: 'Context', block_value):
         raise EmptyBlockException(f"Empty hook in key path = {key}", context=context)
 
 
+def compact_hook_call_macro(context: 'Context', element: str) -> dict:
+    """
+    Rewrite the input_context with an expanded expression on the called compact key.
+     Returns the string element as a dict with the key as the arrow and element as
+     value.
+    """
+    base_key_path = context.key_path[:-1]
+    new_key = [context.key_path[-1][:-2]]
+    key_path = (base_key_path + new_key)[len(context.key_path_block) :]
+    arrow = context.key_path[-1][-2:]
+
+    nested_set(
+        element=context.input_context,
+        keys=key_path,
+        value={arrow: element},
+    )
+    # Remove the old key
+    nested_delete(context.input_context, context.key_path)
+    context.key_path = key_path
+
+    return {arrow: element}
+
+
 def walk_sync(context: 'Context', element):
     """
     Traverse an object looking for hook calls and running those hooks. Here we are
@@ -563,15 +586,20 @@ def walk_sync(context: 'Context', element):
     """
     if len(context.key_path) != 0:
         # Handle compact expressions - ie key->: hook_type args
-        if context.key_path[-1][-2:] in ('->', '_>'):
-            context.input_string = element
-            run_hook(context)
-            if context.key_path[-1][-2:] == '_>':
-                # Private hook calls
-                context.keys_to_remove.append(
-                    context.key_path[:-1] + [context.key_path[-1][:-2]]
-                )
-            return
+        # if context.key_path[-1][-2:] in ('->', '_>'):
+        ending = context.key_path[-1][-2:]
+        if ending in ('->', '_>'):
+            element = compact_hook_call_macro(context, element)
+            # context.input_string = element
+            # run_hook(context)
+
+            # TODO
+            # if context.key_path[-1][-2:] == '_>':
+            #     # Private hook calls
+            #     context.keys_to_remove.append(
+            #         context.key_path[:-1] + [context.key_path[-1][:-2]]
+            #     )
+            # return
 
     if isinstance(element, dict):
         # Handle expanded expressions - ie key:\n  ->: hook_type args
