@@ -212,20 +212,6 @@ def run_hook_in_dir(hook: Type[BaseHook]) -> Any:
         return hook.exec()
 
 
-def run_hook_with_try(hook: Type[BaseHook]) -> Any:
-    """Handle changing dir attribute."""
-    if hook.try_:
-        try:
-            return run_hook_in_dir(hook)
-        except Exception as e:
-            if hook.verbose:
-                print(e)
-            return
-    else:
-        # Normal hook run
-        return run_hook_in_dir(hook)
-
-
 def render_hook_vars(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
     """Render the hook variables."""
     for key, value in list(hook_dict.items()):
@@ -285,7 +271,19 @@ def parse_hook(
                 is_hook_call=True,
             )
             # Main exec logic
-            hook_output_value = run_hook_with_try(hook)
+            if hook.try_:
+                try:
+                    hook_output_value = run_hook_in_dir(hook)
+                except Exception as e:
+                    if hook.verbose:
+                        print(e)
+                    if hook.except_:
+                        # TODO: Use generalized function same with `else`
+                        raise NotImplementedError
+                    return
+            else:
+                # Normal hook run
+                hook_output_value = run_hook_in_dir(hook)
 
             if hook.hook_type == 'block':
                 if hook.merge:
@@ -348,15 +346,12 @@ def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
      afterwards. So if the mapping consists of a [str, list], then the if the first
      args are strs then we can ignore the list part. Right now it would just join all
      the strings together if they are part of last arg mapping.
-
-    TODO: Improve error handling
-
+    TODO: Improve error handling.
     Solutions:
     - First try to infer type from arg
         - Single types then into unions?
     - If type cannot be infered (ie Any) then do ast as literal
     """
-
     hook_args: list = Hook.__fields__['args'].default
     for i, v in enumerate(args):
         # Iterate over the input args
