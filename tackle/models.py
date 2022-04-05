@@ -393,6 +393,7 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
     for_: Union[str, list] = Field(None, render_by_default=True)
     reverse: Union[str, bool] = Field(None, render_by_default=True)
     try_: Union[str, bool] = Field(None, render_by_default=True)
+    except_: Union[str, bool] = Field(None, alias='except', render_by_default=True)
 
     callback: str = None
     chdir: Optional[str] = Field(None, description="Name of the hook.")
