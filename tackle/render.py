@@ -55,7 +55,7 @@ def render_variable(context: 'Context', raw: Any):
 def render_string(context: 'Context', raw: str):
     """
     Render strings by first extracting renderable variables then build a render context
-    from the output_dict, then existing context, and last looks up special variables.
+    from the public_context, then existing context, and last looks up special variables.
     After the value has been rendered it is returned as literal so as to preserve the
     original type of the value.
 
@@ -72,9 +72,9 @@ def render_string(context: 'Context', raw: str):
     render_context = {}
     unknown_variables = []
     for v in variables:
-        # Variables in the current output_dict take precedence
-        if v in context.output_dict:
-            render_context.update({v: context.output_dict[v]})
+        # Variables in the current public_context take precedence
+        if v in context.public_context:
+            render_context.update({v: context.public_context[v]})
         elif v in context.existing_context:
             render_context.update({v: context.existing_context[v]})
         elif v in special_variables:
@@ -97,8 +97,8 @@ def render_string(context: 'Context', raw: str):
         for i in unknown_variables:
             if i in context.provider_hooks:
                 context.env_.globals[i] = context.provider_hooks[i](
-                    input_dict=context.input_dict,
-                    output_dict=context.output_dict,
+                    input_dict=context.input_context,
+                    output_dict=context.public_context,
                     existing_context=context.existing_context,
                     no_input=context.no_input,
                     calling_directory=context.calling_directory,
@@ -118,8 +118,8 @@ def render_string(context: 'Context', raw: str):
         match = re.search(r'\<class \'(.+?)\'>', rendered_template)
         if match:
             ambiguous_key = match.group(1).split('.')[-1].lower()
-            if ambiguous_key in context.output_dict:
-                rendered_template = context.output_dict[ambiguous_key]
+            if ambiguous_key in context.public_context:
+                rendered_template = context.public_context[ambiguous_key]
             elif match.group(1) in context.existing_context:
                 rendered_template = context.existing_context[ambiguous_key]
 

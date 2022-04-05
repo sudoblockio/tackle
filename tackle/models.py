@@ -264,7 +264,10 @@ class PartialModelMetaclass(ModelMetaclass):
                     for i, v in enumerate(args):
                         kwargs[self.args[i]] = v
                 # cls is always initialized with kwargs not args.
-                cls_init(self, **kwargs)
+                try:
+                    cls_init(self, **kwargs)
+                except Exception as e:
+                    raise e
                 # Restore requiredness
                 optionalize(fields, restore=True)
 
@@ -299,7 +302,7 @@ class StrictEnvironment(Environment):
             if isinstance(v, LazyImportHook):
                 self.filters[k] = v.wrapped_exec
             else:
-                # Filters don't receive any context (output_dict, etc)
+                # Filters don't receive any context (public_context, etc)
                 self.filters[k] = v().wrapped_exec
 
 
@@ -324,11 +327,17 @@ class Context(BaseModel):
         None,
         description="For inputs referencing remote repos, refers to a branch or tag.",
     )
-    existing_context: dict = {}
+
+    # RF input_context
+    input_context: dict = {}
     overwrite_inputs: Union[dict, str] = None
-    input_dict: dict = {}
-    # output_dict: dict = {}
-    output_dict: Any = {}
+
+    public_context: Any = {}
+    private_context: Union[dict, list] = None
+    temporary_context: Union[dict, list] = None
+    existing_context: dict = {}
+
+    # TODO: RM
     keys_to_remove: list = []
 
     # Internal
@@ -338,6 +347,8 @@ class Context(BaseModel):
 
     calling_directory: str = None
     calling_file: str = None
+    current_file: str = None
+
     env_: Any = None
 
     global_args: list = None
@@ -389,10 +400,14 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
     confirm: Optional[Any] = None
 
     # context parameters - must be same type as context
-    input_dict: Union[dict, list] = None
-    output_dict: Union[dict, list] = {}
-    key_path: list = None
+    input_context: Union[dict, list] = None
+
+    public_context: Union[dict, list] = {}
     existing_context: dict = None
+    private_context: Union[dict, list] = None
+    temporary_context: Union[dict, list] = None
+
+    key_path: list = None
     no_input: bool = None
     calling_directory: str = None
     calling_file: str = None
@@ -415,7 +430,12 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
     args: list = []
 
     # Fields that should not be rendered by default
-    _render_exclude_default: set = {'input_dict', 'output_dict', 'hook_type', 'else'}
+    _render_exclude_default: set = {
+        'input_context',
+        'public_context',
+        'hook_type',
+        'else',
+    }
     _render_exclude: set = {}
     _render_by_default: list = []
 

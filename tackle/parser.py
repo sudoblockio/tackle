@@ -92,7 +92,7 @@ def evaluate_for(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
 
     # Need add an empty list in the value so we have something to append to
     set_key(
-        element=context.output_dict,
+        element=context.public_context,
         keys=context.key_path,
         value=[],
     )
@@ -150,11 +150,11 @@ def merge_block_output(
     indexed_block_output = nested_get(element=hook_output_value, keys=context.key_path)
     for k, v in indexed_block_output.items():
         nested_set(
-            element=context.output_dict,
+            element=context.public_context,
             keys=[k] + context.key_path[:-1],
             value=v,
         )
-    nested_delete(element=context.output_dict, keys=context.key_path)
+    nested_delete(element=context.public_context, keys=context.key_path)
 
 
 def merge_output(
@@ -179,7 +179,7 @@ def merge_output(
         if isinstance(hook_output_value, (dict, OrderedDict)):
             for k, v in hook_output_value.items():
                 set_key(
-                    element=context.output_dict,
+                    element=context.public_context,
                     keys=[k] + key_path,
                     value=v,
                 )
@@ -190,7 +190,7 @@ def merge_output(
             )
     else:
         set_key(
-            element=context.output_dict,
+            element=context.public_context,
             keys=key_path,
             value=hook_output_value,
         )
@@ -258,8 +258,8 @@ def parse_hook(
 
             hook = Hook(
                 **hook_dict,
-                input_dict=context.input_dict,
-                output_dict=context.output_dict,
+                input_context=context.input_context,
+                public_context=context.public_context,
                 existing_context=context.existing_context,
                 no_input=context.no_input,
                 calling_directory=context.calling_directory,
@@ -301,7 +301,7 @@ def parse_hook(
                 )
             else:
                 set_key(
-                    element=context.output_dict,
+                    element=context.public_context,
                     keys=context.key_path,
                     # keys=context.key_path[-len(context.key_path_block):],
                     value=hook_output_value,
@@ -311,7 +311,7 @@ def parse_hook(
     elif 'else' in hook_dict:
         if isinstance(hook_dict['else'], str):
             set_key(
-                element=context.output_dict,
+                element=context.public_context,
                 keys=context.key_path,
                 # keys=context.key_path[:-len(context.key_path_block)],
                 value=render_variable(context, hook_dict['else']),
@@ -429,14 +429,14 @@ def run_hook(context: 'Context'):
         # Only qualified when input is of form `key->: [{{var}},{{var}},...]
         # In this case we need to set the key as an empty list
         nested_set(
-            element=context.output_dict,
+            element=context.public_context,
             keys=context.key_path[:-1] + [context.key_path[-1][:-2]],
             value=[],
         )
         # Iterate over values appending rendered values. Rendered values can be any type
         for i, v in enumerate(context.input_string):
             nested_set(
-                element=context.output_dict,
+                element=context.public_context,
                 keys=context.key_path[:-1]
                 + [context.key_path[-1][:-2]]
                 + [encode_list_index(i)],
@@ -456,7 +456,7 @@ def run_hook(context: 'Context'):
         # We have an expanded or mixed (with args) hook expression and so there will be
         # additional properties in adjacent keys. Trim key_path_block for blocks
         hook_dict = nested_get(
-            context.input_dict, context.key_path[:-1][len(context.key_path_block) :]
+            context.input_context, context.key_path[:-1][len(context.key_path_block) :]
         ).copy()
         # Need to replace arrow keys as for the time being (pydantic 1.8.2) - multiple
         # aliases for the same field (type) can't be specified so doing this hack
@@ -467,7 +467,7 @@ def run_hook(context: 'Context'):
     else:
         # Hook is a compact expression - Can only be a string
         hook_dict = {}
-        # hook_dict['hook_type'] = nested_get(context.input_dict, context.key_path)
+        # hook_dict['hook_type'] = nested_get(context.input_context, context.key_path)
     hook_dict['hook_type'] = first_arg
 
     # Associate hook arguments provided in the call with hook attributes
@@ -519,19 +519,19 @@ def handle_empty_blocks(context: 'Context', block_value):
 
     # Over-write the input with an expanded path (ie no arrow in key)
     nested_set(
-        element=context.input_dict,
+        element=context.input_context,
         keys=key_path,
         value=block_value,
     )
     # Add back the arrow with the value set to `block` for the block hook
     arrow = [context.key_path[-1][-2:]]
     nested_set(
-        element=context.input_dict,
+        element=context.input_context,
         keys=key_path + arrow,
         value='block',
     )
     # Remove the old key
-    nested_delete(context.input_dict, old_key_path)
+    nested_delete(context.input_context, old_key_path)
 
     # Iterate through the block keys except for the reserved keys like `for` or `if`
     aliases = [v.alias for _, v in BaseHook.__fields__.items()] + ['->', '_>']
@@ -539,18 +539,18 @@ def handle_empty_blocks(context: 'Context', block_value):
         if k not in aliases:
             # Set the keys under the `items` key per the block hook's input
             nested_set(
-                element=context.input_dict,
+                element=context.input_context,
                 keys=key_path + ['items', k],
                 value=v,
             )
             # Remove the old key
-            nested_delete(context.input_dict, key_path + [k])
+            nested_delete(context.input_context, key_path + [k])
         elif context.verbose:
             warnings.warn(f"Warning - skipping over {k} in block hook.")
 
-    # Finally check if the `items` key exists in the input_dict.  If not then we have
+    # Finally check if the `items` key exists in the input_context.  If not then we have
     # an empty hook which will cause an ambiguous ValidationError for missing field
-    if 'items' not in nested_get(context.input_dict, key_path):
+    if 'items' not in nested_get(context.input_context, key_path):
         key = get_readable_key_path(context.key_path)
         raise EmptyBlockException(f"Empty hook in key path = {key}", context=context)
 
@@ -591,7 +591,7 @@ def walk_sync(context: 'Context', element):
             context.key_path.pop()
             return
         elif element == {}:
-            nested_set(element=context.output_dict, keys=context.key_path, value={})
+            nested_set(element=context.public_context, keys=context.key_path, value={})
             return
 
         for k, v in element.copy().items():
@@ -613,7 +613,7 @@ def walk_sync(context: 'Context', element):
         # Handle empty lists
         if len(element) == 0:
             nested_set(
-                element=context.output_dict, keys=context.key_path, value=element
+                element=context.public_context, keys=context.key_path, value=element
             )
         else:
             for i, v in enumerate(element.copy()):
@@ -621,7 +621,7 @@ def walk_sync(context: 'Context', element):
                 walk_sync(context, v)
                 context.key_path.pop()
     else:
-        nested_set(element=context.output_dict, keys=context.key_path, value=element)
+        nested_set(element=context.public_context, keys=context.key_path, value=element)
 
 
 def run_handler(context, handler_key, handler_value):
@@ -633,15 +633,15 @@ def run_handler(context, handler_key, handler_value):
     if handler_key in context.functions:
         """Run functions"""
         function = context.functions[handler_key]
-        context.input_dict = function.exec
+        context.input_context = function.exec
         walk_sync(context, function.exec.copy())
 
     elif get_hook(handler_key, context, suppress_error=True):
         Hook = get_hook(handler_key, context)
         hook = Hook(
             **handler_value,
-            input_dict=context.input_dict,
-            output_dict=context.output_dict,
+            input_context=context.input_context,
+            public_context=context.public_context,
             no_input=context.no_input,
             providers=context.providers,
         )
@@ -652,26 +652,26 @@ def run_handler(context, handler_key, handler_value):
         )
 
 
-def update_input_dict_with_kwargs(context: 'Context', kwargs: dict):
+def update_input_context_with_kwargs(context: 'Context', kwargs: dict):
     """
     Update the input dict with kwargs which in this context are treated as overriding
     the keys. Takes into account if the key is a hook and replaces that.
     """
     for k, v in kwargs.items():
-        if k in context.input_dict:
-            context.input_dict.update({k: v})
-        elif f"{k}->" in context.input_dict:
+        if k in context.input_context:
+            context.input_context.update({k: v})
+        elif f"{k}->" in context.input_context:
             # Replace the keys and value in the same position it was in
-            context.input_dict = {
+            context.input_context = {
                 key if key != f"{k}->" else k: value if key != f"{k}->" else v
-                for key, value in context.input_dict.items()
+                for key, value in context.input_context.items()
             }
 
 
 def run_source(context: 'Context', args: list, kwargs: dict, flags: list):
     """
     Take the input dict and impose global args/kwargs/flags with the following logic:
-    - Use kwargs/flags as overriding keys in the input_dict
+    - Use kwargs/flags as overriding keys in the input_context
     - Check the input dict if there is a key matching the arg and run that key
       - Additional arguments are assessed as
         - If the call is to a hook directly, then inject that as an argument
@@ -696,34 +696,34 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list):
         kwargs.update({i: True for i in context.global_flags})
         context.global_flags = None
 
-    update_input_dict_with_kwargs(context=context, kwargs=kwargs)
+    update_input_context_with_kwargs(context=context, kwargs=kwargs)
 
     for i in flags:
         # Process flags by setting key to true
-        context.input_dict.update({i: True})
+        context.input_context.update({i: True})
 
     if len(args) >= 1:
         # TODO: Implement help
         # `help` which will always be the last arg
         # if args[-1] == 'help':
         #     # Calling help will exit 0. End of the line.
-        #     run_help(context, context.input_dict, args[:-1])
+        #     run_help(context, context.input_context, args[:-1])
 
         # Loop through all args
         for i in args:
             # Remove any arrows on the first level keys
             first_level_compact_keys = [
-                k[:-2] for k, _ in context.input_dict.items() if k.endswith('->')
+                k[:-2] for k, _ in context.input_context.items() if k.endswith('->')
             ]
             if i in first_level_compact_keys:
-                arg_key_value = context.input_dict[i + '->']
+                arg_key_value = context.input_context[i + '->']
                 if isinstance(arg_key_value, str):
                     # We have a compact hook so nothing else to traverse
                     break
 
-            elif i in context.input_dict:
+            elif i in context.input_context:
                 context.key_path.append(i)
-                walk_sync(context, context.input_dict[i].copy())
+                walk_sync(context, context.input_context[i].copy())
                 context.key_path.pop()
 
             elif i in context.provider_hooks:
@@ -733,7 +733,7 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list):
                 raise ValueError(f"Argument {i} not found as key in input.")
         return
 
-    if len(context.input_dict) == 0:
+    if len(context.input_context) == 0:
         raise EmptyTackleFileException(
             # TODO improve -> Should give help by default?
             f"Only functions are declared in {context.input_string} tackle file. Must"
@@ -742,7 +742,7 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list):
             context=context,
         )
     else:
-        walk_sync(context, context.input_dict.copy())
+        walk_sync(context, context.input_context.copy())
 
 
 def function_walk(
@@ -755,7 +755,7 @@ def function_walk(
     many returnable string keys. Function is meant to be implanted into a function
     object and called either as `exec` or some other arbitrary method.
     """
-    existing_context = self.output_dict.copy()
+    existing_context = self.public_context.copy()
     existing_context.update(self.existing_context)
 
     for i in self.function_fields:
@@ -764,8 +764,8 @@ def function_walk(
     tmp_context = Context(
         provider_hooks=self.provider_hooks,
         existing_context=existing_context,
-        output_dict={},
-        input_dict=input_element,
+        public_context={},
+        input_context=input_element,
         key_path=[],
         no_input=self.no_input,
         calling_directory=self.calling_directory,
@@ -775,8 +775,8 @@ def function_walk(
 
     if return_:
         if isinstance(return_, str):
-            if return_ in tmp_context.output_dict:
-                return tmp_context.output_dict[return_]
+            if return_ in tmp_context.public_context:
+                return tmp_context.public_context[return_]
             else:
                 raise FunctionCallException(
                     f"Return value '{return_}' is not found " f"in output.",
@@ -792,17 +792,17 @@ def function_walk(
             output = {}
             for i in return_:
                 # Can only return top level keys right now
-                if i in tmp_context.output_dict:
-                    output[i] = tmp_context.output_dict[i]
+                if i in tmp_context.public_context:
+                    output[i] = tmp_context.public_context[i]
                 else:
                     raise FunctionCallException(
                         f"Return value '{i}' in return {return_} not found in output.",
                         function=self,
                     )
-            return tmp_context.output_dict[return_]
+            return tmp_context.public_context[return_]
         else:
             raise NotImplementedError(f"Return must be of list or string {return_}.")
-    return tmp_context.output_dict
+    return tmp_context.public_context
 
 
 def create_function_model(
@@ -858,15 +858,15 @@ def create_function_model(
 
 
 def extract_functions(context: 'Context'):
-    for k, v in context.input_dict.copy().items():
+    for k, v in context.input_context.copy().items():
         if re.match(r'.*(<\-|<\_)$', k):
             Function = create_function_model(context, k, v)
             context.provider_hooks[k[:-2]] = Function
-            context.input_dict.pop(k)
+            context.input_context.pop(k)
 
 
 def extract_base_file(context: 'Context'):
-    """Read the tackle file and initialize input_dict."""
+    """Read the tackle file and initialize input_context."""
     if context.find_in_parent:
         path = find_in_parent(context.input_dir, context.input_file)
         context.input_file = os.path.basename(path)
@@ -880,15 +880,15 @@ def extract_base_file(context: 'Context'):
         # context.calling_file = path
     context.current_file = path
 
-    context.input_dict = read_config_file(path)
-    if context.input_dict is None:
+    context.input_context = read_config_file(path)
+    if context.input_context is None:
         raise EmptyTackleFileException(
             f"No tackle file found at {path}.", context=context
         )
 
-    if isinstance(context.input_dict, list):
+    if isinstance(context.input_context, list):
         # Change output to empty list
-        context.output_dict = []
+        context.public_context = []
     else:
         # TODO: Implement function extractor
         extract_functions(context)
@@ -901,16 +901,16 @@ def extract_base_file(context: 'Context'):
 
     # TODO: Experimental feature that could be integrated later
     # # Extract handlers
-    # for k, v in list(input_dict.items()):
+    # for k, v in list(input_context.items()):
     #     if k.startswith('__'):
     #         # Run pre-execution handlers and remove from input
     #         run_handler(context, k[2:], v)
-    #         input_dict.pop(k)
+    #         input_context.pop(k)
     #     if k.endswith('__'):
     #         # Store post-execution handlers and remove from input
     #         # TODO: Execute post exec handlers
     #         context.post_exec_handlers.append({k[:-2]: v})
-    #         input_dict.pop(k)
+    #         input_context.pop(k)
 
 
 def import_local_provider_source(context: 'Context', provider_dir: str):
@@ -966,7 +966,7 @@ def update_source(context: 'Context'):
         context.input_file = os.path.basename(find_tackle_file(first_arg))
         context.input_dir = Path(first_arg).absolute()
 
-        # Load the base file into input_dict
+        # Load the base file into input_context
         extract_base_file(context)
     # File
     elif is_file(first_arg):
@@ -988,7 +988,7 @@ def update_source(context: 'Context'):
         context.input_dir = Path(tackle_file).parent.absolute()
         extract_base_file(context)
 
-        if first_arg not in context.input_dict:
+        if first_arg not in context.input_context:
             context.input_file = first_arg
             raise UnknownSourceException(
                 f"Could not find source = {first_arg} or as "

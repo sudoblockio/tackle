@@ -68,6 +68,6 @@ def tackle(
 
     # Private hooks need to be removed from the output
     for k in context.keys_to_remove:
-        nested_delete(context.output_dict, k)
+        nested_delete(context.public_context, k)
 
-    return context.output_dict
+    return context.public_context
