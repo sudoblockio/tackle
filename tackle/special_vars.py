@@ -82,11 +82,23 @@ def _current_directory(context: 'Context'):
 
 
 def _this(context: 'Context'):
-    return dict(context.output_dict)
+    return dict(context.public_context)
 
 
-def _output(context: 'Context'):
-    return context.output_dict
+def _public_context(context: 'Context'):
+    return context.public_context
+
+
+def _private_context(context: 'Context'):
+    return context.private_context
+
+
+def _temporary_context(context: 'Context'):
+    return context.temporary_context
+
+
+def _existing_context(context: 'Context'):
+    return context.existing_context
 
 
 special_variables = {
@@ -103,5 +115,8 @@ special_variables = {
     'current_file': _current_file,
     'current_directory': _current_directory,
     'this': _this,
-    'output': _output,
+    'public_context': _public_context,
+    'private_context': _private_context,
+    'existing_context': _existing_context,
+    'temporary_context': _temporary_context,
 }
