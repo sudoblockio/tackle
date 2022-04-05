@@ -1,11 +1,10 @@
-"""Jinja hook."""
 from jinja2.exceptions import UndefinedError
 from jinja2 import FileSystemLoader
 
 from typing import Union
 
 from tackle import BaseHook, Field
-from tackle.exceptions import UndefinedVariableInTemplate
+from tackle.providers.generate.hooks.exceptions import UndefinedVariableInTemplate
 from tackle.utils.dicts import get_readable_key_path
 
 
@@ -39,13 +38,13 @@ class JinjaHook(BaseHook):
             pass
         elif self.additional_context is not None:
             self.render_context = {
-                **self.output_dict,
+                **self.public_context,
                 **self.additional_context,
                 **self.existing_context,
             }
         else:
             self.render_context = {
-                **self.output_dict,
+                **self.public_context,
                 **self.existing_context,
             }
 
@@ -65,7 +64,7 @@ class JinjaHook(BaseHook):
 
         except UndefinedError as err:
             msg = f"The Jinja hook for '{get_readable_key_path(self.key_path)}' key path failed to render"
-            raise UndefinedVariableInTemplate(msg, err, self.output_dict)
+            raise UndefinedVariableInTemplate(msg, err, self.public_context)
 
         if self.output is not None:
             with open(self.output, 'w') as fh:

@@ -1,4 +1,3 @@
-"""Generate hook."""
 import os.path
 import fnmatch
 from typing import Union
@@ -10,7 +9,7 @@ import shutil
 from typing import List
 
 from tackle.models import BaseHook
-from tackle.exceptions import UndefinedVariableInTemplate
+from tackle.providers.generate.hooks.exceptions import UndefinedVariableInTemplate
 
 
 class GenerateHook(BaseHook, smart_union=True):
@@ -72,20 +71,20 @@ class GenerateHook(BaseHook, smart_union=True):
         elif self.extra_context is not None:
             if isinstance(self.extra_context, list):
                 self.render_context = {
-                    **self.output_dict,
+                    **self.public_context,
                     **self.existing_context,
                 }
                 for i in self.extra_context:
                     self.render_context.update(i)
             else:
                 self.render_context = {
-                    **self.output_dict,
+                    **self.public_context,
                     **self.extra_context,
                     **self.existing_context,
                 }
         else:
             self.render_context = {
-                **self.output_dict,
+                **self.public_context,
                 **self.existing_context,
             }
 

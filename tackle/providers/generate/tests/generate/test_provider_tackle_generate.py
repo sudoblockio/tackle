@@ -1,4 +1,3 @@
-"""Tests dict input objects for `tackle.providers.tackle.generate` module."""
 import pytest
 from ruamel.yaml import YAML
 
