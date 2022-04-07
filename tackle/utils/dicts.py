@@ -209,12 +209,7 @@ def set_key(element, keys: list, value, append_hook_value: bool = False):
             # Condition when we are appending values from a list
             nested_set(element, keys, value)
 
-    elif keys[-1] == '->':  # Expanded public hook call
+    elif keys[-1] in ('->', '_>'):  # Expanded hook call
         nested_set(element, keys[:-1], value)
-    elif keys[-1].endswith('->'):  # Compact public hook call
+    elif keys[-1].endswith(('->', '_>')):  # Compact public hook call
         nested_set(element, keys[:-1] + [keys[-1][:-2]], value)
-    elif keys[-1] == '_>':  # Expanded private hook call
-        nested_set(element, keys[:-1], value)
-    elif keys[-1].endswith('_>'):  # Compact private hook call
-        key_path = keys[:-1] + [keys[-1][:-2]]
-        nested_set(element, key_path, value)

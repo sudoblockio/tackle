@@ -571,9 +571,12 @@ def compact_hook_call_macro(context: 'Context', element: str) -> dict:
         keys=key_path,
         value={arrow: element},
     )
-    # Remove the old key
-    nested_delete(context.input_context, context.key_path)
-    context.key_path = key_path
+
+    # Delete the keys based on a re-indexed key_path corrected for blocks
+    extra_keys = len(context.key_path) - len(context.key_path_block)
+    nested_delete(context.input_context, context.key_path[-extra_keys:])
+    # Reset the key_path without arrow
+    context.key_path = context.key_path_block + key_path
 
     return {arrow: element}
 
@@ -615,7 +618,10 @@ def walk_sync(context: 'Context', element):
             context.key_path.append('_>')
             context.input_string = element['_>']
             run_hook(context)
-            context.keys_to_remove.append(context.key_path.copy())
+
+            # TODO
+            # context.keys_to_remove.append(context.key_path.copy())
+
             context.key_path.pop()
             return
         elif element == {}:
