@@ -935,7 +935,7 @@ def create_function_model(
 
 def extract_functions(context: 'Context'):
     for k, v in context.input_context.copy().items():
-        if re.match(r'^[a-zA-Z0-9\_](<\-|<\_)$', k):
+        if re.match(r'^[a-zA-Z0-9\_]*(<\-|<\_)$', k):
             Function = create_function_model(context, k, v)
             context.provider_hooks[k[:-2]] = Function
             context.input_context.pop(k)
