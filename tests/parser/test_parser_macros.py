@@ -43,3 +43,22 @@ def test_parser_calling_directory_preserve(change_curdir_fixtures):
     """Validate that the calling_directory param is carried over from hook calls."""
     output = tackle('calling-context.yaml')
     assert output['call']['call']['calling_file'] == 'calling-context.yaml'
+
+
+def test_parser_list_to_block_macro(change_curdir_fixtures):
+    os.chdir('macros')
+    output = tackle('list-block.yaml')
+    assert isinstance(output['foo'][1], list)
+
+
+def test_parser_compact_hook_call_macro(change_curdir_fixtures):
+    """Check that embedded compact hooks are called appropriately."""
+    os.chdir('macros')
+    output = tackle('compact-hook-macro.yaml')
+    assert output['compact'] == 'things'
+
+
+# def test_parser_compact_hook_call_macro(change_curdir_fixtures):
+#     os.chdir('macros')
+#     output = tackle('compact-hook-macro2.yaml')
+#     assert output['compact'] == 'things'

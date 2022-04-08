@@ -1,0 +1,32 @@
+stuff: things
+
+compact->: var stuff
+
+a:
+  compact->: var stuff
+  b:
+    compact->: var stuff
+    c:
+      compact->: var stuff
+    d:
+      - compact->: var stuff
+      - compact->: var stuff
+    e:
+      compact->: var stuff
+
+b:
+  compact: things
+  b:
+    compact: things
+    c:
+      compact: things
+    d:
+      - compact: things
+      - compact: things
+    e:
+      compact: things
+
+check->: assert {{a}} {{b}}
+
+
+

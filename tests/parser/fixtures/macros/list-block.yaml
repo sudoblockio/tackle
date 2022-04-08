@@ -1,0 +1,22 @@
+
+alist:
+  - foo
+  - bar
+
+stuff: things
+
+adict:
+  this: foo
+  that: bar
+
+#expanded:
+#  ->: block
+#  items:
+#    - this
+#    - "{{stuff}}"
+
+foo->:
+  - this
+  - "{{alist}}"
+#  - this:
+#      ->: var adict
