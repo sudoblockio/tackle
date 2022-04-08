@@ -511,7 +511,7 @@ def handle_empty_blocks(context: 'Context', block_value):
     # Break up key paths
     base_key_path = context.key_path[:-1]
     new_key = [context.key_path[-1][:-2]]
-    # Handle embedded blocks which need to have thier key paths adjusted
+    # Handle embedded blocks which need to have their key paths adjusted
     # key_path = (base_key_path + new_key)[-len(context.key_path_block) :]
     key_path = (base_key_path + new_key)[len(context.key_path_block) :]
 
@@ -561,6 +561,8 @@ def compact_hook_call_macro(context: 'Context', element: str) -> dict:
      Returns the string element as a dict with the key as the arrow and element as
      value.
     """
+    # if isinstance(element)
+
     base_key_path = context.key_path[:-1]
     new_key = [context.key_path[-1][:-2]]
     key_path = (base_key_path + new_key)[len(context.key_path_block) :]
@@ -581,6 +583,38 @@ def compact_hook_call_macro(context: 'Context', element: str) -> dict:
     return {arrow: element}
 
 
+def list_to_var_macro(context: 'Context', element: list) -> dict:
+    """
+    Convert arrow keys with a list as the value to `var` hooks via a re-write to the
+    input.
+    """
+    # TODO: Convert this to a block. Issue is that keys are not rendered by default so
+    #  when str items in a list are parsed, they are not rendered by default. Should
+    #  have some validator or something on block to render str items in a list.
+    # Break up key paths
+    base_key_path = context.key_path[:-1]
+    new_key = [context.key_path[-1][:-2]]
+    # Handle embedded blocks which need to have their key paths adjusted
+    # key_path = (base_key_path + new_key)[-len(context.key_path_block) :]
+    key_path = (base_key_path + new_key)[len(context.key_path_block) :]
+
+    old_key_path = context.key_path[len(context.key_path_block) :]
+
+    # Add back the arrow with the value set to `block` for the block hook
+    arrow = context.key_path[-1][-2:]
+    nested_set(
+        element=context.input_context,
+        keys=key_path,
+        value={arrow: 'var', 'input': element},
+    )
+
+    # Remove the old key
+    nested_delete(context.input_context, old_key_path)
+    context.key_path = context.key_path_block + key_path
+
+    return {arrow: 'var'}
+
+
 def walk_sync(context: 'Context', element):
     """
     Traverse an object looking for hook calls and running those hooks. Here we are
@@ -592,10 +626,12 @@ def walk_sync(context: 'Context', element):
         # if context.key_path[-1][-2:] in ('->', '_>'):
         ending = context.key_path[-1][-2:]
         if ending in ('->', '_>'):
-            element = compact_hook_call_macro(context, element)
+            if isinstance(element, str):
+                element = compact_hook_call_macro(context, element)
+            elif isinstance(element, list):
+                element = list_to_var_macro(context, element)
             # context.input_string = element
             # run_hook(context)
-
             # TODO
             # if context.key_path[-1][-2:] == '_>':
             #     # Private hook calls
@@ -640,7 +676,10 @@ def walk_sync(context: 'Context', element):
             else:
                 # Recurse
                 walk_sync(context, v)
-                context.key_path.pop()
+                try:
+                    context.key_path.pop()
+                except Exception as e:
+                    raise e
             # context.key_path.pop()
     # Non-hook calls recurse through inputs
     elif isinstance(element, list):
@@ -652,8 +691,11 @@ def walk_sync(context: 'Context', element):
         else:
             for i, v in enumerate(element.copy()):
                 context.key_path.append(encode_list_index(i))
-                walk_sync(context, v)
-                context.key_path.pop()
+                try:
+                    walk_sync(context, v)
+                    context.key_path.pop()
+                except Exception as e:
+                    raise e
     else:
         nested_set(element=context.public_context, keys=context.key_path, value=element)
 
@@ -670,7 +712,7 @@ def run_handler(context, handler_key, handler_value):
         context.input_context = function.exec
         walk_sync(context, function.exec.copy())
 
-    elif get_hook(handler_key, context, suppress_error=True):
+    elif get_hook(handler_key, context):
         Hook = get_hook(handler_key, context)
         hook = Hook(
             **handler_value,
@@ -893,7 +935,7 @@ def create_function_model(
 
 def extract_functions(context: 'Context'):
     for k, v in context.input_context.copy().items():
-        if re.match(r'.*(<\-|<\_)$', k):
+        if re.match(r'^[a-zA-Z0-9\_](<\-|<\_)$', k):
             Function = create_function_model(context, k, v)
             context.provider_hooks[k[:-2]] = Function
             context.input_context.pop(k)
@@ -924,7 +966,6 @@ def extract_base_file(context: 'Context'):
         # Change output to empty list
         context.public_context = []
     else:
-        # TODO: Implement function extractor
         extract_functions(context)
 
     # Check if there is a hooks directory in the provider being run and import the hooks

@@ -6,9 +6,10 @@ from tackle import tackle
 from tackle.exceptions import EmptyBlockException
 
 FIXTURES = [
-    ('single-level.yaml', 'single-level-output.yaml'),
-    ('nested-dict.yaml', 'nested-dict-output.yaml'),
-    ('nested-for.yaml', 'nested-for-output.yaml'),
+    # ('single-level.yaml', 'single-level-output.yaml'),
+    # ('nested-dict.yaml', 'nested-dict-output.yaml'),
+    # ('nested-for.yaml', 'nested-for-output.yaml'),
+    # ('embedded-blocks.yaml', 'embedded-blocks.yaml'),
 ]
 
 

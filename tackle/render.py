@@ -97,8 +97,8 @@ def render_string(context: 'Context', raw: str):
         for i in unknown_variables:
             if i in context.provider_hooks:
                 context.env_.globals[i] = context.provider_hooks[i](
-                    input_dict=context.input_context,
-                    output_dict=context.public_context,
+                    input_context=context.input_context,
+                    public_context=context.public_context,
                     existing_context=context.existing_context,
                     no_input=context.no_input,
                     calling_directory=context.calling_directory,

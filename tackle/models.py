@@ -329,7 +329,7 @@ class Context(BaseModel):
     )
 
     # RF input_context
-    input_context: dict = {}
+    input_context: Union[dict, list] = None
     overwrite_inputs: Union[dict, str] = None
 
     public_context: Any = {}
@@ -393,7 +393,7 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
     for_: Union[str, list] = Field(None, render_by_default=True)
     reverse: Union[str, bool] = Field(None, render_by_default=True)
     try_: Union[str, bool] = Field(None, render_by_default=True)
-    except_: Union[str, bool] = Field(None, alias='except', render_by_default=True)
+    except_: Union[str, bool] = Field(None, render_by_default=True)
 
     callback: str = None
     chdir: Optional[str] = Field(None, description="Name of the hook.")
@@ -474,6 +474,7 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
             'else_private': 'else_>',
             'for_': 'for',
             'try_': 'try',
+            'except_': 'except',
         }
         # Per https://github.com/samuelcolvin/pydantic/issues/1577
         # This is an issue until pydantic 1.9 is released and items can be set with
