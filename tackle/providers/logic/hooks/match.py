@@ -4,6 +4,7 @@ import re
 
 from tackle.models import BaseHook, Context, Field
 from tackle.parser import walk_sync
+from tackle.render import render_string
 
 
 class MatchHook(BaseHook):
@@ -23,46 +24,65 @@ class MatchHook(BaseHook):
         "if present.",
     )
 
-    _render_exclude = {'case'}
     args: list = ['value']
+
+    _render_exclude = {'case'}
     _docs_order = 3
+
+    @staticmethod
+    def block_macro(val) -> dict:
+        """Take input and create a block hook to parse."""
+        output = {}
+        aliases = [v.alias for _, v in BaseHook.__fields__.items()] + ['->', '_>']
+        for k, v in val.items():
+            if k not in aliases:
+                # Set the keys under the `items` key per the block hook's input
+                output.update({'items': {k: v}})
+            else:
+                output.update({k: v})
+        return output
 
     def exec(self) -> Union[dict, list]:
         # Condition catches everything except expanded hook calls and blocks (ie key->)
         for k, v in self.case.items():
             if re.match(k, self.value):
                 # Dicts that are not expanded hooks themselves
-                if isinstance(v, dict) and not ('->' in v or '_>' in v):
+                if isinstance(v, (dict, list)) and not ('->' in v or '_>' in v):
                     return self.run_key(v)
-                return self.run_key(k, v)[k]
+                if isinstance(v, dict):
+                    return self.run_key({k: {**v, **{'merge': True}}})
+                elif isinstance(v, str):
+                    return render_string(self, v)
+                return v
 
             elif re.match(k[:-2], self.value) and k[-2:] in ('->', '_>'):
                 # Return the value indexed without arrow
-                return self.run_key(k, v)[k[:-2]]
+                if isinstance(v, str):
+                    return self.run_key({k[:-2]: {k[-2:]: v + ' --merge'}})
+                elif isinstance(v, dict):
+                    return self.run_key(self.block_macro(v))
+                else:
+                    raise NotImplementedError
 
         raise Exception(f"Value `{self.value}` not found in {self.case.keys()}")
 
-    def run_key(self, key, value=None):
-        if value:
-            case_value = {key: value}
-        else:
-            case_value = key
+    def run_key(self, value):
+        self.skip_output: bool = True
 
-        # Bring in the current input dict
-        existing_context = self.public_context.copy()
-        existing_context.update(self.existing_context)
-
-        # Create a temporary context
         tmp_context = Context(
             provider_hooks=self.provider_hooks,
-            existing_context=existing_context,
-            output_dict={},
-            input_dict=case_value,
-            key_path=[],
+            public_context=self.public_context,
+            private_context=self.private_context,
+            temporary_context=self.temporary_context,
+            existing_context=self.existing_context.copy(),
+            input_context=value,
+            key_path=self.key_path.copy(),
+            key_path_block=self.key_path.copy(),
             no_input=self.no_input,
             calling_directory=self.calling_directory,
+            calling_file=self.calling_file,
+            verbose=self.verbose,
         )
-        # Traverse the input and update the output dict
-        walk_sync(tmp_context, element=case_value.copy())
-        # Reindex the return based on self.value
-        return tmp_context.public_context
+        walk_sync(context=tmp_context, element=value.copy())
+
+        return self.public_context
