@@ -18,7 +18,9 @@ class BlockHook(BaseHook):
     """
 
     hook_type: str = 'block'
-    items: dict = Field(..., description="Items to be parsed like a normal input.")
+    items: Union[dict, list] = Field(
+        ..., description="Items to be parsed like a normal input."
+    )
 
     _render_exclude = {'items'}
 
@@ -43,12 +45,15 @@ class BlockHook(BaseHook):
         # self.key_path = self.key_path[:-1]
         # if isinstance(self.key_path[-1], bytes):
         # Remove the prior hook from the key path so it does not get used when writing
-        if self.key_path[-1] == b'\x00\x00':
-            # If the key path is part of a list
-            self.key_path.pop(-2)
-        elif self.key_path[-1] in ('->', '_>'):
-            # Normal
-            self.key_path.pop(-1)
+
+        # last_key = self.key_path[-1]
+        # # if last_key == b'\x00\x00':
+        #     # If the key path is part of a list
+        #     self.key_path.pop(-2)
+
+        # elif last_key in ('->', '_>'):
+        #     # Normal
+        #     self.key_path.pop(-1)
 
         # else:
         #     self.key_path.pop(-1)
@@ -60,8 +65,10 @@ class BlockHook(BaseHook):
 
         tmp_context = Context(
             provider_hooks=self.provider_hooks,
-            existing_context=self.existing_context.copy(),
             public_context=self.public_context,
+            private_context=self.private_context,
+            temporary_context=self.temporary_context,
+            existing_context=self.existing_context.copy(),
             input_context=self.items,
             # key_path=self.key_path[:-1],
             key_path=self.key_path.copy(),
@@ -71,13 +78,21 @@ class BlockHook(BaseHook):
             calling_file=self.calling_file,
             verbose=self.verbose,
         )
-        if len(self.key_path) > 0:
-            if self.key_path[0] == b'\x00\x01':
-                print()
+        # if len(self.key_path) > 0:
+        #     if self.key_path[0] == b'\x00\x01':
+        #         print()
+
+        # if last_key in ('->', '_>'):
+        #     # Normal
+        #     self.key_path.append(last_key)
 
         walk_sync(context=tmp_context, element=self.items.copy())
 
         # for i in self.key_path[:-1]:
         #     self.public_context = self.public_context[i]
+
+        # if last_key in ('->', '_>'):
+        #     # Normal
+        #     self.key_path.append(last_key)
 
         return self.public_context
