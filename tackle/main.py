@@ -1,10 +1,8 @@
-"""Main entry point."""
 from typing import Union
 
 from tackle.models import Context
 from tackle.parser import update_source
 from tackle.utils.paths import find_nearest_tackle_file
-from tackle.utils.dicts import nested_delete
 from tackle.exceptions import NoInputOrParentTackleException
 
 
@@ -63,11 +61,7 @@ def tackle(
         # package - ie tackle('input-file.yaml', **some_override_dict)
         context.global_kwargs = get_global_kwargs(kwargs)
 
-    # Synchronous execution
+    # Main loop
     update_source(context)
-
-    # Private hooks need to be removed from the output
-    for k in context.keys_to_remove:
-        nested_delete(context.public_context, k)
 
     return context.public_context

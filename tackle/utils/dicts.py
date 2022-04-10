@@ -215,7 +215,7 @@ def smush_key_path(key_path: list) -> list:
     return output
 
 
-def set_key2(
+def set_key(
     context: 'Context',
     value: Any,
     key_path: list = None,

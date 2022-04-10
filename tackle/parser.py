@@ -281,16 +281,13 @@ def parse_hook(
                 # Normal hook run
                 hook_output_value = run_hook_in_dir(hook)
 
-            # if hook.hook_type == 'block':
             if hook.skip_output:
-                # if len(context.key_path_block) != 0:
                 if hook.merge:
                     merge_block_output(
                         hook_output_value=hook_output_value,
                         context=context,
                         append_hook_value=append_hook_value,
                     )
-                # context.key_path.pop()
                 return
             elif hook.merge:
                 merge_output(
@@ -416,22 +413,10 @@ def run_hook(context: 'Context'):
         # Rare case when an arrow is used to indicate rendering of a list.
         # Only qualified when input is of form `key->: [{{var}},{{var}},...]
         # In this case we need to set the key as an empty list
-        # nested_set(
-        #     element=context.public_context,
-        #     keys=context.key_path[:-1] + [context.key_path[-1][:-2]],
-        #     value=[],
-        # )
         set_key(context, value=[])
 
         # Iterate over values appending rendered values. Rendered values can be any type
         for i, v in enumerate(context.input_string):
-            # nested_set(
-            #     element=context.public_context,
-            #     keys=context.key_path[:-1]
-            #     + [context.key_path[-1][:-2]]
-            #     + [encode_list_index(i)],
-            #     value=render_variable(context, v),
-            # )
             set_key(
                 context=context,
                 value=render_variable(context, v),
@@ -450,16 +435,10 @@ def run_hook(context: 'Context'):
     if context.key_path[-1] in ('->', '_>'):
         # We have an expanded or mixed (with args) hook expression and so there will be
         # additional properties in adjacent keys. Trim key_path_block for blocks
-        # hook_dict = nested_get(
-        #     context.input_context, context.key_path[:-1][len(context.key_path_block) :]
-        # ).copy()
-
         hook_dict = nested_get(
             context.input_context,
             smush_key_path(context.key_path[:-1][len(context.key_path_block) :]),
         ).copy()
-
-        # hook_dict = nested_get(context.input_context, context.key_path[:-1]).copy()
         # Need to replace arrow keys as for the time being (pydantic 1.8.2) - multiple
         # aliases for the same field (type) can't be specified so doing this hack
         if '->' in hook_dict:
@@ -469,7 +448,6 @@ def run_hook(context: 'Context'):
     else:
         # Hook is a compact expression - Can only be a string
         hook_dict = {}
-        # hook_dict['hook_type'] = nested_get(context.input_context, context.key_path)
     hook_dict['hook_type'] = first_arg
 
     # Associate hook arguments provided in the call with hook attributes
@@ -482,7 +460,6 @@ def run_hook(context: 'Context'):
 
     # Main parser
     parse_hook(hook_dict, Hook, context)
-    # context.key_path.pop()
 
 
 def handle_empty_blocks(context: 'Context', block_value):
@@ -515,20 +492,15 @@ def handle_empty_blocks(context: 'Context', block_value):
     base_key_path = context.key_path[:-1]
     new_key = [context.key_path[-1][:-2]]
     # Handle embedded blocks which need to have their key paths adjusted
-    # key_path = (base_key_path + new_key)[-len(context.key_path_block) :]
     key_path = (base_key_path + new_key)[len(context.key_path_block) :]
-
     old_key_path = context.key_path[len(context.key_path_block) :]
 
     # Over-write the input with an expanded path (ie no arrow in key)
-    try:
-        nested_set(
-            element=context.input_context,
-            keys=key_path,
-            value=block_value,
-        )
-    except Exception as e:
-        raise e
+    nested_set(
+        element=context.input_context,
+        keys=key_path,
+        value=block_value,
+    )
 
     # Add back the arrow with the value set to `block` for the block hook
     arrow = [context.key_path[-1][-2:]]
@@ -675,11 +647,8 @@ def walk_sync(context: 'Context', element):
         else:
             for i, v in enumerate(element.copy()):
                 context.key_path.append(encode_list_index(i))
-                try:
-                    walk_sync(context, v)
-                    context.key_path.pop()
-                except Exception as e:
-                    raise e
+                walk_sync(context, v)
+                context.key_path.pop()
     else:
         set_key(context=context, value=element)
 

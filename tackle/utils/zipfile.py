@@ -39,7 +39,7 @@ def unzip(zip_uri, clone_to_dir='.', no_input=False, password=None):
     :param no_input: Suppress any prompts
     :param password: The password to use when unpacking the repository.
     """
-    # Ensure that clone_to_dir exists
+    # Ensure "that clone_to_dir exists
     clone_to_dir = os.path.expanduser(clone_to_dir)
     make_sure_path_exists(clone_to_dir)
 
