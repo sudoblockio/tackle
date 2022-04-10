@@ -15,8 +15,10 @@ from tackle.utils.dicts import (
     nested_delete,
     nested_set,
     encode_list_index,
-    set_key,
+    set_key2,
+    get_target_and_key,
     get_readable_key_path,
+    smush_key_path,
 )
 from tackle.utils.command import unpack_args_kwargs_string
 from tackle.utils.vcs import get_repo_source
@@ -91,9 +93,13 @@ def evaluate_for(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
     hook_dict.pop('for')
 
     # Need add an empty list in the value so we have something to append to
-    set_key(
-        element=context.public_context,
-        keys=context.key_path,
+    # set_key(
+    #     element=context.public_context,
+    #     keys=context.key_path,
+    #     value=[],
+    # )
+    set_key2(
+        context=context,
         value=[],
     )
 
@@ -147,14 +153,21 @@ def merge_block_output(
         # raise HookCallException("Can't merge from for loop.", key_path=key_path)
         raise AppendMergeException("Can't merge from for loop.", context=context)
 
-    indexed_block_output = nested_get(element=hook_output_value, keys=context.key_path)
+    target_context, key_path = get_target_and_key(context)
+
+    # indexed_block_output = nested_get(element=hook_output_value, keys=context.key_path[:-1])
+
+    indexed_block_output = nested_get(element=hook_output_value, keys=key_path)
     for k, v in indexed_block_output.items():
+        element, key_path = get_target_and_key(context)
         nested_set(
-            element=context.public_context,
-            keys=[k] + context.key_path[:-1],
+            element=target_context,
+            keys=[k] + key_path[:-1],
             value=v,
         )
-    nested_delete(element=context.public_context, keys=context.key_path)
+
+    nested_delete(element=target_context, keys=key_path)
+    # nested_delete(element=context.public_context, keys=context.key_path[:-1])
 
 
 def merge_output(
@@ -178,22 +191,24 @@ def merge_output(
         # This is only valid for dict output
         if isinstance(hook_output_value, (dict, OrderedDict)):
             for k, v in hook_output_value.items():
-                set_key(
-                    element=context.public_context,
-                    keys=[k] + key_path,
-                    value=v,
-                )
+                # set_key(
+                #     element=context.public_context,
+                #     keys=[k] + key_path,
+                #     value=v,
+                # )
+                set_key2(context=context, value=v, key_path=[k] + key_path)
             return
         else:
             raise HookCallException(
                 "Can't merge non maps into top level keys.",
             )
     else:
-        set_key(
-            element=context.public_context,
-            keys=key_path,
-            value=hook_output_value,
-        )
+        set_key2(context=context, value=hook_output_value, key_path=key_path)
+        # set_key(
+        #     element=context.public_context,
+        #     keys=key_path,
+        #     value=hook_output_value,
+        # )
 
 
 def run_hook_in_dir(hook: Type[BaseHook]) -> Any:
@@ -260,6 +275,8 @@ def parse_hook(
                 **hook_dict,
                 input_context=context.input_context,
                 public_context=context.public_context,
+                private_context=context.private_context,
+                temporary_context=context.temporary_context,
                 existing_context=context.existing_context,
                 no_input=context.no_input,
                 calling_directory=context.calling_directory,
@@ -286,12 +303,14 @@ def parse_hook(
                 hook_output_value = run_hook_in_dir(hook)
 
             if hook.hook_type == 'block':
+                # if len(context.key_path_block) != 0:
                 if hook.merge:
                     merge_block_output(
                         hook_output_value=hook_output_value,
                         context=context,
                         append_hook_value=append_hook_value,
                     )
+                # context.key_path.pop()
                 return
             elif hook.merge:
                 merge_output(
@@ -300,27 +319,39 @@ def parse_hook(
                     append_hook_value=append_hook_value,
                 )
             else:
-                set_key(
-                    element=context.public_context,
-                    keys=context.key_path,
-                    # keys=context.key_path[-len(context.key_path_block):],
+                # set_key(
+                #     element=context.public_context,
+                #     keys=context.key_path,
+                #     # keys=context.key_path[-len(context.key_path_block):],
+                #     value=hook_output_value,
+                #     append_hook_value=append_hook_value,
+                # )
+
+                set_key2(
+                    context=context,
                     value=hook_output_value,
                     append_hook_value=append_hook_value,
                 )
+                print()
 
     elif 'else' in hook_dict:
         if isinstance(hook_dict['else'], str):
-            set_key(
-                element=context.public_context,
-                keys=context.key_path,
-                # keys=context.key_path[:-len(context.key_path_block)],
+            # set_key(
+            #     element=context.public_context,
+            #     keys=context.key_path,
+            #     # keys=context.key_path[:-len(context.key_path_block)],
+            #     value=render_variable(context, hook_dict['else']),
+            #     append_hook_value=append_hook_value,
+            # )
+            set_key2(
+                context=context,
                 value=render_variable(context, hook_dict['else']),
                 append_hook_value=append_hook_value,
             )
             return
-        context.key_path.pop()  # Remove the prior hook call
+        # context.key_path.pop()  # Remove the prior hook call
         walk_sync(context, element=hook_dict['else'])
-        context.key_path.append('hack')  #
+        # context.key_path.append('hack')  #
     elif 'else->' in hook_dict:
         if isinstance(hook_dict['else->'], str):
             context.key_path[-1] = '->'
@@ -329,9 +360,9 @@ def parse_hook(
         raise NotImplementedError("Compact else not implemented.")
 
     # TODO: Ultra hack - Should be RMed -
-    elif context.key_path[-1] in ('->', '_>'):
-        if hook_dict['hook_type'] == 'block':
-            context.key_path.pop()
+    # elif context.key_path[-1] in ('->', '_>'):
+    #     if hook_dict['hook_type'] == 'block':
+    #         context.key_path.pop()
 
 
 def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
@@ -455,9 +486,16 @@ def run_hook(context: 'Context'):
     if context.key_path[-1] in ('->', '_>'):
         # We have an expanded or mixed (with args) hook expression and so there will be
         # additional properties in adjacent keys. Trim key_path_block for blocks
+        # hook_dict = nested_get(
+        #     context.input_context, context.key_path[:-1][len(context.key_path_block) :]
+        # ).copy()
+
         hook_dict = nested_get(
-            context.input_context, context.key_path[:-1][len(context.key_path_block) :]
+            context.input_context,
+            smush_key_path(context.key_path[:-1][len(context.key_path_block) :]),
         ).copy()
+
+        # hook_dict = nested_get(context.input_context, context.key_path[:-1]).copy()
         # Need to replace arrow keys as for the time being (pydantic 1.8.2) - multiple
         # aliases for the same field (type) can't be specified so doing this hack
         if '->' in hook_dict:
@@ -480,6 +518,7 @@ def run_hook(context: 'Context'):
 
     # Main parser
     parse_hook(hook_dict, Hook, context)
+    # context.key_path.pop()
 
 
 def handle_empty_blocks(context: 'Context', block_value):
@@ -518,11 +557,15 @@ def handle_empty_blocks(context: 'Context', block_value):
     old_key_path = context.key_path[len(context.key_path_block) :]
 
     # Over-write the input with an expanded path (ie no arrow in key)
-    nested_set(
-        element=context.input_context,
-        keys=key_path,
-        value=block_value,
-    )
+    try:
+        nested_set(
+            element=context.input_context,
+            keys=key_path,
+            value=block_value,
+        )
+    except Exception as e:
+        raise e
+
     # Add back the arrow with the value set to `block` for the block hook
     arrow = [context.key_path[-1][-2:]]
     nested_set(
@@ -568,11 +611,14 @@ def compact_hook_call_macro(context: 'Context', element: str) -> dict:
     key_path = (base_key_path + new_key)[len(context.key_path_block) :]
     arrow = context.key_path[-1][-2:]
 
-    nested_set(
-        element=context.input_context,
-        keys=key_path,
-        value={arrow: element},
-    )
+    try:
+        nested_set(
+            element=context.input_context,
+            keys=smush_key_path(key_path),
+            value={arrow: element},
+        )
+    except Exception as e:
+        raise e
 
     # Delete the keys based on a re-indexed key_path corrected for blocks
     extra_keys = len(context.key_path) - len(context.key_path_block)
@@ -596,21 +642,33 @@ def list_to_var_macro(context: 'Context', element: list) -> dict:
     new_key = [context.key_path[-1][:-2]]
     # Handle embedded blocks which need to have their key paths adjusted
     # key_path = (base_key_path + new_key)[-len(context.key_path_block) :]
-    key_path = (base_key_path + new_key)[len(context.key_path_block) :]
+    # key_path = (base_key_path + new_key)[len(context.key_path_block) :]
 
     old_key_path = context.key_path[len(context.key_path_block) :]
 
     # Add back the arrow with the value set to `block` for the block hook
     arrow = context.key_path[-1][-2:]
-    nested_set(
-        element=context.input_context,
-        keys=key_path,
-        value={arrow: 'var', 'input': element},
-    )
 
-    # Remove the old key
-    nested_delete(context.input_context, old_key_path)
-    context.key_path = context.key_path_block + key_path
+    # context.key_path = key_path + [arrow]
+    # context.key_path = base_key_path + [arrow]
+
+    _, key_path = get_target_and_key(context)
+    # TODO: Hackology
+    if isinstance(context.input_context, dict):
+        nested_set(
+            element=context.input_context,
+            # keys=key_path,
+            keys=base_key_path + new_key,
+            value={arrow: 'var', 'input': element},
+        )
+        nested_delete(context.input_context, old_key_path)
+        # Remove the old key
+        # context.key_path = context.key_path_block + key_path
+        context.key_path = base_key_path + new_key
+
+    else:
+        context.input_context = {arrow: 'var', 'input': element}
+        context.key_path = base_key_path
 
     return {arrow: 'var'}
 
@@ -661,7 +719,8 @@ def walk_sync(context: 'Context', element):
             context.key_path.pop()
             return
         elif element == {}:
-            nested_set(element=context.public_context, keys=context.key_path, value={})
+            # nested_set(element=context.public_context, keys=context.key_path, value={})
+            set_key2(context=context, value={})
             return
 
         for k, v in element.copy().items():
@@ -672,7 +731,11 @@ def walk_sync(context: 'Context', element):
                 handle_empty_blocks(context, v)
                 context.key_path[-1] = k[:-2]
                 walk_sync(context, v)
-                # context.key_path.pop()
+                print()
+                try:
+                    context.key_path.pop()
+                except Exception as e:
+                    raise e
             else:
                 # Recurse
                 walk_sync(context, v)
@@ -685,9 +748,10 @@ def walk_sync(context: 'Context', element):
     elif isinstance(element, list):
         # Handle empty lists
         if len(element) == 0:
-            nested_set(
-                element=context.public_context, keys=context.key_path, value=element
-            )
+            # nested_set(
+            #     element=context.public_context, keys=context.key_path, value=element
+            # )
+            set_key2(context=context, value=element)
         else:
             for i, v in enumerate(element.copy()):
                 context.key_path.append(encode_list_index(i))
@@ -697,7 +761,8 @@ def walk_sync(context: 'Context', element):
                 except Exception as e:
                     raise e
     else:
-        nested_set(element=context.public_context, keys=context.key_path, value=element)
+        # nested_set(element=context.public_context, keys=context.key_path, value=element)
+        set_key2(context=context, value=element)
 
 
 def run_handler(context, handler_key, handler_value):

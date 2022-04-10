@@ -2,7 +2,10 @@
 Utils for modifying complex dictionaries generally based on an encoded key_path which is
 a list of strings for key value lookups and byte encoded integers for items in a list.
 """
-from typing import Union
+from typing import Union, Any, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from tackle.models import Context
 
 
 def encode_list_index(list_index: int) -> bytes:
@@ -127,10 +130,16 @@ def nested_get(element, keys):
     """
     num_elements = len(keys)
 
+    if num_elements == 0:
+        return element
+
     if num_elements == 1:
         if isinstance(keys[0], bytes):
             return element[decode_list_index(keys[0])]
-        return element[keys[0]]
+        try:
+            return element[keys[0]]
+        except Exception as e:
+            raise e
 
     if isinstance(keys[0], bytes):
         return nested_get(element[decode_list_index(keys[0])], keys[1:])
@@ -210,6 +219,64 @@ def set_key(element, keys: list, value, append_hook_value: bool = False):
             nested_set(element, keys, value)
 
     elif keys[-1] in ('->', '_>'):  # Expanded hook call
+        # Yes
         nested_set(element, keys[:-1], value)
     elif keys[-1].endswith(('->', '_>')):  # Compact public hook call
         nested_set(element, keys[:-1] + [keys[-1][:-2]], value)
+
+
+def get_target_and_key(context: 'Context', key_path: list = None) -> (Any, list):
+    target_context = context.public_context
+
+    if key_path is None:
+        key_path = context.key_path
+
+    output_key_path = []
+    for i in key_path:
+        if i == '_>':
+            if context.private_context is None:
+                context.private_context = (
+                    {} if isinstance(output_key_path[0], str) else []
+                )
+            target_context = context.private_context
+        elif i != '->':
+            output_key_path.append(i)
+
+    return target_context, output_key_path
+
+
+def smush_key_path(key_path: list) -> list:
+    """Remove the arrows from a key path."""
+    output = []
+    for i in key_path:
+        if i not in ('->', '_>'):
+            output.append(i)
+    return output
+
+
+def set_key2(
+    context: 'Context',
+    value: Any,
+    key_path: list = None,
+    append_hook_value: bool = False,
+):
+    """
+    Wrap nested_set to set keys for both public and private hook calls.
+
+    For public hook calls, qualifies if the hook is compact form (ie key->) or expanded
+    (ie key: {->:..}) before setting the output. For private hook calls, the key and
+    all parent keys without additional objects are deleted later as they might be
+    used in rendering so they are added as well but their key paths are tracked for
+    later deletion.
+    """
+    target_context, key_path = get_target_and_key(context, key_path=key_path)
+    nested_set(target_context, key_path, value)
+
+    if len(context.key_path_block) != 0:
+        tmp_key_path = context.key_path[
+            -(len(context.key_path) - len(context.key_path_block)) :
+        ]
+        if context.temporary_context is None:
+            context.temporary_context = {} if isinstance(tmp_key_path[0], str) else []
+        tmp_key_path = [i for i in tmp_key_path if i not in ('->', '_>')]
+        nested_set(context.temporary_context, tmp_key_path, value)

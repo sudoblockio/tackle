@@ -73,8 +73,12 @@ def render_string(context: 'Context', raw: str):
     unknown_variables = []
     for v in variables:
         # Variables in the current public_context take precedence
-        if v in context.public_context:
+        if context.public_context and v in context.public_context:
             render_context.update({v: context.public_context[v]})
+        elif context.private_context and v in context.private_context:
+            render_context.update({v: context.private_context[v]})
+        elif context.temporary_context and v in context.temporary_context:
+            render_context.update({v: context.temporary_context[v]})
         elif v in context.existing_context:
             render_context.update({v: context.existing_context[v]})
         elif v in special_variables:

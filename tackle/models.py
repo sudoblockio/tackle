@@ -66,15 +66,16 @@ class ProviderHooks(dict):
         file_path: str,
     ):
         """Import a single hook from a path."""
+        file_split = os.path.basename(file_path).split('.')
+        file_base = file_split[0]
+        file_extension = file_split[-1]
         # Maintaining cookiecutter support here as it might have a `hooks` dir.
-        excluded_file_names = ['pre_gen_project', 'post_gen_project', '__pycache__']
-        excluded_file_extensions = ['pyc']
-
-        file_base = os.path.basename(file_path).split('.')
-        if file_base[0] in excluded_file_names:
+        if file_base in ('pre_gen_project', 'post_gen_project', '__pycache__'):
             return
-        if file_base[-1] in excluded_file_extensions:
+        if file_extension == 'pyc':
             return
+        if file_extension in ('yaml', 'yml'):
+            pass
 
         if os.path.basename(file_path).split('.')[-1] != "py":
             # Only import python files
