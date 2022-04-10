@@ -186,45 +186,6 @@ def nested_set(element, keys, value, index: int = 0):
     nested_set(element, keys, value, index + 1)
 
 
-def set_key(element, keys: list, value, append_hook_value: bool = False):
-    """
-    Wrap nested_set to set keys for both public and private hook calls.
-
-    For public hook calls, qualifies if the hook is compact form (ie key->) or expanded
-    (ie key: {->:..}) before setting the output. For private hook calls, the key and
-    all parent keys without additional objects are deleted later as they might be
-    used in rendering so they are added as well but their key paths are tracked for
-    later deletion.
-    """
-    # TODO: Implement removal of parent keys without values
-    if isinstance(keys[-1], bytes):
-        if append_hook_value:
-            # Condition when we are appending values from a hook for loop where we need
-            # take off the prior keys hook arrows
-            parent_key_value = keys[-2]
-            if parent_key_value in ('->', '_>'):
-                # We never append with the hook arrow so temporarily remove it so we can
-                # still keep the path to the key
-                keys.pop(-2)
-                nested_set(element, keys, value)
-                keys.insert(-1, parent_key_value)
-            else:
-                # Same as above but here we are in a compact expression and want to
-                # temporarily replace the trailing hook arrow
-                keys[-2] = parent_key_value.replace('->', '').replace('_>', '')
-                nested_set(element, keys, value)
-                keys[-2] = parent_key_value
-        else:
-            # Condition when we are appending values from a list
-            nested_set(element, keys, value)
-
-    elif keys[-1] in ('->', '_>'):  # Expanded hook call
-        # Yes
-        nested_set(element, keys[:-1], value)
-    elif keys[-1].endswith(('->', '_>')):  # Compact public hook call
-        nested_set(element, keys[:-1] + [keys[-1][:-2]], value)
-
-
 def get_target_and_key(context: 'Context', key_path: list = None) -> (Any, list):
     target_context = context.public_context
 
