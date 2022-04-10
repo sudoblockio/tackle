@@ -6,15 +6,11 @@ from tackle.parser import walk_sync
 
 class BlockHook(BaseHook):
     """
-    Hook for blocks of hooks.
-     This is a special case where the hooks input variables are not rendered
-     until it is later executed. Each `item` is looped over and parsed like a
-     normal pass. Useful if you have a block of hooks that should be grouped
-     into a single conditional / looped execution.
-
-    Render context is a little different than normal where both the context
-     from outside of the hook and within the hook are made available. See
-     [examples](block.md).
+    Hook for blocks of hooks. This is a special case where `items` are parsed like a
+     normal context with the added benefit of maintaining a `temporary_context` so that
+     items on the same level can be accessed in memory / rendered. Normally executed
+     via a macro with an arrow. This the only hook the core parser is aware of as it is
+     parsing.
     """
 
     hook_type: str = 'block'
@@ -24,45 +20,7 @@ class BlockHook(BaseHook):
 
     _render_exclude = {'items'}
 
-    # def exec(self) -> Union[dict, list]:
-    #     existing_context = self.public_context.copy()
-    #     existing_context.update(self.existing_context)
-    #
-    #     tmp_context = Context(
-    #         provider_hooks=self.provider_hooks,
-    #         existing_context=existing_context,
-    #         public_context={},
-    #         input_context=self.items,
-    #         key_path=[],
-    #         no_input=self.no_input,
-    #         calling_directory=self.calling_directory,
-    #         calling_file=self.calling_file,
-    #     )
-    #     walk_sync(context=tmp_context, element=self.items.copy())
-    #     return tmp_context.public_context
-
     def exec(self) -> Union[dict, list]:
-        # self.key_path = self.key_path[:-1]
-        # if isinstance(self.key_path[-1], bytes):
-        # Remove the prior hook from the key path so it does not get used when writing
-
-        # last_key = self.key_path[-1]
-        # # if last_key == b'\x00\x00':
-        #     # If the key path is part of a list
-        #     self.key_path.pop(-2)
-
-        # elif last_key in ('->', '_>'):
-        #     # Normal
-        #     self.key_path.pop(-1)
-
-        # else:
-        #     self.key_path.pop(-1)
-        # key_path = self.key_path[:-1]
-
-        # if self.merge:
-        #     print()
-        #     self.key_path.pop()
-
         tmp_context = Context(
             provider_hooks=self.provider_hooks,
             public_context=self.public_context,
@@ -70,7 +28,6 @@ class BlockHook(BaseHook):
             temporary_context=self.temporary_context,
             existing_context=self.existing_context.copy(),
             input_context=self.items,
-            # key_path=self.key_path[:-1],
             key_path=self.key_path.copy(),
             key_path_block=self.key_path.copy(),
             no_input=self.no_input,
@@ -78,21 +35,6 @@ class BlockHook(BaseHook):
             calling_file=self.calling_file,
             verbose=self.verbose,
         )
-        # if len(self.key_path) > 0:
-        #     if self.key_path[0] == b'\x00\x01':
-        #         print()
-
-        # if last_key in ('->', '_>'):
-        #     # Normal
-        #     self.key_path.append(last_key)
-
         walk_sync(context=tmp_context, element=self.items.copy())
-
-        # for i in self.key_path[:-1]:
-        #     self.public_context = self.public_context[i]
-
-        # if last_key in ('->', '_>'):
-        #     # Normal
-        #     self.key_path.append(last_key)
 
         return self.public_context
