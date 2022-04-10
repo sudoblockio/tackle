@@ -16,9 +16,11 @@ class JinjaHook(BaseHook):
 
     hook_type: str = 'jinja'
     # fmt: off
-    template: str = Field(..., description="Path to the template to render relative to `file_system_loader`.")
+    template: str = Field(...,
+                          description="Path to the template to render relative to `file_system_loader`.")
     output: str = Field(None, description="Path to the output the template.")
-    extra_context: dict = Field(None, description="Extra context update the global context to render with.")
+    extra_context: dict = Field(None,
+                                description="Extra context update the global context to render with.")
     render_context: dict = Field(
         None, description="A render context that invalidates the default context."
     )
@@ -33,35 +35,39 @@ class JinjaHook(BaseHook):
 
     args: list = ['template', 'output']
 
-    def exec(self) -> str:
+    def _init_context(self):
+        # Update the render_context that will be used
         if self.render_context is not None:
-            pass
-        elif self.additional_context is not None:
-            self.render_context = {
-                **self.public_context,
-                **self.additional_context,
-                **self.existing_context,
-            }
-        else:
-            self.render_context = {
-                **self.public_context,
-                **self.existing_context,
-            }
+            return
 
+        # fmt: off
+        existing_context = self.existing_context if self.existing_context is not None else {}
+        temporary_context = self.temporary_context if self.temporary_context is not None else {}
+        private_context = self.private_context if self.private_context is not None else {}
+        public_context = self.public_context if self.public_context is not None else {}
+        # fmt: on
+
+        self.render_context = {
+            **existing_context,
+            **temporary_context,
+            **private_context,
+            **public_context,
+        }
+
+        if self.extra_context is not None:
+            if isinstance(self.extra_context, list):
+                for i in self.extra_context:
+                    self.render_context.update(i)
+            else:
+                self.render_context.update(self.extra_context)
+
+    def exec(self) -> str:
+        self._init_context()
         self.env_.loader = FileSystemLoader(self.file_system_loader)
         template = self.env_.get_template(self.template)
 
-        jinja_context = self.render_context
-
-        if self.extra_context:
-            jinja_context.update(self.extra_context)
-
         try:
-            # output_from_parsed_template = template.render(
-            #     **{self.context_key: jinja_context}, **jinja_context
-            # )
-            output_from_parsed_template = template.render(**jinja_context)
-
+            output_from_parsed_template = template.render(**self.render_context)
         except UndefinedError as err:
             msg = f"The Jinja hook for '{get_readable_key_path(self.key_path)}' key path failed to render"
             raise UndefinedVariableInTemplate(msg, err, self.public_context)

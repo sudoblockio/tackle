@@ -50,8 +50,7 @@ class GenerateHook(BaseHook, smart_union=True):
 
     args: list = ['templates', 'output']
 
-    def exec(self):
-        """Generate files / directories."""
+    def _init_paths(self):
         if isinstance(self.copy_without_render, str):
             self.copy_without_render = [self.copy_without_render]
 
@@ -65,30 +64,37 @@ class GenerateHook(BaseHook, smart_union=True):
             if not self.output.startswith('/'):
                 self.output = os.path.join(self.calling_directory, self.output)
 
+    def _init_context(self):
         # Update the render_context that will be used
         if self.render_context is not None:
-            pass
-        elif self.extra_context is not None:
+            return
+
+        # fmt: off
+        existing_context = self.existing_context if self.existing_context is not None else {}
+        temporary_context = self.temporary_context if self.temporary_context is not None else {}
+        private_context = self.private_context if self.private_context is not None else {}
+        public_context = self.public_context if self.public_context is not None else {}
+        # fmt: on
+
+        self.render_context = {
+            **existing_context,
+            **temporary_context,
+            **private_context,
+            **public_context,
+        }
+
+        if self.extra_context is not None:
             if isinstance(self.extra_context, list):
-                self.render_context = {
-                    **self.public_context,
-                    **self.existing_context,
-                }
                 for i in self.extra_context:
                     self.render_context.update(i)
             else:
-                self.render_context = {
-                    **self.public_context,
-                    **self.extra_context,
-                    **self.existing_context,
-                }
-        else:
-            self.render_context = {
-                **self.public_context,
-                **self.existing_context,
-            }
+                self.render_context.update(self.extra_context)
 
-        # self.env_ = StrictEnvironment(provider_hooks=self.provider_hooks)
+    def exec(self):
+        """Generate files / directories."""
+        self._init_paths()
+        self._init_context()
+
         # https://stackoverflow.com/questions/42368678/jinja-environment-is-not-supporting-absolute-paths
         # Need to add root to support absolute paths
         if isinstance(self.file_system_loader, str):
