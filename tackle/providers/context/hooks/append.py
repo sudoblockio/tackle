@@ -1,7 +1,7 @@
 from typing import Union, Any, Optional
 
 from tackle import BaseHook, Field
-from tackle.utils.dicts import nested_get, encode_key_path
+from tackle.utils.dicts import nested_get, encode_key_path, get_target_and_key
 
 
 class ListAppendHook(BaseHook):
@@ -25,19 +25,15 @@ class ListAppendHook(BaseHook):
 
     def exec(self) -> Optional[list]:
         if isinstance(self.src, str) or self.src_is_key_path:
-            self.src = encode_key_path(self.src, self.sep)
+            key_path = encode_key_path(self.src, self.sep)
             # When appending within a block, we try to append to output dict then
             # fallback on trying to append to the existing context
-            try:
-                self.src = nested_get(
-                    element=self.public_context,
-                    keys=self.src,
-                )
-            except KeyError:
-                self.src = nested_get(
-                    element=self.existing_context,
-                    keys=self.src,
-                )
+            target_context, set_key_path = get_target_and_key(self, key_path=key_path)
+
+            self.src = nested_get(
+                element=target_context,
+                keys=set_key_path,
+            )
 
             self.src.append(self.item)
         else:

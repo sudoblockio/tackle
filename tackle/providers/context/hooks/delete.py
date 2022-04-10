@@ -1,7 +1,7 @@
 from typing import Union
 
 from tackle.models import BaseHook, Field
-from tackle.utils.dicts import nested_delete, encode_key_path
+from tackle.utils.dicts import nested_delete, encode_key_path, get_target_and_key
 
 
 class DeleteKeyHook(BaseHook):
@@ -22,8 +22,11 @@ class DeleteKeyHook(BaseHook):
 
     def exec(self) -> None:
         """Run the hook."""
-        self.path = encode_key_path(self.path, self.sep)
+        target_context, set_key_path = get_target_and_key(
+            self, key_path=encode_key_path(self.path, self.sep)
+        )
+
         nested_delete(
-            element=self.public_context,
-            keys=self.path,
+            element=target_context,
+            keys=set_key_path,
         )

@@ -1,7 +1,7 @@
 from typing import Union
 
 from tackle import BaseHook, Field
-from tackle.utils.dicts import encode_key_path, nested_get
+from tackle.utils.dicts import encode_key_path, nested_get, get_target_and_key
 
 
 class DictPopHook(BaseHook, smart_union=True):
@@ -40,11 +40,20 @@ class DictPopHook(BaseHook, smart_union=True):
         be returned.
         """
         if isinstance(self.src, str) or self.src_is_key_path:
-            self.src = encode_key_path(self.src, self.sep)
-            self.src = nested_get(
-                element=self.public_context,
-                keys=self.src,
+            target_context, set_key_path = get_target_and_key(
+                self, key_path=encode_key_path(self.src, self.sep)
             )
+
+            self.src = nested_get(
+                element=target_context,
+                keys=set_key_path,
+            )
+
+            # self.src = encode_key_path(self.src, self.sep)
+            # self.src = nested_get(
+            #     element=self.public_context,
+            #     keys=self.src,
+            # )
             self.pop_item()
         else:
             self.pop_item()

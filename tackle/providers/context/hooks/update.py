@@ -1,7 +1,7 @@
 from typing import Union, Optional, Any
 
 from tackle import BaseHook, Field
-from tackle.utils.dicts import encode_key_path, nested_set
+from tackle.utils.dicts import encode_key_path, nested_set, get_target_and_key
 
 
 class DictUpdateHook(BaseHook, smart_union=True):
@@ -22,9 +22,10 @@ class DictUpdateHook(BaseHook, smart_union=True):
         if isinstance(self.src, (str, list)):
             self.src = encode_key_path(self.src, self.sep)
         if isinstance(self.src, list):
+            target_context, set_key_path = get_target_and_key(self, key_path=self.src)
             nested_set(
-                element=self.public_context,
-                keys=self.src,
+                element=target_context,
+                keys=set_key_path,
                 value=self.input,
             )
         else:

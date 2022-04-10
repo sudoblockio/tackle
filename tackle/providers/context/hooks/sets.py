@@ -3,7 +3,7 @@ from typing import Any
 from pydantic import Field
 
 from tackle import BaseHook
-from tackle.utils.dicts import encode_key_path, nested_set
+from tackle.utils.dicts import encode_key_path, nested_set, get_target_and_key
 
 
 class SetKeyHook(BaseHook):
@@ -22,9 +22,12 @@ class SetKeyHook(BaseHook):
 
     def exec(self):
         """Run the hook."""
-        self.path = encode_key_path(self.path, self.sep)
+        target_context, set_key_path = get_target_and_key(
+            self, key_path=encode_key_path(self.path, self.sep)
+        )
+
         nested_set(
-            element=self.public_context,
-            keys=self.path,
+            element=target_context,
+            keys=set_key_path,
             value=self.value,
         )
