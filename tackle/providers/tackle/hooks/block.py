@@ -18,6 +18,7 @@ class BlockHook(BaseHook):
         ..., description="Items to be parsed like a normal input."
     )
 
+    skip_output: bool = True
     _render_exclude = {'items'}
 
     def exec(self) -> Union[dict, list]:

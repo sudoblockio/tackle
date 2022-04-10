@@ -7,3 +7,8 @@ blocker->:
   test_block->:
     if: stuff == 'things'
     my_dog->: print Penny # --if "friend == 'dog'"
+
+after->:
+  if: true
+  thing: stuffs
+

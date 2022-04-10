@@ -6,3 +6,5 @@ public->:
 private_>:
   - stuff
   - things
+
+use_priv->: "{{private}}"

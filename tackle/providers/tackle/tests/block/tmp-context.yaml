@@ -1,0 +1,11 @@
+
+alist:
+  - stuff
+  - things
+
+public->:
+  if: true
+  foo: bar
+  that->:
+    if: foo == 'bar'
+    one: two

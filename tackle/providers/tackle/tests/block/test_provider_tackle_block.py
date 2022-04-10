@@ -36,19 +36,26 @@ def test_provider_system_hook_block_block_merge(change_dir):
     output = tackle('block-merge.yaml', no_input=True)
     # TODO: Update tests with https://github.com/robcxyz/tackle-box/issues/51
     # assert output['things'] == 'here'
-    assert output['things'] == 'things'
+    assert output['stuff'] == 'things'
 
 
 def test_provider_system_hook_block_block(change_dir):
     """Complex block."""
     output = tackle('block.yaml', no_input=True)
     # TODO: Update tests with https://github.com/robcxyz/tackle-box/issues/51
-    assert output['block']['things'] == 'out-block'
+    assert output['block']['things'] == 'here'
 
 
 def test_provider_system_hook_block_list(change_dir):
-    """Complex block."""
+    """Macro re-written block, simple."""
     output = tackle('list.yaml')
+    assert output['public'] == ['stuff', 'things']
+    assert 'private' not in output
+
+
+def test_provider_system_hook_block_list_block(change_dir):
+    """Complex block."""
+    output = tackle('block-list.yaml')
     assert 'private' not in output
 
 
@@ -56,3 +63,9 @@ def test_provider_system_hook_block_logic(change_dir):
     """Block with logic."""
     output = tackle('block-logic.yaml')
     assert output
+
+
+def test_provider_system_hook_block_tmp_context(change_dir):
+    """Check that a temp context is built."""
+    output = tackle('tmp-context.yaml')
+    assert output['public']
