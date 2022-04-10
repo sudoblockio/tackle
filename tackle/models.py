@@ -431,6 +431,7 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
 
     args: list = []
 
+    skip_output: bool = False
     # Fields that should not be rendered by default
     _render_exclude_default: set = {
         'input_context',

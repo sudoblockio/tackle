@@ -281,7 +281,8 @@ def parse_hook(
                 # Normal hook run
                 hook_output_value = run_hook_in_dir(hook)
 
-            if hook.hook_type == 'block':
+            # if hook.hook_type == 'block':
+            if hook.skip_output:
                 # if len(context.key_path_block) != 0:
                 if hook.merge:
                     merge_block_output(
@@ -415,19 +416,26 @@ def run_hook(context: 'Context'):
         # Rare case when an arrow is used to indicate rendering of a list.
         # Only qualified when input is of form `key->: [{{var}},{{var}},...]
         # In this case we need to set the key as an empty list
-        nested_set(
-            element=context.public_context,
-            keys=context.key_path[:-1] + [context.key_path[-1][:-2]],
-            value=[],
-        )
+        # nested_set(
+        #     element=context.public_context,
+        #     keys=context.key_path[:-1] + [context.key_path[-1][:-2]],
+        #     value=[],
+        # )
+        set_key(context, value=[])
+
         # Iterate over values appending rendered values. Rendered values can be any type
         for i, v in enumerate(context.input_string):
-            nested_set(
-                element=context.public_context,
-                keys=context.key_path[:-1]
-                + [context.key_path[-1][:-2]]
-                + [encode_list_index(i)],
+            # nested_set(
+            #     element=context.public_context,
+            #     keys=context.key_path[:-1]
+            #     + [context.key_path[-1][:-2]]
+            #     + [encode_list_index(i)],
+            #     value=render_variable(context, v),
+            # )
+            set_key(
+                context=context,
                 value=render_variable(context, v),
+                key_path=context.key_path + [encode_list_index(i)],
             )
         return
 
@@ -872,7 +880,8 @@ def create_function_model(
         exec_=func_dict.pop('exec') if 'exec' in func_dict else None,
         return_=func_dict.pop('return') if 'return' in func_dict else None,
         args=func_dict.pop('args') if 'args' in func_dict else [],
-        render_exclude=func_dict.pop('render_exclude') if 'render_exclude' in func_dict else [],
+        render_exclude=func_dict.pop(
+            'render_exclude') if 'render_exclude' in func_dict else [],
         # validators_=func_dict.pop('validators') if 'validators' in func_dict else None,
         # methods_=func_dict.pop('methods') if 'methods' in func_dict else None,
     )
