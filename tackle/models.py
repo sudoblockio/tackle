@@ -307,41 +307,18 @@ class StrictEnvironment(Environment):
                 self.filters[k] = v().wrapped_exec
 
 
-class Context(BaseModel):
-    """The main object that is being modified by parsing."""
+class BaseContext(BaseModel):
+    """Shared items that are passed between hook calls and the main context."""
 
-    # Mode
     no_input: bool = False
     verbose: bool = False
 
-    # Source
-    password: SecretStr = None
-    directory: str = None
-    find_in_parent: bool = False
-
-    # Inputs
-    input_string: str = None
-    input_dir: str = None
-    input_file: str = None
-    # TODO: Change to version?
-    checkout: str = Field(
-        None,
-        description="For inputs referencing remote repos, refers to a branch or tag.",
-    )
-
-    # RF input_context
     input_context: Union[dict, list] = None
-    overwrite_inputs: Union[dict, str] = None
-
-    public_context: Any = {}
+    public_context: Union[dict, list] = None
     private_context: Union[dict, list] = None
     temporary_context: Union[dict, list] = None
     existing_context: dict = {}
 
-    # TODO: RM
-    keys_to_remove: list = []
-
-    # Internal
     key_path: list = []
     key_path_block: list = []
     provider_hooks: ProviderHooks = None
@@ -351,6 +328,24 @@ class Context(BaseModel):
     current_file: str = None
 
     env_: Any = None
+
+
+class Context(BaseContext):
+    """The main object that is being modified by parsing."""
+
+    # Source
+    password: SecretStr = None
+    directory: str = None
+    find_in_parent: bool = False
+    input_string: str = None
+    input_dir: str = None
+    input_file: str = None
+
+    # TODO: Change to version?
+    checkout: str = Field(
+        None,
+        description="For inputs referencing remote repos, refers to a branch or tag.",
+    )
 
     global_args: list = None
     global_kwargs: dict = None
@@ -371,7 +366,7 @@ class Context(BaseModel):
             self.calling_directory = os.path.abspath(os.path.curdir)
 
 
-class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
+class BaseHook(BaseContext, Extension, metaclass=PartialModelMetaclass):
     """
     Base hook class from which all other hooks inherit from to be discovered. There are
     a number of reserved keys that are used for logic such as `if` and `for` that are
@@ -380,44 +375,16 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
 
     hook_type: str = Field(..., description="Name of the hook.")
 
-    # TODO: Serialize the access modifier earlier in parsing - Could store the arrow in
-    #  key_path as boolean. Would have big changes to tackle.utils.dicts
-    # access_modifier: Literal['public', 'private'] = None
-
     if_: Union[str, bool] = Field(None, render_by_default=True)
     when: Union[str, bool] = Field(None, render_by_default=True)
-
     else_: Any = Field(None)
-    else_public: Any = Field(None)
-    else_private: Any = Field(None)
-
     for_: Union[str, list] = Field(None, render_by_default=True)
     reverse: Union[str, bool] = Field(None, render_by_default=True)
     try_: Union[str, bool] = Field(None, render_by_default=True)
-    except_: Union[str, bool] = Field(None, render_by_default=True)
-
-    callback: str = None
+    except_: Any = Field(None, render_by_default=True)
     chdir: Optional[str] = Field(None, description="Name of the hook.")
     merge: Union[bool, str] = None
     confirm: Optional[Any] = None
-
-    # context parameters - must be same type as context
-    input_context: Union[dict, list] = None
-
-    public_context: Union[dict, list] = {}
-    existing_context: dict = None
-    private_context: Union[dict, list] = None
-    temporary_context: Union[dict, list] = None
-
-    key_path: list = None
-    key_path_block: list = []
-
-    no_input: bool = None
-    calling_directory: str = None
-    calling_file: str = None
-    current_file: str = None
-
-    verbose: bool = False
 
     # Placeholder until help can be fully worked out
     help: str = None
@@ -427,11 +394,7 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
     skip_import: bool = False
     hooks_path: str = None
 
-    # exec_: Any = None  # For storing exec from function
-    # return_: Any = None  # Function return
-
-    # For tackle hook that needs to pass this expensive to instantiate object through
-    provider_hooks: ProviderHooks = None
+    env_: Any = None
 
     args: list = []
 
@@ -456,7 +419,6 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
     _docs_order: int = 10  # Arbitrary high number so hooks can be sorted high or low
     # Parameterized return type description for docs
     _return_description: str = None
-    env_: Any = None
 
     @validator('if_', 'reverse', 'for_', 'merge')
     def wrap_bool_if_string(cls, v):
@@ -476,8 +438,6 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
         fields = {
             'if_': 'if',
             'else_': 'else',
-            'else_public': 'else->',
-            'else_private': 'else_>',
             'for_': 'for',
             'try_': 'try',
             'except_': 'except',
