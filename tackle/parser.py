@@ -203,7 +203,10 @@ def run_hook_in_dir(hook: Type[BaseHook]) -> Any:
                 hook=hook,
             )
     else:
-        return hook.exec()
+        try:
+            return hook.exec()
+        except Exception as e:
+            raise e
 
 
 def render_hook_vars(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
@@ -296,11 +299,14 @@ def parse_hook(
                     append_hook_value=append_hook_value,
                 )
             else:
-                set_key(
-                    context=context,
-                    value=hook_output_value,
-                    append_hook_value=append_hook_value,
-                )
+                try:
+                    set_key(
+                        context=context,
+                        value=hook_output_value,
+                        append_hook_value=append_hook_value,
+                    )
+                except Exception as e:
+                    raise e
 
     elif 'else' in hook_dict:
         if isinstance(hook_dict['else'], str):
@@ -540,19 +546,26 @@ def compact_hook_call_macro(context: 'Context', element: str) -> dict:
      Returns the string element as a dict with the key as the arrow and element as
      value.
     """
+    # TODO: Clean this up
     base_key_path = context.key_path[:-1]
     new_key = [context.key_path[-1][:-2]]
     key_path = (base_key_path + new_key)[len(context.key_path_block) :]
     arrow = context.key_path[-1][-2:]
 
-    nested_set(
-        element=context.input_context,
-        keys=smush_key_path(key_path),
-        value={arrow: element},
-    )
-    # Delete the keys based on a re-indexed key_path corrected for blocks
     extra_keys = len(context.key_path) - len(context.key_path_block)
-    nested_delete(context.input_context, context.key_path[-extra_keys:])
+    old_key_path = context.key_path[-extra_keys:]
+
+    value = nested_get(
+        element=context.input_context,
+        keys=smush_key_path(old_key_path)[:-1],
+    )
+
+    replacement = {context.key_path[-1]: new_key[0]}
+    for k, v in list(value.items()):
+        value[replacement.get(k, k)] = (
+            value.pop(k) if k != context.key_path[-1] else {arrow: value.pop(k)}
+        )
+
     # Reset the key_path without arrow
     context.key_path = context.key_path_block + key_path
 
@@ -919,8 +932,11 @@ def extract_base_file(context: 'Context'):
     if isinstance(context.input_context, list):
         # Change output to empty list
         context.public_context = []
+        context.private_context = []
     else:
         extract_functions(context)
+        context.public_context = {}
+        context.private_context = {}
 
     # Check if there is a hooks directory in the provider being run and import the hooks
     input_dir_contents = os.listdir(context.input_dir)

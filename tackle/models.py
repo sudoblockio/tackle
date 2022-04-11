@@ -410,9 +410,13 @@ class BaseHook(BaseModel, Extension, metaclass=PartialModelMetaclass):
     temporary_context: Union[dict, list] = None
 
     key_path: list = None
+    key_path_block: list = []
+
     no_input: bool = None
     calling_directory: str = None
     calling_file: str = None
+    current_file: str = None
+
     verbose: bool = False
 
     # Placeholder until help can be fully worked out
