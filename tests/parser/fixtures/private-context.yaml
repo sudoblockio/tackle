@@ -1,7 +1,9 @@
 
 some: context
 
-private_>:
-  stuff: things
-  foo->: print bar
+#private_>:
+#  stuff: things
+#  foo->: print bar
 
+private:
+  _>: tackle petstore.yaml

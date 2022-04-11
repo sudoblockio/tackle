@@ -1,0 +1,15 @@
+
+alist:
+  - 1
+  - 2
+
+# This
+one->:
+  for: alist
+  two->:
+    for: alist
+    three->:
+      for: alist
+      t->: tackle embedded-blocks-import.yaml
+      p->: print {{this}}
+

@@ -2,5 +2,6 @@ from tackle import tackle
 
 
 def test_docs_build(change_dir_base):
-    output = tackle('docs/docs-gen.yaml')
+    """Make sure docs build."""
+    output = tackle('docs/docs-gen.yaml', no_input=True)
     assert output

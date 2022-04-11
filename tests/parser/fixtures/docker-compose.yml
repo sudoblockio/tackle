@@ -42,7 +42,6 @@ x-env: &env
   # DB
   POSTGRES_USER: "postgres"
   POSTGRES_PASSWORD: "changeme"
-#  POSTGRES_SERVER: "127.0.0.1"
   POSTGRES_SERVER: "postgres"
   POSTGRES_PORT: "5432"
   POSTGRES_DATABASE: "postgres"
@@ -96,10 +95,10 @@ services:
     environment:
       <<: *env
 
-#  postgres:
-#    image: postgres
-#    environment:
-#      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-#      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
-#    ports:
-#      - "5432:5432"
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+    ports:
+      - "5432:5432"

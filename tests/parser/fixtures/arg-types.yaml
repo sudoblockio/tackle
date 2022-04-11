@@ -3,16 +3,23 @@ a_list:
   - foo
   - bar
 
-foo->: var {{index}} --for a_list --if 'index != 1'
+#foo->: var {{index}} --for a_list --if 'index != 1'
 
 bar->:
   - stuff
   - "{{a_list}}"
 
-an_int: 1
+bar:
+  ->: var
+  input:
+    - stuff
+    - "{{a_list}}"
 
-int->: "{{ an_int }}"
 
-a_string_int: "1"
-
-string_int->: "{{ an_int }}"
+#an_int: 1
+#
+#int->: "{{ an_int }}"
+#
+#a_string_int: "1"
+#
+#string_int->: "{{ an_int }}"
