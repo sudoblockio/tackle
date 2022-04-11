@@ -27,8 +27,10 @@ def test_provider_system_hook_block_looped(change_dir):
     output = tackle('looped.yaml', no_input=True)
 
     assert len(output['blocker']) == 2
-    assert output['blocker'][0]['first'] == 'stuff'
-    assert output['blocker'][1]['first'] == 'things'
+    assert output['blocker'][0]['compact'] == 'stuff'
+    assert output['blocker'][1]['compact'] == 'things'
+    assert 'priv_expanded' not in output
+    assert 'priv_compact' not in output
 
 
 def test_provider_system_hook_block_block_merge(change_dir):

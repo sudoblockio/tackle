@@ -4,7 +4,14 @@ alist:
 
 blocker->:
   for: alist
-  first->: "{{item}}"
+  priv_compact_>: "{{item}}"
+  var1: foo
+  compact->: "{{item}}"
+  var2: bar
+  expanded:
+    ->: "{{item}}"
+  priv_expanded:
+    _>: "{{item}}"
 
 #blocker->:
 #  for: alist

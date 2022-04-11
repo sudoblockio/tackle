@@ -1,0 +1,15 @@
+
+a_func<-:
+  input: str
+  exec:
+    p->: print {{input}}
+    this: that
+  return: this
+
+b_func<-:
+  input: str
+  exec:
+    p->: print {{input}}
+    this: that
+  return: this
+

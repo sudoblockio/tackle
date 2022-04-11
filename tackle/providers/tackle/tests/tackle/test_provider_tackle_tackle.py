@@ -31,3 +31,8 @@ def test_provider_tackle_local_no_context(change_dir):
 def test_provider_tackle_local_prior_context(change_dir):
     output = tackle('local-prior-context.yaml', no_input=True)
     assert output['shell']['foo'] == 'bar'
+
+
+def test_provider_tackle_block_tackle(change_dir):
+    output = tackle('block-tackle.yaml', no_input=True)
+    assert output

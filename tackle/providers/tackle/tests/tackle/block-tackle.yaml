@@ -1,0 +1,17 @@
+
+stuff->:
+  for:
+    - foo
+    - bar
+#  if: item == 'bar'
+  this->: var item
+  local->: tackle local.yaml
+
+things->:
+  for:
+    - foo
+    - bar
+  this->: var item
+  local->: tackle local.yaml
+
+

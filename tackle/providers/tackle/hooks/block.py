@@ -22,6 +22,9 @@ class BlockHook(BaseHook):
     _render_exclude = {'items'}
 
     def exec(self) -> Union[dict, list]:
+        if self.temporary_context is None:
+            self.temporary_context = {}
+
         tmp_context = Context(
             provider_hooks=self.provider_hooks,
             public_context=self.public_context,
