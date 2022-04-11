@@ -110,7 +110,6 @@ def nested_delete(element, keys):
                 # Case where we have an embedded
                 return nested_delete(element[keys[0]], keys[1:])
             else:
-                # element.pop(keys[0])
                 element[keys[0]] = None
                 return
 
@@ -136,10 +135,7 @@ def nested_get(element, keys):
     if num_elements == 1:
         if isinstance(keys[0], bytes):
             return element[decode_list_index(keys[0])]
-        try:
-            return element[keys[0]]
-        except Exception as e:
-            raise e
+        return element[keys[0]]
 
     if isinstance(keys[0], bytes):
         return nested_get(element[decode_list_index(keys[0])], keys[1:])

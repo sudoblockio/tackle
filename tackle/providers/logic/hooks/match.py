@@ -74,7 +74,7 @@ class MatchHook(BaseHook):
             public_context=self.public_context,
             private_context=self.private_context,
             temporary_context=self.temporary_context,
-            existing_context=self.existing_context.copy(),
+            existing_context=self.existing_context,
             input_context=value,
             key_path=self.key_path.copy(),
             key_path_block=self.key_path.copy(),

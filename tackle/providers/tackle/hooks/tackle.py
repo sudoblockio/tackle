@@ -39,7 +39,9 @@ class TackleHook(BaseHook):
             existing_context = self.context
         else:
             existing_context = self.public_context.copy()
-            existing_context.update(self.existing_context)
+
+            if self.existing_context:
+                existing_context.update(self.existing_context)
 
             if self.extra_context:
                 existing_context.update(self.extra_context)

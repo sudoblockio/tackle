@@ -30,8 +30,6 @@ def tackle(
         Defaults to tackle.yaml then cookiecutter.json.
     :param existing_context: A string pointing to a json/yaml or dictionary to use as
         additional context when rendering items.
-    :param overwrite_inputs: A string pointing to a json/yaml or dictionary to overwrite
-        the input keys and prevent a hook from being called.
     :param password: The password to use when extracting the repository.
     :param directory: Relative path to a cookiecutter template in a repository.
 

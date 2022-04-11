@@ -79,7 +79,7 @@ def render_string(context: 'Context', raw: str):
             render_context.update({v: context.private_context[v]})
         elif context.temporary_context and v in context.temporary_context:
             render_context.update({v: context.temporary_context[v]})
-        elif v in context.existing_context:
+        elif context.existing_context and v in context.existing_context:
             render_context.update({v: context.existing_context[v]})
         elif v in special_variables:
             # If it is a special variable we need to check if the call requires
