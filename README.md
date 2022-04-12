@@ -1,4 +1,4 @@
-# Tackle Box
+# Tackle
 
 [![pypi](https://img.shields.io/pypi/v/tackle-box.svg)](https://pypi.python.org/pypi/tackle-box)
 [![python](https://img.shields.io/pypi/pyversions/tackle-box.svg)](https://pypi.python.org/pypi/tackle-box)
@@ -6,102 +6,145 @@
 [![main-tests](https://github.com/robcxyz/tackle-box/actions/workflows/main.yml/badge.svg)](https://github.com/robcxyz/tackle-box/actions)
 
 * [Documentation](https://robcxyz.github.io/tackle-box) (WIP)
-* [GitHub](https://github.com/robcxyz/tackle-box)
 * [PyPI](https://pypi.org/project/tackle-box/)
 * [BSD License](LICENSE)
 
-Tackle box is a DSL for turning static configuration files into dynamic workflows. Tool is plugins based and can easily be extended by writing additional hooks or importing external providers.
+Tackle box is a language for making modular declarative CLIs. It can make any yaml/json configuration file dynamic/callable with turing complete flow control common to any general purpose programming language.
 
-### Demo
+> Warning: Language is in it's early phases and only now considered stable enough to use. It may never reach 1.x version as, if it gets enough stars, it will be converted to a spec and re-written in another language (ie give it a star if you'd like to see that).
+
+- Install
+- Use Cases
+- Hello world
+- Advanced Topics
+- Contributing
+
+### Install
+
+Note: tackle can install dependencies on its own. Check [docs]() for advanced installation methods to isolate tackle from your system python.
 
 ```shell
-pip3 install tackle-box
-
-# Create a new provider in one minute
-tackle robcxyz/tackle-provider
-
-# Push to github and now you can call it directly
-tackle <your GH username>/<tackle-your-provider>
-
-# Or alternatively create a tackle file
-echo '
-name->: input What is your name?
-print->: print Hi {{name}}, lets make a provider now!
-call->: tackle robcxyz/tackle-provider
-' > tackle.yaml
-tackle
+python -m venv env
+pip install tackle-box
 ```
 
-### Features
+### Use Cases
 
-- Modular: New providers / hooks can be created or imported remotely
-- Declarative: Everything is in yaml with easy to use interfaces
-- Turing complete: Loops, conditionals and branching is supported
-- Lean: Tackle box has only 4 dependencies - core logic <1k LOC
+- [Modular code generation]() - wip
+- [Kubernetes management]() - wip
+- [Declarative toolchains]() - wip
+- [Declarative utilities]() - wip
 
-### Usage
+### Hello worlds
 
-Tackle-box in its simplest form is a structured data parser taking in arbitrary yaml or json and only applying logic with keys ending in an arrow (ie '->'). By default, tackle looks for a `tackle.yaml` file in the target location which is parsed sequentially with each key / value or item in a list traversed, parsed, and rendered on hook calls indicated by an arrow (`->`). Tackle box ships with ~70 hooks to do basic prompting / code generation / system operations but can easily be extended by writing additional hooks or importing other providers.
+To call tackle, create a yaml file and run `tackle hello-world.yaml`.
 
-### Provider Structure
-
-For instance given the following directory structure:
-
-```
-├── hooks
-│ └── stuff.py
-└── tackle.yaml
+Use the [print]() hook.
+```yaml
+hw->: print Hello world!
 ```
 
-With **`stuff.py`** looking like:
+Using [jinja templating](), hooks can be called in [four different ways]().
+```yaml
+words: Hello world!
+expanded:
+  ->: print
+  objects: "{{words}}"
+compact->: print {{words}}
+jinja_extension->: "{{ print(words) }}"
+jinja_filter->: "{{ words | print }}"
+```
 
+Interactive example with [prompt]() hooks.
+```yaml
+name->: input
+target:
+  ->: select Say hi to who?
+  choices:
+    - world
+    - universe
+hello->: print My name is {{name}}. Hello {{target}}!
+```
+
+Hooks can have for [loops](), [conditionals](), and [other base methods]().
+```yaml
+words:
+  - Hello
+  - cruel
+  - world!
+expanded:
+  ->: print {{item}}
+  for: words
+  if: item != 'cruel'
+compact->: print {{item}} --for words --if "item != 'cruel'"
+```
+
+Hooks can be [written in python]().
 ```python
 from tackle import BaseHook
 
-class Stuff(BaseHook):
-    hook_type: str = "do-stuff"
-    things: str
-    _args: list = ['things']
-
+class Greeter(BaseHook):
+    hook_type: str = "greeter"
+    target: str
+    args: list = ['target']
     def exec(self):
-        return self.things.title()
+        print(f"Hello {self.target}")
 ```
 
-One could write a **`tackle.yaml`** that looks like this:
-
+Or new hooks can be [declaratively created]() with tackle.
 ```yaml
-compact->: do-stuff a string
+greeter<-:
+  help: A thing that says hi!
+  target: str
+  args:
+    - target
+  exec:
+    hi->: print Hello {{target}}
+```
+
+And both can be called in the same way.
+```yaml
+hello: world!
+compact->: greeter {{hello}}
 expanded:
-  if: compact == 'A String'
-  ->: do-stuff
-  things: "{{compact}} That Renders!"
+  ->: greeter
+  target: "{{hello}}"
+jinja_extension->: "{{ greeter(hello) }}"
+jinja_filter->: "{{ hello | greeter }}"
 ```
 
-Which if you call `tackle` in that directory would result in the following context:
-
+Or can be imported / called remotely.
 ```yaml
-compact: A String
-expanded: A String That Renders!
+local-call->: tackle hello-world.yaml
+remote-call->: tackle robcxyz/tackle-hello-world
+# Or
+import-hello_>: import robcxyz/tackle-hello-world
+call->: greeter world!
 ```
 
-Which you can use to then generate code, print out to file, or do any number of custom actions with additional hook calls or calls to other tackle providers. For instance if you wanted to use it in another tackle provider and generate code, you would use:
+Creating a web of declarative CLIs.
 
-```yaml
-remote_call->: tackle robcxyz/tackle-do-stuff  # Fictitious repo
-gen->: generate path/to/jinja/templates output/path
-```
+### Topics
 
-Which would result in the same context embedded under the `remote_call` key and would be used to generate files / directories of templates to the output path.
+- Writing Tackle Files
+- Creating Providers
+- Blocks and Flow Control
+- Memory Management
+- Declarative CLIs
+- Declarative Hooks
+- Special Variables
 
-### Road Map
+### Roadmap
 
-The main challenge with this project is going to be reaching a stable syntax that people can reliably build on. Until that happens any feedback is welcome both on the core parsing logic or hook interfaces. A place outside of github issues will be made to better accommodate those conversations.
+- Declarative hook inheritance
+- Declarative schemas
+- Declarative methods
+- Cached providers
+- State management
 
 ### Code of Conduct
 
-Everyone interacting in the Cookiecutter project's codebases, issue trackers,
-chat rooms, and mailing lists is expected to follow the
-[PyPA Code of Conduct](https://www.pypa.io/en/latest/code-of-conduct/).
+Everyone interacting in the tackle-box project's codebases, issue trackers, chat rooms, and mailing lists is expected to follow the [PyPA Code of Conduct](https://www.pypa.io/en/latest/code-of-conduct/).
 
 ## Credit
 
