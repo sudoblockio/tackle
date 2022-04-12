@@ -12,15 +12,6 @@ a_block:
     - B 0
     - B 1
 
-#b_block_private_verify:
-#  foo:
-#    bar:
-#      baz:
-#        - 1
-#        - 2
-#    bing: bang
-
-
 b_block:
   foo:
     bar:

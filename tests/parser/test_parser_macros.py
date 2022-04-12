@@ -9,7 +9,6 @@ FIXTURES = [
     ('single-level.yaml', 'single-level-output.yaml'),
     ('nested-dict.yaml', 'nested-dict-output.yaml'),
     ('nested-for.yaml', 'nested-for-output.yaml'),
-    ('embedded-blocks.yaml', 'embedded-blocks.yaml'),
 ]
 
 
@@ -27,7 +26,6 @@ def test_parser_blocks_validate_output(chdir, input, output):
 
 ERROR_SOURCES = [
     ("empty-block-exception.yaml", EmptyBlockException),
-    # ("")
 ]
 
 

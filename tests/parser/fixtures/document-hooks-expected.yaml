@@ -1,0 +1,15 @@
+---
+
+stuff: things
+
+---
+
+that: something
+foo:
+  expanded: something
+  mixed: something
+  compact: somethin
+bar:
+  expanded: something
+  mixed: something
+  compact: something

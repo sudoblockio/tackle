@@ -1,30 +1,24 @@
 
 stuff: things
 
-compact->: print this --if false --else foo
+compact->: tackle foobar.yaml --try --except foo
 
-str->:
-  if: false
-  do: this
-  else: foo
+str:
+  ->: tackle foobar.yaml
+  try: true
+  except: foo
 
-str_render:
-  ->: print this
-  if: false
-  do: this
-  else: "{{stuff}}"
-
-str_render_block->:
-  if: false
-  do: this
-  else: "{{stuff}}"
-
-dict_render:
-  if: false
-  ->: print this
-  do: this
-  else:
+dic:
+  ->: tackle foobar.yaml
+  try: true
+  except:
     stuff: "{{stuff}}"
+
+hook:
+  ->: tackle foobar.yaml
+  try: true
+  except:
+    stuff->: "{{stuff}}"
 
 dict_render_block->:
   if: false
@@ -33,19 +27,17 @@ dict_render_block->:
     stuff: "{{stuff}}"
 
 hook_call->:
-  if: false
-  do: this
-  else:
+  do->: ferk
+  try: true
+  except:
     stuff->: "{{stuff}}"
-
 
 embedded:
   hook_call->:
-    if: false
-    do: this
-    else:
+    do->: ferk
+    try: true
+    except:
       stuff->: "{{stuff}}"
-
 
 listed:
   hook_call:
@@ -66,9 +58,3 @@ block_listed:
     do: this
     else:
       stuff->: "{{item}}"
-
-
-#hook_call_compact->:
-#  if: false
-#  do: this
-#  else->: var "{{stuff}}"

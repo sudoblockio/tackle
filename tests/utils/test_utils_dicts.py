@@ -207,13 +207,3 @@ def test_nested_delete(input, key_path, expected_output):
     """Test deletion based on key path."""
     nested_delete(input, key_path)
     assert input == expected_output
-
-
-# SET_KEY_FIXTURES = [
-#     ({},['->'], )
-# ]
-#
-# @pytest.mark.parametrize("input,key_path,expected_output", SET_KEY_FIXTURES)
-# def test_set_key(input, key_path, expected_output):
-#     set_key(input, key_path, True, [])
-#     assert input == expected_output

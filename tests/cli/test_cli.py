@@ -54,9 +54,9 @@ def test_cli_parse_args_print_option(
     mocker, change_curdir_fixtures, capsys, input_string
 ):
     """When no arg is given we should find the closest tackle file."""
-    mocker.patch("tackle.main.update_source", autospec=True, return_value={})
+    mocker.patch("tackle.main.tackle", autospec=True, return_value={})
     main([input_string])
-    assert '{}' in capsys.readouterr().out
+    assert '{"stuff": "things"}' in capsys.readouterr().out
 
 
 # def test_cli_parse_args_help_arg(change_curdir_fixtures):
