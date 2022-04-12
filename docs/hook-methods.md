@@ -3,13 +3,13 @@
 Every hook has a number of base methods that are implemented alongside the declaration of the hook.  This document outlines each of these methods with an example of their use.
 
 - [Conditionals](#conditionals)
-    - `if` / `else`
+    - `if` / `else` / `when`
 - [Loops](#loops)
     - `for` / `reverse`
 - [Methods](#methods)
     - `chdir`
     - `merge`
-    - `try` / `except` - Coming soon
+    - `try` / `except`
     - `defer` - Coming soon
     - `callback` - Coming soon
 

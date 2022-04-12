@@ -1,17 +1,16 @@
 problem_hooks:
   - print  # Has "\n" as a default value which messes up table
 
-# Directories / files to ignore inside the `tackle/providers` directory
-provider_ignore:
-  - __init__.py
-  - __pycache__
-  - .gitignore
-
 provider_dir->: "{{ cwd }}/../tackle/providers"
 provider_docs_dir->: "{{ cwd }}/providers"
 templates_dir->: "{{ cwd }}/templates"
 schemas_dir->: "{{ cwd }}/schemas"
 
+# Directories / files to ignore inside the `tackle/providers` directory
+provider_ignore:
+  - __init__.py
+  - __pycache__
+  - .gitignore
 provider_list->: listdir "{{ provider_dir }}"
 # List comprehension to get the providers
 providers->: var "{{ provider_list | reject('in', provider_ignore) | list }}"
@@ -36,23 +35,21 @@ gen->:
 
   Put schemas in schema directory_>: json {{schemas_dir}}/{{provider}}.json {{schemas}}
 
-  is_tackle_meta->: isfile .tackle.meta.yaml
-
   provider_meta:
     ->: tackle .tackle.meta.yaml
-    if: is_tackle_meta
+    if: isfile('.tackle.meta.yaml')
     else: {}
 
   # Build the provider navigation for mkdocs
   provider_mkdocs_nav_list:
     - Index->: providers/{{ provider | title }}/index.md
   append multiple hooks providers:
-    _>: append provider_mkdocs_nav_list
+    ->: append provider_mkdocs_nav_list
     for: render_context.hooks
     item:
       "{{item.hook_type}}": providers/{{ provider | title }}/{{ item.hook_type }}.md
   append to mkdocs_nav_list:
-    _>: append mkdocs_nav_list
+    ->: append mkdocs_nav_list
     item:
       "{{provider|title}}": "{{provider_mkdocs_nav_list}}"
 
@@ -65,7 +62,7 @@ gen->:
         - "{{ provider_meta }}"
         - "{{ render_context.hooks[0] }}"
 
-  Generate multiple ->:
+  Generate multiple->:
     if: render_context['hooks'] | length != 1
     Render hook templates from the tackle provider:
       ->: generate {{templates_dir}}/hook-doc.md.tpl {{provider_docs_dir}}/{{provider|title }}/{{ item.hook_type }}.md

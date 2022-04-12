@@ -35,7 +35,7 @@ lint: ## Check code style with flake8
 
 # TODO: Fix
 .PHONY: test
-test:  ## Run tests quickly with the default Python
+test:  clean-pyc ## Run tests quickly with the default Python
 	@echo "+ $@"
 	@tox -e py
 
