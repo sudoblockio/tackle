@@ -100,17 +100,42 @@ def render_string(context: 'Context', raw: str):
         # hooks which need to be inserted into the global env so that they can be called
         for i in unknown_variables:
             if i in context.provider_hooks:
-                context.env_.globals[i] = context.provider_hooks[i](
-                    input_context=context.input_context,
-                    public_context=context.public_context,
-                    existing_context=context.existing_context,
-                    no_input=context.no_input,
-                    calling_directory=context.calling_directory,
-                    calling_file=context.calling_file,
-                    provider_hooks=context.provider_hooks,
-                    key_path=context.key_path,
-                    verbose=context.verbose,
-                ).wrapped_exec
+                from tackle.models import LazyBaseFunction
+
+                jinja_hook = context.provider_hooks[i]
+                if isinstance(jinja_hook, LazyBaseFunction):
+                    from tackle.parser import create_function_model
+
+                    jinja_hook.dict().update(
+                        {
+                            'input_context': context.input_context,
+                            'public_context': context.public_context,
+                            'existing_context': context.existing_context,
+                            'no_input': context.no_input,
+                            'calling_directory': context.calling_directory,
+                            'calling_file': context.calling_file,
+                            'provider_hooks': context.provider_hooks,
+                            'key_path': context.key_path,
+                            'verbose': context.verbose,
+                        }
+                    )
+
+                    # Need to instantiate the hook before passing the wrapped_exec
+                    context.env_.globals[i] = create_function_model(
+                        context, i, jinja_hook.dict()
+                    )().wrapped_exec
+                else:
+                    context.env_.globals[i] = jinja_hook(
+                        input_context=context.input_context,
+                        public_context=context.public_context,
+                        existing_context=context.existing_context,
+                        no_input=context.no_input,
+                        calling_directory=context.calling_directory,
+                        calling_file=context.calling_file,
+                        provider_hooks=context.provider_hooks,
+                        key_path=context.key_path,
+                        verbose=context.verbose,
+                    ).wrapped_exec
 
     try:
         rendered_template = template.render(render_context)

@@ -32,7 +32,14 @@ from tackle.utils.paths import (
     find_in_parent,
 )
 from tackle.utils.zipfile import unzip
-from tackle.models import Context, BaseHook, LazyImportHook, BaseFunction, FunctionInput
+from tackle.models import (
+    Context,
+    BaseHook,
+    LazyImportHook,
+    BaseFunction,
+    FunctionInput,
+    LazyBaseFunction,
+)
 from tackle.exceptions import (
     HookCallException,
     UnknownHookTypeException,
@@ -479,6 +486,11 @@ def run_hook(context: 'Context'):
         raise UnknownHookTypeException(
             f"Hook type-> \"{first_arg}\" unknown.", context=context
         )
+
+    # TODO: Enrich lazy functions
+    #  Might want to instead track lazy
+    if isinstance(Hook, LazyBaseFunction):
+        Hook = create_function_model(context, first_arg, Hook.dict())
 
     if context.key_path[-1] in ('->', '_>'):
         # We have an expanded or mixed (with args) hook expression and so there will be
@@ -996,6 +1008,20 @@ def extract_base_file(context: 'Context'):
     if 'hooks' in input_dir_contents:
         with work_in(context.input_dir):
             context.provider_hooks.import_from_path(context.input_dir)
+        for i in context.provider_hooks.new_functions:
+            try:
+                context.env_.filters[i] = create_function_model(
+                    context=context,
+                    func_name=i,
+                    func_dict=context.provider_hooks[i].dict(),
+                )().wrapped_exec
+            except KeyError:
+                # TODO: This is odd - when running
+                #  tackle/providers/tackle/tests/test_provider_tackle_import.py::test_provider_hook_import_func_provider_import
+                #  There is an error from an adjacent test object that is thrown here
+                #  only when all the tests are run. tackle-box/issues/61
+                pass
+        context.provider_hooks._new_functions = []
 
     # TODO: Experimental feature that could be integrated later
     # # Extract handlers

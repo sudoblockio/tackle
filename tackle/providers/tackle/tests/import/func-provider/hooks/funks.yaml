@@ -1,0 +1,33 @@
+
+a_funky<-:
+  full:
+    type: str
+    description: A description
+    default: a-default
+  compact: a-default
+
+  exec:
+    foo: bar
+    do->: var "{{full}}"
+
+  args:
+    - full
+
+  return: do
+
+b_funky<-:
+  full:
+    type: str
+    description: A description
+    default: a-default
+  compact: a-default
+
+  exec:
+    foo: bar
+    do->: var "{{full}}"
+
+  args:
+    - full
+
+  return: do
+

@@ -1,4 +1,6 @@
 """Tests `import` in the `tackle.providers.tackle.hooks.import` hook."""
+import os
+
 import pytest
 
 from tackle import tackle
@@ -30,3 +32,10 @@ def test_provider_system_hook_import_local(change_dir):
     """Assert local import of hook is valid."""
     o = tackle('local.yaml')
     assert o['stuff'] == 'thing'
+
+
+def test_provider_hook_import_func_provider_import(change_dir):
+    """Assert local import of hook is valid."""
+    os.chdir('func-provider')
+    o = tackle()
+    assert o['foo'] == 'a-default'

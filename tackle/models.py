@@ -1,5 +1,6 @@
 import os
 import sys
+import re
 import inspect
 import threading
 import subprocess
@@ -27,6 +28,7 @@ import string
 from tackle.utils.paths import listdir_absolute
 from tackle.utils.dicts import get_readable_key_path
 from tackle.render import wrap_jinja_braces
+from tackle.utils.files import read_config_file
 
 logger = logging.getLogger(__name__)
 
@@ -49,6 +51,10 @@ class LazyImportHook(BaseModel):
 
 class ProviderHooks(dict):
     """Dict with hook_types as keys mapped to their corresponding objects."""
+
+    # List to keep track of new functions which need to be updated into the jinja env's
+    #  filters so that a hook can be called that way.
+    new_functions: list = []
 
     def __init__(self, *args, **kwargs):
         super(ProviderHooks, self).__init__(*args, **kwargs)
@@ -75,7 +81,12 @@ class ProviderHooks(dict):
         if file_extension == 'pyc':
             return
         if file_extension in ('yaml', 'yml'):
-            pass
+            file_contents = read_config_file(file_path)
+            for k, v in file_contents.items():
+                if re.match(r'^[a-zA-Z0-9\_]*(<\-|<\_)$', k):
+                    self[k[:-2]] = LazyBaseFunction(**v)
+                    self.new_functions.append(k[:-2])
+            return
 
         if os.path.basename(file_path).split('.')[-1] != "py":
             # Only import python files
@@ -203,7 +214,10 @@ class PartialModelMetaclass(ModelMetaclass):
     def __new__(
         meta: Type["PartialModelMetaclass"], *args: Any, **kwargs: Any
     ) -> "PartialModelMetaclass":
-        cls = super(PartialModelMetaclass, meta).__new__(meta, *args, **kwargs)
+        try:
+            cls = super(PartialModelMetaclass, meta).__new__(meta, *args, **kwargs)
+        except Exception as e:
+            raise e
         cls_init = cls.__init__
         # Because the class will be modified temporarily, need to lock __init__
         init_lock = threading.Lock()
@@ -301,6 +315,8 @@ class StrictEnvironment(Environment):
         # Import filters into environment
         for k, v in provider_hooks.items():
             if isinstance(v, LazyImportHook):
+                self.filters[k] = v.wrapped_exec
+            elif isinstance(v, LazyBaseFunction):
                 self.filters[k] = v.wrapped_exec
             else:
                 # Filters don't receive any context (public_context, etc)
@@ -505,3 +521,25 @@ class BaseFunction(BaseHook, FunctionInput, ABC):
     """Function input model."""
 
     function_fields: list
+
+
+class LazyBaseFunction(BaseFunction, Extension, metaclass=PartialModelMetaclass):
+    """
+    Base function that declarative hooks are derived from and either imported when a
+     tackle file is read (by searching in adjacent hooks directory) on init in local
+     providers. Used by jinja extensions and filters.
+    """
+
+    class Config:
+        arbitrary_types_allowed = True
+        extra = Extra.allow
+        # TODO: Figure this out as it is needed in the combined jinja hook wrapped exec
+        #  logic... In this case we already have it serialized?
+        # Not sure what is going on here
+        fields = {
+            'if_': 'if_',
+            'else_': 'else_',
+            'for_': 'for_',
+            'try_': 'try_',
+            'except_': 'except_',
+        }
