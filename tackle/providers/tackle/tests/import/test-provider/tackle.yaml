@@ -1,0 +1,6 @@
+stuff: things
+
+compact->: a_funky
+jinja_extension_default->: var {{a_funky()}}
+jinja_extension->: var {{a_funky(stuff)}}
+jinja_filter->: var {{stuff|a_funky}}

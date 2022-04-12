@@ -38,4 +38,7 @@ def test_provider_hook_import_func_provider_import(change_dir):
     """Assert local import of hook is valid."""
     os.chdir('func-provider')
     o = tackle()
-    assert o['foo'] == 'a-default'
+    assert o['compact'] == 'a-default'
+    assert o['jinja_extension_default'] == 'a-default'
+    assert o['jinja_extension'] == 'things'
+    assert o['jinja_filter'] == 'things'
