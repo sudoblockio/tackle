@@ -30,10 +30,16 @@ class ListAppendHook(BaseHook):
             # fallback on trying to append to the existing context
             target_context, set_key_path = get_target_and_key(self, key_path=key_path)
 
-            self.src = nested_get(
-                element=target_context,
-                keys=set_key_path,
-            )
+            try:
+                self.src = nested_get(
+                    element=target_context,
+                    keys=set_key_path,
+                )
+            except KeyError:
+                self.src = nested_get(
+                    element=self.temporary_context,
+                    keys=set_key_path,
+                )
 
             self.src.append(self.item)
         else:

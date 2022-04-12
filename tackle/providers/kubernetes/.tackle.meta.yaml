@@ -1,6 +1,6 @@
-name: Console Provider
+name: Kubernetes Provider
 
-description: Hooks that print things to the console like tables and markdown via [rich] or print.
+description: Hooks that interact with various kubernetes resources.
 
 examples:
   - name: "[k8s_context_map](context.md)"
