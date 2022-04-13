@@ -41,7 +41,6 @@ from tackle.models import (
     LazyBaseFunction,
 )
 from tackle.exceptions import (
-    HookCallException,
     UnknownHookTypeException,
     UnknownArgumentException,
     UnknownSourceException,
@@ -50,6 +49,7 @@ from tackle.exceptions import (
     FunctionCallException,
     HookUnknownChdirException,
     AppendMergeException,
+    TopLevelMergeException,
 )
 from tackle.settings import settings
 
@@ -79,7 +79,8 @@ def get_hook(hook_type, context: 'Context'):
             )
         raise UnknownHookTypeException(
             f"The hook type=\"{hook_type}\" is not available in the providers. "
-            + available_hooks
+            + available_hooks,
+            context=context,
         )
 
     # LazyImportHook in hook ref when declared in provider __init__.hook_types
@@ -184,7 +185,7 @@ def merge_output(
 ):
     """Merge the contents into it's top level set of keys."""
     if append_hook_value:
-        raise AppendMergeException("Can't merge from for loop.")
+        raise AppendMergeException("Can't merge from for loop.", context=context)
 
     if context.key_path[-1] in ('->', '_>'):
         # Expanded key - Remove parent key from key path
@@ -201,8 +202,8 @@ def merge_output(
                 set_key(context=context, value=v, key_path=[k] + key_path)
             return
         else:
-            raise HookCallException(
-                "Can't merge non maps into top level keys.",
+            raise TopLevelMergeException(
+                "Can't merge non maps into top level keys.", context=context
             )
     else:
         set_key(context=context, value=hook_output_value, key_path=key_path)
@@ -261,10 +262,18 @@ def parse_sub_context(
     normal runs by checking the last item in the key path. Then overwrites the input
     with a new context.
     """
-    if isinstance(hook_dict[target], str):
+    hook_target = hook_dict[target]
+    if isinstance(hook_target, str):
         set_key(
             context=context,
             value=render_variable(context, hook_dict[target]),
+            append_hook_value=append_hook_value,
+        )
+        return
+    elif isinstance(hook_target, (bool, int, float)):
+        set_key(
+            context=context,
+            value=hook_target,
             append_hook_value=append_hook_value,
         )
         return
@@ -569,7 +578,7 @@ def handle_empty_blocks(context: 'Context', block_value):
             nested_set(context.input_context, key_path, {arrow[0]: 'block'})
             nested_delete(context.input_context, indexed_key_path)
         else:
-            context.input_context[k] = context.input_context.pop(k)
+            input_dict[k] = input_dict.pop(k)
 
     # Iterate through the block keys except for the reserved keys like `for` or `if`
     aliases = [v.alias for _, v in BaseHook.__fields__.items()] + ['->', '_>']
