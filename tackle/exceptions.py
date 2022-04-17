@@ -163,7 +163,15 @@ class AppendMergeException(TackleParserException):
     """
     Excpetion when user tries to merge from for loop (ie hook --for [] --merge).
 
-    Raised when handling empty blocks.
+    Raised when merging the output of a hook call.
+    """
+
+
+class TopLevelMergeException(TackleParserException):
+    """
+    Excpetion when user tries to merge from top level (ie t->: literal foo --merge).
+
+    Raised when merging the output of a hook call.
     """
 
 

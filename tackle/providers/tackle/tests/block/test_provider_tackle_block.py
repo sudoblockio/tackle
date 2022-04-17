@@ -55,6 +55,13 @@ def test_provider_system_hook_block_list(change_dir):
     assert 'private' not in output
 
 
+def test_provider_system_hook_block_looped_context(change_dir):
+    """Check that a temp context is built."""
+    output = tackle('looped-context.yaml')
+    assert len(output['networks']) == 2
+    assert output['networks'][0]['network_name'] == 'foo'
+
+
 def test_provider_system_hook_block_list_block(change_dir):
     """Complex block."""
     output = tackle('block-list.yaml')

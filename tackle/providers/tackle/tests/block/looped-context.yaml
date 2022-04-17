@@ -1,0 +1,9 @@
+
+
+networks->:
+  for:
+    - foo
+    - bar
+
+  network_name->: "{{ item }}"
+  data->: tackle looped-context-other.yaml --merge

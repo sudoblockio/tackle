@@ -206,7 +206,12 @@ def merge_output(
                 "Can't merge non maps into top level keys.", context=context
             )
     else:
-        set_key(context=context, value=hook_output_value, key_path=key_path)
+        if isinstance(hook_output_value, dict):
+            for k, v in hook_output_value.items():
+                set_key(context=context, value=v, key_path=key_path + [k])
+            return
+        else:
+            set_key(context=context, value=hook_output_value, key_path=key_path)
 
 
 def run_hook_in_dir(hook: Type[BaseHook]) -> Any:
