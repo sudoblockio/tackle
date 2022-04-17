@@ -43,7 +43,7 @@ def test_provider_system_hook_generate_error(change_dir, fixture, error):
         tackle(fixture)
 
 
-def test_provider_system_hook_copy_without_render(change_dir):
+def test_hook_generate_copy_without_render(change_dir):
     tackle("copy-without-render.yaml")
     yaml = YAML()
     with open(os.path.join('output', '.hidden.yaml')) as f:
@@ -54,4 +54,9 @@ def test_provider_system_hook_copy_without_render(change_dir):
 
     assert hidden['stuff'] == '{{stuff}}'
     assert nested_glob['stuff'] == '{{stuff}}'
+    shutil.rmtree('output')
+
+
+def test_hook_generate_looped(change_dir):
+    tackle("looped.yaml")
     shutil.rmtree('output')

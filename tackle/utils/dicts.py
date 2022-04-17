@@ -226,13 +226,14 @@ def set_key(
     used in rendering so they are added as well but their key paths are tracked for
     later deletion.
     """
-    target_context, key_path = get_target_and_key(context, key_path=key_path)
-    nested_set(target_context, key_path, value)
+    if key_path is None:
+        key_path = context.key_path
+
+    target_context, set_key_path = get_target_and_key(context, key_path=key_path)
+    nested_set(target_context, set_key_path, value)
 
     if len(context.key_path_block) != 0:
-        tmp_key_path = context.key_path[
-            -(len(context.key_path) - len(context.key_path_block)) :
-        ]
+        tmp_key_path = key_path[(len(context.key_path_block) - len(key_path)) :]
         if context.temporary_context is None:
             context.temporary_context = {} if isinstance(tmp_key_path[0], str) else []
         tmp_key_path = [i for i in tmp_key_path if i not in ('->', '_>')]

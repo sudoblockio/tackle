@@ -1,0 +1,19 @@
+
+
+networks->:
+  for:
+    - foo
+    - bar
+
+  network_name->: "{{ item }}"
+  other->: tackle looped-context.yaml --merge
+
+  this: that
+
+  gen:
+    for:
+      - plain_src
+      - template_src
+    ->: generate templates/{{item}} output/{{item}}
+    extra_context:
+      stuff: "{{item}}"
