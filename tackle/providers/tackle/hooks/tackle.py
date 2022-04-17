@@ -35,16 +35,25 @@ class TackleHook(BaseHook):
     _docs_order = 0
 
     def exec(self) -> dict:
+        existing_context = {}
+
         if self.context:
-            existing_context = self.context
-        else:
-            existing_context = self.public_context.copy()
+            existing_context.update(self.context)
 
-            if self.existing_context:
-                existing_context.update(self.existing_context)
+        if self.existing_context:
+            existing_context.update(self.existing_context)
 
-            if self.extra_context:
-                existing_context.update(self.extra_context)
+        if self.temporary_context:
+            existing_context.update(self.temporary_context)
+
+        if self.private_context:
+            existing_context.update(self.private_context)
+
+        if self.public_context:
+            existing_context.update(self.public_context)
+
+        if self.extra_context:
+            existing_context.update(self.extra_context)
 
         output_context = tkl.main.tackle(
             self.input_string,
