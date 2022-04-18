@@ -1,0 +1,83 @@
+- hosts: all
+  become: true
+  tasks:
+    - name: Add user
+      include_role:
+        name: juju4.adduser
+      vars:
+        adduser_user_name->: "{{user}}"
+
+    - name: Install zsh
+      include_role:
+        name: gantsign.oh-my-zsh
+      vars:
+        users:
+          - username->: "{{user}}"
+            oh_my_zsh:
+              theme: robbyrussell
+              plugins:
+                - git
+
+    - name: Modify the file descriptor limits
+      community.general.pam_limits:
+        domain: '*'
+        limit_type: soft
+        limit_item: nofile
+        value: 256000
+
+    - name: Configure ufw
+      include_role:
+        name: weareinteractive.ufw
+      vars:
+        ufw_rules->:
+          for: public_ports
+          rule: allow
+          to_port->: '{{item}}'
+          proto: tcp
+        ufw_manage_config: true
+        # Configuration object passed to the configuration file
+        ufw_config:
+          IPV6: "yes"
+          DEFAULT_INPUT_POLICY: DROP
+          DEFAULT_OUTPUT_POLICY: ACCEPT
+          DEFAULT_FORWARD_POLICY: DROP
+          DEFAULT_APPLICATION_POLICY: SKIP
+          MANAGE_BUILTINS: "no"
+          IPT_SYSCTL: /etc/ufw/sysctl.conf
+          IPT_MODULES: ""
+
+    - name: Install tuned
+      include_role:
+        name: linux-system-roles.tuned
+      vars:
+        profile: "throughput-performance"
+
+    - name: Install docker
+      include_role:
+        name: geerlingguy.docker
+      vars:
+        docker_install_compose: true
+        docker_users->: var ["{{user}}"]
+
+    - name: Create a data directory
+      ansible.builtin.file:
+        path: /data/{{item}}
+        state: directory
+        owner->: "{{user}}"
+        mode: '0755'
+      loop: ['mainnet']
+
+    - name: Create a symbolic link for the icon data dir
+      ansible.builtin.file:
+        src: /data/{{item}}
+        dest->: var /home/{{user}}/{% raw %}{{item}}{% endraw %} --no_recursion
+        owner->: "{{user}}"
+        state: link
+      loop: [ 'mainnet' ]
+
+    - name: Copy docker-compose
+      ansible.builtin.template:
+        src: "templates/docker-compose.yml"
+        dest->: /home/{{user}}/docker-compose.yml
+        owner->: "{{user}}"
+        mode: '0644'

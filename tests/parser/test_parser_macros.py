@@ -1,14 +1,16 @@
 import pytest
 import os
-from ruamel.yaml import YAML
 
 from tackle import tackle
+from tackle.utils.files import read_config_file
 from tackle.exceptions import EmptyBlockException
 
 FIXTURES = [
     ('single-level.yaml', 'single-level-output.yaml'),
     ('nested-dict.yaml', 'nested-dict-output.yaml'),
     ('nested-for.yaml', 'nested-for-output.yaml'),
+    # Consider RM - Too much stuff
+    # ('ansible-parse-call.yaml', 'ansible-parse-output.yaml')
 ]
 
 
@@ -16,12 +18,9 @@ FIXTURES = [
 def test_parser_blocks_validate_output(chdir, input, output):
     """Test blocks."""
     chdir(os.path.join("fixtures", "blocks"))
-    yaml = YAML()
-    with open(output) as f:
-        expected_output = yaml.load(f)
 
     tackle_output = tackle(input)
-    assert tackle_output == expected_output
+    assert tackle_output == read_config_file(output)
 
 
 ERROR_SOURCES = [

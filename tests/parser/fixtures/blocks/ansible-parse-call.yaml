@@ -1,0 +1,9 @@
+public_ports:
+  - 22
+  - 5432
+
+user: rob
+call->: tackle ansible-parse.yaml
+
+#expected: yaml ansible-parse-output.yaml
+#assert->: assert {{call}} {{expected}}

@@ -1,0 +1,27 @@
+vms:
+  - 1.2.3.4
+
+rpc_port: 9000
+
+#serverBlock->: |-
+#  var upstream backend {
+#  {% for i in vms %}
+#    server {{i}}:{{rpc_port}};
+#  {% endfor %}
+#  }
+#
+#  server {
+#    listen 0.0.0.0:8080;
+#    listen 443 ssl;
+#    location / {
+#        proxy_pass http://backend;
+#    }
+#  }
+
+priv_>:
+  serverBlockTpl: |-
+    upstream backend {
+    {% for i in vms %}
+      server {{i}}:{{rpc_port}};{% endfor %}
+    }
+serverBlock->: var "{{priv.serverBlockTpl}}"

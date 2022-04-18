@@ -1,0 +1,9 @@
+vms:
+  - 1.2.3.4
+
+rpc_port: 9000
+
+serverBlock: |-
+  upstream backend {
+    server 1.2.3.4:9000;
+  }

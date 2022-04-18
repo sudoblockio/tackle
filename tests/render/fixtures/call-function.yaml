@@ -1,0 +1,5 @@
+
+
+foo: stuff
+head_start_block->: "{{yaml('dir/stuff.yaml')[foo]}}"
+
