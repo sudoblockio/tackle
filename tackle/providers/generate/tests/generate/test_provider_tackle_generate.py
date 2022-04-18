@@ -58,5 +58,8 @@ def test_hook_generate_copy_without_render(change_dir):
 
 
 def test_hook_generate_looped(change_dir):
-    tackle("looped.yaml")
+    output = tackle("looped.yaml")
+
+    assert len(output['networks']) == 2
+    assert output['networks'][0]['things'] == 'foo'
     shutil.rmtree('output')
