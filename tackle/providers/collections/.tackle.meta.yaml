@@ -1,0 +1,35 @@
+name: Collections Provider
+
+description: |
+  Hooks that act on collections of items.
+
+examples:
+  - name: "[set](set.md)"
+    description: Set a previous key based on a key path
+    content: |
+      stuff:
+        and: things
+      set_>: set stuff/and other-stuff
+    output: |
+      stuff:
+        and: other-stuff
+
+hook_examples:
+  distinct:
+    - description:
+      content: |
+        list:
+          - a
+          - b
+          - b
+        result->: distinct {{list}}
+
+      output: |
+        list:
+          - a
+          - b
+          - b
+        result:
+          - a
+          - b
+
