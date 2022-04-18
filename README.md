@@ -5,13 +5,13 @@
 [![codecov](https://codecov.io/gh/robcxyz/tackle-box/branch/main/graphs/badge.svg?branch=main)](https://codecov.io/github/robcxyz/tackle-box?branch=main)
 [![main-tests](https://github.com/robcxyz/tackle-box/actions/workflows/main.yml/badge.svg)](https://github.com/robcxyz/tackle-box/actions)
 
-* [Documentation](https://robcxyz.github.io/tackle-box) (WIP)
+* [Documentation](https://robcxyz.github.io/tackle-box)
 * [PyPI](https://pypi.org/project/tackle-box/)
 * [BSD License](LICENSE)
 
-Tackle box is a language for making modular declarative CLIs. It can make any yaml/json configuration file dynamic/callable with turing complete flow control common to any general purpose programming language.
+Tackle box is a language for making modular declarative CLIs. Make any yaml/json configuration file dynamic/callable with turing complete flow control common to any general purpose programming language.
 
-> Warning: Language is in it's early phases and only now considered stable enough to use. It may never reach 1.x version as, if it gets enough stars, it will be converted to a spec and re-written in another language (ie give it a star if you'd like to see that).
+> Warning: Language is in it's very early phases and only now considered stable enough to use. It may never reach 1.x version as, if it gets enough stars, it will be converted to a spec and re-written in rust (ie give it a star if you'd like to see that).
 
 - Install
 - Use Cases
@@ -39,7 +39,7 @@ pip install tackle-box
 
 To call tackle, create a yaml file and run `tackle hello-world.yaml`.
 
-Use the [print]() hook.
+Use the [print](https://robcxyz.github.io/tackle-box/providers/Console/print/) hook.
 ```yaml
 hw->: print Hello world!
 ```
@@ -66,7 +66,7 @@ target:
 hello->: print My name is {{name}}. Hello {{target}}!
 ```
 
-Hooks can have for [loops](), [conditionals](), and [other base methods]().
+Hooks can have for [loops](https://robcxyz.github.io/tackle-box/hook-methods/#loops), [conditionals](https://robcxyz.github.io/tackle-box/hook-methods/#conditionals), and [other base methods](https://robcxyz.github.io/tackle-box/hook-methods/#methods).
 ```yaml
 words:
   - Hello
@@ -125,14 +125,13 @@ call->: greeter world!
 Creating a web of declarative CLIs.
 
 ### Topics
-
-- Writing Tackle Files
-- Creating Providers
-- Blocks and Flow Control
-- Memory Management
-- Declarative CLIs
-- Declarative Hooks
-- Special Variables
+- [Writing Tackle Files](https://robcxyz.github.io/tackle-box/writing-tackle-files/)
+- [Creating Providers](https://robcxyz.github.io/tackle-box/creating-providers/)
+- [Blocks and Flow Control]()
+- [Memory Management]()
+- [Declarative CLIs]()
+- [Declarative Hooks]()
+- [Special Variables]()
 
 ### Roadmap
 

@@ -45,7 +45,9 @@ called within a hook:
   param: $function_example foo "{{ a_list }}"
 ```
 
-Functions can then refer to other functions to also create nested logic.
+Functions can then refer to other functions to also create nested logic. Functions will also support inheritance patterns to be able to extend a schema in or implement another function's methods. Ultimately these functions should have some object-oriented properties with the ability to use schemas such as OpenAPI to form the basis of extending functions with methods.
+
+Still working out the nomenclature for all of this so please raise issues if you have a suggestion around how to formalize these ideas.
 
 ## Help on Providers and Files
 
