@@ -116,6 +116,26 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://robcxyz.github.io/tackle-box/providers/Collections/</loc>
+         <lastmod>2022-04-18</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://robcxyz.github.io/tackle-box/providers/Collections/distinct/</loc>
+         <lastmod>2022-04-18</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://robcxyz.github.io/tackle-box/providers/Collections/list_key_values/</loc>
+         <lastmod>2022-04-18</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://robcxyz.github.io/tackle-box/providers/Collections/sort/</loc>
+         <lastmod>2022-04-18</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://robcxyz.github.io/tackle-box/providers/Command/</loc>
          <lastmod>2022-04-18</lastmod>
          <changefreq>daily</changefreq>
