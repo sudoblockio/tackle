@@ -237,4 +237,8 @@ def set_key(
         if context.temporary_context is None:
             context.temporary_context = {} if isinstance(tmp_key_path[0], str) else []
         tmp_key_path = [i for i in tmp_key_path if i not in ('->', '_>')]
-        nested_set(context.temporary_context, tmp_key_path, value)
+
+        if tmp_key_path:
+            # Assert that the list is not empty - handles cases where we are appending
+            #  a value from a list.
+            nested_set(context.temporary_context, tmp_key_path, value)
