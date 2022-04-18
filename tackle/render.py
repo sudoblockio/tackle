@@ -157,12 +157,14 @@ def render_string(context: 'Context', raw: str):
         raise e
 
     except UndefinedError as e:
-        if len(unknown_variables) != 0:
-            raise UnknownTemplateVariableException(
-                f"Variable{'s' if len(unknown_variables) != 1 else ''} {' '.join(unknown_variables)} unknown.",
-                context=context,
-            ) from None
-        raise e
+        # TODO: Make it so when dicts are used as references that the error detects that
+        #  https://github.com/robcxyz/tackle-box/issues/68
+        # if len(unknown_variables) != 0:
+        #     raise UnknownTemplateVariableException(
+        #         f"Variable{'s' if len(unknown_variables) != 1 else ''} {' '.join(unknown_variables)} unknown.",
+        #         context=context,
+        #     ) from None
+        raise UnknownTemplateVariableException(str(e), context=context)
 
     try:
         # This will error on strings
