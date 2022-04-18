@@ -30,9 +30,9 @@ class MatchHook(BaseHook):
     _docs_order = 3
 
     @staticmethod
-    def block_macro(val) -> dict:
+    def block_macro(key, val) -> dict:
         """Take input and create a block hook to parse."""
-        output = {}
+        output = {key[-2:]: 'block'}
         aliases = [v.alias for _, v in BaseHook.__fields__.items()] + ['->', '_>']
         for k, v in val.items():
             if k not in aliases:
@@ -49,7 +49,8 @@ class MatchHook(BaseHook):
                 # Dicts that are not expanded hooks themselves
                 if isinstance(v, (dict, list)) and not ('->' in v or '_>' in v):
                     return self.run_key(v)
-                if isinstance(v, dict):
+                elif isinstance(v, dict):
+                    # return self.run_key({k: {**v, **{'merge': True}}})
                     return self.run_key({k: {**v, **{'merge': True}}})
                 elif isinstance(v, str):
                     return render_string(self, v)
@@ -60,7 +61,7 @@ class MatchHook(BaseHook):
                 if isinstance(v, str):
                     return self.run_key({k[:-2]: {k[-2:]: v + ' --merge'}})
                 elif isinstance(v, dict):
-                    return self.run_key(self.block_macro(v))
+                    return self.run_key(self.block_macro(k, v))
                 else:
                     raise NotImplementedError
 
@@ -70,14 +71,14 @@ class MatchHook(BaseHook):
         self.skip_output: bool = True
 
         tmp_context = Context(
+            input_context=value,
+            key_path=self.key_path.copy(),
+            key_path_block=self.key_path.copy(),
             provider_hooks=self.provider_hooks,
             public_context=self.public_context,
             private_context=self.private_context,
             temporary_context=self.temporary_context,
             existing_context=self.existing_context,
-            input_context=value,
-            key_path=self.key_path.copy(),
-            key_path_block=self.key_path.copy(),
             no_input=self.no_input,
             calling_directory=self.calling_directory,
             calling_file=self.calling_file,

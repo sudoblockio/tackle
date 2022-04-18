@@ -1,0 +1,19 @@
+
+cases:
+  - hook-expanded
+  - hook-compact
+
+matches:
+  ->: match
+  for: cases
+  value: "{{item}}"
+  case:
+    hook-expanded:
+      ->: literal expanded
+    hook-compact->: literal compact
+
+expected:
+  - expanded
+  - compact
+
+assert->: assert "{{matches}}" "{{expected}}"

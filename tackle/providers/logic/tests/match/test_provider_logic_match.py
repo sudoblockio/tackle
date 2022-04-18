@@ -2,15 +2,25 @@
 from tackle import tackle
 
 
-def test_provider_system_hook_match(change_dir):
+def test_hook_match_loop(change_dir):
     """Run the source and check that the hooks imported the demo module."""
-    context = tackle('loop.yaml')
-    assert context['matches'][0]
-    assert len(context['matches'][6]) == 2
+    output = tackle('loop.yaml')
+    assert output['matches'][0]
+    assert len(output['matches'][6]) == 2
 
 
-def test_provider_system_hook_match_cases(change_dir):
+def test_hook_match_cases(change_dir):
     """Run the source and check that the hooks imported the demo module."""
-    context = tackle('cases.yaml')
-    assert context['matched_dict'] == 'this'
-    assert context['fallback_dict'] == 'foo'
+    output = tackle('cases.yaml')
+    assert output['matched_dict'] == 'this'
+    assert output['fallback_dict'] == 'foo'
+
+
+def test_hook_match_value_list(change_dir):
+    """
+    Edge case where in match hooks one can have a single value trying to be merged into
+    a temporary context which does not make sense.
+    """
+    output = tackle('value-list.yaml')
+    # Assertions in file
+    assert output

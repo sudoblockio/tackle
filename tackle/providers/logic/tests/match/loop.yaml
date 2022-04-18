@@ -1,11 +1,11 @@
 
 cases:
-  - value
-  - a_dict
-  - list
-  - hook-dict
-  - hook-expanded
-  - hook-compact
+#  - value
+#  - a_dict
+#  - list
+#  - hook-dict
+#  - hook-expanded
+#  - hook-compact
   - block
 
 matches:
@@ -25,9 +25,9 @@ matches:
       list:
         - stuff
         - things
-      hook-expanded:
+      hook-dict-expanded:
         ->: literal expanded
-      hook-compact->: literal compact
+      hook-dict-compact->: literal compact
 
     hook-expanded:
       ->: literal expanded
@@ -43,8 +43,8 @@ matches:
         - stuff
         - things
       hook-expanded:
-        ->: print expanded
-      hook-compact->: print compact
+        ->: literal expanded
+      hook-compact->: literal compact
 
 
 expected:
@@ -58,8 +58,8 @@ expected:
     list:
       - stuff
       - things
-    hook-expanded: expanded
-    hook-compact: compact
+    hook-dict-expanded: expanded
+    hook-dict-compact: compact
   - expanded
   - compact
   -
@@ -81,4 +81,4 @@ expected:
       hook-expanded: expanded
       hook-compact: compact
 
-#assert->: assert "{{matches}}" "{{expected}}"
+assert->: assert "{{matches}}" "{{expected}}"
