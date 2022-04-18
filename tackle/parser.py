@@ -164,8 +164,14 @@ def merge_block_output(
      keys from the key path and move them up one level.
     """
     if append_hook_value:
+        # TODO: https://github.com/robcxyz/tackle-box/issues/66
+        #  Allow merging into lists
+        if isinstance(context.key_path_block[-1], bytes):
+            # An exception maybe needed here or this error is snubbed.
+            pass
         raise AppendMergeException("Can't merge from for loop.", context=context)
 
+    # 66 - Should qualify dict here
     target_context, key_path = get_target_and_key(context)
     indexed_block_output = nested_get(element=hook_output_value, keys=key_path)
     for k, v in indexed_block_output.items():
