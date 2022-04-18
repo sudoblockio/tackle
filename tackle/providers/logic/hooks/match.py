@@ -29,10 +29,9 @@ class MatchHook(BaseHook):
     _render_exclude = {'case'}
     _docs_order = 3
 
-    @staticmethod
-    def block_macro(key, val) -> dict:
+    def block_macro(self, key, val) -> dict:
         """Take input and create a block hook to parse."""
-        output = {key[-2:]: 'block'}
+        output = {key[-2:]: 'block', 'merge': True}
         aliases = [v.alias for _, v in BaseHook.__fields__.items()] + ['->', '_>']
         for k, v in val.items():
             if k not in aliases:
@@ -40,7 +39,13 @@ class MatchHook(BaseHook):
                 output.update({'items': {k: v}})
             else:
                 output.update({k: v})
-        return output
+        if self.verbose:
+            print(
+                "You are likely going to hit a bug."
+                "https://github.com/robcxyz/tackle-box/issues/67"
+            )
+        return {key[:-2]: output}
+        # return output
 
     def exec(self) -> Union[dict, list]:
         # Condition catches everything except expanded hook calls and blocks (ie key->)

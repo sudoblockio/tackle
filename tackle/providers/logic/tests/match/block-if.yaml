@@ -1,0 +1,38 @@
+
+matcher_true: blocker_true
+
+matches_true:
+  ->: match matcher_true
+  case:
+    blocker_true->:
+      if: true
+      value: True
+      a_dict:
+        stuff->: "{{cases}}"
+      list:
+        - stuff
+        - things
+      hook-expanded:
+        ->: literal expanded
+      hook-compact->: literal compact
+
+matcher_false: blocker_false
+
+matches_false:
+  ->: match matcher_false
+  case:
+    blocker_false->:
+      if: false
+      value: True
+
+expected:
+  value: True
+  dict:
+    stuff: things
+  list:
+    - stuff
+    - things
+  hook-expanded: expanded
+  hook-compact: compact
+
+#assert->: assert "{{matches_true}}" "{{expected}}"
