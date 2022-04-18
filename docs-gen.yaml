@@ -1,5 +1,6 @@
 problem_hooks:
-  - print  # Has "\n" as a default value which messes up table
+  # Has "\n" as a default value which messes up table
+  print: Console
 
 provider_dir->: "{{ cwd }}/../tackle/providers"
 provider_docs_dir->: "{{ cwd }}/providers"
@@ -77,5 +78,9 @@ gen->:
       extra_context:
         - "{{ render_context }}"
         - "{{ provider_meta }}"
+
+copy problem hooks:
+  _>: copy {{templates_dir}}/problem-hooks/{{item}}.md {{provider_docs_dir}}/{{problem_hooks[item]}}/{{item}}.md
+  for: keys(problem_hooks)
 
 Regenerate mkdocs->: tackle ../mkdocs.tackle.yml
