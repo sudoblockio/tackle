@@ -10,14 +10,14 @@
       
       
       
-        <link rel="canonical" href="https://robcxyz.github.io/tackle-box/hook-methods/">
+        <link rel="canonical" href="https://robcxyz.github.io/tackle-box/memory-management/">
       
       <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.9">
     
     
       
-        <title>Hook Methods - tackle-box</title>
+        <title>Memory Management - tackle-box</title>
       
     
     
@@ -81,7 +81,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#hook-base-methods" class="md-skip">
+        <a href="#memory-management" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Hook Methods
+              Memory Management
             
           </span>
         </div>
@@ -366,140 +366,11 @@
 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Hook Methods
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../hook-methods/" class="md-nav__link">
         Hook Methods
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#loops" class="md-nav__link">
-    Loops
-  </a>
-  
-    <nav class="md-nav" aria-label="Loops">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#reverse" class="md-nav__link">
-    reverse
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#conditionals" class="md-nav__link">
-    Conditionals
-  </a>
-  
-    <nav class="md-nav" aria-label="Conditionals">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#if" class="md-nav__link">
-    if
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#when" class="md-nav__link">
-    when
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#else" class="md-nav__link">
-    else
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#methods" class="md-nav__link">
-    Methods
-  </a>
-  
-    <nav class="md-nav" aria-label="Methods">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#chdir" class="md-nav__link">
-    chdir
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#merge" class="md-nav__link">
-    merge
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#try-except" class="md-nav__link">
-    try / except
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#defer-coming-soon" class="md-nav__link">
-    defer - Coming soon
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2967,16 +2838,50 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#loops" class="md-nav__link">
-    Loops
+  <a href="#public-vs-private-context" class="md-nav__link">
+    Public vs Private Context
   </a>
   
-    <nav class="md-nav" aria-label="Loops">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-contexts" class="md-nav__link">
+    Additional Contexts
+  </a>
+  
+    <nav class="md-nav" aria-label="Additional Contexts">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#reverse" class="md-nav__link">
-    reverse
+  <a href="#existing-context" class="md-nav__link">
+    Existing Context
+  </a>
+  
+    <nav class="md-nav" aria-label="Existing Context">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#calling-tackleyaml" class="md-nav__link">
+    calling-tackle.yaml
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#globalsyaml" class="md-nav__link">
+    globals.yaml
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#temporary-context" class="md-nav__link">
+    Temporary Context
   </a>
   
 </li>
@@ -2987,77 +2892,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#conditionals" class="md-nav__link">
-    Conditionals
+  <a href="#render-context-precedence" class="md-nav__link">
+    Render Context Precedence
   </a>
-  
-    <nav class="md-nav" aria-label="Conditionals">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#if" class="md-nav__link">
-    if
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#when" class="md-nav__link">
-    when
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#else" class="md-nav__link">
-    else
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#methods" class="md-nav__link">
-    Methods
-  </a>
-  
-    <nav class="md-nav" aria-label="Methods">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#chdir" class="md-nav__link">
-    chdir
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#merge" class="md-nav__link">
-    merge
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#try-except" class="md-nav__link">
-    try / except
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#defer-coming-soon" class="md-nav__link">
-    defer - Coming soon
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -3075,173 +2912,72 @@
                 
 
 
-<h1 id="hook-base-methods">Hook Base Methods<a class="headerlink" href="#hook-base-methods" title="Permanent link">&para;</a></h1>
-<p>Every hook has a number of base methods that are implemented alongside the declaration of the hook.  This document outlines each of these methods with an example of their use.</p>
-<ul>
-<li><a href="#loops">Loops</a><ul>
-<li><code>for</code> / <code>reverse</code></li>
-</ul>
-</li>
-<li><a href="#conditionals">Conditionals</a><ul>
-<li><code>if</code> / <code>when</code> / <code>else</code></li>
-</ul>
-</li>
-<li><a href="#methods">Methods</a><ul>
-<li><code>chdir</code></li>
-<li><code>merge</code></li>
-<li><code>try</code> / <code>except</code></li>
-<li><code>defer</code> - Coming soon</li>
-</ul>
-</li>
-</ul>
-<h2 id="loops">Loops<a class="headerlink" href="#loops" title="Permanent link">&para;</a></h2>
-<p>Hooks can be called in a loop based on specifying a list input in a <code>for</code> key and will return a list. Within the loop, the iterand is stored in a temporary variable <code>item</code> along with it's indexed position in a variable called <code>index</code>. For instance running:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">printer</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print &quot;We are at item {{ item }} and index {{ index }}&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">for</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stuff</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">things</span><span class="w"></span>
-</code></pre></div>
-<p>Would result in:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">printer</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">We are at item stuff and index 0</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">We are at item things and index 1</span><span class="w"></span>
-</code></pre></div>
-<p>The <code>for</code> key must be a list so if the input is a string, it is rendered by default like in this example which does the same as above:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">a_list</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stuff</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">things</span><span class="w"></span>
-
-<span class="nt">printer</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print &quot;We are at item {{ item }} and index {{ index }}&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">for</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">a_list</span><span class="w"></span>
-</code></pre></div>
-<p>Loop iterands can be of any type as in this example:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">printer</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print &quot;The type is {{ item.type }}</span><span class="w"></span>
-<span class="w">  </span><span class="nt">for</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">foo</span><span class="w"></span>
-<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stuff</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bar</span><span class="w"></span>
-<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">things</span><span class="w"></span>
-</code></pre></div>
-<p>Additionally, jinja hooks can be used to do some logic that could help with some patterns. For instance the <a href="">keys</a> hook can be used to create a list of keys from a map which can be used as an iterand.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">inputs</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">foo</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stuff</span><span class="w"></span>
-<span class="w">  </span><span class="nt">bar</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">things</span><span class="w"></span>
-
-<span class="nt">printer</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print &quot;The type is {{ inputs[item].type }}</span><span class="w"></span>
-<span class="w">  </span><span class="nt">for</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{keys(inputs)}}&quot;</span><span class="w"></span>
-</code></pre></div>
-<h3 id="reverse"><code>reverse</code><a class="headerlink" href="#reverse" title="Permanent link">&para;</a></h3>
-<p>To loop through a list in reverse, simply set a <code>reverse</code> key to true as in this example:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">printer</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print &quot;We are at item {{ item }} and index {{ index }}&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">for</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stuff</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">things</span><span class="w"></span>
-<span class="w">  </span><span class="nt">reverse</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-</code></pre></div>
-<p>Would result in:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">printer</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">We are at item things and index 1</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">We are at item stuff and index 0</span><span class="w"></span>
-</code></pre></div>
-<h2 id="conditionals">Conditionals<a class="headerlink" href="#conditionals" title="Permanent link">&para;</a></h2>
-<h3 id="if"><code>if</code><a class="headerlink" href="#if" title="Permanent link">&para;</a></h3>
-<p>Hooks can be conditionally called with an <code>if</code> key that needs to resolve to some kind of boolean. It is typically based on some kind of jinja expression. For instance:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">planet-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">select What planet you on? --choices [&#39;earth&#39;,&#39;mars&#39;]</span><span class="w"></span>
-<span class="nt">weather</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print {{ planet | title }} weather is nice!</span><span class="w"></span>
-<span class="w">  </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">planet == &#39;earth&#39;</span><span class="w"></span>
-</code></pre></div>
-<p>Here we can see the <code>if</code> key that by default is wrapped with jinja braces and is evaluated as true or false depending on the value entered into the <code>planet</code> key. Full jinja syntax is supported so other assertions such as whether an item is in a list (ie <code>if: 'a key' in a_list</code>) is supported.</p>
-<p>The <code>if</code> key is evaluated after a <code>for</code> loops are entered allowing list comprehensions to be done. For instance this example would only print "Hello world!".</p>
-<div class="highlight"><pre><span></span><code><span class="nt">words</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Hello</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cruel</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">world!</span><span class="w"></span>
-<span class="nt">expanded</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print {{item}}</span><span class="w"></span>
-<span class="w">  </span><span class="nt">for</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">words</span><span class="w"></span>
-<span class="w">  </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">item != &#39;cruel&#39;</span><span class="w"></span>
-<span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print {{item}} --for words --if &quot;item != &#39;cruel&#39;&quot;</span><span class="w"></span>
-</code></pre></div>
-<h3 id="when"><code>when</code><a class="headerlink" href="#when" title="Permanent link">&para;</a></h3>
-<p>For imposing conditionality before a loop, the <code>when</code> method exists. For instance in this example the <code>when</code> is evaluated first, the loop is entered, and then the <code>if</code> condition is imposed to do a list comprehension.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">words</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;Hello&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;cruel&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;world!&#39;</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="nt">expanded</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print {{item}}</span><span class="w"></span>
-<span class="w">  </span><span class="nt">for</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">words</span><span class="w"></span>
-<span class="w">  </span><span class="nt">when</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&#39;Hello&#39;</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">words&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">item != &#39;cruel&#39;</span><span class="w"></span>
-</code></pre></div>
-<h3 id="else"><code>else</code><a class="headerlink" href="#else" title="Permanent link">&para;</a></h3>
-<p>If you want to return a different value when the <code>if</code> or <code>when</code> condition resolves to false, use the <code>else</code> key with the value you wish to return otherwise.  For instance:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">name-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">input What is your name?</span><span class="w"></span>
-<span class="nt">hello</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print Hello {{ name }}!</span><span class="w"></span>
-<span class="w">  </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">name != &#39;Rob&#39;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">else</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Hello me</span><span class="w"></span>
-</code></pre></div>
-<p>Which can also be rendered.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">intro</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Hello</span><span class="w"></span>
-<span class="nn">...</span><span class="w"></span>
-<span class="w">  </span><span class="nt">else</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="nv">intro</span><span class="p p-Indicator">}}</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">me</span><span class="w"></span>
-</code></pre></div>
-<p>And could have hooks embedded in it.
-<div class="highlight"><pre><span></span><code><span class="nt">hello</span><span class="p">:</span><span class="w"></span>
-<span class="nn">...</span><span class="w"></span>
-<span class="w">  </span><span class="nt">else</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print(&#39;Hello me&#39;)</span><span class="w"></span>
-</code></pre></div></p>
-<p>Or simply could be a dictionary output with further hooks.
-<div class="highlight"><pre><span></span><code><span class="nt">hello</span><span class="p">:</span><span class="w"></span>
-<span class="nn">...</span><span class="w"></span>
-<span class="w">  </span><span class="nt">else</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">stuff</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">things-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print foo</span><span class="w"></span>
-</code></pre></div></p>
-<blockquote>
-<p>Currently only jinja hooks are supported as string values. Future could add support for <code>else-&gt;/else_&gt;</code> compact hook calls.</p>
-<p>Checkout the <a href="">match</a> hook if needing to do a lot of conditionals which can satisfy regexes when catching cases.</p>
-</blockquote>
-<h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
-<h3 id="chdir"><code>chdir</code><a class="headerlink" href="#chdir" title="Permanent link">&para;</a></h3>
-<p>Sometimes it is desirable to run the hook in another directory.  For this there is the <code>chdir</code> key where the hook is called in the context of the directory being specified. For instance one could run the <code>listdir</code> hook in another directory:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">contents</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">listdir</span><span class="w"></span>
-<span class="w">  </span><span class="nt">chdir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">path/to/some/dir</span><span class="w"></span>
-</code></pre></div>
-<h3 id="merge"><code>merge</code><a class="headerlink" href="#merge" title="Permanent link">&para;</a></h3>
-<p>If the output of the hook call is a map, then one can merge that map into the parent keys.  For instance given this <a href=""><code>block</code> hook</a>:</p>
+<h1 id="memory-management">Memory Management<a class="headerlink" href="#memory-management" title="Permanent link">&para;</a></h1>
+<p>Tackle has a memory management model that defines both the ability for tackle files to pass context between one another and the order of precedence when rendering variables and assigning values to them.  </p>
+<h2 id="public-vs-private-context">Public vs Private Context<a class="headerlink" href="#public-vs-private-context" title="Permanent link">&para;</a></h2>
+<p>For passing variables between files, tackle has the notion of <code>public</code> and <code>private</code> memory spaces that are differentiated based on any kind of hook call that ends in <code>-&gt;</code> or <code>_&gt;</code> respectively.  Public contexts are exported when calling a declarative hook / tackle file / provider whereas private contexts stay local to the declarative hook / tackle file / provider. By default, non-hook calls are inserted into the public context. For instance given the following tackle file and running <code>tackle file.yaml -p</code>, with the <code>-p</code> short for <code>--print</code>, an option that prints out the output / public context:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">stuff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">things</span><span class="w"></span>
-
-<span class="nt">to merge-&gt;</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">merge</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="w">  </span><span class="nt">stuff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">more things</span><span class="w"></span>
+<span class="nt">private_hook_&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">input Enter value?</span><span class="w"></span>
+<span class="nt">public_hook-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">var You entered value {{private_hook}}...</span><span class="w"></span>
 </code></pre></div>
 <p>Would result in:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">stuff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">more things</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">stuff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">things</span><span class="w"></span>
+<span class="nt">public_hook</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">You entered value &lt;the value you entered&gt;...</span><span class="w"></span>
 </code></pre></div>
+<p>Public and private contexts are really only important when operating in schema constrained environments or from a security perspective if calling untrusted external hooks. For instance to enforce a schema with a declarative hook, one could write the following.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">goto&lt;-</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">exec</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">journey</span><span class="w"></span>
+<span class="w">    </span><span class="nt">destination_&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">input Where we going? --default moon</span><span class="w"></span>
+<span class="w">    </span><span class="nt">itinerary-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">var One trip to the {{destination}}</span><span class="w"></span>
+<span class="nt">trip-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">goto</span><span class="w"></span>
+</code></pre></div>
+<p>Which when run with <code>tackle file.yaml -p</code> would prompt the user and return:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">trip</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">journey</span><span class="w"></span>
+<span class="w">  </span><span class="nt">itinerary</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">One trip to the moon</span><span class="w"></span>
+</code></pre></div>
+<p>Where we can see that <code>destination</code> was not included in the output because it is a private hook. This shows how if you need to control the schema, private hooks are an good way manage what is return it while still having the ability to use internal variables and call internal actions.</p>
 <blockquote>
-<p>Future work will support merging operations for lists as interpreted as an append operation</p>
+<p>Note, tackle has no notion of private declarative hooks yet but will when declarative methods are more flushed out.  </p>
 </blockquote>
-<h3 id="try-except"><code>try</code> / <code>except</code><a class="headerlink" href="#try-except" title="Permanent link">&para;</a></h3>
-<p>To catch errors, use the <code>try</code> method which also can run a context in the case of failure in an <code>except</code> method.  For instance in both these example the print would execute.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">a failed command-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">command &quot;exit 1&quot; --try</span><span class="w"></span>
-<span class="nt">p-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print Hello world!</span><span class="w"></span>
+<h2 id="additional-contexts">Additional Contexts<a class="headerlink" href="#additional-contexts" title="Permanent link">&para;</a></h2>
+<p>In the prior section the difference between the public and private context is discussed but in fact there are two other contexts that tackle uses called the existing context and the temporary context.</p>
+<h3 id="existing-context">Existing Context<a class="headerlink" href="#existing-context" title="Permanent link">&para;</a></h3>
+<p>The existing context is the public context that is passed when calling another tackle file or providers from within a tackle file. It is helpful if you want to build context in one file and then use it in another. For instance a common pattern is to have a data file that holds variables that are then used to render / resolve underlying logic. In the following example we can see the initial file call another file and then use that context to perform an action.</p>
+<h4 id="calling-tackleyaml"><strong><code>calling-tackle.yaml</code></strong><a class="headerlink" href="#calling-tackleyaml" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="nt">globals-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tackle globals.yaml --find_in_parent --merge</span><span class="w"></span>
+<span class="c1">#...</span><span class="w"></span>
+<span class="nt">do-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print {{stuff}}</span><span class="w"></span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="nt">a failed command</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">command &quot;exit 1&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">try</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="w">  </span><span class="nt">except</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">p-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print Hello world!</span><span class="w"></span>
+<p>Which could then call a file which asks for things like environment and then indexes some data (many ways to do this) allowing the previous file to access variables specific to the environment.</p>
+<h4 id="globalsyaml"><strong><code>globals.yaml</code></strong><a class="headerlink" href="#globalsyaml" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="nt">environment-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">select --choices [&#39;dev&#39;,&#39;prod&#39;]</span><span class="w"></span>
+<span class="nt">dev_&gt;</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">stuff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">things</span><span class="w"></span>
+<span class="nt">prod_&gt;</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">stuff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">more things</span><span class="w"></span>
+<span class="nt">merge-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">get {{environment}} --merge</span><span class="w"></span>
 </code></pre></div>
-<h3 id="defer-coming-soon"><code>defer</code> - Coming soon<a class="headerlink" href="#defer-coming-soon" title="Permanent link">&para;</a></h3>
-<p>Future versions of tackle fill have a <code>defer</code> functionality similar to Go where one can declare deferred actions that will run if there is a script error or when a tackle file / execution is finished.  Details still <a href="https://github.com/robcxyz/tackle-box/issues/37">being worked out</a>.</p>
+<h3 id="temporary-context">Temporary Context<a class="headerlink" href="#temporary-context" title="Permanent link">&para;</a></h3>
+<p>When parsing <a href="">blocks</a> and other hooks that parse their own individual context such as the <a href="">match</a> hook, an additional context is built so that users don't need to provide the full path to variables that are on the same level. For instance given this block hook, the following would run:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">trips-&gt;</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">for</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">space</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">the moon</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mars</span><span class="w"></span>
+<span class="w">  </span><span class="nt">destination-&gt;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{item}}&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">info_&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print Let&#39;s go to {{destination}}!</span><span class="w"></span>
+</code></pre></div>
+<p>Notice how within the <code>trip</code> block, the field <code>destination</code> can be referenced directly without its full path which would be <code>trips[index].destination</code>, something that would be a serious pain in complicated nested logic.  </p>
+<h2 id="render-context-precedence">Render Context Precedence<a class="headerlink" href="#render-context-precedence" title="Permanent link">&para;</a></h2>
+<p>When variables are rendered, they can use any number of different contexts based on an order of precedence described below.</p>
+<ol>
+<li>Temporary</li>
+<li>Public</li>
+<li>Private</li>
+<li>Existing</li>
+</ol>
 
               
             </article>
@@ -3251,41 +2987,6 @@
       </main>
       
         <footer class="md-footer">
-  
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
-      
-        
-        <a href="../writing-tackle-files/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Writing Tackle Files" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Writing Tackle Files
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../writing-hooks/" class="md-footer__link md-footer__link--next" aria-label="Next: Writing Hooks" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              Writing Hooks
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
