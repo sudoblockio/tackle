@@ -1,0 +1,31 @@
+name: Postgres Provider
+
+description: Hooks to interact with posgres. WIP
+
+examples:
+#  - name: "[copy](copy.md)"
+#    description: Copy a file or directory single file
+#    content: |
+#      compact->: copy path/to/file output/path
+#      expanded:
+#        ->: jinja
+#        template: path/to/file
+#        output: output/path
+#
+#  - name: "[chmod](chmod.md)"
+#    description: Change directory permissions
+#    content->: file tests/file/chmod.yaml
+
+hook_examples:
+  postgres_query:
+
+    - name: With specific context
+      description: Sometimes you want to render with a specific context.
+      content: |
+        generate_example:
+          ->: generate path/to/template/file/or/dir output/path
+          render_context: # Could simply be {{ some.other.key }}
+            foo: bar
+            stuff:
+              - things
+
