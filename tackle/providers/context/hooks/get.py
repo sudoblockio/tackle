@@ -3,7 +3,7 @@ from typing import Union
 from pydantic import Field
 
 from tackle import BaseHook
-from tackle.utils.dicts import encode_key_path, nested_get, get_target_and_key
+from tackle.utils.dicts import encode_key_path, nested_get
 
 
 class GetKeyHook(BaseHook):
@@ -21,12 +21,20 @@ class GetKeyHook(BaseHook):
 
     def exec(self):
         """Run the hook."""
-        target_context, set_key_path = get_target_and_key(
-            self, key_path=encode_key_path(self.path, self.sep)
-        )
+        value = None
+        for i in ['public', 'private', 'temporary', 'existing']:
+            try:
+                value = nested_get(
+                    element=getattr(self, f'{i}_context'),
+                    keys=encode_key_path(self.path, self.sep),
+                )
+            except KeyError:
+                pass
 
-        value = nested_get(
-            element=target_context,
-            keys=set_key_path,
-        )
+            if value is not None:
+                break
+
+        if value is None and self.verbose:
+            print(f"Could not find a key in {self.path} in any context.")
+
         return value
