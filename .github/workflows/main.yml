@@ -18,7 +18,6 @@ jobs:
       matrix:
         name:
           - "linting"
-          - "ubuntu-py36"
           - "ubuntu-py37"
           - "ubuntu-py38"
           - "ubuntu-py39"

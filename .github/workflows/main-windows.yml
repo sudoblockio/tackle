@@ -17,7 +17,6 @@ jobs:
       fail-fast: false
       matrix:
         name:
-          - "windows-py36"
           - "windows-py37"
           - "windows-py38"
 
