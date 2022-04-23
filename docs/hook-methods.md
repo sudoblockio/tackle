@@ -203,6 +203,8 @@ Would result in:
 stuff: more things
 ```
 
+> Future work will support merging operations for lists as interpreted as an append operation
+
 ### `try` / `except`
 
 To catch errors, use the `try` method which also can run a context in the case of failure in an `except` method.  For instance in both these example the print would execute.

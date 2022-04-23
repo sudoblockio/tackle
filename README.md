@@ -9,9 +9,11 @@
 * [PyPI](https://pypi.org/project/tackle-box/)
 * [BSD License](LICENSE)
 
-Tackle box is a language for making modular declarative CLIs. Make any yaml/json configuration file dynamic/callable with turing complete flow control common to any general purpose programming language.
+[//]: # (Tackle box is a language for making modular declarative CLIs. Make any yaml/json configuration file dynamic/callable with turing complete flow control common to any general purpose programming language.)
 
-> Warning: Language is in it's very early phases and only now considered stable enough to use. It may never reach 1.x version as, if it gets enough stars, it will be converted to a spec and re-written in rust (ie give it a star if you'd like to see that).
+Tackle box is a tool for making modular code generators and declarative CLIs. It can make any yaml / json file callable by giving users access to a collection of hooks to perform any number of special actions with flow control common to a general purpose programming language.  
+
+> Warning: Tool is in it's very early phases and only now considered stable enough to use. It may never reach 1.x version as, if it gets enough stars, it will be converted to a spec and re-written in rust (ie give it a star if you'd like to see that).
 
 - Install
 - Use Cases
@@ -55,7 +57,7 @@ jinja_extension->: "{{ print(words) }}"
 jinja_filter->: "{{ words | print }}"
 ```
 
-Interactive example with [prompt]() hooks.
+Interactive example with [prompt](https://robcxyz.github.io/tackle-box/providers/Prompts/) hooks.
 ```yaml
 name->: input
 target:
@@ -94,10 +96,8 @@ class Greeter(BaseHook):
 Or new hooks can be [declaratively created]() with tackle.
 ```yaml
 greeter<-:
-  help: A thing that says hi!
   target: str
-  args:
-    - target
+  args: ['target']
   exec:
     hi->: print Hello {{target}}
 ```
@@ -127,11 +127,11 @@ Creating a web of declarative CLIs.
 ### Topics
 - [Writing Tackle Files](https://robcxyz.github.io/tackle-box/writing-tackle-files/)
 - [Creating Providers](https://robcxyz.github.io/tackle-box/creating-providers/)
-- [Blocks and Flow Control]()
-- [Memory Management]()
-- [Declarative CLIs]()
-- [Declarative Hooks]()
-- [Special Variables]()
+- [Blocks and Flow Control]() - wip
+- [Memory Management](https://robcxyz.github.io/tackle-box/memory-management/)
+- [Special Variables]() - wip
+- [Declarative Hooks]() - wip
+- [Declarative CLIs]() - wip
 
 ### Roadmap
 
