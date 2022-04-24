@@ -1,0 +1,10 @@
+int: "1.2"
+int_cast->: int int
+int_check->: assert "{{type(int_cast)}}" int
+int_check2->: assert "{{int_cast}}" 1
+
+float: "1.2"
+float_cast->: float float
+float_check->: assert "{{type(float_cast)}}" float
+float_check2->: assert "{{float_cast}}" 1.2
+
