@@ -421,16 +421,24 @@ def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
             if not isinstance(args[i], (str, float)):
                 # Catch list dict and ints - strings floats and bytes caught later
                 value = args[i]
-            elif Hook.__fields__[hook_args[i]].type_ in (str, float, int):
+            elif Hook.__fields__[hook_args[i]].type_ == str:
                 # Was parsed on spaces so reconstructed.
                 value = ' '.join(args[i:])
-            # fmt: skip
+            elif Hook.__fields__[hook_args[i]].type_ in (bool, float, int):
+                # TODO: Incomplete
+                value = args[i]
             elif isinstance(Hook.__fields__[hook_args[i]], list):
                 # If list then all the remaining items
                 value = args[i:]
-            elif isinstance(v, (str, float, int)):
+            elif isinstance(v, str):
                 # Make assumption the rest of the args can be reconstructed as above
                 value = ' '.join(args[i:])
+            elif isinstance(v, (bool, float, int)):
+                # TODO: Incomplete
+                if len(args[i:]) > 1:
+                    value = args[i:]
+                else:
+                    value = args[i]
             else:
                 # Only thing left is a dict
                 if len(args[i:]) > 1:
