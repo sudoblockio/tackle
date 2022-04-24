@@ -550,31 +550,20 @@ def run_hook(context: 'Context'):
     parse_hook(hook_dict, Hook, context)
 
 
-def handle_empty_blocks(context: 'Context', block_value):
+def blocks_macro(context: 'Context'):
     """
     Handle keys appended with arrows and interpret them as `block` hooks. Value is
     re-written over with a `block` hook to support the following syntax.
 
     a-key->:
       if: stuff == 'things'
-      for: a_list
       foo->: print ...
-      bar->: print ...
-
     to
-
     a-key:
       ->: block
       if: stuff == 'things'
-      for: a_list
       items:
         foo->: print ...
-        bar->: print ...
-
-    :param context:
-    :param block_key:
-    :param block_value:
-    :return:
     """
     # Break up key paths
     base_key_path = context.key_path[:-1]
@@ -722,7 +711,7 @@ def walk_sync(context: 'Context', element):
             # Special case where we have an empty hook, expanded or compact
             if k[-2:] in ('->', '_>') and (v is None or isinstance(v, dict)):
                 # Here we re-write the input to turn empty hooks into block hooks
-                handle_empty_blocks(context, v)
+                blocks_macro(context)
                 context.key_path[-1] = k[:-2]
                 value = nested_get(
                     element=context.input_context,
@@ -1004,7 +993,14 @@ def extract_functions(context: 'Context'):
 def extract_base_file(context: 'Context'):
     """Read the tackle file and initialize input_context."""
     if context.find_in_parent:
-        path = find_in_parent(context.input_dir, context.input_file)
+        try:
+            path = find_in_parent(context.input_dir, [context.input_file])
+        except NotADirectoryError:
+            raise UnknownSourceException(
+                f"Could not find {context.input_file} in {context.input_dir} or in "
+                f"any of the parent directories.",
+                context=context,
+            ) from None
         context.input_file = os.path.basename(path)
         context.input_dir = os.path.dirname(path)
     else:
@@ -1016,10 +1012,16 @@ def extract_base_file(context: 'Context'):
         # context.calling_file = path
     context.current_file = path
 
-    context.input_context = read_config_file(path)
+    try:
+        context.input_context = read_config_file(path)
+    except FileNotFoundError:
+        raise UnknownSourceException(
+            f"Could not find file in {path}.", context=context
+        ) from None
+
     if context.input_context is None:
         raise EmptyTackleFileException(
-            f"No tackle file found at {path}.", context=context
+            f"Tackle file found at {path} is empty.", context=context
         )
 
     if isinstance(context.input_context, list):

@@ -175,7 +175,7 @@ def find_tackle_file(provider_dir) -> str:
     raise InvalidConfiguration(f"Can't find tackle file in {provider_dir}")
 
 
-def find_in_parent(dir, targets, fallback=None) -> str:
+def find_in_parent(dir: str, targets: list, fallback=None) -> str:
     """Recursively search in parent directories for a path to a target file."""
     for i in os.listdir(dir):
         if i in targets:
