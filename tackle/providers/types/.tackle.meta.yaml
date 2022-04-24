@@ -1,0 +1,36 @@
+name: Types Provider
+
+description: Hooks for getting and setting a variable's type.
+
+examples:
+
+  - name: "[type](type.md)"
+    description: Hook to get type of variable.
+    content: |
+      stuff: things
+      map:
+        stuff: things
+      stuff_type->: type stuff  # rendered by default
+      map_type->: type map
+    output: |
+      stuff: things
+      map:
+        stuff: things
+      stuff_type: str
+      map_type: dict
+
+hook_examples:
+  type:
+    - description: Simple example.
+      content: |
+        stuff: things
+        map:
+          stuff: things
+        stuff_type->: type stuff  # rendered by default
+        map_type->: type map
+      output: |
+        stuff: things
+        map:
+          stuff: things
+        stuff_type: str
+        map_type: dict

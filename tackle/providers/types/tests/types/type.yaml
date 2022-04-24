@@ -16,3 +16,16 @@ list_type->: type list
 a_dict_type->: type a_dict
 dict_list_type->: type dict_list
 list_dict_type->: type list_dict
+
+foo<-:
+  stuff:
+    type: list
+    default:
+      - things
+  exec:
+    in->: var stuff
+    type->: var type(stuff)
+  args: ['stuff']
+
+default->: foo
+with_args->: foo ['bar']

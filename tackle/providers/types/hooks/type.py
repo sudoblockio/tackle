@@ -14,4 +14,9 @@ class TypeHook(BaseHook):
     args: list = ['input']
 
     def exec(self) -> str:
-        return type(self.input).__name__
+        output = type(self.input).__name__
+        if output == 'CommentedSeq':
+            output = 'list'
+        elif output == 'CommentedMap':
+            output = 'map'
+        return output

@@ -10,3 +10,5 @@ def test_provider_logic_type(change_dir):
     assert output['a_dict_type'] == 'dict'
     assert output['dict_list_type'] == 'dict'
     assert output['list_dict_type'] == 'list'
+    assert output['with_args']['type'] == 'list'
+    assert output['default']['type'] == 'list'
