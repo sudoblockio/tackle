@@ -186,6 +186,9 @@ class ProviderDocsHook(BaseHook):
             # fmt: on
 
             for h in hooks:
+                if h._wip:
+                    continue
+
                 return_type = get_type_hints(h.exec)
                 if 'return' in return_type:
                     return_type = hook_type_to_string(return_type['return'])

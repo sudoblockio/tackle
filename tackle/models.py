@@ -435,6 +435,8 @@ class BaseHook(BaseContext, Extension, metaclass=PartialModelMetaclass):
     _docs_order: int = 10  # Arbitrary high number so hooks can be sorted high or low
     # Parameterized return type description for docs
     _return_description: str = None
+    # Flag for skipping creating the docs for
+    _wip: bool = False
 
     @validator('if_', 'reverse', 'for_', 'merge')
     def wrap_bool_if_string(cls, v):
