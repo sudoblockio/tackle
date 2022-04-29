@@ -523,10 +523,13 @@ def run_hook(context: 'Context'):
     if context.key_path[-1] in ('->', '_>'):
         # We have an expanded or mixed (with args) hook expression and so there will be
         # additional properties in adjacent keys. Trim key_path_block for blocks
-        hook_dict = nested_get(
-            context.input_context,
-            smush_key_path(context.key_path[:-1][len(context.key_path_block) :]),
-        ).copy()
+        try:
+            hook_dict = nested_get(
+                context.input_context,
+                smush_key_path(context.key_path[:-1][len(context.key_path_block) :]),
+            ).copy()
+        except KeyError as e:
+            raise UnknownHookTypeException(f"Key: {e} - Unknown", context=context)
         # Need to replace arrow keys as for the time being (pydantic 1.8.2) - multiple
         # aliases for the same field (type) can't be specified so doing this hack
         if '->' in hook_dict:
