@@ -101,6 +101,14 @@ def _existing_context(context: 'Context'):
     return context.existing_context
 
 
+def _key_path(context: 'Context'):
+    return context.key_path
+
+
+def _key_path_block(context: 'Context'):
+    return context.key_path_block
+
+
 special_variables = {
     'cwd': _cwd,
     'home_dir': _home_dir,
@@ -119,4 +127,6 @@ special_variables = {
     'private_context': _private_context,
     'existing_context': _existing_context,
     'temporary_context': _temporary_context,
+    'key_path': _key_path,
+    'key_path_block': _key_path_block,
 }
