@@ -35,3 +35,13 @@ def test_main_expected_output(change_curdir_fixtures, fixture, expected_output):
     expected_output = read_config_file(expected_output)
     output = tackle(fixture)
     assert output == expected_output
+
+
+def test_parser_ruamel_braces(change_curdir_fixtures):
+    """
+    Validate super hack for ruamel parsing error where `stuff->: {{things}}`
+    (no quotes), ruamel interprets as:
+    'stuff': ordereddict([(ordereddict([('things', None)]), None)]).
+    """
+    output = tackle('ruamel-parsing-error-braces.yaml', verbose=True)
+    assert output['stuff'] == 'things'

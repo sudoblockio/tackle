@@ -18,6 +18,7 @@ from tackle.utils.dicts import (
     set_key,
     get_target_and_key,
     smush_key_path,
+    get_readable_key_path,
 )
 from tackle.utils.command import unpack_args_kwargs_string
 from tackle.utils.vcs import get_repo_source
@@ -710,6 +711,20 @@ def walk_sync(context: 'Context', element):
             return
 
         for k, v in element.copy().items():
+
+            if isinstance(v, OrderedDict):
+                # TODO: Improve this?
+                # This is for a common parsing error that messes up values with braces.
+                # For instance `stuff->: {{things}}` (no quotes), ruamel interprets as
+                # 'stuff': ordereddict([(ordereddict([('things', None)]), None)])
+                # Since it is common to forget to quote, this is a helper to try to
+                # catch that error and fix it.  Super hacky....
+                if len(v) == 1 and next(iter(v.values())) is None:
+                    if context.verbose:
+                        _key_path = get_readable_key_path(context.key_path)
+                        print(f"Handling unquoted template at key path {_key_path}.")
+                    v = "{{" + next(iter(next(iter(v.keys())))) + "}}"
+
             context.key_path.append(k)
             # Special case where we have an empty hook, expanded or compact
             if k[-2:] in ('->', '_>') and (v is None or isinstance(v, dict)):
@@ -879,6 +894,15 @@ def function_walk(
     many returnable string keys. Function is meant to be implanted into a function
     object and called either as `exec` or some other arbitrary method.
     """
+    if input_element is None:
+        # If there is no `exec` method, input_element is None so we infer that the
+        # input fields are to be returned. This is useful if the user would like to
+        # validate a dict easily with a function and is the only natural meaning of
+        # a function call without an exec method.
+        input_element = {}
+        for i in self.function_fields:
+            input_element[i] = getattr(self, i)
+
     if self.public_context:
         existing_context = self.public_context.copy()
         existing_context.update(self.existing_context)
@@ -936,6 +960,10 @@ def create_function_model(
     context: 'Context', func_name: str, func_dict: dict
 ) -> Type[BaseFunction]:
     """Create a model from the function input dict."""
+    if func_dict is None:
+        # TODO
+        raise EmptyBlockException
+
     if 'extends' in func_dict:
         base_hook = context.provider_hooks[func_dict['extends']]
         func_dict = {**base_hook, **func_dict}
@@ -955,10 +983,15 @@ def create_function_model(
     # fmt: on
 
     new_func = {'hook_type': func_name[:-2], 'function_fields': []}
+    literals = ('str', 'int', 'float', 'bool')  # strings to match
     # Create function fields from anything left over in the function dict
     for k, v in func_dict.items():
         if isinstance(v, dict):
             new_func[k] = Field(**v)
+        elif v in literals:
+            from pydoc import locate
+
+            new_func[k] = (locate(v), Field(...))
         elif isinstance(v, (str, int, float, bool)):
             new_func[k] = v
         elif isinstance(v, list):
