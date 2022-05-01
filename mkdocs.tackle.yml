@@ -34,15 +34,17 @@ nav:
   #  - Usage Docs:
   - Index: index.md
   - Installation: installation.md
-  - Use Cases: use-cases.md
+#  - Use Cases: use-cases.md
   - Project Structure: project-structure.md
   - Command Line: command-line.md
   - Creating Providers: creating-providers.md
   - Using Providers: using-providers.md
   - Writing Tackle Files: writing-tackle-files.md
+  - Jinja Templating: jinja.md
   - Hook Methods: hook-methods.md
   - Writing Hooks: writing-hooks.md
-  - Examples: examples/index.md
+  - Declarative Hooks: declarative-hooks.md
+  - Memory Management: memory-management.md
   - Examples:
       #    - Tackle File Examples:
       - Index: examples/index.md
