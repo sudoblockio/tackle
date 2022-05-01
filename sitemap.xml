@@ -141,6 +141,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://robcxyz.github.io/tackle-box/providers/Collections/concat/</loc>
+         <lastmod>2022-05-01</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://robcxyz.github.io/tackle-box/providers/Collections/distinct/</loc>
          <lastmod>2022-05-01</lastmod>
          <changefreq>daily</changefreq>
