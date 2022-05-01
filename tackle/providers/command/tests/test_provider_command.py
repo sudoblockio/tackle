@@ -1,3 +1,4 @@
+import sys
 import os
 import pytest
 
@@ -16,6 +17,10 @@ if os.name == 'nt':
 
 
 # TODO: https://github.com/robcxyz/tackle-box/issues/14
+# TODO: https://github.com/robcxyz/tackle-box/issues/71
+@pytest.mark.skipif(
+    sys.platform == 'darwin', reason="https://github.com/robcxyz/tackle-box/issues/71"
+)
 def test_provider_system_hook_command_multi_line(change_dir):
     output = tackle('multi-line-cmd.yaml')
     assert output['multiline'].startswith('stuff and thing')
