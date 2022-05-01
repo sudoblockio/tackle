@@ -78,7 +78,7 @@ expanded:
 compact->: print {{item}} --for words --if "item != 'cruel'"
 ```
 
-Hooks can be [written in python](). Tackle ships with ~100 hooks that make up the core set of functions needed to build complex logic.
+Hooks can be [written in python](https://robcxyz.github.io/tackle-box/writing-tackle-files/).  
 ```python
 from tackle import BaseHook
 
@@ -90,7 +90,7 @@ class Greeter(BaseHook):
         print(f"Hello {self.target}")
 ```
 
-Or new hooks can be [declaratively created]() with tackle.
+Or new hooks can be [declaratively created](https://robcxyz.github.io/tackle-box/declarative-hooks/) with tackle.
 ```yaml
 greeter<-:
   target: str
@@ -127,7 +127,7 @@ Creating a web of declarative CLIs.
 - [Blocks and Flow Control]() - wip
 - [Memory Management](https://robcxyz.github.io/tackle-box/memory-management/)
 - [Special Variables]() - wip
-- [Declarative Hooks]() - wip
+- [Declarative Hooks](https://robcxyz.github.io/tackle-box/declarative-hooks/)
 - [Declarative CLIs]() - wip
 
 ### Roadmap
