@@ -55,22 +55,17 @@ If it was in a github repo it could then be called in the command line with `tac
 
 If one instead wanted to prompt the user for items which would be used to render the templates, one would call various prompt hooks from the `pyinquirer` provider. Some common ones include:
 
-- [input]() - Input strings
-- [select]() - List of options where the user can only choose one
-- [checkbox]() - Multi select that returns a list
-- [confirm]() - Simple confirmation that returns a boolean
+- [input](https://robcxyz.github.io/tackle-box/providers/Prompts/input/) - Input strings
+- [select](https://robcxyz.github.io/tackle-box/providers/Prompts/select/) - List of options where the user can only choose one
+- [checkbox](https://robcxyz.github.io/tackle-box/providers/Prompts/checkbox/) - Multi select that returns a list
+- [confirm](https://robcxyz.github.io/tackle-box/providers/Prompts/confirm/) - Simple confirmation that returns a boolean
 
 For instance:
 
 ```yaml
 # Arbitrary context
-project_slug->: input What is the project's slug (ie head directory)?
-license:
-  ->: select What license type?
-  choices:  
-    - Apache
-    - MIT
-
+project_slug->: input What is the project's slug (ie head directory)? --default tackle-thing
+license->: select What license type? --choices ['Apache','MIT']
 makefile_sections:
   ->: checkbox What utilities to include in makefile?
   choices:
@@ -78,11 +73,34 @@ makefile_sections:
     - docs
     - tests
 
-ci_enable->: confirm Do you want to setup CI?
-generate ci->: generate templates/.github "{{project_slug}}/" --if "{{ci_enable}}"
+generate ci:
+  ->: generate templates/.github "{{project_slug}}/"
+  if: confirm('Do you want to setup CI?')
 
 generate code->: generate templates/src "{{project_slug}}"
 ```
+
+Would look like:
+
+```shell
+? What is the project's slug (ie head directory)?  tackle-thing
+? What license type?  (Use arrow keys)
+ ❯ Apache
+   MIT
+? What utilities to include in makefile?  (<up>, <down> to move, <space> to select, <a> to toggle, <i> to invert)
+  ● build
+  ○ docs
+ ❯● tests
+? Do you want to setup CI?  (Y/n)
+```
+
+### Controlling context
+
+> TODO
+
+### Building file paths from maps
+
+> TODO
 
 ### Ingesting a spec and transforming it to a render context
 

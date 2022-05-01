@@ -12,6 +12,7 @@ provider_ignore:
   - __init__.py
   - __pycache__
   - .gitignore
+  - postgres  # WIP
 
 # List comprehension to get the providers
 providers->: var "{{ listdir(provider_dir) | reject('in', provider_ignore) | list }}"

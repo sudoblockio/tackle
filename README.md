@@ -5,6 +5,8 @@
 [![codecov](https://codecov.io/gh/robcxyz/tackle-box/branch/main/graphs/badge.svg?branch=main)](https://codecov.io/github/robcxyz/tackle-box?branch=main)
 [![main-tests](https://github.com/robcxyz/tackle-box/actions/workflows/main.yml/badge.svg)](https://github.com/robcxyz/tackle-box/actions)
 
+[//]: # (<img align="right" width="80" height="80" src="https://raw.githubusercontent.com/akarsh/akarsh-seggemu-resume/master/akarsh%20seggemu%20resume/Assets/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60%403x.png" alt="Resume application project app icon">)
+
 * [Documentation](https://robcxyz.github.io/tackle-box)
 * [PyPI](https://pypi.org/project/tackle-box/)
 * [BSD License](LICENSE)
@@ -15,11 +17,13 @@ Tackle box is a tool for making modular code generators and declarative CLIs. It
 
 > Warning: Tool is in it's very early phases and only now considered stable enough to use. It may never reach 1.x version as, if it gets enough stars, it will be converted to a spec and re-written in rust (ie give it a star if you'd like to see that).
 
-- Install
-- Use Cases
-- Hello world
-- Advanced Topics
-- Contributing
+[//]: # (- [Install]&#40;#install&#41;)
+
+[//]: # (- [Hello world]&#40;#hello-world&#41;)
+
+[//]: # (- [Topics]&#40;#topics&#41;)
+
+[//]: # (- [Roadmap]&#40;#roadmap&#41;)
 
 ### Install
 
@@ -30,14 +34,7 @@ python -m venv env
 pip install tackle-box
 ```
 
-### Use Cases
-
-- [Modular code generation]() - wip
-- [Kubernetes management]() - wip
-- [Declarative toolchains]() - wip
-- [Declarative utilities]() - wip
-
-### Hello worlds
+### Hello world
 
 To call tackle, create a yaml file and run `tackle hello-world.yaml`.
 
@@ -46,7 +43,7 @@ Use the [print](https://robcxyz.github.io/tackle-box/providers/Console/print/) h
 hw->: print Hello world!
 ```
 
-Using [jinja templating](), hooks can be called in [four different ways]().
+Using [jinja templating](https://robcxyz.github.io/tackle-box/jinja), hooks can be called in [four different ways](https://robcxyz.github.io/tackle-box/jinja).
 ```yaml
 words: Hello world!
 expanded:
@@ -76,12 +73,12 @@ words:
   - world!
 expanded:
   ->: print {{item}}
-  for: words
+  for: keys(words)
   if: item != 'cruel'
 compact->: print {{item}} --for words --if "item != 'cruel'"
 ```
 
-Hooks can be [written in python]().
+Hooks can be [written in python](). Tackle ships with ~100 hooks that make up the core set of functions needed to build complex logic.
 ```python
 from tackle import BaseHook
 
