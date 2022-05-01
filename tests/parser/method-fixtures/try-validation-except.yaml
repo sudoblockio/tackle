@@ -1,0 +1,7 @@
+some_hook<-:
+  input:
+    type: str
+call:
+  ->: some_hook --input ['foo'] --try
+  except:
+    p->: print Wrong type!!

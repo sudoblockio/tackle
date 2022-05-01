@@ -1,0 +1,9 @@
+
+nodes:
+  - ip: 1
+    name: foo
+  - ip: 2
+    name: bar
+
+network_name: bar
+nodes->: var item --for "{{nodes}}" --if item.name==network_name

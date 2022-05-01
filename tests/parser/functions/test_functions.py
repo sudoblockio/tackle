@@ -1,10 +1,9 @@
 import pytest
 import os
 from ruamel.yaml import YAML
-from pydantic import ValidationError
 
 from tackle import tackle
-from tackle.exceptions import FunctionCallException
+from tackle.exceptions import FunctionCallException, HookParseException
 
 FIXTURES = [
     ('call.yaml', 'call-output.yaml'),
@@ -48,7 +47,7 @@ EXCEPTION_FIXTURES = [
     # Check that return string not found caught
     ('return-str-not-found.yaml', FunctionCallException),
     # Check that type checking works with no exec method.
-    ('no-exec-type-error.yaml', ValidationError),
+    ('no-exec-type-error.yaml', HookParseException),
 ]
 
 
@@ -75,5 +74,5 @@ FIELD_TYPE_EXCEPTION_FIXTURES = [
 def test_function_raises_exceptions_field_types(chdir, type_, field_input):
     """Check that a validation error is returned for each type of field definition."""
     chdir(os.path.join('fixtures', 'field-type-exceptions'))
-    with pytest.raises(ValidationError):
+    with pytest.raises(HookParseException):
         tackle(f'field-types-{type_}-error-{field_input}.yaml')

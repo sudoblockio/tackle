@@ -361,6 +361,12 @@ def parse_hook(
                     is_hook_call=True,
                 )
             except ValidationError as e:
+                # Handle any try / except logic
+                if 'try' in hook_dict and hook_dict['try']:
+                    if 'except' in hook_dict and hook_dict['except']:
+                        parse_sub_context(context, hook_dict, target='except')
+                    return
+
                 msg = str(e)
                 if Hook.identifier.startswith('tackle.providers'):
                     id_list = Hook.identifier.split('.')
@@ -384,8 +390,6 @@ def parse_hook(
                     if hook.verbose:
                         print(e)
                     if hook.except_:
-                        # TODO: Use generalized function same with `else`
-                        # raise NotImplementedError
                         parse_sub_context(context, hook_dict, target='except')
                     return
             else:
@@ -735,12 +739,12 @@ def walk_sync(context: 'Context', element):
         for k, v in element.copy().items():
 
             if isinstance(v, OrderedDict):
-                # TODO: Improve this?
                 # This is for a common parsing error that messes up values with braces.
                 # For instance `stuff->: {{things}}` (no quotes), ruamel interprets as
-                # 'stuff': ordereddict([(ordereddict([('things', None)]), None)])
+                # 'stuff': ordereddict([(ordereddict([('things', None)]), None)]) which
+                # technically is accurate but generally users would never actually do.
                 # Since it is common to forget to quote, this is a helper to try to
-                # catch that error and fix it.  Super hacky....
+                # catch that error and fix it.  Warning -> super hacky....
                 if len(v) == 1 and next(iter(v.values())) is None:
                     if context.verbose:
                         _key_path = get_readable_key_path(context.key_path)

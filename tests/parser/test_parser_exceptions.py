@@ -1,5 +1,4 @@
 """Test the input source part of the parser."""
-import os
 import pytest
 
 from tackle.exceptions import (
@@ -25,6 +24,6 @@ INPUT_SOURCES = [
 @pytest.mark.parametrize("input_file,exception", INPUT_SOURCES)
 def test_parser_raises_exceptions(chdir, input_file, exception):
     """Test raising exceptions."""
-    chdir(os.path.join('fixtures', 'exceptions'))
+    chdir('exceptions')
     with pytest.raises(exception):
         main([input_file])
