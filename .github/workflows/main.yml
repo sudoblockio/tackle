@@ -22,7 +22,6 @@ jobs:
           - "ubuntu-py38"
           - "ubuntu-py39"
           - "ubuntu-py310"
-          - "ubuntu-pypy3"
           - "macos-py37"
           - "macos-py38"
           - "macos-py39"
@@ -32,10 +31,6 @@ jobs:
             python: "3.8"
             os: ubuntu-latest
             tox_env: "lint"
-          - name: "ubuntu-py36"
-            python: "3.6"
-            os: ubuntu-latest
-            tox_env: "py36"
           - name: "ubuntu-py37"
             python: "3.7"
             os: ubuntu-latest
@@ -52,10 +47,6 @@ jobs:
             python: "3.8"
             os: ubuntu-latest
             tox_env: "py38"
-          - name: "ubuntu-pypy3"
-            python: "pypy3"
-            os: ubuntu-latest
-            tox_env: "pypy3"
           - name: "macos-py37"
             python: "3.7"
             os: macos-latest
