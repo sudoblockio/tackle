@@ -152,7 +152,11 @@ class GenerateHook(BaseHook, smart_union=True):
         # Render the path right away as templating mangles things later - also logical
         # to render file names.  Who wants to generate files with templates in the name?
         file_name_template = self.env_.from_string(str(output_path))
-        output_path = file_name_template.render(self.render_context)
+        try:
+            output_path = file_name_template.render(self.render_context)
+        except UndefinedError as e:
+            msg = f"The `generate` hook failed to render -> {e}"
+            raise UndefinedVariableInTemplate(msg, hook=self) from None
 
         # Make the parent directories by default
         parent_dir = Path(output_path).parent.absolute()
@@ -176,11 +180,18 @@ class GenerateHook(BaseHook, smart_union=True):
         try:
             rendered_contents = file_contents_template.render(self.render_context)
         except UndefinedError as e:
-            raise UndefinedVariableInTemplate(
-                message=f"Error rendering {input_file}, {e.args[0]}.",
-                error=e,
-                context=self.render_context,
-            )
+            # raise UndefinedVariableInTemplate(
+            #     message=f"Error rendering {input_file}, {e.args[0]}.",
+            #     error=e,
+            #     context=self.render_context,
+            # )
+            msg = f"The `generate` hook failed to render -> {e}"
+            raise UndefinedVariableInTemplate(msg, hook=self) from None
+
+            # raise UndefinedVariableInTemplate(
+            #     f"Error rendering {input_file}, {e.args[0]}.",
+            #     context=self.render_context,
+            # )
 
         # Write contents
         with open(output_path, 'w') as f:

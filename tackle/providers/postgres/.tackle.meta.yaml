@@ -18,14 +18,17 @@ examples:
 
 hook_examples:
   postgres_query:
-
-    - name: With specific context
-      description: Sometimes you want to render with a specific context.
+    - description: Basic
       content: |
-        generate_example:
-          ->: generate path/to/template/file/or/dir output/path
-          render_context: # Could simply be {{ some.other.key }}
-            foo: bar
-            stuff:
-              - things
+        query:
+          ->: postgres_query
+          dbname: some_db
+          user: postgres  # default
+          password: nunyabiznis
+          host: 1.2.3.4
+          port: 5432  # default
+
+          query: select * from information_schema.tables
+
+        print->: {{item.table_catalog}} --for query
 

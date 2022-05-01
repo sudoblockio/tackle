@@ -1,0 +1,4 @@
+
+# Should error with unknown variable
+compact->: generate templates output
+

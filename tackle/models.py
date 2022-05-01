@@ -428,7 +428,7 @@ class BaseHook(BaseContext, Extension, metaclass=PartialModelMetaclass):
     # Used when rendering docs
     _doc_tags: list = []
     # For linking issues in the docs so others can potentially contribute
-    _issue_numbers: list = []
+    _issue_numbers: list = []  # TODO: Implement this
     # Additional callout sections to be included at the top of the docs
     _notes: list = []
     # Allow hooks to be sorted in the docs

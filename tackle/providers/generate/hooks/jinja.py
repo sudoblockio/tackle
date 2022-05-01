@@ -5,7 +5,6 @@ from typing import Union
 
 from tackle import BaseHook, Field
 from tackle.providers.generate.hooks.exceptions import UndefinedVariableInTemplate
-from tackle.utils.dicts import get_readable_key_path
 
 
 class JinjaHook(BaseHook):
@@ -69,8 +68,8 @@ class JinjaHook(BaseHook):
         try:
             output_from_parsed_template = template.render(**self.render_context)
         except UndefinedError as err:
-            msg = f"The Jinja hook for '{get_readable_key_path(self.key_path)}' key path failed to render"
-            raise UndefinedVariableInTemplate(msg, err, self.public_context)
+            msg = f"The `jinja` hook failed to render -> {err}"
+            raise UndefinedVariableInTemplate(msg, hook=self) from None
 
         if self.output is not None:
             with open(self.output, 'w') as fh:

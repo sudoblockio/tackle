@@ -1,4 +1,4 @@
-from tackle import BaseHook
+from tackle import BaseHook, Field
 import psycopg2
 
 
@@ -10,20 +10,22 @@ class PostgresQuery(BaseHook):
 
     hook_type = "postgres_query"
 
-    db_host: str
-    db_user: str
-    db_name: str
-    db_password: str
-    db_port: int = 5432
-    query: str
+    # fmt: off
+    query: str = Field(..., description="The query to run.")
+    dbname: str = Field("postgres", description="The database name (database is a deprecated alias).")
+    user: str = Field("postgres", description="User name used to authenticate.")
+    password: str = Field(None, description="Password used to authenticate.")
+    host: str = Field(None, description="Database host address (defaults to UNIX socket if not provided).")
+    port: int = Field(5432, description="Connection port number (defaults to 5432 if not provided).")
+    # fmt: on
 
     def exec(self) -> list:
         connection = psycopg2.connect(
-            user=self.db_user,
-            password=self.db_password,
-            host=self.db_host,
-            port=self.db_port,
-            database=self.db_name,
+            user=self.user,
+            password=self.password,
+            host=self.host,
+            port=self.port,
+            database=self.dbname,
         )
         cursor = connection.cursor()
         cursor.execute(self.query)
