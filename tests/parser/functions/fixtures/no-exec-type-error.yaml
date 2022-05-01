@@ -1,0 +1,10 @@
+stuff: things
+
+no_arg<-:
+  target: str
+
+no_arg_call:
+  ->: no_arg
+  target: ['world']
+
+# Should raise ValidationError

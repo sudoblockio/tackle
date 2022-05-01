@@ -1,0 +1,9 @@
+
+str_dict<-:
+  a_str:
+    type: str
+
+str_dict_call:
+  ->: str_dict
+  a_str:
+    stuff: things

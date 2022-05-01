@@ -7,6 +7,7 @@ from typing import Type, Any, Union
 from pydantic import Field, create_model
 from pydantic.main import ModelMetaclass
 from collections import OrderedDict
+from pydoc import locate
 
 from tackle.render import render_variable, wrap_jinja_braces
 from tackle.utils.dicts import (
@@ -51,6 +52,8 @@ from tackle.exceptions import (
     HookUnknownChdirException,
     AppendMergeException,
     TopLevelMergeException,
+    EmptyFunctionException,
+    MalformedFunctionFieldException,
 )
 from tackle.settings import settings
 
@@ -910,6 +913,7 @@ def function_walk(
         existing_context = {}
 
     for i in self.function_fields:
+        # TODO: Why? -> test RM
         existing_context.update({i: getattr(self, i)})
 
     tmp_context = Context(
@@ -961,8 +965,7 @@ def create_function_model(
 ) -> Type[BaseFunction]:
     """Create a model from the function input dict."""
     if func_dict is None:
-        # TODO
-        raise EmptyBlockException
+        raise EmptyFunctionException("Can't have an empty function", context=context)
 
     if 'extends' in func_dict:
         base_hook = context.provider_hooks[func_dict['extends']]
@@ -983,19 +986,29 @@ def create_function_model(
     # fmt: on
 
     new_func = {'hook_type': func_name[:-2], 'function_fields': []}
-    literals = ('str', 'int', 'float', 'bool')  # strings to match
+    literals = ('str', 'int', 'float', 'bool', 'dict', 'list')  # strings to match
     # Create function fields from anything left over in the function dict
     for k, v in func_dict.items():
         if isinstance(v, dict):
-            new_func[k] = Field(**v)
+            if 'type' in v:
+                new_func[k] = (v['type'], Field(**v))
+            elif 'default' in v:
+                new_func[k] = (type(v['default']), Field(**v))
+            else:
+                raise MalformedFunctionFieldException(
+                    f"Function field {k} must have either a `type` or `default` field "
+                    f"where the type can be inferred.",
+                    function_name=func_name,
+                    context=context,
+                )
         elif v in literals:
-            from pydoc import locate
-
             new_func[k] = (locate(v), Field(...))
         elif isinstance(v, (str, int, float, bool)):
             new_func[k] = v
         elif isinstance(v, list):
             new_func[k] = (list, v)
+        # function_fields used later to populate functions without an exec method and
+        # the context for rendering inputs.
         new_func['function_fields'].append(k)
 
     Function = create_model(

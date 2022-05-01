@@ -1,0 +1,8 @@
+dict_hook<-:
+  a_dict: dict
+
+dict_call:
+  ->: dict_hook
+  a_dict:
+    - stuff
+    - things
