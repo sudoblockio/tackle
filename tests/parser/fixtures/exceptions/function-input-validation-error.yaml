@@ -1,0 +1,6 @@
+some_hook<-:
+  input:
+    type: str
+
+call:
+  ->: some_hook --input ['foo']

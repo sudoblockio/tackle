@@ -60,6 +60,24 @@ class TackleException(Exception):
     """
 
 
+class TackleFunctionCreateException(Exception):
+    """Base hook call exception class."""
+
+    def __init__(
+        self, extra_message: str, function_name: str, context: 'Context' = None
+    ):
+        if context:
+            self.message = (
+                f"Error creating function='{function_name}' in file="
+                f"'{context.calling_file}', {extra_message}"
+            )
+            if not context.verbose:
+                sys.tracebacklimit = 0
+        else:
+            self.message = extra_message
+        super().__init__(self.message)
+
+
 class TackleFunctionCallException(Exception):
     """Base hook call exception class."""
 
@@ -147,6 +165,8 @@ class HookCallException(TackleHookCallException):
     Raised when field has been provided not declared in the hook type.
     """
 
+    # TODO: Needed?
+
 
 class HookUnknownChdirException(TackleHookCallException):
     """
@@ -159,6 +179,14 @@ class HookUnknownChdirException(TackleHookCallException):
 #
 # Parser exceptions
 #
+class HookParseException(TackleParserException):
+    """
+    Exception for an unknown field in a hook.
+
+    Raised when field has been provided not declared in the hook type.
+    """
+
+
 class AppendMergeException(TackleParserException):
     """
     Excpetion when user tries to merge from for loop (ie hook --for [] --merge).
@@ -320,4 +348,24 @@ class InvalidZipRepository(TackleException):
 
     Raised when the specified tackle repository isn't a valid
     Zip archive.
+    """
+
+
+#
+# Function create exceptions
+#
+class EmptyFunctionException(TackleFunctionCreateException):
+    """
+    Exception when a function is declared without any input.
+
+    Happens when a tackle file is parsed.
+    """
+
+
+class MalformedFunctionFieldException(TackleFunctionCreateException):
+    """
+    Exception when functions with field inputs of type dict are not formatted
+    appropriately.
+
+    Happens when a tackle file is parsed.
     """

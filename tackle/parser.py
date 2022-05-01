@@ -7,6 +7,7 @@ from typing import Type, Any, Union
 from pydantic import Field, create_model
 from pydantic.main import ModelMetaclass
 from collections import OrderedDict
+from pydantic import ValidationError
 from pydoc import locate
 
 from tackle.render import render_variable, wrap_jinja_braces
@@ -54,6 +55,7 @@ from tackle.exceptions import (
     TopLevelMergeException,
     EmptyFunctionException,
     MalformedFunctionFieldException,
+    HookParseException,
 )
 from tackle.settings import settings
 
@@ -341,22 +343,39 @@ def parse_hook(
             # Render the remaining hook variables
             render_hook_vars(hook_dict, Hook, context)
 
-            hook = Hook(
-                **hook_dict,
-                input_context=context.input_context,
-                public_context=context.public_context,
-                private_context=context.private_context,
-                temporary_context=context.temporary_context,
-                existing_context=context.existing_context,
-                no_input=context.no_input,
-                calling_directory=context.calling_directory,
-                calling_file=context.calling_file,
-                provider_hooks=context.provider_hooks,
-                key_path=context.key_path,
-                verbose=context.verbose,
-                env_=context.env_,
-                is_hook_call=True,
-            )
+            try:
+                hook = Hook(
+                    **hook_dict,
+                    input_context=context.input_context,
+                    public_context=context.public_context,
+                    private_context=context.private_context,
+                    temporary_context=context.temporary_context,
+                    existing_context=context.existing_context,
+                    no_input=context.no_input,
+                    calling_directory=context.calling_directory,
+                    calling_file=context.calling_file,
+                    provider_hooks=context.provider_hooks,
+                    key_path=context.key_path,
+                    verbose=context.verbose,
+                    env_=context.env_,
+                    is_hook_call=True,
+                )
+            except ValidationError as e:
+                msg = str(e)
+                if Hook.identifier.startswith('tackle.providers'):
+                    id_list = Hook.identifier.split('.')
+                    provider_doc_url_str = id_list[2].title()
+                    # Replace the validated object name (ex PrintHook) with the
+                    # hook_type field that users would more easily know.
+                    msg = msg.replace(id_list[-1], f"{hook_dict['hook_type']} hook")
+
+                    msg += (
+                        f"\n Check the docs for more information on the hook -> "
+                        f"https://robcxyz.github.io/tackle-box/providers/"
+                        f"{provider_doc_url_str}/{hook_dict['hook_type']}/"
+                    )
+                raise HookParseException(str(msg), context=context) from None
+
             # Main exec logic
             if hook.try_:
                 try:
