@@ -31,7 +31,7 @@ class InquirerCheckboxHook(BaseHook):
         False, description="Boolean to return the index instead of the answer"
     )
 
-    args: list = ['message']
+    args: list = ['message', 'choices']
     _docs_order: int = 2
 
     def check_no_input(self, outputs):
