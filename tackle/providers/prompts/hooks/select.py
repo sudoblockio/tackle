@@ -25,7 +25,7 @@ class InquirerListHook(BaseHook, smart_union=True):
         False, description="Boolean to return the index instead of the answer"
     )
 
-    args: list = ['message', 'choices']
+    args: list = ['message']
     _docs_order = 1
 
     def exec(self) -> Any:

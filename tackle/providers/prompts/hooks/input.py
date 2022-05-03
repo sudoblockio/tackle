@@ -14,8 +14,8 @@ class InquirerInputHook(BaseHook):
 
     hook_type: str = 'input'
 
-    default: Any = Field(None, description="Default choice.")
     message: str = Field(None, description="String message to show when prompting.")
+    default: Any = Field(None, description="Default choice.")
 
     args: list = ['message']
     _docs_order = 0
