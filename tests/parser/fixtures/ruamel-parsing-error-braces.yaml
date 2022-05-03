@@ -1,3 +1,7 @@
 
 foo: things
 stuff->: {{foo}}
+
+a:
+  b:
+one: two

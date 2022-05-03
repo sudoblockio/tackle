@@ -45,3 +45,5 @@ def test_parser_ruamel_braces(change_curdir_fixtures):
     """
     output = tackle('ruamel-parsing-error-braces.yaml', verbose=True)
     assert output['stuff'] == 'things'
+    assert output['a']['b'] is None
+    assert output['one'] == 'two'

@@ -9,6 +9,7 @@ from pydantic.main import ModelMetaclass
 from collections import OrderedDict
 from pydantic import ValidationError
 from pydoc import locate
+from ruamel.yaml.constructor import CommentedKeyMap
 
 from tackle.render import render_variable, wrap_jinja_braces
 from tackle.utils.dicts import (
@@ -745,7 +746,11 @@ def walk_sync(context: 'Context', element):
                 # technically is accurate but generally users would never actually do.
                 # Since it is common to forget to quote, this is a helper to try to
                 # catch that error and fix it.  Warning -> super hacky....
-                if len(v) == 1 and next(iter(v.values())) is None:
+                value_ = next(iter(v.values()))
+                key_ = next(iter(v.keys()))
+                if len(v) == 1 and value_ is None and isinstance(key_, CommentedKeyMap):
+                    # keys_value = next(iter(next(iter(v.keys())).values()))
+                    # if keys_value is None:
                     if context.verbose:
                         _key_path = get_readable_key_path(context.key_path)
                         print(f"Handling unquoted template at key path {_key_path}.")
