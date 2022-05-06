@@ -11,9 +11,7 @@
 * [PyPI](https://pypi.org/project/tackle-box/)
 * [BSD License](LICENSE)
 
-[//]: # (Tackle box is a language for making modular declarative CLIs. Make any yaml/json configuration file dynamic/callable with turing complete flow control common to any general purpose programming language.)
-
-Tackle box is a tool for making modular code generators and declarative CLIs. It can make any yaml / json file callable by giving users access to a collection of hooks to perform any number of special actions with flow control common to a general purpose programming language.  
+Tackle box is a tool for making modular code generators and declarative CLIs. It can make any config file dynamic with both strong and weakly typed programmable flow control common to a general purpose programming language. Basically you can write a fully functional CLI and Turing-complete program in yaml. It's wild.
 
 > Warning: Tool is in it's very early phases and only now considered stable enough to use. It may never reach 1.x version as, if it gets enough stars, it will be converted to a spec and re-written in rust (ie give it a star if you'd like to see that).
 
@@ -73,7 +71,7 @@ words:
   - world!
 expanded:
   ->: print {{item}}
-  for: keys(words)
+  for: words
   if: item != 'cruel'
 compact->: print {{item}} --for words --if "item != 'cruel'"
 ```
