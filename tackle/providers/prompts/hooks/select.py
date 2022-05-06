@@ -1,4 +1,5 @@
-from PyInquirer import prompt
+from InquirerPy import prompt
+
 from typing import Any, List, Union
 
 from tackle.models import BaseHook, Field

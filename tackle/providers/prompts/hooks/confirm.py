@@ -1,5 +1,5 @@
 import sys
-from PyInquirer import prompt
+from InquirerPy import prompt
 
 from tackle.models import BaseHook, Field
 from tackle.utils.dicts import get_readable_key_path

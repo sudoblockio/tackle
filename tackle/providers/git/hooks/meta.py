@@ -4,7 +4,9 @@ import os
 import re
 import subprocess
 from collections import MutableMapping
-from PyInquirer import prompt
+
+from InquirerPy import prompt
+
 from pydantic import BaseModel, ValidationError, validator
 from typing import Optional
 

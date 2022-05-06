@@ -1,0 +1,7 @@
+project_name:
+  ->: input What is the name of your project?
+  default: Base Project
+
+project_slug:
+  ->: input What do you want to call your project slug (ie the top level directory name)?
+  default: "my-provider"

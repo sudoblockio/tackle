@@ -1,5 +1,5 @@
 import sys
-from PyInquirer import prompt
+from InquirerPy import prompt
 
 from typing import Any
 from tackle.models import BaseHook, Field
@@ -44,4 +44,4 @@ class InquirerInputHook(BaseHook):
             return self.default
         else:
             # When no_input then return empty list
-            return []
+            return ""

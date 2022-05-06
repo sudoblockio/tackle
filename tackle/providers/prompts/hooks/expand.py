@@ -1,5 +1,5 @@
 import sys
-from PyInquirer import prompt
+from InquirerPy import prompt
 
 from typing import Any
 from tackle.models import BaseHook, Field

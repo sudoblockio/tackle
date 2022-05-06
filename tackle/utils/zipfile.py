@@ -2,12 +2,9 @@
 import os
 import sys
 import tempfile
-
 from zipfile import BadZipFile, ZipFile
-
-# import requests
 import logging
-from PyInquirer import prompt
+from InquirerPy import prompt
 
 from tackle.exceptions import InvalidZipRepository
 from tackle.utils.prompts import prompt_and_delete

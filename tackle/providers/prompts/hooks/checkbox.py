@@ -1,5 +1,6 @@
 import sys
-from PyInquirer import prompt
+from InquirerPy import prompt
+
 from typing import Union, List, Dict
 
 from tackle.models import BaseHook, Field
@@ -33,12 +34,6 @@ class InquirerCheckboxHook(BaseHook):
 
     args: list = ['message']
     _docs_order: int = 2
-
-    def check_no_input(self, outputs):
-        if self.no_input:
-            if self.checked:
-                return outputs
-            return []
 
     def exec(self) -> list:
         if self.message is None:
@@ -74,10 +69,10 @@ class InquirerCheckboxHook(BaseHook):
         elif choices_type == dict:
             # Check if the input is in the normal form of how pyinquirer takes choices:
             # choices = [{'name': 'stuff'}, {'name': 'things','checked':True}]
-            # https://github.com/CITGuru/PyInquirer/blob/master/examples/checkbox.py
+            # https://github.com/kazhala/InquirerPy/blob/master/examples/checkbox.py
             normal = True
             for i in self.choices:
-                if 'name' not in i:
+                if 'name' not in i or 'value' not in i:
                     normal = False
                     break
 
@@ -107,7 +102,9 @@ class InquirerCheckboxHook(BaseHook):
 
             # Fixing to the expected input choices {'name': 'stuff', 'name': ...}
             choices_map = self.choices.copy()
-            self.choices = [{'name': x} if isinstance(x, str) else x for x in choices]
+            self.choices = [
+                {'name': x, 'value': x} if isinstance(x, str) else x for x in choices
+            ]
 
             answer = self._run_prompt()
 
@@ -125,14 +122,15 @@ class InquirerCheckboxHook(BaseHook):
     def _run_prompt(self):
         if self.checked:
             for i in self.choices:
-                i['checked'] = True
+                # i['checked'] = True
+                i['enabled'] = True
 
         question = {
             'type': 'checkbox',
             'name': 'tmp',
             'message': self.message,
             'choices': self.choices,
-            'checked': self.checked,
+            # 'checked': self.checked,
         }
         # if self.default:
         #     question.update({'default': self.default})
