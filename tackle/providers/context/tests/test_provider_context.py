@@ -21,7 +21,17 @@ def test_provider_system_hook_dicts_pop(change_dir):
 def test_provider_system_hook_dicts_keys(change_dir):
     """Validated keys hook outputs list from map."""
     output = tackle('keys.yaml')
+    # Validated with inline assertions
     assert output['output'] == ['stuff', 'things']
+    assert output['check']
+    assert output['check_key_path']
+
+
+def test_provider_system_hook_dicts_values(change_dir):
+    """Validated keys hook outputs list from map."""
+    output = tackle('values.yaml')
+    # Validated with inline assertions
+    assert output['output']
     assert output['check']
     assert output['check_key_path']
 
