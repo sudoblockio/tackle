@@ -523,6 +523,7 @@ class BaseFunction(BaseHook, FunctionInput, ABC):
     """Function input model."""
 
     function_fields: list
+    function_dict: dict
 
 
 class LazyBaseFunction(BaseFunction, Extension, metaclass=PartialModelMetaclass):

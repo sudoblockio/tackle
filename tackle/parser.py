@@ -604,7 +604,7 @@ def blocks_macro(context: 'Context'):
     arrow = [context.key_path[-1][-2:]]
 
     indexed_key_path = context.key_path[
-        -(len(context.key_path) - len(context.key_path_block)) :
+        (len(context.key_path_block) - len(context.key_path)) :
     ]
     input_dict = nested_get(
         element=context.input_context,
@@ -997,8 +997,11 @@ def create_function_model(
 
     if 'extends' in func_dict:
         base_hook = context.provider_hooks[func_dict['extends']]
-        func_dict = {**base_hook, **func_dict}
+        func_dict = {**base_hook().function_dict, **func_dict}
         func_dict.pop('extends')
+
+    # Persisted with object for `extends`. Used later
+    function_dict = func_dict.copy()
 
     # fmt: off
     # Validate raw input params against pydantic object where values will be used later
@@ -1044,7 +1047,9 @@ def create_function_model(
         __base__=BaseFunction,
         **new_func,
         **function_input.dict(include={'args', 'render_exclude'}),
+        **{'function_dict': (dict, function_dict)},  # Preserve for `extends` key
     )
+
     setattr(
         Function,
         'exec',

@@ -43,6 +43,12 @@ def test_function_field_types(change_curdir_fixtures):
     assert output
 
 
+def test_function_extends(change_curdir_fixtures):
+    """Check that we can extend a base function."""
+    output = tackle('extends.yaml')
+    assert output['t'] == ['hello', 'world']
+
+
 EXCEPTION_FIXTURES = [
     # Check that return string not found caught
     ('return-str-not-found.yaml', FunctionCallException),
