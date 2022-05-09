@@ -32,13 +32,14 @@ class InquirerExpandHook(BaseHook):
             if self.default:
                 question.update({'default': self.default})
 
-            response = prompt([question])
-
             # Handle keyboard exit
             try:
-                return response['tmp']
-            except KeyError:
+                response = prompt([question])
+            except KeyboardInterrupt:
+                print("Exiting...")
                 sys.exit(0)
+            return response['tmp']
+
         elif self.default:
             return self.default
         else:

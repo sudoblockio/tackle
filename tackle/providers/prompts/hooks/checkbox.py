@@ -132,12 +132,15 @@ class InquirerCheckboxHook(BaseHook):
             'choices': self.choices,
             # 'checked': self.checked,
         }
-        # if self.default:
-        #     question.update({'default': self.default})
-        response = prompt([question])
-
-        # Handle keyboard exit
         try:
-            return response['tmp']
-        except KeyError:
+            response = prompt([question])
+        except KeyboardInterrupt:
+            print("Exiting...")
             sys.exit(0)
+        return response['tmp']
+
+        # # Handle keyboard exit
+        # try:
+        #     return response['tmp']
+        # except KeyError:
+        #     sys.exit(0)

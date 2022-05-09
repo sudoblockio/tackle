@@ -1,5 +1,6 @@
-from InquirerPy import prompt
+import sys
 
+from InquirerPy import prompt
 from typing import Any, List, Union
 
 from tackle.models import BaseHook, Field
@@ -73,15 +74,15 @@ class InquirerListHook(BaseHook, smart_union=True):
                 'message': self.message,
                 'choices': self.choices,
             }
-            response = prompt([question])
 
             # Handle keyboard exit
             try:
-                return response['tmp']
-            except KeyError:
-                import sys
-
+                response = prompt([question])
+            except KeyboardInterrupt:
+                print("Exiting...")
                 sys.exit(0)
+            return response['tmp']
+
         elif isinstance(self.choices[0], str):
             return self.choices[0]
         elif isinstance(self.choices[0], dict):
