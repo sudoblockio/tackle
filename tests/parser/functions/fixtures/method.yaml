@@ -1,0 +1,29 @@
+
+greeter_base<-:
+  words:
+    - hello
+    - world
+
+  bar: baz
+
+  foo->:
+    foo->: var bar
+
+  bar->:
+    if: foo
+    bar->: var bar
+
+  call<-:
+    foo->: print baz
+    in: str
+
+    return: in
+
+
+greeter_exec<-:
+  extends: greeter_base
+  exec:
+    p->: var {{item}} --for words
+  return: p
+
+t->: greeter_exec.call('fooo')

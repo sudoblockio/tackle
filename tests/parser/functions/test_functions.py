@@ -49,6 +49,42 @@ def test_function_extends(change_curdir_fixtures):
     assert output['t'] == ['hello', 'world']
 
 
+def test_function_method(change_curdir_fixtures):
+    """Check...."""
+    output = tackle('method.yaml')
+    assert output
+
+
+def test_function_method_simple(change_curdir_fixtures):
+    """Check that we can create a method."""
+    output = tackle('method-single.yaml')
+    assert output
+
+
+def test_function_method_embed(change_curdir_fixtures):
+    """Check that we can create a method."""
+    output = tackle('method-embed.yaml')
+    assert output
+
+
+def test_function_method_inherit(change_curdir_fixtures):
+    """Check that we can create a method."""
+    output = tackle('method-inherit.yaml')
+    assert output
+
+
+def test_function_method_args(change_curdir_fixtures):
+    """Check that we can create a method that takes args."""
+    output = tackle('method-args.yaml')
+    assert output['foo'] == 'bar'
+
+
+def test_function_method_maintain_context(change_curdir_fixtures):
+    """Check a method that carries a context with it from the parent object."""
+    output = tackle('method-maintain-context.yaml')
+    assert output
+
+
 EXCEPTION_FIXTURES = [
     # Check that return string not found caught
     ('return-str-not-found.yaml', FunctionCallException),

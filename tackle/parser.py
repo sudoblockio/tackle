@@ -76,19 +76,29 @@ def get_hook(hook_type, context: 'Context'):
     """
     h = context.provider_hooks.get(hook_type, None)
     if h is None:
-        # Show this without verbose:
-        available_hooks = (
-            "Run the application with `--verbose` to see available hook types."
-        )
-        if context.verbose:
-            available_hooks = 'Available hooks = ' + ' '.join(
-                [str(i) for i in context.provider_hooks.keys()]
+        # When the hook type has a period in it, we try to find a hook's method to call
+        if '.' in hook_type:
+            hook_parts = hook_type.split('.')
+            h = context.provider_hooks.get(hook_parts.pop(0), None)
+            for i in hook_parts:
+                h = getattr(h, i, None)
+                if h is None:
+                    # TODO
+                    raise Exception(f"Unknown method {i} when calling {hook_type}")
+        else:
+            # Show this without verbose:
+            available_hooks = (
+                "Run the application with `--verbose` to see available hook types."
             )
-        raise UnknownHookTypeException(
-            f"The hook type=\"{hook_type}\" is not available in the providers. "
-            + available_hooks,
-            context=context,
-        )
+            if context.verbose:
+                available_hooks = 'Available hooks = ' + ' '.join(
+                    [str(i) for i in context.provider_hooks.keys()]
+                )
+            raise UnknownHookTypeException(
+                f"The hook type=\"{hook_type}\" is not available in the providers. "
+                + available_hooks,
+                context=context,
+            )
 
     # LazyImportHook in hook ref when declared in provider __init__.hook_types
     if isinstance(h, LazyImportHook):
@@ -430,7 +440,7 @@ def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
 
     TODO: This needs to be re-thought. Right now we parse the inputs without regard
      for the types of the argument mapping. What could be better is if we know the types
-     of the arg mapping ahead of time and they try to assemble the most logical mapping
+     of the arg mapping ahead of time and then try to assemble the most logical mapping
      afterwards. So if the mapping consists of a [str, list], then the if the first
      args are strs then we can ignore the list part. Right now it would just join all
      the strings together if they are part of last arg mapping.
@@ -1020,7 +1030,14 @@ def create_function_model(
     literals = ('str', 'int', 'float', 'bool', 'dict', 'list')  # strings to match
     # Create function fields from anything left over in the function dict
     for k, v in func_dict.items():
-        if isinstance(v, dict):
+        if k.endswith(('->', '_>')):
+            raise NotImplementedError
+        elif k.endswith(('<-', '<_')):
+            method = create_function_model(context, k, v)
+            new_func[k[:-2]] = method
+            continue
+
+        elif isinstance(v, dict):
             if 'type' in v:
                 new_func[k] = (v['type'], Field(**v))
             elif 'default' in v:
@@ -1038,10 +1055,15 @@ def create_function_model(
             new_func[k] = v
         elif isinstance(v, list):
             new_func[k] = (list, v)
+        else:
+            raise Exception("This should never happen")
+
         # function_fields used later to populate functions without an exec method and
         # the context for rendering inputs.
         new_func['function_fields'].append(k)
 
+    # TODO: Update module namespace
+    # Create a function with the __module__ default to pydantic.main
     Function = create_model(
         func_name[:-2],
         __base__=BaseFunction,
