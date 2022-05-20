@@ -10,11 +10,11 @@ match_content: |
     choices: ['agree','disagree']
 
   matcher:
-    ->: match {% raw %}{{selection}}{% endraw %}
+    ->: match selection
     case:
       agree: Some value
       disagree->: # Run some tackle context
-        ...
+      ...
 
 examples:
   - name: "[match](match.md)"

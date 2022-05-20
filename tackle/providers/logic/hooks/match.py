@@ -10,8 +10,8 @@ from tackle.render import render_string
 class MatchHook(BaseHook):
     """
     Hook for match / case statements. Takes a dict where the keys are matched to a
-    value. If the case value has an arrow in it (ie key->: ... ) the arrow is stripped
-    away. All matched values are ran as hooks.
+     value. If the case value has an arrow in it (ie key->: ... ) the arrow is stripped
+     away. All matched values are ran as hooks.
     """
 
     hook_type: str = 'match'
