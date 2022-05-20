@@ -88,6 +88,13 @@ def test_function_method_maintain_context(change_curdir_fixtures):
     assert output
 
 
+def test_function_method_base_validate(change_curdir_fixtures):
+    """Check that when a method uses a base attribute, that validation still happens."""
+    with pytest.raises(Exception) as e:
+        tackle('method-base-validate.yaml')
+    assert 'string does not match regex' in e.value.message
+
+
 EXCEPTION_FIXTURES = [
     # Check that return string not found caught
     ('return-str-not-found.yaml', FunctionCallException),

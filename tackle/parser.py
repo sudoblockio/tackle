@@ -87,11 +87,11 @@ def get_hook(hook_type, context: 'Context'):
                 # Get the method
                 h = getattr(h0, i, None)
                 if h is None:
-                    # TODO
+                    # TODO Improve error
                     raise Exception(f"Unknown method {i} when calling {hook_type}")
                 # Update method with values from base class
                 for i in h0.function_fields:
-                    setattr(h, i, getattr(h0, i))
+                    setattr(h, i, h0.function_dict[i])
 
         else:
             # Show this without verbose:
