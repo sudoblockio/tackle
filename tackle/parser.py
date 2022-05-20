@@ -1036,23 +1036,6 @@ def create_function_model(
         # methods_=func_dict.pop('methods') if 'methods' in func_dict else None,
     )
     # fmt: on
-
-    # TODO: Need to determine how to support property inheritance for methods
-    #  - Option 1: Delay building method till all fields are parsed and then pass that
-    #    into the call for building the method
-    #     + Explicit - no need for lazy object compilation
-    #     - Expensive - Every method needs to be compiled
-    #  - Option 2: Create lazy method who's type is detected later and compiled with
-    #    proper fields. Will need to persist refs to those fields so that they can be
-    #    properly compiled.
-    #     + Cheap - easy to make new hook methods
-    #     + Allows inheritance - If you compile it right away, it won't be able to
-    #       support extending objects as you don't know the base until you run it.
-    #       + Would need to re-compile the method later anyways...
-    #     - Complicated - May be hard to implement
-
-    # If we do lazy models, then compiling functions will be super fast as we don't
-    # actually need to parse the model except for methods.
     new_func = {'hook_type': func_name[:-2], 'function_fields': []}
     literals = ('str', 'int', 'float', 'bool', 'dict', 'list')  # strings to match
     # Create function fields from anything left over in the function dict
@@ -1060,14 +1043,8 @@ def create_function_model(
         if k.endswith(('->', '_>')):
             raise NotImplementedError
         elif k.endswith(('<-', '<_')):
-            # Option 1
-            # method_args.append(())
-            # Option 2
+            # Implement method which is instantiated later in `get_hook`
             new_func[k[:-2]] = (Callable, LazyBaseFunction(**v))
-            # This errors
-            # new_func[k[:-2]] = LazyBaseFunction(**v)
-            # method = create_function_model(context, k, v)
-            # new_func[k[:-2]] = method
             continue
 
         elif isinstance(v, dict):
