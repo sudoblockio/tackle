@@ -104,6 +104,8 @@ def render_string(context: 'Context', raw: str):
 
                 jinja_hook = context.provider_hooks[i]
                 if isinstance(jinja_hook, LazyBaseFunction):
+                    # Case where hook is declarative (ie a with internal nomenclature,
+                    #  a function)...
                     from tackle.parser import create_function_model
 
                     jinja_hook.dict().update(

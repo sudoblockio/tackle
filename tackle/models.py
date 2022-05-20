@@ -529,7 +529,7 @@ class BaseFunction(BaseHook, FunctionInput, ABC):
 class LazyBaseFunction(BaseFunction, Extension, metaclass=PartialModelMetaclass):
     """
     Base function that declarative hooks are derived from and either imported when a
-     tackle file is read (by searching in adjacent hooks directory) on init in local
+     tackle file is read (by searching in adjacent hooks directory) or on init in local
      providers. Used by jinja extensions and filters.
     """
 

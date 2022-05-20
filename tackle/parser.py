@@ -3,7 +3,7 @@ import re
 import logging
 from pathlib import Path
 from functools import partialmethod
-from typing import Type, Any, Union
+from typing import Type, Any, Union, Callable
 from pydantic import Field, create_model
 from pydantic.main import ModelMetaclass
 from collections import OrderedDict
@@ -81,10 +81,18 @@ def get_hook(hook_type, context: 'Context'):
             hook_parts = hook_type.split('.')
             h = context.provider_hooks.get(hook_parts.pop(0), None)
             for i in hook_parts:
-                h = getattr(h, i, None)
+                # Methods are of type LazyBaseFunction which need to have the base
+                #  instantiated before getting the hook. Further enriched later.
+                h0 = h()
+                # Get the method
+                h = getattr(h0, i, None)
                 if h is None:
                     # TODO
                     raise Exception(f"Unknown method {i} when calling {hook_type}")
+                # Update method with values from base class
+                for i in h0.function_fields:
+                    setattr(h, i, getattr(h0, i))
+
         else:
             # Show this without verbose:
             available_hooks = (
@@ -102,12 +110,14 @@ def get_hook(hook_type, context: 'Context'):
 
     # LazyImportHook in hook ref when declared in provider __init__.hook_types
     if isinstance(h, LazyImportHook):
-        # Install the requirements which will convert all the provider
+        # Install the requirements which will convert all the hooks in that provider
+        #  to actual hooks
         context.provider_hooks.import_with_fallback_install(
             mod_name=h.mod_name,
             path=h.hooks_path,
         )
         h = context.provider_hooks[hook_type]
+
     return h
 
 
@@ -492,6 +502,7 @@ def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
             try:
                 hook_dict[hook_args[i]] = v
             except IndexError:
+                # TODO: Handle error
                 raise UnknownArgumentException(f"Unknown argument {i}.")
 
 
@@ -1026,6 +1037,22 @@ def create_function_model(
     )
     # fmt: on
 
+    # TODO: Need to determine how to support property inheritance for methods
+    #  - Option 1: Delay building method till all fields are parsed and then pass that
+    #    into the call for building the method
+    #     + Explicit - no need for lazy object compilation
+    #     - Expensive - Every method needs to be compiled
+    #  - Option 2: Create lazy method who's type is detected later and compiled with
+    #    proper fields. Will need to persist refs to those fields so that they can be
+    #    properly compiled.
+    #     + Cheap - easy to make new hook methods
+    #     + Allows inheritance - If you compile it right away, it won't be able to
+    #       support extending objects as you don't know the base until you run it.
+    #       + Would need to re-compile the method later anyways...
+    #     - Complicated - May be hard to implement
+
+    # If we do lazy models, then compiling functions will be super fast as we don't
+    # actually need to parse the model except for methods.
     new_func = {'hook_type': func_name[:-2], 'function_fields': []}
     literals = ('str', 'int', 'float', 'bool', 'dict', 'list')  # strings to match
     # Create function fields from anything left over in the function dict
@@ -1033,8 +1060,14 @@ def create_function_model(
         if k.endswith(('->', '_>')):
             raise NotImplementedError
         elif k.endswith(('<-', '<_')):
-            method = create_function_model(context, k, v)
-            new_func[k[:-2]] = method
+            # Option 1
+            # method_args.append(())
+            # Option 2
+            new_func[k[:-2]] = (Callable, LazyBaseFunction(**v))
+            # This errors
+            # new_func[k[:-2]] = LazyBaseFunction(**v)
+            # method = create_function_model(context, k, v)
+            # new_func[k[:-2]] = method
             continue
 
         elif isinstance(v, dict):
