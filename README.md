@@ -36,12 +36,12 @@ pip install tackle-box
 
 To call tackle, create a yaml file and run `tackle hello-world.yaml`.
 
-Use the [print](https://robcxyz.github.io/tackle-box/providers/Console/print/) hook.
+Simply use the [print](https://robcxyz.github.io/tackle-box/providers/Console/print/) hook.
 ```yaml
 hw->: print Hello world!
 ```
 
-Using [jinja templating](https://robcxyz.github.io/tackle-box/jinja), hooks can be called in [four different ways](https://robcxyz.github.io/tackle-box/jinja).
+Which using [jinja templating](https://robcxyz.github.io/tackle-box/jinja) can be called in [four different ways](https://robcxyz.github.io/tackle-box/jinja).
 ```yaml
 words: Hello world!
 expanded:
@@ -52,7 +52,7 @@ jinja_extension->: "{{ print(words) }}"
 jinja_filter->: "{{ words | print }}"
 ```
 
-Interactive example with [prompt](https://robcxyz.github.io/tackle-box/providers/Prompts/) hooks.
+And can also have interactive [prompt](https://robcxyz.github.io/tackle-box/providers/Prompts/) hooks.
 ```yaml
 name->: input
 target:
@@ -63,7 +63,7 @@ target:
 hello->: print My name is {{name}}. Hello {{target}}!
 ```
 
-Hooks can have for [loops](https://robcxyz.github.io/tackle-box/hook-methods/#loops), [conditionals](https://robcxyz.github.io/tackle-box/hook-methods/#conditionals), and [other base methods](https://robcxyz.github.io/tackle-box/hook-methods/#methods).
+Hooks can have [loops](https://robcxyz.github.io/tackle-box/hook-methods/#loops), [conditionals](https://robcxyz.github.io/tackle-box/hook-methods/#conditionals), and [other base methods](https://robcxyz.github.io/tackle-box/hook-methods/#methods).
 ```yaml
 words:
   - Hello
@@ -108,13 +108,55 @@ jinja_extension->: "{{ greeter(hello) }}"
 jinja_filter->: "{{ hello | greeter }}"
 ```
 
-Or can be imported / called remotely.
+Declarative hooks are strongly typed objects.
 ```yaml
-local-call->: tackle hello-world.yaml
-remote-call->: tackle robcxyz/tackle-hello-world
-# Or
+words<-:
+  hi:
+    type: str
+    default: Hello
+    regex: ^(Bonjour|Hola|Hello)
+  target: str
+
+p->: print {{item}} --for values(words(hi="Hello",target="world!"))
+```
+
+Which can have methods that extend the base.
+```yaml
+words<-:
+  hi:
+    type: str
+    default: Hello
+    regex: ^(Bonjour|Hola|Hello)
+  say<-:
+    target: str
+    exec:
+      p->: print {{hi}} {{target}}
+
+p->: words.say --hi Hello --target world!
+```
+
+And also support inheritance.
+```yaml
+base<-:
+  hi: Hello
+
+words<-:
+  extends: base
+  say<-:
+    target: str
+    exec:
+      p->: print {{hi}} {{target}}
+
+p->: words.say --target world!
+```
+
+And last, everything can be imported / called remotely from github repos.
+```yaml
 import-hello_>: import robcxyz/tackle-hello-world
 call->: greeter world!
+# Or
+local-call->: tackle hello-world.yaml
+remote-call->: tackle robcxyz/tackle-hello-world --version v0.1.0
 ```
 
 Creating a web of declarative CLIs.
