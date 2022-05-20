@@ -1,0 +1,33 @@
+
+a_list:
+  - foo
+  - bar
+  - baz
+
+sort_a_list->: sort a_list
+
+b_list:
+  - foo
+  - bar
+  - baz
+
+# Should not sort in place
+sort_in_list->: sort "{{b_list}}"
+
+#TODO: Not implemented
+#a_list_of_dicts:
+#  - Console:
+#    - Index: providers/Console/index.md
+#    - markdown: providers/Console/markdown.md
+#    - table: providers/Console/table.md
+#  - Files:
+#    - Index: providers/Files/index.md
+#    - chmod: providers/Files/chmod.md
+#    - zipfile: providers/Files/zipfile.md
+#    - unzipfile: providers/Files/unzipfile.md
+#  - Command:
+#    - Index: providers/Command/index.md
+#    - command: providers/Command/command.md
+#
+#sort_a_list_of_dicts->: sort a_list_of_dicts --index
+#
