@@ -17,7 +17,9 @@ provider_ignore:
   - time
 
 # List comprehension to get the providers
-providers->: var "{{ listdir(provider_dir) | reject('in', provider_ignore) | list }}"
+#providers->: var "{{ listdir(provider_dir) | reject('in', provider_ignore) | list }}"
+providers->: var "{{ sort(listdir(provider_dir) | reject('in', provider_ignore) | list) }}"
+#sort-providers->: sort providers
 
 # mkdocs.yml navigation sidebar options - Empty list that will be appended to
 mkdocs_nav_list: []
@@ -39,6 +41,7 @@ gen->:
 
   Put schemas in schema directory_>: json {{schemas_dir}}/{{provider}}.json {{schemas}}
 
+  # Read the provider metadata
   provider_meta:
     ->: tackle .tackle.meta.yaml
     if: isfile('.tackle.meta.yaml')

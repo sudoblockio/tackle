@@ -221,7 +221,10 @@ class ProviderDocsHook(BaseHook):
                     )
                     docs.hooks.append(hook_doc)
 
-        docs.hooks = sorted(docs.hooks, key=lambda d: d.order)
+        # # Sort based on order
+        # docs.hooks = sorted(docs.hooks, key=lambda d: d.order)
+        # Sort alphabetically
+        docs.hooks = sorted(docs.hooks, key=lambda d: d.hook_type)
 
         if self.output_schemas:
             return schema_list
