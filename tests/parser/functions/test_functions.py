@@ -49,6 +49,7 @@ def test_function_extends(change_curdir_fixtures):
     assert output['t'] == ['hello', 'world']
 
 
+# TODO: Update this with more complicated fixtures
 def test_function_method(change_curdir_fixtures):
     """Check...."""
     output = tackle('method.yaml')
@@ -61,10 +62,12 @@ def test_function_method_simple(change_curdir_fixtures):
     assert output
 
 
-def test_function_method_embed(change_curdir_fixtures):
-    """Check that we can create a method."""
-    output = tackle('method-embed.yaml')
-    assert output
+# TODO: Support embedded methods
+# https://github.com/robcxyz/tackle-box/issues/77
+# def test_function_method_embed(change_curdir_fixtures):
+#     """Check that we can create a method."""
+#     output = tackle('method-embed.yaml')
+#     assert output
 
 
 def test_function_method_inherit(change_curdir_fixtures):

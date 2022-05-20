@@ -6,18 +6,17 @@ greeter_base<-:
 
   bar: baz
 
-  foo->:
-    foo->: var bar
-
-  bar->:
-    if: foo
-    bar->: var bar
+#  foo->:
+#    foo->: var bar
+#
+#  bar->:
+#    if: foo
+#    bar->: var bar
 
   call<-:
-    foo->: print baz
+#    foo->: print baz
     in: str
 
-    return: in
 
 
 greeter_exec<-:
@@ -26,4 +25,4 @@ greeter_exec<-:
     p->: var {{item}} --for words
   return: p
 
-t->: greeter_exec.call('fooo')
+t->: greeter_exec.call
