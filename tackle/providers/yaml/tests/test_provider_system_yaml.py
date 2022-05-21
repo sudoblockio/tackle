@@ -91,3 +91,9 @@ def test_provider_system_hook_yaml_write(change_dir, clean_outputs):
 # def test_provider_system_hook_yaml_append(change_dir, clean_outputs):
 #     output = tackle('append.yaml', no_input=True)
 #     assert output['append_dict'] == {'things': ['dogs', 'cats', 'bar', 'baz']}
+
+
+def test_yaml_yamlify(change_dir, clean_outputs):
+    output = tackle('yamlify.yaml', no_input=True)
+    assert isinstance(output['out'], str)
+    assert 'stuff: things' in output['out']

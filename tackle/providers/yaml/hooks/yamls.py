@@ -42,3 +42,28 @@ class YamlHook(BaseHook):
             data = json.loads(json.dumps(data))
 
             return data
+
+
+class YamlifyHook(BaseHook):
+    """Hook for converting a dict to a yaml encoded string."""
+
+    hook_type: str = 'yamlify'
+    data: Union[dict, list, str] = Field(
+        ...,
+        description="Map/list or renderable string to data to convert to yaml string.",
+        render_by_default=True,
+    )
+    args: list = ['data']
+
+    def exec(self) -> Union[dict, str]:
+        from io import StringIO
+
+        yaml = YAML()
+        options = {}
+        string_stream = StringIO()
+        yaml.dump(self.data, string_stream, **options)
+        output_str = string_stream.getvalue()
+        string_stream.close()
+        return output_str
+
+        # return yaml.dump(self.data)
