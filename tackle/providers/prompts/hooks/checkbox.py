@@ -1,5 +1,6 @@
 import sys
 from InquirerPy import prompt
+from InquirerPy.base.control import Choice
 
 from typing import Union, List, Dict
 
@@ -53,7 +54,8 @@ class InquirerCheckboxHook(BaseHook):
 
             choice_list = self.choices.copy()
             self.choices = [
-                {'name': x} if isinstance(x, str) else x for x in self.choices
+                {'name': x, 'value': x} if isinstance(x, str) else x
+                for x in self.choices
             ]
 
             answer = self._run_prompt()
@@ -121,16 +123,18 @@ class InquirerCheckboxHook(BaseHook):
 
     def _run_prompt(self):
         if self.checked:
-            for i in self.choices:
-                # i['checked'] = True
-                i['enabled'] = True
+            choices = [
+                Choice(**i, enabled=True) if isinstance(i, dict) else i
+                for i in self.choices
+            ]
+        else:
+            choices = self.choices
 
         question = {
             'type': 'checkbox',
             'name': 'tmp',
             'message': self.message,
-            'choices': self.choices,
-            # 'checked': self.checked,
+            'choices': choices,
         }
         try:
             response = prompt([question])
@@ -138,9 +142,3 @@ class InquirerCheckboxHook(BaseHook):
             print("Exiting...")
             sys.exit(0)
         return response['tmp']
-
-        # # Handle keyboard exit
-        # try:
-        #     return response['tmp']
-        # except KeyError:
-        #     sys.exit(0)
