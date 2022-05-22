@@ -81,6 +81,10 @@ def get_hook(hook_type, context: 'Context'):
             hook_parts = hook_type.split('.')
             h = context.provider_hooks.get(hook_parts.pop(0), None)
             for i in hook_parts:
+                if h is None:
+                    raise UnknownHookTypeException(
+                        f"Unknown method {i} when calling {hook_type}", context=context
+                    )
                 # Methods are of type LazyBaseFunction which need to have the base
                 #  instantiated before getting the hook. Further enriched later.
                 h0 = h()
@@ -896,9 +900,12 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list):
     if len(args) >= 1:
         # TODO: Implement help
         # `help` which will always be the last arg
-        # if args[-1] == 'help':
-        #     # Calling help will exit 0. End of the line.
-        #     run_help(context, context.input_context, args[:-1])
+        if args[-1] == 'help':
+            from tackle.utils.help import run_help
+
+            # Calling help will exit 0. End of the line.
+            # run_help(context, context.input_context, args[:-1])
+            run_help(context, args[:-1])
 
         # Loop through all args
         for i in args:
@@ -1023,6 +1030,10 @@ def create_function_model(
 
     # Persisted with object for `extends`. Used later
     function_dict = func_dict.copy()
+
+    if context.context_functions is None:
+        context.context_functions = []
+    context.context_functions.append(func_name[:-2])
 
     # fmt: off
     # Validate raw input params against pydantic object where values will be used later
