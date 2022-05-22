@@ -8,10 +8,12 @@
 [//]: # (<img align="right" width="80" height="80" src="https://raw.githubusercontent.com/akarsh/akarsh-seggemu-resume/master/akarsh%20seggemu%20resume/Assets/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60%403x.png" alt="Resume application project app icon">)
 
 * [Documentation](https://robcxyz.github.io/tackle-box)
+* [Discord]() - wip
+* [Slack]() - wip
 * [PyPI](https://pypi.org/project/tackle-box/)
 * [BSD License](LICENSE)
 
-Tackle box is a tool for making modular code generators and declarative CLIs. It can make any config file dynamic with both strong and weakly typed programmable flow control common to a general purpose programming language. Basically you can write a fully functional CLI and Turing-complete program in yaml. It's wild.
+Tackle is a language for building modular code generators and declarative CLIs. It can make any config file dynamic with both strong and weakly typed programmable flow control common to a general purpose programming language. Basically you can write a fully functional CLI and Turing-complete program in yaml. It's wild.
 
 > Warning: Tool is in it's very early phases and only now considered stable enough to use. It may never reach 1.x version as, if it gets enough stars, it will be converted to a spec and re-written in rust (ie give it a star if you'd like to see that).
 
@@ -25,10 +27,10 @@ Tackle box is a tool for making modular code generators and declarative CLIs. It
 
 ### Install
 
-Note: tackle can install dependencies on its own. Check [docs]() for advanced installation methods to isolate tackle from your system python.
+> Note: tackle can install dependencies on its own. Check [docs](https://robcxyz.github.io/tackle-box/installation) for advanced installation methods to isolate tackle from your system python.
 
 ```shell
-python -m venv env
+python -m venv env && source env/bin/activate
 pip install tackle-box
 ```
 
@@ -76,7 +78,7 @@ expanded:
 compact->: print {{item}} --for words --if "item != 'cruel'"
 ```
 
-Hooks can be [written in python](https://robcxyz.github.io/tackle-box/writing-tackle-files/).  
+Hooks can be [written in python](https://robcxyz.github.io/tackle-box/python-hooks/).  
 ```python
 from tackle import BaseHook
 
@@ -108,25 +110,21 @@ jinja_extension->: "{{ greeter(hello) }}"
 jinja_filter->: "{{ hello | greeter }}"
 ```
 
-Declarative hooks are strongly typed objects.
+Declarative hooks are strongly typed objects with many [declarative fields](https://robcxyz.github.io/tackle-box/declarative-hooks#input-fields).
 ```yaml
 words<-:
   hi:
     type: str
-    default: Hello
     regex: ^(Bonjour|Hola|Hello)
   target: str
 
 p->: print {{item}} --for values(words(hi="Hello",target="world!"))
 ```
 
-Which can have methods that extend the base.
+Which can have [methods](https://robcxyz.github.io/tackle-box/declarative-hooks#methods) that extend the base.
 ```yaml
 words<-:
-  hi:
-    type: str
-    default: Hello
-    regex: ^(Bonjour|Hola|Hello)
+  hi: Wadup
   say<-:
     target: str
     exec:
@@ -135,10 +133,11 @@ words<-:
 p->: words.say --hi Hello --target world!
 ```
 
-And also support inheritance.
+And also support [inheritance](https://robcxyz.github.io/tackle-box/declarative-hooks#extending-hooks).
 ```yaml
 base<-:
-  hi: Hello
+  hi:
+    default: Hello
 
 words<-:
   extends: base
@@ -150,7 +149,28 @@ words<-:
 p->: words.say --target world!
 ```
 
-And last, everything can be imported / called remotely from github repos.
+> And will later support extending common schemas like OpenAPI, protobuf, and json schema
+
+Hooks and fields can have documentation embedded in them.
+
+```yaml
+greeter<-:
+  help: Something that greets
+  hi:
+    default: Yo
+    description: Initial greeting.
+  target:
+    type: str
+    description: Thing to greet.
+  exec:
+    p->: print {{hi}} {{target}}
+
+p->: words.say --target world!
+```
+
+> That [will] drive a `help` screen by running `tackle hello-world.yaml --help` -> **Coming soon**
+
+And last, everything can be [imported]() / [called]() remotely from github repos.
 ```yaml
 import-hello_>: import robcxyz/tackle-hello-world
 call->: greeter world!
@@ -161,20 +181,30 @@ remote-call->: tackle robcxyz/tackle-hello-world --version v0.1.0
 
 Creating a web of declarative CLIs.
 
+### Use Cases
+
+- [Code Generation](https://robcxyz.github.io/tackle-box/tutorials/code-generation/)
+- [Declarative Utilities]() - wip
+- [Kubernetes Manifest Management]() - wip
+- [Toolchain Management]() - wip
+- [Repo Management]() - wip
+- [Home]() - wip
+
 ### Topics
-- [Writing Tackle Files](https://robcxyz.github.io/tackle-box/writing-tackle-files/)
+- [Writing Tackle Files]() - wip
 - [Creating Providers](https://robcxyz.github.io/tackle-box/creating-providers/)
 - [Blocks and Flow Control]() - wip
 - [Memory Management](https://robcxyz.github.io/tackle-box/memory-management/)
-- [Special Variables]() - wip
 - [Declarative Hooks](https://robcxyz.github.io/tackle-box/declarative-hooks/)
 - [Declarative CLIs]() - wip
+- [Special Variables]() - wip
 
 ### Roadmap
 
-- Declarative hook inheritance
 - Declarative schemas
-- Declarative methods
+  - json schema
+  - openapi
+  - protobuf
 - Cached providers
 - State management
 

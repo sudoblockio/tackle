@@ -15,3 +15,6 @@ Tackle box is a declarative DSL for building modular utilities and code generato
 - [Tackle File Examples](examples/index.md)
 - [Tutorials](tutorials/index.md)
 - [Provider Docs](providers/index.md)
+
+- [Memory Management](memory-management.md)
+- [Declarative Hooks](declarative-hooks.md)

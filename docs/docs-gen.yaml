@@ -16,19 +16,13 @@ provider_ignore:
   - postgres
   - time
 
-# List comprehension to get the providers
-#providers->: var "{{ listdir(provider_dir) | reject('in', provider_ignore) | list }}"
-providers->: var "{{ sort(listdir(provider_dir) | reject('in', provider_ignore) | list) }}"
-#sort-providers->: sort providers
-
 # mkdocs.yml navigation sidebar options - Empty list that will be appended to
 mkdocs_nav_list: []
-
-remove old provider docs dir->: remove "{{ item }}" --fail_silently true --for ['provider_docs_dir','schemas_dir']
+remove old provider docs dir->: remove "{{ item }}" --for ['provider_docs_dir','schemas_dir'] --try
 
 gen->:
-  # Iterate through the providers
-  for: providers
+  # Iterate through the providers via list comprehesion
+  for: sort(listdir(provider_dir) | reject('in', provider_ignore) | list)
   chdir: "{{ provider_dir }}/{{ item }}"
   print->: print "Generating {{item}} provider"
 

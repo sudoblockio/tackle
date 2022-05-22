@@ -1,13 +1,5 @@
 # Declarative Hooks
 
-> TODO - This is a new topic and is still a WIP
-- What are declarative hooks
-- The exec method and return  
-- Creating fields with types and arguments
-- Multiple inheritance - WIP
-- Methods - WIP
-- OpenAPI - WIP
-
 Declarative hooks are very similar to python hooks in that they offer a way interface with business logic from within a tackle file but instead of being written in python, they are written within tackle files themselves. They are useful when you want to create reusable logic, interface with schemas, or create CLI's with rich option sets out of tackle files. They have strongly typed input parameters and can have object-oriented properties such as inheritance and methods that can be passed between hooks.
 
 ### Basic Usage
@@ -25,6 +17,11 @@ hook_call:
 ```
 
 Declarative hooks have no required fields as in the example above the hook is simply used to validate the input and by default will simply return the input parameters.
+
+```yaml
+hook_call:
+  input: stuff
+```
 
 #### `exec` method
 
@@ -120,16 +117,44 @@ call:
     p->: print Wrong type!!
 ```
 
-### Advanced Topics
-
 #### Methods
 
-> WIP / TODO
+Declarative hooks can have methods that can be called similar to how the `exec` method is called. For instance the following would print out "Hello world!".
 
-#### Inheritance
+```yaml
+words<-:
+  hi: Wadup
+  say<-:
+    target: str
+    exec:
+      p->: print {{hi}} {{target}}
 
-> WIP / TODO
+p->: words.say --hi Hello --target world!
+```
 
-#### Schema Support
+Here you can see that there is method `say` that when called executes its own `exec` method which is able to access the base attribute `hi`.  This is useful in many contexts where one wants to extend base objects with additional functionality.
 
-> WIP / TODO
+> Future versions are contemplating ways to do method overloading based on types. Stay tuned.
+
+#### Extending Hooks
+
+Tackle has the notion of extending hooks from base hooks similar to inheritance patterns found in OOP languages. This is useful if you have a schema that you want to use in multiple hooks or you want to create generic methods that apply to multiple schemas. For instance:
+
+```yaml
+base<-:
+  hi:
+    default: Hello
+
+words<-:
+  extends: base
+  say<-:
+    target: str
+    exec:
+      p->: print {{hi}} {{target}}
+
+p->: words.say --target world!
+```
+
+Here we can see some base hook `base` which is then extended in the `words` hook.
+
+> Note: Future versions of tackle will support inheriting from common schemas like OpenAPI and have generic classes that

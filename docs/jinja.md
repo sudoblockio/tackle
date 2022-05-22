@@ -56,8 +56,8 @@ some_hook<-:
     default: foo
     render_by_default: true
 stuff: things
-call->: some_hook --input stuff
-check->: assert "{{call.input}}" things
+schema->: some_hook --input stuff # Not things
+check->: assert "{{schema.input}}" things
 ```
 
 ## Jinja Expressions
@@ -86,7 +86,7 @@ run_things:
   if: "'stuff' in user_input"
 ```
 
-Notice in this example the exra quoting which is an artifact of yaml parsing and need to be encapsulated for the parser.
+Notice in this example the extra quoting which is an artifact of yaml parsing and need to be encapsulated for the parser.
 
 ## Jinja Filters
 
@@ -107,3 +107,19 @@ list_comprehension->: "{{ input_list | reject('in', reject_list) | list }}"
 ```
 
 Here, `reject` and `list` are builtin jinja filters, not tackle hooks.
+
+## Calling Hooks from Jinja
+
+Calling hooks from jinja can be convenient in a lot of situations when one wants to string hooks together. For instance here is an example using the [yaml hook](providers/Yaml/yaml.md) that reads a key from a file using a dynamic [path](providers/Paths/path_join.md) based on variable inputs.
+
+```yaml
+read_key_in_file->: "{{yaml(path_join([a_str_var,join(a_list_var),'values.yaml'])).a_key}}"
+```
+
+> Note: The above example uses a convenience macro whereby without an actual hook declaration and jinja templating, tackle interprets that as an object to rander.
+
+Another nice pattern is to prompt a user to do something within an if statement as a one liner:
+
+```yaml
+do_thing->: do_stuff 'input' --if confirm('Do the thing?')
+```
