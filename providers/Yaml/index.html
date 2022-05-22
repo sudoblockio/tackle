@@ -81,7 +81,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#yaml" class="md-skip">
+        <a href="#yaml-provider" class="md-skip">
           Skip to content
         </a>
       
@@ -2868,22 +2868,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#inputs" class="md-nav__link">
-    Inputs
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#arguments" class="md-nav__link">
-    Arguments
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#returns" class="md-nav__link">
-    Returns
+  <a href="#hooks" class="md-nav__link">
+    Hooks
   </a>
   
 </li>
@@ -2930,8 +2916,22 @@
   
   
     <li class="md-nav__item">
-      <a href="yaml.md" class="md-nav__link">
+      <a href="yaml/" class="md-nav__link">
         yaml
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="yamlify/" class="md-nav__link">
+        yamlify
       </a>
     </li>
   
@@ -3056,22 +3056,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#inputs" class="md-nav__link">
-    Inputs
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#arguments" class="md-nav__link">
-    Arguments
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#returns" class="md-nav__link">
-    Returns
+  <a href="#hooks" class="md-nav__link">
+    Hooks
   </a>
   
 </li>
@@ -3117,71 +3103,40 @@
                 
 
 
-<h1 id="yaml">yaml<a class="headerlink" href="#yaml" title="Permanent link">&para;</a></h1>
-<p><a href="https://github.com/robcxyz/tackle-box/blob/main/tackle/providers/yaml/hooks/yamls.py">Source</a></p>
-<p>Hook for reading and writing yaml. Hook reads from <code>path</code> if no <code>data</code> field is provided, otherwise it writes the <code>data</code> to <code>path</code>.</p>
-<h2 id="inputs">Inputs<a class="headerlink" href="#inputs" title="Permanent link">&para;</a></h2>
+<h1 id="yaml-provider">YAML Provider<a class="headerlink" href="#yaml-provider" title="Permanent link">&para;</a></h1>
+<p>Wraps yaml library to read and write yaml.</p>
+<h3 id="hooks">Hooks<a class="headerlink" href="#hooks" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
-<th align="left">Name</th>
-<th align="center">Type</th>
-<th align="center">Default</th>
-<th align="center">Required</th>
+<th align="left">Type</th>
 <th align="left">Description</th>
+<th align="left">Return</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td align="left">path</td>
-<td align="center">str</td>
-<td align="center">None</td>
-<td align="center">True</td>
-<td align="left">The file path to put read or write to.</td>
+<td align="left"><a href="yaml/">yaml</a></td>
+<td align="left">Hook for reading and writing yaml. Hook reads from <code>path</code> if no <code>data</code> field is provided, otherwise it writes the <code>data</code> to <code>path</code>.</td>
+<td align="left">union</td>
 </tr>
 <tr>
-<td align="left">data</td>
-<td align="center">union</td>
-<td align="center">None</td>
-<td align="center">False</td>
-<td align="left">Map/list or renderable string to a map/list key to write.</td>
+<td align="left"><a href="yamlify/">yamlify</a></td>
+<td align="left">Hook for converting a dict to a yaml encoded string.</td>
+<td align="left">union</td>
 </tr>
 </tbody>
 </table>
-<h2 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th align="left">Position</th>
-<th align="center">Argument</th>
-<th align="center">Type</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="left">1</td>
-<td align="center">path</td>
-<td align="center">str</td>
-</tr>
-<tr>
-<td align="left">2</td>
-<td align="center">data</td>
-<td align="center">union</td>
-</tr>
-</tbody>
-</table>
-<h2 id="returns">Returns<a class="headerlink" href="#returns" title="Permanent link">&para;</a></h2>
-<p><code>union</code></p>
-<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
-<h3 id="read-yaml">Read yaml<a class="headerlink" href="#read-yaml" title="Permanent link">&para;</a></h3>
-<p>Read a yaml file into a key
+<h3 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h3>
+<h4 id="read-yaml">Read yaml<a class="headerlink" href="#read-yaml" title="Permanent link">&para;</a></h4>
+<p>Read a yaml file into a key</p>
 <div class="highlight"><pre><span></span><code><span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">yaml path/to/file.yaml</span><span class="w"></span>
 <span class="nt">expanded</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">yaml</span><span class="w"></span>
 <span class="w">  </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">path/to/file.yaml</span><span class="w"></span>
-</code></pre></div></p>
-<h3 id="write-yaml">Write yaml<a class="headerlink" href="#write-yaml" title="Permanent link">&para;</a></h3>
-<p>Read a yaml file into a key
+</code></pre></div>
+<h4 id="write-yaml">Write yaml<a class="headerlink" href="#write-yaml" title="Permanent link">&para;</a></h4>
+<p>Read a yaml file into a key</p>
 <div class="highlight"><pre><span></span><code><span class="nt">stuff</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">and</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">things</span><span class="w"></span>
 <span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">yaml path/to/file.yaml &quot;{{stuff}}&quot;</span><span class="w"></span>
@@ -3189,7 +3144,7 @@
 <span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">yaml</span><span class="w"></span>
 <span class="w">  </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">path/to/file.yaml</span><span class="w"></span>
 <span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">stuff</span><span class="nv"> </span><span class="s">}}&quot;</span><span class="w"></span>
-</code></pre></div></p>
+</code></pre></div>
 
               
             </article>
@@ -3219,13 +3174,13 @@
       
       
         
-        <a href="../../contributing/" class="md-footer__link md-footer__link--next" aria-label="Next: Contributing" rel="next">
+        <a href="yaml/" class="md-footer__link md-footer__link--next" aria-label="Next: yaml" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Contributing
+              yaml
             </div>
           </div>
           <div class="md-footer__button md-icon">

@@ -428,6 +428,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#calling-hooks-from-jinja" class="md-nav__link">
+    Calling Hooks from Jinja
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2920,8 +2927,22 @@
   
   
     <li class="md-nav__item">
-      <a href="../providers/Yaml/yaml.md" class="md-nav__link">
+      <a href="../providers/Yaml/yaml/" class="md-nav__link">
         yaml
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../providers/Yaml/yamlify/" class="md-nav__link">
+        yamlify
       </a>
     </li>
   
@@ -3087,6 +3108,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#calling-hooks-from-jinja" class="md-nav__link">
+    Calling Hooks from Jinja
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3141,8 +3169,8 @@
 <span class="w">    </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">foo</span><span class="w"></span>
 <span class="w">    </span><span class="nt">render_by_default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
 <span class="nt">stuff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">things</span><span class="w"></span>
-<span class="nt">call-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">some_hook --input stuff</span><span class="w"></span>
-<span class="nt">check-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">assert &quot;{{call.input}}&quot; things</span><span class="w"></span>
+<span class="nt">schema-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">some_hook --input stuff</span><span class="w"> </span><span class="c1"># Not things</span><span class="w"></span>
+<span class="nt">check-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">assert &quot;{{schema.input}}&quot; things</span><span class="w"></span>
 </code></pre></div>
 <h2 id="jinja-expressions">Jinja Expressions<a class="headerlink" href="#jinja-expressions" title="Permanent link">&para;</a></h2>
 <p>Jinja offers a rich expression syntax that is similar to python's and allows checking whether items are equal, items are in a list / map, and other things outside the scope of these docs that you can find in <a href="https://jinja.palletsprojects.com/en/3.0.x/templates/#expressions">jinja's excellent documentation</a>.</p>
@@ -3163,7 +3191,7 @@
 <span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print Things</span><span class="w"></span>
 <span class="w">  </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&#39;stuff&#39;</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">user_input&quot;</span><span class="w"></span>
 </code></pre></div>
-<p>Notice in this example the exra quoting which is an artifact of yaml parsing and need to be encapsulated for the parser.</p>
+<p>Notice in this example the extra quoting which is an artifact of yaml parsing and need to be encapsulated for the parser.</p>
 <h2 id="jinja-filters">Jinja Filters<a class="headerlink" href="#jinja-filters" title="Permanent link">&para;</a></h2>
 <p>Jinja natively has numerous builtin functions that allow a wide variety of actions similar to tackle but with less options. To see the full list, check out <a href="https://jinja.palletsprojects.com/en/3.0.x/templates/#list-of-builtin-filters">jinja's documentation</a>.</p>
 <h2 id="list-comprehensions">List Comprehensions<a class="headerlink" href="#list-comprehensions" title="Permanent link">&para;</a></h2>
@@ -3177,6 +3205,16 @@
 <span class="nt">list_comprehension-&gt;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">input_list</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">reject(&#39;in&#39;,</span><span class="nv"> </span><span class="s">reject_list)</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">list</span><span class="nv"> </span><span class="s">}}&quot;</span><span class="w"></span>
 </code></pre></div>
 <p>Here, <code>reject</code> and <code>list</code> are builtin jinja filters, not tackle hooks.</p>
+<h2 id="calling-hooks-from-jinja">Calling Hooks from Jinja<a class="headerlink" href="#calling-hooks-from-jinja" title="Permanent link">&para;</a></h2>
+<p>Calling hooks from jinja can be convenient in a lot of situations when one wants to string hooks together. For instance here is an example using the <a href="../providers/Yaml/yaml/">yaml hook</a> that reads a key from a file using a dynamic <a href="../providers/Paths/path_join/">path</a> based on variable inputs.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">read_key_in_file-&gt;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{yaml(path_join([a_str_var,join(a_list_var),&#39;values.yaml&#39;])).a_key}}&quot;</span><span class="w"></span>
+</code></pre></div>
+<blockquote>
+<p>Note: The above example uses a convenience macro whereby without an actual hook declaration and jinja templating, tackle interprets that as an object to rander.</p>
+</blockquote>
+<p>Another nice pattern is to prompt a user to do something within an if statement as a one liner:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">do_thing-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">do_stuff &#39;input&#39; --if confirm(&#39;Do the thing?&#39;)</span><span class="w"></span>
+</code></pre></div>
 
               
             </article>

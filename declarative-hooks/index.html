@@ -460,19 +460,6 @@
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#advanced-topics" class="md-nav__link">
-    Advanced Topics
-  </a>
-  
-    <nav class="md-nav" aria-label="Advanced Topics">
-      <ul class="md-nav__list">
-        
           <li class="md-nav__item">
   <a href="#methods" class="md-nav__link">
     Methods
@@ -481,15 +468,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#inheritance" class="md-nav__link">
-    Inheritance
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#schema-support" class="md-nav__link">
-    Schema Support
+  <a href="#extending-hooks" class="md-nav__link">
+    Extending Hooks
   </a>
   
 </li>
@@ -2946,8 +2926,22 @@
   
   
     <li class="md-nav__item">
-      <a href="../providers/Yaml/yaml.md" class="md-nav__link">
+      <a href="../providers/Yaml/yaml/" class="md-nav__link">
         yaml
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../providers/Yaml/yamlify/" class="md-nav__link">
+        yamlify
       </a>
     </li>
   
@@ -3100,19 +3094,6 @@
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#advanced-topics" class="md-nav__link">
-    Advanced Topics
-  </a>
-  
-    <nav class="md-nav" aria-label="Advanced Topics">
-      <ul class="md-nav__list">
-        
           <li class="md-nav__item">
   <a href="#methods" class="md-nav__link">
     Methods
@@ -3121,15 +3102,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#inheritance" class="md-nav__link">
-    Inheritance
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#schema-support" class="md-nav__link">
-    Schema Support
+  <a href="#extending-hooks" class="md-nav__link">
+    Extending Hooks
   </a>
   
 </li>
@@ -3154,15 +3128,6 @@
 
 
 <h1 id="declarative-hooks">Declarative Hooks<a class="headerlink" href="#declarative-hooks" title="Permanent link">&para;</a></h1>
-<blockquote>
-<p>TODO - This is a new topic and is still a WIP
-- What are declarative hooks
-- The exec method and return<br />
-- Creating fields with types and arguments
-- Multiple inheritance - WIP
-- Methods - WIP
-- OpenAPI - WIP</p>
-</blockquote>
 <p>Declarative hooks are very similar to python hooks in that they offer a way interface with business logic from within a tackle file but instead of being written in python, they are written within tackle files themselves. They are useful when you want to create reusable logic, interface with schemas, or create CLI's with rich option sets out of tackle files. They have strongly typed input parameters and can have object-oriented properties such as inheritance and methods that can be passed between hooks.</p>
 <h3 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h3>
 <p>Declarative hooks are keys that end with an arrow to the left, <code>&lt;-</code> for public hooks / <code>&lt;_</code> for private hooks (more on this later), which is the same as hook calls but in the opposite direction.</p>
@@ -3174,6 +3139,9 @@
 <span class="w">  </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stuff</span><span class="w"></span>
 </code></pre></div>
 <p>Declarative hooks have no required fields as in the example above the hook is simply used to validate the input and by default will simply return the input parameters.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">hook_call</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stuff</span><span class="w"></span>
+</code></pre></div>
 <h4 id="exec-method"><code>exec</code> method<a class="headerlink" href="#exec-method" title="Permanent link">&para;</a></h4>
 <p>If you want the hook to actually do something, the hook will need to have an <code>exec</code> method similar to how a <a href="../writing-hooks/">python hooks</a> have the same.  As a simple example, here we are creating a hook <code>greeter</code> that prints <code>Hello world!</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">greeter&lt;-</span><span class="p">:</span><span class="w"></span>
@@ -3242,18 +3210,39 @@
 <span class="w">  </span><span class="nt">except</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">p-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print Wrong type!!</span><span class="w"></span>
 </code></pre></div>
-<h3 id="advanced-topics">Advanced Topics<a class="headerlink" href="#advanced-topics" title="Permanent link">&para;</a></h3>
 <h4 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h4>
+<p>Declarative hooks can have methods that can be called similar to how the <code>exec</code> method is called. For instance the following would print out "Hello world!".</p>
+<div class="highlight"><pre><span></span><code><span class="nt">words&lt;-</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">hi</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Wadup</span><span class="w"></span>
+<span class="w">  </span><span class="nt">say&lt;-</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">str</span><span class="w"></span>
+<span class="w">    </span><span class="nt">exec</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">p-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print {{hi}} {{target}}</span><span class="w"></span>
+
+<span class="nt">p-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">words.say --hi Hello --target world!</span><span class="w"></span>
+</code></pre></div>
+<p>Here you can see that there is method <code>say</code> that when called executes its own <code>exec</code> method which is able to access the base attribute <code>hi</code>.  This is useful in many contexts where one wants to extend base objects with additional functionality.</p>
 <blockquote>
-<p>WIP / TODO</p>
+<p>Future versions are contemplating ways to do method overloading based on types. Stay tuned.</p>
 </blockquote>
-<h4 id="inheritance">Inheritance<a class="headerlink" href="#inheritance" title="Permanent link">&para;</a></h4>
+<h4 id="extending-hooks">Extending Hooks<a class="headerlink" href="#extending-hooks" title="Permanent link">&para;</a></h4>
+<p>Tackle has the notion of extending hooks from base hooks similar to inheritance patterns found in OOP languages. This is useful if you have a schema that you want to use in multiple hooks or you want to create generic methods that apply to multiple schemas. For instance:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">base&lt;-</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">hi</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Hello</span><span class="w"></span>
+
+<span class="nt">words&lt;-</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">extends</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">base</span><span class="w"></span>
+<span class="w">  </span><span class="nt">say&lt;-</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">str</span><span class="w"></span>
+<span class="w">    </span><span class="nt">exec</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">p-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print {{hi}} {{target}}</span><span class="w"></span>
+
+<span class="nt">p-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">words.say --target world!</span><span class="w"></span>
+</code></pre></div>
+<p>Here we can see some base hook <code>base</code> which is then extended in the <code>words</code> hook.</p>
 <blockquote>
-<p>WIP / TODO</p>
-</blockquote>
-<h4 id="schema-support">Schema Support<a class="headerlink" href="#schema-support" title="Permanent link">&para;</a></h4>
-<blockquote>
-<p>WIP / TODO</p>
+<p>Note: Future versions of tackle will support inheriting from common schemas like OpenAPI and have generic classes that</p>
 </blockquote>
 
               

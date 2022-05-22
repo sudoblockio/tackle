@@ -2923,8 +2923,22 @@
   
   
     <li class="md-nav__item">
-      <a href="../Yaml/yaml.md" class="md-nav__link">
+      <a href="../Yaml/yaml/" class="md-nav__link">
         yaml
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Yaml/yamlify/" class="md-nav__link">
+        yamlify
       </a>
     </li>
   
@@ -3122,7 +3136,7 @@
 </tr>
 <tr>
 <td align="left"><a href="match/">match</a></td>
-<td align="left">Hook for match / case statements. Takes a dict where the keys are matched to avalue. If the case value has an arrow in it (ie key-&gt;: ... ) the arrow is strippedaway. All matched values are ran as hooks.</td>
+<td align="left">Hook for match / case statements. Takes a dict where the keys are matched to a value. If the case value has an arrow in it (ie key-&gt;: ... ) the arrow is stripped away. All matched values are ran as hooks.</td>
 <td align="left">union</td>
 </tr>
 </tbody>
@@ -3136,11 +3150,11 @@
 <span class="w">  </span><span class="nt">choices</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;agree&#39;</span><span class="p p-Indicator">,</span><span class="s">&#39;disagree&#39;</span><span class="p p-Indicator">]</span><span class="w"></span>
 
 <span class="nt">matcher</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">match {% raw %}{{selection}}{% endraw %}</span><span class="w"></span>
+<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">match selection</span><span class="w"></span>
 <span class="w">  </span><span class="nt">case</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">agree</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Some value</span><span class="w"></span>
 <span class="w">    </span><span class="nt">disagree-&gt;</span><span class="p">:</span><span class="w"> </span><span class="c1"># Run some tackle context</span><span class="w"></span>
-<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
 </code></pre></div>
 <h4 id="assert"><a href="assert/">assert</a><a class="headerlink" href="#assert" title="Permanent link">&para;</a></h4>
 <p>Hook to assert if two items are equal. Can also easily be done with jinja but with this hook you can exit based on the assertion.</p>

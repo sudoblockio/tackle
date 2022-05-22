@@ -2854,8 +2854,22 @@
   
   
     <li class="md-nav__item">
-      <a href="../providers/Yaml/yaml.md" class="md-nav__link">
+      <a href="../providers/Yaml/yaml/" class="md-nav__link">
         yaml
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../providers/Yaml/yamlify/" class="md-nav__link">
+        yamlify
       </a>
     </li>
   
@@ -2987,10 +3001,13 @@
 
 <h1 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h1>
 <p>Tackle-box aims to be cross-platform (linux, windows, mac) and can be installed via python's package manager, pip.</p>
-<div class="highlight"><pre><span></span><code>pip install tackle-box
-</code></pre></div>
 <blockquote>
-<p>Binary versions coming soon</p>
+<p>Warning -&gt; tackle can install additional packages. Keep reading document for recommended installation settings.</p>
+</blockquote>
+<p><strong>Simplest installation</strong>
+<div class="highlight"><pre><span></span><code>pip install tackle-box
+</code></pre></div></p>
+<blockquote>
 <p>Windows users: Tackle-box strives to be fully functional on windows but has some <a href="https://github.com/robcxyz/tackle-box/actions/workflows/main-windows.yml">incompatibilities</a>.  Accepting PRs.</p>
 </blockquote>
 <p>Tackle-box has the capability to install additional package dependencies from hooks. If you wish to keep your system python interpreter clean of packages, you should use a virtual environment.</p>
@@ -2998,6 +3015,9 @@
 <span class="nb">source</span> env/bin/activate
 pip install tackle-box
 </code></pre></div>
+<blockquote>
+<p>TODO: Document how to alias tackle in rc files.</p>
+</blockquote>
 <p>Alternatively, to build from source:</p>
 <div class="highlight"><pre><span></span><code>git clone https://github.com/robcxyz/tackle-box
 <span class="nb">cd</span> tackle-box
