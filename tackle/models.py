@@ -357,6 +357,8 @@ class Context(BaseContext):
     input_dir: str = None
     input_file: str = None
 
+    context_functions: list = None
+
     # TODO: Change to version?
     checkout: str = Field(
         None,
