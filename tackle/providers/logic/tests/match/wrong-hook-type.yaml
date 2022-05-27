@@ -1,0 +1,8 @@
+a_dict: nothing
+
+fallback_dict:
+  ->: match a_dict
+  case:
+    hook-expanded:
+      ->: print expanded
+    nothing->: true

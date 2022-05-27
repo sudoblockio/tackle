@@ -5,6 +5,7 @@ import re
 from tackle.models import BaseHook, Context, Field
 from tackle.parser import walk_sync
 from tackle.render import render_string
+from tackle.exceptions import HookCallException
 
 
 class MatchHook(BaseHook):
@@ -68,7 +69,10 @@ class MatchHook(BaseHook):
                 elif isinstance(v, dict):
                     return self.run_key(self.block_macro(k, v))
                 else:
-                    raise NotImplementedError
+                    raise HookCallException(
+                        f"Matched value must be of type string or dict, not {v}.",
+                        hook=self,
+                    )
 
         raise Exception(f"Value `{self.value}` not found in {self.case.keys()}")
 

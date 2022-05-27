@@ -1,5 +1,6 @@
-"""Tests `import` in the `tackle.providers.tackle.hooks.match` hook."""
+import pytest
 from tackle import tackle
+from tackle.exceptions import HookCallException
 
 
 def test_hook_match_loop(change_dir):
@@ -41,3 +42,12 @@ def test_hook_match_value_list(change_dir):
     output = tackle('value-list.yaml')
     # Assertions in file
     assert output
+
+
+def test_hook_match_value_wrong_hook_type(change_dir):
+    """
+    Edge case where in match hooks one can have a single value trying to be merged into
+    a temporary context which does not make sense.
+    """
+    with pytest.raises(HookCallException):
+        tackle('wrong-hook-type.yaml')
