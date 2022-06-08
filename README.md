@@ -164,8 +164,6 @@ greeter<-:
     description: Thing to greet.
   exec:
     p->: print {{hi}} {{target}}
-
-p->: words.say --target world!
 ```
 
 > That [will] drive a `help` screen by running `tackle hello-world.yaml --help` -> **Coming soon**
@@ -207,6 +205,10 @@ Creating a web of declarative CLIs.
   - protobuf
 - Cached providers
 - State management
+
+### Contributing
+
+Contributions welcome particularly for additional hooks and suggestions around their interfaces. If contributing to the core parser, please make sure any changes are non-breaking by running tests (`make test`). For writing providers / hooks, please make sure to use the testing conventions laid out in the existing providers whereby the test uses pytest fixtures to change the directory into the test's directory.  This is so the tests can be run from both the root of the project and from within the test directory to facilitate debugging.
 
 ### Code of Conduct
 
