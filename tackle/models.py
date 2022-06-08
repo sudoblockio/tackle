@@ -345,6 +345,9 @@ class BaseContext(BaseModel):
 
     env_: Any = None
 
+    class Config:
+        smart_union = True
+
 
 class Context(BaseContext):
     """The main object that is being modified by parsing."""

@@ -1,0 +1,17 @@
+region: ams
+
+vms:
+  ->: match region
+  case:
+    sng:
+      - ip: 139
+        name: foo
+    ams:
+      - ip: 108
+        name: bar
+      - ip: 209
+        name: stuff
+      - ip: 199
+        name: things
+      - ip: 95
+        name: baz

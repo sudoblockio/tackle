@@ -44,6 +44,15 @@ def test_hook_match_value_list(change_dir):
     assert output
 
 
+def test_hook_match_value_lists(change_dir):
+    """
+    Edge case where in match hooks one can have a single value trying to be merged into
+    a temporary context which does not make sense.
+    """
+    o = tackle('lists.yaml')
+    assert o
+
+
 def test_hook_match_value_wrong_hook_type(change_dir):
     """
     Edge case where in match hooks one can have a single value trying to be merged into
