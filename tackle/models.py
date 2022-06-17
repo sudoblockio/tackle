@@ -94,13 +94,18 @@ class ProviderHooks(dict):
 
         # Use a unique RUN_ID to prevent duplicate validator errors
         # https://github.com/robcxyz/tackle-box/issues/43
-        loader = importlib.machinery.SourceFileLoader(
-            mod_name + '.hooks.' + file_base[0] + self._run_id, file_path
-        )
+        module_name = mod_name + '.hooks.' + file_base[0] + self._run_id
+        loader = importlib.machinery.SourceFileLoader(module_name, file_path)
 
-        module = loader.load_module()
+        if sys.version_info.minor < 10:
+            mod = loader.load_module()
+        else:
+            spec = importlib.util.spec_from_loader(loader.name, loader)
+            mod = importlib.util.module_from_spec(spec)
+            sys.modules[spec.name] = mod
+            loader.exec_module(mod)
 
-        for k, v in module.__dict__.items():
+        for k, v in mod.__dict__.items():
             if (
                 isinstance(v, ModelMetaclass)
                 and 'hook_type' in v.__fields__
@@ -124,7 +129,7 @@ class ProviderHooks(dict):
             if skip_on_error:
                 try:
                     self.import_hook_from_path(mod_name, f)
-                except (ModuleNotFoundError, ConfigError):
+                except (ModuleNotFoundError, ConfigError, ImportError):
                     logger.debug(f"Skipping importing {f}")
                     continue
             else:
@@ -362,6 +367,7 @@ class Context(BaseContext):
 
     context_functions: list = None
 
+    latest: bool = False
     # TODO: Change to version?
     checkout: str = Field(
         None,
@@ -374,6 +380,9 @@ class Context(BaseContext):
 
     def __init__(self, **data: Any):
         super().__init__(**data)
+        if self.latest:
+            self.checkout = 'latest'
+
         # Allows for passing the providers between tackle runtimes
         if self.provider_hooks is None:
             self.provider_hooks = ProviderHooks()
