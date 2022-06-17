@@ -49,6 +49,13 @@ def main(raw_args=None):
         help="The branch or version to checkout if a remote source is given.",
     )
     parser.add_argument(
+        '--latest',
+        '-l',
+        action='store_false',
+        help="When using version controlled providers (ie in github), use the latest "
+        "commit in the default branch.",
+    )
+    parser.add_argument(
         '--directory',
         '-d',
         default=None,
@@ -62,7 +69,8 @@ def main(raw_args=None):
         type=str,
         metavar="",
         dest="context_file",
-        help="The file to run. Only relevent for remote sources as otherwise you can just give full path to file as input.",
+        help="The file to run. Only relevent for remote sources as otherwise you can "
+        "just give full path to file as input.",
     )
     parser.add_argument(
         '--find-in-parent',
