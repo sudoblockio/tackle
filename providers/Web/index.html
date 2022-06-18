@@ -3225,28 +3225,28 @@
 <h3 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h3>
 <h4 id="webbrowser"><a href="webbrowser/">webbrowser</a><a class="headerlink" href="#webbrowser" title="Permanent link">&para;</a></h4>
 <p>Open a web browser. Wraps python's <a href="https://docs.python.org/3/library/webbrowser.html#browser-controller-objects">webbrowser</a> module.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http_get https://jsonplaceholder.typicode.com/todos/1</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http_get https://httpbin.org/get</span><span class="w"></span>
 <span class="nt">expanded</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http_get</span><span class="w"></span>
-<span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://jsonplaceholder.typicode.com/todos/1</span><span class="w"></span>
+<span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://httpbin.org/get</span><span class="w"></span>
 </code></pre></div>
 <h4 id="http_get"><a href="http_get/">http_get</a><a class="headerlink" href="#http_get" title="Permanent link">&para;</a></h4>
 <p>Make get request and store output in key</p>
-<div class="highlight"><pre><span></span><code><span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http_get https://jsonplaceholder.typicode.com/todos/1</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http_get https://httpbin.org/get</span><span class="w"></span>
 <span class="nt">expanded</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http_get</span><span class="w"></span>
-<span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://jsonplaceholder.typicode.com/todos/1</span><span class="w"></span>
+<span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://httpbin.org/get</span><span class="w"></span>
 </code></pre></div>
 <h4 id="http_put"><a href="http_put/">http_put</a><a class="headerlink" href="#http_put" title="Permanent link">&para;</a></h4>
 <p>Make <a href="https://docs.python-requests.org/en/latest/api/#requests.put">put</a> request and store output in key</p>
 <div class="highlight"><pre><span></span><code><span class="nt">input_json</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">stuff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">things</span><span class="w"></span>
 
-<span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http_post https://reqres.in/api/users input_json</span><span class="w"></span>
+<span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http_post https://httpbin.org/post --input_json input_json</span><span class="w"></span>
 
 <span class="nt">expanded</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http_post</span><span class="w"></span>
-<span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://reqres.in/api/users</span><span class="w"></span>
+<span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://httpbin.org/post</span><span class="w"></span>
 <span class="w">  </span><span class="nt">input_json</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">stuff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">things</span><span class="w"></span>
 </code></pre></div>
@@ -3255,31 +3255,31 @@
 <div class="highlight"><pre><span></span><code><span class="nt">input_json</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">stuff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">things</span><span class="w"></span>
 
-<span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http_post https://reqres.in/api/users input_json</span><span class="w"></span>
+<span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http_post https://httpbin.org/post --input_json input_json</span><span class="w"></span>
 
 <span class="nt">expanded</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http_post</span><span class="w"></span>
-<span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://reqres.in/api/users</span><span class="w"></span>
+<span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://httpbin.org/post</span><span class="w"></span>
 <span class="w">  </span><span class="nt">input_json</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">stuff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">things</span><span class="w"></span>
 </code></pre></div>
 <h4 id="http_delete"><a href="http_delete/">http_delete</a><a class="headerlink" href="#http_delete" title="Permanent link">&para;</a></h4>
 <p>Make delete request and store response code in key</p>
-<div class="highlight"><pre><span></span><code><span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http_delete https://reqres.in/api/users/2</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http_delete https://httpbin.org/delete</span><span class="w"></span>
 <span class="nt">expanded</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http_delete</span><span class="w"></span>
-<span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://reqres.in/api/users/2</span><span class="w"></span>
+<span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://httpbin.org/delete</span><span class="w"></span>
 </code></pre></div>
 <h4 id="http_patch"><a href="http_patch/">http_patch</a><a class="headerlink" href="#http_patch" title="Permanent link">&para;</a></h4>
 <p>Make patch request and store response code in key</p>
 <div class="highlight"><pre><span></span><code><span class="nt">input_json</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">stuff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">things</span><span class="w"></span>
 
-<span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http_patch https://reqres.in/api/users/2 input_json</span><span class="w"></span>
+<span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http_patch https://httpbin.org/patch --input_json input_json</span><span class="w"></span>
 
 <span class="nt">expanded</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http_patch</span><span class="w"></span>
-<span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://reqres.in/api/users/2</span><span class="w"></span>
+<span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://httpbin.org/patch</span><span class="w"></span>
 <span class="w">  </span><span class="nt">input_json</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">stuff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">things</span><span class="w"></span>
 </code></pre></div>
