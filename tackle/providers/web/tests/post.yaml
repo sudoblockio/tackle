@@ -1,10 +1,10 @@
 input_json:
   stuff: things
 
-compact->: http_post https://reqres.in/api/users input_json
+compact->: http_post https://httpbin.org/post --input_json input_json
 
 expanded:
   ->: http_post
-  url: https://reqres.in/api/users
+  url: https://httpbin.org/post
   input_json:
     stuff: things

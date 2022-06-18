@@ -76,7 +76,13 @@ class RequestsPostHook(BaseHook):
         description="Dictionary, list of tuples, bytes, or file-like object to send in the body of the Request.",
         render_by_default=True
     )
-    input_json: dict = None
+    # TODO: Fix alias so input_json -> json
+    #  https://github.com/robcxyz/tackle-box/issues/80
+    input_json: dict = Field(
+        False,
+        description="Whether to exit on non-200 response.",
+        render_by_default=True
+    )
     no_exit: bool = Field(False, description="Whether to exit on non-200 response.")
     # fmt: on
 
@@ -113,11 +119,13 @@ class RequestsPutHook(BaseHook):
     data: Any = Field(
         None,
         description="Dictionary, list of tuples, bytes, or file-like object to send in the body of the Request.",
-        render_by_default=True
     )
+    # TODO: Fix alias so input_json -> json
+    #  https://github.com/robcxyz/tackle-box/issues/80
     input_json: dict = Field(
         None,
         description="Json data to send in the body of the Request.",
+        render_by_default=True
     )
     no_exit: bool = Field(False, description="Whether to exit on non-200 response.")
     # fmt: off
@@ -148,11 +156,13 @@ class RequestsPatchHook(BaseHook):
     data: Any = Field(
         None,
         description="Dictionary, list of tuples, bytes, or file-like object to send in the body of the Request.",
-        render_by_default=True
     )
+    # TODO: Fix alias so input_json -> json
+    #  https://github.com/robcxyz/tackle-box/issues/80
     input_json: dict = Field(
         None,
         description="Json data to send in the body of the Request.",
+        render_by_default=True,
     )
     no_exit: bool = Field(False, description="Whether to exit on non-200 response.")
     # fmt: off
