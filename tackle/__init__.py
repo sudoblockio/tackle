@@ -1,5 +1,5 @@
 """Main package for tackle box."""
-__version__ = "0.3.0-beta.3"
+__version__ = "0.3.0-beta.5"
 
 from tackle.models import BaseHook
 from tackle.models import Field
