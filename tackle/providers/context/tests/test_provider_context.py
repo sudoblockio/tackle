@@ -6,6 +6,9 @@ def test_provider_system_hook_dicts_update(change_dir):
     assert output['update_map'] == output['arg']
     assert output['update_map2'] == output['arg2']
     assert output['dict_map'] == {'foo': 'bar', 'bar': 'bar'}
+    assert output['input_map']['foo'] == 'bing'
+    assert output['new_list'][2] == 'baz'
+    assert output['new_str'] == 'baz'
 
 
 def test_provider_system_hook_dicts_pop(change_dir):
