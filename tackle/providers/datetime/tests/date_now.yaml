@@ -1,0 +1,5 @@
+now->: date_now
+year->: date_now %Y
+month_year->: date_now "%B %Y"
+timestamp->: date_now --timestamp
+timestamp_utc->: date_now --timestamp --utc

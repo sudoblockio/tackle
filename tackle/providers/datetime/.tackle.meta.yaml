@@ -1,0 +1,14 @@
+name: Datetime Provider
+
+description: Hooks that work with date and time
+
+examples:
+  - name: "[date_now](date_now.md)"
+    description: Get the current date or timestamp.
+    content->: file tests/date_now.yaml
+
+hook_examples:
+  date_now:
+    - name: Get current date / timestamp
+      content->: file tests/date_now.yaml
+
