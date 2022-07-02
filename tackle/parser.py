@@ -36,6 +36,7 @@ from tackle.utils.paths import (
     find_in_parent,
 )
 from tackle.utils.zipfile import unzip
+from tackle.utils.help import run_help
 from tackle.models import (
     Context,
     BaseHook,
@@ -285,6 +286,10 @@ def render_hook_vars(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
                 hook_dict[key] = render_variable(context, wrap_jinja_braces(value))
 
             # TODO: When we build our own custom Field function then this will change
+            # TODO: This causes errors when the field is aliased as the lookup doesn't
+            #  work and needs a deeper introspection.
+            #  https://github.com/robcxyz/tackle-box/issues/80
+            #  Fixing with custom Field def should fix this.
             elif 'render_by_default' in Hook.__fields__[key].field_info.extra:
                 hook_dict[key] = render_variable(context, wrap_jinja_braces(value))
 
@@ -446,7 +451,12 @@ def parse_hook(
         parse_sub_context(context, hook_dict, target='else')
 
 
-def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
+def evaluate_args(
+    args: list,
+    hook_dict: dict,
+    Hook: Type[BaseHook],
+    context: 'Context' = None,  # For error handling
+):
     """
     Associate hook arguments provided in the call with hook attributes. Parses the
     hook's `_args` attribute to know how to map arguments are mapped to where and
@@ -506,8 +516,18 @@ def evaluate_args(args: list, hook_dict: dict, Hook: Type[BaseHook]):
             try:
                 hook_dict[hook_args[i]] = v
             except IndexError:
-                # TODO: Handle error
-                raise UnknownArgumentException(f"Unknown argument {i}.")
+                if len(hook_args) == 0:
+                    raise UnknownArgumentException(
+                        f"The hook {hook_dict['hook_type']} does not take any "
+                        f"arguments. Hook argument {v} caused an error.",
+                        context=context,
+                    )
+                else:
+                    raise UnknownArgumentException(
+                        f"The hook {hook_dict['hook_type']} takes the following indexed"
+                        f"arguments -> {hook_args} which does not map to the arg {v}.",
+                        context=context,
+                    )
 
 
 def handle_leading_brackets(args) -> list:
@@ -595,7 +615,7 @@ def run_hook(context: 'Context'):
     hook_dict['hook_type'] = first_arg
 
     # Associate hook arguments provided in the call with hook attributes
-    evaluate_args(args, hook_dict, Hook)
+    evaluate_args(args=args, hook_dict=hook_dict, Hook=Hook, context=context)
     # Add any kwargs
     for k, v in kwargs.items():
         hook_dict[k] = v
@@ -790,7 +810,7 @@ def walk_sync(context: 'Context', element):
                 value = nested_get(
                     element=context.input_context,
                     keys=context.key_path[
-                        -(len(context.key_path) - len(context.key_path_block)) :
+                        (len(context.key_path_block) - len(context.key_path)) :
                     ],
                 )
                 # Finally check if the `items` key exists in the input_context.  If not
@@ -898,14 +918,10 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list):
         context.input_context.update({i: True})
 
     if len(args) >= 1:
-        # TODO: Implement help
-        # `help` which will always be the last arg
         if args[-1] == 'help':
-            from tackle.utils.help import run_help
-
-            # Calling help will exit 0. End of the line.
-            # run_help(context, context.input_context, args[:-1])
+            # `help` which will always be the last arg
             run_help(context, args[:-1])
+            # Calling help will exit 0. End of the line.
 
         # Loop through all args
         for i in args:
@@ -925,8 +941,12 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list):
                 context.key_path.pop()
 
             elif i in context.provider_hooks:
+                Hook = context.provider_hooks[i]
+                args.pop(-1)
+                evaluate_args(args, {}, Hook=Hook, context=context)
 
-                raise NotImplementedError
+                hook_output_value = Hook().exec()
+                return hook_output_value
             else:
                 raise ValueError(f"Argument {i} not found as key in input.")
         return
@@ -1038,6 +1058,7 @@ def create_function_model(
     # fmt: off
     # Validate raw input params against pydantic object where values will be used later
     function_input = FunctionInput(
+        # exec_=func_dict.pop('exec<-') if 'exec<-' in func_dict else None,
         exec_=func_dict.pop('exec') if 'exec' in func_dict else None,
         return_=func_dict.pop('return') if 'return' in func_dict else None,
         args=func_dict.pop('args') if 'args' in func_dict else [],
@@ -1280,4 +1301,4 @@ def update_source(context: 'Context'):
     # or would be very confusing if writing a provider to always refer to it's own path.
     with work_in(context.input_dir):
         # Main parsing logic
-        run_source(context, args, kwargs, flags)
+        return run_source(context, args, kwargs, flags)

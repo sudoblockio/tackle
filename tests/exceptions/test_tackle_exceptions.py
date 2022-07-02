@@ -21,6 +21,16 @@ def test_should_raise_error_with_calling_file(change_curdir_fixtures):
 
 
 FIXTURES = [
+    # (
+    #     'unknown-argument-extra.yaml',
+    #     exceptions.UnknownArgumentException,
+    #     'fixtures/unknown-argument.yaml',
+    # ),
+    (
+        'unknown-argument.yaml',
+        exceptions.UnknownArgumentException,
+        'fixtures/unknown-argument.yaml',
+    ),
     (
         'unknown-variable.yaml',
         exceptions.UnknownTemplateVariableException,
