@@ -51,7 +51,7 @@ def main(raw_args=None):
     parser.add_argument(
         '--latest',
         '-l',
-        action='store_false',
+        action='store_true',
         help="When using version controlled providers (ie in github), use the latest "
         "commit in the default branch.",
     )
