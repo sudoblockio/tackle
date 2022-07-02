@@ -44,10 +44,10 @@ class YamlHook(BaseHook):
             return data
 
 
-class YamlifyHook(BaseHook):
+class YamlEncodeHook(BaseHook):
     """Hook for converting a dict to a yaml encoded string."""
 
-    hook_type: str = 'yamlify'
+    hook_type: str = 'yamlencode'
     data: Union[dict, list, str] = Field(
         ...,
         description="Map/list or renderable string to data to convert to yaml string.",
@@ -66,4 +66,15 @@ class YamlifyHook(BaseHook):
         string_stream.close()
         return output_str
 
-        # return yaml.dump(self.data)
+
+class YamlDecodeHook(BaseHook):
+    """Hook for decoding a yaml string to a dict."""
+
+    hook_type: str = 'yamldecode'
+    data: str = Field(..., description="Yaml string to convert to dict.")
+    args: list = ['data']
+
+    def exec(self) -> dict:
+        yaml = YAML(typ='safe', pure=True)
+        output = yaml.load(self.data)
+        return output

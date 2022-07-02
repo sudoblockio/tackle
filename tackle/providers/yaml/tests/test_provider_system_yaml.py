@@ -94,6 +94,12 @@ def test_provider_system_hook_yaml_write(change_dir, clean_outputs):
 
 
 def test_yaml_yamlify(change_dir, clean_outputs):
-    output = tackle('yamlify.yaml', no_input=True)
+    output = tackle('yamlencode.yaml', no_input=True)
     assert isinstance(output['out'], str)
     assert 'stuff: things' in output['out']
+
+
+def test_yaml_yamldecode(change_dir, clean_outputs):
+    output = tackle('yamldecode.yaml', no_input=True)
+    assert isinstance(output['out'], dict)
+    assert output['out']['stuff'] == 'things'

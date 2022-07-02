@@ -1,0 +1,3 @@
+in->: yaml read.yaml
+
+out->: "{{in|yamlencode}}"
