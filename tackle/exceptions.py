@@ -266,6 +266,14 @@ class UnknownSourceException(TackleParserInputException):
     """
 
 
+class UnknownInputArgumentException(TackleParserInputException):
+    """
+    Exception for unknown extra arguments.
+
+    Raised when tackle cannot determine what the extra argument means.
+    """
+
+
 #
 # Util exceptions
 #

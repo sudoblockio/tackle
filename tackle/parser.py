@@ -58,6 +58,7 @@ from tackle.exceptions import (
     EmptyFunctionException,
     MalformedFunctionFieldException,
     HookParseException,
+    UnknownInputArgumentException,
 )
 from tackle.settings import settings
 
@@ -105,7 +106,7 @@ def get_hook(hook_type, context: 'Context'):
             )
             if context.verbose:
                 available_hooks = 'Available hooks = ' + ' '.join(
-                    [str(i) for i in context.provider_hooks.keys()]
+                    sorted([str(i) for i in context.provider_hooks.keys()])
                 )
             raise UnknownHookTypeException(
                 f"The hook type=\"{hook_type}\" is not available in the providers. "
@@ -504,9 +505,10 @@ def evaluate_args(
             else:
                 # Only thing left is a dict
                 if len(args[i:]) > 1:
-                    raise ValueError(
+                    raise HookParseException(
                         f"Can't specify multiple arguments for map argument "
-                        f"{Hook.__fields__[hook_args[i]]}."
+                        f"{Hook.__fields__[hook_args[i]]}.",
+                        context=context,
                     )
                 value = args[i]
             hook_dict[hook_args[i]] = value
@@ -948,7 +950,9 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list):
                 hook_output_value = Hook().exec()
                 return hook_output_value
             else:
-                raise ValueError(f"Argument {i} not found as key in input.")
+                raise UnknownInputArgumentException(
+                    f"Argument {i} not found as key in tackle file.", context=context
+                )
         return
 
     if len(context.input_context) == 0:
@@ -1161,9 +1165,7 @@ def extract_base_file(context: 'Context'):
     try:
         context.input_context = read_config_file(path)
     except FileNotFoundError:
-        raise UnknownSourceException(
-            f"Could not find file in {path}.", context=context
-        ) from None
+        raise UnknownSourceException(f"Could not find file in {path}.", context=context)
 
     if context.input_context is None:
         raise EmptyTackleFileException(
