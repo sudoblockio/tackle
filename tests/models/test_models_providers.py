@@ -1,8 +1,12 @@
+import shutil
+
 import pytest
 import os
-from tackle.main import tackle
 import subprocess
 import sys
+
+from tackle.main import tackle
+from tackle.settings import settings
 
 
 @pytest.fixture()
@@ -31,7 +35,17 @@ def test_parser_provider_import_installs_requirements(
 ):
     """Validate that if a package is missing, that it will be installed and usable."""
     temporary_uninstall('requests')
+    try:
+        import requests
+    except ImportError:
+        assert True
+    else:
+        assert False
+
     tackle('test-install-dep.yaml')
+    import requests  # noqa
+
+    assert requests
 
 
 def test_parser_hooks_raises_error_on_unknown_hook_type(change_curdir_fixtures):
@@ -72,3 +86,49 @@ def test_providers_local_hooks_dir(chdir_fixture):
     chdir_fixture(os.path.join('child', 'dir'))
     o = tackle()
     assert o
+
+
+@pytest.fixture()
+def remove_provider():
+    """Fixture to remove a provider."""
+
+    def f(provider):
+        provider = provider.split('/')
+        provider_path = os.path.join(settings.provider_dir, *provider)
+        if os.path.exists(provider_path):
+            shutil.rmtree(provider_path)
+
+    return f
+
+
+def test_providers_released(chdir_fixture, remove_provider):
+    """
+    Check that when we call a released provider, that we only use commits from the
+    latest release and not anything that was added after the release. Check the external
+     fixture for details.
+    """
+    remove_provider("robcxyz/tackle-fixture-released")
+    o = tackle("robcxyz/tackle-fixture-released")
+    assert 'released_added_later' not in o
+    assert o['released_hook'] == 'foo'
+
+
+def test_providers_released_latest(chdir_fixture, remove_provider):
+    """
+    Check that when we call a released provider, that when we include the latest flag
+    we use the latest commit.
+    """
+    remove_provider("robcxyz/tackle-fixture-released")
+    o = tackle(
+        "robcxyz/tackle-fixture-released",
+        latest=True,
+    )
+    assert 'released_added_later' in o
+    assert o['released_hook'] == 'foo'
+
+
+def test_providers_unreleased_import(chdir_fixture, remove_provider):
+    """Check that we can use an unreleased provider."""
+    remove_provider("robcxyz/tackle-fixture-unreleased")
+    o = tackle("robcxyz/tackle-fixture-unreleased", no_input=True)
+    assert o['this'] == 'that'

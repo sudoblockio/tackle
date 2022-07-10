@@ -77,6 +77,7 @@ INSTALL_REQUIREMENTS = [
     'pydantic>=1.8.0',
     'InquirerPy>=0.3.3',
     'ruamel.yaml>=0.17.0',
+    'xdg==5.1.1',
 ]
 
 if sys.argv[-1] == 'readme':

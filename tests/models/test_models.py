@@ -4,8 +4,7 @@ import sys
 
 from tackle.models import (
     BaseHook,
-    LazyImportHook,
-    ProviderHooks,
+    Context,
 )
 
 
@@ -63,3 +62,8 @@ def temporary_uninstall():
 #         path=lazy_hook.hooks_path,
 #     )
 #     assert issubclass(pd['http_get'], BaseHook)
+
+
+def test_models_latest():
+    c = Context(latest=True)
+    assert c.checkout == 'latest'

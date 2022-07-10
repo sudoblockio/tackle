@@ -1,13 +1,12 @@
 """Settings initializer."""
 from pydantic import BaseSettings, Field
 from typing import Dict
-
 import os
 import logging
 import pathlib
+from xdg import xdg_config_home  # When adding replay functionality -> xdg_state_home
 
 from tackle.utils.files import read_config_file
-from tackle.utils.paths import expand_path
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +14,7 @@ logger = logging.getLogger(__name__)
 class Settings(BaseSettings):
     """Base settings that are immutable during main runtime."""
 
-    tackle_dir: str = expand_path('~/.tackle')
+    tackle_dir: str = os.path.join(xdg_config_home(), 'tackle')
     config_path: str = os.path.join(tackle_dir, 'settings.yaml')
     provider_dir: str = os.path.join(tackle_dir, 'providers')
 
