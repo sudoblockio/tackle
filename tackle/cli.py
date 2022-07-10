@@ -96,14 +96,17 @@ def main(raw_args=None):
         debug_file=getattr(args, "debug_file", None),
     )
 
-    output_dict = tackle(
+    output = tackle(
         **vars(args),
         global_args=global_args,
         global_kwargs=global_kwargs,
         global_flags=global_flags,
     )
     if print_enabled:
-        print(json.dumps(dict(output_dict)))
+        if isinstance(output, (dict, list)):
+            print(json.dumps(dict(output)))
+        else:
+            print(output)
 
 
 if __name__ == "__main__":
