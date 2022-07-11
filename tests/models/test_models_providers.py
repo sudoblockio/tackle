@@ -126,6 +126,11 @@ def test_providers_released_latest(chdir_fixture, remove_provider):
     assert 'released_added_later' in o
     assert o['released_hook'] == 'foo'
 
+    # Then test that when we run the provider again that it uses the latest release.
+    o = tackle("robcxyz/tackle-fixture-released")
+    assert 'released_added_later' not in o
+    assert o['released_hook'] == 'foo'
+
 
 def test_providers_unreleased_import(chdir_fixture, remove_provider):
     """Check that we can use an unreleased provider."""
