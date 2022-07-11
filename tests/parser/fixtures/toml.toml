@@ -1,0 +1,5 @@
+
+baz = "bar"
+
+[foo]
+"bar->" = "{{baz}}"

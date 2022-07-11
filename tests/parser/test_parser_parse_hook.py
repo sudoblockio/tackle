@@ -22,6 +22,7 @@ FIXTURES = [
     ('docker-compose.yml', 'docker-compose.yml'),
     ('list-list.yaml', 'list-list.yaml'),
     ('var-hook.yaml', 'var-hook-output.yaml'),
+    ('toml.toml', 'toml.yaml'),
     # # Broken
     # # TODO: https://github.com/robcxyz/tackle-box/issues/52
     # ('bug-mixed-flags.yaml', 'bug-mixed-flags.yaml'),

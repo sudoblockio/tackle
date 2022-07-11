@@ -159,7 +159,7 @@ def is_directory_with_tackle(value) -> bool:
 def is_file(value) -> bool:
     """Return True if the input looks like a file."""
     FILE_REGEX = re.compile(
-        r"""^.*\.(yaml|yml|json)$""",
+        r"""^.*\.(yaml|yml|json|toml)$""",
         re.VERBOSE,
     )
     return bool(FILE_REGEX.match(value))

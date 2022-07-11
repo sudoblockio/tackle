@@ -377,3 +377,20 @@ class MalformedFunctionFieldException(TackleFunctionCreateException):
 
     Happens when a tackle file is parsed.
     """
+
+
+class TackleGeneralException(Exception):
+    """Base hook call exception class."""
+
+    def __init__(self, message: str):
+        sys.tracebacklimit = 0
+        super().__init__(message)
+
+
+class TackleImportError(TackleGeneralException):
+    """
+    Exception when functions with field inputs of type dict are not formatted
+    appropriately.
+
+    Happens when a tackle file is parsed.
+    """

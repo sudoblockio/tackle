@@ -5,7 +5,11 @@ from ruamel.yaml.composer import ComposerError
 import os
 import logging
 
-from tackle.exceptions import ContextDecodingException, UnsupportedBaseFileTypeException
+from tackle.exceptions import (
+    ContextDecodingException,
+    UnsupportedBaseFileTypeException,
+    TackleImportError,
+)
 from tackle.utils.paths import make_sure_path_exists
 
 logger = logging.getLogger(__name__)
@@ -66,6 +70,18 @@ def read_config_file(file, file_extension=None):
                     for doc in yaml.load_all(f.read()):
                         output.append(doc)
                 return output
+        elif file_extension == 'toml':
+            try:
+                import toml
+            except ImportError:
+                raise TackleImportError(
+                    f"Error parsing {file} No toml package installed. Install it with "
+                    "`pip install toml` and try again."
+                ) from None
+            with open(file) as f:
+                data = toml.load(f)
+            return data
+
         else:
             raise UnsupportedBaseFileTypeException(
                 'Unable to parse file {}. Error: Unsupported extension (json/yaml only)'
@@ -75,11 +91,11 @@ def read_config_file(file, file_extension=None):
     except ValueError as e:
         # JSON decoding error.  Let's throw a new exception that is more
         # friendly for the developer or user.
-        our_exc_message = (
+        message = (
             f'JSON decoding error while loading "{file}".  Decoding'
             f' error details: "{str(e)}"'
         )
-        raise ContextDecodingException(our_exc_message)
+        raise ContextDecodingException(message) from None
 
 
 def apply_overwrites_to_inputs(input, overwrite_dict):
