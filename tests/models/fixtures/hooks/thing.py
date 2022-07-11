@@ -9,7 +9,7 @@ class ThingHook(BaseHook):
     hook_type: str = 'thing'
     stuff: str
 
-    @validator('things')
+    @validator('stuff')
     def validate(cls, value):
         # Check if the input is valid - throw error otherwise
         if value == 'not-things':
