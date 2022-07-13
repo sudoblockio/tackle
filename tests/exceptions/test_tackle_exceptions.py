@@ -47,6 +47,11 @@ FIXTURES = [
         'fixtures/tackle.yaml',
     ),
     ('bad-extension.yaml', exceptions.UnknownTemplateVariableException, 'foobar'),
+    (
+        'unknown-named-argument.yaml',
+        exceptions.UnknownInputArgumentException,
+        'unknown-named-argument.yaml',
+    ),
 ]
 
 

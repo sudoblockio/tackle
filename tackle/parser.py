@@ -272,6 +272,22 @@ def run_hook_in_dir(hook: Type[BaseHook]) -> Any:
 def render_hook_vars(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
     """Render the hook variables."""
     for key, value in list(hook_dict.items()):
+        if key not in Hook.__fields__:
+            # Get a list of possible fields for hook before raising error.
+            possible_fields = [
+                f"{k}: {v.type_.__name__}"
+                for k, v in Hook.__fields__.items()
+                if k not in BaseHook.__fields__
+            ]
+            # TODO: Include link to docs -> Will need to also include provider name
+            #  and then differentiate between lazy imported hooks which already have the
+            #  provider and the ones that don't
+            raise UnknownInputArgumentException(
+                f"Key={key} not in hook={hook_dict['hook_type']}. Possible values are "
+                f"{', '.join(possible_fields)}",
+                context=context,
+            )
+
         if key in Hook.Config.alias_to_fields:
             # Skip any keys used in logic as these are evaluated / rendered separately
             continue
