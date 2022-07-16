@@ -9,7 +9,7 @@ from pydantic.main import ModelMetaclass
 from collections import OrderedDict
 from pydantic import ValidationError
 from pydoc import locate
-from ruamel.yaml.constructor import CommentedKeyMap
+from ruamel.yaml.constructor import CommentedKeyMap, CommentedMap
 
 from tackle.render import render_variable, wrap_jinja_braces
 from tackle.utils.dicts import (
@@ -22,6 +22,7 @@ from tackle.utils.dicts import (
     get_target_and_key,
     smush_key_path,
     get_readable_key_path,
+    cleanup_unquoted_strings,
 )
 from tackle.utils.command import unpack_args_kwargs_string
 from tackle.utils.vcs import get_repo_source
@@ -63,6 +64,19 @@ from tackle.exceptions import (
 from tackle.settings import settings
 
 logger = logging.getLogger(__name__)
+
+
+BASE_METHODS = [
+    'if',
+    'when',
+    'else',
+    'for',
+    'reverse',
+    'try',
+    'except',
+    'chdir',
+    'merge',
+]
 
 
 def get_hook(hook_type, context: 'Context'):
@@ -272,7 +286,7 @@ def run_hook_in_dir(hook: Type[BaseHook]) -> Any:
 def render_hook_vars(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
     """Render the hook variables."""
     for key, value in list(hook_dict.items()):
-        if key not in Hook.__fields__:
+        if key not in Hook.__fields__ and key not in BASE_METHODS:
             # Get a list of possible fields for hook before raising error.
             possible_fields = [
                 f"{k}: {v.type_.__name__}"
@@ -579,9 +593,8 @@ def run_hook(context: 'Context'):
     if isinstance(context.input_string, str):
         args, kwargs, flags = unpack_args_kwargs_string(context.input_string)
         args = handle_leading_brackets(args)
-        first_arg = args[0]
         # Remove first args it will be consumed and no longer relevant
-        args.pop(0)
+        first_arg = args.pop(0)
 
     else:
         # Rare case when an arrow is used to indicate rendering of a list.
@@ -639,6 +652,10 @@ def run_hook(context: 'Context'):
         hook_dict[k] = v
     for i in flags:
         hook_dict[i] = True
+
+    # Cleanup any unquoted fields -> common mistake that is hard to debug producing a
+    #  nested dict that breaks parsing / hook calls. Ex foo: {{bar}} -> foo: "{{bar}}"
+    cleanup_unquoted_strings(hook_dict)
 
     # Main parser
     parse_hook(hook_dict, Hook, context)
@@ -802,7 +819,7 @@ def walk_sync(context: 'Context', element):
 
         for k, v in element.copy().items():
 
-            if isinstance(v, OrderedDict):
+            if isinstance(v, CommentedMap):
                 # This is for a common parsing error that messes up values with braces.
                 # For instance `stuff->: {{things}}` (no quotes), ruamel interprets as
                 # 'stuff': ordereddict([(ordereddict([('things', None)]), None)]) which

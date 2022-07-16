@@ -1,5 +1,6 @@
 """Tests for tackle.utils.dicts"""
 import pytest
+from ruamel.yaml import YAML
 
 from tackle.utils.dicts import (
     encode_list_index,
@@ -8,6 +9,7 @@ from tackle.utils.dicts import (
     nested_get,
     nested_delete,
     # set_key,
+    cleanup_unquoted_strings,
 )
 
 ZERO_INDEX = encode_list_index(0)
@@ -207,3 +209,62 @@ def test_nested_delete(input, key_path, expected_output):
     """Test deletion based on key path."""
     nested_delete(input, key_path)
     assert input == expected_output
+
+
+CLEANUP_UNQUOTED_STRINGS_FIXTURES = [
+    (
+        """
+        foo: bar
+        """,
+        {'foo': 'bar'},
+    ),
+    (
+        """
+        foo: {{bar}}
+        """,
+        {'foo': '{{bar}}'},
+    ),
+    (
+        """
+        foo:
+          bar: {{baz}}
+        """,
+        {'foo': {'bar': '{{baz}}'}},
+    ),
+    (
+        """
+        foo:
+          bar:
+            - {{baz}}
+        """,
+        {'foo': {'bar': ['{{baz}}']}},
+    ),
+    (
+        """
+        foo:
+          bar:
+            - baz: 1
+              bing: {{baz}}
+        """,
+        {'foo': {'bar': [{'baz': 1, 'bing': '{{baz}}'}]}},
+    ),
+    (
+        """
+        foo:
+          bar:
+            - baz: 1
+              bing: baz
+        """,
+        {'foo': {'bar': [{'baz': 1, 'bing': 'baz'}]}},
+    ),
+]
+
+
+@pytest.mark.parametrize("input,expected_output", CLEANUP_UNQUOTED_STRINGS_FIXTURES)
+def test_utils_dicts_cleanup_unquoted_strings(input, expected_output):
+    """Test deletion based on key path."""
+    yaml = YAML()
+    input_dict = yaml.load(input)
+
+    cleanup_unquoted_strings(input_dict)
+    assert input_dict == expected_output

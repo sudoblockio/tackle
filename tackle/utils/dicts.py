@@ -3,6 +3,7 @@ Utils for modifying complex dictionaries generally based on an encoded key_path 
 a list of strings for key value lookups and byte encoded integers for items in a list.
 """
 from typing import Union, Any, TYPE_CHECKING
+from ruamel.yaml.constructor import CommentedKeyMap
 
 if TYPE_CHECKING:
     from tackle.models import Context
@@ -21,7 +22,7 @@ def decode_list_index(list_index: bytes) -> int:
 def encode_key_path(path: Union[list, str], sep: str = "/") -> list:
     """
     Take a list or string key_path and encode it with bytes for items in a list. Strings
-    are split up based on a separator, ie path/to/key.
+     are split up based on a separator, ie path/to/key.
     """
     if isinstance(path, str):
         path = path.split(sep)
@@ -242,3 +243,31 @@ def set_key(
             # Assert that the list is not empty - handles cases where we are appending
             #  a value from a list.
             nested_set(context.temporary_context, tmp_key_path, value)
+
+
+def _clean_item(element: Union[dict, list], item: Union[int, str], value: Any):
+    if isinstance(value, dict):
+        value_key = next(iter(value.keys()))
+        if isinstance(value_key, CommentedKeyMap):
+            new_key = next(iter(value_key.keys()))
+            element[item] = "{{" + new_key + "}}"
+        else:
+            cleanup_unquoted_strings(value)
+    elif isinstance(value, list):
+        cleanup_unquoted_strings(value)
+
+
+def cleanup_unquoted_strings(element: Union[dict, list]):
+    """
+    Cleanup a complex dict that might have unquoted templates in them which is a very
+     common mistake to make when writing tackle files. Dicts could be complex with both
+     lists and embedded dicts so each key needs to be visited to check. Looks for values
+     like `ordereddict([('foo', None)]): None and turns them into `foo`. Input is always
+     a dict.
+    """
+    if isinstance(element, dict):
+        for k, v in element.items():
+            _clean_item(element, k, v)
+    elif isinstance(element, list):
+        for i, v in enumerate(element):
+            _clean_item(element, i, v)
