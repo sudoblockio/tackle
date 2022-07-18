@@ -7,7 +7,10 @@ from typing import TYPE_CHECKING, Any
 from pydantic import ValidationError
 
 from tackle.special_vars import special_variables
-from tackle.exceptions import UnknownTemplateVariableException
+from tackle.exceptions import (
+    UnknownTemplateVariableException,
+    MissingTemplateArgsException,
+)
 
 if TYPE_CHECKING:
     from tackle.models import Context
@@ -68,6 +71,10 @@ def render_string(context: 'Context', raw: str):
     # Extract variables
     variables = meta.find_undeclared_variables(context.env_.parse(raw))
 
+    # We need to make a list of used hooks so that we can remove them from the jinja
+    # environment later.
+    used_hooks = []
+
     # Build a render context by inspecting the renderable variables
     render_context = {}
     unknown_variables = []
@@ -101,6 +108,8 @@ def render_string(context: 'Context', raw: str):
         for i in unknown_variables:
             if i in context.provider_hooks:
                 from tackle.models import LazyBaseFunction
+
+                used_hooks.append(i)
 
                 jinja_hook = context.provider_hooks[i]
                 if isinstance(jinja_hook, LazyBaseFunction):
@@ -141,9 +150,21 @@ def render_string(context: 'Context', raw: str):
 
     try:
         rendered_template = template.render(render_context)
+
+        # Need to remove the hook from the globals as if it is called a second time,
+        # it is no longer an unknown variable and will use the prior arguments if they
+        # have not been re-instantiated.
+        for i in used_hooks:
+            context.env_.globals.pop(i)
+
+        # # TODO: RM?
         if rendered_template.startswith('<bound method BaseHook'):
             # Handle unknown variables that are the same as hook_types issues/55
-            raise UndefinedError
+            raise UndefinedError(
+                f"A variable `{'/'.join(used_hooks)}` is the same as "
+                f"a hook and either not declared as a variable or "
+                f"doesn't have arguments. Consider changing."
+            )
 
         # Check for ambiguous globals like `namespace` tackle-box/issues/19
         match = re.search(r'\<class \'(.+?)\'>', rendered_template)
@@ -154,19 +175,13 @@ def render_string(context: 'Context', raw: str):
             elif match.group(1) in context.existing_context:
                 rendered_template = context.existing_context[ambiguous_key]
 
-    except ValidationError as e:
-        # For pydantic validation errors
-        raise e
+    except (TypeError, UndefinedError) as e:
+        # Raised when the wrong type is provided to a hook
+        raise UnknownTemplateVariableException(str(e), context=context) from None
 
-    except UndefinedError as e:
-        # TODO: Make it so when dicts are used as references that the error detects that
-        #  https://github.com/robcxyz/tackle-box/issues/68
-        # if len(unknown_variables) != 0:
-        #     raise UnknownTemplateVariableException(
-        #         f"Variable{'s' if len(unknown_variables) != 1 else ''} {' '.join(unknown_variables)} unknown.",
-        #         context=context,
-        #     ) from None
-        raise UnknownTemplateVariableException(str(e), context=context)
+    except ValidationError as e:
+        # Raised when the wrong type is provided to a hook
+        raise MissingTemplateArgsException(str(e), context=context) from None
 
     try:
         # This will error on strings
