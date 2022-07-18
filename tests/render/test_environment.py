@@ -13,7 +13,7 @@ def test_env_should_come_with_default_extensions():
 
 def test_env_should_evaluate_is_defined(change_curdir_fixtures):
     """Verify that the `is defined` works when rendering."""
-    o = tackle('is_defined.yaml', no_input=True)
+    o = tackle('is-defined.yaml', no_input=True)
     assert 'defined' in o
     assert 'not_defined' not in o
     assert 'not_defined_again' not in o

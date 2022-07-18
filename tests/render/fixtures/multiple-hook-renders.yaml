@@ -1,0 +1,2 @@
+first->: "{{ join(['foo','stuff'], ',') }}"
+second->: "{{join(['2','.txt'])}}"

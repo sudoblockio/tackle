@@ -38,3 +38,15 @@ def test_render_files(change_curdir_fixtures, file, expected_output):
     o = tackle(file)
     expected_output = read_config_file(expected_output)
     assert o == expected_output
+
+
+def test_render_hook_call_multiple(change_curdir_fixtures):
+    """
+    Check that when we run a hook multiple times, that we don't carry over the prior
+    hook calls arguments which may not be instantiated on the second hook call. This
+    happens when the hook that was called is left in the jinja env's globals and not
+    removed which makes the hook not an `unknown_variable` so it uses the prior args.
+    """
+    o = tackle('multiple-hook-renders.yaml')
+    assert o['first'] == "foo,stuff"
+    assert o['second'] == "2.txt"

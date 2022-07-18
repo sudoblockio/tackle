@@ -1,3 +1,0 @@
-
-#This should raise unknown variable exception
-file->: "{{ var }}"
