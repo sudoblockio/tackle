@@ -4,23 +4,26 @@ This document aims to provide an overview of the core parsing logic for tackle f
 
 ## Basics
 
-Tackle-box **sequentially** parses **arbitrary** json or yaml files with the parser only changing the data structure when hooks are called denoted by `->` at the end of a key / item in a list. Hooks can perform a variety of different actions such as prompting for inputs, making web requests, or generating code and return values that are stored in the key they were called from. After any key / value / item in a list is parsed, it is available to be referenced / reused in additional hook calls through jinja rendering.
+Tackle-box **sequentially** parses **arbitrary** json or yaml files with the parser only changing the data structure when hooks are called denoted by forward arrows, ie `->`/`_>` at the end of a key / item in a list. Hooks can perform a variety of different actions such as prompting for inputs, making web requests, or generating code and return values that are stored in the key they were called from. After any key / value / item in a list is parsed, it is available to be referenced / reused in additional hook calls through jinja rendering.
 
 ### Hook Call Forms
 
-Hooks can be called in two basic forms, expanded and compact. For instance:
+Hooks can be called in directly in expanded and compact forms or within jinja as an extensions or filters. For instance:
 
 ```yaml
 expanded:
   ->: input
   message: What is your name?
-# Equivalent to
 compact->: input What is your name?
+# Or with jinja
+jinja_expression->: "{{ input('What is your name?'}}"
+question: What is your name?
+jinja_filter->: "{{question|input}}"
 ```
 
-In this example we are calling the `input` hook which has one mapped argument, `message`, which in the compact form of calling the `input` allows it to be written in a single line. The exact semantics of how arguments are mapped can be found in the [writing hooks]() documentation.
+In this example we are calling the [input](providers/Prompts/input.md) hook that prompts for a string input which has one mapped argument, `message`, which in the compact form of calling [input](providers/Prompts/input.md) allows it to be written in a single line. The exact semantics of how arguments are mapped can be found in the [python hooks](python-hooks.md) and [declarative hooks](declarative-hooks.md) documentation.
 
-The `input` hook has several parameters that are not mapped as arguments such as `default` which can additionally be used in a compact form by including a `--` in the parameter name. For instance:
+The [input](providers/Prompts/input.md) hook has several parameters that are not mapped as arguments such as `default` which can be used in both expanded and compact forms but not in jinja which relies on [mapped arguments](python-hooks.md#arguments-with-list-and-dict-types). For instance:
 
 ```yaml
 expanded:
@@ -32,7 +35,9 @@ compact->: input What is your name? --default robcxyz
 # Notice the additional argument
 ```
 
-Tackle-box also enables conditionals, loops, and other base methods that are also able to be expressed in both hook call forms.  For instance here we can see a `for` loop in both forms:
+### Control Flow
+
+Tackle-box also enables conditionals, loops, and other [base methods](hook-methods.md) that are also able to be expressed in both hook call forms.  For instance here we can see a `for` loop in both forms:
 
 ```yaml
 ttd:
@@ -42,18 +47,20 @@ ttd:
 
 expanded:
   ->: input
-  message: What do you want to do?
   for: ttd  # Strings are rendered by default for `for` loops
+  message: What do you want to do?
   default: "{{item}}" # Here we must explicitly render as default could be a str
 # Equivalent to
 compact->: input What do you want to do? --for ttd --default "{{ item }}"
 ```
 
-For more information on loops and conditional, check out the [hook methods documentation.]()
+For more information on loops and conditional, check out the [hook methods documentation.](hook-methods.md)
 
 ### Public vs Private Hook Calls
 
 Thus far all the examples have been of public hook calls denoted by `->` arrows which run the hook and store the value in the key but sometimes you might want to call hooks but not have the key stored in the output. To do this you would instead run a private hook denoted by `_>` arrow.  Such cases exist when you are dealing with a strict schema and want to embed actions / logic in that schema or you want to keep a clean context and ignore the output of a key. The output of a private hook call is still available to be used later in the same context and is only removed when the context changes such as when a tackle hook is called that parses another tackle file / provider.
+
+For more information, check out the [memory management](memory-management.md) docs.
 
 ## Special Cases
 
@@ -99,7 +106,7 @@ reference:
 
 ### Blocks
 
-Sometimes it is convenient to be able to apply logic to entire blocks of yaml for which there is a special case embedded in the parser. For instance it is common to use a single / multi selector in a tackle file to restrict users to running a certain set of functions:
+Sometimes it is convenient to be able to apply logic to entire blocks of yaml for which there is a special case embedded in the parser. For instance, it is common to use a single / multi selector in a tackle file to restrict users to running a certain set of functions:
 
 ```yaml
 action:
@@ -138,7 +145,7 @@ code:
 
 #### Block render context
 
-When writing blocks, one has access to two different render contexts, the local block context and the outer global context.  For instance:
+When writing blocks, one has access to two different render contexts, a local block context which is referenced and the outer global context.  For instance:
 
 ```yaml
 stuff: things
@@ -153,6 +160,7 @@ code->:
 
 In this example, the key "inner-context" would equal "baz" while the "outer-context" is able to reference "stuff".
 
+Check the [memory management docs](memory-management.md) for more information on different contexts.
 
 #### Side note on blocks - Try out `match` hooks
 

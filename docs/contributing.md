@@ -12,11 +12,13 @@ Contributions are welcome, and they are greatly appreciated! Every little bit he
 
 You can contribute in many ways:
 
-### Create Tackle Providers
+### Create Tackle Providers / Hooks
 
-Some providers to list in the [README](https://github.com/robcxyz/tackle-box) would be great.
+Providers / Hooks can be either contributed directly to tackle-box as a native provider or as external providers / hooks that can be imported remotely. Hooks that have general use cases can be contributed directly to tackle-box where as hooks that are more specialized should be created as external providers.
 
-If you create a tackle provider, submit a pull request adding it to README.md.
+#### Native Providers
+
+Native providers should come with documentation on how to use the hooks by writing a `.tackle.meta.yaml` file at the base of the provider similar to the ones found in the existing [providers](../tackle/providers/collections/.tackle.meta.yaml). This file is parsed as a tackle file and includes links the source code. Please review the examples and get in touch if you have any questions on the [discord](). Hooks should also contain `Field` functions with descriptions so that
 
 ### Report Bugs
 
@@ -244,7 +246,8 @@ Freedom for tackle-box users to build and extend.
 #### Inclusive
 
 * Cross-platform and cross-version support are more important than features/functionality
-* Fixing Windows bugs even if it's a pain, to allow for use by more beginner coders
+
+[//]: # (* Fixing Windows bugs even if it's a pain, to allow for use by more beginner coders)
 
 #### Stable
 

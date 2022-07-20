@@ -114,6 +114,14 @@ Flags are the same as key value pairs but override with True.
 
 ## Additional Command Line Arguments
 
+### override
+
+To override some inputs in the tackle file or to insert extra values, use the `override` option to point to a file with those extra values.  For instance:
+
+```shell
+tackle path/to/something --override some-file.yaml
+```
+
 ### print
 
 When the print flag is specified, the context after parsing is printed out to the screen which can then be piped to a file.

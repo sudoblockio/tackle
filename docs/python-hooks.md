@@ -122,8 +122,6 @@ foo: bar
 jinja_filter->: "{{ foo | print }}"  
 ```
 
-
-
 ## Concepts
 
 ### Pydantic and Types
@@ -177,7 +175,6 @@ with_rendering->: do_stuff "{{ a_map }}" "{{ a_list }}"
 ```
 
 But that's a little verbose so instead we can render inputs by default as explained in the next section.
-
 
 ### Controlling Rendering of Fields
 
