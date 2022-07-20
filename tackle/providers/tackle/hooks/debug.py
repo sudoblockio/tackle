@@ -3,24 +3,22 @@ from InquirerPy import prompt
 
 from tackle import BaseHook, Field
 
-rich_install = False
-try:
-    from pprint import pprint
+rich_install = False  # noqa
+from pprint import pprint
 
+try:
     from rich import print
 
-    # from rich.pretty import pprint
-    # from rich.pretty import Pretty
-    # from rich.panel import Panel
     rich_install = True
 except ImportError:
-    from pprint import pprint
+    pass
 
 
 class DebugHook(BaseHook):
     """Hook for debugging that prints the output context and pauses runtime."""
 
     hook_type: str = 'debug'
+    key: str = Field(None, description="A path to a key to debug")
     context: str = Field(
         None,
         description="Which context to examine. One of `public`, `private`, "
@@ -28,6 +26,16 @@ class DebugHook(BaseHook):
     )
 
     _contexts: list = ['public', 'private', 'temporary', 'existing']
+
+    def print_key(self, print_context):
+        if self.key is not None:
+            if self.key in print_context:
+                pprint(print_context[self.key])
+                return True
+            else:
+                return False
+        else:
+            pprint(print_context[self.key])
 
     def print_context(self, print_context, context_name: str):
         if rich_install:
@@ -58,12 +66,21 @@ class DebugHook(BaseHook):
                     f"`public`, `private`, `temporary`, or `existing`"
                 )
         else:
+            printed = None
             for i in self._contexts:
                 output = getattr(self, f'{i}_context')
                 if output is not None and output != {}:
-                    self.print_context(output, i)
+                    if self.key is not None:
+                        if self.key in output:
+                            self.print_context(output[self.key], i)
+                            printed = True
+                    else:
+                        self.print_context(output, i)
                 else:
                     continue
+
+            if self.key is not None and printed is None:
+                print(f"Key={self.key} not found in ")
 
         if not self.no_input:
             question = {
