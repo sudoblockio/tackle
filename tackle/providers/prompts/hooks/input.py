@@ -24,6 +24,9 @@ class InquirerInputHook(BaseHook):
         if self.message is None:
             self.message = get_readable_key_path(self.key_path) + ' >>>'
 
+        if self.default is not None and not isinstance(self.default, str):
+            self.default = str(self.default)
+
         if not self.no_input:
             question = {
                 'type': 'input',

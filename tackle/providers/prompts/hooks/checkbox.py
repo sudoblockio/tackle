@@ -32,6 +32,10 @@ class InquirerCheckboxHook(BaseHook):
     index: bool = Field(
         False, description="Boolean to return the index instead of the answer"
     )
+    fuzzy: bool = Field(
+        False,
+        description="Allow fuzzy search like fzf - [docs](https://inquirerpy.readthedocs.io/en/latest/pages/prompts/fuzzy.html)",
+    )
 
     args: list = ['message']
     _docs_order: int = 2
@@ -131,7 +135,7 @@ class InquirerCheckboxHook(BaseHook):
             choices = self.choices
 
         question = {
-            'type': 'checkbox',
+            'type': 'checkbox' if not self.fuzzy else 'fuzzy',
             'name': 'tmp',
             'message': self.message,
             'choices': choices,
