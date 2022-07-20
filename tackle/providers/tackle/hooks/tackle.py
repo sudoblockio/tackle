@@ -15,6 +15,8 @@ class TackleHook(BaseHook):
         description="The input can be one of repo, file path, directory with tackle.yaml, zip file, or if left blank parent tackle file.")
     checkout: str = Field(None,
                           description="The branch or version to checkout for repo type inputs_strings.")
+    latest: bool = Field(False,
+                         description="For remote providers, use the latest commit.")
     context_file: str = Field(None, description="The file to run inside a repo input.")
     extra_context: dict = Field(
         None,
@@ -58,6 +60,7 @@ class TackleHook(BaseHook):
         output_context = tkl.main.tackle(
             self.input_string,
             checkout=self.checkout,
+            latest=self.latest,
             password=self.password,
             directory=self.directory,
             calling_directory=self.calling_directory,
