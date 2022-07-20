@@ -1,4 +1,4 @@
-from typing import Union, Optional
+import itertools
 
 from tackle import BaseHook, Field
 
@@ -8,18 +8,11 @@ class ConcatenateHook(BaseHook):
 
     hook_type: str = 'concat'
     # fmt: off
-    src: Union[list, str] = Field(
-        ..., description="A list to extract the keys out of.", render_by_default=True)
-    key: str = Field(...)
-    src_is_key_path: bool = Field(
-        False, description="If the src is a list and is meant to be a key path.")
-    sep: str = Field('/', description="For string src's, a separator for key path.")
+    src: list = Field(
+        ..., description="A list to concatenate the items of.", render_by_default=True)
     # fmt: on
 
-    args: list = ['src', 'key']
+    args: list = ['src']
 
-    def exec(self) -> Optional[list]:
-        if isinstance(self.src, list):
-            return [i[self.key] for i in self.src]
-        else:
-            raise NotImplementedError
+    def exec(self) -> list:
+        return list(itertools.chain.from_iterable(self.src))

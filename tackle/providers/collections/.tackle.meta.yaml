@@ -4,32 +4,180 @@ description: |
   Hooks that act on collections of items.
 
 examples:
-  - name: "[set](set.md)"
-    description: Set a previous key based on a key path
+  - name: "[sort](sort.md)"
+    description: Sort a list in place based on a reference to a key path list or keys in dict
     content: |
       stuff:
-        and: things
-      set_>: set stuff/and other-stuff
+        things:
+          - foo
+          - bar
+          - baz
+      in-place_>: sort stuff/things
+      # Argument is a list so it is output to key
+      output->: sort {{stuff.things}}
     output: |
       stuff:
-        and: other-stuff
+        things:
+          - bar
+          - baz
+          - foo
+      output:
+        - bar
+        - baz
+        - foo
+
+  - name: "[concatenate](concatenate.md)"
+    description: Concatenate two lists.
+    content: |
+      list_1:
+        - foo
+        - bar
+      list_2:
+        - stuff
+        - things
+      out->: concat [list_1,list_2]
+
+    output: |
+      ...
+      out:
+        - foo
+        - bar
+        - stuff
+        - things
+
+  - name: "[distinct](distinct.md)"
+    description: Get distinct members from a list. Can also operate on context.
+    content: |
+      list:
+        - stuff
+        - stuff
+        - things
+      compact->: distinct {{list}}
+      expanded:
+        ->: distinct
+        src:
+          - stuff
+          - stuff
+          - things
+
+    output: |
+      list:
+        - stuff
+        - stuff
+        - things
+      compact:
+        - stuff
+        - things
+      expanded:
+        - stuff
+        - things
+
+  - name: "[list_key_values](list_key_values.md)"
+    description: From a list of maps, get the values based on a key.
+    content->: file tests/list-keys.yaml
+    output: |
+      list_of_maps:
+        - stuff: things
+          foo: bar
+        - foo: baz
+          stuff: mo tings
+      list_key_values:
+        - things
+        - mo tings
 
 hook_examples:
   distinct:
-    - description:
+    - description: Distinct values of list passed into `src` field.
       content: |
         list:
-          - a
-          - b
-          - b
-        result->: distinct {{list}}
+          - stuff
+          - stuff
+          - things
+        compact->: distinct {{list}}
+        expanded:
+          ->: distinct
+          src:
+            - stuff
+            - stuff
+            - things
 
       output: |
         list:
-          - a
-          - b
-          - b
-        result:
-          - a
-          - b
+          - stuff
+          - stuff
+          - things
+        compact:
+          - stuff
+          - things
+        expanded:
+          - stuff
+          - things
 
+    - description: Distinct values operating on context
+      content: |
+        a:
+          list:
+            - stuff
+            - stuff
+            - things
+        compact_>: distinct a/list  # string inputs interpreted path to key
+        # Also notice how hook is private as the output is useless
+
+      output: |
+        a:
+          list:
+            - stuff
+            - things
+
+  sort:
+    - description: Sort a list in place based on a reference to a key path list or keys in dict
+      content: |
+        stuff:
+          things:
+            - foo
+            - bar
+            - baz
+        in-place_>: sort stuff/things  # Notice this is a private hook
+        # Argument is a list so it is output to key
+        output->: sort {{stuff.things}}
+      output: |
+        stuff:
+          things:
+            - bar
+            - baz
+            - foo
+        output:
+          - bar
+          - baz
+          - foo
+
+  concatenate:
+    - description: Concatenate two lists.
+      content: |
+        list_1:
+          - foo
+          - bar
+        list_2:
+          - stuff
+          - things
+        out->: concat [list_1,list_2]
+      output: |
+        ...
+        out:
+          - foo
+          - bar
+          - stuff
+          - things
+
+  list_key:
+    - description: From a list of maps, get the values based on a key.
+      content->: file tests/list-keys.yaml
+      output: |
+        list_of_maps:
+          - stuff: things
+            foo: bar
+          - foo: baz
+            stuff: mo tings
+        list_key_values:
+          - things
+          - mo tings

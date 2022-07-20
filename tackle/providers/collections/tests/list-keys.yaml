@@ -1,0 +1,9 @@
+list_of_maps:
+  - stuff: things
+    foo: bar
+  - foo: baz
+    stuff: mo tings
+
+list_key_values:
+  ->: list_key_values list_of_maps
+  key: stuff

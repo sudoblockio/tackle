@@ -1,0 +1,9 @@
+
+a_list:
+  - things
+  - stuff
+  - things
+  - foo
+
+distincts->: distinct a_list
+

@@ -1,0 +1,10 @@
+
+list_1:
+  - foo
+  - bar
+
+list_2:
+  - stuff
+  - things
+
+out->: concat [list_1,list_2]
