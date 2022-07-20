@@ -4,19 +4,22 @@ from typing import Union
 from pydantic import Field
 from pathlib import Path
 from jinja2 import FileSystemLoader
-from jinja2.exceptions import UndefinedError, TemplateNotFound
+from jinja2.exceptions import UndefinedError
 import shutil
 from typing import List
 
 from tackle.models import BaseHook
-from tackle.providers.generate.hooks.exceptions import UndefinedVariableInTemplate
+from tackle.providers.generate.hooks.exceptions import (
+    UndefinedVariableInTemplate,
+    GenerateHookTemplateNotFound,
+)
 
 
 class GenerateHook(BaseHook, smart_union=True):
     """
     Hook for generating project outputs. Recursively renders all files and folders in a
-    given target directory to an output. If there is a "templates" directory and a file
-    or directory that matches the `templates` input param, use that as target.
+     given target directory to an output. If there is a "templates" directory and a file
+     or directory that matches the `templates` input param, use that as target.
     """
 
     hook_type: str = 'generate'
@@ -137,7 +140,9 @@ class GenerateHook(BaseHook, smart_union=True):
         elif os.path.isdir(target_path):
             self.generate_dir(target_path, self.output)
         else:
-            raise TemplateNotFound(f"Could not find {target_path}.")
+            raise GenerateHookTemplateNotFound(
+                f"Could not find {target_path}.", hook=self
+            ) from None
 
     def generate_file(self, input_file: str, output_path: str):
         """
@@ -180,18 +185,8 @@ class GenerateHook(BaseHook, smart_union=True):
         try:
             rendered_contents = file_contents_template.render(self.render_context)
         except UndefinedError as e:
-            # raise UndefinedVariableInTemplate(
-            #     message=f"Error rendering {input_file}, {e.args[0]}.",
-            #     error=e,
-            #     context=self.render_context,
-            # )
             msg = f"The `generate` hook failed to render -> {e}"
             raise UndefinedVariableInTemplate(msg, hook=self) from None
-
-            # raise UndefinedVariableInTemplate(
-            #     f"Error rendering {input_file}, {e.args[0]}.",
-            #     context=self.render_context,
-            # )
 
         # Write contents
         with open(output_path, 'w') as f:

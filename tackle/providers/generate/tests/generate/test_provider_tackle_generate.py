@@ -5,8 +5,10 @@ import shutil
 import os
 
 from tackle.main import tackle
-from jinja2.exceptions import TemplateNotFound
-from tackle.providers.generate.hooks.exceptions import UndefinedVariableInTemplate
+from tackle.providers.generate.hooks.exceptions import (
+    UndefinedVariableInTemplate,
+    GenerateHookTemplateNotFound,
+)
 
 FIXTURES = [
     "file.yaml",
@@ -34,7 +36,7 @@ def test_provider_system_hook_generate_fixtures(change_dir, fixture):
 
 
 ERRORS = [
-    ("missing-file.yaml", TemplateNotFound),
+    ("missing-file.yaml", GenerateHookTemplateNotFound),
     ("unknown-variable.yaml", UndefinedVariableInTemplate),
 ]
 
