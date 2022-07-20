@@ -11,6 +11,11 @@ def test_provider_system_hook_dicts_update(change_dir):
     assert output['new_str'] == 'baz'
 
 
+def test_provider_system_hook_dicts_update_2(change_dir):
+    output = tackle('update-2.yaml')
+    assert output
+
+
 def test_provider_system_hook_dicts_pop(change_dir):
     output = tackle('pop.yaml')
     assert 'stuff' not in output['pop_map']
@@ -71,3 +76,9 @@ def test_provider_context_append(change_dir):
     assert output['output'] == expected_output
     assert output['path']['to']['list'] == expected_output
     assert len(output['stuff']) == 2
+
+
+def test_provider_context_append_dict(change_dir):
+    """Verify the append hook literal and in place."""
+    output = tackle('append-dict.yaml')
+    assert output

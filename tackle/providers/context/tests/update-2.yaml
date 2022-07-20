@@ -1,0 +1,35 @@
+#app_name->: input
+#environment->: select --choices ['prod','dev']
+
+branch->: get_env BRANCH
+
+base:
+  foo: bar
+  app_name: fluf
+
+environments:
+  develop:
+    baz: bar
+    app_name: fling
+
+  prod:
+    foo: 'bar'
+
+output->: update base {{environments['develop']}}
+
+#arbitrary->: yaml app.yaml {{base['branch']}}
+#
+##p->: yaml app.yaml --if "branch == 'develop'"
+#
+#
+#app_name: foo
+#
+#secrets:
+#  - key: CHAIN
+#    value->: get_env CHAIN
+#  - key: BACKEND_PORT
+#    value: 3001
+#
+#gen->: generate templates .
+#
+#secrets->: yaml secrets.yaml secrets

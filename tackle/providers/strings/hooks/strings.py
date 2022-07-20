@@ -8,7 +8,7 @@ class SplitHook(BaseHook):
 
     hook_type: str = 'split'
 
-    input: str = Field(..., description="A list of string to split or just a string")
+    input: str = Field(..., description="A string to split into a list")
     separator: str = Field("/", description="String separator")
 
     args: list = ['input', 'separator']

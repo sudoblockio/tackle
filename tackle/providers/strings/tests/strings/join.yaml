@@ -23,3 +23,6 @@ foo:
     - even_more_things
 
 inventory->: "{{ join(foo.stuff, ',') }}"
+
+type: stuff
+apath->: "{{join([type,'.txt'])}}"

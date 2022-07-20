@@ -1,0 +1,17 @@
+
+branch: develop
+
+base:
+  foo: bar
+  app_name: fluf
+
+environments:
+  develop:
+    baz: bar
+    app_name: fling
+
+  prod:
+    foo: 'bar'
+
+output->: var {'key':item,'value':base[item]} --for {{keys(base)}}
+output append_>: append output {'key':'{{item}}','value':'{{environments[branch][item]}}'} --for {{keys(environments[branch])}}

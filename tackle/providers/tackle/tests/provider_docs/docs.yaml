@@ -2,9 +2,9 @@ render_context:
   ->: provider_docs
   chdir: "../.."
 
-schemas:
-  ->: provider_docs --output_schemas
-  chdir: "../.."
+#schemas:
+#  ->: provider_docs --output_schemas
+#  chdir: "../.."
 
 #  chdir: "../../../yaml"
 

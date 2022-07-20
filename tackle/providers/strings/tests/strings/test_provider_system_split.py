@@ -14,3 +14,5 @@ def test_provider_strings_join(change_dir):
 
     assert output['a_str'] == ['things', 'stuffs']
     assert output['join_a_str'] == 'things.stuffs'
+    # See test_render_hook_call_multiple for other test on this next assertion
+    assert output['apath'] == "stuff.txt"
