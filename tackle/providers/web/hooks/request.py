@@ -1,8 +1,11 @@
 import os
 import json
 import logging
-import requests
 from typing import Union, Any
+from pydantic import BaseModel
+
+import requests
+from requests.auth import HTTPBasicAuth
 
 from tackle.models import BaseHook, Field
 
@@ -17,15 +20,27 @@ def exit_none_200(r: requests.Response, no_exit: bool, url: str):
         )
 
 
-def process_content(r: requests.Response):
+def process_content(r: requests.Response, encoding):
     """Output the content based on the header."""
     if 'application/json' in r.headers['Content-Type']:
         return json.loads(r.content)
     elif 'text/plain' in r.headers['Content-Type']:
-        return r.content
+        return r.content.decode(encoding=encoding)
 
 
-class RequestsGetHook(BaseHook):
+class AuthMixin(BaseModel):
+    """Authorization for web requesst."""
+
+    username: str = None
+    password: str = None
+
+    def auth(self):
+        if self.username is not None:
+            return HTTPBasicAuth(username=self.username, password=self.password)
+        return None
+
+
+class RequestsGetHook(BaseHook, AuthMixin):
     """
     Hook for Requests 'get' type prompts.
     [Link](https://docs.python-requests.org/en/latest/api/#requests.get)
@@ -42,6 +57,8 @@ class RequestsGetHook(BaseHook):
     params: dict = Field(None,
                          description="Dictionary, list of tuples or bytes to send in the query string for the Request.")
     no_exit: bool = Field(False, description="Whether to exit on non-200 response.")
+    encoding: str = Field('utf-8',
+                          description="For text/plain type return values, the encoding of the type.")
     # fmt: on
 
     args: list = [
@@ -51,12 +68,12 @@ class RequestsGetHook(BaseHook):
     ]
 
     def exec(self) -> dict:
-        r = requests.get(self.url, params=self.params, **self.kwargs)
+        r = requests.get(self.url, params=self.params, auth=self.auth(), **self.kwargs)
         exit_none_200(r, self.no_exit, self.url)
-        return process_content(r)
+        return process_content(r, encoding=self.encoding)
 
 
-class RequestsPostHook(BaseHook):
+class RequestsPostHook(BaseHook, AuthMixin):
     """
     Hook for Requests 'post' type prompts.
     [Link](https://docs.python-requests.org/en/latest/api/#requests.post)
@@ -96,13 +113,14 @@ class RequestsPostHook(BaseHook):
                     f"reference to a file path, not {self.data}."
                 )
 
-        r = requests.post(self.url, data=self.data, json=self.input_json, **self.kwargs)
+        r = requests.post(self.url, data=self.data, json=self.input_json,
+                          auth=self.auth(), **self.kwargs)
         exit_none_200(r, self.no_exit, self.url)
 
         return r.json()
 
 
-class RequestsPutHook(BaseHook):
+class RequestsPutHook(BaseHook, AuthMixin):
     """
     Hook for Requests 'put' type prompts.
     [Link](https://docs.python-requests.org/en/latest/api/#requests.put)
@@ -133,13 +151,14 @@ class RequestsPutHook(BaseHook):
     args: list = ['url', 'data', 'kwargs']
 
     def exec(self):
-        r = requests.put(self.url, data=self.data, json=self.input_json, **self.kwargs)
+        r = requests.put(self.url, data=self.data, json=self.input_json,
+                         auth=self.auth(), **self.kwargs)
         exit_none_200(r, self.no_exit, self.url)
 
         return r.json()
 
 
-class RequestsPatchHook(BaseHook):
+class RequestsPatchHook(BaseHook, AuthMixin):
     """
     Hook for Requests 'patch' type prompts.
     [Link](https://docs.python-requests.org/en/latest/api/#requests.patch)
@@ -171,14 +190,15 @@ class RequestsPatchHook(BaseHook):
 
     def exec(self):
         r = requests.patch(
-            self.url, data=self.data, json=self.input_json, **self.kwargs
+            self.url, data=self.data, json=self.input_json, auth=self.auth(),
+            **self.kwargs
         )
         exit_none_200(r, self.no_exit, self.url)
 
         return r.json()
 
 
-class RequestsDeleteHook(BaseHook):
+class RequestsDeleteHook(BaseHook, AuthMixin):
     """
     Hook for Requests 'delete' type prompts.
     [Link](https://docs.python-requests.org/en/latest/api/#requests.delete)
@@ -198,7 +218,7 @@ class RequestsDeleteHook(BaseHook):
     args: list = ['url', 'kwargs']
 
     def exec(self):
-        r = requests.delete(self.url, **self.kwargs)
+        r = requests.delete(self.url, auth=self.auth(), **self.kwargs)
         exit_none_200(r, self.no_exit, self.url)
 
         return r.status_code
