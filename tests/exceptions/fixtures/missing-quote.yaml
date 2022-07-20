@@ -1,0 +1,5 @@
+words:
+  - Hello
+  - cruel
+  - world!
+hw->: print {{item}} --for words --if "item != 'cruel'

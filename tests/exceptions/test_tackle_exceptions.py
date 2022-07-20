@@ -52,6 +52,11 @@ FIXTURES = [
         exceptions.UnknownInputArgumentException,
         'unknown-named-argument.yaml',
     ),
+    (
+        'missing-quote.yaml',
+        exceptions.MalformedTemplateVariableException,
+        'missing-quote.yaml',
+    ),
 ]
 
 

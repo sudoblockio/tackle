@@ -1,7 +1,7 @@
 import re
 import ast
 from jinja2 import meta
-from jinja2.exceptions import UndefinedError
+from jinja2.exceptions import UndefinedError, TemplateSyntaxError
 from inspect import signature
 from typing import TYPE_CHECKING, Any
 from pydantic import ValidationError
@@ -10,6 +10,7 @@ from tackle.special_vars import special_variables
 from tackle.exceptions import (
     UnknownTemplateVariableException,
     MissingTemplateArgsException,
+    MalformedTemplateVariableException,
 )
 
 if TYPE_CHECKING:
@@ -67,7 +68,13 @@ def render_string(context: 'Context', raw: str):
     if '{{' not in raw:
         return raw
 
-    template = context.env_.from_string(raw)
+    try:
+        template = context.env_.from_string(raw)
+    except TemplateSyntaxError as e:
+        raise MalformedTemplateVariableException(
+            str(e).capitalize() + f" in {raw}", context=context
+        ) from None
+
     # Extract variables
     variables = meta.find_undeclared_variables(context.env_.parse(raw))
 

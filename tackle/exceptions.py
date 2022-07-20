@@ -262,6 +262,14 @@ class UnknownHookTypeException(TackleParserException):
     """
 
 
+class MalformedTemplateVariableException(TackleParserException):
+    """
+    Exception for a malformed templatable argument.
+
+    Raised when rendering variables.
+    """
+
+
 #
 # Parser input exceptions
 #
