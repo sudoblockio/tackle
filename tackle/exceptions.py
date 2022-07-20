@@ -232,7 +232,23 @@ class NoInputOrParentTackleException(TackleParserException):
 
 class UnknownTemplateVariableException(TackleParserException):
     """
-    Exception an unknown templatable argument.
+    Exception for an unknown templatable argument.
+
+    Raised when rendering variables.
+    """
+
+
+class MissingTemplateArgsException(TackleParserException):
+    """
+    Exception with missing arguments in hook call within template.
+
+    Raised when rendering variables.
+    """
+
+
+class TooManyTemplateArgsException(TackleParserException):
+    """
+    Exception with missing arguments in hook call within template.
 
     Raised when rendering variables.
     """

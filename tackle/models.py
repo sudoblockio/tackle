@@ -29,6 +29,7 @@ from tackle.utils.paths import listdir_absolute
 from tackle.utils.dicts import get_readable_key_path
 from tackle.render import wrap_jinja_braces
 from tackle.utils.files import read_config_file
+from tackle.exceptions import TooManyTemplateArgsException
 
 logger = logging.getLogger(__name__)
 
@@ -364,6 +365,9 @@ class Context(BaseContext):
     input_string: str = None
     input_dir: str = None
     input_file: str = None
+    override_context: Union[str, dict] = Field(
+        None, description="A str for a file or dict to override inputs with."
+    )
 
     context_functions: list = None
 
@@ -480,6 +484,7 @@ class BaseHook(BaseContext, Extension, metaclass=PartialModelMetaclass):
         # disregards aliased fields
         alias_to_fields = {v: k for k, v in fields.items()}
 
+    # TODO: RM?
     def exec(self) -> Any:
         raise NotImplementedError("Every hook needs an exec method.")
 
@@ -506,9 +511,11 @@ class BaseHook(BaseContext, Extension, metaclass=PartialModelMetaclass):
                     break
                 setattr(self, v, args[i])
             if len(args) > len(self.args):
-                raise Exception(
-                    f"Too many arguments in {get_readable_key_path(self.key_path)}"
-                )
+                raise TooManyTemplateArgsException(
+                    f"Too many arguments in {get_readable_key_path(self.key_path)} "
+                    f"hook call.",
+                    context=self,
+                ) from None
         for k, v in kwargs.items():
             setattr(self, k, v)
 
