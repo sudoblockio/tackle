@@ -66,3 +66,12 @@ def test_main_from_cli_input_dict(change_curdir_fixtures, capsys):
     """Test same as above but from command line."""
     main(["dict-input.yaml", "--this", "1", "--that", "2", "--print"])
     assert 'this' in capsys.readouterr().out
+
+
+def test_main_overrides(change_curdir_fixtures):
+    """Test that we can override inputs."""
+    o = tackle("dict-input.yaml", override="dict-input-overrides.yaml")
+    # Should normally throw error with prompt
+    assert o['this'] == "stuff"
+    # Again, should raise error w/o override
+    main(["dict-input.yaml", "--override", "dict-input-overrides.yaml"])

@@ -79,6 +79,15 @@ def main(raw_args=None):
         help="Search for target in parent directory. Only relevant for local targets.",
     )
     parser.add_argument(
+        '--override',
+        '-o',
+        type=str,
+        default=None,
+        # metavar="",
+        help="A string to a file to use as overrides when parsing a tackle file or "
+        "some dict to use with keys to additionally use when parsing a file.",
+    )
+    parser.add_argument(
         '--version', action='version', version=f'tackle-box {__version__}'
     )
 

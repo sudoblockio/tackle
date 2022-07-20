@@ -1,9 +1,11 @@
+import os
 from typing import Union
 
 from tackle.models import Context
 from tackle.parser import update_source
 from tackle.utils.paths import find_nearest_tackle_file
 from tackle.exceptions import NoInputOrParentTackleException
+from tackle.utils.files import read_config_file
 
 
 def get_global_kwargs(kwargs):
@@ -36,6 +38,7 @@ def tackle(
     :return: Dictionary of the output
     """
     if args:
+        # Remove first arg and consider all other args global to be ingested later
         kwargs['input_string'] = args[0]
         if len(args) != 1:
             kwargs['global_args'] = []
@@ -59,7 +62,17 @@ def tackle(
         # package - ie tackle('input-file.yaml', **some_override_dict)
         context.global_kwargs = get_global_kwargs(kwargs)
 
-    # Main loop
-    update_source(context)
+    if 'override' in kwargs and kwargs['override'] is not None:
+        overrides = kwargs.pop('override')
+        if os.path.exists(overrides):
+            override_dict = read_config_file(overrides)
+            if override_dict is not None:
+                context.global_kwargs.update(override_dict)
 
-    return context.public_context
+    # Main loop
+    output = update_source(context)
+    if output is None:
+        return context.public_context
+    return output
+
+    # return context.public_context
