@@ -1,4 +1,13 @@
-# 0.1.0 (2022-07-21)
+## [0.1.1](https://github.com/robcxyz/tackle-box/compare/v0.1.0...v0.1.1) (2022-07-21)
+
+
+### Bug Fixes
+
+* issue with unquoted string cleanup function on empty dicts: ([b1e8b3f](https://github.com/robcxyz/tackle-box/commit/b1e8b3faf60c018f143b019f85732b13abe639d2))
+
+
+
+# [0.1.0](https://github.com/robcxyz/tackle-box/compare/f173ef6818d179ed4f21ef899cad49bcb080b9f3...v0.1.0) (2022-07-21)
 
 
 ### Bug Fixes
