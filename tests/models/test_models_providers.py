@@ -39,8 +39,6 @@ def test_parser_provider_import_installs_requirements(
         import requests
     except ImportError:
         assert True
-    else:
-        assert False
 
     tackle('test-install-dep.yaml')
     import requests  # noqa
