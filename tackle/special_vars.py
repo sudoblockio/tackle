@@ -1,11 +1,9 @@
-"""Special variables to be used in rendering."""
-
 import os
 import platform
-
 import csv
-
 from typing import TYPE_CHECKING
+
+from tackle.settings import settings
 
 if TYPE_CHECKING:
     from tackle.models import Context
@@ -65,6 +63,14 @@ def _architecture():
     return platform.architecture()
 
 
+def _tackle_dir():
+    return settings.tackle_dir
+
+
+def _provider_dir():
+    return settings.provider_dir
+
+
 def _calling_directory(context: 'Context'):
     return context.calling_directory
 
@@ -118,6 +124,8 @@ special_variables = {
     'processor': _processor,
     'architecture': _architecture,
     'lsb_release': get_linux_distribution,
+    'tackle_dir': _tackle_dir,
+    'provider_dir': _provider_dir,
     'calling_directory': _calling_directory,
     'calling_file': _calling_file,
     'current_file': _current_file,
