@@ -11,7 +11,7 @@
       
       
       <link rel="icon" href="/tackle-box/assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.3.6">
+      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.4.0rc1">
     
     
       
@@ -19,7 +19,7 @@
       
     
     
-      <link rel="stylesheet" href="/tackle-box/assets/stylesheets/main.4a0965b7.min.css">
+      <link rel="stylesheet" href="/tackle-box/assets/stylesheets/main.476df7d4.min.css">
       
         
         <link rel="stylesheet" href="/tackle-box/assets/stylesheets/palette.cbb835fc.min.css">
@@ -42,7 +42,7 @@
     
       <link rel="stylesheet" href="/tackle-box/css/custom.css">
     
-    <script>__md_scope=new URL("/tackle-box/",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("/tackle-box/",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
   
@@ -52,9 +52,11 @@
   
 
 
-  <script>window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-205713594-2","auto"),ga("set","anonymizeIp",!0),ga("send","pageview"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){var e;this.value&&(e=document.location.pathname,ga("send","pageview",e+"?q="+this.value))}),"undefined"!=typeof location$&&location$.subscribe(function(e){ga("send","pageview",e.pathname)})})</script>
-  <script async src="https://www.google-analytics.com/analytics.js"></script>
+  <script id="__analytics">function __md_analytics(){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-205713594-2","auto"),ga("set","anonymizeIp",!0),ga("send","pageview"),document.addEventListener("DOMContentLoaded",function(){if(document.forms.search&&document.forms.search.query.addEventListener("blur",function(){var e;this.value&&(e=document.location.pathname,ga("send","pageview",e+"?q="+this.value))}),document.forms.feedback){var e,a=document.forms.feedback;for(e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");ga("send","event","feedback","click",t,e),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}"undefined"!=typeof location$&&location$.subscribe(function(e){ga("send","pageview",e.pathname)})});var e=document.createElement("script");e.async=!0,e.src="https://www.google-analytics.com/analytics.js",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
 
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
 
     
     
@@ -257,8 +259,8 @@
   
   
     <li class="md-nav__item">
-      <a href="/tackle-box/installation/" class="md-nav__link">
-        Installation
+      <a href="/tackle-box/hello-worlds/" class="md-nav__link">
+        Hello Worlds
       </a>
     </li>
   
@@ -272,8 +274,8 @@
   
   
     <li class="md-nav__item">
-      <a href="/tackle-box/project-structure/" class="md-nav__link">
-        Project Structure
+      <a href="/tackle-box/installation/" class="md-nav__link">
+        Installation
       </a>
     </li>
   
@@ -302,8 +304,8 @@
   
   
     <li class="md-nav__item">
-      <a href="/tackle-box/creating-providers/" class="md-nav__link">
-        Creating Providers
+      <a href="/tackle-box/using-providers/" class="md-nav__link">
+        Using Providers
       </a>
     </li>
   
@@ -317,8 +319,8 @@
   
   
     <li class="md-nav__item">
-      <a href="/tackle-box/using-providers/" class="md-nav__link">
-        Using Providers
+      <a href="/tackle-box/project-structure/" class="md-nav__link">
+        Project Structure
       </a>
     </li>
   
@@ -377,8 +379,8 @@
   
   
     <li class="md-nav__item">
-      <a href="/tackle-box/writing-hooks/" class="md-nav__link">
-        Writing Hooks
+      <a href="/tackle-box/python-hooks/" class="md-nav__link">
+        Python Hooks
       </a>
     </li>
   
@@ -407,8 +409,53 @@
   
   
     <li class="md-nav__item">
+      <a href="/tackle-box/creating-providers/" class="md-nav__link">
+        Creating Providers
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="/tackle-box/debugging-tackle/" class="md-nav__link">
+        Debugging
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="/tackle-box/memory-management/" class="md-nav__link">
         Memory Management
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="/tackle-box/special-variables/" class="md-nav__link">
+        Special Variables
       </a>
     </li>
   
@@ -427,36 +474,22 @@
     <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_13" type="checkbox" id="__nav_13" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_16" type="checkbox" id="__nav_16" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_13">
+        <label class="md-nav__link" for="__nav_16">
           Examples
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Examples" data-md-level="1">
-        <label class="md-nav__title" for="__nav_13">
+        <label class="md-nav__title" for="__nav_16">
           <span class="md-nav__icon md-icon"></span>
           Examples
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="/tackle-box/examples/" class="md-nav__link">
-        Index
-      </a>
-    </li>
-  
-
-            
           
             
               
@@ -520,7 +553,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/tackle-box/examples/generating-code/" class="md-nav__link">
+      <a href="/tackle-box/examples/generating-code.md" class="md-nav__link">
         Generating Code
       </a>
     </li>
@@ -537,18 +570,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_13_7" type="checkbox" id="__nav_13_7" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_16_6" type="checkbox" id="__nav_16_6" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_13_7">
+        <label class="md-nav__link" for="__nav_16_6">
           Tutorials
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Tutorials" data-md-level="2">
-        <label class="md-nav__title" for="__nav_13_7">
+        <label class="md-nav__title" for="__nav_16_6">
           <span class="md-nav__icon md-icon"></span>
           Tutorials
         </label>
@@ -622,18 +655,18 @@
     <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14" type="checkbox" id="__nav_14" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17" type="checkbox" id="__nav_17" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14">
+        <label class="md-nav__link" for="__nav_17">
           Provider Docs
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Provider Docs" data-md-level="1">
-        <label class="md-nav__title" for="__nav_14">
+        <label class="md-nav__title" for="__nav_17">
           <span class="md-nav__icon md-icon"></span>
           Provider Docs
         </label>
@@ -648,18 +681,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_1" type="checkbox" id="__nav_14_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_1" type="checkbox" id="__nav_17_1" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_1">
+        <label class="md-nav__link" for="__nav_17_1">
           Collections
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Collections" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_1">
+        <label class="md-nav__title" for="__nav_17_1">
           <span class="md-nav__icon md-icon"></span>
           Collections
         </label>
@@ -751,18 +784,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_2" type="checkbox" id="__nav_14_2" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_2" type="checkbox" id="__nav_17_2" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_2">
+        <label class="md-nav__link" for="__nav_17_2">
           Command
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Command" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_2">
+        <label class="md-nav__title" for="__nav_17_2">
           <span class="md-nav__icon md-icon"></span>
           Command
         </label>
@@ -812,18 +845,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_3" type="checkbox" id="__nav_14_3" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_3" type="checkbox" id="__nav_17_3" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_3">
+        <label class="md-nav__link" for="__nav_17_3">
           Console
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Console" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_3">
+        <label class="md-nav__title" for="__nav_17_3">
           <span class="md-nav__icon md-icon"></span>
           Console
         </label>
@@ -915,18 +948,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_4" type="checkbox" id="__nav_14_4" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_4" type="checkbox" id="__nav_17_4" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_4">
+        <label class="md-nav__link" for="__nav_17_4">
           Context
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Context" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_4">
+        <label class="md-nav__title" for="__nav_17_4">
           <span class="md-nav__icon md-icon"></span>
           Context
         </label>
@@ -1074,18 +1107,79 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_5" type="checkbox" id="__nav_14_5" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_5" type="checkbox" id="__nav_17_5" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_5">
+        <label class="md-nav__link" for="__nav_17_5">
+          Datetime
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Datetime" data-md-level="2">
+        <label class="md-nav__title" for="__nav_17_5">
+          <span class="md-nav__icon md-icon"></span>
+          Datetime
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="/tackle-box/providers/Datetime/" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="/tackle-box/providers/Datetime/date_now.md" class="md-nav__link">
+        date_now
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_6" type="checkbox" id="__nav_17_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_17_6">
           Environment
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Environment" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_5">
+        <label class="md-nav__title" for="__nav_17_6">
           <span class="md-nav__icon md-icon"></span>
           Environment
         </label>
@@ -1177,18 +1271,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_6" type="checkbox" id="__nav_14_6" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_7" type="checkbox" id="__nav_17_7" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_6">
+        <label class="md-nav__link" for="__nav_17_7">
           Files
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Files" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_6">
+        <label class="md-nav__title" for="__nav_17_7">
           <span class="md-nav__icon md-icon"></span>
           Files
         </label>
@@ -1350,18 +1444,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_7" type="checkbox" id="__nav_14_7" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_8" type="checkbox" id="__nav_17_8" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_7">
+        <label class="md-nav__link" for="__nav_17_8">
           Generate
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Generate" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_7">
+        <label class="md-nav__title" for="__nav_17_8">
           <span class="md-nav__icon md-icon"></span>
           Generate
         </label>
@@ -1425,18 +1519,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_8" type="checkbox" id="__nav_14_8" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_9" type="checkbox" id="__nav_17_9" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_8">
+        <label class="md-nav__link" for="__nav_17_9">
           Git
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Git" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_8">
+        <label class="md-nav__title" for="__nav_17_9">
           <span class="md-nav__icon md-icon"></span>
           Git
         </label>
@@ -1500,18 +1594,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_9" type="checkbox" id="__nav_14_9" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_10" type="checkbox" id="__nav_17_10" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_9">
+        <label class="md-nav__link" for="__nav_17_10">
           Ini
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Ini" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_9">
+        <label class="md-nav__title" for="__nav_17_10">
           <span class="md-nav__icon md-icon"></span>
           Ini
         </label>
@@ -1561,18 +1655,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_10" type="checkbox" id="__nav_14_10" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_11" type="checkbox" id="__nav_17_11" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_10">
+        <label class="md-nav__link" for="__nav_17_11">
           Json
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Json" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_10">
+        <label class="md-nav__title" for="__nav_17_11">
           <span class="md-nav__icon md-icon"></span>
           Json
         </label>
@@ -1636,135 +1730,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_11" type="checkbox" id="__nav_14_11" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_12" type="checkbox" id="__nav_17_12" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_11">
-          Kubernetes
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Kubernetes" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_11">
-          <span class="md-nav__icon md-icon"></span>
-          Kubernetes
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="/tackle-box/providers/Kubernetes/" class="md-nav__link">
-        Index
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="/tackle-box/providers/Kubernetes/k8s_apply/" class="md-nav__link">
-        k8s_apply
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="/tackle-box/providers/Kubernetes/k8s_context_list/" class="md-nav__link">
-        k8s_context_list
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="/tackle-box/providers/Kubernetes/k8s_context_map/" class="md-nav__link">
-        k8s_context_map
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="/tackle-box/providers/Kubernetes/k8s_current_context/" class="md-nav__link">
-        k8s_current_context
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="/tackle-box/providers/Kubernetes/k8s_use_context/" class="md-nav__link">
-        k8s_use_context
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_12" type="checkbox" id="__nav_14_12" >
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_14_12">
+        <label class="md-nav__link" for="__nav_17_12">
           Logic
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Logic" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_12">
+        <label class="md-nav__title" for="__nav_17_12">
           <span class="md-nav__icon md-icon"></span>
           Logic
         </label>
@@ -1828,18 +1805,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_13" type="checkbox" id="__nav_14_13" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_13" type="checkbox" id="__nav_17_13" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_13">
+        <label class="md-nav__link" for="__nav_17_13">
           Paths
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Paths" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_13">
+        <label class="md-nav__title" for="__nav_17_13">
           <span class="md-nav__icon md-icon"></span>
           Paths
         </label>
@@ -2057,18 +2034,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_14" type="checkbox" id="__nav_14_14" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_14" type="checkbox" id="__nav_17_14" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_14">
+        <label class="md-nav__link" for="__nav_17_14">
           Prompts
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Prompts" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_14">
+        <label class="md-nav__title" for="__nav_17_14">
           <span class="md-nav__icon md-icon"></span>
           Prompts
         </label>
@@ -2216,18 +2193,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_15" type="checkbox" id="__nav_14_15" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_15" type="checkbox" id="__nav_17_15" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_15">
+        <label class="md-nav__link" for="__nav_17_15">
           Strings
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Strings" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_15">
+        <label class="md-nav__title" for="__nav_17_15">
           <span class="md-nav__icon md-icon"></span>
           Strings
         </label>
@@ -2269,6 +2246,20 @@
     <li class="md-nav__item">
       <a href="/tackle-box/providers/Strings/base64_encode/" class="md-nav__link">
         base64_encode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="/tackle-box/providers/Strings/ends_with/" class="md-nav__link">
+        ends_with
       </a>
     </li>
   
@@ -2331,6 +2322,34 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="/tackle-box/providers/Strings/starts_with/" class="md-nav__link">
+        starts_with
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="/tackle-box/providers/Strings/starts_with/" class="md-nav__link">
+        starts_with
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -2347,18 +2366,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_16" type="checkbox" id="__nav_14_16" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_16" type="checkbox" id="__nav_17_16" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_16">
+        <label class="md-nav__link" for="__nav_17_16">
           Tackle
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Tackle" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_16">
+        <label class="md-nav__title" for="__nav_17_16">
           <span class="md-nav__icon md-icon"></span>
           Tackle
         </label>
@@ -2506,18 +2525,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_17" type="checkbox" id="__nav_14_17" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_17" type="checkbox" id="__nav_17_17" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_17">
+        <label class="md-nav__link" for="__nav_17_17">
           Toml
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Toml" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_17">
+        <label class="md-nav__title" for="__nav_17_17">
           <span class="md-nav__icon md-icon"></span>
           Toml
         </label>
@@ -2567,18 +2586,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_18" type="checkbox" id="__nav_14_18" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_18" type="checkbox" id="__nav_17_18" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_18">
+        <label class="md-nav__link" for="__nav_17_18">
           Types
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Types" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_18">
+        <label class="md-nav__title" for="__nav_17_18">
           <span class="md-nav__icon md-icon"></span>
           Types
         </label>
@@ -2670,18 +2689,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_19" type="checkbox" id="__nav_14_19" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_19" type="checkbox" id="__nav_17_19" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_19">
+        <label class="md-nav__link" for="__nav_17_19">
           Web
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Web" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_19">
+        <label class="md-nav__title" for="__nav_17_19">
           <span class="md-nav__icon md-icon"></span>
           Web
         </label>
@@ -2801,18 +2820,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_20" type="checkbox" id="__nav_14_20" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_20" type="checkbox" id="__nav_17_20" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_20">
+        <label class="md-nav__link" for="__nav_17_20">
           Yaml
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Yaml" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_20">
+        <label class="md-nav__title" for="__nav_17_20">
           <span class="md-nav__icon md-icon"></span>
           Yaml
         </label>
@@ -2852,8 +2871,22 @@
   
   
     <li class="md-nav__item">
-      <a href="/tackle-box/providers/Yaml/yamlify/" class="md-nav__link">
-        yamlify
+      <a href="/tackle-box/providers/Yaml/yamldecode/" class="md-nav__link">
+        yamldecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="/tackle-box/providers/Yaml/yamlencode/" class="md-nav__link">
+        yamlencode
       </a>
     </li>
   
@@ -2886,18 +2919,18 @@
     <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_15" type="checkbox" id="__nav_15" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_18" type="checkbox" id="__nav_18" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_15">
+        <label class="md-nav__link" for="__nav_18">
           Development
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Development" data-md-level="1">
-        <label class="md-nav__title" for="__nav_15">
+        <label class="md-nav__title" for="__nav_18">
           <span class="md-nav__icon md-icon"></span>
           Development
         </label>
@@ -3069,10 +3102,11 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "/tackle-box/", "features": ["search.suggest", "search.highlight", "content.tabs.link", "navigation.sections"], "search": "/tackle-box/assets/javascripts/workers/search.85cb4492.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    <script id="__config" type="application/json">{"base": "/tackle-box/", "features": ["search.suggest", "search.highlight", "content.tabs.link", "navigation.sections"], "search": "/tackle-box/assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="/tackle-box/assets/javascripts/bundle.a877e258.min.js"></script>
+      <script src="/tackle-box/assets/javascripts/bundle.0bc13b87.min.js"></script>
       
         <script src="/tackle-box/js/termynal.js"></script>
       

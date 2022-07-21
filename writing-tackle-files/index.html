@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://robcxyz.github.io/tackle-box/writing-tackle-files/">
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.3.6">
+      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.4.0rc1">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.4a0965b7.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.476df7d4.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.cbb835fc.min.css">
@@ -44,7 +44,7 @@
     
       <link rel="stylesheet" href="../css/custom.css">
     
-    <script>__md_scope=new URL("..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
   
@@ -54,9 +54,11 @@
   
 
 
-  <script>window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-205713594-2","auto"),ga("set","anonymizeIp",!0),ga("send","pageview"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){var e;this.value&&(e=document.location.pathname,ga("send","pageview",e+"?q="+this.value))}),"undefined"!=typeof location$&&location$.subscribe(function(e){ga("send","pageview",e.pathname)})})</script>
-  <script async src="https://www.google-analytics.com/analytics.js"></script>
+  <script id="__analytics">function __md_analytics(){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-205713594-2","auto"),ga("set","anonymizeIp",!0),ga("send","pageview"),document.addEventListener("DOMContentLoaded",function(){if(document.forms.search&&document.forms.search.query.addEventListener("blur",function(){var e;this.value&&(e=document.location.pathname,ga("send","pageview",e+"?q="+this.value))}),document.forms.feedback){var e,a=document.forms.feedback;for(e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");ga("send","event","feedback","click",t,e),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}"undefined"!=typeof location$&&location$.subscribe(function(e){ga("send","pageview",e.pathname)})});var e=document.createElement("script");e.async=!0,e.src="https://www.google-analytics.com/analytics.js",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
 
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
 
     
     
@@ -264,8 +266,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../installation/" class="md-nav__link">
-        Installation
+      <a href="../hello-worlds/" class="md-nav__link">
+        Hello Worlds
       </a>
     </li>
   
@@ -279,8 +281,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../project-structure/" class="md-nav__link">
-        Project Structure
+      <a href="../installation/" class="md-nav__link">
+        Installation
       </a>
     </li>
   
@@ -309,8 +311,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../creating-providers/" class="md-nav__link">
-        Creating Providers
+      <a href="../using-providers/" class="md-nav__link">
+        Using Providers
       </a>
     </li>
   
@@ -324,8 +326,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../using-providers/" class="md-nav__link">
-        Using Providers
+      <a href="../project-structure/" class="md-nav__link">
+        Project Structure
       </a>
     </li>
   
@@ -383,6 +385,13 @@
           <li class="md-nav__item">
   <a href="#hook-call-forms" class="md-nav__link">
     Hook Call Forms
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#control-flow" class="md-nav__link">
+    Control Flow
   </a>
   
 </li>
@@ -492,8 +501,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../writing-hooks/" class="md-nav__link">
-        Writing Hooks
+      <a href="../python-hooks/" class="md-nav__link">
+        Python Hooks
       </a>
     </li>
   
@@ -522,8 +531,53 @@
   
   
     <li class="md-nav__item">
+      <a href="../creating-providers/" class="md-nav__link">
+        Creating Providers
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../debugging-tackle/" class="md-nav__link">
+        Debugging
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../memory-management/" class="md-nav__link">
         Memory Management
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../special-variables/" class="md-nav__link">
+        Special Variables
       </a>
     </li>
   
@@ -542,36 +596,22 @@
     <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_13" type="checkbox" id="__nav_13" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_16" type="checkbox" id="__nav_16" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_13">
+        <label class="md-nav__link" for="__nav_16">
           Examples
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Examples" data-md-level="1">
-        <label class="md-nav__title" for="__nav_13">
+        <label class="md-nav__title" for="__nav_16">
           <span class="md-nav__icon md-icon"></span>
           Examples
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../examples/" class="md-nav__link">
-        Index
-      </a>
-    </li>
-  
-
-            
           
             
               
@@ -635,7 +675,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/generating-code/" class="md-nav__link">
+      <a href="../examples/generating-code.md" class="md-nav__link">
         Generating Code
       </a>
     </li>
@@ -652,18 +692,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_13_7" type="checkbox" id="__nav_13_7" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_16_6" type="checkbox" id="__nav_16_6" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_13_7">
+        <label class="md-nav__link" for="__nav_16_6">
           Tutorials
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Tutorials" data-md-level="2">
-        <label class="md-nav__title" for="__nav_13_7">
+        <label class="md-nav__title" for="__nav_16_6">
           <span class="md-nav__icon md-icon"></span>
           Tutorials
         </label>
@@ -737,18 +777,18 @@
     <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14" type="checkbox" id="__nav_14" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17" type="checkbox" id="__nav_17" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14">
+        <label class="md-nav__link" for="__nav_17">
           Provider Docs
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Provider Docs" data-md-level="1">
-        <label class="md-nav__title" for="__nav_14">
+        <label class="md-nav__title" for="__nav_17">
           <span class="md-nav__icon md-icon"></span>
           Provider Docs
         </label>
@@ -763,18 +803,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_1" type="checkbox" id="__nav_14_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_1" type="checkbox" id="__nav_17_1" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_1">
+        <label class="md-nav__link" for="__nav_17_1">
           Collections
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Collections" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_1">
+        <label class="md-nav__title" for="__nav_17_1">
           <span class="md-nav__icon md-icon"></span>
           Collections
         </label>
@@ -866,18 +906,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_2" type="checkbox" id="__nav_14_2" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_2" type="checkbox" id="__nav_17_2" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_2">
+        <label class="md-nav__link" for="__nav_17_2">
           Command
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Command" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_2">
+        <label class="md-nav__title" for="__nav_17_2">
           <span class="md-nav__icon md-icon"></span>
           Command
         </label>
@@ -927,18 +967,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_3" type="checkbox" id="__nav_14_3" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_3" type="checkbox" id="__nav_17_3" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_3">
+        <label class="md-nav__link" for="__nav_17_3">
           Console
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Console" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_3">
+        <label class="md-nav__title" for="__nav_17_3">
           <span class="md-nav__icon md-icon"></span>
           Console
         </label>
@@ -1030,18 +1070,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_4" type="checkbox" id="__nav_14_4" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_4" type="checkbox" id="__nav_17_4" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_4">
+        <label class="md-nav__link" for="__nav_17_4">
           Context
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Context" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_4">
+        <label class="md-nav__title" for="__nav_17_4">
           <span class="md-nav__icon md-icon"></span>
           Context
         </label>
@@ -1189,18 +1229,79 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_5" type="checkbox" id="__nav_14_5" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_5" type="checkbox" id="__nav_17_5" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_5">
+        <label class="md-nav__link" for="__nav_17_5">
+          Datetime
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Datetime" data-md-level="2">
+        <label class="md-nav__title" for="__nav_17_5">
+          <span class="md-nav__icon md-icon"></span>
+          Datetime
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../providers/Datetime/" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../providers/Datetime/date_now.md" class="md-nav__link">
+        date_now
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_6" type="checkbox" id="__nav_17_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_17_6">
           Environment
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Environment" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_5">
+        <label class="md-nav__title" for="__nav_17_6">
           <span class="md-nav__icon md-icon"></span>
           Environment
         </label>
@@ -1292,18 +1393,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_6" type="checkbox" id="__nav_14_6" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_7" type="checkbox" id="__nav_17_7" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_6">
+        <label class="md-nav__link" for="__nav_17_7">
           Files
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Files" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_6">
+        <label class="md-nav__title" for="__nav_17_7">
           <span class="md-nav__icon md-icon"></span>
           Files
         </label>
@@ -1465,18 +1566,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_7" type="checkbox" id="__nav_14_7" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_8" type="checkbox" id="__nav_17_8" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_7">
+        <label class="md-nav__link" for="__nav_17_8">
           Generate
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Generate" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_7">
+        <label class="md-nav__title" for="__nav_17_8">
           <span class="md-nav__icon md-icon"></span>
           Generate
         </label>
@@ -1540,18 +1641,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_8" type="checkbox" id="__nav_14_8" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_9" type="checkbox" id="__nav_17_9" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_8">
+        <label class="md-nav__link" for="__nav_17_9">
           Git
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Git" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_8">
+        <label class="md-nav__title" for="__nav_17_9">
           <span class="md-nav__icon md-icon"></span>
           Git
         </label>
@@ -1615,18 +1716,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_9" type="checkbox" id="__nav_14_9" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_10" type="checkbox" id="__nav_17_10" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_9">
+        <label class="md-nav__link" for="__nav_17_10">
           Ini
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Ini" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_9">
+        <label class="md-nav__title" for="__nav_17_10">
           <span class="md-nav__icon md-icon"></span>
           Ini
         </label>
@@ -1676,18 +1777,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_10" type="checkbox" id="__nav_14_10" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_11" type="checkbox" id="__nav_17_11" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_10">
+        <label class="md-nav__link" for="__nav_17_11">
           Json
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Json" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_10">
+        <label class="md-nav__title" for="__nav_17_11">
           <span class="md-nav__icon md-icon"></span>
           Json
         </label>
@@ -1751,135 +1852,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_11" type="checkbox" id="__nav_14_11" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_12" type="checkbox" id="__nav_17_12" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_11">
-          Kubernetes
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Kubernetes" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_11">
-          <span class="md-nav__icon md-icon"></span>
-          Kubernetes
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../providers/Kubernetes/" class="md-nav__link">
-        Index
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../providers/Kubernetes/k8s_apply/" class="md-nav__link">
-        k8s_apply
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../providers/Kubernetes/k8s_context_list/" class="md-nav__link">
-        k8s_context_list
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../providers/Kubernetes/k8s_context_map/" class="md-nav__link">
-        k8s_context_map
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../providers/Kubernetes/k8s_current_context/" class="md-nav__link">
-        k8s_current_context
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../providers/Kubernetes/k8s_use_context/" class="md-nav__link">
-        k8s_use_context
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_12" type="checkbox" id="__nav_14_12" >
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_14_12">
+        <label class="md-nav__link" for="__nav_17_12">
           Logic
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Logic" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_12">
+        <label class="md-nav__title" for="__nav_17_12">
           <span class="md-nav__icon md-icon"></span>
           Logic
         </label>
@@ -1943,18 +1927,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_13" type="checkbox" id="__nav_14_13" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_13" type="checkbox" id="__nav_17_13" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_13">
+        <label class="md-nav__link" for="__nav_17_13">
           Paths
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Paths" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_13">
+        <label class="md-nav__title" for="__nav_17_13">
           <span class="md-nav__icon md-icon"></span>
           Paths
         </label>
@@ -2172,18 +2156,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_14" type="checkbox" id="__nav_14_14" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_14" type="checkbox" id="__nav_17_14" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_14">
+        <label class="md-nav__link" for="__nav_17_14">
           Prompts
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Prompts" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_14">
+        <label class="md-nav__title" for="__nav_17_14">
           <span class="md-nav__icon md-icon"></span>
           Prompts
         </label>
@@ -2331,18 +2315,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_15" type="checkbox" id="__nav_14_15" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_15" type="checkbox" id="__nav_17_15" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_15">
+        <label class="md-nav__link" for="__nav_17_15">
           Strings
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Strings" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_15">
+        <label class="md-nav__title" for="__nav_17_15">
           <span class="md-nav__icon md-icon"></span>
           Strings
         </label>
@@ -2384,6 +2368,20 @@
     <li class="md-nav__item">
       <a href="../providers/Strings/base64_encode/" class="md-nav__link">
         base64_encode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../providers/Strings/ends_with/" class="md-nav__link">
+        ends_with
       </a>
     </li>
   
@@ -2446,6 +2444,34 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../providers/Strings/starts_with/" class="md-nav__link">
+        starts_with
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../providers/Strings/starts_with/" class="md-nav__link">
+        starts_with
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -2462,18 +2488,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_16" type="checkbox" id="__nav_14_16" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_16" type="checkbox" id="__nav_17_16" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_16">
+        <label class="md-nav__link" for="__nav_17_16">
           Tackle
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Tackle" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_16">
+        <label class="md-nav__title" for="__nav_17_16">
           <span class="md-nav__icon md-icon"></span>
           Tackle
         </label>
@@ -2621,18 +2647,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_17" type="checkbox" id="__nav_14_17" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_17" type="checkbox" id="__nav_17_17" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_17">
+        <label class="md-nav__link" for="__nav_17_17">
           Toml
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Toml" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_17">
+        <label class="md-nav__title" for="__nav_17_17">
           <span class="md-nav__icon md-icon"></span>
           Toml
         </label>
@@ -2682,18 +2708,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_18" type="checkbox" id="__nav_14_18" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_18" type="checkbox" id="__nav_17_18" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_18">
+        <label class="md-nav__link" for="__nav_17_18">
           Types
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Types" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_18">
+        <label class="md-nav__title" for="__nav_17_18">
           <span class="md-nav__icon md-icon"></span>
           Types
         </label>
@@ -2785,18 +2811,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_19" type="checkbox" id="__nav_14_19" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_19" type="checkbox" id="__nav_17_19" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_19">
+        <label class="md-nav__link" for="__nav_17_19">
           Web
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Web" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_19">
+        <label class="md-nav__title" for="__nav_17_19">
           <span class="md-nav__icon md-icon"></span>
           Web
         </label>
@@ -2916,18 +2942,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_20" type="checkbox" id="__nav_14_20" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_20" type="checkbox" id="__nav_17_20" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_20">
+        <label class="md-nav__link" for="__nav_17_20">
           Yaml
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Yaml" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_20">
+        <label class="md-nav__title" for="__nav_17_20">
           <span class="md-nav__icon md-icon"></span>
           Yaml
         </label>
@@ -2967,8 +2993,22 @@
   
   
     <li class="md-nav__item">
-      <a href="../providers/Yaml/yamlify/" class="md-nav__link">
-        yamlify
+      <a href="../providers/Yaml/yamldecode/" class="md-nav__link">
+        yamldecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../providers/Yaml/yamlencode/" class="md-nav__link">
+        yamlencode
       </a>
     </li>
   
@@ -3001,18 +3041,18 @@
     <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_15" type="checkbox" id="__nav_15" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_18" type="checkbox" id="__nav_18" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_15">
+        <label class="md-nav__link" for="__nav_18">
           Development
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Development" data-md-level="1">
-        <label class="md-nav__title" for="__nav_15">
+        <label class="md-nav__title" for="__nav_18">
           <span class="md-nav__icon md-icon"></span>
           Development
         </label>
@@ -3108,6 +3148,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#control-flow" class="md-nav__link">
+    Control Flow
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#public-vs-private-hook-calls" class="md-nav__link">
     Public vs Private Hook Calls
   </a>
@@ -3183,17 +3230,20 @@
 <h1 id="tackle-file-parsing-logic">Tackle File Parsing Logic<a class="headerlink" href="#tackle-file-parsing-logic" title="Permanent link">&para;</a></h1>
 <p>This document aims to provide an overview of the core parsing logic for tackle files which are arbitrary yaml files that have hooks embedded in them.</p>
 <h2 id="basics">Basics<a class="headerlink" href="#basics" title="Permanent link">&para;</a></h2>
-<p>Tackle-box <strong>sequentially</strong> parses <strong>arbitrary</strong> json or yaml files with the parser only changing the data structure when hooks are called denoted by <code>-&gt;</code> at the end of a key / item in a list. Hooks can perform a variety of different actions such as prompting for inputs, making web requests, or generating code and return values that are stored in the key they were called from. After any key / value / item in a list is parsed, it is available to be referenced / reused in additional hook calls through jinja rendering.</p>
+<p>Tackle-box <strong>sequentially</strong> parses <strong>arbitrary</strong> json or yaml files with the parser only changing the data structure when hooks are called denoted by forward arrows, ie <code>-&gt;</code>/<code>_&gt;</code> at the end of a key / item in a list. Hooks can perform a variety of different actions such as prompting for inputs, making web requests, or generating code and return values that are stored in the key they were called from. After any key / value / item in a list is parsed, it is available to be referenced / reused in additional hook calls through jinja rendering.</p>
 <h3 id="hook-call-forms">Hook Call Forms<a class="headerlink" href="#hook-call-forms" title="Permanent link">&para;</a></h3>
-<p>Hooks can be called in two basic forms, expanded and compact. For instance:</p>
+<p>Hooks can be called in directly in expanded and compact forms or within jinja as an extensions or filters. For instance:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">expanded</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">input</span><span class="w"></span>
 <span class="w">  </span><span class="nt">message</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">What is your name?</span><span class="w"></span>
-<span class="c1"># Equivalent to</span><span class="w"></span>
 <span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">input What is your name?</span><span class="w"></span>
+<span class="c1"># Or with jinja</span><span class="w"></span>
+<span class="nt">jinja_expression-&gt;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">input(&#39;What</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">your</span><span class="nv"> </span><span class="s">name?&#39;}}&quot;</span><span class="w"></span>
+<span class="nt">question</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">What is your name?</span><span class="w"></span>
+<span class="nt">jinja_filter-&gt;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{question|input}}&quot;</span><span class="w"></span>
 </code></pre></div>
-<p>In this example we are calling the <code>input</code> hook which has one mapped argument, <code>message</code>, which in the compact form of calling the <code>input</code> allows it to be written in a single line. The exact semantics of how arguments are mapped can be found in the <a href="">writing hooks</a> documentation.</p>
-<p>The <code>input</code> hook has several parameters that are not mapped as arguments such as <code>default</code> which can additionally be used in a compact form by including a <code>--</code> in the parameter name. For instance:</p>
+<p>In this example we are calling the <a href="../providers/Prompts/input/">input</a> hook that prompts for a string input which has one mapped argument, <code>message</code>, which in the compact form of calling <a href="../providers/Prompts/input/">input</a> allows it to be written in a single line. The exact semantics of how arguments are mapped can be found in the <a href="../python-hooks/">python hooks</a> and <a href="../declarative-hooks/">declarative hooks</a> documentation.</p>
+<p>The <a href="../providers/Prompts/input/">input</a> hook has several parameters that are not mapped as arguments such as <code>default</code> which can be used in both expanded and compact forms but not in jinja which relies on <a href="../python-hooks/#arguments-with-list-and-dict-types">mapped arguments</a>. For instance:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">expanded</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">input</span><span class="w"></span>
 <span class="w">  </span><span class="nt">message</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">What is your name?</span><span class="w"></span>
@@ -3202,7 +3252,8 @@
 <span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">input What is your name? --default robcxyz</span><span class="w"></span>
 <span class="c1"># Notice the additional argument</span><span class="w"></span>
 </code></pre></div>
-<p>Tackle-box also enables conditionals, loops, and other base methods that are also able to be expressed in both hook call forms.  For instance here we can see a <code>for</code> loop in both forms:</p>
+<h3 id="control-flow">Control Flow<a class="headerlink" href="#control-flow" title="Permanent link">&para;</a></h3>
+<p>Tackle-box also enables conditionals, loops, and other <a href="../hook-methods/">base methods</a> that are also able to be expressed in both hook call forms.  For instance here we can see a <code>for</code> loop in both forms:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">ttd</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stuff</span><span class="w"></span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">and</span><span class="w"></span>
@@ -3210,15 +3261,16 @@
 
 <span class="nt">expanded</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">input</span><span class="w"></span>
-<span class="w">  </span><span class="nt">message</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">What do you want to do?</span><span class="w"></span>
 <span class="w">  </span><span class="nt">for</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ttd</span><span class="w">  </span><span class="c1"># Strings are rendered by default for `for` loops</span><span class="w"></span>
+<span class="w">  </span><span class="nt">message</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">What do you want to do?</span><span class="w"></span>
 <span class="w">  </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{item}}&quot;</span><span class="w"> </span><span class="c1"># Here we must explicitly render as default could be a str</span><span class="w"></span>
 <span class="c1"># Equivalent to</span><span class="w"></span>
 <span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">input What do you want to do? --for ttd --default &quot;{{ item }}&quot;</span><span class="w"></span>
 </code></pre></div>
-<p>For more information on loops and conditional, check out the <a href="">hook methods documentation.</a></p>
+<p>For more information on loops and conditional, check out the <a href="../hook-methods/">hook methods documentation.</a></p>
 <h3 id="public-vs-private-hook-calls">Public vs Private Hook Calls<a class="headerlink" href="#public-vs-private-hook-calls" title="Permanent link">&para;</a></h3>
 <p>Thus far all the examples have been of public hook calls denoted by <code>-&gt;</code> arrows which run the hook and store the value in the key but sometimes you might want to call hooks but not have the key stored in the output. To do this you would instead run a private hook denoted by <code>_&gt;</code> arrow.  Such cases exist when you are dealing with a strict schema and want to embed actions / logic in that schema or you want to keep a clean context and ignore the output of a key. The output of a private hook call is still available to be used later in the same context and is only removed when the context changes such as when a tackle hook is called that parses another tackle file / provider.</p>
+<p>For more information, check out the <a href="../memory-management/">memory management</a> docs.</p>
 <h2 id="special-cases">Special Cases<a class="headerlink" href="#special-cases" title="Permanent link">&para;</a></h2>
 <p>While all logic can be expressed simply through calling hooks, several convenient shorthand forms exist for calling common hooks such as <code>var</code> for rendering a variable and <code>block</code> for parsing a level of the input.  </p>
 <h3 id="rendering-variables">Rendering Variables<a class="headerlink" href="#rendering-variables" title="Permanent link">&para;</a></h3>
@@ -3247,7 +3299,7 @@
 <span class="w">  </span><span class="nt">stuff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">things</span><span class="w"></span>
 </code></pre></div>
 <h3 id="blocks">Blocks<a class="headerlink" href="#blocks" title="Permanent link">&para;</a></h3>
-<p>Sometimes it is convenient to be able to apply logic to entire blocks of yaml for which there is a special case embedded in the parser. For instance it is common to use a single / multi selector in a tackle file to restrict users to running a certain set of functions:</p>
+<p>Sometimes it is convenient to be able to apply logic to entire blocks of yaml for which there is a special case embedded in the parser. For instance, it is common to use a single / multi selector in a tackle file to restrict users to running a certain set of functions:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">action</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">select What are we doing today?</span><span class="w"></span>
 <span class="w">  </span><span class="nt">choices</span><span class="p">:</span><span class="w"></span>
@@ -3279,7 +3331,7 @@
 <span class="w">    </span><span class="nt">open-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">command touch code.py</span><span class="w"></span>
 </code></pre></div>
 <h4 id="block-render-context">Block render context<a class="headerlink" href="#block-render-context" title="Permanent link">&para;</a></h4>
-<p>When writing blocks, one has access to two different render contexts, the local block context and the outer global context.  For instance:</p>
+<p>When writing blocks, one has access to two different render contexts, a local block context which is referenced and the outer global context.  For instance:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">stuff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">things</span><span class="w"></span>
 <span class="nt">foo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bar</span><span class="w"></span>
 
@@ -3290,6 +3342,7 @@
 <span class="w">  </span><span class="nt">outer-context-&gt;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">stuff</span><span class="nv"> </span><span class="s">}}&quot;</span><span class="w"></span>
 </code></pre></div>
 <p>In this example, the key "inner-context" would equal "baz" while the "outer-context" is able to reference "stuff".</p>
+<p>Check the <a href="../memory-management/">memory management docs</a> for more information on different contexts.</p>
 <h4 id="side-note-on-blocks-try-out-match-hooks">Side note on blocks - Try out <code>match</code> hooks<a class="headerlink" href="#side-note-on-blocks-try-out-match-hooks" title="Permanent link">&para;</a></h4>
 <p>For another way of conditionally parsing blocks of yaml, checkout the <a href=""><code>match</code> hook</a> which performs similarly to match / switch case statements per the below example.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">action</span><span class="p">:</span><span class="w"></span>
@@ -3312,6 +3365,11 @@
 <span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
 </code></pre></div>
 
+
+  
+
+
+
               
             </article>
             
@@ -3328,7 +3386,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../using-providers/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Using Providers" rel="prev">
+        <a href="../project-structure/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Project Structure" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -3337,7 +3395,7 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Using Providers
+              Project Structure
             </div>
           </div>
         </a>
@@ -3438,10 +3496,11 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": ["search.suggest", "search.highlight", "content.tabs.link", "navigation.sections"], "search": "../assets/javascripts/workers/search.85cb4492.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["search.suggest", "search.highlight", "content.tabs.link", "navigation.sections"], "search": "../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.a877e258.min.js"></script>
+      <script src="../assets/javascripts/bundle.0bc13b87.min.js"></script>
       
         <script src="../js/termynal.js"></script>
       

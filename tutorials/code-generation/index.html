@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://robcxyz.github.io/tackle-box/tutorials/code-generation/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.3.6">
+      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.4.0rc1">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.4a0965b7.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.476df7d4.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.cbb835fc.min.css">
@@ -44,7 +44,7 @@
     
       <link rel="stylesheet" href="../../css/custom.css">
     
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
   
@@ -54,9 +54,11 @@
   
 
 
-  <script>window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-205713594-2","auto"),ga("set","anonymizeIp",!0),ga("send","pageview"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){var e;this.value&&(e=document.location.pathname,ga("send","pageview",e+"?q="+this.value))}),"undefined"!=typeof location$&&location$.subscribe(function(e){ga("send","pageview",e.pathname)})})</script>
-  <script async src="https://www.google-analytics.com/analytics.js"></script>
+  <script id="__analytics">function __md_analytics(){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-205713594-2","auto"),ga("set","anonymizeIp",!0),ga("send","pageview"),document.addEventListener("DOMContentLoaded",function(){if(document.forms.search&&document.forms.search.query.addEventListener("blur",function(){var e;this.value&&(e=document.location.pathname,ga("send","pageview",e+"?q="+this.value))}),document.forms.feedback){var e,a=document.forms.feedback;for(e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");ga("send","event","feedback","click",t,e),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}"undefined"!=typeof location$&&location$.subscribe(function(e){ga("send","pageview",e.pathname)})});var e=document.createElement("script");e.async=!0,e.src="https://www.google-analytics.com/analytics.js",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
 
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
 
     
     
@@ -264,8 +266,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../installation/" class="md-nav__link">
-        Installation
+      <a href="../../hello-worlds/" class="md-nav__link">
+        Hello Worlds
       </a>
     </li>
   
@@ -279,8 +281,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../project-structure/" class="md-nav__link">
-        Project Structure
+      <a href="../../installation/" class="md-nav__link">
+        Installation
       </a>
     </li>
   
@@ -309,8 +311,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../creating-providers/" class="md-nav__link">
-        Creating Providers
+      <a href="../../using-providers/" class="md-nav__link">
+        Using Providers
       </a>
     </li>
   
@@ -324,8 +326,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../using-providers/" class="md-nav__link">
-        Using Providers
+      <a href="../../project-structure/" class="md-nav__link">
+        Project Structure
       </a>
     </li>
   
@@ -384,8 +386,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../writing-hooks/" class="md-nav__link">
-        Writing Hooks
+      <a href="../../python-hooks/" class="md-nav__link">
+        Python Hooks
       </a>
     </li>
   
@@ -414,8 +416,53 @@
   
   
     <li class="md-nav__item">
+      <a href="../../creating-providers/" class="md-nav__link">
+        Creating Providers
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../debugging-tackle/" class="md-nav__link">
+        Debugging
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../memory-management/" class="md-nav__link">
         Memory Management
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../special-variables/" class="md-nav__link">
+        Special Variables
       </a>
     </li>
   
@@ -436,36 +483,22 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_13" type="checkbox" id="__nav_13" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_16" type="checkbox" id="__nav_16" checked>
       
       
       
       
-        <label class="md-nav__link" for="__nav_13">
+        <label class="md-nav__link" for="__nav_16">
           Examples
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Examples" data-md-level="1">
-        <label class="md-nav__title" for="__nav_13">
+        <label class="md-nav__title" for="__nav_16">
           <span class="md-nav__icon md-icon"></span>
           Examples
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        Index
-      </a>
-    </li>
-  
-
-            
           
             
               
@@ -529,7 +562,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/generating-code/" class="md-nav__link">
+      <a href="../../examples/generating-code.md" class="md-nav__link">
         Generating Code
       </a>
     </li>
@@ -548,18 +581,18 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_13_7" type="checkbox" id="__nav_13_7" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_16_6" type="checkbox" id="__nav_16_6" checked>
       
       
       
       
-        <label class="md-nav__link" for="__nav_13_7">
+        <label class="md-nav__link" for="__nav_16_6">
           Tutorials
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Tutorials" data-md-level="2">
-        <label class="md-nav__title" for="__nav_13_7">
+        <label class="md-nav__title" for="__nav_16_6">
           <span class="md-nav__icon md-icon"></span>
           Tutorials
         </label>
@@ -605,51 +638,44 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#code-generator-examples" class="md-nav__link">
-    Code Generator Examples
+  <a href="#examples" class="md-nav__link">
+    Examples
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#creating-your-own-code-generator" class="md-nav__link">
-    Creating Your Own Code Generator
+  <a href="#the-generate-hook" class="md-nav__link">
+    The generate Hook
   </a>
   
-    <nav class="md-nav" aria-label="Creating Your Own Code Generator">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simplest-example" class="md-nav__link">
+    Simplest Example
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-with-prompting" class="md-nav__link">
+    Example with Prompting
+  </a>
+  
+    <nav class="md-nav" aria-label="Example with Prompting">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#tackle-file-structure" class="md-nav__link">
-    Tackle File Structure
+  <a href="#conditional-options" class="md-nav__link">
+    Conditional Options
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#prompting-a-user-for-inputs" class="md-nav__link">
-    Prompting a user for inputs
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#controlling-context" class="md-nav__link">
-    Controlling context
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#building-file-paths-from-maps" class="md-nav__link">
-    Building file paths from maps
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ingesting-a-spec-and-transforming-it-to-a-render-context" class="md-nav__link">
-    Ingesting a spec and transforming it to a render context
+  <a href="#conditional-blocks" class="md-nav__link">
+    Conditional Blocks
   </a>
   
 </li>
@@ -658,6 +684,19 @@
   <a href="#using-other-tackle-providers" class="md-nav__link">
     Using other tackle providers
   </a>
+  
+    <nav class="md-nav" aria-label="Using other tackle providers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#note-on-context" class="md-nav__link">
+    Note on context
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -736,18 +775,18 @@
     <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14" type="checkbox" id="__nav_14" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17" type="checkbox" id="__nav_17" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14">
+        <label class="md-nav__link" for="__nav_17">
           Provider Docs
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Provider Docs" data-md-level="1">
-        <label class="md-nav__title" for="__nav_14">
+        <label class="md-nav__title" for="__nav_17">
           <span class="md-nav__icon md-icon"></span>
           Provider Docs
         </label>
@@ -762,18 +801,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_1" type="checkbox" id="__nav_14_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_1" type="checkbox" id="__nav_17_1" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_1">
+        <label class="md-nav__link" for="__nav_17_1">
           Collections
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Collections" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_1">
+        <label class="md-nav__title" for="__nav_17_1">
           <span class="md-nav__icon md-icon"></span>
           Collections
         </label>
@@ -865,18 +904,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_2" type="checkbox" id="__nav_14_2" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_2" type="checkbox" id="__nav_17_2" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_2">
+        <label class="md-nav__link" for="__nav_17_2">
           Command
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Command" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_2">
+        <label class="md-nav__title" for="__nav_17_2">
           <span class="md-nav__icon md-icon"></span>
           Command
         </label>
@@ -926,18 +965,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_3" type="checkbox" id="__nav_14_3" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_3" type="checkbox" id="__nav_17_3" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_3">
+        <label class="md-nav__link" for="__nav_17_3">
           Console
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Console" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_3">
+        <label class="md-nav__title" for="__nav_17_3">
           <span class="md-nav__icon md-icon"></span>
           Console
         </label>
@@ -1029,18 +1068,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_4" type="checkbox" id="__nav_14_4" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_4" type="checkbox" id="__nav_17_4" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_4">
+        <label class="md-nav__link" for="__nav_17_4">
           Context
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Context" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_4">
+        <label class="md-nav__title" for="__nav_17_4">
           <span class="md-nav__icon md-icon"></span>
           Context
         </label>
@@ -1188,18 +1227,79 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_5" type="checkbox" id="__nav_14_5" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_5" type="checkbox" id="__nav_17_5" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_5">
+        <label class="md-nav__link" for="__nav_17_5">
+          Datetime
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Datetime" data-md-level="2">
+        <label class="md-nav__title" for="__nav_17_5">
+          <span class="md-nav__icon md-icon"></span>
+          Datetime
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../providers/Datetime/" class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../providers/Datetime/date_now.md" class="md-nav__link">
+        date_now
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_6" type="checkbox" id="__nav_17_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_17_6">
           Environment
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Environment" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_5">
+        <label class="md-nav__title" for="__nav_17_6">
           <span class="md-nav__icon md-icon"></span>
           Environment
         </label>
@@ -1291,18 +1391,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_6" type="checkbox" id="__nav_14_6" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_7" type="checkbox" id="__nav_17_7" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_6">
+        <label class="md-nav__link" for="__nav_17_7">
           Files
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Files" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_6">
+        <label class="md-nav__title" for="__nav_17_7">
           <span class="md-nav__icon md-icon"></span>
           Files
         </label>
@@ -1464,18 +1564,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_7" type="checkbox" id="__nav_14_7" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_8" type="checkbox" id="__nav_17_8" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_7">
+        <label class="md-nav__link" for="__nav_17_8">
           Generate
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Generate" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_7">
+        <label class="md-nav__title" for="__nav_17_8">
           <span class="md-nav__icon md-icon"></span>
           Generate
         </label>
@@ -1539,18 +1639,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_8" type="checkbox" id="__nav_14_8" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_9" type="checkbox" id="__nav_17_9" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_8">
+        <label class="md-nav__link" for="__nav_17_9">
           Git
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Git" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_8">
+        <label class="md-nav__title" for="__nav_17_9">
           <span class="md-nav__icon md-icon"></span>
           Git
         </label>
@@ -1614,18 +1714,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_9" type="checkbox" id="__nav_14_9" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_10" type="checkbox" id="__nav_17_10" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_9">
+        <label class="md-nav__link" for="__nav_17_10">
           Ini
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Ini" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_9">
+        <label class="md-nav__title" for="__nav_17_10">
           <span class="md-nav__icon md-icon"></span>
           Ini
         </label>
@@ -1675,18 +1775,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_10" type="checkbox" id="__nav_14_10" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_11" type="checkbox" id="__nav_17_11" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_10">
+        <label class="md-nav__link" for="__nav_17_11">
           Json
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Json" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_10">
+        <label class="md-nav__title" for="__nav_17_11">
           <span class="md-nav__icon md-icon"></span>
           Json
         </label>
@@ -1750,135 +1850,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_11" type="checkbox" id="__nav_14_11" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_12" type="checkbox" id="__nav_17_12" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_11">
-          Kubernetes
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Kubernetes" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_11">
-          <span class="md-nav__icon md-icon"></span>
-          Kubernetes
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../providers/Kubernetes/" class="md-nav__link">
-        Index
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../providers/Kubernetes/k8s_apply/" class="md-nav__link">
-        k8s_apply
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../providers/Kubernetes/k8s_context_list/" class="md-nav__link">
-        k8s_context_list
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../providers/Kubernetes/k8s_context_map/" class="md-nav__link">
-        k8s_context_map
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../providers/Kubernetes/k8s_current_context/" class="md-nav__link">
-        k8s_current_context
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../providers/Kubernetes/k8s_use_context/" class="md-nav__link">
-        k8s_use_context
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_12" type="checkbox" id="__nav_14_12" >
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_14_12">
+        <label class="md-nav__link" for="__nav_17_12">
           Logic
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Logic" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_12">
+        <label class="md-nav__title" for="__nav_17_12">
           <span class="md-nav__icon md-icon"></span>
           Logic
         </label>
@@ -1942,18 +1925,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_13" type="checkbox" id="__nav_14_13" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_13" type="checkbox" id="__nav_17_13" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_13">
+        <label class="md-nav__link" for="__nav_17_13">
           Paths
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Paths" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_13">
+        <label class="md-nav__title" for="__nav_17_13">
           <span class="md-nav__icon md-icon"></span>
           Paths
         </label>
@@ -2171,18 +2154,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_14" type="checkbox" id="__nav_14_14" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_14" type="checkbox" id="__nav_17_14" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_14">
+        <label class="md-nav__link" for="__nav_17_14">
           Prompts
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Prompts" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_14">
+        <label class="md-nav__title" for="__nav_17_14">
           <span class="md-nav__icon md-icon"></span>
           Prompts
         </label>
@@ -2330,18 +2313,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_15" type="checkbox" id="__nav_14_15" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_15" type="checkbox" id="__nav_17_15" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_15">
+        <label class="md-nav__link" for="__nav_17_15">
           Strings
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Strings" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_15">
+        <label class="md-nav__title" for="__nav_17_15">
           <span class="md-nav__icon md-icon"></span>
           Strings
         </label>
@@ -2383,6 +2366,20 @@
     <li class="md-nav__item">
       <a href="../../providers/Strings/base64_encode/" class="md-nav__link">
         base64_encode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../providers/Strings/ends_with/" class="md-nav__link">
+        ends_with
       </a>
     </li>
   
@@ -2445,6 +2442,34 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../providers/Strings/starts_with/" class="md-nav__link">
+        starts_with
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../providers/Strings/starts_with/" class="md-nav__link">
+        starts_with
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -2461,18 +2486,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_16" type="checkbox" id="__nav_14_16" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_16" type="checkbox" id="__nav_17_16" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_16">
+        <label class="md-nav__link" for="__nav_17_16">
           Tackle
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Tackle" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_16">
+        <label class="md-nav__title" for="__nav_17_16">
           <span class="md-nav__icon md-icon"></span>
           Tackle
         </label>
@@ -2620,18 +2645,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_17" type="checkbox" id="__nav_14_17" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_17" type="checkbox" id="__nav_17_17" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_17">
+        <label class="md-nav__link" for="__nav_17_17">
           Toml
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Toml" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_17">
+        <label class="md-nav__title" for="__nav_17_17">
           <span class="md-nav__icon md-icon"></span>
           Toml
         </label>
@@ -2681,18 +2706,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_18" type="checkbox" id="__nav_14_18" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_18" type="checkbox" id="__nav_17_18" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_18">
+        <label class="md-nav__link" for="__nav_17_18">
           Types
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Types" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_18">
+        <label class="md-nav__title" for="__nav_17_18">
           <span class="md-nav__icon md-icon"></span>
           Types
         </label>
@@ -2784,18 +2809,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_19" type="checkbox" id="__nav_14_19" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_19" type="checkbox" id="__nav_17_19" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_19">
+        <label class="md-nav__link" for="__nav_17_19">
           Web
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Web" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_19">
+        <label class="md-nav__title" for="__nav_17_19">
           <span class="md-nav__icon md-icon"></span>
           Web
         </label>
@@ -2915,18 +2940,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_20" type="checkbox" id="__nav_14_20" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_17_20" type="checkbox" id="__nav_17_20" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_14_20">
+        <label class="md-nav__link" for="__nav_17_20">
           Yaml
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Yaml" data-md-level="2">
-        <label class="md-nav__title" for="__nav_14_20">
+        <label class="md-nav__title" for="__nav_17_20">
           <span class="md-nav__icon md-icon"></span>
           Yaml
         </label>
@@ -2966,8 +2991,22 @@
   
   
     <li class="md-nav__item">
-      <a href="../../providers/Yaml/yamlify/" class="md-nav__link">
-        yamlify
+      <a href="../../providers/Yaml/yamldecode/" class="md-nav__link">
+        yamldecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../providers/Yaml/yamlencode/" class="md-nav__link">
+        yamlencode
       </a>
     </li>
   
@@ -3000,18 +3039,18 @@
     <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_15" type="checkbox" id="__nav_15" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_18" type="checkbox" id="__nav_18" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_15">
+        <label class="md-nav__link" for="__nav_18">
           Development
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Development" data-md-level="1">
-        <label class="md-nav__title" for="__nav_15">
+        <label class="md-nav__title" for="__nav_18">
           <span class="md-nav__icon md-icon"></span>
           Development
         </label>
@@ -3092,51 +3131,44 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#code-generator-examples" class="md-nav__link">
-    Code Generator Examples
+  <a href="#examples" class="md-nav__link">
+    Examples
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#creating-your-own-code-generator" class="md-nav__link">
-    Creating Your Own Code Generator
+  <a href="#the-generate-hook" class="md-nav__link">
+    The generate Hook
   </a>
   
-    <nav class="md-nav" aria-label="Creating Your Own Code Generator">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simplest-example" class="md-nav__link">
+    Simplest Example
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-with-prompting" class="md-nav__link">
+    Example with Prompting
+  </a>
+  
+    <nav class="md-nav" aria-label="Example with Prompting">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#tackle-file-structure" class="md-nav__link">
-    Tackle File Structure
+  <a href="#conditional-options" class="md-nav__link">
+    Conditional Options
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#prompting-a-user-for-inputs" class="md-nav__link">
-    Prompting a user for inputs
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#controlling-context" class="md-nav__link">
-    Controlling context
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#building-file-paths-from-maps" class="md-nav__link">
-    Building file paths from maps
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ingesting-a-spec-and-transforming-it-to-a-render-context" class="md-nav__link">
-    Ingesting a spec and transforming it to a render context
+  <a href="#conditional-blocks" class="md-nav__link">
+    Conditional Blocks
   </a>
   
 </li>
@@ -3145,6 +3177,19 @@
   <a href="#using-other-tackle-providers" class="md-nav__link">
     Using other tackle providers
   </a>
+  
+    <nav class="md-nav" aria-label="Using other tackle providers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#note-on-context" class="md-nav__link">
+    Note on context
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -3175,105 +3220,126 @@
 
 
 <h1 id="code-generation-tutorial">Code Generation Tutorial<a class="headerlink" href="#code-generation-tutorial" title="Permanent link">&para;</a></h1>
-<p>The basic structure of any code generator is to build some kind of context and then render a set of files to a target directory. Most code generators out there have only one way of building the rendering context.  For instance:</p>
+<p>Tackle was originally built from <a href="https://github.com/cookiecutter/cookiecutter">cookiecutter</a>, a very popular code scaffolding tool, and extends its functionality with additional language features such as modularity, conditionals and loops, reusable objects, and more.</p>
+<p>The basic structure of any code skaffolding tool is to build some kind of context and then render a set of files to a target directory. Tackle box uses jinja syntax internally to build flow control but also ships with a number of hooks to create files and render templates. This document aims to go over the common practices for generating code with tackle box.</p>
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
+<p>For those that learn best via examples, here are a few that should get the general point across:</p>
 <ul>
-<li><a href="https://github.com/facebook/create-react-app">create-react-app</a><ul>
-<li>All configuration options baked in</li>
+<li><a href="https://github.com/robcxyz/tackle-provider">tackle-provider</a></li>
+<li>A tackle provider for creating other tackle providers</li>
+<li><a href="https://github.com/robcxyz/tackle-license">tackle-license</a></li>
+<li>A tackle provider for creating license files</li>
+<li><a href="https://github.com/robcxyz/tackle-box/blob/main/docs/docs-gen.yaml">Tackle provider docs</a></li>
+<li>Tackle's <a href="https://robcxyz.github.io/tackle-box/creating-providers/#autogenerated-docs">provider docs</a> are generated with tackle</li>
+<li>This example uses the <a href="../../providers/Tackle/provider_docs/">provider_docs</a> hook from <a href="https://github.com/robcxyz/tackle-box/blob/main/docs/docs-gen.yaml">a tackle-file</a> which then calls a <a href="https://github.com/robcxyz/tackle-box/blob/main/mkdocs.tackle.yml#L109">mkdocs.yaml</a></li>
 </ul>
-</li>
-<li><a href="https://github.com/cookiecutter/cookiecutter">cookiecutter</a><ul>
-<li>User inputs based on a json config file</li>
-<li>tackle-box is a fork of this project</li>
-</ul>
-</li>
-<li><a href="https://github.com/OpenAPITools/openapi-generator">openapi-generator</a><ul>
-<li>User points to an OpenAPI spec</li>
-</ul>
-</li>
-</ul>
-<p>Tackle-box being more of a DSL allows all these configuration options in a completely modular way with the only catch that you need to explicitly declare all the functionality in a tackle file.  This tutorial walks through how to setup code generators based on each of the above patterns.</p>
-<h2 id="code-generator-examples">Code Generator Examples<a class="headerlink" href="#code-generator-examples" title="Permanent link">&para;</a></h2>
-<blockquote>
-<p>Coming soon</p>
-</blockquote>
-<h2 id="creating-your-own-code-generator">Creating Your Own Code Generator<a class="headerlink" href="#creating-your-own-code-generator" title="Permanent link">&para;</a></h2>
-<p>The following sections outline key concepts when creating your own code generator.</p>
-<h3 id="tackle-file-structure">Tackle File Structure<a class="headerlink" href="#tackle-file-structure" title="Permanent link">&para;</a></h3>
-<p>Tackle files are all parsed sequentially such that when you build a code generator, the render context must come before the hook call that generates the code, the <a href="../providers/tackle/generate.md">generate hook</a>. For instance given this file structure:</p>
+<h2 id="the-generate-hook">The <code>generate</code> Hook<a class="headerlink" href="#the-generate-hook" title="Permanent link">&para;</a></h2>
+<p>When rendering files, you will want to use the <a href="../../providers/Generate/generate/"><code>generate</code></a> hook which can render individual files or directories of templates to some output path. Basically every code generator uses this hook. There are several parameters that can be used with this hook but the simplest way of using it is as a <a href="../../writing-tackle-files/#hook-call-forms">compact hook</a> with the first positional value being the path to your templates and the second being the output path. For instance:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Render context</span><span class="w"></span>
+<span class="nt">foo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bar</span><span class="w"></span>
+
+<span class="c1"># Call generate hook</span><span class="w"></span>
+<span class="nt">generate hook in compact form-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">generate path/to/templates output/path</span><span class="w"></span>
+<span class="c1"># Or</span><span class="w"></span>
+<span class="nt">generate hook in expanded form</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">generate</span><span class="w"></span>
+<span class="w">  </span><span class="nt">templates</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">path/to/templates</span><span class="w"></span>
+<span class="w">  </span><span class="nt">output</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">output/path</span><span class="w"></span>
+</code></pre></div>
+<p>Throughout this tutorial we'll be using it but just know this hook generally comes at the end of your tackle file once you have established a render context (foo=bar in the example above).</p>
+<h2 id="simplest-example">Simplest Example<a class="headerlink" href="#simplest-example" title="Permanent link">&para;</a></h2>
+<p>Most project scaffolding tools work off the general principle of building a render context which is then used to generate code from templates. This render context is typically a map of key value pairs that map the variables in the template to the render context.</p>
+<p>For instance if our template was:</p>
+<p><strong><code>file.py.tpl</code></strong>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">do_thing</span><span class="p">():</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;{{words}}&quot;</span><span class="p">)</span>
+</code></pre></div></p>
+<p>We'd need to have some variable <code>words</code> to fill into the template. In tackle, this context is built within the tackle file before one renders files. For instance given the following tackle file:</p>
+<p><strong><code>tackle.yaml</code></strong>
+<div class="highlight"><pre><span></span><code><span class="nt">words</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Hello world!</span><span class="w"></span>
+<span class="nt">gen-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">generate file.py.tpl file.py</span><span class="w"></span>
+</code></pre></div></p>
+<p>When called by running <code>tackle</code> in the same directory would generate a <code>file.py</code> with the <code>words</code> variable populated.</p>
+<h2 id="example-with-prompting">Example with Prompting<a class="headerlink" href="#example-with-prompting" title="Permanent link">&para;</a></h2>
+<p>Similar to cookiecutter, tackle offers the ability to prompt a user for inputs which are then used to render out the files. There are many kinds of <a href="../../providers/Prompts/">prompt hooks</a> with the most common being the <a href="../../providers/Prompts/input/">input</a> prompt (string inputs) and the <a href="../../providers/Prompts/select/">select</a> prompt (choices of values) corresponding to cookiecutter's string and <a href="https://cookiecutter.readthedocs.io/en/latest/advanced/choice_variables.html">list</a> values. Each of these have their first positional argument as a displayed question but this is not required.</p>
+<p>For instance given this file structure:</p>
 <div class="highlight"><pre><span></span><code>├── templates
 │ └── file1.py
 │ └── file2.py
 └── tackle.yaml
 </code></pre></div>
-<p>With this tackle file:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Arbitrary context</span><span class="w"></span>
-<span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">value</span><span class="w"></span>
-<span class="nt">list</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">item1</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">item2</span><span class="w"></span>
-
-<span class="c1"># Use the generate hook</span><span class="w"></span>
-<span class="nt">generate code</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">generate</span><span class="w"></span>
-<span class="w">  </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">templates</span><span class="w"></span>
-<span class="w">  </span><span class="nt">output</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">src</span><span class="w"></span>
-<span class="c1"># Or in compact form</span><span class="w"></span>
-<span class="nt">generate code-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">generate templates src</span><span class="w"></span>
-</code></pre></div>
-<p>If it was in a github repo it could then be called in the command line with <code>tackle &lt;your org&gt;/&lt;your repo&gt;</code>. The output would be a <code>src</code> directory with the templates rendered with jinja based on the preceding context (ie <code>key</code> and <code>list</code>) in the current working directory.</p>
-<h3 id="prompting-a-user-for-inputs">Prompting a user for inputs<a class="headerlink" href="#prompting-a-user-for-inputs" title="Permanent link">&para;</a></h3>
-<p>If one instead wanted to prompt the user for items which would be used to render the templates, one would call various prompt hooks from the <code>pyinquirer</code> provider. Some common ones include:</p>
-<ul>
-<li><a href="https://robcxyz.github.io/tackle-box/providers/Prompts/input/">input</a> - Input strings</li>
-<li><a href="https://robcxyz.github.io/tackle-box/providers/Prompts/select/">select</a> - List of options where the user can only choose one</li>
-<li><a href="https://robcxyz.github.io/tackle-box/providers/Prompts/checkbox/">checkbox</a> - Multi select that returns a list</li>
-<li><a href="https://robcxyz.github.io/tackle-box/providers/Prompts/confirm/">confirm</a> - Simple confirmation that returns a boolean</li>
-</ul>
-<p>For instance:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Arbitrary context</span><span class="w"></span>
-<span class="nt">project_slug-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">input What is the project&#39;s slug (ie head directory)? --default tackle-thing</span><span class="w"></span>
-<span class="nt">license-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">select What license type? --choices [&#39;Apache&#39;,&#39;MIT&#39;]</span><span class="w"></span>
-<span class="nt">makefile_sections</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">checkbox What utilities to include in makefile?</span><span class="w"></span>
+<p><strong><code>tackle.yaml</code></strong>
+<div class="highlight"><pre><span></span><code><span class="nt">project_name-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">input</span><span class="w"></span>
+<span class="nt">project_slug-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">input --default &quot;{{project_name.lower()|replace(&#39; &#39;, &#39;_&#39;)|replace(&#39;-&#39;, &#39;_&#39;)|replace(&#39;.&#39;, &#39;_&#39;)|trim()}}&quot;</span><span class="w"></span>
+<span class="nt">github_username-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">input What is your Github username / org?</span><span class="w"></span>
+<span class="nt">license-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">select --choices [&#39;apache&#39;,&#39;mit&#39;]</span><span class="w"></span>
+<span class="nt">postgres_version</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">select</span><span class="w"></span>
 <span class="w">  </span><span class="nt">choices</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">build</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docs</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tests</span><span class="w"></span>
-
-<span class="nt">generate ci</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">generate templates/.github &quot;{{project_slug}}/&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">confirm(&#39;Do you want to setup CI?&#39;)</span><span class="w"></span>
-
-<span class="nt">generate code-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">generate templates/src &quot;{{project_slug}}&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">14</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">13</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">12</span><span class="w"></span>
+<span class="nt">generate code-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">generate templates {{project_slug}}</span><span class="w"></span>
+</code></pre></div></p>
+<p>After running <code>tackle</code> in the same directory one would be prompted with:</p>
+<div class="highlight"><pre><span></span><code>? project_name &gt;&gt;&gt; tackle-foo-bar
+? project_slug &gt;&gt;&gt; tackle_foo_bar
+? What is your Github username / org? robcxyz
+? license &gt;&gt;&gt; apache
+? postgres_version &gt;&gt;&gt;
+  14
+❯ 13
+  12
 </code></pre></div>
-<p>Would look like:</p>
-<div class="highlight"><pre><span></span><code>? What is the project<span class="err">&#39;</span>s slug <span class="o">(</span>ie head directory<span class="o">)</span>?  tackle-thing
-? What license type?  <span class="o">(</span>Use arrow keys<span class="o">)</span>
- ❯ Apache
-   MIT
-? What utilities to include <span class="k">in</span> makefile?  <span class="o">(</span>&lt;up&gt;, &lt;down&gt; to move, &lt;space&gt; to <span class="k">select</span>, &lt;a&gt; to toggle, &lt;i&gt; to invert<span class="o">)</span>
-  ● build
-  ○ docs
- ❯● tests
-? Do you want to setup CI?  <span class="o">(</span>Y/n<span class="o">)</span>
+<p>Before generating the code.</p>
+<h4 id="conditional-options">Conditional Options<a class="headerlink" href="#conditional-options" title="Permanent link">&para;</a></h4>
+<p>Most project scaffolding is not a "one size fits all" situation such that the template should prompt the user for high level questions and the conditionally prompt a user for additional questions based on the answers of the prior ones. For instance if you had the question "Do you want to use docker?", one could then conditionally expose a subset of options such as "What docker base image do you want to start with?".  For simple conditions, tackle has the <a href="../../providers/Prompts/confirm/">confirm</a> hook that prompts the user and outputs a boolean to inform conditionals / blocks that expose a subset of options. Thus, to express some conditionality around creating a Dockerfile, one could have the following:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">use_docker-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">confirm Do you want to use docker?</span><span class="w"></span>
+<span class="nt">docker_os-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">select What docker base image? --choices [&#39;ubuntu&#39;,&#39;alpine&#39;,&#39;centos&#39;] --if use_docker</span><span class="w"></span>
+<span class="c1"># Or in expanded form</span><span class="w"></span>
+<span class="nt">docker_os</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">select What docker base image?</span><span class="w"></span>
+<span class="w">  </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">use_docker</span><span class="w"></span>
+<span class="w">  </span><span class="nt">choices</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;ubuntu&#39;</span><span class="p p-Indicator">,</span><span class="s">&#39;alpine&#39;</span><span class="p p-Indicator">,</span><span class="s">&#39;centos&#39;</span><span class="p p-Indicator">]</span><span class="w"></span>
 </code></pre></div>
-<h3 id="controlling-context">Controlling context<a class="headerlink" href="#controlling-context" title="Permanent link">&para;</a></h3>
+<p>Which could then expose a subset of options. If you wanted to express the above in one line, you could also do:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">docker_os-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">select --choices [&#39;ubuntu&#39;,&#39;alpine&#39;,&#39;centos&#39;] --if &quot;confirm(&#39;Use docker?&#39;)&quot;</span><span class="w"></span>
+</code></pre></div>
+<p>But in this case you would not have the <code>use_docker</code> boolean variable which could be useful if building a template.</p>
+<h4 id="conditional-blocks">Conditional Blocks<a class="headerlink" href="#conditional-blocks" title="Permanent link">&para;</a></h4>
+<p>If you are building a decision tree, you might want to consider using <a href="../../writing-tackle-files/#blocks">block</a> hooks which allow having a group of hooks being called based on a single condition without having to repeat a bunch of conditionals. For instance given the above docker example, if you wanted to have a number of options:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">use_docker-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">confirm Do you want to use docker?</span><span class="w"></span>
+<span class="nt">docker-&gt;</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">use_docker</span><span class="w"></span>
+<span class="w">  </span><span class="nt">os</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">select What docker base image?</span><span class="w"></span>
+<span class="w">    </span><span class="nt">choices</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">alpine</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">centos</span><span class="w"></span>
+
+<span class="w">  </span><span class="nt">registry</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">select Where to push docker image?</span><span class="w"></span>
+<span class="w">    </span><span class="nt">choices</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dockerhub</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">quay</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">custom</span><span class="w"></span>
+</code></pre></div>
 <blockquote>
-<p>TODO</p>
-</blockquote>
-<h3 id="building-file-paths-from-maps">Building file paths from maps<a class="headerlink" href="#building-file-paths-from-maps" title="Permanent link">&para;</a></h3>
-<blockquote>
-<p>TODO</p>
-</blockquote>
-<h3 id="ingesting-a-spec-and-transforming-it-to-a-render-context">Ingesting a spec and transforming it to a render context<a class="headerlink" href="#ingesting-a-spec-and-transforming-it-to-a-render-context" title="Permanent link">&para;</a></h3>
-<blockquote>
-<p>Coming soon - creating OpenAPI transformer hook</p>
+<p>Note: Checkout the <a href="../../providers/Logic/match/"><code>match</code></a> hook for creating other types of decision trees.  </p>
 </blockquote>
 <h3 id="using-other-tackle-providers">Using other tackle providers<a class="headerlink" href="#using-other-tackle-providers" title="Permanent link">&para;</a></h3>
 <p>Code generators are great at setting up boilerplate such as licenses and makefiles but each one shouldn't have to come up with its own license / makefile generator. Tackle box being modular is perfect for this where instead of implementing these items in your code generator, call these items as providers.</p>
 <p>For instance if you wanted to include a license, in the tackle file include:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">license-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tackle robcxyz/tackle-license</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">project_slug-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">input</span><span class="w">   </span><span class="c1"># This is the convention for naming the project&#39;s head directory</span><span class="w"></span>
+<span class="nt">license</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tackle robcxyz/tackle-license</span><span class="w"></span>
+<span class="w">  </span><span class="nt">context</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">output</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="nv">project_slug</span><span class="p p-Indicator">}}</span><span class="w"></span>
 </code></pre></div>
+<blockquote>
+<p>See <a href="https://github.com/robcxyz/tackle-box/issues/83">issue #83</a> for future changes</p>
+</blockquote>
 <p>Which is itself a code generator and will generate the appropriate license and return a map including all the selections and context used to generate the license.</p>
 <p>If one alternatively wanted to run a number of providers:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">providers</span><span class="p">:</span><span class="w"></span>
@@ -3282,14 +3348,24 @@
 <span class="w">  </span><span class="nt">choices</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">license</span><span class="w"></span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">makefile</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bazel</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pre-commit</span><span class="w"></span>
 
-<span class="nt">call providers-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tackle robcxyz/tackle-{{item}} --for {{providers}}</span><span class="w"></span>
+<span class="nt">call providers-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tackle robcxyz/tackle-{{item}} --for providers</span><span class="w"></span>
 </code></pre></div>
+<h4 id="note-on-context">Note on context<a class="headerlink" href="#note-on-context" title="Permanent link">&para;</a></h4>
+<p>Tackle has a memory management system which allows one to pass context from one tackle-file to another. In the above example calling the <a href="">license</a> provider, one could have written it like:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">output-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">input</span><span class="w">   </span><span class="c1"># This is the convention for naming the project&#39;s head directory</span><span class="w"></span>
+<span class="nt">license-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tackle robcxyz/tackle-license</span><span class="w"></span>
+</code></pre></div>
+<p>This is because the <code>output</code> key will be passed into the calling of the <code>tackle-license</code> provider.  </p>
 <h3 id="testing-code-generators">Testing code generators<a class="headerlink" href="#testing-code-generators" title="Permanent link">&para;</a></h3>
-<blockquote>
-<p>Coming soon  </p>
-</blockquote>
+<p>Once you generate code, it is often helpful to then run the tests within that generated code to make sure it works. For examples on how to do this, checkout the <a href="https://github.com/robcxyz/tackle-provider">tackle-provider</a> provider which generates the scaffolding to run a provider.</p>
+<p>In that provider you will see a <a href="https://github.com/robcxyz/tackle-provider/blob/main/tests/test_this.py">test</a> which uses a number of fixtures from the <a href="https://github.com/robcxyz/tackle-provider/blob/main/tests/conftest.py">conftest.py</a> which can be used to run the tests in the generated code.</p>
+
+
+  
+
+
 
               
             </article>
@@ -3307,7 +3383,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../../examples/generating-code/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Generating Code" rel="prev">
+        <a href="../../examples/complex-logic/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Complex Logic" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -3316,7 +3392,7 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Generating Code
+              Complex Logic
             </div>
           </div>
         </a>
@@ -3417,10 +3493,11 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["search.suggest", "search.highlight", "content.tabs.link", "navigation.sections"], "search": "../../assets/javascripts/workers/search.85cb4492.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["search.suggest", "search.highlight", "content.tabs.link", "navigation.sections"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.a877e258.min.js"></script>
+      <script src="../../assets/javascripts/bundle.0bc13b87.min.js"></script>
       
         <script src="../../js/termynal.js"></script>
       
