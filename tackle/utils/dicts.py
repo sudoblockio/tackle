@@ -247,7 +247,10 @@ def set_key(
 
 def _clean_item(element: Union[dict, list], item: Union[int, str], value: Any):
     if isinstance(value, dict):
-        value_key = next(iter(value.keys()))
+        try:
+            value_key = next(iter(value.keys()))
+        except StopIteration:
+            return
         if isinstance(value_key, CommentedKeyMap):
             new_key = next(iter(value_key.keys()))
             element[item] = "{{" + new_key + "}}"
