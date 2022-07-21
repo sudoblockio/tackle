@@ -5,7 +5,6 @@ import os
 from tackle.models import Context
 from tackle.cli import main
 
-
 # fmt: off
 INPUT_SOURCES = [
     ("github.com/robcxyz/tackle-demo",
@@ -57,10 +56,6 @@ def test_cli_parse_args_print_option(
     mocker.patch("tackle.main.tackle", autospec=True, return_value={})
     main([input_string])
     assert '{"stuff": "things"}' in capsys.readouterr().out
-
-
-# def test_cli_parse_args_help_arg(change_curdir_fixtures):
-#     main(["tackle-help.yaml help"])
 
 
 def test_cli_parse_args_help():
