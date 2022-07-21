@@ -79,6 +79,7 @@ target/
 .vscode
 
 scratch*.py
+scratch/
 .bak/
 pyvenv.cfg
 docs/scratch*

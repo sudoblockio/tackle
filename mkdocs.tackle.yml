@@ -33,21 +33,23 @@ edit_uri: ''
 nav:
   #  - Usage Docs:
   - Index: index.md
+  - Hello Worlds: hello-worlds.md
   - Installation: installation.md
-#  - Use Cases: use-cases.md
-  - Project Structure: project-structure.md
   - Command Line: command-line.md
-  - Creating Providers: creating-providers.md
   - Using Providers: using-providers.md
+  - Project Structure: project-structure.md
   - Writing Tackle Files: writing-tackle-files.md
   - Jinja Templating: jinja.md
   - Hook Methods: hook-methods.md
-  - Writing Hooks: writing-hooks.md
+  - Python Hooks: python-hooks.md
   - Declarative Hooks: declarative-hooks.md
+  - Creating Providers: creating-providers.md
+  - Debugging: debugging-tackle.md
   - Memory Management: memory-management.md
+  - Special Variables: special-variables.md
   - Examples:
       #    - Tackle File Examples:
-      - Index: examples/index.md
+#      - Index: examples/index.md
       - Prompting: examples/prompting.md
       - Reading and Writing Data: examples/reading-writing-data.md
       - Context Manipulation: examples/context-manipulation.md
