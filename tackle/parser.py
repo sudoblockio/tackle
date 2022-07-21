@@ -37,7 +37,6 @@ from tackle.utils.paths import (
     find_in_parent,
 )
 from tackle.utils.zipfile import unzip
-from tackle.utils.help import run_help
 from tackle.models import (
     Context,
     BaseHook,
@@ -953,11 +952,6 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list):
         context.input_context.update({i: True})
 
     if len(args) >= 1:
-        if args[-1] == 'help':
-            # `help` which will always be the last arg
-            run_help(context, args[:-1])
-            # Calling help will exit 0. End of the line.
-
         # Loop through all args
         for i in args:
             # Remove any arrows on the first level keys
