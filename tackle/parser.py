@@ -59,6 +59,7 @@ from tackle.exceptions import (
     MalformedFunctionFieldException,
     HookParseException,
     UnknownInputArgumentException,
+    ShadowedFunctionFieldException,
 )
 from tackle.settings import settings
 
@@ -1090,7 +1091,7 @@ def create_function_model(
     # Validate raw input params against pydantic object where values will be used later
     function_input = FunctionInput(
         # exec_=func_dict.pop('exec<-') if 'exec<-' in func_dict else None,
-        exec_=func_dict.pop('exec') if 'exec' in func_dict else None,
+        # exec_=func_dict.pop('exec') if 'exec' in func_dict else None,
         return_=func_dict.pop('return') if 'return' in func_dict else None,
         args=func_dict.pop('args') if 'args' in func_dict else [],
         render_exclude=func_dict.pop(
@@ -1098,6 +1099,11 @@ def create_function_model(
         # validators_=func_dict.pop('validators') if 'validators' in func_dict else None,
         # methods_=func_dict.pop('methods') if 'methods' in func_dict else None,
     )
+    if 'exec' in func_dict:
+        function_input.exec_ = func_dict.pop('exec')
+    elif 'exec<-' in func_dict:
+        function_input.exec_ = func_dict.pop('exec<-')
+
     # fmt: on
     new_func = {'hook_type': func_name[:-2], 'function_fields': []}
     literals = ('str', 'int', 'float', 'bool', 'dict', 'list')  # strings to match
@@ -1123,7 +1129,7 @@ def create_function_model(
                     context=context,
                 )
         elif v in literals:
-            new_func[k] = (locate(v), Field(...))
+            new_func[k] = (locate(v).__name__, Field(...))
         elif isinstance(v, (str, int, float, bool)):
             new_func[k] = v
         elif isinstance(v, list):
@@ -1137,13 +1143,23 @@ def create_function_model(
 
     # TODO: Update module namespace
     # Create a function with the __module__ default to pydantic.main
-    Function = create_model(
-        func_name[:-2],
-        __base__=BaseFunction,
-        **new_func,
-        **function_input.dict(include={'args', 'render_exclude'}),
-        **{'function_dict': (dict, function_dict)},  # Preserve for `extends` key
-    )
+    try:
+        Function = create_model(
+            func_name[:-2],
+            __base__=BaseFunction,
+            **new_func,
+            **function_input.dict(include={'args', 'render_exclude'}),
+            **{'function_dict': (dict, function_dict)},  # Preserve for `extends` key
+        )
+    except NameError as e:
+        if 'shadows a BaseModel attribute' in e.args[0]:
+            shadowed_arg = e.args[0].split('\"')[1]
+            extra = "a different value"
+            raise ShadowedFunctionFieldException(
+                f"The function field \'{shadowed_arg}\' is reserved. Use {extra}.",
+                function_name=func_name[:-2],
+                context=context,
+            ) from None
 
     setattr(
         Function,

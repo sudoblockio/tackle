@@ -403,6 +403,15 @@ class MalformedFunctionFieldException(TackleFunctionCreateException):
     """
 
 
+class ShadowedFunctionFieldException(TackleFunctionCreateException):
+    """
+    Exception when functions with field inputs of type dict are not formatted
+    appropriately.
+
+    Happens when a tackle file is parsed.
+    """
+
+
 class TackleGeneralException(Exception):
     """Base hook call exception class."""
 
