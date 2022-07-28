@@ -1,8 +1,6 @@
 import os
 import sys
 import re
-import inspect
-import threading
 import subprocess
 import importlib.machinery
 from abc import ABC
@@ -17,16 +15,14 @@ from pydantic import (
     ConfigError,
 )
 from pydantic.main import ModelMetaclass
-from pydantic.fields import UndefinedType, ModelField
 from jinja2 import Environment, StrictUndefined
 from jinja2.ext import Extension
-from typing import Any, Union, Optional, Dict, Type, Tuple
+from typing import Any, Union, Optional
 import logging
 import random
 import string
 
 from tackle.utils.paths import listdir_absolute
-from tackle.utils.dicts import get_readable_key_path
 from tackle.render import wrap_jinja_braces
 from tackle.utils.files import read_config_file
 from tackle.exceptions import TooManyTemplateArgsException
@@ -82,11 +78,19 @@ class ProviderHooks(dict):
         if file_extension == 'pyc':
             return
         if file_extension in ('yaml', 'yml'):
+            # TODO: Turn this into a parser so that declararitive hooks can be imported.
+            #  Difference is now that we have access modifiers for hooks where
+
+            # Import declarative hooks
             file_contents = read_config_file(file_path)
             for k, v in file_contents.items():
                 if re.match(r'^[a-zA-Z0-9\_]*(<\-|<\_)$', k):
-                    self[k[:-2]] = LazyBaseFunction(**v)
-                    self.new_functions.append(k[:-2])
+                    hook_type = k[:-2]
+                    self[hook_type] = LazyBaseFunction(
+                        function_dict=v,
+                        # function_fields=[],
+                    )
+                    # self.new_functions.append(hook_type)
             return
 
         if os.path.basename(file_path).split('.')[-1] != "py":
@@ -211,102 +215,102 @@ class ProviderHooks(dict):
             self.import_from_path(i)
 
 
-class PartialModelMetaclass(ModelMetaclass):
-    """
-    Metaclass to allow partial model initialization.
-    See https://github.com/samuelcolvin/pydantic/issues/1223#issuecomment-998160737
-    """
-
-    def __new__(
-        meta: Type["PartialModelMetaclass"], *args: Any, **kwargs: Any
-    ) -> "PartialModelMetaclass":
-        try:
-            cls = super(PartialModelMetaclass, meta).__new__(meta, *args, **kwargs)
-        except Exception as e:
-            raise e
-        cls_init = cls.__init__
-        # Because the class will be modified temporarily, need to lock __init__
-        init_lock = threading.Lock()
-        # To preserve identical hashes of temporary nested partial models,
-        # only one instance of each temporary partial class can exist
-        temporary_partial_classes: Dict[str, ModelMetaclass] = {}
-
-        def __init__(self: BaseModel, *args: Any, **kwargs: Any) -> None:
-            with init_lock:
-                fields = self.__class__.__fields__
-                fields_map: Dict[ModelField, Tuple[Any, bool]] = {}
-
-                def optionalize(
-                    fields: Dict[str, ModelField], *, restore: bool = False
-                ) -> None:
-                    for _, field in fields.items():
-                        if not restore:
-                            assert not isinstance(field.required, UndefinedType)
-                            fields_map[field] = (field.type_, field.required)
-                            field.required = False
-                            if (
-                                inspect.isclass(field.type_)
-                                and issubclass(field.type_, BaseModel)
-                                and not field.type_.__name__.startswith(
-                                    "TemporaryPartial"
-                                )
-                            ):
-                                # Assign a temporary type to optionalize to avoid
-                                # modifying *other* classes
-                                class_name = f"TemporaryPartial{field.type_.__name__}"
-                                if class_name in temporary_partial_classes:
-                                    field.type_ = temporary_partial_classes[class_name]
-                                else:
-                                    field.type_ = ModelMetaclass(
-                                        class_name,
-                                        (field.type_,),
-                                        {},
-                                    )
-                                    temporary_partial_classes[class_name] = field.type_
-                                optionalize(field.type_.__fields__)
-                                # After replacing the field type, regenerate validators
-                                field.populate_validators()
-                        else:
-                            # No need to recursively de-optionalize once original types
-                            # are restored
-                            field.type_, field.required = fields_map[field]
-
-                # Make fields and fields of nested model types optional
-                optionalize(fields)
-                # Transform kwargs that are PartialModels to their dict() forms. This
-                # will exclude `None` (see below) from the dictionary used to construct
-                # the temporarily-partial model field, avoiding ValidationErrors of
-                # type type_error.none.not_allowed.
-                for kwarg, value in kwargs.items():
-                    if value.__class__.__class__ is PartialModelMetaclass:
-                        kwargs[kwarg] = value.dict()
-                # Validation is performed in __init__, for which all fields are now optional
-                if args:
-                    for i, v in enumerate(args):
-                        kwargs[self.args[i]] = v
-                # cls is always initialized with kwargs not args.
-                try:
-                    cls_init(self, **kwargs)
-                except Exception as e:
-                    raise e
-                # Restore requiredness
-                optionalize(fields, restore=True)
-
-        setattr(cls, "__init__", __init__)
-
-        # Exclude unset (`None`) from dict(), which isn't allowed in the schema
-        # but will be the default for non-required fields. This enables
-        # PartialModel(**PartialModel().dict()) to work correctly.
-        cls_dict = cls.dict
-
-        def dict_exclude_unset(
-            self: BaseModel, *args: Any, exclude_unset: bool = None, **kwargs: Any
-        ) -> Dict[str, Any]:
-            return cls_dict(self, *args, **kwargs, exclude_unset=True)
-
-        cls.dict = dict_exclude_unset
-
-        return cls
+# class PartialModelMetaclass(ModelMetaclass):
+#     """
+#     Metaclass to allow partial model initialization.
+#     See https://github.com/samuelcolvin/pydantic/issues/1223#issuecomment-998160737
+#     """
+#
+#     def __new__(
+#         meta: Type["PartialModelMetaclass"], *args: Any, **kwargs: Any
+#     ) -> "PartialModelMetaclass":
+#         try:
+#             cls = super(PartialModelMetaclass, meta).__new__(meta, *args, **kwargs)
+#         except Exception as e:
+#             raise e
+#         cls_init = cls.__init__
+#         # Because the class will be modified temporarily, need to lock __init__
+#         init_lock = threading.Lock()
+#         # To preserve identical hashes of temporary nested partial models,
+#         # only one instance of each temporary partial class can exist
+#         temporary_partial_classes: Dict[str, ModelMetaclass] = {}
+#
+#         def __init__(self: BaseModel, *args: Any, **kwargs: Any) -> None:
+#             with init_lock:
+#                 fields = self.__class__.__fields__
+#                 fields_map: Dict[ModelField, Tuple[Any, bool]] = {}
+#
+#                 def optionalize(
+#                     fields: Dict[str, ModelField], *, restore: bool = False
+#                 ) -> None:
+#                     for _, field in fields.items():
+#                         if not restore:
+#                             assert not isinstance(field.required, UndefinedType)
+#                             fields_map[field] = (field.type_, field.required)
+#                             field.required = False
+#                             if (
+#                                 inspect.isclass(field.type_)
+#                                 and issubclass(field.type_, BaseModel)
+#                                 and not field.type_.__name__.startswith(
+#                                     "TemporaryPartial"
+#                                 )
+#                             ):
+#                                 # Assign a temporary type to optionalize to avoid
+#                                 # modifying *other* classes
+#                                 class_name = f"TemporaryPartial{field.type_.__name__}"
+#                                 if class_name in temporary_partial_classes:
+#                                     field.type_ = temporary_partial_classes[class_name]
+#                                 else:
+#                                     field.type_ = ModelMetaclass(
+#                                         class_name,
+#                                         (field.type_,),
+#                                         {},
+#                                     )
+#                                     temporary_partial_classes[class_name] = field.type_
+#                                 optionalize(field.type_.__fields__)
+#                                 # After replacing the field type, regenerate validators
+#                                 field.populate_validators()
+#                         else:
+#                             # No need to recursively de-optionalize once original types
+#                             # are restored
+#                             field.type_, field.required = fields_map[field]
+#
+#                 # Make fields and fields of nested model types optional
+#                 optionalize(fields)
+#                 # Transform kwargs that are PartialModels to their dict() forms. This
+#                 # will exclude `None` (see below) from the dictionary used to construct
+#                 # the temporarily-partial model field, avoiding ValidationErrors of
+#                 # type type_error.none.not_allowed.
+#                 for kwarg, value in kwargs.items():
+#                     if value.__class__.__class__ is PartialModelMetaclass:
+#                         kwargs[kwarg] = value.dict()
+#                 # Validation is performed in __init__, for which all fields are now optional
+#                 if args:
+#                     for i, v in enumerate(args):
+#                         kwargs[self.args[i]] = v
+#                 # cls is always initialized with kwargs not args.
+#                 try:
+#                     cls_init(self, **kwargs)
+#                 except Exception as e:
+#                     raise e
+#                 # Restore requiredness
+#                 optionalize(fields, restore=True)
+#
+#         setattr(cls, "__init__", __init__)
+#
+#         # Exclude unset (`None`) from dict(), which isn't allowed in the schema
+#         # but will be the default for non-required fields. This enables
+#         # PartialModel(**PartialModel().dict()) to work correctly.
+#         cls_dict = cls.dict
+#
+#         def dict_exclude_unset(
+#             self: BaseModel, *args: Any, exclude_unset: bool = None, **kwargs: Any
+#         ) -> Dict[str, Any]:
+#             return cls_dict(self, *args, **kwargs, exclude_unset=True)
+#
+#         cls.dict = dict_exclude_unset
+#
+#         return cls
 
 
 class StrictEnvironment(Environment):
@@ -319,14 +323,16 @@ class StrictEnvironment(Environment):
     def __init__(self, provider_hooks: dict, **kwargs):
         super(StrictEnvironment, self).__init__(undefined=StrictUndefined, **kwargs)
         # Import filters into environment
-        for k, v in provider_hooks.items():
-            if isinstance(v, LazyImportHook):
-                self.filters[k] = v.wrapped_exec
-            elif isinstance(v, LazyBaseFunction):
-                self.filters[k] = v.wrapped_exec
-            else:
-                # Filters don't receive any context (public_context, etc)
-                self.filters[k] = v().wrapped_exec
+        # for k, v in provider_hooks.items():
+        #     if isinstance(v, LazyImportHook):
+        #         self.filters[k] = v.wrapped_exec
+        #     elif isinstance(v, LazyBaseFunction):
+        #         self.filters[k] = v.exec
+        # self.filters[k] = v.wrapped_exec
+
+        # else:
+        #     # Filters don't receive any context (public_context, etc)
+        #     self.filters[k] = v().wrapped_exec
 
 
 class BaseContext(BaseModel):
@@ -400,7 +406,8 @@ class Context(BaseContext):
             self.calling_directory = os.path.abspath(os.path.curdir)
 
 
-class BaseHook(BaseContext, Extension, metaclass=PartialModelMetaclass):
+# class BaseHook(BaseContext, Extension, metaclass=PartialModelMetaclass):
+class BaseHook(BaseContext, Extension):
     """
     Base hook class from which all other hooks inherit from to be discovered. There are
     a number of reserved keys that are used for logic such as `if` and `for` that are
@@ -488,7 +495,50 @@ class BaseHook(BaseContext, Extension, metaclass=PartialModelMetaclass):
     def exec(self) -> Any:
         raise NotImplementedError("Every hook needs an exec method.")
 
-    # https://github.com/samuelcolvin/pydantic/issues/1864#issuecomment-679044432
+    # # https://github.com/samuelcolvin/pydantic/issues/1864#issuecomment-679044432
+    # def validate(self, **kwargs):
+    #     """Manual validation with mapping back aliases as they will be remapped."""
+    #     # For some reason changes here apply to all instances of a class and so if a
+    #     # hook is reused, it will fail because the special aliased fields are already
+    #     # remapped. This is a hack.
+    #     if 'if_' in self.__dict__:
+    #         for k, v in self.Config.fields.items():
+    #             self.__dict__[v] = self.__dict__[k]
+    #             self.__dict__.pop(k)
+    #     *_, validation_error = validate_model(self.__class__, self.__dict__)
+    #     if validation_error:
+    #         raise validation_error
+    #
+    # def wrapped_exec(self, *args, **kwargs):
+    #     # Map args / kwargs
+    #     if args:
+    #         num_args = len(args)
+    #         for i, v in enumerate(self.args):
+    #             if i >= num_args:
+    #                 break
+    #             setattr(self, v, args[i])
+    #         if len(args) > len(self.args):
+    #             raise TooManyTemplateArgsException(
+    #                 f"Too many arguments in {get_readable_key_path(self.key_path)} "
+    #                 f"hook call.",
+    #                 context=self,
+    #             ) from None
+    #     for k, v in kwargs.items():
+    #         setattr(self, k, v)
+    #
+    #     self.validate()
+    #     return self.exec()
+
+
+class JinjaHook(BaseModel):
+    """
+    Model for jinja hooks. Is instantiated in render.py while rendering from unknown
+    variables.
+    """
+
+    hook: ModelMetaclass
+    context_: BaseContext
+
     def validate(self, **kwargs):
         """Manual validation with mapping back aliases as they will be remapped."""
         # For some reason changes here apply to all instances of a class and so if a
@@ -504,23 +554,40 @@ class BaseHook(BaseContext, Extension, metaclass=PartialModelMetaclass):
 
     def wrapped_exec(self, *args, **kwargs):
         # Map args / kwargs
-        if args:
-            num_args = len(args)
-            for i, v in enumerate(self.args):
-                if i >= num_args:
-                    break
-                setattr(self, v, args[i])
-            if len(args) > len(self.args):
-                raise TooManyTemplateArgsException(
-                    f"Too many arguments in {get_readable_key_path(self.key_path)} "
-                    f"hook call.",
-                    context=self,
-                ) from None
-        for k, v in kwargs.items():
-            setattr(self, k, v)
+        from tackle.parser import evaluate_args
 
-        self.validate()
-        return self.exec()
+        args_list = list(args)
+        for i in args_list:
+            if isinstance(i, StrictUndefined):
+                raise TooManyTemplateArgsException(
+                    "Too many arguments supplied to hook call", context=self.context_
+                )
+
+        evaluate_args(
+            args=args_list, hook_dict=kwargs, Hook=self.hook, context=self.context_
+        )
+
+        output = self.hook(**kwargs, **self.context_.dict()).exec()
+
+        return output
+
+        # if args:
+        #     num_args = len(args)
+        #     for i, v in enumerate(self.args):
+        #         if i >= num_args:
+        #             break
+        #         setattr(self, v, args[i])
+        #     if len(args) > len(self.args):
+        #         raise TooManyTemplateArgsException(
+        #             f"Too many arguments in {get_readable_key_path(self.key_path)} "
+        #             f"hook call.",
+        #             context=self,
+        #         ) from None
+        # for k, v in kwargs.items():
+        #     setattr(self, k, v)
+        #
+        # self.validate()
+        # return self.exec()
 
 
 class FunctionInput(BaseModel):
@@ -543,16 +610,22 @@ class FunctionInput(BaseModel):
 class BaseFunction(BaseHook, FunctionInput, ABC):
     """Function input model."""
 
-    function_fields: list
-    function_dict: dict
+    # function_fields: list = Field(..., description="")
+    # function_dict: dict = Field(..., description="")
 
 
-class LazyBaseFunction(BaseFunction, Extension, metaclass=PartialModelMetaclass):
+class LazyBaseFunction(BaseModel):
     """
     Base function that declarative hooks are derived from and either imported when a
      tackle file is read (by searching in adjacent hooks directory) or on init in local
      providers. Used by jinja extensions and filters.
+
     """
+
+    function_dict: dict = Field(
+        ..., description="A dict for the lazy function to be parsed at runtime."
+    )
+    # function_fields: list = Field(None, description="")
 
     class Config:
         arbitrary_types_allowed = True
@@ -567,3 +640,27 @@ class LazyBaseFunction(BaseFunction, Extension, metaclass=PartialModelMetaclass)
             'try_': 'try_',
             'except_': 'except_',
         }
+
+
+#
+# # class LazyBaseFunction(BaseFunction, Extension, metaclass=PartialModelMetaclass):
+# class LazyBaseFunction(BaseFunction, Extension):
+#     """
+#     Base function that declarative hooks are derived from and either imported when a
+#      tackle file is read (by searching in adjacent hooks directory) or on init in local
+#      providers. Used by jinja extensions and filters.
+#     """
+#
+#     class Config:
+#         arbitrary_types_allowed = True
+#         extra = Extra.allow
+#         # TODO: Figure this out as it is needed in the combined jinja hook wrapped exec
+#         #  logic... In this case we already have it serialized?
+#         # Not sure what is going on here
+#         fields = {
+#             'if_': 'if_',
+#             'else_': 'else_',
+#             'for_': 'for_',
+#             'try_': 'try_',
+#             'except_': 'except_',
+#         }

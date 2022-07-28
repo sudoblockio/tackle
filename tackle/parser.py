@@ -10,6 +10,7 @@ from collections import OrderedDict
 from pydantic import ValidationError
 from pydoc import locate
 from ruamel.yaml.constructor import CommentedKeyMap, CommentedMap
+from ruamel.yaml.parser import ParserError
 
 from tackle.render import render_variable, wrap_jinja_braces
 from tackle.utils.dicts import (
@@ -44,7 +45,10 @@ from tackle.models import (
     BaseFunction,
     FunctionInput,
     LazyBaseFunction,
+    BaseContext,
 )
+
+# TODO: Replace with single import
 from tackle.exceptions import (
     UnknownHookTypeException,
     UnknownArgumentException,
@@ -60,6 +64,7 @@ from tackle.exceptions import (
     HookParseException,
     UnknownInputArgumentException,
     ShadowedFunctionFieldException,
+    TackleFileInitialParsingException,
 )
 from tackle.settings import settings
 
@@ -81,55 +86,64 @@ BASE_METHODS = [
 
 def get_hook(hook_type, context: 'Context'):
     """
-    Get the hook from available providers and install hook requirements if they haven't
-    been already.
-
-    This function does the following to return the hook:
-    1. Check if hook hasn't been imported already
-    2. Check if the hook has been declared in a provider's __init__.py's
-    `hook_types` field.
-    3. Try to import it then fall back on installing the requirements.txt file
+    Get the hook from providers. Qualify if the hook is a method and if it is a lazy
+    hook (ie has requirements that have not been installed), install them.
     """
-    h = context.provider_hooks.get(hook_type, None)
-    if h is None:
-        # When the hook type has a period in it, we try to find a hook's method to call
-        if '.' in hook_type:
-            hook_parts = hook_type.split('.')
-            h = context.provider_hooks.get(hook_parts.pop(0), None)
-            for i in hook_parts:
-                if h is None:
-                    raise UnknownHookTypeException(
-                        f"Unknown method {i} when calling {hook_type}", context=context
-                    )
-                # Methods are of type LazyBaseFunction which need to have the base
-                #  instantiated before getting the hook. Further enriched later.
-                h0 = h()
-                # Get the method
-                h = getattr(h0, i, None)
-                if h is None:
-                    # TODO Improve error
-                    raise Exception(f"Unknown method {i} when calling {hook_type}")
-                # Update method with values from base class
-                for i in h0.function_fields:
-                    setattr(h, i, h0.function_dict[i])
-
-        else:
-            # Show this without verbose:
-            available_hooks = (
-                "Run the application with `--verbose` to see available hook types."
-            )
-            if context.verbose:
-                available_hooks = 'Available hooks = ' + ' '.join(
-                    sorted([str(i) for i in context.provider_hooks.keys()])
-                )
+    if '.' in hook_type:
+        # When the hook type has a period in it, we are calling a hook's method. Here we
+        # are going to split up the call into methods denoted by periods, and do logic
+        # to support inheriting base properties into methods. To do this we need to
+        # instantiate the base and use the `function_fields` list to inform which
+        # fields will be inherited. See `create_function_model` function for more info.
+        hook_parts = hook_type.split('.')
+        # Extract the base hook.
+        h = context.provider_hooks.get(hook_parts.pop(0), None)
+        if h is None:
             raise UnknownHookTypeException(
-                f"The hook type=\"{hook_type}\" is not available in the providers. "
-                + available_hooks,
-                context=context,
+                f"Unknown hook='{hook_type}'", context=context
+            ) from None
+
+        # TODO: To support calling python hook methods, put a conditional here to
+        #  determine if hook is of type BaseHook / LazyImportHook and perform logic
+        #  separate from the declarative hook.
+
+        for i in hook_parts:
+            # Methods are of type LazyBaseFunction which need to have the base
+            # instantiated before getting the hook. Run through `create_function_model`
+            # later to build callable from hook.
+            h0 = h()
+            # Get the method
+            h = getattr(h0, i, None)
+            if h is None:
+                # TODO Improve error
+                raise UnknownHookTypeException(
+                    f"Unknown method={i} when calling {hook_type}", context=context
+                ) from None
+
+            # Update method with values from base class so that fields can be inheritted
+            # from the base hook. function_fields is a list of those fields that aren't
+            # methods / special vars (ie args, return, etc).
+            for i in h0.function_fields:
+                h.function_dict[i] = h0.function_dict[i]
+
+    else:
+        h = context.provider_hooks.get(hook_type, None)
+    if h is None:
+        available_hooks = (
+            "Run the application with `--verbose` to see available hook types."
+        )
+        if context.verbose:
+            available_hooks = 'Available hooks = ' + ' '.join(
+                sorted([str(i) for i in context.provider_hooks.keys()])
             )
+        raise UnknownHookTypeException(
+            f"The hook type=\"{hook_type}\" is not available in the providers. "
+            + available_hooks,
+            context=context,
+        )
 
     # LazyImportHook in hook ref when declared in provider __init__.hook_types
-    if isinstance(h, LazyImportHook):
+    elif isinstance(h, LazyImportHook):
         # Install the requirements which will convert all the hooks in that provider
         #  to actual hooks
         context.provider_hooks.import_with_fallback_install(
@@ -486,7 +500,7 @@ def evaluate_args(
     args: list,
     hook_dict: dict,
     Hook: Type[BaseHook],
-    context: 'Context' = None,  # For error handling
+    context: 'BaseContext' = None,  # For error handling
 ):
     """
     Associate hook arguments provided in the call with hook attributes. Parses the
@@ -622,7 +636,8 @@ def run_hook(context: 'Context'):
     # TODO: Enrich lazy functions
     #  Might want to instead track lazy
     if isinstance(Hook, LazyBaseFunction):
-        Hook = create_function_model(context, first_arg, Hook.dict())
+        # Hook = create_function_model(context, first_arg, Hook.dict())
+        Hook = create_function_model(context, first_arg, Hook.function_dict)
 
     if context.key_path[-1] in ('->', '_>'):
         # We have an expanded or mixed (with args) hook expression and so there will be
@@ -1073,9 +1088,11 @@ def create_function_model(
 ) -> Type[BaseFunction]:
     """Create a model from the function input dict."""
     if func_dict is None:
-        raise EmptyFunctionException("Can't have an empty function", context=context)
+        raise EmptyFunctionException(
+            "Can't have an empty function", context=context, function_name=func_name
+        )
 
-    if 'extends' in func_dict:
+    if 'extends' in func_dict and func_dict['extends'] is not None:
         base_hook = context.provider_hooks[func_dict['extends']]
         func_dict = {**base_hook().function_dict, **func_dict}
         func_dict.pop('extends')
@@ -1109,11 +1126,16 @@ def create_function_model(
     literals = ('str', 'int', 'float', 'bool', 'dict', 'list')  # strings to match
     # Create function fields from anything left over in the function dict
     for k, v in func_dict.items():
+        if v is None:
+            # We now
+            continue
+
         if k.endswith(('->', '_>')):
             raise NotImplementedError
         elif k.endswith(('<-', '<_')):
             # Implement method which is instantiated later in `get_hook`
-            new_func[k[:-2]] = (Callable, LazyBaseFunction(**v))
+            # new_func[k[:-2]] = (Callable, LazyBaseFunction(**v))
+            new_func[k[:-2]] = (Callable, LazyBaseFunction(function_dict=v))
             continue
 
         elif isinstance(v, dict):
@@ -1146,6 +1168,7 @@ def create_function_model(
     try:
         Function = create_model(
             func_name[:-2],
+            # __base__=BaseFunction,
             __base__=BaseFunction,
             **new_func,
             **function_input.dict(include={'args', 'render_exclude'}),
@@ -1167,10 +1190,11 @@ def create_function_model(
         partialmethod(function_walk, function_input.exec_, function_input.return_),
     )
 
-    context.env_.filters[func_name[:-2]] = Function(
-        existing_context={},
-        no_input=context.no_input,
-    ).wrapped_exec
+    #
+    # context.env_.filters[func_name[:-2]] = Function(
+    #     existing_context={},
+    #     no_input=context.no_input,
+    # ).wrapped_exec
 
     return Function
 
@@ -1178,6 +1202,9 @@ def create_function_model(
 def extract_functions(context: 'Context'):
     for k, v in context.input_context.copy().items():
         if re.match(r'^[a-zA-Z0-9\_]*(<\-|<\_)$', k):
+
+            # TODO: RM arrow and put in associated access modifier namespace
+
             Function = create_function_model(context, k, v)
             context.provider_hooks[k[:-2]] = Function
             context.input_context.pop(k)
@@ -1208,7 +1235,11 @@ def extract_base_file(context: 'Context'):
     try:
         context.input_context = read_config_file(path)
     except FileNotFoundError:
-        raise UnknownSourceException(f"Could not find file in {path}.", context=context)
+        raise UnknownSourceException(
+            f"Could not find file in {path}.", context=context
+        ) from None
+    except ParserError as e:
+        raise TackleFileInitialParsingException(e) from None
 
     if context.input_context is None:
         raise EmptyTackleFileException(
@@ -1229,6 +1260,9 @@ def extract_base_file(context: 'Context'):
     if 'hooks' in input_dir_contents:
         with work_in(context.input_dir):
             context.provider_hooks.import_from_path(context.input_dir)
+
+        # TODO: RM this -> No more filters implemented this way
+
         for i in context.provider_hooks.new_functions:
             try:
                 context.env_.filters[i] = create_function_model(

@@ -143,16 +143,21 @@ def render_string(context: 'Context', raw: str):
                         context, i, jinja_hook.dict()
                     )().wrapped_exec
                 else:
-                    context.env_.globals[i] = jinja_hook(
-                        input_context=context.input_context,
-                        public_context=context.public_context,
-                        existing_context=context.existing_context,
-                        no_input=context.no_input,
-                        calling_directory=context.calling_directory,
-                        calling_file=context.calling_file,
-                        provider_hooks=context.provider_hooks,
-                        key_path=context.key_path,
-                        verbose=context.verbose,
+                    from tackle.models import JinjaHook, BaseContext
+
+                    context.env_.globals[i] = JinjaHook(
+                        hook=jinja_hook,
+                        context_=BaseContext(
+                            input_context=context.input_context,
+                            public_context=context.public_context,
+                            existing_context=context.existing_context,
+                            no_input=context.no_input,
+                            calling_directory=context.calling_directory,
+                            calling_file=context.calling_file,
+                            provider_hooks=context.provider_hooks,
+                            key_path=context.key_path,
+                            verbose=context.verbose,
+                        ),
                     ).wrapped_exec
 
     try:
@@ -165,7 +170,7 @@ def render_string(context: 'Context', raw: str):
             context.env_.globals.pop(i)
 
         # # TODO: RM?
-        if rendered_template.startswith('<bound method BaseHook'):
+        if rendered_template.startswith('<bound method'):
             # Handle unknown variables that are the same as hook_types issues/55
             raise UndefinedError(
                 f"A variable `{'/'.join(used_hooks)}` is the same as "
@@ -182,10 +187,13 @@ def render_string(context: 'Context', raw: str):
             elif match.group(1) in context.existing_context:
                 rendered_template = context.existing_context[ambiguous_key]
 
-    except (TypeError, UndefinedError) as e:
+    except TypeError as e:
         # Raised when the wrong type is provided to a hook
+        # TODO: Consider detecting when StrictUndefined is part of e and raise an
+        #  UnknownVariable type of error
         raise UnknownTemplateVariableException(str(e), context=context) from None
-
+    except UndefinedError as e:
+        raise UnknownTemplateVariableException(str(e), context=context) from None
     except ValidationError as e:
         # Raised when the wrong type is provided to a hook
         raise MissingTemplateArgsException(str(e), context=context) from None
