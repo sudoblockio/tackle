@@ -8,7 +8,7 @@ from tackle.utils.dicts import get_readable_key_path
 
 if TYPE_CHECKING:
     from typing import Type
-    from tackle.models import Context, BaseHook, BaseFunction
+    from tackle.models import Context, BaseFunction, BaseHook
 
 
 #
@@ -51,102 +51,37 @@ class ContributionNeededException(Exception):
         return os.path.join(*github_path_list)
 
 
-# TODO: RM
-class TackleException(Exception):
-    """
-    Base exception class.
-
-    All Tackle-specific exceptions should subclass this class.
-    """
-
-
-class TackleFunctionCreateException(Exception):
-    """Base hook call exception class."""
-
-    def __init__(
-        self, extra_message: str, function_name: str, context: 'Context' = None
-    ):
-        if context:
-            self.message = (
-                f"Error creating function='{function_name}' in file="
-                f"'{context.calling_file}', {extra_message}"
-            )
-            if not context.verbose:
-                sys.tracebacklimit = 0
-        else:
-            self.message = extra_message
-        super().__init__(self.message)
-
-
-class TackleFunctionCallException(Exception):
-    """Base hook call exception class."""
-
-    def __init__(self, extra_message: str, function: 'Type[BaseFunction]' = None):
-        if function:
-            self.message = (
-                f"Error parsing input_file='{function.calling_file}' at "
-                f"key_path='{get_readable_key_path(key_path=function.key_path)}' \n"
-                f"{extra_message}"
-            )
-            if not function.verbose:
-                sys.tracebacklimit = 0
-        else:
-            self.message = extra_message
-        super().__init__(self.message)
-
-
 class TackleHookCallException(Exception):
     """Base hook call exception class."""
 
     def __init__(self, extra_message: str, hook: 'Type[BaseHook]' = None):
-        if hook:
-            self.message = (
-                f"Error parsing input_file='{hook.calling_file}' at "
-                f"key_path='{get_readable_key_path(key_path=hook.key_path)}' \n"
-                f"{extra_message}"
-            )
-            if not hook.verbose:
-                sys.tracebacklimit = 0
-        else:
-            self.message = extra_message
-        super().__init__(self.message)
-
-
-class TackleParserException(Exception):
-    """Base parser exception class."""
-
-    def __init__(self, extra_message: str, context: 'Context' = None):
-        if context:
-            self.message = (
-                f"Error parsing input_file='{context.current_file}' at "
-                f"key_path='{get_readable_key_path(key_path=context.key_path)}' \n"
-                f"{extra_message}"
-            )
-            if not context.verbose:
-                sys.tracebacklimit = 0
-        else:
-            self.message = extra_message
-        super().__init__(self.message)
-
-
-class TackleParserInputException(Exception):
-    """Base input parser exception class."""
-
-    def __init__(self, extra_message: str, context: 'Context' = None):
-        if context:
-            self.message = (
-                f"Error parsing input_file='{context.input_file}' \n" f"{extra_message}"
-            )
-            if not context.verbose:
-                sys.tracebacklimit = 0
-        else:
-            self.message = extra_message
+        self.message = (
+            f"Error parsing input_file='{hook.calling_file}' at "
+            f"key_path='{get_readable_key_path(key_path=hook.key_path)}' \n"
+            f"{extra_message}"
+        )
+        if not hook.verbose:
+            sys.tracebacklimit = 0
         super().__init__(self.message)
 
 
 #
 # Function call exceptions
 #
+class TackleFunctionCallException(Exception):
+    """Base hook call exception class."""
+
+    def __init__(self, extra_message: str, function: 'Type[BaseFunction]' = None):
+        self.message = (
+            f"Error parsing input_file='{function.calling_file}' at "
+            f"key_path='{get_readable_key_path(key_path=function.key_path)}' \n"
+            f"{extra_message}"
+        )
+        if not function.verbose:
+            sys.tracebacklimit = 0
+        super().__init__(self.message)
+
+
 class FunctionCallException(TackleFunctionCallException):
     """
     Exception for when walking a function input context.
@@ -156,19 +91,31 @@ class FunctionCallException(TackleFunctionCallException):
 
 
 #
-# Hook call exceptions
+# Parser exceptions
 #
-class HookCallException(TackleHookCallException):
+class TackleParserException(Exception):
+    """Base parser exception class."""
+
+    def __init__(self, extra_message: str, context: 'Context' = None):
+        self.message = (
+            f"Error parsing input_file='{context.current_file}' at "
+            f"key_path='{get_readable_key_path(key_path=context.key_path)}' \n"
+            f"{extra_message}"
+        )
+        if not context.verbose:
+            sys.tracebacklimit = 0
+        super().__init__(self.message)
+
+
+class HookCallException(TackleParserException):
     """
     Exception for an unknown field in a hook.
 
     Raised when field has been provided not declared in the hook type.
     """
 
-    # TODO: Needed?
 
-
-class HookUnknownChdirException(TackleHookCallException):
+class HookUnknownChdirException(TackleParserException):
     """
     Exception for a hook call with a chdir method.
 
@@ -176,9 +123,6 @@ class HookUnknownChdirException(TackleHookCallException):
     """
 
 
-#
-# Parser exceptions
-#
 class HookParseException(TackleParserException):
     """
     Exception for an unknown field in a hook.
@@ -215,15 +159,6 @@ class EmptyBlockException(TackleParserException):
 class UnknownArgumentException(TackleParserException):
     """
     Exception unknown argument when supplied via a hook call.
-
-    Raised when a hook is called with an unknown argument in it's mapping (ie missing
-    `_args` param in the hook definition.
-    """
-
-
-class NoInputOrParentTackleException(TackleParserException):
-    """
-    Exception when no input has been given, nor is there a parent tackle.
 
     Raised when a hook is called with an unknown argument in it's mapping (ie missing
     `_args` param in the hook definition.
@@ -273,6 +208,26 @@ class MalformedTemplateVariableException(TackleParserException):
 #
 # Parser input exceptions
 #
+class TackleParserInputException(Exception):
+    """Base input parser exception class."""
+
+    def __init__(self, extra_message: str, context: 'Context' = None):
+        self.message = (
+            f"Error parsing input_file='{context.input_file}' \n" f"{extra_message}"
+        )
+        if not context.verbose:
+            sys.tracebacklimit = 0
+        super().__init__(self.message)
+
+
+# class TackleFileInitialParsingException(TackleParserInputException):
+#     """
+#     Exception when base tackle file is empty.
+#
+#     Raised when calling files / providers.
+#     """
+
+
 class EmptyTackleFileException(TackleParserInputException):
     """
     Exception when base tackle file is empty.
@@ -299,8 +254,21 @@ class UnknownInputArgumentException(TackleParserInputException):
 
 
 #
-# Util exceptions
+# Util exceptions -> No context
 #
+class TackleException(Exception):
+    """
+    Base exception class.
+
+    All Tackle-specific exceptions should subclass this class.
+    """
+
+    def __init__(self, message: str):
+        self.message = message
+        sys.tracebacklimit = 0
+        super().__init__(self.message)
+
+
 class InvalidConfiguration(TackleException):
     """
     Exception for invalid configuration file.
@@ -386,6 +354,21 @@ class InvalidZipRepository(TackleException):
 #
 # Function create exceptions
 #
+class TackleFunctionCreateException(Exception):
+    """Base hook call exception class."""
+
+    def __init__(
+        self, extra_message: str, function_name: str, context: 'Context' = None
+    ):
+        self.message = (
+            f"Error creating function='{function_name}' in file="
+            f"'{context.calling_file}', {extra_message}"
+        )
+        if not context.verbose:
+            sys.tracebacklimit = 0
+        super().__init__(self.message)
+
+
 class EmptyFunctionException(TackleFunctionCreateException):
     """
     Exception when a function is declared without any input.
@@ -420,10 +403,27 @@ class TackleGeneralException(Exception):
         super().__init__(message)
 
 
+class NoInputOrParentTackleException(TackleGeneralException):
+    """
+    Exception when no input has been given, nor is there a parent tackle.
+
+    Raised when a hook is called with an unknown argument in it's mapping (ie missing
+    `_args` param in the hook definition.
+    """
+
+
 class TackleImportError(TackleGeneralException):
     """
     Exception when functions with field inputs of type dict are not formatted
     appropriately.
 
     Happens when a tackle file is parsed.
+    """
+
+
+class TackleFileInitialParsingException(TackleGeneralException):
+    """
+    Exception when parsing a tackle file.
+
+    Raised when first parsing a file.
     """
