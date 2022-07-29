@@ -67,3 +67,10 @@ def temporary_uninstall():
 def test_models_latest():
     c = Context(latest=True)
     assert c.checkout == 'latest'
+
+
+def test_models_lazy_base_function():
+    from tackle.models import LazyBaseFunction
+
+    c = LazyBaseFunction(function_dict={}, function_fields=[], hook_type="foo")
+    assert c

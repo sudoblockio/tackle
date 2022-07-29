@@ -37,6 +37,12 @@ INPUT_STRINGS = [
         "{{get('stuff-and',sep='-')}}",
         ["{{get(\'stuff-and\',sep=\'-\')}}"],
     ),
+    # TODO: Fix splitting on whitespace unless it is surrounded by special chars
+    #  Or just replace with pyparsing ->
+    # (
+    #     "{{print('things', 'stuff')}}",
+    #     ["{{print(\'things\', \'stuff\')}}"],
+    # ),
 ]
 
 

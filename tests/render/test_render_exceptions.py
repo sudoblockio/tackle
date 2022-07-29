@@ -26,7 +26,7 @@ EXCEPTIONS = [
     (
         exceptions.TooManyTemplateArgsException,
         'hooks-args-too-many-args.yaml',
-        'Too many arguments in',
+        '',  # TODO: Consider updating to better error
     ),
 ]
 
