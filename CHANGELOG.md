@@ -1,3 +1,12 @@
+# [0.2.0](https://github.com/robcxyz/tackle-box/compare/v0.1.1...v0.2.0) (2022-07-29)
+
+
+### Features
+
+* rm PartialModelMetaclass which simplifies model creation / tmp rm jinja filters ([21b4417](https://github.com/robcxyz/tackle-box/commit/21b441774e0c1fc9038d3583555dbf30e3e3c428))
+
+
+
 ## [0.1.1](https://github.com/robcxyz/tackle-box/compare/v0.1.0...v0.1.1) (2022-07-21)
 
 
