@@ -235,7 +235,10 @@ def checkout_version(repo_path, version):
             return
             # return stdout.strip()
         else:
-            raise VersionNotFoundError()
+            rough_repo = '/'.join(repo_path.split('/')[-2:])
+            raise VersionNotFoundError(
+                f"Could not find the version='{version}' for the repo {rough_repo}."
+            ) from None
 
 
 def parse_repo_ref(repo):

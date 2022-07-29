@@ -1,4 +1,7 @@
-"""pytest fixtures which are globally available throughout the suite."""
+"""
+pytest fixtures which are globally available in both `tests` and tests within
+`tackle/providers/<provider>/tests`.
+"""
 import pytest
 import os
 import shutil

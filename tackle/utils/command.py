@@ -17,7 +17,7 @@ def strip_dashes(raw_arg: str) -> str:
 def split_input_string(input_string: str) -> list:
     """
     Split first on whitespace then regex each item to qualify if it needs to be
-    intepreted as literal (ast).
+    interpreted as literal.
     """
     # Inspired from https://stackoverflow.com/a/524796/12642712
     # input_list = [p for p in re.split("( |(?<!\{|\[)\\\"(?!\,|\:).*?\\\"(?!\}|\])|'.*?')", input_string) if p.strip()]
