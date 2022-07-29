@@ -1,4 +1,4 @@
-<img align="right" width="300" height="300" src="https://raw.githubusercontent.com/robcxyz/tackle-box/main/docs/assets/logo-box.png">
+<img align="right" width="280" height="280" src="https://raw.githubusercontent.com/robcxyz/tackle-box/main/docs/assets/logo-box.png">
 
 # tackle-box
 
