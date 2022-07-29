@@ -2,7 +2,5 @@
 arbitrary key:
   _>: import
   src:
-    - src: robcxyz/tackle-demos
-      version: v0.0.1-alpha.1
-#    - src: robcxyz/tackle-provider
-#      version: v0.1.0
+    - src: robcxyz/tackle-fixture-released
+      version: v0.1.0

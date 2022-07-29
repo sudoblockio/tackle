@@ -11,8 +11,8 @@ FIXTURES = [
     # # Handlers are experimental features
     # 'handler-str.yaml',
     # 'handler-list-compact.yaml',
-    # 'expanded-string.yaml',
-    # 'expanded-list-dict.yaml',
+    'expanded-string.yaml',
+    'expanded-list-dict.yaml',
     'local.yaml',
     'function-import.yaml',
 ]
@@ -41,4 +41,4 @@ def test_provider_hook_import_func_provider_import(change_dir):
     assert o['compact'] == 'a-default'
     assert o['jinja_extension_default'] == 'a-default'
     assert o['jinja_extension'] == 'things'
-    assert o['jinja_filter'] == 'things'
+    # assert o['jinja_filter'] == 'things'

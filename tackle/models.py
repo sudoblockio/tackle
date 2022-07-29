@@ -399,7 +399,7 @@ class BaseHook(BaseContext, Extension):
 
 
 class FunctionInput(BaseModel):
-    """Function input model."""
+    """Function input model. Used to validate the raw function input."""
 
     exec_: Any = Field(None)
     return_: Union[str, list] = Field(None)
@@ -416,7 +416,7 @@ class FunctionInput(BaseModel):
 
 
 class BaseFunction(BaseHook, FunctionInput, ABC):
-    """Function input model."""
+    """Base model when creating new functions."""
 
 
 class LazyBaseFunction(BaseModel):
@@ -424,7 +424,6 @@ class LazyBaseFunction(BaseModel):
     Base function that declarative hooks are derived from and either imported when a
      tackle file is read (by searching in adjacent hooks directory) or on init in local
      providers. Used by jinja extensions and filters.
-
     """
 
     function_dict: dict = Field(
