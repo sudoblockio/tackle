@@ -1,0 +1,25 @@
+func_a<-:
+  full:
+    type: str
+    description: A description
+    default: a-default
+  compact: a-default
+  args:
+    - full
+
+  exec:
+    foo: bar
+    do->: var "{{full}}"
+
+func_b<-:
+  full:
+    type: str
+    description: A description
+    default: a-default
+  compact: a-default
+  args:
+    - full
+
+  exec:
+    foo: bar
+    do->: var "{{full}}"

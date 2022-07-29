@@ -1,0 +1,8 @@
+
+greeter<-:
+  bar: baz
+  call<-:
+    in:
+      type: str
+
+t->: greeter.call --in foo

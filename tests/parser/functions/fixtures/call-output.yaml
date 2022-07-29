@@ -7,6 +7,6 @@ expanded:
 global:
   foo: bar
   do: baz
-filter:
-  foo: bar
-  do: baz
+#filter:
+#  foo: bar
+#  do: baz

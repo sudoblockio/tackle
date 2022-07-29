@@ -1,0 +1,7 @@
+greeter<-:
+  in: str
+  args: ['in']
+  exec<-:
+    v->: var {{in}}
+
+foo->: greeter

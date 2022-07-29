@@ -4,7 +4,7 @@ expanded:
   ->: some_function
   full: baz
 global->: "{{some_function('baz')}}"
-filter->: "{{'baz'|some_function}}"
+#filter->: "{{'baz'|some_function}}"
 
 
 some_function<-:
@@ -14,7 +14,7 @@ some_function<-:
     default: a-default
   compact: a-default
 
-  exec:
+  exec<-:
     foo: bar
     do->: var "{{full}}"
 

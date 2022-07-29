@@ -4,19 +4,6 @@ greeter<-:
     - world!
   say<-:
     exec:
-      v->: print {{item}} --for words
+      v->: var {{item}} --for words
 
-do_greeter->: greeter.say
-
-#greeter_str<-:
-#  words: list
-#  say<-:
-#    args: ['words']
-#    exec:
-#      v->: print {{item}} --for words
-#
-#the_words:
-#  - Hello
-#  - world!
-#
-#do_greeter_str->: greeter.say the_words
+do_greeter->: greeter.say --merge

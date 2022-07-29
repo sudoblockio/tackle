@@ -1,0 +1,16 @@
+
+
+ansible-playbook<-:
+  version:
+    type: bool
+    default: false
+  private-key:
+    type: string
+    default: null
+  become-method:
+    type: string
+    default: sudo
+
+  exec<-:
+    r->: ansible_playbook {{self.flatten}}
+

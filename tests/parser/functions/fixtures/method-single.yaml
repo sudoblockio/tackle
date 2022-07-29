@@ -1,20 +1,9 @@
 greeter<-:
-#  words:
-#    - Hello
-#    - world!
-#  exec:  # print Hello {{target}}!
-#      p->: print Hello
-#    v->: print {{item}} --for words
-
   say<-:
     words:
       - Hello
       - world!
-#    stuff<-:
-#      ds: sd;lfkj
-    exec:  # print Hello {{target}}!
-#      p->: print Hello
-      v->: print {{item}} --for words
+    exec:
+      v->: var {{item}} --for words
 
 do->: greeter.say
-#jinja->: "{{greeter.say()}}"

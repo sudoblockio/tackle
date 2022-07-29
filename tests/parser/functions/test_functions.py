@@ -49,17 +49,16 @@ def test_function_extends(change_curdir_fixtures):
     assert output['t'] == ['hello', 'world']
 
 
-# TODO: Update this with more complicated fixtures
 def test_function_method(change_curdir_fixtures):
-    """Check...."""
-    output = tackle('method.yaml')
-    assert output
+    """Check that methods work"""
+    output = tackle('method-hook.yaml')
+    assert output['t'] == {'in': 'foo', 'bar': 'baz'}
 
 
 def test_function_method_simple(change_curdir_fixtures):
     """Check that we can create a method."""
     output = tackle('method-single.yaml')
-    assert output
+    assert output['do'] == {"v": ["Hello", "world!"]}
 
 
 # TODO: Support embedded methods
@@ -73,19 +72,49 @@ def test_function_method_simple(change_curdir_fixtures):
 def test_function_method_inherit(change_curdir_fixtures):
     """Check that we can create a method."""
     output = tackle('method-inherit.yaml')
-    assert output
+    assert output == {"t": "fooo"}
 
 
 def test_function_method_args(change_curdir_fixtures):
     """Check that we can create a method that takes args."""
     output = tackle('method-args.yaml')
-    assert output['foo'] == 'bar'
+    assert output == {'foo': 'bar'}
 
 
 def test_function_method_maintain_context(change_curdir_fixtures):
     """Check a method that carries a context with it from the parent object."""
     output = tackle('method-maintain-context.yaml')
-    assert output
+    assert output['v'] == ['Hello', 'world!']
+
+
+def test_function_import_func_from_hooks_dir(change_dir):
+    """Assert that we can call functions from local hooks dir."""
+    os.chdir(os.path.join('fixtures', 'func-provider'))
+    o = tackle()
+    assert o['compact'] == 'a-default'
+    assert o['jinja_extension_default'] == 'a-default'
+    assert o['jinja_extension'] == 'things'
+    # assert o['jinja_filter'] == 'things'
+
+
+# Determine what lists do
+# def test_function_list_call(change_curdir_fixtures):
+#     """Check what compact hooks do."""
+#     output = tackle('list-call.yaml')
+#     assert output
+
+
+# TODO: Build compact hook macro
+# def test_function_compact(change_curdir_fixtures):
+#     """Check what compact hooks do."""
+#     output = tackle('compact.yaml')
+#     assert output
+
+
+def test_function_args_require_exception(change_curdir_fixtures):
+    """Check args are required when they are not supplied."""
+    with pytest.raises(HookParseException):
+        tackle('field-require.yaml')
 
 
 def test_function_method_base_validate(change_curdir_fixtures):

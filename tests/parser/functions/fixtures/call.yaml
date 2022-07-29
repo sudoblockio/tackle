@@ -4,7 +4,7 @@ expanded:
   ->: some_function
   full: baz
 global->: "{{some_function('baz')}}"
-filter->: "{{'baz'|some_function}}"
+#filter->: "{{'baz'|some_function}}"
 
 some_function<-:
   full:
