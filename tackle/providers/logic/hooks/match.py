@@ -71,8 +71,8 @@ class MatchHook(BaseHook):
                 else:
                     raise HookCallException(
                         f"Matched value must be of type string or dict, not {v}.",
-                        hook=self,
-                    )
+                        context=self,
+                    ) from None
 
         raise Exception(f"Value `{self.value}` not found in {self.case.keys()}")
 

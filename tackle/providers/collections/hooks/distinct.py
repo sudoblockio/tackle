@@ -1,4 +1,4 @@
-from typing import Union, Any, Optional
+from typing import Union, Optional
 
 from tackle import BaseHook, Field
 from tackle.utils.dicts import nested_get, encode_key_path
@@ -10,18 +10,15 @@ class DistinctHook(BaseHook):
     hook_type: str = 'distinct'
     # fmt: off
     src: Union[list, str] = Field(
-        ..., description="A list append to and output the result or a str with "
-                         "separators or list for a key path to the element to append "
-                         "to within the context.")
+        ..., description="A list to get the distinct values from or a str with "
+                         "separators or list for a key path to the element to rewrite "
+                         "the distinct items back to the context.")
     src_is_key_path: bool = Field(
         False, description="If the src is a list and is meant to be a key path.")
     sep: str = Field('/', description="For string src's, a separator for key path.")
-    item: Any = Field(
-        ..., description="An item to append to a list."
-    )
     # fmt: on
 
-    args: list = ['src', 'item']
+    args: list = ['src']
 
     def exec(self) -> Optional[list]:
         if isinstance(self.src, str) or self.src_is_key_path:
