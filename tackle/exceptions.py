@@ -7,8 +7,9 @@ from typing import TYPE_CHECKING
 from tackle.utils.dicts import get_readable_key_path
 
 if TYPE_CHECKING:
-    from typing import Type
-    from tackle.models import Context, BaseFunction, BaseHook
+    from typing import Type, Union
+    from pydantic.main import ModelMetaclass
+    from tackle.models import Context, BaseFunction, BaseHook, BaseContext
 
 
 #
@@ -52,7 +53,7 @@ class ContributionNeededException(Exception):
 
 
 class TackleHookCallException(Exception):
-    """Base hook call exception class."""
+    """Base hook call exception class. Subclassed within providers."""
 
     def __init__(self, extra_message: str, hook: 'Type[BaseHook]' = None):
         self.message = (
@@ -71,7 +72,11 @@ class TackleHookCallException(Exception):
 class TackleFunctionCallException(Exception):
     """Base hook call exception class."""
 
-    def __init__(self, extra_message: str, function: 'Type[BaseFunction]' = None):
+    def __init__(
+        self,
+        extra_message: str,
+        function: 'Union[BaseFunction, Type[ModelMetaclass]]',
+    ):
         self.message = (
             f"Error parsing input_file='{function.calling_file}' at "
             f"key_path='{get_readable_key_path(key_path=function.key_path)}' \n"
@@ -96,7 +101,7 @@ class FunctionCallException(TackleFunctionCallException):
 class TackleParserException(Exception):
     """Base parser exception class."""
 
-    def __init__(self, extra_message: str, context: 'Context' = None):
+    def __init__(self, extra_message: str, context: 'Union[Context, BaseContext]'):
         self.message = (
             f"Error parsing input_file='{context.current_file}' at "
             f"key_path='{get_readable_key_path(key_path=context.key_path)}' \n"
