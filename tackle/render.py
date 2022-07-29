@@ -115,50 +115,38 @@ def render_string(context: 'Context', raw: str):
         for i in unknown_variables:
             if i in context.provider_hooks:
                 from tackle.models import LazyBaseFunction
+                from tackle.models import JinjaHook, BaseContext
 
+                # Keep track of the hook put in globals so that it can be removed later
                 used_hooks.append(i)
 
-                jinja_hook = context.provider_hooks[i]
-                if isinstance(jinja_hook, LazyBaseFunction):
-                    # Case where hook is declarative (ie a with internal nomenclature,
-                    #  a function)...
+                hook = context.provider_hooks[i]
+                if isinstance(hook, LazyBaseFunction):
+                    # In this case the hook was imported from the `hooks` directory and
+                    # it needs to be created before being put in the jinja.globals.
                     from tackle.parser import create_function_model
 
-                    jinja_hook.dict().update(
-                        {
-                            'input_context': context.input_context,
-                            'public_context': context.public_context,
-                            'existing_context': context.existing_context,
-                            'no_input': context.no_input,
-                            'calling_directory': context.calling_directory,
-                            'calling_file': context.calling_file,
-                            'provider_hooks': context.provider_hooks,
-                            'key_path': context.key_path,
-                            'verbose': context.verbose,
-                        }
-                    )
+                    hook = create_function_model(context, i, hook.function_dict)
+                    # Once the hook is created it then needs to replace the hook in
+                    # context.provider_hooks so that it may be called normally again
+                    context.provider_hooks[i] = hook
 
-                    # Need to instantiate the hook before passing the wrapped_exec
-                    context.env_.globals[i] = create_function_model(
-                        context, i, jinja_hook.dict()
-                    )().wrapped_exec
-                else:
-                    from tackle.models import JinjaHook, BaseContext
-
-                    context.env_.globals[i] = JinjaHook(
-                        hook=jinja_hook,
-                        context_=BaseContext(
-                            input_context=context.input_context,
-                            public_context=context.public_context,
-                            existing_context=context.existing_context,
-                            no_input=context.no_input,
-                            calling_directory=context.calling_directory,
-                            calling_file=context.calling_file,
-                            provider_hooks=context.provider_hooks,
-                            key_path=context.key_path,
-                            verbose=context.verbose,
-                        ),
-                    ).wrapped_exec
+                # Add the hook to the jinja environment's globals
+                context.env_.globals[i] = JinjaHook(
+                    hook=hook,
+                    context=BaseContext(
+                        input_context=context.input_context,
+                        public_context=context.public_context,
+                        existing_context=context.existing_context,
+                        no_input=context.no_input,
+                        calling_directory=context.calling_directory,
+                        calling_file=context.calling_file,
+                        provider_hooks=context.provider_hooks,
+                        key_path=context.key_path,
+                        verbose=context.verbose,
+                    ),
+                ).wrapped_exec
+                # wrapped_exec calls exec on the `hook` integrating any positional args
 
     try:
         rendered_template = template.render(render_context)

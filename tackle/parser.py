@@ -1092,6 +1092,9 @@ def create_function_model(
             "Can't have an empty function", context=context, function_name=func_name
         )
 
+    if func_name.endswith(('<-', '<_')):
+        func_name = func_name[:-2]
+
     if 'extends' in func_dict and func_dict['extends'] is not None:
         base_hook = context.provider_hooks[func_dict['extends']]
         func_dict = {**base_hook().function_dict, **func_dict}
@@ -1102,7 +1105,7 @@ def create_function_model(
 
     if context.context_functions is None:
         context.context_functions = []
-    context.context_functions.append(func_name[:-2])
+    context.context_functions.append(func_name)
 
     # fmt: off
     # Validate raw input params against pydantic object where values will be used later
@@ -1122,7 +1125,7 @@ def create_function_model(
         function_input.exec_ = func_dict.pop('exec<-')
 
     # fmt: on
-    new_func = {'hook_type': func_name[:-2], 'function_fields': []}
+    new_func = {'hook_type': func_name, 'function_fields': []}
     literals = ('str', 'int', 'float', 'bool', 'dict', 'list')  # strings to match
     # Create function fields from anything left over in the function dict
     for k, v in func_dict.items():
@@ -1167,7 +1170,7 @@ def create_function_model(
     # Create a function with the __module__ default to pydantic.main
     try:
         Function = create_model(
-            func_name[:-2],
+            func_name,
             # __base__=BaseFunction,
             __base__=BaseFunction,
             **new_func,
@@ -1180,18 +1183,18 @@ def create_function_model(
             extra = "a different value"
             raise ShadowedFunctionFieldException(
                 f"The function field \'{shadowed_arg}\' is reserved. Use {extra}.",
-                function_name=func_name[:-2],
+                function_name=func_name,
                 context=context,
             ) from None
 
+    # Create an 'exec' method
     setattr(
         Function,
         'exec',
         partialmethod(function_walk, function_input.exec_, function_input.return_),
     )
 
-    #
-    # context.env_.filters[func_name[:-2]] = Function(
+    # context.env_.filters[func_name] = Function(
     #     existing_context={},
     #     no_input=context.no_input,
     # ).wrapped_exec

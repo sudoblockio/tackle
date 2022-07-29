@@ -23,6 +23,8 @@ import random
 import string
 
 from tackle.utils.paths import listdir_absolute
+
+# TODO: Move to utils
 from tackle.render import wrap_jinja_braces
 from tackle.utils.files import read_config_file
 from tackle.exceptions import TooManyTemplateArgsException
@@ -537,7 +539,7 @@ class JinjaHook(BaseModel):
     """
 
     hook: ModelMetaclass
-    context_: BaseContext
+    context: BaseContext
 
     def validate(self, **kwargs):
         """Manual validation with mapping back aliases as they will be remapped."""
@@ -560,15 +562,12 @@ class JinjaHook(BaseModel):
         for i in args_list:
             if isinstance(i, StrictUndefined):
                 raise TooManyTemplateArgsException(
-                    "Too many arguments supplied to hook call", context=self.context_
+                    "Too many arguments supplied to hook call", context=self.context
                 )
-
         evaluate_args(
-            args=args_list, hook_dict=kwargs, Hook=self.hook, context=self.context_
+            args=args_list, hook_dict=kwargs, Hook=self.hook, context=self.context
         )
-
-        output = self.hook(**kwargs, **self.context_.dict()).exec()
-
+        output = self.hook(**kwargs, **self.context.dict()).exec()
         return output
 
         # if args:
