@@ -499,7 +499,7 @@ def parse_hook(
 def evaluate_args(
     args: list,
     hook_dict: dict,
-    Hook: Type[BaseHook],
+    Hook: ModelMetaclass,  # noqa
     context: 'BaseContext' = None,  # For error handling
 ):
     """
@@ -1011,7 +1011,7 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list):
 
 
 def function_walk(
-    self: Type[BaseFunction],
+    self: Type[ModelMetaclass],
     input_element: Union[list, dict],
     return_: Union[list, dict] = None,
 ) -> Any:
@@ -1095,6 +1095,7 @@ def create_function_model(
     if func_name.endswith(('<-', '<_')):
         func_name = func_name[:-2]
 
+    # Implement inheritance
     if 'extends' in func_dict and func_dict['extends'] is not None:
         base_hook = context.provider_hooks[func_dict['extends']]
         func_dict = {**base_hook().function_dict, **func_dict}
@@ -1103,26 +1104,23 @@ def create_function_model(
     # Persisted with object for `extends`. Used later
     function_dict = func_dict.copy()
 
-    if context.context_functions is None:
-        context.context_functions = []
-    context.context_functions.append(func_name)
-
     # fmt: off
     # Validate raw input params against pydantic object where values will be used later
+    exec_ = None
+    if 'exec' in func_dict:
+        exec_ = func_dict.pop('exec')
+    elif 'exec<-' in func_dict:
+        exec_ = func_dict.pop('exec<-')
+
     function_input = FunctionInput(
-        # exec_=func_dict.pop('exec<-') if 'exec<-' in func_dict else None,
-        # exec_=func_dict.pop('exec') if 'exec' in func_dict else None,
+        exec_=exec_,
         return_=func_dict.pop('return') if 'return' in func_dict else None,
         args=func_dict.pop('args') if 'args' in func_dict else [],
         render_exclude=func_dict.pop(
             'render_exclude') if 'render_exclude' in func_dict else [],
+        # TODO: Build validators
         # validators_=func_dict.pop('validators') if 'validators' in func_dict else None,
-        # methods_=func_dict.pop('methods') if 'methods' in func_dict else None,
     )
-    if 'exec' in func_dict:
-        function_input.exec_ = func_dict.pop('exec')
-    elif 'exec<-' in func_dict:
-        function_input.exec_ = func_dict.pop('exec<-')
 
     # fmt: on
     new_func = {'hook_type': func_name, 'function_fields': []}
@@ -1171,7 +1169,6 @@ def create_function_model(
     try:
         Function = create_model(
             func_name,
-            # __base__=BaseFunction,
             __base__=BaseFunction,
             **new_func,
             **function_input.dict(include={'args', 'render_exclude'}),
@@ -1186,14 +1183,17 @@ def create_function_model(
                 function_name=func_name,
                 context=context,
             ) from None
+        # Don't know what else could happen
+        raise e
 
-    # Create an 'exec' method
+    # Create an 'exec' method on the function that can be called later.
     setattr(
         Function,
         'exec',
         partialmethod(function_walk, function_input.exec_, function_input.return_),
     )
 
+    # TODO: Rm when filters fixed
     # context.env_.filters[func_name] = Function(
     #     existing_context={},
     #     no_input=context.no_input,

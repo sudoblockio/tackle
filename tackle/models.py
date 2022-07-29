@@ -413,6 +413,7 @@ class FunctionInput(BaseModel):
 
     class Config:
         extra = 'ignore'
+        validate_on_assignment = True
 
 
 class BaseFunction(BaseHook, FunctionInput, ABC):
