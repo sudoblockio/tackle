@@ -1,7 +1,9 @@
 import pytest
 
 from tackle import tackle
-from tackle.parser import handle_leading_brackets
+
+# from tackle.parser import handle_leading_brackets
+from tackle.macros import var_hook_macro
 from tackle.utils.command import unpack_args_kwargs_string
 
 TEMPLATES = [
@@ -23,7 +25,7 @@ def test_unpack_args_kwargs_handle_leading_brackets(
 ):
     """Validate the count of each input arg/kwarg/flag."""
     args, kwargs, flags = unpack_args_kwargs_string(template)
-    args = handle_leading_brackets(args)
+    args = var_hook_macro(args)
 
     assert len_args == len(args)
     assert len_kwargs == len(kwargs)

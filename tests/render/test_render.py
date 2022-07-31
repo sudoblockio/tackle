@@ -15,6 +15,8 @@ RENDERABLES = [
     # Normal
     ({'adict': {'stuff': 'things'}}, '{{adict}}', {'stuff': 'things'}),
     ({'list': ['stuff', 'things']}, '{{list}}', ['stuff', 'things']),
+    # Dashes don't work ->
+    # ({'a-dash': 'dash'}, '{{a-dash}}', 'dash'),
 ]
 
 
