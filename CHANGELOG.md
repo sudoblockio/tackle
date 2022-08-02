@@ -1,3 +1,12 @@
+## [0.2.1](https://github.com/robcxyz/tackle-box/compare/v0.2.0...v0.2.1) (2022-08-02)
+
+
+### Bug Fixes
+
+* issue with non-defaulted base parameters when calling declarative hook methods ([da315d9](https://github.com/robcxyz/tackle-box/commit/da315d957b7f2ec127395ec87d8ea91d49c6202b))
+
+
+
 # [0.2.0](https://github.com/robcxyz/tackle-box/compare/v0.1.1...v0.2.0) (2022-07-29)
 
 
