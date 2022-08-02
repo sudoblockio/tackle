@@ -112,25 +112,24 @@ def get_hook(hook_type, context: 'Context'):
         # TODO: To support calling python hook methods, put a conditional here to
         #  determine if hook is of type BaseHook / LazyImportHook and perform logic
         #  separate from the declarative hook.
-
-        for i in hook_parts:
+        for method in hook_parts:
             # Methods are of type LazyBaseFunction which need to have the base
             # instantiated before getting the hook. Run through `create_function_model`
             # later to build callable from hook.
-            h0 = h()
-            # Get the method
-            h = getattr(h0, i, None)
-            if h is None:
-                # TODO Improve error
+            try:
+                new_hook = h.__fields__[method].default
+            except IndexError:
                 raise UnknownHookTypeException(
-                    f"Unknown method={i} when calling {hook_type}", context=context
+                    f"Unknown method={method} when calling {hook_type}", context=context
                 ) from None
 
             # Update method with values from base class so that fields can be inheritted
             # from the base hook. function_fields is a list of those fields that aren't
             # methods / special vars (ie args, return, etc).
-            for i in h0.function_fields:
-                h.function_dict[i] = h0.function_dict[i]
+            for i in h.__fields__['function_fields'].default:
+                new_hook.function_dict[i] = h.__fields__['function_dict'].default[i]
+
+            h = new_hook
 
     else:
         h = context.provider_hooks.get(hook_type, None)
@@ -164,23 +163,26 @@ def get_hook(hook_type, context: 'Context'):
 def evaluate_for(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
     """Run the parse_hook function in a loop and return a list of outputs."""
     loop_targets = render_variable(context, wrap_jinja_braces(hook_dict['for']))
+
+    if len(loop_targets) == 0:
+        return
+
     hook_dict.pop('for')
 
     # Need add an empty list in the value so we have something to append to
     target_context, key_path = get_target_and_key(context)
     nested_set(target_context, key_path, [])
 
+    # Account for nested contexts and justify the new keys based on the key path within
+    #  blocks by trimming the key_path_block from the key_path.
     if len(context.key_path_block) != 0:
         tmp_key_path = context.key_path[
-            -(len(context.key_path) - len(context.key_path_block)) :
-        ]
+            len(context.key_path_block) - len(context.key_path) :
+        ]  # noqa
         if context.temporary_context is None:
             context.temporary_context = {} if isinstance(tmp_key_path[0], str) else []
         tmp_key_path = [i for i in tmp_key_path if i not in ('->', '_>')]
         nested_set(context.temporary_context, tmp_key_path, [])
-
-    if len(loop_targets) == 0:
-        return
 
     for i, l in (
         enumerate(loop_targets)
@@ -194,7 +196,7 @@ def evaluate_for(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
         # Append the index to the keypath
         context.key_path.append(encode_list_index(i))
 
-        # TODO: Do we need to parse a copy of the hook?
+        # Reparse the hook with the new temp vars in place
         parse_hook(hook_dict.copy(), Hook, context, append_hook_value=True)
         context.key_path.pop()
 
@@ -620,8 +622,8 @@ def run_hook(context: 'Context'):
     # TODO: Enrich lazy functions
     #  Might want to instead track lazy
     if isinstance(Hook, LazyBaseFunction):
-        # Hook = create_function_model(context, first_arg, Hook.dict())
-        Hook = create_function_model(context, first_arg, Hook.function_dict)
+        # Build the hook and make a copy of the dict as it is manipulated when building
+        Hook = create_function_model(context, first_arg, Hook.function_dict.copy())
 
     if context.key_path[-1] in ('->', '_>'):
         # We have an expanded or mixed (with args) hook expression and so there will be

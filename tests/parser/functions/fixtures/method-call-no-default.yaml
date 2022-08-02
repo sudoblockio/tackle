@@ -1,0 +1,13 @@
+greeter<-:
+  word:
+    type: str
+
+  say<-:
+    exec:
+      v->: var {{word}}
+
+compact->: greeter.say --word foo
+
+expanded:
+  ->: greeter.say
+  word: foo

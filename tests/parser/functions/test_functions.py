@@ -97,6 +97,13 @@ def test_function_import_func_from_hooks_dir(change_dir):
     # assert o['jinja_filter'] == 'things'
 
 
+def test_function_method_no_default(change_curdir_fixtures):
+    """Assert that method calls with base fields with no default can be run."""
+    o = tackle('method-call-no-default.yaml')
+    assert o['compact']['v'] == 'foo'
+    assert o['compact'] == o['expanded']
+
+
 # Determine what lists do
 # def test_function_list_call(change_curdir_fixtures):
 #     """Check what compact hooks do."""
