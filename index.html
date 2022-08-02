@@ -84,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#tackle" class="md-skip">
+        <a href="#tackle-box" class="md-skip">
           Skip to content
         </a>
       
@@ -285,6 +285,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    Features
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#install" class="md-nav__link">
     Install
   </a>
@@ -308,13 +315,6 @@
         <li class="md-nav__item">
   <a href="#topics" class="md-nav__link">
     Topics
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#roadmap" class="md-nav__link">
-    Roadmap
   </a>
   
 </li>
@@ -3108,6 +3108,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    Features
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#install" class="md-nav__link">
     Install
   </a>
@@ -3131,13 +3138,6 @@
         <li class="md-nav__item">
   <a href="#topics" class="md-nav__link">
     Topics
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#roadmap" class="md-nav__link">
-    Roadmap
   </a>
   
 </li>
@@ -3177,64 +3177,57 @@
                 
 
 
-<h1 id="tackle">Tackle<a class="headerlink" href="#tackle" title="Permanent link">&para;</a></h1>
+<p><img align="right" width="280" height="280" src="https://raw.githubusercontent.com/robcxyz/tackle-box/main/docs/assets/logo-box.png"></p>
+<h1 id="tackle-box">tackle-box<a class="headerlink" href="#tackle-box" title="Permanent link">&para;</a></h1>
 <p><a href="https://pypi.python.org/pypi/tackle-box"><img alt="pypi" src="https://img.shields.io/pypi/v/tackle-box.svg" /></a>
 <a href="https://pypi.python.org/pypi/tackle-box"><img alt="python" src="https://img.shields.io/pypi/pyversions/tackle-box.svg" /></a>
 <a href="https://codecov.io/github/robcxyz/tackle-box?branch=main"><img alt="codecov" src="https://codecov.io/gh/robcxyz/tackle-box/branch/main/graphs/badge.svg?branch=main" /></a>
 <a href="https://github.com/robcxyz/tackle-box/actions"><img alt="main-tests" src="https://github.com/robcxyz/tackle-box/actions/workflows/main.yml/badge.svg" /></a></p>
 <ul>
 <li><a href="https://robcxyz.github.io/tackle-box">Documentation</a></li>
-<li><a href="">Discord</a> - wip</li>
-<li><a href="">Slack</a> - wip</li>
+<li><a href="https://discord.gg/7uVUfUVD7K">Discord</a></li>
+<li><a href="https://join.slack.com/t/slack-y748219/shared_invite/zt-1cqreswyd-5qDBE53QlY97mQOI6DhcKw">Slack</a></li>
 <li><a href="https://pypi.org/project/tackle-box/">PyPI</a></li>
 <li><a href="LICENSE">BSD License</a></li>
 </ul>
-<p>Tackle is a language for building modular code generators and declarative CLIs. It can make any config file dynamic with both strong and weakly typed programmable flow control common to a general purpose programming language. Basically you can write a fully functional CLI and Turing-complete program in yaml. It's wild.</p>
-<blockquote>
-<p>Warning: Tool is in it's very early phases and only now considered stable enough to use. It may never reach 1.x version as, if it gets enough stars, it will be converted to a spec and re-written in rust (ie give it a star if you'd like to see that).</p>
-</blockquote>
+<p>Tackle is an experimental language for building modular code generators and declarative CLIs built as a fork of <a href="https://github.com/cookiecutter/cookiecutter">cookiecutter</a>. It can make any config file dynamic with both strong and weakly typed programmable flow control common to a general purpose programming language. Basically you can write a fully functional CLI and Turing-complete program in yaml. It's wild.</p>
+<h3 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Makes arbitrary yaml / json / toml <a href="https://robcxyz.github.io/tackle-box/hook-methods/">dynamic</a></li>
+<li>Loops, conditionals, and other base methods</li>
+<li>Ships with a collection of over <a href="https://robcxyz.github.io/tackle-box">100 hooks</a> to perform a wide variety of specialized actions</li>
+<li><a href="https://robcxyz.github.io/tackle-box">Prompt for user inputs</a></li>
+<li><a href="https://robcxyz.github.io/tackle-box/providers/Prompts/">Generate code from templates</a></li>
+<li>Read and write <a href="https://robcxyz.github.io/tackle-box/providers/Yaml/">yaml</a> / <a href="https://robcxyz.github.io/tackle-box/providers/Toml/">toml</a> / <a href="https://robcxyz.github.io/tackle-box/providers/Json/">json</a> <a href="https://robcxyz.github.io/tackle-box/providers/Files/">files</a></li>
+<li><a href="https://robcxyz.github.io/tackle-box/providers/Web/">Make http calls</a></li>
+<li><a href="https://robcxyz.github.io/tackle-box/providers/Command/">Run arbitrary system commands</a></li>
+<li><a href="https://robcxyz.github.io/tackle-box/providers/Context/">Manipulate the context</a></li>
+<li><a href="https://robcxyz.github.io/tackle-box/providers/Tackle/tackle/">Run other tackle files</a></li>
+<li>Modular design allows creating / importing new hooks a breeze</li>
+<li>Supports both <a href="https://robcxyz.github.io/tackle-box/python-hooks/">python</a> and <a href="https://robcxyz.github.io/tackle-box/declarative-hooks/">declarative</a> hooks which can be called / defined in-line or within jinja templates</li>
+</ul>
 <h3 id="install">Install<a class="headerlink" href="#install" title="Permanent link">&para;</a></h3>
 <blockquote>
-<p>Note: tackle can install dependencies on its own. Check <a href="https://robcxyz.github.io/tackle-box/installation">docs</a> for advanced installation methods to isolate tackle from your system python.</p>
+<p>Note: tackle can install dependencies on its own. Check <a href="https://robcxyz.github.io/tackle-box/installation#best-installation-method">docs</a> for advanced installation methods to isolate tackle from your system python.</p>
 </blockquote>
 <div class="highlight"><pre><span></span><code>python -m venv env <span class="o">&amp;&amp;</span> <span class="nb">source</span> env/bin/activate
 pip install tackle-box
 </code></pre></div>
 <h3 id="hello-world">Hello world<a class="headerlink" href="#hello-world" title="Permanent link">&para;</a></h3>
-<p>To call tackle, create a yaml file and run <code>tackle hello-world.yaml</code>.</p>
-<p>Simply use the <a href="https://robcxyz.github.io/tackle-box/providers/Console/print/">print</a> hook.
+<p>Check out the <a href="https://robcxyz.github.io/tackle-box/hello-worlds/">docs</a> for &gt;10 hello worlds that demonstrate the various aspects of the syntax with the simplest one using the <a href="https://robcxyz.github.io/tackle-box/providers/Console/print/">print</a> hook.</p>
+<p><strong>hello.yaml</strong>
 <div class="highlight"><pre><span></span><code><span class="nt">hw-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print Hello world!</span><span class="w"></span>
 </code></pre></div></p>
-<p>Which using <a href="https://robcxyz.github.io/tackle-box/jinja">jinja templating</a> can be called in <a href="https://robcxyz.github.io/tackle-box/jinja">four different ways</a>.
-<div class="highlight"><pre><span></span><code><span class="nt">words</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Hello world!</span><span class="w"></span>
-<span class="nt">expanded</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print</span><span class="w"></span>
-<span class="w">  </span><span class="nt">objects</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{words}}&quot;</span><span class="w"></span>
-<span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print {{words}}</span><span class="w"></span>
-<span class="nt">jinja_extension-&gt;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">print(words)</span><span class="nv"> </span><span class="s">}}&quot;</span><span class="w"></span>
-<span class="nt">jinja_filter-&gt;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">words</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">print</span><span class="nv"> </span><span class="s">}}&quot;</span><span class="w"></span>
-</code></pre></div></p>
-<p>And can also have interactive <a href="https://robcxyz.github.io/tackle-box/providers/Prompts/">prompt</a> hooks.
-<div class="highlight"><pre><span></span><code><span class="nt">name-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">input</span><span class="w"></span>
-<span class="nt">target</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">select Say hi to who?</span><span class="w"></span>
-<span class="w">  </span><span class="nt">choices</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">world</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">universe</span><span class="w"></span>
-<span class="nt">hello-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print My name is {{name}}. Hello {{target}}!</span><span class="w"></span>
-</code></pre></div></p>
-<p>Hooks can have <a href="https://robcxyz.github.io/tackle-box/hook-methods/#loops">loops</a>, <a href="https://robcxyz.github.io/tackle-box/hook-methods/#conditionals">conditionals</a>, and <a href="https://robcxyz.github.io/tackle-box/hook-methods/#methods">other base methods</a>.
+<p>To run, call <code>tackle hello.yaml</code>. Can also be <a href="https://robcxyz.github.io/tackle-box/creating-providers/">version controlled</a> -&gt; <a href="https://github.com/robcxyz/tackle-hello-world"><code>tackle robcxyz/tackle-hello-world</code></a>.</p>
+<p>Can also use <a href="https://robcxyz.github.io/tackle-box/hook-methods/">loops, conditionals, and other base methods</a>.</p>
+<p><strong>hello.yaml</strong>
 <div class="highlight"><pre><span></span><code><span class="nt">words</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Hello</span><span class="w"></span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cruel</span><span class="w"></span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">world!</span><span class="w"></span>
-<span class="nt">expanded</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print {{item}}</span><span class="w"></span>
-<span class="w">  </span><span class="nt">for</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">words</span><span class="w"></span>
-<span class="w">  </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">item != &#39;cruel&#39;</span><span class="w"></span>
-<span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print {{item}} --for words --if &quot;item != &#39;cruel&#39;&quot;</span><span class="w"></span>
+<span class="nt">hw-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print {{item}} --for words --if &quot;item != &#39;cruel&#39;&quot;</span><span class="w"></span>
 </code></pre></div></p>
-<p>Hooks can be <a href="https://robcxyz.github.io/tackle-box/python-hooks/">written in python</a>.<br />
+<p>New hooks can be <a href="https://robcxyz.github.io/tackle-box/python-hooks/">made in python</a>.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">tackle</span> <span class="kn">import</span> <span class="n">BaseHook</span>
 
 <span class="k">class</span> <span class="nc">Greeter</span><span class="p">(</span><span class="n">BaseHook</span><span class="p">):</span>
@@ -3243,109 +3236,41 @@ pip install tackle-box
     <span class="n">args</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span>
     <span class="k">def</span> <span class="nf">exec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</code></pre></div></p>
-<p>Or new hooks can be <a href="https://robcxyz.github.io/tackle-box/declarative-hooks/">declaratively created</a> with tackle.
+</code></pre></div>
+<p>Or can be <a href="https://robcxyz.github.io/tackle-box/declarative-hooks/">defined in a config file</a>.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">greeter&lt;-</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">str</span><span class="w"></span>
 <span class="w">  </span><span class="nt">args</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;target&#39;</span><span class="p p-Indicator">]</span><span class="w"></span>
-<span class="w">  </span><span class="nt">exec</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">exec&lt;-</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">hi-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print Hello {{target}}</span><span class="w"></span>
-</code></pre></div></p>
-<p>And both can be called in the same way.
+</code></pre></div>
+<p>And both can be <a href="https://robcxyz.github.io/tackle-box/writing-tackle-files/">called in the same way</a>.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">hello</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">world!</span><span class="w"></span>
 <span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">greeter {{hello}}</span><span class="w"></span>
 <span class="nt">expanded</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">greeter</span><span class="w"></span>
 <span class="w">  </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{hello}}&quot;</span><span class="w"></span>
 <span class="nt">jinja_extension-&gt;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">greeter(hello)</span><span class="nv"> </span><span class="s">}}&quot;</span><span class="w"></span>
-<span class="nt">jinja_filter-&gt;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">hello</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">greeter</span><span class="nv"> </span><span class="s">}}&quot;</span><span class="w"></span>
-</code></pre></div></p>
-<p>Declarative hooks are strongly typed objects with many <a href="https://robcxyz.github.io/tackle-box/declarative-hooks#input-fields">declarative fields</a>.
-<div class="highlight"><pre><span></span><code><span class="nt">words&lt;-</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">hi</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">str</span><span class="w"></span>
-<span class="w">    </span><span class="nt">regex</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">^(Bonjour|Hola|Hello)</span><span class="w"></span>
-<span class="w">  </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">str</span><span class="w"></span>
-
-<span class="nt">p-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print {{item}} --for values(words(hi=&quot;Hello&quot;,target=&quot;world!&quot;))</span><span class="w"></span>
-</code></pre></div></p>
-<p>Which can have <a href="https://robcxyz.github.io/tackle-box/declarative-hooks#methods">methods</a> that extend the base.
-<div class="highlight"><pre><span></span><code><span class="nt">words&lt;-</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">hi</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Wadup</span><span class="w"></span>
-<span class="w">  </span><span class="nt">say&lt;-</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">str</span><span class="w"></span>
-<span class="w">    </span><span class="nt">exec</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">p-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print {{hi}} {{target}}</span><span class="w"></span>
-
-<span class="nt">p-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">words.say --hi Hello --target world!</span><span class="w"></span>
-</code></pre></div></p>
-<p>And also support <a href="https://robcxyz.github.io/tackle-box/declarative-hooks#extending-hooks">inheritance</a>.
-<div class="highlight"><pre><span></span><code><span class="nt">base&lt;-</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">hi</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Hello</span><span class="w"></span>
-
-<span class="nt">words&lt;-</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">extends</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">base</span><span class="w"></span>
-<span class="w">  </span><span class="nt">say&lt;-</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">str</span><span class="w"></span>
-<span class="w">    </span><span class="nt">exec</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">p-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print {{hi}} {{target}}</span><span class="w"></span>
-
-<span class="nt">p-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">words.say --target world!</span><span class="w"></span>
-</code></pre></div></p>
-<blockquote>
-<p>And will later support extending common schemas like OpenAPI, protobuf, and json schema</p>
-</blockquote>
-<p>Hooks and fields can have documentation embedded in them.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">greeter&lt;-</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">help</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Something that greets</span><span class="w"></span>
-<span class="w">  </span><span class="nt">hi</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Yo</span><span class="w"></span>
-<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Initial greeting.</span><span class="w"></span>
-<span class="w">  </span><span class="nt">target</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">str</span><span class="w"></span>
-<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Thing to greet.</span><span class="w"></span>
-<span class="w">  </span><span class="nt">exec</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">p-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print {{hi}} {{target}}</span><span class="w"></span>
 </code></pre></div>
-<blockquote>
-<p>That [will] drive a <code>help</code> screen by running <code>tackle hello-world.yaml --help</code> -&gt; <strong>Coming soon</strong></p>
-</blockquote>
-<p>And last, everything can be <a href="">imported</a> / <a href="">called</a> remotely from github repos.
-<div class="highlight"><pre><span></span><code><span class="nt">import-hello_&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">import robcxyz/tackle-hello-world</span><span class="w"></span>
-<span class="nt">call-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">greeter world!</span><span class="w"></span>
-<span class="c1"># Or</span><span class="w"></span>
-<span class="nt">local-call-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tackle hello-world.yaml</span><span class="w"></span>
-<span class="nt">remote-call-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tackle robcxyz/tackle-hello-world --version v0.1.0</span><span class="w"></span>
-</code></pre></div></p>
-<p>Creating a web of declarative CLIs.</p>
 <h3 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h3>
 <ul>
 <li><a href="https://robcxyz.github.io/tackle-box/tutorials/code-generation/">Code Generation</a></li>
 <li><a href="">Declarative Utilities</a> - wip</li>
+<li><a href="">Infrastructure as code management</a> - wip</li>
 <li><a href="">Kubernetes Manifest Management</a> - wip</li>
 <li><a href="">Toolchain Management</a> - wip</li>
 <li><a href="">Repo Management</a> - wip</li>
-<li><a href="">Home</a> - wip</li>
 </ul>
 <h3 id="topics">Topics<a class="headerlink" href="#topics" title="Permanent link">&para;</a></h3>
 <ul>
-<li><a href="">Writing Tackle Files</a> - wip</li>
-<li><a href="https://robcxyz.github.io/tackle-box/creating-providers/">Creating Providers</a></li>
-<li><a href="">Blocks and Flow Control</a> - wip</li>
-<li><a href="https://robcxyz.github.io/tackle-box/memory-management/">Memory Management</a></li>
+<li><a href="https://robcxyz.github.io/tackle-box/writing-tackle-files/">Writing Tackle Files</a></li>
+<li><a href="https://robcxyz.github.io/tackle-box/python-hooks/">Python Hooks</a></li>
 <li><a href="https://robcxyz.github.io/tackle-box/declarative-hooks/">Declarative Hooks</a></li>
+<li><a href="https://robcxyz.github.io/tackle-box/creating-providers/">Creating Providers</a></li>
+<li><a href="https://robcxyz.github.io/tackle-box/writing-tackle-files/#blocks">Blocks</a> and <a href="https://robcxyz.github.io/tackle-box/hook-methods/">Flow Control</a></li>
+<li><a href="https://robcxyz.github.io/tackle-box/memory-management/">Memory Management</a></li>
+<li><a href="https://robcxyz.github.io/tackle-box/special-variables/">Special Variables</a></li>
 <li><a href="">Declarative CLIs</a> - wip</li>
-<li><a href="">Special Variables</a> - wip</li>
-</ul>
-<h3 id="roadmap">Roadmap<a class="headerlink" href="#roadmap" title="Permanent link">&para;</a></h3>
-<ul>
-<li>Declarative schemas</li>
-<li>json schema</li>
-<li>openapi</li>
-<li>protobuf</li>
-<li>Cached providers</li>
-<li>State management</li>
 </ul>
 <h3 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permanent link">&para;</a></h3>
 <p>Contributions welcome particularly for additional hooks and suggestions around their interfaces. If contributing to the core parser, please make sure any changes are non-breaking by running tests (<code>make test</code>). For writing providers / hooks, please make sure to use the testing conventions laid out in the existing providers whereby the test uses pytest fixtures to change the directory into the test's directory.  This is so the tests can be run from both the root of the project and from within the test directory to facilitate debugging.</p>
