@@ -3,7 +3,11 @@ import os
 from ruamel.yaml import YAML
 
 from tackle import tackle
-from tackle.exceptions import FunctionCallException, HookParseException
+from tackle.exceptions import (
+    FunctionCallException,
+    HookParseException,
+    MalformedFunctionFieldException,
+)
 
 FIXTURES = [
     ('call.yaml', 'call-output.yaml'),
@@ -102,6 +106,7 @@ def test_function_method_no_default(change_curdir_fixtures):
     o = tackle('method-call-no-default.yaml')
     assert o['compact']['v'] == 'foo'
     assert o['compact'] == o['expanded']
+    assert o['jinja'] == o['expanded']
 
 
 # Determine what lists do
@@ -118,12 +123,6 @@ def test_function_method_no_default(change_curdir_fixtures):
 #     assert output
 
 
-def test_function_args_require_exception(change_curdir_fixtures):
-    """Check args are required when they are not supplied."""
-    with pytest.raises(HookParseException):
-        tackle('field-require.yaml')
-
-
 def test_function_method_base_validate(change_curdir_fixtures):
     """Check that when a method uses a base attribute, that validation still happens."""
     with pytest.raises(Exception) as e:
@@ -136,6 +135,12 @@ EXCEPTION_FIXTURES = [
     ('return-str-not-found.yaml', FunctionCallException),
     # Check that type checking works with no exec method.
     ('no-exec-type-error.yaml', HookParseException),
+    # Check args are required when they are not supplied.
+    ('field-require.yaml', HookParseException),
+    # Check that type is one of literals.
+    ('field-bad-type.yaml', MalformedFunctionFieldException),
+    # Check that type or default is given.
+    ('field-type-or-default.yaml', MalformedFunctionFieldException),
 ]
 
 

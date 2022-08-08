@@ -1008,7 +1008,14 @@ def create_function_model(
         elif isinstance(v, dict):
             if 'type' in v:
                 # TODO: Qualify type in enum -> Type
-                new_func[k] = (v['type'], Field(**v))
+                type_ = v['type']
+                if type_ not in literals:
+                    raise MalformedFunctionFieldException(
+                        f"Function field {k} with type={v} unknown. Must be one of {','.join(literals)}",
+                        function_name=func_name,
+                        context=context,
+                    )
+                new_func[k] = (type_, Field(**v))
             elif 'default' in v:
                 new_func[k] = (type(v['default']), Field(**v))
             else:

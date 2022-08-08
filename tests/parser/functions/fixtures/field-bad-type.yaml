@@ -1,0 +1,5 @@
+greeter<-:
+  in:
+    type: foobar
+
+foo->: greeter
