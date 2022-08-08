@@ -169,12 +169,22 @@ class ProviderHooks(dict):
                 )
             self.import_hooks_from_dir(mod_name, path)
 
-    def import_from_path(self, provider_path: str):
+    def import_from_path(self, provider_path: str, hooks_dir_name: str = None):
         """Append a provider with a given path."""
+        # Look for `.hooks` or `hooks` dir
+        if hooks_dir_name is None:
+            provider_contents = os.listdir(provider_path)
+            if '.hooks' in provider_contents:
+                hooks_dir_name = '.hooks'
+            elif 'hooks' in provider_contents:
+                hooks_dir_name = 'hooks'
+            else:
+                return
+
         provider_name = os.path.basename(provider_path)
         mod_name = 'tackle.providers.' + provider_name
-        hooks_init_path = os.path.join(provider_path, 'hooks', '__init__.py')
-        hooks_path = os.path.join(provider_path, 'hooks')
+        hooks_init_path = os.path.join(provider_path, hooks_dir_name, '__init__.py')
+        hooks_path = os.path.join(provider_path, hooks_dir_name)
 
         # If the provider has an __init__.py in the hooks directory, import that
         # to check if there are any hook types declared there.  If there are, store
@@ -213,7 +223,7 @@ class ProviderHooks(dict):
         """Iterate through paths and import them."""
         native_provider_paths = self.get_native_provider_paths()
         for i in native_provider_paths:
-            self.import_from_path(i)
+            self.import_from_path(i, hooks_dir_name='hooks')
 
 
 class StrictEnvironment(Environment):

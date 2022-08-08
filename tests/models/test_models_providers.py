@@ -76,14 +76,17 @@ def test_parser_provider_hook_add_list(change_curdir_fixtures):
     assert o['stuff'] == 'bar'
 
 
-def test_providers_local_hooks_dir(chdir_fixture):
+@pytest.mark.parametrize("input_file", [None, "file.yaml"])
+def test_providers_local_hooks_dir(chdir_fixture, input_file):
     """
     Check that when you call from a child dir that you import the hooks from the dir
-     with the file being called.
+     with the file being called. Tests both the case that the parent file is a
+     tackle.yaml file and that when you import the file via a tackle hook, that the
+     hooks are imported and usable.
     """
     chdir_fixture(os.path.join('child', 'dir'))
-    o = tackle()
-    assert o
+    o = tackle(input_file)
+    assert o['do'] == 'foo'
 
 
 @pytest.fixture()

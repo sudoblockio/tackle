@@ -1,0 +1,5 @@
+globals->: tackle global.yaml --find_in_parent --merge
+
+do:
+  ->: thing
+  stuff: foo
