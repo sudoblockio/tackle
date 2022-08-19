@@ -54,24 +54,7 @@ from tackle.macros import (
     list_to_var_macro,
 )
 
-# TODO: Replace with single import
-from tackle.exceptions import (
-    UnknownHookTypeException,
-    UnknownArgumentException,
-    UnknownSourceException,
-    EmptyTackleFileException,
-    EmptyBlockException,
-    FunctionCallException,
-    HookUnknownChdirException,
-    AppendMergeException,
-    TopLevelMergeException,
-    EmptyFunctionException,
-    MalformedFunctionFieldException,
-    HookParseException,
-    UnknownInputArgumentException,
-    ShadowedFunctionFieldException,
-    TackleFileInitialParsingException,
-)
+from tackle import exceptions
 from tackle.settings import settings
 
 logger = logging.getLogger(__name__)
@@ -102,25 +85,23 @@ def get_hook(hook_type, context: 'Context') -> Type[BaseHook]:
         # instantiate the base and use the `function_fields` list to inform which
         # fields will be inherited. See `create_function_model` function for more info.
         hook_parts = hook_type.split('.')
+
         # Extract the base hook.
-        h = context.provider_hooks.get(hook_parts.pop(0), None)
+        hook_type = hook_parts.pop(0)
+        h = context.provider_hooks.get(hook_type, None)
         if h is None:
-            raise UnknownHookTypeException(
-                f"Unknown hook='{hook_type}'", context=context
-            ) from None
+            exceptions.raise_unknown_hook(context, hook_type)
 
         # TODO: To support calling python hook methods, put a conditional here to
         #  determine if hook is of type BaseHook / LazyImportHook and perform logic
         #  separate from the declarative hook.
         for method in hook_parts:
+            new_hook = None
             try:
                 new_hook = h.__fields__[method].default
-                # if isinstance()
-
             except (IndexError, KeyError):
-                raise UnknownHookTypeException(
-                    f"Unknown method={method} when calling {hook_type}", context=context
-                ) from None
+                # Raise error - method not found
+                exceptions.raise_unknown_hook(context, method, method=True)
 
             # Update method with values from base class so that fields can be inherited
             # from the base hook. function_fields is a list of those fields that aren't
@@ -144,18 +125,8 @@ def get_hook(hook_type, context: 'Context') -> Type[BaseHook]:
     else:
         h = context.provider_hooks.get(hook_type, None)
     if h is None:
-        available_hooks = (
-            "Run the application with `--verbose` to see available hook types."
-        )
-        if context.verbose:
-            available_hooks = 'Available hooks = ' + ' '.join(
-                sorted([str(i) for i in context.provider_hooks.keys()])
-            )
-        raise UnknownHookTypeException(
-            f"The hook type=\"{hook_type}\" is not available in the providers. "
-            + available_hooks,
-            context=context,
-        )
+        # Raise exception for unknown hook
+        exceptions.raise_unknown_hook(context, hook_type)
 
     # LazyImportHook in hook ref when declared in provider __init__.hook_types
     elif isinstance(h, LazyImportHook):
@@ -248,7 +219,9 @@ def merge_block_output(
         if isinstance(context.key_path_block[-1], bytes):
             # An exception maybe needed here or this error is snubbed.
             pass
-        raise AppendMergeException("Can't merge from for loop.", context=context)
+        raise exceptions.AppendMergeException(
+            "Can't merge from for loop.", context=context
+        )
 
     # 66 - Should qualify dict here
     target_context, key_path = get_target_and_key(context)
@@ -270,7 +243,9 @@ def merge_output(
 ):
     """Merge the contents into it's top level set of keys."""
     if append_hook_value:
-        raise AppendMergeException("Can't merge from for loop.", context=context)
+        raise exceptions.AppendMergeException(
+            "Can't merge from for loop.", context=context
+        )
 
     if context.key_path[-1] in ('->', '_>'):
         # Expanded key - Remove parent key from key path
@@ -287,7 +262,7 @@ def merge_output(
                 set_key(context=context, value=v, key_path=[k] + key_path)
             return
         else:
-            raise TopLevelMergeException(
+            raise exceptions.TopLevelMergeException(
                 "Can't merge non maps into top level keys.", context=context
             )
     else:
@@ -307,7 +282,7 @@ def run_hook_in_dir(hook: Type[BaseHook]) -> Any:
             with work_in(os.path.abspath(os.path.expanduser(hook.chdir))):
                 return hook.exec()
         else:
-            raise HookUnknownChdirException(
+            raise exceptions.HookUnknownChdirException(
                 f"The specified path='{path}' to change to was not found.",
                 hook=hook,
             )
@@ -328,7 +303,7 @@ def render_hook_vars(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
             # TODO: Include link to docs -> Will need to also include provider name
             #  and then differentiate between lazy imported hooks which already have the
             #  provider and the ones that don't
-            raise UnknownInputArgumentException(
+            raise exceptions.UnknownInputArgumentException(
                 f"Key={key} not in hook={hook_dict['hook_type']}. Possible values are "
                 f"{', '.join(possible_fields)}",
                 context=context,
@@ -473,7 +448,7 @@ def parse_hook(
                         f"https://robcxyz.github.io/tackle-box/providers/"
                         f"{provider_doc_url_str}/{hook_dict['hook_type']}/"
                     )
-                raise HookParseException(str(msg), context=context) from None
+                raise exceptions.HookParseException(str(msg), context=context) from None
 
             # Main exec logic
             if hook.try_:
@@ -567,7 +542,7 @@ def evaluate_args(
             else:
                 # Only thing left is a dict
                 if len(args[i:]) > 1:
-                    raise HookParseException(
+                    raise exceptions.HookParseException(
                         f"Can't specify multiple arguments for map argument "
                         f"{Hook.__fields__[hook_args[i]]}.",
                         context=context,
@@ -581,13 +556,13 @@ def evaluate_args(
                 hook_dict[hook_args[i]] = v
             except IndexError:
                 if len(hook_args) == 0:
-                    raise UnknownArgumentException(
+                    raise exceptions.UnknownArgumentException(
                         f"The hook {hook_dict['hook_type']} does not take any "
                         f"arguments. Hook argument {v} caused an error.",
                         context=context,
                     )
                 else:
-                    raise UnknownArgumentException(
+                    raise exceptions.UnknownArgumentException(
                         f"The hook {hook_dict['hook_type']} takes the following indexed"
                         f"arguments -> {hook_args} which does not map to the arg {v}.",
                         context=context,
@@ -633,7 +608,9 @@ def run_hook(context: 'Context'):
                 smush_key_path(context.key_path[:-1][len(context.key_path_block) :]),
             ).copy()
         except KeyError as e:
-            raise UnknownHookTypeException(f"Key: {e} - Unknown", context=context)
+            raise exceptions.UnknownHookTypeException(
+                f"Key: {e} - Unknown", context=context
+            )
         # Need to replace arrow keys as for the time being (pydantic 1.8.2) - multiple
         # aliases for the same field (type) can't be specified so doing this hack
         if '->' in hook_dict:
@@ -732,7 +709,9 @@ def walk_sync(context: 'Context', element):
                 #  then we have an empty hook which will cause an ambiguous
                 #  ValidationError for missing field
                 if 'items' not in value:
-                    raise EmptyBlockException("Empty block hook.", context=context)
+                    raise exceptions.EmptyBlockException(
+                        "Empty block hook.", context=context
+                    )
 
                 walk_sync(context, value)
                 context.key_path.pop()
@@ -858,13 +837,13 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list):
                 hook_output_value = Hook().exec()
                 return hook_output_value
             else:
-                raise UnknownInputArgumentException(
+                raise exceptions.UnknownInputArgumentException(
                     f"Argument {i} not found as key in tackle file.", context=context
                 )
         return
 
     if len(context.input_context) == 0:
-        raise EmptyTackleFileException(
+        raise exceptions.EmptyTackleFileException(
             # TODO improve -> Should give help by default?
             f"Only functions are declared in {context.input_string} tackle file. Must"
             f" provide an argument such as [] or run `tackle {context.input_string}"
@@ -921,14 +900,14 @@ def function_walk(
             if return_ in tmp_context.public_context:
                 return tmp_context.public_context[return_]
             else:
-                raise FunctionCallException(
+                raise exceptions.FunctionCallException(
                     f"Return value '{return_}' is not found " f"in output.",
                     function=self,
                 )
         elif isinstance(return_, list):
             if isinstance(tmp_context, list):
                 # TODO: This is not implemented (ie list outputs)
-                raise FunctionCallException(
+                raise exceptions.FunctionCallException(
                     f"Can't have list return {return_} for " f"list output.",
                     function=self,
                 )
@@ -938,7 +917,7 @@ def function_walk(
                 if i in tmp_context.public_context:
                     output[i] = tmp_context.public_context[i]
                 else:
-                    raise FunctionCallException(
+                    raise exceptions.FunctionCallException(
                         f"Return value '{i}' in return {return_} not found in output.",
                         function=self,
                     )
@@ -953,7 +932,7 @@ def create_function_model(
 ) -> Type[BaseFunction]:
     """Create a model from the function input dict."""
     if func_dict is None:
-        raise EmptyFunctionException(
+        raise exceptions.EmptyFunctionException(
             "Can't have an empty function", context=context, function_name=func_name
         )
 
@@ -1008,7 +987,7 @@ def create_function_model(
                 # TODO: Qualify type in enum -> Type
                 type_ = v['type']
                 if type_ not in literals:
-                    raise MalformedFunctionFieldException(
+                    raise exceptions.MalformedFunctionFieldException(
                         f"Function field {k} with type={v} unknown. Must be one of {','.join(literals)}",
                         function_name=func_name,
                         context=context,
@@ -1017,7 +996,7 @@ def create_function_model(
             elif 'default' in v:
                 new_func[k] = (type(v['default']), Field(**v))
             else:
-                raise MalformedFunctionFieldException(
+                raise exceptions.MalformedFunctionFieldException(
                     f"Function field {k} must have either a `type` or `default` field "
                     f"where the type can be inferred.",
                     function_name=func_name,
@@ -1050,7 +1029,7 @@ def create_function_model(
         if 'shadows a BaseModel attribute' in e.args[0]:
             shadowed_arg = e.args[0].split('\"')[1]
             extra = "a different value"
-            raise ShadowedFunctionFieldException(
+            raise exceptions.ShadowedFunctionFieldException(
                 f"The function field \'{shadowed_arg}\' is reserved. Use {extra}.",
                 function_name=func_name,
                 context=context,
@@ -1091,7 +1070,7 @@ def extract_base_file(context: 'Context'):
         try:
             path = find_in_parent(context.input_dir, [context.input_file])
         except NotADirectoryError:
-            raise UnknownSourceException(
+            raise exceptions.UnknownSourceException(
                 f"Could not find {context.input_file} in {context.input_dir} or in "
                 f"any of the parent directories.",
                 context=context,
@@ -1110,14 +1089,14 @@ def extract_base_file(context: 'Context'):
     try:
         context.input_context = read_config_file(path)
     except FileNotFoundError:
-        raise UnknownSourceException(
+        raise exceptions.UnknownSourceException(
             f"Could not find file in {path}.", context=context
         ) from None
     except ParserError as e:
-        raise TackleFileInitialParsingException(e) from None
+        raise exceptions.TackleFileInitialParsingException(e) from None
 
     if context.input_context is None:
-        raise EmptyTackleFileException(
+        raise exceptions.EmptyTackleFileException(
             f"Tackle file found at {path} is empty.", context=context
         )
 
@@ -1235,7 +1214,7 @@ def update_source(context: 'Context'):
         # does not exist so we don't have to catch it with context later.
         tackle_file = find_nearest_tackle_file()
         if tackle_file is None:
-            raise UnknownSourceException(
+            raise exceptions.UnknownSourceException(
                 f"Could not find source = {first_arg}", context=context
             )
 
@@ -1245,7 +1224,7 @@ def update_source(context: 'Context'):
 
         if first_arg not in context.input_context:
             context.input_file = first_arg
-            raise UnknownSourceException(
+            raise exceptions.UnknownSourceException(
                 f"Could not find source = {first_arg} or as "
                 f"key in parent tackle file.",
                 context=context,

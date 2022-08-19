@@ -12,13 +12,33 @@ if TYPE_CHECKING:
     from tackle.models import Context, BaseFunction, BaseHook, BaseContext
 
 
-#
-# Base exceptions - Ones that are subclassed later
-#
+def raise_unknown_hook(context: 'Context', hook_type: str, method: bool = None):
+    """Raise an exception for when there is a missing hook with some context."""
+    if method:
+        type_ = ["method", "hook"]
+        extra = ""  # TODO
+        # extra = "Available methods include"
+    else:
+        type_ = ["hook", "providers"]
+        if context.verbose:
+            available_hooks = "".join(
+                sorted([str(i) for i in context.provider_hooks.keys()])
+            )
+            extra = f'Available hooks = {available_hooks}'
+
+        else:
+            extra = "Run the application with `--verbose` to see available hook types."
+
+    raise UnknownHookTypeException(
+        f"The {type_[0]}=\"{hook_type}\" is not available in the {type_[1]}. " + extra,
+        context=context,
+    )
+
+
 class ContributionNeededException(Exception):
     """
-    Special exception to point users (particularly of the windows variety) to contribute
-    a fix with context that includes a link to the file needing upgrade.
+    Special exception to point users (particularly of the Windows variety) to contribute
+     a fix with context that includes a link to the file needing upgrade.
     """
 
     def __init__(self, extra_message=None):
@@ -52,6 +72,11 @@ class ContributionNeededException(Exception):
         return os.path.join(*github_path_list)
 
 
+#
+# Base exceptions - Ones that are subclassed later
+#
+
+
 class TackleHookCallException(Exception):
     """Base hook call exception class. Subclassed within providers."""
 
@@ -64,6 +89,14 @@ class TackleHookCallException(Exception):
         if not hook.verbose:
             sys.tracebacklimit = 0
         super().__init__(self.message)
+
+
+class HookUnknownChdirException(TackleHookCallException):
+    """
+    Exception for a hook call with a chdir method.
+
+    Raised when chdir is to an unknown directory.
+    """
 
 
 #
@@ -117,14 +150,6 @@ class HookCallException(TackleParserException):
     Exception for an unknown field in a hook.
 
     Raised when field has been provided not declared in the hook type.
-    """
-
-
-class HookUnknownChdirException(TackleParserException):
-    """
-    Exception for a hook call with a chdir method.
-
-    Raised when chdir is to an unknown directory.
     """
 
 
