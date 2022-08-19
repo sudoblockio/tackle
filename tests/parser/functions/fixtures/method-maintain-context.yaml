@@ -6,4 +6,5 @@ greeter<-:
     exec:
       v->: var {{item}} --for words
 
-do_greeter->: greeter.say --merge
+do_greeter->: greeter.say
+jinja_call->: {{greeter.say()}}

@@ -3,7 +3,7 @@ import ast
 from jinja2 import meta
 from jinja2.exceptions import UndefinedError, TemplateSyntaxError
 from inspect import signature
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Callable
 from pydantic import ValidationError
 
 from tackle.special_vars import special_variables
@@ -13,8 +13,10 @@ from tackle.exceptions import (
     MalformedTemplateVariableException,
 )
 
+from pydantic.main import ModelMetaclass
+
 if TYPE_CHECKING:
-    from tackle.models import Context
+    from tackle.models import Context, JinjaHook
 
 
 def wrap_braces_if_not_exist(value):
@@ -56,6 +58,58 @@ def render_variable(context: 'Context', raw: Any):
         return raw
 
 
+# TODO: typechecking return
+def create_jinja_hook(context: 'Context', hook: 'ModelMetaclass') -> 'JinjaHook':
+    from tackle.models import JinjaHook, BaseContext
+
+    return JinjaHook(
+        hook=hook,
+        context=BaseContext(
+            input_context=context.input_context,
+            public_context=context.public_context,
+            existing_context=context.existing_context,
+            no_input=context.no_input,
+            calling_directory=context.calling_directory,
+            calling_file=context.calling_file,
+            provider_hooks=context.provider_hooks,
+            key_path=context.key_path,
+            verbose=context.verbose,
+        ),
+    )
+
+
+def add_jinja_hook_methods(
+    context: 'Context',
+    jinja_hook: 'JinjaHook',
+):
+    """Recursively look through hook and add methods to jinja hook so that if"""
+    from tackle.parser import create_function_model
+
+    for k, v in jinja_hook.hook.__fields__.items():
+        if v.type_ == Callable:
+            # Enrich the method with the base attributes
+            for i in jinja_hook.hook.__fields__['function_fields'].default:
+                v.default.function_dict[i] = jinja_hook.hook.__fields__[
+                    'function_dict'
+                ].default[i]
+
+            # Build the function with a copy of the dict, so it can be called twice
+            # without losing methods
+            method_base = create_function_model(
+                context=context, func_name=k, func_dict=v.default.function_dict.copy()
+            )
+
+            # Create the jinja method with
+            jinja_method = create_jinja_hook(context, method_base)
+
+            # Add the jinja method's exec as an attribute of the base's wrapped exec so
+            # that it can be called within the jinja globals along with the wrapped exec
+            jinja_method.set_method(k, jinja_method.wrapped_exec)
+
+            add_jinja_hook_methods(context, jinja_method)
+
+
+# wrapped_exec calls exec on the `hook` integrating any positional args
 def render_string(context: 'Context', raw: str):
     """
     Render strings by first extracting renderable variables then build a render context
@@ -115,39 +169,38 @@ def render_string(context: 'Context', raw: str):
         for i in unknown_variables:
             if i in context.provider_hooks:
                 from tackle.models import LazyBaseFunction
-                from tackle.models import JinjaHook, BaseContext
 
+                hook = context.provider_hooks[i]
                 # Keep track of the hook put in globals so that it can be removed later
                 used_hooks.append(i)
 
-                hook = context.provider_hooks[i]
                 if isinstance(hook, LazyBaseFunction):
                     # In this case the hook was imported from the `hooks` directory and
                     # it needs to be created before being put in the jinja.globals.
                     from tackle.parser import create_function_model
 
-                    hook = create_function_model(context, i, hook.function_dict)
-                    # Once the hook is created it then needs to replace the hook in
-                    # context.provider_hooks so that it may be called normally again
+                    hook = create_function_model(
+                        context=context, func_name=i, func_dict=hook.function_dict
+                    )
+
+                    # Replace the provider hooks with instantiated function
                     context.provider_hooks[i] = hook
 
-                # Add the hook to the jinja environment's globals
-                context.env_.globals[i] = JinjaHook(
-                    hook=hook,
-                    context=BaseContext(
-                        input_context=context.input_context,
-                        public_context=context.public_context,
-                        existing_context=context.existing_context,
-                        no_input=context.no_input,
-                        calling_directory=context.calling_directory,
-                        calling_file=context.calling_file,
-                        provider_hooks=context.provider_hooks,
-                        key_path=context.key_path,
-                        verbose=context.verbose,
-                    ),
-                ).wrapped_exec
-                # wrapped_exec calls exec on the `hook` integrating any positional args
+                # Create the jinja method with
+                jinja_hook = create_jinja_hook(context, hook)
 
+                # Iterate recursively through hook fields looking for methods as
+                # type Callables and create attributes on their base function so
+                # that those methods can be called individually.
+                add_jinja_hook_methods(context, jinja_hook)
+
+                # Add the hook to the jinja environment globals along with all hook
+                # methods
+                context.env_.globals[i] = jinja_hook.wrapped_exec
+
+            else:
+                # An error will be thrown later when the variable can't be rendered
+                pass
     try:
         rendered_template = template.render(render_context)
 

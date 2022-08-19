@@ -57,6 +57,8 @@ def test_function_method(change_curdir_fixtures):
     """Check that methods work"""
     output = tackle('method-hook.yaml')
     assert output['t'] == {'in': 'foo', 'bar': 'baz'}
+    assert output['t'] == output['jinja_method']
+    assert output['jinja_base']['bar'] == 'foo'
 
 
 def test_function_method_simple(change_curdir_fixtures):
@@ -88,7 +90,15 @@ def test_function_method_args(change_curdir_fixtures):
 def test_function_method_maintain_context(change_curdir_fixtures):
     """Check a method that carries a context with it from the parent object."""
     output = tackle('method-maintain-context.yaml')
-    assert output['v'] == ['Hello', 'world!']
+    assert output['do_greeter']['v'] == ['Hello', 'world!']
+    assert output['jinja_call']['v'] == ['Hello', 'world!']
+
+
+def test_function_method_nested(change_curdir_fixtures):
+    """Check that we can create a method."""
+    output = tackle('method-nested-hook.yaml')
+    assert output['jinja_method_home']['destination'] == "earth"
+    assert output['jinja_method_home'] == output['t_home']
 
 
 def test_function_import_func_from_hooks_dir(change_dir):
@@ -106,7 +116,8 @@ def test_function_method_no_default(change_curdir_fixtures):
     o = tackle('method-call-no-default.yaml')
     assert o['compact']['v'] == 'foo'
     assert o['compact'] == o['expanded']
-    assert o['jinja'] == o['expanded']
+    assert o['jinja_base']['word'] == 'foo'
+    assert o['jinja_method']['v'] == 'foo'
 
 
 # Determine what lists do

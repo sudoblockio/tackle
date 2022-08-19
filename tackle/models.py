@@ -16,7 +16,7 @@ from pydantic import (
 from pydantic.main import ModelMetaclass
 from jinja2 import Environment, StrictUndefined
 from jinja2.ext import Extension
-from typing import Any, Union, Optional
+from typing import Any, Union, Optional, Callable
 import logging
 import random
 import string
@@ -440,7 +440,17 @@ class LazyBaseFunction(BaseModel):
     function_dict: dict = Field(
         ..., description="A dict for the lazy function to be parsed at runtime."
     )
-    function_fields: list = Field(None, description="")
+    function_fields: list = Field(
+        None,
+        description="List of fields used to 1, enrich functions without exec method, "
+        "and 2, inherit base attributes into methods. Basically a helper.",
+    )
+    function_methods: list = Field(
+        None,
+        description="List of methods so that when we use a function as a jinja hook, "
+        "we can easily enrich them without having to iterate over all of "
+        "its fields to detect if it is a callable.",
+    )
 
 
 class JinjaHook(BaseModel):
@@ -467,3 +477,14 @@ class JinjaHook(BaseModel):
         )
         output = self.hook(**kwargs, **self.context.dict()).exec()
         return output
+
+    def set_method(self, key: str, method: Callable):
+        """
+        Method to attach method attributes onto wrapped_exec method so that function
+        can be called from jinja globals. For instance JinjaHook().wrapped_exec will be
+        put into jinja.environment.globals which might have a method itself such as
+        JinjaHook().wrapped_exec.JinjaHook().wrapped_exec.another_method. This can't
+        be done directly with setattr against JinjaHook().wrapped_exec. Inspired by
+        https://stackoverflow.com/a/20306101/12642712
+        """
+        setattr(JinjaHook.wrapped_exec, key, method)

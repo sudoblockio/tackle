@@ -90,7 +90,7 @@ BASE_METHODS = [
 ]
 
 
-def get_hook(hook_type, context: 'Context'):
+def get_hook(hook_type, context: 'Context') -> Type[BaseHook]:
     """
     Get the hook from providers. Qualify if the hook is a method and if it is a lazy
     hook (ie has requirements that have not been installed), install them.
@@ -113,21 +113,31 @@ def get_hook(hook_type, context: 'Context'):
         #  determine if hook is of type BaseHook / LazyImportHook and perform logic
         #  separate from the declarative hook.
         for method in hook_parts:
-            # Methods are of type LazyBaseFunction which need to have the base
-            # instantiated before getting the hook. Run through `create_function_model`
-            # later to build callable from hook.
             try:
                 new_hook = h.__fields__[method].default
-            except IndexError:
+                # if isinstance()
+
+            except (IndexError, KeyError):
                 raise UnknownHookTypeException(
                     f"Unknown method={method} when calling {hook_type}", context=context
                 ) from None
 
-            # Update method with values from base class so that fields can be inheritted
+            # Update method with values from base class so that fields can be inherited
             # from the base hook. function_fields is a list of those fields that aren't
             # methods / special vars (ie args, return, etc).
             for i in h.__fields__['function_fields'].default:
-                new_hook.function_dict[i] = h.__fields__['function_dict'].default[i]
+                if i not in new_hook.function_dict:
+                    # Base method should not override child.
+                    new_hook.function_dict[i] = h.__fields__['function_dict'].default[i]
+
+            # Methods that are of type LazyBaseFunction which need to have the base
+            # instantiated before getting the hook. Allows nested methods for functions.
+            if isinstance(new_hook, LazyBaseFunction):
+                new_hook = create_function_model(
+                    context=context,
+                    func_name=h.__fields__[method].name,
+                    func_dict=new_hook.function_dict.copy(),
+                )
 
             h = new_hook
 
@@ -587,8 +597,8 @@ def evaluate_args(
 def run_hook(context: 'Context'):
     """
     Run the hook by qualifying the input argument and matching the input params with the
-    with the hook's `_args` which are then overlayed into a hook kwargs. Also interprets
-    special cases where you have a string or list input of renderable variables.
+     hook's `_args` which are then overlayed into a hook kwargs. Also interprets
+     special cases where you have a string or list input of renderable variables.
     """
     if isinstance(context.input_string, str):
         args, kwargs, flags = unpack_args_kwargs_string(context.input_string)
@@ -613,17 +623,6 @@ def run_hook(context: 'Context'):
 
     # Look up the hook from the imported providers
     Hook = get_hook(first_arg, context)
-
-    if Hook is None:
-        raise UnknownHookTypeException(
-            f"Hook type-> \"{first_arg}\" unknown.", context=context
-        )
-
-    # TODO: Enrich lazy functions
-    #  Might want to instead track lazy
-    if isinstance(Hook, LazyBaseFunction):
-        # Build the hook and make a copy of the dict as it is manipulated when building
-        Hook = create_function_model(context, first_arg, Hook.function_dict.copy())
 
     if context.key_path[-1] in ('->', '_>'):
         # We have an expanded or mixed (with args) hook expression and so there will be
@@ -755,32 +754,32 @@ def walk_sync(context: 'Context', element):
         set_key(context=context, value=element)
 
 
-def run_handler(context, handler_key, handler_value):
-    """
-    Run a pre/post execution handlers which are either hooks or functions.
-
-    NOTE: This is an experimental feature and may change.
-    """
-    if handler_key in context.functions:
-        """Run functions"""
-        function = context.functions[handler_key]
-        context.input_context = function.exec
-        walk_sync(context, function.exec.copy())
-
-    elif get_hook(handler_key, context):
-        Hook = get_hook(handler_key, context)
-        hook = Hook(
-            **handler_value,
-            input_context=context.input_context,
-            public_context=context.public_context,
-            no_input=context.no_input,
-            providers=context.providers,
-        )
-        hook.call()
-    else:
-        raise UnknownHookTypeException(
-            f"Unknown hook type={handler_key}.", context=context
-        )
+# def run_handler(context, handler_key, handler_value):
+#     """
+#     Run a pre/post execution handlers which are either hooks or functions.
+#
+#     NOTE: This is an experimental feature and may change.
+#     """
+#     if handler_key in context.functions:
+#         """Run functions"""
+#         function = context.functions[handler_key]
+#         context.input_context = function.exec
+#         walk_sync(context, function.exec.copy())
+#
+#     elif get_hook(handler_key, context):
+#         Hook = get_hook(handler_key, context)
+#         hook = Hook(
+#             **handler_value,
+#             input_context=context.input_context,
+#             public_context=context.public_context,
+#             no_input=context.no_input,
+#             providers=context.providers,
+#         )
+#         hook.call()
+#     else:
+#         raise UnknownHookTypeException(
+#             f"Unknown hook type={handler_key}.", context=context
+#         )
 
 
 def update_input_context_with_kwargs(context: 'Context', kwargs: dict):
@@ -989,19 +988,18 @@ def create_function_model(
     )
 
     # fmt: on
-    new_func = {'hook_type': func_name, 'function_fields': []}
+    new_func = {'hook_type': func_name, 'function_fields': [], 'function_methods': []}
     literals = ('str', 'int', 'float', 'bool', 'dict', 'list')  # strings to match
     # Create function fields from anything left over in the function dict
     for k, v in func_dict.items():
         if v is None:
-            # We now
+            # TODO: ? -> why skip? Would be ignored. Empty keys mean something right?
             continue
 
         if k.endswith(('->', '_>')):
             raise NotImplementedError
         elif k.endswith(('<-', '<_')):
             # Implement method which is instantiated later in `get_hook`
-            # new_func[k[:-2]] = (Callable, LazyBaseFunction(**v))
             new_func[k[:-2]] = (Callable, LazyBaseFunction(function_dict=v))
             continue
 
