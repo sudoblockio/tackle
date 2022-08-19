@@ -733,34 +733,6 @@ def walk_sync(context: 'Context', element):
         set_key(context=context, value=element)
 
 
-# def run_handler(context, handler_key, handler_value):
-#     """
-#     Run a pre/post execution handlers which are either hooks or functions.
-#
-#     NOTE: This is an experimental feature and may change.
-#     """
-#     if handler_key in context.functions:
-#         """Run functions"""
-#         function = context.functions[handler_key]
-#         context.input_context = function.exec
-#         walk_sync(context, function.exec.copy())
-#
-#     elif get_hook(handler_key, context):
-#         Hook = get_hook(handler_key, context)
-#         hook = Hook(
-#             **handler_value,
-#             input_context=context.input_context,
-#             public_context=context.public_context,
-#             no_input=context.no_input,
-#             providers=context.providers,
-#         )
-#         hook.call()
-#     else:
-#         raise UnknownHookTypeException(
-#             f"Unknown hook type={handler_key}.", context=context
-#         )
-
-
 def update_input_context_with_kwargs(context: 'Context', kwargs: dict):
     """
     Update the input dict with kwargs which in this context are treated as overriding
@@ -1111,40 +1083,6 @@ def extract_base_file(context: 'Context'):
 
     # Import the hooks
     context.provider_hooks.import_from_path(context.input_dir)
-
-    # if 'hooks' in input_dir_contents:
-    #     with work_in(context.input_dir):
-    #         context.provider_hooks.import_from_path(context.input_dir)
-    #
-    #     # TODO: RM this -> No more filters implemented this way
-    #
-    #     for i in context.provider_hooks.new_functions:
-    #         try:
-    #             context.env_.filters[i] = create_function_model(
-    #                 context=context,
-    #                 func_name=i,
-    #                 func_dict=context.provider_hooks[i].dict(),
-    #             )().wrapped_exec
-    #         except KeyError:
-    #             # TODO: This is odd - when running
-    #             #  tackle/providers/tackle/tests/test_provider_tackle_import.py::test_provider_hook_import_func_provider_import
-    #             #  There is an error from an adjacent test object that is thrown here
-    #             #  only when all the tests are run. tackle-box/issues/61
-    #             pass
-    #     context.provider_hooks._new_functions = []
-
-    # TODO: Experimental feature that could be integrated later
-    # # Extract handlers
-    # for k, v in list(input_context.items()):
-    #     if k.startswith('__'):
-    #         # Run pre-execution handlers and remove from input
-    #         run_handler(context, k[2:], v)
-    #         input_context.pop(k)
-    #     if k.endswith('__'):
-    #         # Store post-execution handlers and remove from input
-    #         # TODO: Execute post exec handlers
-    #         context.post_exec_handlers.append({k[:-2]: v})
-    #         input_context.pop(k)
 
 
 def import_local_provider_source(context: 'Context', provider_dir: str):
