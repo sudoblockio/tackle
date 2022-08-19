@@ -35,9 +35,14 @@ def test_provider_tackle_local_prior_context(change_dir):
 
 def test_provider_tackle_block_tackle(change_dir):
     output = tackle('block-tackle.yaml', no_input=True)
-    assert output
+    assert 'things' in output
 
 
 def test_provider_tackle_remote(change_dir, clean_outputs):
     output = tackle('remote.yaml', no_input=True)
-    assert output
+    assert output['project_slug'] == 'output'
+
+
+def test_provider_tackle_kwargs_default(change_dir):
+    output = tackle('kwargs-default.yaml', no_input=True)
+    assert output['default_kwargs']['stuff'] == 'bing'

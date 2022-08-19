@@ -350,6 +350,7 @@ class BaseHook(BaseContext, Extension):
     env_: Any = None
 
     args: list = []
+    kwargs: str = None
 
     skip_output: bool = False
     # Fields that should not be rendered by default
@@ -415,6 +416,8 @@ class FunctionInput(BaseModel):
     return_: Union[str, list] = Field(None)
 
     args: list = None
+    kwargs: str = None
+
     render_exclude: list = None
     validators: dict = None
     methods: dict = None

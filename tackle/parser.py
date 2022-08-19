@@ -294,6 +294,15 @@ def render_hook_vars(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
     """Render the hook variables."""
     for key, value in list(hook_dict.items()):
         if key not in Hook.__fields__ and key not in BASE_METHODS:
+            # If the hook has a `kwargs` field, then map it to that field.
+            if Hook.__fields__['kwargs'].default is not None:
+                default_kwargs = Hook.__fields__['kwargs'].default
+                if default_kwargs not in hook_dict:
+                    hook_dict[default_kwargs] = {}
+                hook_dict[default_kwargs][key] = value
+                hook_dict.pop(key)
+                continue
+
             # Get a list of possible fields for hook before raising error.
             possible_fields = [
                 f"{k}: {v.type_.__name__}"

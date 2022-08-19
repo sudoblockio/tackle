@@ -34,6 +34,7 @@ class TackleHook(BaseHook):
     # fmt: on
 
     args: list = ['input_string']
+    kwargs: str = "extra_context"
     _docs_order = 0
 
     def exec(self) -> dict:
