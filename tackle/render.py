@@ -58,7 +58,6 @@ def render_variable(context: 'Context', raw: Any):
         return raw
 
 
-# TODO: typechecking return
 def create_jinja_hook(context: 'Context', hook: 'ModelMetaclass') -> 'JinjaHook':
     from tackle.models import JinjaHook, BaseContext
 
@@ -89,9 +88,11 @@ def add_jinja_hook_methods(
         if v.type_ == Callable:
             # Enrich the method with the base attributes
             for i in jinja_hook.hook.__fields__['function_fields'].default:
-                v.default.function_dict[i] = jinja_hook.hook.__fields__[
-                    'function_dict'
-                ].default[i]
+                # Don't override attributes within the method
+                if i not in v.default.function_dict:
+                    v.default.function_dict[i] = jinja_hook.hook.__fields__[
+                        'function_dict'
+                    ].default[i]
 
             # Build the function with a copy of the dict, so it can be called twice
             # without losing methods
