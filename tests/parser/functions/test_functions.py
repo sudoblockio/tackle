@@ -101,6 +101,20 @@ def test_function_method_nested(change_curdir_fixtures):
     assert output['jinja_method_home'] == output['t_home']
 
 
+def test_function_method_override(change_curdir_fixtures):
+    """
+    Check that when we call methods that attributes are properly overridden if they
+     exist in the base.
+    """
+    output = tackle('method-nested-override.yaml')
+    assert output['method_overlap_jinja']['home'] == 'earth'
+    assert output['method_overlap_compact']['home'] == 'foo'
+    assert output['attribute_override_jinja']['home'] == 'bing'
+    assert output['attribute_override_compact']['home'] == 'bing'
+    assert output['nested_jinja']['home'] == 'baz'
+    assert output['nexted_compact']['home'] == 'baz'
+
+
 def test_function_import_func_from_hooks_dir(change_dir):
     """Assert that we can call functions from local hooks dir."""
     os.chdir(os.path.join('fixtures', 'func-provider'))

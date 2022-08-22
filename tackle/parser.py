@@ -137,6 +137,14 @@ def get_hook(hook_type, context: 'Context') -> Type[BaseHook]:
             path=h.hooks_path,
         )
         h = context.provider_hooks[hook_type]
+    # TODO: Refactor this whole function so this is not repeated
+    #  Make it so hook is split right away and evaluated in one loop
+    elif isinstance(h, LazyBaseFunction):
+        h = create_function_model(
+            context=context,
+            func_name=hook_type,
+            func_dict=h.function_dict.copy(),
+        )
 
     return h
 
