@@ -448,12 +448,6 @@ class LazyBaseFunction(BaseModel):
         description="List of fields used to 1, enrich functions without exec method, "
         "and 2, inherit base attributes into methods. Basically a helper.",
     )
-    function_methods: list = Field(
-        None,
-        description="List of methods so that when we use a function as a jinja hook, "
-        "we can easily enrich them without having to iterate over all of "
-        "its fields to detect if it is a callable.",
-    )
 
 
 class JinjaHook(BaseModel):
@@ -478,7 +472,20 @@ class JinjaHook(BaseModel):
         evaluate_args(
             args=args_list, hook_dict=kwargs, Hook=self.hook, context=self.context
         )
-        output = self.hook(**kwargs, **self.context.dict()).exec()
+        # Can't simply do self.hook(**kwargs, **self.context.dict()) because the
+        #  references might not be copied over properly.
+        output = self.hook(
+            **kwargs,
+            input_context=self.context.input_context,
+            public_context=self.context.public_context,
+            existing_context=self.context.existing_context,
+            no_input=self.context.no_input,
+            calling_directory=self.context.calling_directory,
+            calling_file=self.context.calling_file,
+            provider_hooks=self.context.provider_hooks,
+            key_path=self.context.key_path,
+            verbose=self.context.verbose,
+        ).exec()
         return output
 
     def set_method(self, key: str, method: Callable):

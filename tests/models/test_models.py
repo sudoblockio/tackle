@@ -3,8 +3,10 @@ import subprocess
 import sys
 
 from tackle.models import (
+    BaseContext,
     BaseHook,
     Context,
+    JinjaHook,
 )
 
 
@@ -69,8 +71,22 @@ def test_models_latest():
     assert c.checkout == 'latest'
 
 
+# TODO: RM
 def test_models_lazy_base_function():
     from tackle.models import LazyBaseFunction
 
     c = LazyBaseFunction(function_dict={}, function_fields=[], hook_type="foo")
     assert c
+
+
+def test_models_jinja_hook():
+    """
+    Test that wrapped_exec properly passes references to context vars such as
+     public_context between a hook call.
+    """
+    context = BaseContext()
+    context.provider_hooks = Context().provider_hooks
+    c = JinjaHook(context=context, hook=context.provider_hooks['set'])
+    c.context.public_context = {}
+    c.wrapped_exec(path="foo", value=1)
+    assert c.context.public_context == {"foo": 1}

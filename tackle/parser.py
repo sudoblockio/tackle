@@ -956,7 +956,7 @@ def create_function_model(
     )
 
     # fmt: on
-    new_func = {'hook_type': func_name, 'function_fields': [], 'function_methods': []}
+    new_func = {'hook_type': func_name, 'function_fields': []}
     literals = ('str', 'int', 'float', 'bool', 'dict', 'list')  # strings to match
     # Create function fields from anything left over in the function dict
     for k, v in func_dict.items():
