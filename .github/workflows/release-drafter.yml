@@ -16,4 +16,5 @@ jobs:
           release-type: python
           extra-files: |
             tackle/__init__.py
+          release-as: v0.3.0
 
