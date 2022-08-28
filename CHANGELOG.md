@@ -1,35 +1,10 @@
-## [0.2.1](https://github.com/robcxyz/tackle-box/compare/v0.2.0...v0.2.1) (2022-08-02)
+# Changelog
 
 
 ### Bug Fixes
 
 * issue with non-defaulted base parameters when calling declarative hook methods ([da315d9](https://github.com/robcxyz/tackle-box/commit/da315d957b7f2ec127395ec87d8ea91d49c6202b))
-
-
-
-# [0.2.0](https://github.com/robcxyz/tackle-box/compare/v0.1.1...v0.2.0) (2022-07-29)
-
-
-### Features
-
-* rm PartialModelMetaclass which simplifies model creation / tmp rm jinja filters ([21b4417](https://github.com/robcxyz/tackle-box/commit/21b441774e0c1fc9038d3583555dbf30e3e3c428))
-
-
-
-## [0.1.1](https://github.com/robcxyz/tackle-box/compare/v0.1.0...v0.1.1) (2022-07-21)
-
-
-### Bug Fixes
-
 * issue with unquoted string cleanup function on empty dicts: ([b1e8b3f](https://github.com/robcxyz/tackle-box/commit/b1e8b3faf60c018f143b019f85732b13abe639d2))
-
-
-
-# [0.1.0](https://github.com/robcxyz/tackle-box/compare/f173ef6818d179ed4f21ef899cad49bcb080b9f3...v0.1.0) (2022-07-21)
-
-
-### Bug Fixes
-
 * add exception for unknown variables the same as hook_types closes [#55](https://github.com/robcxyz/tackle-box/issues/55) ([b0b47ea](https://github.com/robcxyz/tackle-box/commit/b0b47ea85ae9be3ceeb96149126f15261b1cbc2c))
 * add field for functions ([1a56f74](https://github.com/robcxyz/tackle-box/commit/1a56f74c81136394b29d041e49c9ae9d23d735aa))
 * add smart_union to fix mangling of list inputs ([971ca88](https://github.com/robcxyz/tackle-box/commit/971ca882371f7079fc5f3f7a893bf6116b0d90f4))
@@ -68,6 +43,7 @@
 
 ### Features
 
+* rm PartialModelMetaclass which simplifies model creation / tmp rm jinja filters ([21b4417](https://github.com/robcxyz/tackle-box/commit/21b441774e0c1fc9038d3583555dbf30e3e3c428))
 * add ability for declarative hooks to be run as jinja extensions and filters ([d6e3dea](https://github.com/robcxyz/tackle-box/commit/d6e3dea3fbc1957db7ffc942490b21232ce50a3e))
 * add ability to default render context when no hook provided ([0e89c0e](https://github.com/robcxyz/tackle-box/commit/0e89c0eaedb19b7535ec6bf28079fea0f5f18d00))
 * add auth handler for web requests pprovider ([b635dc3](https://github.com/robcxyz/tackle-box/commit/b635dc3416c2e40b16a3c24f4069179059d43c0d))
