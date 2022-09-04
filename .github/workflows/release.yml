@@ -19,6 +19,15 @@ jobs:
           release-type: python
           extra-files: |
             tackle/__init__.py
+          changelog-types: |
+            [
+              {"type":"feat","section":"Features","hidden":false},
+              {"type":"fix","section":"Bug Fixes","hidden":false},
+              {"type":"perf","section":"Performance Improvements","hidden":false},
+              {"type":"refactor","section":"Refactors","hidden":false},
+              {"type":"revert","section":"Reversions","hidden":false},
+              {"type":"provider","section":"Provider Changes","hidden":false}
+            ]
 
       # Release to pypi if previous action resulted in creating a new release which
       # happens when the release-please PR is merged
