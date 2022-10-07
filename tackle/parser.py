@@ -1,18 +1,40 @@
-import os
-import re
-import logging
-from pathlib import Path
-from functools import partialmethod
-from typing import Type, Any, Union, Callable
-from pydantic import Field, create_model
-from pydantic.main import ModelMetaclass
 from collections import OrderedDict
-from pydantic import ValidationError
+from functools import partialmethod
+import os
+from pydantic import Field, create_model, ValidationError
+from pydantic.main import ModelMetaclass
+from pydantic.fields import ModelField
 from pydoc import locate
+from pathlib import Path
+import re
 from ruamel.yaml.constructor import CommentedKeyMap, CommentedMap
 from ruamel.yaml.parser import ParserError
+from typing import Type, Any, Union, Callable, Optional
 
-from tackle.render import render_variable, wrap_jinja_braces
+from tackle import exceptions
+from tackle.hooks import (
+    import_from_path,
+    import_with_fallback_install,
+    LazyImportHook,
+    LazyBaseFunction,
+)
+from tackle.macros import (
+    var_hook_macro,
+    blocks_macro,
+    compact_hook_call_macro,
+    list_to_var_macro,
+)
+from tackle.models import (
+    Context,
+    BaseHook,
+    BaseFunction,
+    FunctionInput,
+    BaseContext,
+)
+from tackle.render import render_variable
+from tackle.settings import settings
+from tackle.utils.help import run_help
+from tackle.utils.render import wrap_jinja_braces
 from tackle.utils.dicts import (
     nested_get,
     nested_delete,
@@ -38,27 +60,6 @@ from tackle.utils.paths import (
     find_in_parent,
 )
 from tackle.utils.zipfile import unzip
-from tackle.models import (
-    Context,
-    BaseHook,
-    LazyImportHook,
-    BaseFunction,
-    FunctionInput,
-    LazyBaseFunction,
-    BaseContext,
-)
-from tackle.macros import (
-    var_hook_macro,
-    blocks_macro,
-    compact_hook_call_macro,
-    list_to_var_macro,
-)
-
-from tackle import exceptions
-from tackle.settings import settings
-
-logger = logging.getLogger(__name__)
-
 
 BASE_METHODS = [
     'if',
@@ -71,6 +72,16 @@ BASE_METHODS = [
     'chdir',
     'merge',
 ]
+
+
+def get_public_or_private_hook(
+    context: 'Context',
+    hook_type: str,
+) -> Union[Type[BaseHook], LazyBaseFunction]:
+    h = context.public_hooks.get(hook_type, None)
+    if h is not None:
+        return h
+    return context.private_hooks.get(hook_type, None)
 
 
 def get_hook(hook_type, context: 'Context') -> Type[BaseHook]:
@@ -88,7 +99,7 @@ def get_hook(hook_type, context: 'Context') -> Type[BaseHook]:
 
         # Extract the base hook.
         hook_type = hook_parts.pop(0)
-        h = context.provider_hooks.get(hook_type, None)
+        h = get_public_or_private_hook(context, hook_type)
         if h is None:
             exceptions.raise_unknown_hook(context, hook_type)
 
@@ -123,7 +134,7 @@ def get_hook(hook_type, context: 'Context') -> Type[BaseHook]:
             h = new_hook
 
     else:
-        h = context.provider_hooks.get(hook_type, None)
+        h = get_public_or_private_hook(context, hook_type)
     if h is None:
         # Raise exception for unknown hook
         exceptions.raise_unknown_hook(context, hook_type)
@@ -132,11 +143,12 @@ def get_hook(hook_type, context: 'Context') -> Type[BaseHook]:
     elif isinstance(h, LazyImportHook):
         # Install the requirements which will convert all the hooks in that provider
         #  to actual hooks
-        context.provider_hooks.import_with_fallback_install(
+        import_with_fallback_install(
+            context=context,
             mod_name=h.mod_name,
             path=h.hooks_path,
         )
-        h = context.provider_hooks[hook_type]
+        h = get_public_or_private_hook(context, hook_type)
     # TODO: Refactor this whole function so this is not repeated
     #  Make it so hook is split right away and evaluated in one loop
     elif isinstance(h, LazyBaseFunction):
@@ -381,7 +393,7 @@ def parse_sub_context(
         return
 
     indexed_key_path = context.key_path[
-        -(len(context.key_path) - len(context.key_path_block)) :
+        (len(context.key_path_block) - len(context.key_path)) :  # noqa
     ]
 
     if isinstance(indexed_key_path[-1], bytes):
@@ -439,7 +451,8 @@ def parse_hook(
                     no_input=context.no_input,
                     calling_directory=context.calling_directory,
                     calling_file=context.calling_file,
-                    provider_hooks=context.provider_hooks,
+                    public_hooks=context.public_hooks,
+                    private_hooks=context.private_hooks,
                     key_path=context.key_path,
                     verbose=context.verbose,
                     env_=context.env_,
@@ -566,6 +579,7 @@ def evaluate_args(
                     )
                 value = args[i]
             hook_dict[hook_args[i]] = value
+            args.pop(0)
             return
         else:
             # The hooks arguments are indexed
@@ -573,8 +587,9 @@ def evaluate_args(
                 hook_dict[hook_args[i]] = v
             except IndexError:
                 if len(hook_args) == 0:
+                    # TODO: Give more info on possible methods
                     raise exceptions.UnknownArgumentException(
-                        f"The hook {hook_dict['hook_type']} does not take any "
+                        f"The hook {Hook.identifier.split('.')[-1]} does not take any "
                         f"arguments. Hook argument {v} caused an error.",
                         context=context,
                     )
@@ -766,21 +781,124 @@ def update_input_context_with_kwargs(context: 'Context', kwargs: dict):
             }
 
 
-def run_source(context: 'Context', args: list, kwargs: dict, flags: list):
+def update_hook_with_kwargs_and_flags(hook: ModelMetaclass, kwargs: dict) -> dict:
     """
-    Take the input dict and impose global args/kwargs/flags with the following logic:
-    - Use kwargs/flags as overriding keys in the input_context
-    - Check the input dict if there is a key matching the arg and run that key
-      - Additional arguments are assessed as
-        - If the call is to a hook directly, then inject that as an argument
-        - If the call is to a block of hooks then call the next hook key
-    - Otherwise run normally (ie full parsing).
+    For consuming kwargs / flags, once the hook has been identified when calling hooks
+    via CLI actions, this function matches the kwargs / flags with the hook and returns
+    any unused kwargs / flags for use in the outer context. Note that flags are kwargs
+    as they have already been merged by now.
+    """
+    for k, v in kwargs.copy().items():
+        if k in hook.__fields__:
+            if hook.__fields__[k].type_ == bool:
+                # Flags -> These are evaluated as the inverse of whatever is the default
+                if hook.__fields__[k].default:  # ie -> True
+                    hook.__fields__[k].default = False
+                else:
+                    hook.__fields__[k].default = True
+            else:
+                # Kwargs
+                hook.__fields__[k].default = v
+            hook.__fields__[k].required = False  # Otherwise will complain
+            kwargs.pop(k)
+    return kwargs
 
-    An exception exists for if the last arg is `help` in which case that level's help
-    is called and exited 0.
+
+def find_run_hook_method(
+    context: 'Context', hook: ModelMetaclass, args: list, kwargs: dict
+) -> Any:
+    """
+    Given a hook with args, find if the hook has methods and if it does not, apply the
+     args to the hook based on the `args` field mapping. Calls the hook.
+    """
+    kwargs = update_hook_with_kwargs_and_flags(
+        hook=hook,
+        kwargs=kwargs,
+    )
+
+    if kwargs != {}:
+        hook_name = hook.identifier.split('.')[-1]
+        if hook_name == '':
+            hook_name = 'default'
+        # We were given extra kwargs / flags so should throw error
+        unknown_args = ' '.join([f"{k}={v}" for k, v in kwargs.items()])
+        raise exceptions.UnknownInputArgumentException(
+            f"The args {unknown_args} not recognized when running the hook/method "
+            f"{hook_name}. Exiting.",
+            context=context,
+        )
+
+    arg_dict = {}
+    num_popped = 0
+    for i, arg in enumerate(args.copy()):
+        if arg in hook.__fields__ and hook.__fields__[arg].type_ == Callable:
+            # Consume the args
+            args.pop(i - num_popped)
+            num_popped += 1
+
+            # Gather the function's dict so it can be compiled into a runnable hook
+            func_dict = hook.__fields__[arg].default.function_dict.copy()
+
+            # Add inheritance from base function fields
+            for j in hook.__fields__['function_fields'].default:
+                # Base method should not override child.
+                if j not in func_dict:
+                    func_dict[j] = hook.__fields__[j]
+
+            new_hook = create_function_model(
+                context=context,
+                func_name=hook.__fields__[arg].name,
+                func_dict=func_dict,
+            )
+
+            hook = new_hook
+
+        elif arg == 'help':
+            # TODO: Update this
+            run_help(context=context, args=[])
+            return None
+        elif 'args' in hook.__fields__:
+            evaluate_args(args, arg_dict, Hook=hook, context=context)
+        else:
+            raise exceptions.UnknownInputArgumentException(
+                "Can't find the ", context=context
+            )
+
+    return hook(**kwargs, **arg_dict).exec()
+
+
+def raise_if_args_exist(
+    context: 'Context', hook: ModelMetaclass, args: list, kwargs: dict, flags: list
+):
+    msgs = []
+    if len(args) != 0:
+        msgs.append(f"args {', '.join(args)}")
+    if len(kwargs) != 0:
+        missing_kwargs = ', '.join([f"{k}={v}" for k, v in kwargs.items()])
+        msgs.append(f"kwargs {missing_kwargs}")
+    if len(flags) != 0:
+        msgs.append(f"flags {', '.join(flags)}")
+    if len(msgs) != 0:
+        hook_name = hook.identifier.split('.')[-1]
+        if hook_name == '':
+            hook_name = 'default'
+        raise exceptions.UnknownInputArgumentException(
+            # TODO: Add the available args/kwargs/flags to this error msg
+            f"The {' and '.join(msgs)} were not found in the \"{hook_name}\" hook. "
+            f"Run the same command without the arg/kwarg/flag + \"help\" to see the "
+            f"available args/kwargs/flags.",
+            context=context,
+        )
+
+
+def run_source(context: 'Context', args: list, kwargs: dict, flags: list) -> Optional:
+    """
+    Process global args/kwargs/flags based on if the args relate to the default hook or
+     some public hook (usually declarative). Once the hook has been identified, the
+     args/kwargs/flags are consumed and if there are any args left, an error is raised.
     """
     # Tackle is called both through the CLI and as a package and so to preserve args /
-    # kwargs we
+    # kwargs we merge them here.
     if context.global_args is not None:
         args = args + context.global_args
         context.global_args = None
@@ -791,54 +909,90 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list):
         context.global_kwargs = None
 
     if context.global_flags is not None:
+        # TODO: Validate -> These are temporarily set to true but will be resolved as
+        #  the inverse of what the default is
         kwargs.update({i: True for i in context.global_flags})
         context.global_flags = None
 
-    update_input_context_with_kwargs(context=context, kwargs=kwargs)
+    # For CLI calls, this logic lines up the args with methods / method args and
+    # integrates the kwargs / flags into the call
+    if len(args) == 0 and context.default_hook:  # Default hook (no args)
+        # Add kwargs / flags (already merged into kwargs) to default hook
+        kwargs = update_hook_with_kwargs_and_flags(
+            hook=context.default_hook,
+            kwargs=kwargs,
+        )
+        # Run the default hook as there are no args. The outer context is then parsed
+        #  as otherwise it would be unreachable.
+        default_hook_output = context.default_hook().exec()
+        # Return the output of the default hook
+        # TODO: Determine what the meaning of a primitive type return means with some
+        #  kind of outer context -> Should error (and be caught) if there is a conflict
+        #  in types.
+        context.public_context = default_hook_output
+        # TODO: ??? -> If output is primitive, then we need to return it without parsing
+        #  the outer context
+        raise_if_args_exist(  # Raise if there are any args left
+            context=context,
+            hook=context.default_hook,
+            args=args,
+            kwargs=kwargs,
+            flags=flags,
+        )
+    elif len(args) != 0:  # With args
+        # Prioritize public_hooks (ie non-default hook) because if the hook exists,
+        # then we should consume the arg there instead of using the arg as an arg for
+        # default hook because otherwise the public hook would be unreachable.
+        if args[0] in context.public_hooks:  #
+            # Search within the public hook for additional args that could be
+            # interpreted as methods which always get priority over consuming the arg
+            # as an arg within the hook itself.
+            public_hook = args.pop(0)  # Consume arg
+            context.public_context = find_run_hook_method(
+                context=context,
+                hook=context.public_hooks[public_hook],
+                args=args,
+                kwargs=kwargs,
+            )
+            raise_if_args_exist(  # Raise if there are any args left
+                context=context,
+                hook=context.public_hooks[public_hook],
+                args=args,
+                kwargs=kwargs,
+                flags=flags,
+            )
+        elif context.default_hook:
+            context.public_context = find_run_hook_method(
+                context=context, hook=context.default_hook, args=args, kwargs=kwargs
+            )
+            raise_if_args_exist(  # Raise if there are any args left
+                context=context,
+                hook=context.default_hook,
+                args=args,
+                kwargs=kwargs,
+                flags=flags,
+            )
+        # We are not going to parse the outer context in this case as we are already
+        # within a hook. Doesn't necessarily make sense in this case.
+        return
+    else:
+        # If there are no declarative hooks defined, use the kwargs to override values
+        #  within the context.
+        update_input_context_with_kwargs(context=context, kwargs=kwargs)
 
     for i in flags:
         # Process flags by setting key to true
         context.input_context.update({i: True})
 
-    if len(args) >= 1:
-        # Loop through all args
-        for i in args:
-            # Remove any arrows on the first level keys
-            first_level_compact_keys = [
-                k[:-2] for k, _ in context.input_context.items() if k.endswith('->')
-            ]
-            if i in first_level_compact_keys:
-                arg_key_value = context.input_context[i + '->']
-                if isinstance(arg_key_value, str):
-                    # We have a compact hook so nothing else to traverse
-                    break
-
-            elif i in context.input_context:
-                context.key_path.append(i)
-                walk_sync(context, context.input_context[i].copy())
-                context.key_path.pop()
-
-            elif i in context.provider_hooks:
-                Hook = context.provider_hooks[i]
-                args.pop(-1)
-                evaluate_args(args, {}, Hook=Hook, context=context)
-
-                hook_output_value = Hook().exec()
-                return hook_output_value
-            else:
-                raise exceptions.UnknownInputArgumentException(
-                    f"Argument {i} not found as key in tackle file.", context=context
-                )
-        return
-
     if len(context.input_context) == 0:
-        raise exceptions.EmptyTackleFileException(
-            # TODO improve -> Should give help by default?
-            f"Only functions are declared in {context.input_string} tackle file. Must"
-            f" provide an argument such as [] or run `tackle {context.input_string}"
-            f" help` to see more options.",
-            context=context,
-        )
+        if context.public_context is None:
+            raise exceptions.EmptyTackleFileException(
+                # TODO improve -> Should give help by default?
+                f"Only functions are declared in {context.input_string} tackle file. Must"
+                f" provide an argument such as [] or run `tackle {context.input_string}"
+                f" help` to see more options.",
+                context=context,
+            )
     else:
         walk_sync(context, context.input_context.copy())
 
@@ -869,11 +1023,12 @@ def function_walk(
         existing_context = {}
 
     for i in self.function_fields:
-        # TODO: Why? -> test RM
+        # Used in hook inheritance
         existing_context.update({i: getattr(self, i)})
 
     tmp_context = Context(
-        provider_hooks=self.provider_hooks,
+        public_hooks=self.public_hooks,
+        private_hooks=self.private_hooks,
         existing_context=existing_context,
         public_context={},
         input_context=input_element,
@@ -930,7 +1085,7 @@ def create_function_model(
 
     # Implement inheritance
     if 'extends' in func_dict and func_dict['extends'] is not None:
-        base_hook = context.provider_hooks[func_dict['extends']]
+        base_hook = get_public_or_private_hook(context, func_dict['extends'])
         func_dict = {**base_hook().function_dict, **func_dict}
         func_dict.pop('extends')
 
@@ -945,12 +1100,14 @@ def create_function_model(
     elif 'exec<-' in func_dict:
         exec_ = func_dict.pop('exec<-')
 
+    # Special vars
     function_input = FunctionInput(
         exec_=exec_,
         return_=func_dict.pop('return') if 'return' in func_dict else None,
         args=func_dict.pop('args') if 'args' in func_dict else [],
         render_exclude=func_dict.pop(
             'render_exclude') if 'render_exclude' in func_dict else [],
+        help=func_dict.pop('help') if 'help' in func_dict else None,
         # TODO: Build validators
         # validators_=func_dict.pop('validators') if 'validators' in func_dict else None,
     )
@@ -961,7 +1118,7 @@ def create_function_model(
     # Create function fields from anything left over in the function dict
     for k, v in func_dict.items():
         if v is None:
-            # TODO: ? -> why skip? Would be ignored. Empty keys mean something right?
+            # TODO: Why skip? Would be ignored. Empty keys mean something right?
             continue
 
         if k.endswith(('->', '_>')):
@@ -997,6 +1154,9 @@ def create_function_model(
             new_func[k] = v
         elif isinstance(v, list):
             new_func[k] = (list, v)
+        elif isinstance(v, ModelField):
+            # Is encountered when inheritance is imposed and calling function methods
+            new_func[k] = (v.type_, v.default)
         else:
             raise Exception("This should never happen")
 
@@ -1045,12 +1205,22 @@ def create_function_model(
 def extract_functions(context: 'Context'):
     for k, v in context.input_context.copy().items():
         if re.match(r'^[a-zA-Z0-9\_]*(<\-|<\_)$', k):
-
             # TODO: RM arrow and put in associated access modifier namespace
-
             Function = create_function_model(context, k, v)
-            context.provider_hooks[k[:-2]] = Function
-            context.input_context.pop(k)
+            function_name = k[:-2]
+            arrow = k[-2:]
+            if function_name == "":
+                # Function is the default hook
+                context.default_hook = Function
+                context.input_context.pop(k)
+            elif arrow == '<-':  # public hook
+                context.public_hooks[function_name] = Function
+                context.input_context.pop(k)
+            elif arrow == '<_':  # private hook
+                context.private_hooks[function_name] = Function
+                context.input_context.pop(k)
+            else:
+                raise  # Should never happen
 
 
 def extract_base_file(context: 'Context'):
@@ -1072,7 +1242,6 @@ def extract_base_file(context: 'Context'):
     # Preserve the calling file which should be carried over from tackle calls
     if context.calling_file is None:
         context.calling_file = context.input_file
-        # context.calling_file = path
     context.current_file = path
 
     try:
@@ -1099,7 +1268,7 @@ def extract_base_file(context: 'Context'):
         context.private_context = {}
 
     # Import the hooks
-    context.provider_hooks.import_from_path(context.input_dir)
+    import_from_path(context, context.input_dir)
 
 
 def import_local_provider_source(context: 'Context', provider_dir: str):

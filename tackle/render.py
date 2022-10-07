@@ -5,34 +5,20 @@ from jinja2.exceptions import UndefinedError, TemplateSyntaxError
 from inspect import signature
 from typing import TYPE_CHECKING, Any, Callable
 from pydantic import ValidationError
+from pydantic.main import ModelMetaclass
 
+from tackle.hooks import LazyBaseFunction
 from tackle.special_vars import special_variables
 from tackle.exceptions import (
     UnknownTemplateVariableException,
     MissingTemplateArgsException,
     MalformedTemplateVariableException,
 )
+from tackle.utils.imports import get_public_or_private_hook
 
-from pydantic.main import ModelMetaclass
 
 if TYPE_CHECKING:
     from tackle.models import Context, JinjaHook
-
-
-def wrap_braces_if_not_exist(value):
-    """Wrap with braces if they don't exist."""
-    if '{{' in value and '}}' in value:
-        # Already templated
-        return value
-    return '{{' + value + '}}'
-
-
-def wrap_jinja_braces(value):
-    """Wrap a string with braces so it can be templated."""
-    if isinstance(value, str):
-        return wrap_braces_if_not_exist(value)
-    # Nothing else can be wrapped
-    return value
 
 
 def render_variable(context: 'Context', raw: Any):
@@ -59,6 +45,7 @@ def render_variable(context: 'Context', raw: Any):
 
 
 def create_jinja_hook(context: 'Context', hook: 'ModelMetaclass') -> 'JinjaHook':
+    """Create a jinja hook which is callable via wrapped_exec."""
     from tackle.models import JinjaHook, BaseContext
 
     return JinjaHook(
@@ -70,7 +57,8 @@ def create_jinja_hook(context: 'Context', hook: 'ModelMetaclass') -> 'JinjaHook'
             no_input=context.no_input,
             calling_directory=context.calling_directory,
             calling_file=context.calling_file,
-            provider_hooks=context.provider_hooks,
+            public_hooks=context.public_hooks,
+            private_hooks=context.private_hooks,
             key_path=context.key_path,
             verbose=context.verbose,
         ),
@@ -158,6 +146,9 @@ def render_string(context: 'Context', raw: str):
                 render_context.update({v: special_variables[v]()})
             elif 'context' in argments:
                 render_context.update({v: special_variables[v](context)})
+            elif 'kwargs' in argments:
+                # TODO: This should support callable special vars
+                raise NotImplementedError
             else:
                 raise ValueError("This should never happen.")
         else:
@@ -168,10 +159,9 @@ def render_string(context: 'Context', raw: str):
         # Unknown variables can be real unknown variables, preloaded jinja globals or
         # hooks which need to be inserted into the global env so that they can be called
         for i in unknown_variables:
-            if i in context.provider_hooks:
-                from tackle.models import LazyBaseFunction
+            if i in context.public_hooks or i in context.private_hooks:
+                hook = get_public_or_private_hook(context, i)
 
-                hook = context.provider_hooks[i]
                 # Keep track of the hook put in globals so that it can be removed later
                 used_hooks.append(i)
 
@@ -181,11 +171,15 @@ def render_string(context: 'Context', raw: str):
                     from tackle.parser import create_function_model
 
                     hook = create_function_model(
-                        context=context, func_name=i, func_dict=hook.function_dict
+                        context=context,
+                        func_name=i,
+                        # Copying allows calling hook twice - TODO: carry over arrow
+                        func_dict=hook.function_dict.copy(),
                     )
 
                     # Replace the provider hooks with instantiated function
-                    context.provider_hooks[i] = hook
+                    # context.provider_hooks[i] = hook
+                    # TODO: carry over arrow to know where to put hook
 
                 # Create the jinja method with
                 jinja_hook = create_jinja_hook(context, hook)

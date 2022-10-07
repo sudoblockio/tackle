@@ -12,8 +12,9 @@ from tackle.exceptions import (
 from tackle.cli import main
 
 INPUT_SOURCES = [
+    # TODO: empty should now be running help screen
+    # ("empty-with-functions.yaml", EmptyTackleFileException),
     ("empty.yaml", EmptyTackleFileException),
-    ("empty-with-functions.yaml", EmptyTackleFileException),
     ("out-of-range-arg.yaml", UnknownArgumentException),
     ("non-existent.yaml", UnknownSourceException),
     ("hook-input-validation-error.yaml", HookParseException),

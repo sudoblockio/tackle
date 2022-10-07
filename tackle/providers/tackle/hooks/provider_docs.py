@@ -196,6 +196,7 @@ class ProviderDocsHook(BaseHook):
                     return_type = None
 
                 # Generate the json schema
+                # schema = json.loads(h.schema_json(exclude={'default_hook'}))
                 schema = json.loads(h.schema_json())
                 if self.output_schemas:
                     schema_list.append(schema)

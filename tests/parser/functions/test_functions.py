@@ -37,12 +37,8 @@ def test_function_no_exec(change_curdir_fixtures):
 
 
 def test_function_field_types(change_curdir_fixtures):
-    """
-    Check that when no exec is given that by default the input is returned as is and
-    validated.
-    """
+    """Check that field types are respected."""
     output = tackle('field-types.yaml')
-
     # Based on validation of functions in fixture
     assert output
 
@@ -115,9 +111,9 @@ def test_function_method_override(change_curdir_fixtures):
     assert output['nexted_compact']['home'] == 'baz'
 
 
-def test_function_import_func_from_hooks_dir(change_dir):
+def test_function_import_func_from_hooks_dir(change_curdir_fixtures):
     """Assert that we can call functions from local hooks dir."""
-    os.chdir(os.path.join('fixtures', 'func-provider'))
+    os.chdir('func-provider')
     o = tackle()
     assert o['compact'] == 'a-default'
     assert o['jinja_extension_default'] == 'a-default'

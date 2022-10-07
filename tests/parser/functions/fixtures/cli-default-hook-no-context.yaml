@@ -1,0 +1,23 @@
+
+<-:
+  help: A CLI thing
+
+  stuff:
+    default: things
+    type: str
+
+  things:
+    type: bool
+    default: true
+
+  do<-:
+    bar: baz
+    args: ['bar']
+    exec:
+      d->: var {{bar}}
+
+  exec:
+    p->: var {{stuff}}
+    b->: var {{things}}
+
+
