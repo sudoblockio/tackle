@@ -239,6 +239,11 @@ class JinjaHook(BaseModel):
     hook: ModelMetaclass
     context: BaseContext
 
+    class Config:
+        # TODO: Had to add this to get `make test` to run.
+        #  https://github.com/robcxyz/tackle-box/issues/90
+        arbitrary_types_allowed = True
+
     def wrapped_exec(self, *args, **kwargs):
         # Map args / kwargs when called via a jinja global
         from tackle.parser import evaluate_args
