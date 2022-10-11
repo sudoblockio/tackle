@@ -854,9 +854,8 @@ def find_run_hook_method(
             hook = new_hook
 
         elif arg == 'help':
-            # TODO: Update this
-            run_help(context=context, args=[])
-            return None
+            # Exit 0
+            run_help(context=context, hook=hook)
         elif 'args' in hook.__fields__:
             evaluate_args(args, arg_dict, Hook=hook, context=context)
         else:
@@ -1138,6 +1137,9 @@ def create_function_model(
                         function_name=func_name,
                         context=context,
                     )
+                if 'description' in v:
+                    v = dict(v)
+                    v['description'] = v['description'].__repr__()
                 new_func[k] = (type_, Field(**v))
             elif 'default' in v:
                 new_func[k] = (type(v['default']), Field(**v))

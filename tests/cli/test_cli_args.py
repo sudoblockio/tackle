@@ -1,5 +1,3 @@
-"""Collection of tests around tackle box's declarative command-line interface."""
-
 import pytest
 from tackle.cli import main
 

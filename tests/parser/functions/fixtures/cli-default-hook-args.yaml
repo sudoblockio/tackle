@@ -3,6 +3,10 @@
   help: A CLI thing
 
   stuff: things
+
+  foo:
+    bar:
+      baz: 42
   do<-:
     bar: baz
     exec:
@@ -11,11 +15,4 @@
   exec<-:
     p->: var {{stuff}}
 
-foo: bar
-
-run<-:
-  help: Run da foo
-  foo: bar
-  exec:
-    p->: print {{foo}}
-
+  args: ['stuff']
