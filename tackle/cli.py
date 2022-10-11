@@ -1,5 +1,4 @@
 """Main `tackle` CLI."""
-import json
 import sys
 import argparse
 
@@ -14,7 +13,11 @@ def main(raw_args=None):
     if raw_args is None:
         raw_args = sys.argv[1:]
 
-    parser = argparse.ArgumentParser(description="Tackle Box")
+    parser = argparse.ArgumentParser(
+        description="tackle-box is a DSL for creating declarative CLIs. Call tackle "
+        "against files, directories, or repos with yaml/toml/json tackle "
+        "files."
+    )
 
     parser.add_argument(
         dest='input_string',
@@ -39,6 +42,15 @@ def main(raw_args=None):
     )
     parser.add_argument(
         '--print', '-p', action='store_true', help="Print the resulting output."
+    )
+    parser.add_argument(
+        '--print-format',
+        '-pf',
+        default=None,
+        dest='print_format',
+        type=str,
+        metavar="",
+        help="The format to print to output. Defaults to json.",
     )
     parser.add_argument(
         '--checkout',
@@ -83,7 +95,7 @@ def main(raw_args=None):
         '-o',
         type=str,
         default=None,
-        # metavar="",
+        metavar="",
         help="A string to a file to use as overrides when parsing a tackle file or "
         "some dict to use with keys to additionally use when parsing a file.",
     )
@@ -94,7 +106,19 @@ def main(raw_args=None):
     args, unknown_args = parser.parse_known_args(raw_args)
 
     # Handle printing variable which isn't needed in core logic
-    print_enabled = args.print
+    print_format = args.print_format
+    if print_format is not None:
+        print_enabled = True
+        if print_format not in ['json', 'yaml', 'toml']:
+            print(
+                f"Invalid `--print-format` / `-pf` input \"{print_format}\". "
+                f"Must be one of json (default) / yaml / toml."
+            )
+            sys.exit(1)
+    else:
+        print_enabled = args.print
+        print_format = 'json'
+    del args.print_format
     del args.print
 
     # Breakup the unknown arguments which are added later into the runtime's args/kwargs
@@ -113,7 +137,19 @@ def main(raw_args=None):
     )
     if print_enabled:
         if isinstance(output, (dict, list)):
-            print(json.dumps(dict(output)))
+            if print_format == 'json':  # noqa
+                import json
+
+                print(json.dumps(dict(output)))
+            elif print_format == 'yaml':
+                from ruamel.yaml import YAML
+
+                yaml = YAML()
+                yaml.dump(output, sys.stdout)
+            elif print_format == 'toml':
+                from toml import dumps as toml_dumps
+
+                print(toml_dumps(dict(output)))
         else:
             print(output)
 
