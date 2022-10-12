@@ -25,9 +25,12 @@ jobs:
       if: ${{ github.event_name == 'pull_request' }}
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v1
-
-    - run: python setup.py install
+      uses: github/codeql-action/init@v2
+      with:
+        paths:
+          - tackle
+        paths-ignore:
+          - tests/*
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
