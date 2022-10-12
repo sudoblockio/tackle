@@ -1,8 +1,8 @@
 import sys
 from pydantic.main import ModelMetaclass, ModelField
 from pydantic import BaseModel
-from typing import Any
 from jinja2 import Template
+from typing import Any, List
 
 from tackle import exceptions
 from tackle.models import Context
@@ -34,7 +34,7 @@ class HelpInput(BaseModel):
 
 def unpack_hook(
     context: 'Context', hook: ModelMetaclass
-) -> (list[dict], list[dict], list[dict], list[dict]):
+) -> (List[dict], List[dict], List[dict], List[dict]):
     """Unpack arguments (args/kwargs/flags/methods) from hook."""
     args = []
     kwargs = []
@@ -97,7 +97,7 @@ def unpack_hook(
     return args, kwargs, flags, methods
 
 
-def get_methods_on_default_hook(context: 'Context') -> list[dict]:
+def get_methods_on_default_hook(context: 'Context') -> List[dict]:
     """
     When showing help for the default hook, we must show the additional methods. This
     function gets those methods from the context.
