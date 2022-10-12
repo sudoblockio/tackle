@@ -67,16 +67,9 @@ def temporary_uninstall():
 
 
 def test_models_latest():
+    """Sanity check for default checkout to latest."""
     c = Context(latest=True)
     assert c.checkout == 'latest'
-
-
-# TODO: RM
-def test_models_lazy_base_function():
-    from tackle.models import LazyBaseFunction
-
-    c = LazyBaseFunction(function_dict={}, function_fields=[], hook_type="foo")
-    assert c
 
 
 def test_models_jinja_hook():
@@ -85,8 +78,8 @@ def test_models_jinja_hook():
      public_context between a hook call.
     """
     context = BaseContext()
-    context.provider_hooks = Context().provider_hooks
-    c = JinjaHook(context=context, hook=context.provider_hooks['set'])
+    context.private_hooks = Context().private_hooks
+    c = JinjaHook(context=context, hook=context.private_hooks['set'])
     c.context.public_context = {}
     c.wrapped_exec(path="foo", value=1)
     assert c.context.public_context == {"foo": 1}
