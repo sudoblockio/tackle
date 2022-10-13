@@ -1,0 +1,6 @@
+name: "codeql"
+
+paths:
+  - tackle
+paths-ignore:
+  - tests/*
