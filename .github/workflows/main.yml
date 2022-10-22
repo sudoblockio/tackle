@@ -91,3 +91,4 @@ jobs:
           coverage_format: JACOCO/XML
           test_framework: pytest
           test_path: tests
+          test_format: JUNIT
