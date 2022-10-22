@@ -1,5 +1,6 @@
 import os.path
 import fnmatch
+import re
 from typing import Union
 from pydantic import Field
 from pathlib import Path
@@ -37,6 +38,10 @@ class GenerateHook(BaseHook, smart_union=True):
     skip_if_file_exists: bool = Field(
         False, description="Skip creating if path exists."
     )
+    skip_overwrite_files: list = Field(
+        None, description="A list of filenames or globs to not overwrite (ie the "
+                          "second time you render)."
+    )
     render_context: dict = Field(
         None, description="A render context that invalidates the default context."
     )
@@ -49,6 +54,8 @@ class GenerateHook(BaseHook, smart_union=True):
     base_dir_: Path = None
     # env_: Any = None
     file_path_separator_: str = None  # / for mac / linux - \ for win
+    render_off_separator: str = Field("--OFF--")
+    render_on_separator: str = Field("--OFF--")
     # fmt: on
 
     args: list = ['templates', 'output']
@@ -144,6 +151,37 @@ class GenerateHook(BaseHook, smart_union=True):
                 f"Could not find {target_path}.", hook=self
             ) from None
 
+    def generate_segmented_file(
+        self, template_lines: list, output_path: str, output_file: list
+    ):
+        render_on: bool = True
+        render_skip_comment: bool = False
+        for i in template_lines:
+            if bool(re.search(f'.*(--{self.render_on_separator}--)$', i)):
+                render_on = True
+                render_skip_comment = True
+            if bool(re.search(f'.*--{self.render_off_separator}--', i)):
+                render_on = False
+                render_skip_comment = True
+
+            if render_on:
+                try:
+                    rendered_contents = file_contents_template.render(
+                        self.render_context
+                    )
+                except UndefinedError as e:
+                    msg = f"The `generate` hook failed to render -> {e}"
+                    raise UndefinedVariableInTemplate(msg, hook=self) from None
+
+                    # Write contents
+            else:
+                pass
+
+            with open(output_path, 'w') as f:
+                f.write(rendered_contents)
+
+            render_skip_comment = False
+
     def generate_file(self, input_file: str, output_path: str):
         """
         Take a target input_file and render it's contents / file name to an output path.
@@ -172,25 +210,43 @@ class GenerateHook(BaseHook, smart_union=True):
             shutil.copyfile(input_file, output_path)
             return
 
-        try:
-            file_contents_template = self.env_.get_template(os.path.abspath(input_file))
-        except UnicodeDecodeError:
-            # Catch binary files with this hack and copy them over
-            # TODO: Perhaps improve? In cookiecutter they used a package binary-or-not
-            # or something like that but we are staying lean on dependencies in this
-            # project.
-            shutil.copyfile(input_file, output_path)
-            return
+        if os.path.exists(output_path):
+            # We need to check if A, the user wants to overwrite + B, if the file has
+            # render skip comments.
+            # TODO: Ask user if they want to overwrite
+            with open(input_file) as f:
+                input_template_file = f.readlines()
+            with open(output_path) as f:
+                output_file = f.readlines()
 
-        try:
-            rendered_contents = file_contents_template.render(self.render_context)
-        except UndefinedError as e:
-            msg = f"The `generate` hook failed to render -> {e}"
-            raise UndefinedVariableInTemplate(msg, hook=self) from None
+            self.generate_segmented_file(
+                input_template_file,
+                output_path=output_path,
+                output_file=output_file,
+            )
 
-        # Write contents
-        with open(output_path, 'w') as f:
-            f.write(rendered_contents)
+        else:
+            try:
+                file_contents_template = self.env_.get_template(
+                    os.path.abspath(input_file)
+                )
+            except UnicodeDecodeError:
+                # Catch binary files with this hack and copy them over
+                # TODO: Perhaps improve? In cookiecutter they used a package binary-or-not
+                # or something like that but we are staying lean on dependencies in this
+                # project.
+                shutil.copyfile(input_file, output_path)
+                return
+
+            try:
+                rendered_contents = file_contents_template.render(self.render_context)
+            except UndefinedError as e:
+                msg = f"The `generate` hook failed to render -> {e}"
+                raise UndefinedVariableInTemplate(msg, hook=self) from None
+
+            # Write contents
+            with open(output_path, 'w') as f:
+                f.write(rendered_contents)
 
     def generate_dir(self, input_directory: str, output_path: str):
 

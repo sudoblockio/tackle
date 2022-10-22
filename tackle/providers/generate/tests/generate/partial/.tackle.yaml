@@ -1,0 +1,7 @@
+p->: print here
+
+foo:
+  - stuff
+  - things
+
+r->: generate templates/README.md README.md
