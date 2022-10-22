@@ -17,52 +17,85 @@ examples:
     content->: file tests/file/chmod.yaml
 
 hook_examples:
-  generate:
-    - name: Basic
-      description: The most minimal implementation. By default, the render context is the current context.
-      content: |
-        generate_example->: generate path/to/template/file/or/dir output/path
-
-    - name: With specific context
-      description: Sometimes you want to render with a specific context.
-      content: |
-        generate_example:
-          ->: generate path/to/template/file/or/dir output/path
-          render_context: # Could simply be {{ some.other.key }}
-            foo: bar
-            stuff:
-              - things
-
-    - name: With additional context
-      description: Sometimes you want to render by re-keying some of the context. In this case the additional context is a list of maps that is merged together.
-      content: |
-        generate_example:
-          ->: generate path/to/template/file/or/dir output/path
-          additional_context:
-            - "{{ render_context }}"
-            - "{{ other_context }}"
-
-    - name: Copy without render
-      description: In case you don't want to render a file (for example a template), you can copy without rendering.
-      content: |
-        expanded:
-          ->: generate render_src output
-          copy_without_render:
-            - ./render_src/.hidden.yaml
-            - ./render_src/no-render/*
-
-  jinja:
+  copy:
     - name: Basic
       description: The most minimal implementation.
       content: |
-        jinja_example->: jinja path/to/template/file/or/dir output/path
+        compact->: copy path/to/src output/path
+        expanded:
+          ->: copy
+          src: path/to/src
+          dst: output/path
 
-    - name: With context specific
-      description: Sometimes you want to render with a specific context.
+  move:
+    - name: Basic
+      description: The most minimal implementation.
       content: |
-        jinja_example:
-          ->: jinja path/to/template/file/or/dir output/path
-          render_context: # Could simply be {{ some.other.key }}
-            foo: bar
-            stuff:
-              - things
+        compact->: move path/to/src output/path
+        expanded:
+          ->: move
+          src: path/to/src
+          dst: output/path
+
+  remove:
+    - name: Basic
+      description: Remove a file or directory
+      content: |
+        compact->: remove path/to/file
+        expanded:
+          ->: remove
+          path: path/to/dir
+        expanded_list:
+          ->: remove
+          path:
+            - path/to/src1
+            - path/to/src2
+
+  shred:
+    - name: Basic
+      description: The most minimal implementation.
+      content: |
+        compact->: shred path/to/file
+        expanded:
+          ->: shred
+          src: path/to/src
+          passes: 10  # Default
+        expanded_list:
+          ->: shred
+          src:
+            - path/to/src1
+            - path/to/src2
+
+  create_file:
+    - name: Basic
+      description: Create an empty file.
+      content: |
+        compact->: create_file path/to/file/to/create
+        expanded:
+          ->: create_file
+          path: path/to/file/to/read
+
+  file:
+    - name: Read a file
+      description: Read a file into a variable as a string.
+      content: |
+        compact->: file path/to/file/to/read
+        expanded:
+          ->: file
+          path: path/to/file/to/read
+
+    - name: Write to a file
+      description: Write to a file with contents.
+      content: |
+        stuff: |
+          and things...
+        compact->: file path/to/file/to/write {{stuff}}
+        expanded:
+          ->: file
+          path: path/to/file/to/read
+          contents: {{stuff}}
+
+  chmod:
+    - name: Basic
+      description: The most minimal implementation.
+      content->: file tests/file/chmod.yaml

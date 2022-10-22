@@ -1,16 +1,12 @@
-"""File hooks."""
 import os
 import random
 from pathlib import Path
-import logging
 import shutil
 from distutils.dir_util import copy_tree
 from typing import List, Union, Any, Optional
 
 from tackle.models import BaseHook, Field
 from tackle.exceptions import HookCallException
-
-logger = logging.getLogger(__name__)
 
 
 def create_directory_tree(src, dst):
@@ -34,21 +30,13 @@ def expand_path(path):
 
 
 class CopyHook(BaseHook):
-    """
-    Hook coying a file/files or directory/directories to a location.
-
-    :param src: String or list of sources, either a directories or files
-    :param dst: String for path to copy to
-    :param create_path: Boolean to create the directory path if it does not exist.
-        Defaults to true
-    :return: None
-    """
+    """Hook coying a file/files or directory/directories to a location."""
 
     hook_type: str = 'copy'
     src: Union[List, str] = Field(
         ..., description="String or list of sources, either a directories or files"
     )
-    dst: str = Field(..., description="")
+    dst: str = Field(..., description="The destination to copy to.")
     create_path: bool = True
 
     args: list = ['src', 'dst']
@@ -78,20 +66,16 @@ class CopyHook(BaseHook):
 
 
 class MoveHook(BaseHook):
-    """
-    Hook  for moving a directory or directories to a location.
-
-    :param src: String or list of sources, either directories or files
-    :param dst: String for path to copy to
-    :param create_path: Boolean to create the directory path if it does not exist.
-        Defaults to true
-    :return: None
-    """
+    """Hook  for moving a directory or directories to a location."""
 
     hook_type: str = 'move'
-    src: Union[List, str]
-    create_path: bool = True
-    dst: str
+    src: Union[List, str] = Field(
+        ..., description="String or list of sources, either directories or files"
+    )
+    dst: str = Field(..., description="String for path to copy to")
+    create_path: bool = Field(
+        True, description="Boolean to create the directory path if it does not exist."
+    )
 
     args: list = ['src', 'dst']
 
@@ -113,16 +97,12 @@ class MoveHook(BaseHook):
 
 
 class RemoveHook(BaseHook):
-    """
-    Hook for removing a directory or directories.
-
-    :param path: String or list of paths to remove
-    :return: None
-    """
+    """Hook for removing a directory or directories."""
 
     hook_type: str = 'remove'
-    path: Union[List, str]
-    fail_silently: bool = False
+    path: Union[List, str] = Field(
+        ..., description="String or list of paths to remove."
+    )
 
     args: list = ['path']
 
@@ -132,8 +112,7 @@ class RemoveHook(BaseHook):
         elif os.path.isdir(path):
             shutil.rmtree(path)
         else:
-            if not self.fail_silently:
-                raise HookCallException(f"Can't find path {path}.")
+            raise HookCallException(f"Can't find path {path}.", context=self)
 
     def exec(self) -> None:
         if isinstance(self.path, str):
@@ -164,19 +143,15 @@ def wipe(f, passes=30):
 
 
 class ShredHook(BaseHook):
-    """
-    Hook for shredding file/files.
-
-    :param src: String or list of sources, either directories or files
-    :param dst: String for path to copy to
-    :param create_path: Boolean to create the directory path if it does not exist.
-        Defaults to true
-    :return: None
-    """
+    """Hook for shredding file/files."""
 
     hook_type: str = 'shred'
-    src: Union[List, str]
-    passes: int = 10
+    src: Union[List, str] = Field(
+        ..., description="String or list of sources, either directories or files"
+    )
+    passes: int = Field(
+        10, description="The number of passes to overwrite the location."
+    )
 
     args: list = ['src', 'passes']
 
@@ -190,19 +165,18 @@ class ShredHook(BaseHook):
 
 
 class ChmodHook(BaseHook):
-    """
-    Hook removing a file or directory.
-
-    :param src: String or list of sources, either directories or files
-    :param dst: String for path to copy to
-    :param create_path: Boolean to create the directory path if it does not exist.
-        Defaults to true
-    :return: None
-    """
+    """Hook for changing the mode of a path or paths."""
 
     hook_type: str = 'chmod'
-    path: Union[str, list]
-    mode: str
+    path: Union[str, list] = Field(
+        ..., description="String or list of paths, either directories or files."
+    )
+    mode: str = Field(
+        ...,
+        description="The mode to write to the files. See python's os package "
+        "[chmod](https://docs.python.org/3/library/os.html#os.chmod) "
+        "for more details.",
+    )
 
     args: list = ['path', 'mode']
 
@@ -217,14 +191,12 @@ class ChmodHook(BaseHook):
 
 
 class CreateFileHook(BaseHook):
-    """
-    Hook to create an empty file - like touch.
-
-    :param path: String or list of paths to create.
-    """
+    """Hook to create an empty file - like touch."""
 
     hook_type: str = 'create_file'
-    path: Union[str, list]
+    path: Union[str, list] = Field(
+        ..., description="String or list of paths to create files at."
+    )
 
     args: list = ['path']
 
@@ -239,10 +211,12 @@ class CreateFileHook(BaseHook):
 
 
 class FileHook(BaseHook):
-    """Hook to read and write to a file."""
+    """Hook to read or write a file."""
 
     hook_type: str = 'file'
-    path: str = Field(..., description="Path to read or write file.")
+    path: str = Field(
+        ..., description="Path to read a file or write file if contents are given."
+    )
     contents: Any = Field(
         None, description="If writing to file, the contents to write."
     )
