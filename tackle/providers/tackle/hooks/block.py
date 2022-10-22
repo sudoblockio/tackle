@@ -26,7 +26,9 @@ class BlockHook(BaseHook):
             self.temporary_context = {}
 
         tmp_context = Context(
-            provider_hooks=self.provider_hooks,
+            # provider_hooks=self.provider_hooks,
+            public_hooks=self.public_hooks,
+            private_hooks=self.private_hooks,
             public_context=self.public_context,
             private_context=self.private_context,
             temporary_context=self.temporary_context,

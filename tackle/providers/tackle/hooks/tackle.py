@@ -69,7 +69,9 @@ class TackleHook(BaseHook):
             # Evaluated
             existing_context=existing_context,
             # Implicit
-            provider_hooks=self.provider_hooks,
+            # provider_hooks=self.provider_hooks,
+            public_hooks=self.public_hooks,
+            private_hooks=self.private_hooks,
             no_input=self.no_input,
             global_kwargs=self.override,
             find_in_parent=self.find_in_parent,

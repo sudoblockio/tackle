@@ -1,0 +1,38 @@
+with_help<-:
+  help: Do stuff to things
+  things:
+    type: str
+    description: The things
+    render_by_default: true
+  exec<-:
+    p->: print {{things}}
+
+
+with_help_methods<-:
+  help: Do stuff to things
+  things:
+    type: str
+    description: The things
+    render_by_default: true
+  exec<-:
+    p->: print {{things}}
+
+  a_method_without_help<-:
+    foo->: print bar
+
+  a_method_with_help<-:
+    help: Stuff n tings
+    foo->: print bar
+
+no_help<-:
+  no_show_str: foo
+  no_show_list:
+    - foo
+    - bar
+
+  things:
+    type: str
+    description: The things
+    render_by_default: true
+  exec<-:
+    p->: print {{things}}

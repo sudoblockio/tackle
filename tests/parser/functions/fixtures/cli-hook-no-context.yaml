@@ -1,0 +1,32 @@
+run<-:
+  help: A CLI thing
+
+  stuff:
+    default: things
+    type: str
+
+  things:
+    type: bool
+    default: true
+
+  do<-:
+    bar: baz
+    args: ['bar']
+    exec:
+      d->: var {{bar}}
+      t->: var {{stuff}}
+      s->: var {{things}}
+
+  exec:
+    t->: var {{stuff}}
+    s->: var {{things}}
+
+<-:
+  help: A CLI thing
+  things:
+    type: bool
+    default: true
+  args: ['things']
+  exec:
+    b->: var {{things}}
+

@@ -3,7 +3,7 @@ description: File a bug report
 title: "[Bug]: "
 labels: ["bug", "triage"]
 assignees:
-  - octocat
+  - robcxyz
 body:
   - type: markdown
     attributes:
@@ -22,22 +22,28 @@ body:
     id: version
     attributes:
       label: Version
-      description: What version of our software are you running?
+      description: What version of tackle-box are you running?
+      # TODO: Update this with tackle
       options:
-        - 0.3.2 (Default)
-        - 1.0.3 (Edge)
+        - 0.4.x
+        - 0.3.x
     validations:
       required: true
   - type: dropdown
     id: browsers
     attributes:
-      label: What browsers are you seeing the problem on?
+      label: What operating system are you using?
       multiple: true
       options:
-        - Firefox
-        - Chrome
-        - Safari
-        - Microsoft Edge
+        - Mac
+        - Windows
+        - Linux
+  - type: textarea
+    id: logs
+    attributes:
+      label: Inputs
+      description: Can you share a simple example to reproduce the error?
+      render: shell
   - type: textarea
     id: logs
     attributes:

@@ -3,6 +3,7 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 from tackle.models import BaseHook
+from tackle.hooks import import_from_path
 
 # from tackle.imports import import_from_path
 from tackle.utils.vcs import get_repo_source
@@ -32,16 +33,28 @@ class ImportHook(BaseHook):
         if isinstance(self.src, str):
             # Get the provider path either local or remote.
             provider_path = self.get_dir_or_repo(self.src, self.version)
-            self.provider_hooks.import_from_path(provider_path)
+            # self.provider_hooks.import_from_path(provider_path)
+
+            import_from_path(self, provider_path)
+
+            # self.provider_hooks.import_from_path(provider_path)
 
         elif isinstance(self.src, list):
             for i in self.src:
                 if isinstance(i, str):
-                    self.provider_hooks.import_from_path(self.get_dir_or_repo(i, None))
+                    # self.provider_hooks.import_from_path(self.get_dir_or_repo(i, None))
+                    import_from_path(self, i)
                 if isinstance(i, dict):
                     # dict types validated above and transposed through same logic
                     repo_source = RepoSource(**i)
-                    self.provider_hooks.import_from_path(
+                    # self.provider_hooks.import_from_path(
+                    #     provider_path=self.get_dir_or_repo(
+                    #         repo_source.src, repo_source.version
+                    #     ),
+                    # )
+
+                    import_from_path(
+                        self,
                         provider_path=self.get_dir_or_repo(
                             repo_source.src, repo_source.version
                         ),

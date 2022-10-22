@@ -1,4 +1,4 @@
-"""All exceptions used in the tackle box code base are defined here."""
+"""All exceptions are defined here."""
 import inspect
 import os
 import sys

@@ -1,0 +1,46 @@
+
+help:
+
+
+str: foo
+list:
+  - stuff
+  - things
+
+map:
+  bar: baz
+  ding: dong
+
+str_hook->: input
+list_hook->:
+  - stuff
+  - things
+
+map_hook->:
+  bar: baz
+  ding: dong
+
+
+with_help<-:
+  help: Do stuff to things
+  things:
+    type: str
+    description: The things
+    render_by_default: true
+  exec<-:
+    p->: print {{things}}
+
+
+no_help<-:
+
+  no_show_str: foo
+  no_show_list:
+    - foo
+    - bar
+
+  things:
+    type: str
+    description: The things
+    render_by_default: true
+  exec<-:
+    p->: print {{things}}

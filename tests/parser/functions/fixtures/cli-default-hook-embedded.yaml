@@ -1,0 +1,46 @@
+
+<-:
+  help: A CLI thing
+
+  foo: bar
+  foo_full:
+    type: str
+    default: bar
+    description: Foo does...
+
+  do<-:
+    help: Does...
+    bar: baz
+    exec:
+      d->: var {{bar}}
+    stuff<-:
+      things<-:
+        exec<-:
+          t->: var {{foo}}
+      exec<-:
+        t->: var {{foo_full}}
+
+  exec<-:
+    p->: var {{foo}}
+
+run<-:
+  help: A CLI thing
+
+  foo: bar
+  foo_full:
+    type: str
+    default: bar
+
+  do<-:
+    bar: baz
+    exec:
+      d->: var {{bar}}
+    stuff<-:
+      things<-:
+        exec<-:
+          t->: var {{foo}}
+      exec<-:
+        t->: var {{foo_full}}
+
+  exec<-:
+    p->: var {{foo}}
