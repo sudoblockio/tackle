@@ -121,7 +121,7 @@ class BaseHook(BaseContext, Extension):
     """
     Base hook class from which all other hooks inherit from to be discovered. There are
     a number of reserved keys that are used for logic such as `if` and `for` that are
-    aliased to `if_` and `for_` to not collide with python reserved key words.
+    aliased to `if_` and `for_` to not collide with python reserved keywords.
     """
 
     hook_type: str = Field(..., description="Name of the hook.")
@@ -146,7 +146,7 @@ class BaseHook(BaseContext, Extension):
     env_: Any = None
 
     args: list = []
-    kwargs: str = None
+    kwargs: Union[str, dict] = None
 
     skip_output: bool = False
     # Fields that should not be rendered by default

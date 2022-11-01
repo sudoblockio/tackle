@@ -1,0 +1,9 @@
+foo<-:
+  bar: baz
+
+  args: ['bar']
+
+kwarg:
+  bar: bing
+
+call->: foo --kwargs kwarg

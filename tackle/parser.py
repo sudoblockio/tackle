@@ -33,8 +33,6 @@ from tackle.models import (
 )
 from tackle.render import render_variable
 from tackle.settings import settings
-from tackle.utils.help import run_help
-from tackle.utils.render import wrap_jinja_braces
 from tackle.utils.dicts import (
     nested_get,
     nested_delete,
@@ -48,8 +46,10 @@ from tackle.utils.dicts import (
     cleanup_unquoted_strings,
 )
 from tackle.utils.command import unpack_args_kwargs_string
-from tackle.utils.vcs import get_repo_source
 from tackle.utils.files import read_config_file
+from tackle.utils.help import run_help
+from tackle.utils.imports import get_public_or_private_hook
+from tackle.utils.render import wrap_jinja_braces
 from tackle.utils.paths import (
     work_in,
     is_repo_url,
@@ -59,6 +59,7 @@ from tackle.utils.paths import (
     find_nearest_tackle_file,
     find_in_parent,
 )
+from tackle.utils.vcs import get_repo_source
 from tackle.utils.zipfile import unzip
 
 BASE_METHODS = [
@@ -72,16 +73,6 @@ BASE_METHODS = [
     'chdir',
     'merge',
 ]
-
-
-def get_public_or_private_hook(
-    context: 'Context',
-    hook_type: str,
-) -> Union[Type[BaseHook], LazyBaseFunction]:
-    h = context.public_hooks.get(hook_type, None)
-    if h is not None:
-        return h
-    return context.private_hooks.get(hook_type, None)
 
 
 def get_hook(hook_type, context: 'Context') -> Type[BaseHook]:
@@ -527,7 +518,7 @@ def evaluate_args(
 ):
     """
     Associate hook arguments provided in the call with hook attributes. Parses the
-    hook's `_args` attribute to know how to map arguments are mapped to where and
+    hook's `args` attribute to know how to map arguments are mapped to where and
     deal with rendering by default.
 
     TODO: This needs to be re-thought. Right now we parse the inputs without regard
@@ -654,6 +645,15 @@ def run_hook(context: 'Context'):
         hook_dict = {}
     hook_dict['hook_type'] = first_arg
 
+    if 'args' in kwargs:
+        # For calling hooks, you can manually provide the hook with args. Useful for
+        # creating declarative hooks that
+        hook_args = kwargs.pop('args')
+        if isinstance(hook_args, list):
+            args += hook_args
+        else:
+            args += [hook_args]
+
     # Associate hook arguments provided in the call with hook attributes
     evaluate_args(args=args, hook_dict=hook_dict, Hook=Hook, context=context)
     # Add any kwargs
@@ -661,6 +661,28 @@ def run_hook(context: 'Context'):
         hook_dict[k] = v
     for i in flags:
         hook_dict[i] = True
+
+    if 'kwargs' in hook_dict:
+        hook_kwargs = hook_dict.pop('kwargs')
+        if isinstance(hook_kwargs, dict):
+            hook_dict.update(hook_kwargs)
+        elif isinstance(hook_kwargs, str):
+            try:
+                hook_dict.update(
+                    render_variable(context=context, raw=wrap_jinja_braces(hook_kwargs))
+                )
+            except ValueError:
+                error_msg = (
+                    "The parameter `kwargs` should be either a map or a string "
+                    "reference to a map."
+                )
+                raise exceptions.UnknownArgumentException(error_msg, context=context)
+        else:
+            error_msg = (
+                "The parameter `kwargs` should be either a map or a string reference "
+                "to a map."
+            )
+            raise exceptions.UnknownArgumentException(error_msg, context=context)
 
     # Cleanup any unquoted fields -> common mistake that is hard to debug producing a
     #  nested dict that breaks parsing / hook calls. Ex foo: {{bar}} -> foo: "{{bar}}"
@@ -817,10 +839,10 @@ def find_run_hook_method(
     )
 
     if kwargs != {}:
+        # We were given extra kwargs / flags so should throw error
         hook_name = hook.identifier.split('.')[-1]
         if hook_name == '':
             hook_name = 'default'
-        # We were given extra kwargs / flags so should throw error
         unknown_args = ' '.join([f"{k}={v}" for k, v in kwargs.items()])
         raise exceptions.UnknownInputArgumentException(
             f"The args {unknown_args} not recognized when running the hook/method "
@@ -869,6 +891,10 @@ def find_run_hook_method(
 def raise_if_args_exist(
     context: 'Context', hook: ModelMetaclass, args: list, kwargs: dict, flags: list
 ):
+    """
+    Raise an error if not all the args / kwargs / flags have been consumed which would
+     mean the user supplied extra vars and should be yelled at.
+    """
     msgs = []
     if len(args) != 0:
         msgs.append(f"args {', '.join(args)}")
@@ -938,6 +964,9 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list) -> Opt
             kwargs=kwargs,
             flags=flags,
         )
+    elif len(args) == 1 and args[0] == 'help':
+        run_help(context=context, hook=None)
+
     elif len(args) != 0:  # With args
         # Prioritize public_hooks (ie non-default hook) because if the hook exists,
         # then we should consume the arg there instead of using the arg as an arg for
@@ -1205,6 +1234,10 @@ def create_function_model(
 
 
 def extract_functions(context: 'Context'):
+    """
+    Iterate through all the keys along baseline of tackle file and extract / compile
+     all the keys that reference functions.
+    """
     for k, v in context.input_context.copy().items():
         if re.match(r'^[a-zA-Z0-9\_]*(<\-|<\_)$', k):
             # TODO: RM arrow and put in associated access modifier namespace
