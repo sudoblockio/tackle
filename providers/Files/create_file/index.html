@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://robcxyz.github.io/tackle-box/providers/Files/create_file/">
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.1, mkdocs-material-8.5.7">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.7">
     
     
       
@@ -506,7 +506,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../examples/prompting/" class="md-nav__link">
+      <a href="../../../examples/prompting.md" class="md-nav__link">
         Prompting
       </a>
     </li>
@@ -520,7 +520,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../examples/reading-writing-data/" class="md-nav__link">
+      <a href="../../../examples/reading-writing-data.md" class="md-nav__link">
         Reading and Writing Data
       </a>
     </li>
@@ -534,7 +534,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../examples/context-manipulation/" class="md-nav__link">
+      <a href="../../../examples/context-manipulation.md" class="md-nav__link">
         Context Manipulation
       </a>
     </li>
@@ -548,7 +548,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../examples/complex-logic/" class="md-nav__link">
+      <a href="../../../examples/complex-logic.md" class="md-nav__link">
         Complex Logic
       </a>
     </li>
@@ -1400,6 +1400,26 @@
   <a href="#returns" class="md-nav__link">
     Returns
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic" class="md-nav__link">
+    Basic
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -3099,6 +3119,26 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic" class="md-nav__link">
+    Basic
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3116,7 +3156,7 @@
 
 <h1 id="create_file">create_file<a class="headerlink" href="#create_file" title="Permanent link">&para;</a></h1>
 <p><a href="https://github.com/robcxyz/tackle-box/blob/main/tackle/providers/files/hooks/file.py">Source</a></p>
-<p>Hook to create an empty file - like touch.<br />:param path: String or list of paths to create.</p>
+<p>Hook to create an empty file - like touch.</p>
 <h2 id="inputs">Inputs<a class="headerlink" href="#inputs" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -3134,7 +3174,7 @@
 <td align="center">union</td>
 <td align="center">None</td>
 <td align="center">True</td>
-<td align="left"></td>
+<td align="left">String or list of paths to create files at.</td>
 </tr>
 </tbody>
 </table>
@@ -3157,6 +3197,14 @@
 </table>
 <h2 id="returns">Returns<a class="headerlink" href="#returns" title="Permanent link">&para;</a></h2>
 <p><code>union</code></p>
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
+<h3 id="basic">Basic<a class="headerlink" href="#basic" title="Permanent link">&para;</a></h3>
+<p>Create an empty file.
+<div class="highlight"><pre><span></span><code><span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">create_file path/to/file/to/create</span><span class="w"></span>
+<span class="nt">expanded</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">create_file</span><span class="w"></span>
+<span class="w">  </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">path/to/file/to/read</span><span class="w"></span>
+</code></pre></div></p>
 
 
   

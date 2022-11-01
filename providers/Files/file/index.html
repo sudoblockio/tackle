@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://robcxyz.github.io/tackle-box/providers/Files/file/">
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.1, mkdocs-material-8.5.7">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.7">
     
     
       
@@ -506,7 +506,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../examples/prompting/" class="md-nav__link">
+      <a href="../../../examples/prompting.md" class="md-nav__link">
         Prompting
       </a>
     </li>
@@ -520,7 +520,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../examples/reading-writing-data/" class="md-nav__link">
+      <a href="../../../examples/reading-writing-data.md" class="md-nav__link">
         Reading and Writing Data
       </a>
     </li>
@@ -534,7 +534,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../examples/context-manipulation/" class="md-nav__link">
+      <a href="../../../examples/context-manipulation.md" class="md-nav__link">
         Context Manipulation
       </a>
     </li>
@@ -548,7 +548,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../examples/complex-logic/" class="md-nav__link">
+      <a href="../../../examples/complex-logic.md" class="md-nav__link">
         Complex Logic
       </a>
     </li>
@@ -1414,6 +1414,33 @@
   <a href="#returns" class="md-nav__link">
     Returns
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#read-a-file" class="md-nav__link">
+    Read a file
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#write-to-a-file" class="md-nav__link">
+    Write to a file
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -3099,6 +3126,33 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#read-a-file" class="md-nav__link">
+    Read a file
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#write-to-a-file" class="md-nav__link">
+    Write to a file
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3116,7 +3170,7 @@
 
 <h1 id="file">file<a class="headerlink" href="#file" title="Permanent link">&para;</a></h1>
 <p><a href="https://github.com/robcxyz/tackle-box/blob/main/tackle/providers/files/hooks/file.py">Source</a></p>
-<p>Hook to read and write to a file.</p>
+<p>Hook to read or write a file.</p>
 <h2 id="inputs">Inputs<a class="headerlink" href="#inputs" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -3134,7 +3188,7 @@
 <td align="center">str</td>
 <td align="center">None</td>
 <td align="center">True</td>
-<td align="left">Path to read or write file.</td>
+<td align="left">Path to read a file or write file if contents are given.</td>
 </tr>
 <tr>
 <td align="left">contents</td>
@@ -3169,6 +3223,24 @@
 </table>
 <h2 id="returns">Returns<a class="headerlink" href="#returns" title="Permanent link">&para;</a></h2>
 <p><code>union</code></p>
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
+<h3 id="read-a-file">Read a file<a class="headerlink" href="#read-a-file" title="Permanent link">&para;</a></h3>
+<p>Read a file into a variable as a string.
+<div class="highlight"><pre><span></span><code><span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">file path/to/file/to/read</span><span class="w"></span>
+<span class="nt">expanded</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">file</span><span class="w"></span>
+<span class="w">  </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">path/to/file/to/read</span><span class="w"></span>
+</code></pre></div></p>
+<h3 id="write-to-a-file">Write to a file<a class="headerlink" href="#write-to-a-file" title="Permanent link">&para;</a></h3>
+<p>Write to a file with contents.
+<div class="highlight"><pre><span></span><code><span class="nt">stuff</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
+<span class="w">  </span><span class="no">and things...</span><span class="w"></span>
+<span class="nt">compact-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">file path/to/file/to/write {{stuff}}</span><span class="w"></span>
+<span class="nt">expanded</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">file</span><span class="w"></span>
+<span class="w">  </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">path/to/file/to/read</span><span class="w"></span>
+<span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="nv">stuff</span><span class="p p-Indicator">}}</span><span class="w"></span>
+</code></pre></div></p>
 
 
   
