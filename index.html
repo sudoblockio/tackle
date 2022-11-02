@@ -3185,7 +3185,10 @@
 <p><a href="https://pypi.python.org/pypi/tackle-box"><img alt="pypi" src="https://img.shields.io/pypi/v/tackle-box.svg" /></a>
 <a href="https://pypi.python.org/pypi/tackle-box"><img alt="python" src="https://img.shields.io/pypi/pyversions/tackle-box.svg" /></a>
 <a href="https://codecov.io/github/robcxyz/tackle-box?branch=main"><img alt="codecov" src="https://codecov.io/gh/robcxyz/tackle-box/branch/main/graphs/badge.svg?branch=main" /></a>
-<a href="https://github.com/robcxyz/tackle-box/actions"><img alt="main-tests" src="https://github.com/robcxyz/tackle-box/actions/workflows/main.yml/badge.svg" /></a></p>
+<a href="https://github.com/robcxyz/tackle-box/actions/workflows/codeql.yml"><img alt="codeql" src="https://github.com/robcxyz/tackle-box/actions/workflows/codeql.yml/badge.svg" /></a>
+<a href="https://docs.runforesight.com/"><img alt="Foresight Docs" src="https://api-public.service.runforesight.com/api/v1/badge/success?repoId=4abde40b-565a-4557-afc0-983461857bb4" /></a>
+<a href="https://docs.runforesight.com/"><img alt="Foresight Docs" src="https://api-public.service.runforesight.com/api/v1/badge/test?repoId=4abde40b-565a-4557-afc0-983461857bb4" /></a>
+<a href="https://docs.runforesight.com/"><img alt="Foresight Docs" src="https://api-public.service.runforesight.com/api/v1/badge/utilization?repoId=4abde40b-565a-4557-afc0-983461857bb4" /></a></p>
 <ul>
 <li><a href="https://robcxyz.github.io/tackle-box">Documentation</a></li>
 <li><a href="https://discord.gg/7uVUfUVD7K">Discord</a></li>
@@ -3283,7 +3286,6 @@ pip install tackle-box
 tackle robcxyz/tackle-hello-world --checkout v0.1.0
 </code></pre></div>
 <p>Documentation can be embedded into the hooks.</p>
-<p><code>tackle robcxyz/tackle-hello-world help</code>
 <div class="highlight"><pre><span></span><code><span class="nt">&lt;-</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">help</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">This is the default hook</span><span class="w"></span>
 <span class="w">  </span><span class="nt">target</span><span class="p">:</span><span class="w"></span>
@@ -3300,7 +3302,7 @@ tackle robcxyz/tackle-hello-world --checkout v0.1.0
 <span class="w">  </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">str</span><span class="w"></span>
 <span class="w">  </span><span class="nt">exec&lt;-</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">hi-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print Hello {{target}}</span><span class="w"></span>
-</code></pre></div></p>
+</code></pre></div>
 <p>Which when running <code>tackle hello.yaml help</code> produces its own help screen.</p>
 <div class="highlight"><pre><span></span><code>usage: tackle hello.yaml [--target]
 
@@ -3316,9 +3318,9 @@ methods:
 <h3 id="topics">Topics<a class="headerlink" href="#topics" title="Permanent link">&para;</a></h3>
 <ul>
 <li><a href="https://robcxyz.github.io/tackle-box/writing-tackle-files/">Writing Tackle Files</a></li>
+<li><a href="https://robcxyz.github.io/tackle-box/creating-providers/">Creating Providers</a></li>
 <li><a href="https://robcxyz.github.io/tackle-box/python-hooks/">Python Hooks</a></li>
 <li><a href="https://robcxyz.github.io/tackle-box/declarative-hooks/">Declarative Hooks</a></li>
-<li><a href="https://robcxyz.github.io/tackle-box/creating-providers/">Creating Providers</a></li>
 <li><a href="https://robcxyz.github.io/tackle-box/writing-tackle-files/#blocks">Blocks</a> and <a href="https://robcxyz.github.io/tackle-box/hook-methods/">Flow Control</a></li>
 <li><a href="https://robcxyz.github.io/tackle-box/memory-management/">Memory Management</a></li>
 <li><a href="https://robcxyz.github.io/tackle-box/special-variables/">Special Variables</a></li>
@@ -3328,7 +3330,7 @@ methods:
 <h3 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permanent link">&para;</a></h3>
 <p>Contributions are welcome but please be advised of the following notes.</p>
 <ul>
-<li>This project uses <a href="https://www.conventionalcommits.org/">conventional commits</a> which generates the <a href="./CHANGELOG.md">changelog</a>. PRs will be squashed accordingly.</li>
+<li>This project uses <a href="https://www.conventionalcommits.org/">conventional commits</a> which generates the <a href="./CHANGELOG.md">changelog</a> with <a href="">release-please-action</a> in the <a href="">release</a> CI workflow. If commits have been made outside of this convention they will be squashed accordingly.</li>
 <li>For making changes to providers, please include test coverage using the existing fixtures and patterns from prior tests or communicate any suggestions that deviate from this style. Tests should be runnable from the test's directory and via <code>make test</code>.</li>
 <li>For making changes to the core parser, please create a proposal first outlining your suggestions with examples before spending time working on code.</li>
 </ul>
