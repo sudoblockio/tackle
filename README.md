@@ -5,9 +5,12 @@
 [![pypi](https://img.shields.io/pypi/v/tackle-box.svg)](https://pypi.python.org/pypi/tackle-box)
 [![python](https://img.shields.io/pypi/pyversions/tackle-box.svg)](https://pypi.python.org/pypi/tackle-box)
 [![codecov](https://codecov.io/gh/robcxyz/tackle-box/branch/main/graphs/badge.svg?branch=main)](https://codecov.io/github/robcxyz/tackle-box?branch=main)
-[![main-tests](https://github.com/robcxyz/tackle-box/actions/workflows/main.yml/badge.svg)](https://github.com/robcxyz/tackle-box/actions)
+[![codeql](https://github.com/robcxyz/tackle-box/actions/workflows/codeql.yml/badge.svg)](https://github.com/robcxyz/tackle-box/actions/workflows/codeql.yml)
+[![Foresight Docs](https://api-public.service.runforesight.com/api/v1/badge/success?repoId=4abde40b-565a-4557-afc0-983461857bb4)](https://docs.runforesight.com/)
+[![Foresight Docs](https://api-public.service.runforesight.com/api/v1/badge/test?repoId=4abde40b-565a-4557-afc0-983461857bb4)](https://docs.runforesight.com/)
+[![Foresight Docs](https://api-public.service.runforesight.com/api/v1/badge/utilization?repoId=4abde40b-565a-4557-afc0-983461857bb4)](https://docs.runforesight.com/)
 
-[//]: # ([![Foresight Docs]&#40;https://api-public.service.runforesight.com/api/v1/badge/success?repoId=4abde40b-565a-4557-afc0-983461857bb4&#41;]&#40;https://docs.runforesight.com/&#41;)
+[//]: # ([![main-tests]&#40;https://github.com/robcxyz/tackle-box/actions/workflows/main.yml/badge.svg&#41;]&#40;https://github.com/robcxyz/tackle-box/actions&#41;)
 
 * [Documentation](https://robcxyz.github.io/tackle-box)
 * [Discord](https://discord.gg/7uVUfUVD7K)
@@ -132,7 +135,6 @@ tackle robcxyz/tackle-hello-world --checkout v0.1.0
 
 Documentation can be embedded into the hooks.
 
-`tackle robcxyz/tackle-hello-world help`
 ```yaml
 <-:
   help: This is the default hook
@@ -170,9 +172,9 @@ Hooks can be imported, linked, and/or combined creating a web of CLIs.
 
 ### Topics
 - [Writing Tackle Files](https://robcxyz.github.io/tackle-box/writing-tackle-files/)
+- [Creating Providers](https://robcxyz.github.io/tackle-box/creating-providers/)
 - [Python Hooks](https://robcxyz.github.io/tackle-box/python-hooks/)
 - [Declarative Hooks](https://robcxyz.github.io/tackle-box/declarative-hooks/)
-- [Creating Providers](https://robcxyz.github.io/tackle-box/creating-providers/)
 - [Blocks](https://robcxyz.github.io/tackle-box/writing-tackle-files/#blocks) and [Flow Control](https://robcxyz.github.io/tackle-box/hook-methods/)
 - [Memory Management](https://robcxyz.github.io/tackle-box/memory-management/)
 - [Special Variables](https://robcxyz.github.io/tackle-box/special-variables/)
@@ -183,7 +185,7 @@ Hooks can be imported, linked, and/or combined creating a web of CLIs.
 
 Contributions are welcome but please be advised of the following notes.
 
-- This project uses [conventional commits](https://www.conventionalcommits.org/) which generates the [changelog](./CHANGELOG.md). PRs will be squashed accordingly.
+- This project uses [conventional commits](https://www.conventionalcommits.org/) which generates the [changelog](./CHANGELOG.md) with [release-please-action]() in the [release]() CI workflow. If commits have been made outside of this convention they will be squashed accordingly.
 - For making changes to providers, please include test coverage using the existing fixtures and patterns from prior tests or communicate any suggestions that deviate from this style. Tests should be runnable from the test's directory and via `make test`.
 - For making changes to the core parser, please create a proposal first outlining your suggestions with examples before spending time working on code.
 
