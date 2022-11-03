@@ -1,0 +1,8 @@
+
+#mv->: copy skip-tpl skip-output
+
+stuff: things
+
+gen->: generate skip-input skip-output/ --skip_overwrite_files ['skip.yaml']
+
+verify->: yaml {{path_join(['skip-output','skip.yaml'])}}

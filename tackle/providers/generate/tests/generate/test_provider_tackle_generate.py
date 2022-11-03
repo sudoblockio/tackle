@@ -67,3 +67,17 @@ def test_hook_generate_looped(change_dir):
     assert len(output['networks']) == 2
     assert output['networks'][0]['things'] == 'foo'
     shutil.rmtree('output')
+
+
+def test_hook_generate_skip_overwrite_files(change_dir):
+    """Validate that we can skip rendering a file with `skip_overwrite_files`."""
+    output = tackle("skip-overwrite-files.yaml")
+
+    assert output['verify']['stuff'] == 'foo'
+
+
+def test_hook_generate_skip_if_file_exists(change_dir):
+    """Validate that we can skip rendering a file with `skip_if_file_exists`."""
+    output = tackle("skip-overwrite-files.yaml")
+
+    assert output['verify']['stuff'] == 'foo'

@@ -1,0 +1,2 @@
+# The skip-output should not be rendered
+stuff: "{{stuff}}"

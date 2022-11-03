@@ -1,0 +1,4 @@
+
+gen->: generate skip-input skip-output/ --skip-if-file-exists
+
+verify->: yaml {{path_join(['skip-output','skip.yaml'])}}

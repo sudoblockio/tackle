@@ -27,15 +27,19 @@ class GenerateHook(BaseHook, smart_union=True):
     templates: Union[str, list] = Field(
         "templates",
         description="Path or list of paths to a templatable directory or file to "
-        "recursively render the contents.",
+                    "recursively render the contents.",
     )
     output: str = Field('.', description="Path to put the output file(s).")
-    copy_without_render: Union[str, list] = Field([], description="List of path to files to only copy and not render.")
+    copy_without_render: Union[str, list] = Field([],
+                                                  description="List of path to files to only copy and not render.")
     overwrite_if_exists: bool = Field(
         False, description="Overwrite the output if exists."
     )
     skip_if_file_exists: bool = Field(
         False, description="Skip creating if path exists."
+    )
+    skip_overwrite_files: list = Field(
+        [], description="List of files to skip generating over if they exist."
     )
     render_context: dict = Field(
         None, description="A render context that invalidates the default context."
@@ -45,7 +49,8 @@ class GenerateHook(BaseHook, smart_union=True):
         description="A map / list of maps to use as extra context when rendering. Lists inputs are merged together as lists themselves don't make sense.",
         render_by_default=True,
     )
-    file_system_loader: Union[str, list] = Field('.', description="List of paths or string path to directory with templates to load from. [Docs](https://jinja.palletsprojects.com/en/3.0.x/api/#jinja2.FileSystemLoader).")
+    file_system_loader: Union[str, list] = Field('.',
+                                                 description="List of paths or string path to directory with templates to load from. [Docs](https://jinja.palletsprojects.com/en/3.0.x/api/#jinja2.FileSystemLoader).")
     base_dir_: Path = None
     # env_: Any = None
     file_path_separator_: str = None  # / for mac / linux - \ for win
@@ -146,13 +151,24 @@ class GenerateHook(BaseHook, smart_union=True):
 
     def generate_file(self, input_file: str, output_path: str):
         """
-        Take a target input_file and render it's contents / file name to an output path.
+        Take a target input_file and render its contents / file name to an output path.
 
         :param input_file: Input file to generate from
         :param output_path: Output file to generate to
         """
         if output_path.endswith(self.file_path_separator_):
             output_path = os.path.join(output_path, os.path.basename(input_file))
+
+        # For skip operations -> Useful when we only want to render once
+        if os.path.exists(output_path):
+            if self.skip_if_file_exists:
+                return
+
+            if self.skip_overwrite_files is not None:
+                for i in self.skip_overwrite_files:
+                    skip_output_path = os.path.join(Path(output_path).parent, i)
+                    if output_path == skip_output_path:
+                        return
 
         # Render the path right away as templating mangles things later - also logical
         # to render file names.  Who wants to generate files with templates in the name?
