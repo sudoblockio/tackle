@@ -23,6 +23,7 @@ from tackle.macros import (
     blocks_macro,
     compact_hook_call_macro,
     list_to_var_macro,
+    function_field_to_parseable_macro,
 )
 from tackle.models import (
     Context,
@@ -1107,6 +1108,8 @@ def create_function_model(
         raise exceptions.EmptyFunctionException(
             "Can't have an empty function", context=context, function_name=func_name
         )
+    # Macro to expand all keys properly so that a field's default can be parsed
+    func_dict = function_field_to_parseable_macro(func_dict, context, func_name)
 
     if func_name.endswith(('<-', '<_')):
         func_name = func_name[:-2]

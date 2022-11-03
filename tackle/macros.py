@@ -8,6 +8,7 @@ from tackle.utils.dicts import (
     smush_key_path,
 )
 
+from tackle import exceptions
 from tackle.models import BaseHook
 
 if TYPE_CHECKING:
@@ -154,3 +155,64 @@ def list_to_var_macro(context: 'Context', element: list) -> dict:
         context.key_path = base_key_path
 
     return {arrow: 'var'}
+
+
+def raise_on_private_hook(k: str, context: 'Context', func_name: str):
+    raise exceptions.MalformedFunctionFieldException(
+        f"The field {k} can not be a private hook call (ie ending in '_>') as there is "
+        f"no situation this makes sense.",
+        function_name=func_name,
+        context=context,
+    )
+
+
+FUNCTION_ARGS = {
+    'help',
+    'exec',
+    'exec<-',
+    'return',
+    'args',
+    'kwargs',
+    'render_exclude',
+    'extends',
+}
+
+
+def function_field_to_parseable_macro(
+    func_dict: dict, context: 'Context', func_name: str
+) -> dict:
+    """
+    Convert function field to parseable subclassed dict that can be caught later and
+     parsed in the event that the value is not supplied via some arg / kwarg.
+    """
+    for k, v in func_dict.copy().items():
+        if k in FUNCTION_ARGS:
+            continue
+
+        elif k[-2:] == '->':
+            new_value = {'default': {k[-2:]: v}}
+            func_dict = {
+                key if key != k else k[:-2]: value if key != k else new_value
+                for key, value in func_dict.items()
+            }  # noqa
+
+        elif k[-2:] == '_>':
+            raise_on_private_hook(k, context=context, func_name=func_name)
+
+        elif not isinstance(v, dict):
+            continue
+
+        elif '->' in v:
+            func_dict[k] = {'default': v}
+
+        elif '_>' in v:
+            raise_on_private_hook(k, context=context, func_name=func_name)
+
+        elif 'default->' in v:
+            new_value = func_dict[k].pop('default->')
+            func_dict[k]['default'] = {'->': new_value}
+
+        elif 'default_>' in v:
+            raise_on_private_hook(k, context=context, func_name=func_name)
+
+    return func_dict

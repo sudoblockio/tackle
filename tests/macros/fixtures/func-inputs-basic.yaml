@@ -1,0 +1,23 @@
+input:
+  literal_compact->: input
+
+  literal_expanded:
+    ->: input
+
+  field_default_compact:
+    type: str
+    default->: input
+
+expected:
+  literal_compact:
+    default:
+      ->: input
+
+  literal_expanded:
+    default:
+      ->: input
+
+  field_default_compact:
+    type: str
+    default:
+      ->: input
