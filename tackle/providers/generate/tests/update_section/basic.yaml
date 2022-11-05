@@ -1,0 +1,12 @@
+stuff: things
+alist:
+  - foo
+  - bar
+
+section->: |
+  {{stuff}}
+  {% for i in alist %}
+  {{i}}
+  {% endfor %}
+
+update->: update_section file.md {{section}}
