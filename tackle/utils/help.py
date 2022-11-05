@@ -9,16 +9,14 @@ from tackle.models import Context
 
 HELP_TEMPLATE = """
 usage: tackle {{input_string}} {% for i in general_kwargs %}{{i}} {% endfor %}
-{% if general_help %}
-{{general_help}}
-{% endif %}
-{% if flags != [] %}flags:{% for i in flags %}
-    --{{i.name}}      {% if i.description != None %}{{ ('' ~ i.description) | wordwrap(78) }}{% endif %}{% endfor %}{% endif %}
-{% if kwargs != [] %}options:{% for i in kwargs %}
-    --{{i.name}} [{{ i.type }}] {% if i.description != None %}{{ ('' ~ i.description) | wordwrap(78) }}{% endif %}{% endfor %}{% endif %}
-{% if args != [] %}positional arguments:{% for i in args %}
-    {{i.name}} [{{ i.type }}] {% if i.description != None %}{{ ('' ~ i.description) | wordwrap(78) }}{% endif %}{% endfor %}{% endif %}
-{% if methods != [] %}methods:{% for i in methods %}
+{% if general_help %}{{general_help}}{% endif %}{% if flags != [] %}
+flags:{% for i in flags %}
+    --{{i.name}}      {% if i.description != None %}{{ ('' ~ i.description) | wordwrap(78) }}{% endif %}{% endfor %}{% endif %}{% if kwargs != [] %}
+options:{% for i in kwargs %}
+    --{{i.name}} [{{ i.type }}] {% if i.description != None %}{{ ('' ~ i.description) | wordwrap(78) }}{% endif %}{% endfor %}{% endif %}{% if args != [] %}
+positional arguments:{% for i in args %}
+    {{i.name}} [{{ i.type }}] {% if i.description != None %}{{ ('' ~ i.description) | wordwrap(78) }}{% endif %}{% endfor %}{% endif %}{% if methods != [] %}
+methods:{% for i in methods %}
     {{i.name}}     {% if i.description != None %}{{ ('' ~ i.description) | wordwrap(78) }}{% endif %}{% endfor %}{% endif %}
 """
 
@@ -72,15 +70,22 @@ def unpack_hook(
 
     # args
     for arg in hook.__fields__['args'].default:
-        try:
-            arg_data = [i for i in kwargs if i['name'] == arg][0]
-        except IndexError:
-            raise exceptions.MalformedFunctionFieldException(
-                "The args don't match a key word arg.",
-                # TODO: Fix
-                function_name=hook.__fields__,
-                context=context,
-            )
+        # Check kwargs
+        arg_data = [i for i in kwargs if i['name'] == arg]
+        if len(arg_data) == 1:
+            arg_data = arg_data[0]
+        else:
+            # Check flags
+            arg_data = [i for i in flags if i['name'] == arg]
+            if len(arg_data) == 1:
+                arg_data = arg_data[0]
+            else:
+                raise exceptions.MalformedFunctionFieldException(
+                    "The args don't match a key word arg or flag.",
+                    # TODO: Fix
+                    function_name=hook.__fields__,
+                    context=context,
+                )
         args.append(arg_data)
 
     # methods
@@ -121,7 +126,7 @@ def get_methods_on_default_hook(context: 'Context') -> List[dict]:
     return methods
 
 
-def run_help(context: 'Context', hook: ModelMetaclass):
+def run_help(context: 'Context', hook: ModelMetaclass = None):
     """
     Print the help screen then exit. Help can be displayed in three different scenarios.
     1. For the base (no args) -> this shows default / other function's help
@@ -129,15 +134,22 @@ def run_help(context: 'Context', hook: ModelMetaclass):
         associated methods. This is recursive so depends on depth of methods.
     3. For a function's methods (len(args) > 1) -> this drills into methods
     """
-    general_help: str = (
-        hook.__fields__['function_dict'].default.pop('help')
-        if 'help' in hook.__fields__['function_dict'].default
-        else None
-    )
+    if hook is not None:
+        # We have a default hook or method
+        general_help = (
+            hook.__fields__['function_dict'].default.pop('help')
+            if 'help' in hook.__fields__['function_dict'].default
+            else None
+        )
 
-    args, kwargs, flags, methods = unpack_hook(context, hook)
+        args, kwargs, flags, methods = unpack_hook(context, hook)
+        hook_name = hook.identifier.split('.')[-1]
+    else:
+        # Situation where we don't have a default hook or we have not been given an arg
+        # to call a specific hook and need to just display all the base's methods
+        args, kwargs, flags, methods, general_help = [], [], [], [], ""
+        hook_name = ''
 
-    hook_name = hook.identifier.split('.')[-1]
     if hook_name == '':  # Default hook
         hook_name = '_default_'
         # Add the additional methods adjacent to the default hook.

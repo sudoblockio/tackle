@@ -966,7 +966,7 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list) -> Opt
             flags=flags,
         )
     elif len(args) == 1 and args[0] == 'help':
-        run_help(context=context, hook=None)
+        run_help(context=context)
 
     elif len(args) != 0:  # With args
         # Prioritize public_hooks (ie non-default hook) because if the hook exists,
