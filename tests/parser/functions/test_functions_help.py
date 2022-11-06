@@ -1,6 +1,8 @@
+import os
 import pytest
 
 from tackle import tackle
+from tackle import exceptions
 
 
 def test_function_default_hook_no_context_help(change_curdir_fixtures, capsys):
@@ -53,3 +55,27 @@ def test_function_cli_no_default_hook(change_curdir_fixtures, capsys):
     assert "usage: tackle" in out
     with capsys.disabled():
         print(out)
+
+
+def test_function_cli_tackle_help_no_arg(chdir):
+    """Check that when we are in a dir with a default tackle file, we can get help."""
+    chdir(os.path.join('fixtures', 'a-tackle'))
+    with pytest.raises(SystemExit):
+        tackle('help')
+
+
+def test_function_cli_tackle_help_with_arg(chdir):
+    """
+    Check that when we are in a dir with a default tackle file, we can get help when
+     calling a declarative hook.
+    """
+    chdir(os.path.join('fixtures', 'a-tackle'))
+    with pytest.raises(SystemExit):
+        tackle('stuff', 'help')
+
+
+def test_function_cli_tackle_arg_error(chdir):
+    """Check that when we give a bad key, even with help we get an exception."""
+    chdir(os.path.join('fixtures', 'a-tackle'))
+    with pytest.raises(exceptions.UnknownArgumentException):
+        tackle('bad-key', 'help')

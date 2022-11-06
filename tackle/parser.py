@@ -905,16 +905,23 @@ def raise_if_args_exist(
     if len(flags) != 0:
         msgs.append(f"flags {', '.join(flags)}")
     if len(msgs) != 0:
-        hook_name = hook.identifier.split('.')[-1]
-        if hook_name == '':
-            hook_name = 'default'
-        raise exceptions.UnknownInputArgumentException(
-            # TODO: Add the available args/kwargs/flags to this error msg
-            f"The {' and '.join(msgs)} were not found in the \"{hook_name}\" hook. "
-            f"Run the same command without the arg/kwarg/flag + \"help\" to see the "
-            f"available args/kwargs/flags.",
-            context=context,
-        )
+        if hook:
+            hook_name = hook.identifier.split('.')[-1]
+            if hook_name == '':
+                hook_name = 'default'
+            raise exceptions.UnknownInputArgumentException(
+                # TODO: Add the available args/kwargs/flags to this error msg
+                f"The {' and '.join(msgs)} were not found in the \"{hook_name}\" hook. "
+                f"Run the same command without the arg/kwarg/flag + \"help\" to see the "
+                f"available args/kwargs/flags.",
+                context=context,
+            )
+        else:
+            raise exceptions.UnknownSourceException(
+                f"Could not find source = {args[0]} or as key / hook in parent tackle "
+                f"file.",
+                context=context,
+            )
 
 
 def run_source(context: 'Context', args: list, kwargs: dict, flags: list) -> Optional:
@@ -997,6 +1004,14 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list) -> Opt
             raise_if_args_exist(  # Raise if there are any args left
                 context=context,
                 hook=context.default_hook,
+                args=args,
+                kwargs=kwargs,
+                flags=flags,
+            )
+        else:
+            raise_if_args_exist(  # Raise if there are any args left
+                context=context,
+                hook=context.default_hook,  # This is None if it does not exist
                 args=args,
                 kwargs=kwargs,
                 flags=flags,
@@ -1384,13 +1399,6 @@ def update_source(context: 'Context'):
         context.input_dir = Path(tackle_file).parent.absolute()
         extract_base_file(context)
 
-        if first_arg not in context.input_context:
-            context.input_file = first_arg
-            raise exceptions.UnknownSourceException(
-                f"Could not find source = {first_arg} or as "
-                f"key in parent tackle file.",
-                context=context,
-            )
         args.insert(0, first_arg)
 
     # We always change directory into the source that is being called. Needs to be this
