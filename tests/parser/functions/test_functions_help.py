@@ -64,6 +64,17 @@ def test_function_cli_tackle_help_no_arg(chdir):
         tackle('help')
 
 
+def test_function_cli_tackle_default_unknown(change_curdir_fixtures, capsys):
+    """
+    Check that when the type is not provided because there is some hook for the
+     default is unknown.
+    """
+    with pytest.raises(SystemExit):
+        tackle('cli-hook-type-unknown.yaml', 'help')
+    out, _ = capsys.readouterr()
+    assert "[unknown]" in out
+
+
 def test_function_cli_tackle_help_with_arg(chdir):
     """
     Check that when we are in a dir with a default tackle file, we can get help when

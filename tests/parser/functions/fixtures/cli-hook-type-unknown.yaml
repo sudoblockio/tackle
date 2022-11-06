@@ -1,0 +1,8 @@
+
+<-:
+  help: Do stuff
+
+  license_type:
+    default:
+      type: str
+      ->: print foo

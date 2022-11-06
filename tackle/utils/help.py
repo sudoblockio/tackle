@@ -1,5 +1,5 @@
 import sys
-from pydantic.main import ModelMetaclass, ModelField
+from pydantic.main import ModelMetaclass, ModelField, ValidationError
 from pydantic import BaseModel
 from jinja2 import Template
 from typing import Any, List
@@ -7,8 +7,7 @@ from typing import Any, List
 from tackle import exceptions
 from tackle.models import Context
 
-HELP_TEMPLATE = """
-usage: tackle {{input_string}} {% for i in general_kwargs %}{{i}} {% endfor %}
+HELP_TEMPLATE = """usage: tackle {{input_string}} {% for i in general_kwargs %}{{i}} {% endfor %}
 {% if general_help %}{{general_help}}{% endif %}{% if flags != [] %}
 flags:{% for i in flags %}
     --{{i.name}}      {% if i.description != None %}{{ ('' ~ i.description) | wordwrap(78) }}{% endif %}{% endfor %}{% endif %}{% if kwargs != [] %}
@@ -49,7 +48,19 @@ def unpack_hook(
                 name=i, type=type(hook_field).__name__, default=hook_field
             )
         elif isinstance(hook_field, dict):
-            help_arg = HelpInput(name=i, **hook_field)
+            if 'type' not in hook_field:
+                hook_field['type'] = "unknown"
+            try:
+                help_arg = HelpInput(name=i, **hook_field)
+            except ValidationError as e:
+                hook_name = hook.identifier.split('.')[-1]
+                if hook_name == '':  # Default hook
+                    hook_name = 'default hook'
+                raise exceptions.MalformedFunctionFieldException(
+                    f"The field '{i}' is malformed. Getting error=\n{e.__str__()}",
+                    context=context,
+                    function_name=hook_name,
+                ) from None
         elif isinstance(hook_field, ModelField):
             # TODO: https://github.com/robcxyz/tackle-box/issues/91
             # If enabling inheritance for base vars in to the help, then this will
@@ -85,7 +96,7 @@ def unpack_hook(
                     # TODO: Fix
                     function_name=hook.__fields__,
                     context=context,
-                )
+                ) from None
         args.append(arg_data)
 
     # methods

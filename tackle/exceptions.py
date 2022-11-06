@@ -391,7 +391,7 @@ class TackleFunctionCreateException(Exception):
         self, extra_message: str, function_name: str, context: 'Context' = None
     ):
         self.message = (
-            f"Error creating function='{function_name}' in file="
+            f"Error creating hook='{function_name}' in file="
             f"'{context.calling_file}', {extra_message}"
         )
         if not context.verbose:
