@@ -63,12 +63,10 @@ def test_function_method_simple(change_curdir_fixtures):
     assert output['do'] == {"v": ["Hello", "world!"]}
 
 
-# TODO: Support embedded methods
-# https://github.com/robcxyz/tackle-box/issues/77
-# def test_function_method_embed(change_curdir_fixtures):
-#     """Check that we can create a method."""
-#     output = tackle('method-embed.yaml')
-#     assert output
+def test_function_method_embed(change_curdir_fixtures):
+    """Check that we can create a method."""
+    output = tackle('method-embed.yaml')
+    assert output['do']['v'] == ['Hello', 'world!']
 
 
 def test_function_method_inherit(change_curdir_fixtures):
@@ -81,6 +79,12 @@ def test_function_method_args(change_curdir_fixtures):
     """Check that we can create a method that takes args."""
     output = tackle('method-args.yaml')
     assert output == {'foo': 'bar'}
+
+
+# def test_function_method_call_from_default(change_curdir_fixtures):
+#     """Check that we can create a method that takes args."""
+#     output = tackle('method-call-from-default.yaml', target='foo')
+#     assert output
 
 
 def test_function_method_maintain_context(change_curdir_fixtures):

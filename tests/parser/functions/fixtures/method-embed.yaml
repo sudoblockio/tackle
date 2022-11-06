@@ -4,10 +4,10 @@ greeter<-:
       - Hello
       - world!
     exec:
-      v->: print {{item}} --for words
+      v->: var {{item}} --for words
 
     twice<-:
       exec:
-        v->: print {{item}} --for words
+        v->: var {{item}} --for words
 
 do->: greeter.say.twice
