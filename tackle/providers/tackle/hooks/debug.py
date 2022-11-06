@@ -1,17 +1,9 @@
 import sys
 from InquirerPy import prompt
+from pprint import pprint
+from rich import print
 
 from tackle import BaseHook, Field
-
-rich_install = False  # noqa
-from pprint import pprint
-
-try:
-    from rich import print
-
-    rich_install = True
-except ImportError:
-    pass
 
 
 class DebugHook(BaseHook):
@@ -38,19 +30,14 @@ class DebugHook(BaseHook):
             pprint(print_context[self.key])
 
     def print_context(self, print_context, context_name: str):
-        if rich_install:
-            print(f"[bold magenta]{context_name.title()} Context[/bold magenta]")
+        print(f"[bold magenta]{context_name.title()} Context[/bold magenta]")
 
-            # TODO: Improve this -> The builtin pprint is better now since it does the
-            #  first level as the top level keys.
-            # pretty = Pretty(dict(print_context))
-            # panel = Panel(pretty)
-            # print(panel)
-            pprint(print_context)
-
-        else:
-            print(f"{context_name.title()} Context")
-            pprint(print_context)
+        # TODO: Improve this -> The builtin pprint is better now since it does the
+        #  first level as the top level keys.
+        # pretty = Pretty(dict(print_context))
+        # panel = Panel(pretty)
+        # print(panel)
+        pprint(print_context)
 
     def exec(self) -> None:
         if self.context is not None:
@@ -88,7 +75,11 @@ class DebugHook(BaseHook):
                 'name': 'tmp',
                 'message': 'CONTINUE',
             }
-            response = prompt([question])
+            try:
+                response = prompt([question])
+            except KeyboardInterrupt:
+                print("Exiting...")
+                sys.exit(0)
 
             # Catch keyboard exits with return an empty dict
             if response == {}:
