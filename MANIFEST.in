@@ -5,6 +5,7 @@ include LICENSE
 include README.md
 
 recursive-include tackle/providers *
+recursive-include tackle/utils *
 
 recursive-include tests *
 recursive-exclude * __pycache__
