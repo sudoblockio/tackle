@@ -16,8 +16,8 @@ def test_should_raise_error_with_calling_file(change_curdir_fixtures):
     """The correct file with error should come up in error message."""
     with pytest.raises(exceptions.UnknownSourceException) as info:
         main.tackle('calling-tackle.yaml', verbose=True)
-
-    assert 'Error parsing input_file=\'foooooo\'' in info.value.message
+    # This assumes there is a tackle file in a parent directory
+    assert 'Error parsing input_file=' in info.value.message
 
 
 FIXTURES = [
