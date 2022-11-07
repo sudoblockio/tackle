@@ -696,12 +696,11 @@ def run_hook(context: 'Context'):
 def walk_sync(context: 'Context', element):
     """
     Traverse an object looking for hook calls and running those hooks. Here we are
-    keeping track of which keys are traversed in a list called `key_path` with strings
-    as dict keys and byte encoded integers for list indexes.
+     keeping track of which keys are traversed in a list called `key_path` with strings
+     as dict keys and byte encoded integers for list indexes.
     """
     if len(context.key_path) != 0:
         # Handle compact expressions - ie key->: hook_type args
-        # if context.key_path[-1][-2:] in ('->', '_>'):
         ending = context.key_path[-1][-2:]
         if ending in ('->', '_>'):
             if isinstance(element, str):
@@ -1049,8 +1048,8 @@ def function_walk(
 ) -> Any:
     """
     Walk an input_element for a function and either return the whole context or one or
-    many returnable string keys. Function is meant to be implanted into a function
-    object and called either as `exec` or some other arbitrary method.
+     many returnable string keys. Function is meant to be implanted into a function
+     object and called either as `exec` or some other arbitrary method.
     """
     if input_element is None:
         # If there is no `exec` method, input_element is None so we infer that the
@@ -1223,6 +1222,9 @@ def create_function_model(
             **new_func,
             **function_input.dict(include={'args', 'render_exclude'}),
             **{'function_dict': (dict, function_dict)},  # Preserve for `extends` key
+            # https://github.com/robcxyz/tackle-box/issues/99
+            **{'public_hooks': context.public_hooks},
+            **{'private_hooks': context.private_hooks},
         )
     except NameError as e:
         if 'shadows a BaseModel attribute' in e.args[0]:

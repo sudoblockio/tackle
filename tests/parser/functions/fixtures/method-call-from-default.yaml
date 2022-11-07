@@ -1,0 +1,15 @@
+<-:
+  help: This is the default hook
+  target:
+    type: str
+    description: The thing to say hello to
+  exec<-:
+    greeting->: literal foo
+    hi->: greeter --target {{greeting}}
+
+greeter<-:
+  help: A reusable greeter object
+  target: str
+  return: hi
+  exec<-:
+    hi->: var Hello {{target}}
