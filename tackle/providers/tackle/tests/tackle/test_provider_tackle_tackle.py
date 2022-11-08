@@ -46,3 +46,16 @@ def test_provider_tackle_remote(change_dir, clean_outputs):
 def test_provider_tackle_kwargs_default(change_dir):
     output = tackle('kwargs-default.yaml', no_input=True)
     assert output['default_kwargs']['stuff'] == 'bing'
+
+
+def test_provider_tackle_kwargs_default_hook(change_dir):
+    """Check that we can run a default hook from a tackle hook."""
+    output = tackle('kwargs-default-hook.yaml', no_input=True)
+    assert output['compact']['v'] == 'bing'
+    assert output['expanded']['v'] == 'bing'
+
+
+def test_provider_tackle_kwargs_default_hook_args(change_dir):
+    """Check that we can run a default hook from a tackle hook with args."""
+    output = tackle('kwargs-default-hook-arg.yaml', no_input=True)
+    assert output['compact']['v'] == 'bing'

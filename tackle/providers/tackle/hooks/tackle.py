@@ -1,6 +1,7 @@
-import tackle as tkl
 from pydantic import SecretStr
+from typing import Union
 
+import tackle as tkl
 from tackle.models import BaseHook, Field
 
 
@@ -31,14 +32,24 @@ class TackleHook(BaseHook):
                            "local targets.")
 
     override: dict = Field({}, description="A dictionary of keys to override.")
+
+    additional_args: Union[list, str] = Field(
+        None, description="Arguments to pass on either directly as a string or as a "
+                          "list of strings.")
     # fmt: on
 
-    args: list = ['input_string']
-    kwargs: str = "extra_context"
+    args: list = ['input_string', 'additional_args']
+    kwargs: str = 'override'
     _docs_order = 0
 
     def exec(self) -> dict:
         existing_context = {}
+
+        if self.override != {}:
+            # This is a hack as we need extra vars to be mapped to both the
+            # existing_context (allowing rendering of unknown vars) and the overrides
+            # (allowing for calling of declarative hooks with args / kwargs)
+            existing_context.update(self.override)
 
         if self.context:
             existing_context.update(self.context)
@@ -58,6 +69,9 @@ class TackleHook(BaseHook):
         if self.extra_context:
             existing_context.update(self.extra_context)
 
+        if isinstance(self.additional_args, str):
+            self.additional_args = [self.additional_args]
+
         output_context = tkl.main.tackle(
             self.input_string,
             checkout=self.checkout,
@@ -69,11 +83,11 @@ class TackleHook(BaseHook):
             # Evaluated
             existing_context=existing_context,
             # Implicit
-            # provider_hooks=self.provider_hooks,
             public_hooks=self.public_hooks,
             private_hooks=self.private_hooks,
             no_input=self.no_input,
             global_kwargs=self.override,
+            global_args=self.additional_args,
             find_in_parent=self.find_in_parent,
             verbose=self.verbose,
         )

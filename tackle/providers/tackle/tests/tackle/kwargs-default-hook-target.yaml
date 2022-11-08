@@ -1,0 +1,6 @@
+
+<-:
+  foo: bar
+  args: ['foo']
+  exec:
+    v->: var {{foo}}

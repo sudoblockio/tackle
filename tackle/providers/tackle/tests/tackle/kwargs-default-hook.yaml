@@ -1,0 +1,6 @@
+
+expanded:
+  ->: tackle kwargs-default-hook-target.yaml
+  foo: bing
+
+compact->: tackle kwargs-default-hook-target.yaml --foo bing
