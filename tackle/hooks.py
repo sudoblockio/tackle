@@ -63,6 +63,7 @@ def import_from_path(
     context: 'Context',
     provider_path: str,
     hooks_dir_name: str = None,
+    skip_on_error: bool = True,
 ):
     """Append a provider with a given path."""
     # Look for `.hooks` or `hooks` dir
@@ -102,7 +103,9 @@ def import_from_path(
                 context.private_hooks[h] = hook
 
     # This pass will import all the modules and extract hooks
-    import_with_fallback_install(context, mod_name, hooks_path, skip_on_error=True)
+    import_with_fallback_install(
+        context=context, mod_name=mod_name, path=hooks_path, skip_on_error=skip_on_error
+    )
 
 
 def get_native_provider_paths():

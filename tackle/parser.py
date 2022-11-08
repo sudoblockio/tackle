@@ -1323,8 +1323,8 @@ def extract_base_file(context: 'Context'):
         context.public_context = {}
         context.private_context = {}
 
-    # Import the hooks
-    import_from_path(context, context.input_dir)
+    # Import the hooks and install requirements.txt if there is a ModuleNotFound error
+    import_from_path(context, context.input_dir, skip_on_error=False)
 
 
 def import_local_provider_source(context: 'Context', provider_dir: str):

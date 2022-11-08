@@ -37,6 +37,8 @@ def test_parser_provider_import_installs_requirements(
     temporary_uninstall('requests')
     try:
         import requests
+
+        assert False
     except ImportError:
         assert True
 
@@ -44,6 +46,24 @@ def test_parser_provider_import_installs_requirements(
     import requests  # noqa
 
     assert requests
+
+
+def test_parser_provider_import_requirements_installs_requirements(
+    chdir, temporary_uninstall
+):
+    """Validate that if a package is missing, that it will be installed and usable."""
+    chdir(os.path.join('fixtures', 'test-provider-reqs'))
+    temporary_uninstall('art')
+    try:
+        import art
+
+        assert False
+    except ImportError:
+        assert True
+
+    o = tackle()
+    temporary_uninstall('art')
+    assert o['art']
 
 
 def test_parser_hooks_raises_error_on_unknown_hook_type(change_curdir_fixtures):
