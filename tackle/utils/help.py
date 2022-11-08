@@ -8,7 +8,9 @@ from tackle import exceptions
 from tackle.models import Context
 
 HELP_TEMPLATE = """usage: tackle {{input_string}} {% for i in general_kwargs %}{{i}} {% endfor %}
-{% if general_help %}{{general_help}}{% endif %}{% if flags != [] %}
+{% if general_help %}
+{{general_help}}
+{% endif %}{% if flags != [] %}
 flags:{% for i in flags %}
     --{{i.name}}      {% if i.description != None %}{{ ('' ~ i.description) | wordwrap(78) }}{% endif %}{% endfor %}{% endif %}{% if kwargs != [] %}
 options:{% for i in kwargs %}
@@ -170,6 +172,10 @@ def run_help(context: 'Context', hook: ModelMetaclass = None):
     for i in kwargs + flags:
         # Show the other options outside the default hook
         general_kwargs.append(f"[--{i['name']}]")
+
+    # Remove the `help` str from the `usage` line in help.
+    if context.input_string[-4:] == 'help':
+        context.input_string = context.input_string[:-4]
 
     template = Template(HELP_TEMPLATE)
     help_rendered = template.render(
