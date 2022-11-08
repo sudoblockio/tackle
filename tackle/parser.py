@@ -1189,6 +1189,17 @@ def create_function_model(
                     v['description'] = v['description'].__repr__()
                 new_func[k] = (type_, Field(**v))
             elif 'default' in v:
+                # if '->' in v['default']:
+                #     # TODO: Won't work as it messes with context. Previously we have been
+                #     #  making a tmp context but that seems like a heavy weight approach
+                #     #  this process.
+                #     # x = walk_sync(context, {k: v['default']})
+                #     pass
+                # elif '_>' in v['default']:
+                #     pass
+                # else:
+                #     new_func[k] = (type(v['default']), Field(**v))
+
                 new_func[k] = (type(v['default']), Field(**v))
             else:
                 raise exceptions.MalformedFunctionFieldException(
