@@ -160,3 +160,9 @@ def test_providers_unreleased_import(chdir_fixture, remove_provider):
     remove_provider("robcxyz/tackle-fixture-unreleased")
     o = tackle("robcxyz/tackle-fixture-unreleased", no_input=True)
     assert o['this'] == 'that'
+
+
+def test_providers_hook_dirs(change_dir):
+    """Check that we can import hooks by supplying a directory."""
+    o = tackle("hook-dirs.yaml", hook_dirs=[str(os.path.join('fixtures', '.hooks'))])
+    assert o['t'] == 'things'

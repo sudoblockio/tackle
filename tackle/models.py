@@ -14,7 +14,7 @@ from jinja2 import Environment, StrictUndefined
 from jinja2.ext import Extension
 from typing import Any, Union, Optional, Callable
 
-from tackle.hooks import import_native_providers
+from tackle.hooks import import_native_providers, import_hooks_from_dir
 from tackle.utils.render import wrap_jinja_braces
 from tackle.exceptions import TooManyTemplateArgsException
 
@@ -46,7 +46,8 @@ class BaseContext(BaseModel):
     key_path: list = []
     key_path_block: list = []
 
-    public_hooks: dict = {}
+    # public_hooks: dict = {}
+    public_hooks: dict = None
     private_hooks: dict = None
     default_hook: Any = Field(None, exclude=True)
 
@@ -87,6 +88,10 @@ class Context(BaseContext):
 
     context_functions: list = None
 
+    hook_dirs: list = Field(
+        None, description="A list of additional directories to import hooks."
+    )
+
     latest: bool = False
     # TODO: Change to version?
     checkout: str = Field(
@@ -107,6 +112,13 @@ class Context(BaseContext):
         if self.private_hooks is None:
             self.private_hooks = {}
             import_native_providers(self)
+
+        if self.public_hooks is None:
+            self.public_hooks = {}
+
+        if self.hook_dirs is not None:
+            for i in self.hook_dirs:
+                import_hooks_from_dir(context=self, mod_name=i, path=i)
 
         if self.env_ is None:
             self.env_ = StrictEnvironment()
