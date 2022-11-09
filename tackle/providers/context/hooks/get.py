@@ -1,9 +1,14 @@
-from typing import Union
+from typing import Union, Any
 
 from pydantic import Field
 
 from tackle import BaseHook
 from tackle.utils.dicts import encode_key_path, nested_get
+from tackle.exceptions import HookCallException
+
+# Hack because fallback value should be able to be None so None can't be default
+# -> string instead
+FALLBACK_VALUE = "None"
 
 
 class GetKeyHook(BaseHook):
@@ -14,9 +19,17 @@ class GetKeyHook(BaseHook):
 
     hook_type: str = 'get'
     # fmt: off
-    path: Union[list, str] = Field(..., description="A list or string with a separator for the path to the value you want to update with strings for keys and ints for indexes in the list.")
+    path: Union[list, str] = Field(
+        ...,
+        description="A list or string with a separator for the path to the value you "
+                    "want to update with strings for keys and ints for indexes in the "
+                    "list."
+    )
     sep: str = Field('/', description="For string paths, a separator for key path.")
-    args: list = ['path']
+    fallback: Any = Field(
+        FALLBACK_VALUE, description="Fallback value if the keys is not found."
+    )
+    args: list = ['path', 'fallback']
     # fmt: on
 
     def exec(self):
@@ -35,6 +48,14 @@ class GetKeyHook(BaseHook):
                 break
 
         if value is None and self.verbose:
-            print(f"Could not find a key in {self.path} in any context.")
+            if self.verbose:
+                print(f"Could not find a key in {self.path} in any context.")
+            if self.fallback == FALLBACK_VALUE:
+                raise HookCallException(
+                    f"Could not find a key in {self.path} in any context.", context=self
+                )
+            if self.verbose:
+                print(f"Using fallback={self.fallback}.")
+            value = self.fallback
 
         return value

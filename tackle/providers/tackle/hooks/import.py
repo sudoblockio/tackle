@@ -4,8 +4,6 @@ from pydantic import BaseModel, Field
 
 from tackle.models import BaseHook
 from tackle.hooks import import_from_path
-
-# from tackle.imports import import_from_path
 from tackle.utils.vcs import get_repo_source
 
 
@@ -19,9 +17,9 @@ class RepoSource(BaseModel):
 class ImportHook(BaseHook):
     """
     Hook for importing external tackle-box providers. Does not actually execute the
-    base tackle in the provider but merely makes the hooks and functions available to
-    be used in the context. Takes any type as an argument to to build `src` and
-    `version` import targets.
+     base tackle in the provider but merely makes the hooks and functions available to
+     be used in the context. Takes any type as an argument to build `src` and
+     `version` import targets.
     """
 
     hook_type: str = 'import'
@@ -33,25 +31,15 @@ class ImportHook(BaseHook):
         if isinstance(self.src, str):
             # Get the provider path either local or remote.
             provider_path = self.get_dir_or_repo(self.src, self.version)
-            # self.provider_hooks.import_from_path(provider_path)
-
             import_from_path(self, provider_path)
-
-            # self.provider_hooks.import_from_path(provider_path)
 
         elif isinstance(self.src, list):
             for i in self.src:
                 if isinstance(i, str):
-                    # self.provider_hooks.import_from_path(self.get_dir_or_repo(i, None))
                     import_from_path(self, i)
                 if isinstance(i, dict):
                     # dict types validated above and transposed through same logic
                     repo_source = RepoSource(**i)
-                    # self.provider_hooks.import_from_path(
-                    #     provider_path=self.get_dir_or_repo(
-                    #         repo_source.src, repo_source.version
-                    #     ),
-                    # )
 
                     import_from_path(
                         self,
@@ -74,28 +62,3 @@ class ImportHook(BaseHook):
             return src
         else:
             return get_repo_source(src, version)
-
-
-#  WIP - Is relevant if building handler feature
-# """
-#     Compact string - This is used as a pre-execution handler
-#     ```
-#     __import: robcxyz/tackle-demo  # Defaults to default branch (ie main)
-#     ```
-#
-#     ```
-#     List of compact strings
-#     __import:
-#       - robcxyz/tackle-demo
-#       - robcxyz/tackle-react-app
-#     ```
-#
-#     List of dicts
-#     ```
-#     __import:
-#       - src: robcxyz/tackle-demo
-#         version: main
-#       - src: robcxyz/tackle-react-app
-#         version: main
-#     ```
-# """

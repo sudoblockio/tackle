@@ -1,4 +1,3 @@
-"""Tests dict input objects for `tackle.providers.tackle.hooks.tackle` module."""
 from tackle.main import tackle
 
 import pytest

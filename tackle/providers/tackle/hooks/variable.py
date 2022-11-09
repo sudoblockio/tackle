@@ -6,9 +6,10 @@ from tackle.render import render_variable
 
 
 class VarHook(BaseHook):
-    """Hook for rendering a variable based on an input. Only useful for rendering as
-    otherwise you wouldn't need this hook at all. Does recursion when the value being
-    rendered is still renderable - ie a template within a template.
+    """
+    Hook for rendering a variable based on an input. Only useful for rendering as
+     otherwise you wouldn't need this hook at all. Does recursion when the value being
+     rendered is still renderable - ie a template within a template.
     """
 
     hook_type: str = 'var'

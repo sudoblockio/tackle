@@ -1,4 +1,3 @@
-"""Command hook."""
 import sys
 import logging
 import subprocess
@@ -31,7 +30,7 @@ class CommandFailedException(Exception):
         self.message = message
 
 
-class ShellHook(BaseHook):
+class CommandHook(BaseHook):
     """Run system commands."""
 
     hook_type: str = 'command'
@@ -39,6 +38,12 @@ class ShellHook(BaseHook):
     command: str = Field(..., description="A shell command.")
     ignore_error: bool = Field(False, description="Ignore errors.")
     multiline: bool = Field(False, description="Don't automatically breakup lines")
+
+    system: bool = Field(
+        False,
+        description="Use python's os.system command instead of popen based stream "
+        "reader.",
+    )
 
     args: list = ['command']
 

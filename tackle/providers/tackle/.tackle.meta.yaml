@@ -102,7 +102,7 @@ hook_examples:
           ->: block
           items:
             stuff: other things
-            things->: print more things --if "{{ stuff == 'other things' }}"
+            things->: var stuff --if "{{ stuff == 'other things' }}"
       output: |
         stuff: things
         block hook:
@@ -110,15 +110,12 @@ hook_examples:
           things: more things
 
     - name: Short form
-      description: Because block hooks are so common, there is a re-write / short form of this hook.
+      description: Because block hooks are so common, there is a macro that allows calling the hook without an expanded or compact form with simply writine an arrow.
       content: |
-        stuff: things
-        block hook:
-          ->: block
-          merge: true  # This flags merges the output up
-          items:
-            stuff: other things
-            things->: print more things --if "{{ stuff == 'other things' }}"
+        block hook->:
+          merge: true  # This merges the output up one level
+          stuff: other things
+          things->: var stuff
       output: |
         stuff: other things
-        things: more things
+        things: other things

@@ -19,6 +19,10 @@ class SortHook(BaseHook):
         description="Either a list of strings or a dict with keys to sort and return "
                     "the output or a string key_path to sort both in place or as "
                     "output (see `in_place`).")
+    key: str = Field(
+        None,
+        description="If the `src` is a list of maps, the key to sort the contents by."
+    )
     in_place: bool = Field(
         True, description="If the `src` is a string (ie a key path), then sort the "
                           "item in place (ie replace original) and return None.")
@@ -42,9 +46,8 @@ class SortHook(BaseHook):
         if isinstance(src, list):
             if all(isinstance(n, dict) for n in src):
                 # Iterrand is a dict
-                raise NotImplementedError(
-                    "Sort items need to be non-dicts for now. " "Contribution needed."
-                )
+                return sorted(src, key=lambda d: d[self.key])
+
             if self.index is None:
                 return src.sort(reverse=self.reverse)
             else:
@@ -112,8 +115,8 @@ class SortHook(BaseHook):
 
             if self.in_place:
                 self.src = self.get_src()
-                self.sort(self.src)
-                return self.src
+                return self.sort(self.src)
+                # return self.src
             else:
                 src = self.get_src()
                 self.sort(src)

@@ -3,8 +3,8 @@ from typing import Optional
 from tackle import BaseHook, Field
 
 
-class ListKeyHook(BaseHook):
-    """Hook for getting a list of values from a list of maps."""
+class ListKeyValuesHook(BaseHook):
+    """Hook for getting a list of values from a list of maps based on a key."""
 
     hook_type: str = 'list_key_values'
     # fmt: off

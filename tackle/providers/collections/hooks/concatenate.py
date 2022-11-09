@@ -4,7 +4,7 @@ from tackle import BaseHook, Field
 
 
 class ConcatenateHook(BaseHook):
-    """Hook for getting a list of values from a list of maps."""
+    """Hook for concatenating a list of items."""
 
     hook_type: str = 'concat'
     # fmt: off

@@ -13,29 +13,42 @@ class TackleHook(BaseHook):
     # fmt: off
     input_string: str = Field(
         None,
-        description="The input can be one of repo, file path, directory with tackle.yaml, zip file, or if left blank parent tackle file.")
-    checkout: str = Field(None,
-                          description="The branch or version to checkout for repo type inputs_strings.")
-    latest: bool = Field(False,
-                         description="For remote providers, use the latest commit.")
+        description="The input can be one of repo, file path, directory with "
+                    "tackle.yaml, zip file, or if left blank parent tackle file."
+    )
+    checkout: str = Field(
+        None,
+        description="The branch or version to checkout for repo type inputs_strings."
+    )
+    latest: bool = Field(
+        False,
+        description="For remote providers, use the latest commit."
+    )
     context_file: str = Field(None, description="The file to run inside a repo input.")
     extra_context: dict = Field(
         None,
         description="Any additional context to use when calling the hook. Like existing context.")
-    context: dict = Field(None,
-                          description="A context to use that overrides the current context.")
+    context: dict = Field(
+        None,
+        description="A context to use that overrides the current context."
+    )
     password: SecretStr = Field(None, description="A password to use for repo inputs.")
-    directory: str = Field(None,
-                           description="The directory to run inside for repo inputs.")
+    directory: str = Field(
+        None,
+        description="The directory to run inside for repo inputs."
+    )
     find_in_parent: bool = Field(
-        False, description="Search for target in parent directory. Only relevant for "
-                           "local targets.")
+        False,
+        description="Search for target in parent directory. Only relevant for local "
+                    "targets.")
 
     override: dict = Field({}, description="A dictionary of keys to override.")
 
     additional_args: Union[list, str] = Field(
-        None, description="Arguments to pass on either directly as a string or as a "
-                          "list of strings.")
+        None,
+        description="Arguments to pass on either directly as a string or as a list of "
+                    "strings."
+    )
     # fmt: on
 
     args: list = ['input_string', 'additional_args']

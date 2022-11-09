@@ -8,6 +8,11 @@ def test_hook_sort_in_place(change_dir):
     assert output['sort_in_list'] == ['bar', 'baz', 'foo']
 
 
+def test_hook_sort_map_key(change_dir):
+    output = tackle('sort-map.yaml')
+    assert output['sort_a_map'][0]['foo'] == 'bar'
+
+
 def test_collections_hook_list_key(change_dir):
     output = tackle('list-keys.yaml')
     assert output['list_key_values'] == ['things', 'mo tings']

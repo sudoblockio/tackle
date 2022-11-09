@@ -1,9 +1,8 @@
-"""Meta hooks."""
 import pathlib
 import os
 import re
 import subprocess
-from collections import MutableMapping
+from collections.abc import MutableMapping
 
 from InquirerPy import prompt
 

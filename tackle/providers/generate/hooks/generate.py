@@ -30,8 +30,9 @@ class GenerateHook(BaseHook, smart_union=True):
                     "recursively render the contents.",
     )
     output: str = Field('.', description="Path to put the output file(s).")
-    copy_without_render: Union[str, list] = Field([],
-                                                  description="List of path to files to only copy and not render.")
+    copy_without_render: Union[str, list] = Field(
+        [], description="List of path to files to only copy and not render."
+    )
     overwrite_if_exists: bool = Field(
         False, description="Overwrite the output if exists."
     )
@@ -46,11 +47,17 @@ class GenerateHook(BaseHook, smart_union=True):
     )
     extra_context: Union[str, dict, List[dict]] = Field(
         None,
-        description="A map / list of maps to use as extra context when rendering. Lists inputs are merged together as lists themselves don't make sense.",
+        description="A map / list of maps to use as extra context when rendering. "
+                    "Lists inputs are merged together as lists themselves don't make "
+                    "sense.",
         render_by_default=True,
     )
-    file_system_loader: Union[str, list] = Field('.',
-                                                 description="List of paths or string path to directory with templates to load from. [Docs](https://jinja.palletsprojects.com/en/3.0.x/api/#jinja2.FileSystemLoader).")
+    file_system_loader: Union[str, list] = Field(
+        '.',
+        description="List of paths or string path to directory with templates to load "
+                    "from. [Docs](https://jinja.palletsprojects.com/en/3.0.x/api/#jinja2.FileSystemLoader)."  # noqa
+    )
+
     base_dir_: Path = None
     # env_: Any = None
     file_path_separator_: str = None  # / for mac / linux - \ for win
