@@ -1041,6 +1041,31 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list) -> Opt
         walk_sync(context, context.input_context.copy())
 
 
+def parse_tmp_context(context: Context, element: Any):
+    """
+    Parse an arbitrary element. Only used for declarative hook field defaults and in
+     the `run_hook` hook in the tackle provider.
+    """
+    tmp_context = Context(
+        public_hooks=context.public_hooks,
+        private_hooks=context.private_hooks,
+        public_context={},
+        private_context={},
+        temporary_context=context.temporary_context,
+        existing_context=context.existing_context,
+        input_context=element,
+        key_path=['->'],
+        key_path_block=['->'],
+        no_input=context.no_input,
+        calling_directory=context.calling_directory,
+        calling_file=context.calling_file,
+        verbose=context.verbose,
+    )
+    walk_sync(context=tmp_context, element=element)
+
+    return tmp_context.public_context
+
+
 def function_walk(
     self: Type[ModelMetaclass],
     input_element: Union[list, dict],
@@ -1067,8 +1092,14 @@ def function_walk(
         existing_context = {}
 
     for i in self.function_fields:
-        # Used in hook inheritance
-        existing_context.update({i: getattr(self, i)})
+        # Update a function's existing context with the already matched args
+        value = getattr(self, i)
+        if isinstance(value, dict) and '->' in value:
+            # For when the default has a hook in it
+            output = parse_tmp_context(context=self, element={i: value})
+            existing_context.update(output)
+        else:
+            existing_context.update({i: getattr(self, i)})
 
     tmp_context = Context(
         public_hooks=self.public_hooks,
@@ -1189,18 +1220,11 @@ def create_function_model(
                     v['description'] = v['description'].__repr__()
                 new_func[k] = (type_, Field(**v))
             elif 'default' in v:
-                # if '->' in v['default']:
-                #     # TODO: Won't work as it messes with context. Previously we have been
-                #     #  making a tmp context but that seems like a heavy weight approach
-                #     #  this process.
-                #     # x = walk_sync(context, {k: v['default']})
-                #     pass
-                # elif '_>' in v['default']:
-                #     pass
-                # else:
-                #     new_func[k] = (type(v['default']), Field(**v))
-
-                new_func[k] = (type(v['default']), Field(**v))
+                if '->' in v['default']:
+                    # For hooks in the default fields.
+                    new_func[k] = (Any, Field(**v))
+                else:
+                    new_func[k] = (type(v['default']), Field(**v))
             else:
                 raise exceptions.MalformedFunctionFieldException(
                     f"Function field {k} must have either a `type` or `default` field "
