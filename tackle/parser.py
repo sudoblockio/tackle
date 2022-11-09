@@ -1162,7 +1162,7 @@ def create_function_model(
 
     # Implement inheritance
     if 'extends' in func_dict and func_dict['extends'] is not None:
-        base_hook = get_public_or_private_hook(context, func_dict['extends'])
+        base_hook = get_hook(func_dict['extends'], context)
         func_dict = {**base_hook().function_dict, **func_dict}
         func_dict.pop('extends')
 
@@ -1349,6 +1349,9 @@ def extract_base_file(context: 'Context'):
             f"Tackle file found at {path} is empty.", context=context
         )
 
+    # Import the hooks and install requirements.txt if there is a ModuleNotFound error
+    import_from_path(context, context.input_dir, skip_on_error=False)
+
     if isinstance(context.input_context, list):
         # Change output to empty list
         context.public_context = []
@@ -1357,9 +1360,6 @@ def extract_base_file(context: 'Context'):
         extract_functions(context)
         context.public_context = {}
         context.private_context = {}
-
-    # Import the hooks and install requirements.txt if there is a ModuleNotFound error
-    import_from_path(context, context.input_dir, skip_on_error=False)
 
 
 def import_local_provider_source(context: 'Context', provider_dir: str):
