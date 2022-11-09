@@ -1220,7 +1220,7 @@ def create_function_model(
                     v['description'] = v['description'].__repr__()
                 new_func[k] = (type_, Field(**v))
             elif 'default' in v:
-                if '->' in v['default']:
+                if isinstance(v['default'], dict) and '->' in v['default']:
                     # For hooks in the default fields.
                     new_func[k] = (Any, Field(**v))
                 else:
