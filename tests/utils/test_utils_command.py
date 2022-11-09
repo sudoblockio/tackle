@@ -53,7 +53,7 @@ def test_utils_command_split_input_string(input_string, expected_output):
 
 
 TEMPLATES = [
-    # template, len_args, len_kwargs, len_flags
+    # # template, len_args, len_kwargs, len_flags
     ('foo bar baz', 3, 0, 0),
     ('foo --bar baz bing', 2, 1, 0),
     ('foo bar --baz foo', 2, 1, 0),
@@ -71,6 +71,17 @@ TEMPLATES = [
     ('"this --if" --if "expanded == \'that\'"', 1, 1, 0),
     ('var {{print("things")}}', 2, 0, 0),
     ('tackle secrets.yaml --if isfile(path_join([cwd,\'secrets.yaml\']))', 2, 1, 0),
+    # For inputs with `=` signs -> Need to modify insane regex (ugh)
+    # -> or move to peg parser
+    # ('foo --bar=baz bing', 2, 1, 0),
+    # ('foo bar --baz=foo', 2, 1, 0),
+    # ('foo bar --baz=foo --bing=baz', 2, 2, 0),
+    # ('foo --bar=baz', 1, 1, 0),
+    # ('foo --bar=baz --foo', 1, 1, 1),
+    # ('foo bar --foo=bar --bing --baz bling', 2, 2, 1),
+    # ('foo --bar=baz blah --bling', 2, 1, 1),
+    # ('foo --bar= baz blah --bling', 2, 1, 1),
+    # ('foo --bar = baz blah --bling', 2, 1, 1),
 ]
 
 

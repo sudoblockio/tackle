@@ -97,8 +97,6 @@ def test_parser_provider_hook_add_list(change_curdir_fixtures):
 
 
 @pytest.mark.parametrize("input_file", [None, "file.yaml"])
-# @pytest.mark.parametrize("input_file", ["file.yaml"])
-# @pytest.mark.parametrize("input_file", [None])
 def test_providers_local_hooks_dir(chdir_fixture, input_file):
     """
     Check that when you call from a child dir that you import the hooks from the dir
