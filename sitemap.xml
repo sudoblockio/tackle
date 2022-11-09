@@ -571,6 +571,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://robcxyz.github.io/tackle-box/providers/Tackle/run_hook/</loc>
+         <lastmod>2022-11-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://robcxyz.github.io/tackle-box/providers/Tackle/tackle/</loc>
          <lastmod>2022-11-09</lastmod>
          <changefreq>daily</changefreq>
