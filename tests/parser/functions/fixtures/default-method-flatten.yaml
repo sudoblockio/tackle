@@ -1,9 +1,0 @@
-
-
-compact<-:
-  foo: bar
-
-do->: compact.flatten
-
-# Expect: ansible --foo bar
-
