@@ -1,0 +1,10 @@
+do<-:
+  foo: bar
+  args: ['foo']
+
+expanded:
+  ->: run_hook do
+  hook_dict:
+    foo: baz
+
+compact->: run_hook do --foo baz
