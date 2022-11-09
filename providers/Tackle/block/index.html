@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://robcxyz.github.io/tackle-box/providers/Tackle/block/">
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.8">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.9">
     
     
       
@@ -24,7 +24,7 @@
       <link rel="stylesheet" href="../../../assets/stylesheets/main.20d9efc8.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.815d1a91.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.08040f6c.min.css">
         
       
       
@@ -130,6 +130,7 @@
         
           
           
+          
           <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
           
             <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
@@ -137,6 +138,7 @@
             </label>
           
         
+          
           
           
           <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
@@ -3202,7 +3204,7 @@
 <span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">block</span><span class="w"></span>
 <span class="w">  </span><span class="nt">items</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">stuff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">other things</span><span class="w"></span>
-<span class="w">    </span><span class="nt">things-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print more things --if &quot;{{ stuff == &#39;other things&#39; }}&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">things-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">var stuff --if &quot;{{ stuff == &#39;other things&#39; }}&quot;</span><span class="w"></span>
 </code></pre></div></p>
 <div class="highlight"><pre><span></span><code><span class="nt">stuff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">things</span><span class="w"></span>
 <span class="nt">block hook</span><span class="p">:</span><span class="w"></span>
@@ -3210,17 +3212,14 @@
 <span class="w">  </span><span class="nt">things</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">more things</span><span class="w"></span>
 </code></pre></div>
 <h3 id="short-form">Short form<a class="headerlink" href="#short-form" title="Permanent link">&para;</a></h3>
-<p>Because block hooks are so common, there is a re-write / short form of this hook.
-<div class="highlight"><pre><span></span><code><span class="nt">stuff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">things</span><span class="w"></span>
-<span class="nt">block hook</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">block</span><span class="w"></span>
-<span class="w">  </span><span class="nt">merge</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">  </span><span class="c1"># This flags merges the output up</span><span class="w"></span>
-<span class="w">  </span><span class="nt">items</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">stuff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">other things</span><span class="w"></span>
-<span class="w">    </span><span class="nt">things-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print more things --if &quot;{{ stuff == &#39;other things&#39; }}&quot;</span><span class="w"></span>
+<p>Because block hooks are so common, there is a macro that allows calling the hook without an expanded or compact form with simply writine an arrow.
+<div class="highlight"><pre><span></span><code><span class="nt">block hook-&gt;</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">merge</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">  </span><span class="c1"># This merges the output up one level</span><span class="w"></span>
+<span class="w">  </span><span class="nt">stuff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">other things</span><span class="w"></span>
+<span class="w">  </span><span class="nt">things-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">var stuff</span><span class="w"></span>
 </code></pre></div></p>
 <div class="highlight"><pre><span></span><code><span class="nt">stuff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">other things</span><span class="w"></span>
-<span class="nt">things</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">more things</span><span class="w"></span>
+<span class="nt">things</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">other things</span><span class="w"></span>
 </code></pre></div>
 
 
