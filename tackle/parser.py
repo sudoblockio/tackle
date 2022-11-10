@@ -1041,7 +1041,7 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list) -> Opt
         walk_sync(context, context.input_context.copy())
 
 
-def parse_tmp_context(context: Context, element: Any):
+def parse_tmp_context(context: Context, element: Any, existing_context: dict):
     """
     Parse an arbitrary element. Only used for declarative hook field defaults and in
      the `run_hook` hook in the tackle provider.
@@ -1052,7 +1052,7 @@ def parse_tmp_context(context: Context, element: Any):
         public_context={},
         private_context={},
         temporary_context=context.temporary_context,
-        existing_context=context.existing_context,
+        existing_context=existing_context,
         input_context=element,
         key_path=['->'],
         key_path_block=['->'],
@@ -1096,7 +1096,10 @@ def function_walk(
         value = getattr(self, i)
         if isinstance(value, dict) and '->' in value:
             # For when the default has a hook in it
-            output = parse_tmp_context(context=self, element={i: value})
+            context = parse_tmp_context(
+                context=self, element={i: value}, existing_context=existing_context
+            )
+            output = context
             existing_context.update(output)
         else:
             existing_context.update({i: getattr(self, i)})

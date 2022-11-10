@@ -51,3 +51,14 @@ def test_function_field_default_with_hooks_extends(chdir):
     assert output['call']['literal_compact'] == 'foo'
     assert output['call']['literal_expanded'] == 'foo'
     assert output['call']['field_default_compact'] == 'foo'
+
+
+def test_function_field_default_passed_context(chdir):
+    """
+    Check that when we have hooks with hooks in the default field that the context can
+     be passed between the hooks for rendering.
+    """
+    chdir('field-hooks-fixtures')
+    output = tackle('passed-context.yaml')
+
+    assert output['f']['foo'] == 'things'
