@@ -661,6 +661,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://robcxyz.github.io/tackle-box/providers/Yaml/yaml_in_place/</loc>
+         <lastmod>2022-11-10</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://robcxyz.github.io/tackle-box/providers/Yaml/yamldecode/</loc>
          <lastmod>2022-11-10</lastmod>
          <changefreq>daily</changefreq>
