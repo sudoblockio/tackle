@@ -10,7 +10,7 @@ remove_str:
     - _bar
 
 out:
-  ->: yaml
+  ->: yaml_in_place
   contents: "{{ remove_str.things }}"
   path: output.yaml
   remove: "^_"

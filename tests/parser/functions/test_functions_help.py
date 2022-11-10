@@ -11,8 +11,8 @@ def test_function_default_hook_no_context_help(change_curdir_fixtures, capsys):
         tackle('cli-default-hook-no-context.yaml', 'help')
     out, err = capsys.readouterr()
     assert "usage: tackle" in out
-    with capsys.disabled():
-        print(out)
+    # with capsys.disabled():
+    #     print(out)
 
 
 def test_function_default_hook_no_context_method_call_help(
@@ -23,8 +23,8 @@ def test_function_default_hook_no_context_method_call_help(
         tackle('cli-default-hook-no-context.yaml', 'do', 'help')
     out, err = capsys.readouterr()
     assert "usage: tackle" in out
-    with capsys.disabled():
-        print(out)
+    # with capsys.disabled():
+    #     print(out)
 
 
 def test_function_cli_hook_arg_help(change_curdir_fixtures, capsys):
@@ -33,8 +33,8 @@ def test_function_cli_hook_arg_help(change_curdir_fixtures, capsys):
         tackle('cli-hook-no-context.yaml', 'run', 'help')
     out, err = capsys.readouterr()
     assert "usage: tackle" in out
-    with capsys.disabled():
-        print(out)
+    # with capsys.disabled():
+    #     print(out)
 
 
 def test_function_cli_hook_arg_help_no_arg(change_curdir_fixtures, capsys):
@@ -43,8 +43,9 @@ def test_function_cli_hook_arg_help_no_arg(change_curdir_fixtures, capsys):
         tackle('cli-hook-no-context.yaml', 'help')
     out, err = capsys.readouterr()
     assert "usage: tackle" in out
-    with capsys.disabled():
-        print(out)
+    assert 'foo' not in out  # Taken out with `visible:False` field
+    # with capsys.disabled():
+    #     print(out)
 
 
 def test_function_cli_no_default_hook(change_curdir_fixtures, capsys):
@@ -53,8 +54,8 @@ def test_function_cli_no_default_hook(change_curdir_fixtures, capsys):
         tackle('cli-no-default-hook.yaml', 'help')
     out, err = capsys.readouterr()
     assert "usage: tackle" in out
-    with capsys.disabled():
-        print(out)
+    # with capsys.disabled():
+    #     print(out)
 
 
 def test_function_cli_tackle_help_no_arg(chdir):

@@ -9,7 +9,7 @@ things:
   - bar_
 
 out:
-  ->: yaml
+  ->: yaml_in_place
   contents: "{{ things }}"
   path: output.yaml
   remove:

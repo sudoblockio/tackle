@@ -7,7 +7,7 @@ stuff:
     dog: penny
 
 include:
-  ->: yaml
+  ->: yaml_in_place
   path: output.yaml
   contents: "{{ stuff }}"
   update:

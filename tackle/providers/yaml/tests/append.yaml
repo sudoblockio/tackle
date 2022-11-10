@@ -23,7 +23,7 @@ stuff:
     - cats
 
 append_dict:
-  ->: yaml
+  ->: yaml_in_place
   path: output-dict.yaml
   contents: "{{ stuff }}"
   append_items: "{{ foo }}"

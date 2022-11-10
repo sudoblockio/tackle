@@ -3,7 +3,7 @@ a_map:
   foo: bar
 
 things:
-  ->: yaml
+  ->: yaml_in_place
   path: before.yaml
   contents: "{{ a_map }}"
   filter:

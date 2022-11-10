@@ -1,5 +1,5 @@
 write:
-  ->: yaml
+  ->: yaml_in_place
   path: output_merge_in_place.yaml
   contents:
 #    foo: bar
@@ -17,7 +17,8 @@ a_list:
   - stage
 
 merge:
-  ->: yaml
+  ->: yaml_in_place
+#  ->: var
   for: a_list
   path: output_merge_in_place.yaml
   in_place: true
