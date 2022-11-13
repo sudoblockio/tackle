@@ -17,5 +17,5 @@ class RunHookHook(BaseHook):
     def exec(self) -> Any:
         element = {'tmp': {self.key_path[-1]: self.hook_name, **self.hook_dict}}
 
-        output = parse_tmp_context(self, element)
+        output = parse_tmp_context(self, element, existing_context=self.public_context)
         return output['tmp']
