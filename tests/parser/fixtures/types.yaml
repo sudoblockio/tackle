@@ -1,7 +1,10 @@
 
 
 
-int->: literal 1
-#float->: literal 1.0
 bool->: literal true
+int->: literal 1
+float->: literal 1.0
+
+# Needed special logic to not be converted to int
+hex->: literal 0x01
 

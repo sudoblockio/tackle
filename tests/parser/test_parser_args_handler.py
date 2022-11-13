@@ -34,7 +34,11 @@ def test_unpack_args_kwargs_handle_leading_brackets(
 
 def test_parser_types(change_curdir_fixtures):
     output = tackle('types.yaml')
+    assert output['hex'] == '0x01'
+    assert output['float'] == 1.0
+    assert output['bool']
+
     assert isinstance(output['int'], int)
-    # TODO:
-    # assert isinstance(output['float'], float)
-    # assert isinstance(output['bool'], bool)
+    assert isinstance(output['float'], float)
+    assert isinstance(output['hex'], str)
+    assert isinstance(output['bool'], bool)

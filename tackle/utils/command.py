@@ -20,34 +20,44 @@ def split_input_string(input_string: str) -> list:
     interpreted as literal.
     """
     # Inspired from https://stackoverflow.com/a/524796/12642712
-    # input_list = [p for p in re.split("( |(?<!\{|\[)\\\"(?!\,|\:).*?\\\"(?!\}|\])|'.*?')", input_string) if p.strip()]
-
-    # Split on whitespace
+    # Split on whitespace or `=`
     # When quotes are preceded by `,:{[(=`, ignore
     # Don't split between quotes with `,:]})`
     # Otherwise split on quotes
     # Repeated for single quotes
     input_list = [
-        p
-        for p in re.split(
+        i
+        for i in re.split(
             "( |(?<!,|\:|\(|\{|\[|=)\\\"(?!\,|\:|\)|\}|\]).*?\\\"(?!\}|\])|(?<!\,|\:|\(|\{|\[|=)'(?!,|\:|\)|\}|\]).*?'(?!\}|\]))",  # noqa
             input_string,
         )
-        if p.strip()
+        if i.strip()
     ]
+
+    # Remove the '=' that are split out into their own item
+    input_list = [i for i in input_list if i != '=']
 
     output = []
     for i in input_list:
-        try:
-            output.append(ast.literal_eval(i))
-        except (ValueError, SyntaxError):
+        if isinstance(i, str) and i.startswith('0x'):
+            # Prevent hex from being coerced to int type
             output.append(i)
+        else:
+            try:
+                output.append(ast.literal_eval(i))
+            except (ValueError, SyntaxError):
+                # Fix ast.literal_eval coercing bools to strings
+                if i == 'true':
+                    output.append(True)
+                elif i == 'false':
+                    output.append(False)
+                else:
+                    output.append(i)
     return output
 
 
 def unpack_args_kwargs_string(input_string: str) -> (list, dict, list):
     """Split up based on whitespace input args and pass to unpack_args_kwargs_list."""
-    # input_list = shlex.split(input_string)
     input_list = split_input_string(input_string)
     return unpack_args_kwargs_list(input_list)
 
