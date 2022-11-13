@@ -556,6 +556,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://robcxyz.github.io/tackle-box/providers/Tackle/flatten/</loc>
+         <lastmod>2022-11-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://robcxyz.github.io/tackle-box/providers/Tackle/import/</loc>
          <lastmod>2022-11-13</lastmod>
          <changefreq>daily</changefreq>
