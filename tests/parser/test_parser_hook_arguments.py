@@ -51,27 +51,3 @@ def test_parser_render_hook_input(change_curdir_fixtures):
     for k, v in output.items():
         if k.startswith('stuff'):
             assert v == 'things'
-
-
-# TODO: When help is done
-# @pytest.mark.parametrize("input_string", ['do_stuff', 'tackle.yaml do_stuff'])
-# def test_parser_call_key_on_args(chdir_fixture, input_string):
-#     """Validate that when an additional argument is supplied that the key is called."""
-#     chdir_fixture('help')
-#     output = tackle(input_string)
-#     assert output['do_stuff'] == 'Doing things...'
-#     assert output['do_things'] != 'Doing stuff...'
-
-
-# @pytest.mark.parametrize(
-#     "input_string",
-#     [
-#         # 'do_stuff',
-#         # 'file.yaml do_stuff do_things'
-#         'file.yaml do_stuff_compact do_things and other things'
-#         # 'file.yaml do_stuff_compact_block print_this and print all this to'
-#     ],
-# )
-# def test_parser_call_key_on_args_cli(chdir_fixture, input_string):
-#     chdir_fixture('help')
-#     main(input_string.split())

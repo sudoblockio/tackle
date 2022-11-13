@@ -2,6 +2,15 @@ import os
 import platform
 import csv
 from typing import TYPE_CHECKING
+from xdg import (
+    xdg_cache_home,
+    xdg_config_dirs,
+    xdg_config_home,
+    xdg_data_dirs,
+    xdg_data_home,
+    xdg_runtime_dir,
+    xdg_state_home,
+)
 
 from tackle.settings import settings
 
@@ -115,6 +124,34 @@ def _key_path_block(context: 'Context'):
     return context.key_path_block
 
 
+def _xdg_cache_home():
+    return xdg_cache_home()
+
+
+def _xdg_config_dirs():
+    return xdg_config_dirs()
+
+
+def _xdg_config_home():
+    return xdg_config_home()
+
+
+def _xdg_data_dirs():
+    return xdg_data_dirs()
+
+
+def _xdg_data_home():
+    return xdg_data_home()
+
+
+def _xdg_runtime_dir():
+    return xdg_runtime_dir()
+
+
+def _xdg_state_home():
+    return xdg_state_home()
+
+
 special_variables = {
     'cwd': _cwd,
     'home_dir': _home_dir,
@@ -137,4 +174,11 @@ special_variables = {
     'temporary_context': _temporary_context,
     'key_path': _key_path,
     'key_path_block': _key_path_block,
+    'xdg_cache_home': _xdg_cache_home,
+    'xdg_config_dirs': _xdg_config_dirs,
+    'xdg_config_home': _xdg_config_home,
+    'xdg_data_dirs': _xdg_data_dirs,
+    'xdg_data_home': _xdg_data_home,
+    'xdg_runtime_dir': _xdg_runtime_dir,
+    'xdg_state_home': _xdg_state_home,
 }
