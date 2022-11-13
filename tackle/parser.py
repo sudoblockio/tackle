@@ -233,7 +233,7 @@ def merge_block_output(
             pass
         raise exceptions.AppendMergeException(
             "Can't merge from for loop.", context=context
-        )
+        ) from None
 
     # 66 - Should qualify dict here
     target_context, key_path = get_target_and_key(context)
@@ -257,7 +257,7 @@ def merge_output(
     if append_hook_value:
         raise exceptions.AppendMergeException(
             "Can't merge from for loop.", context=context
-        )
+        ) from None
 
     if context.key_path[-1] in ('->', '_>'):
         # Expanded key - Remove parent key from key path
@@ -276,7 +276,7 @@ def merge_output(
         else:
             raise exceptions.TopLevelMergeException(
                 "Can't merge non maps into top level keys.", context=context
-            )
+            ) from None
     else:
         if isinstance(hook_output_value, dict):
             for k, v in hook_output_value.items():
@@ -297,7 +297,7 @@ def run_hook_in_dir(hook: Type[BaseHook]) -> Any:
             raise exceptions.HookUnknownChdirException(
                 f"The specified path='{path}' to change to was not found.",
                 hook=hook,
-            )
+            ) from None
     else:
         return hook.exec()
 
@@ -328,7 +328,7 @@ def render_hook_vars(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
                 f"Key={key} not in hook={hook_dict['hook_type']}. Possible values are "
                 f"{', '.join(possible_fields)}",
                 context=context,
-            )
+            ) from None
 
         if key in Hook.Config.alias_to_fields:
             # Skip any keys used in logic as these are evaluated / rendered separately
@@ -569,7 +569,7 @@ def evaluate_args(
                         f"Can't specify multiple arguments for map argument "
                         f"{Hook.__fields__[hook_args[i]]}.",
                         context=context,
-                    )
+                    ) from None
                 value = args[i]
             hook_dict[hook_args[i]] = value
             args.pop(0)
@@ -581,17 +581,20 @@ def evaluate_args(
             except IndexError:
                 if len(hook_args) == 0:
                     # TODO: Give more info on possible methods
+                    hook_name = Hook.identifier.split('.')[-1]
+                    if hook_name == '':
+                        hook_name = 'default'
                     raise exceptions.UnknownArgumentException(
-                        f"The hook {Hook.identifier.split('.')[-1]} does not take any "
+                        f"The {hook_name} hook does not take any "
                         f"arguments. Hook argument {v} caused an error.",
                         context=context,
-                    )
+                    ) from None
                 else:
                     raise exceptions.UnknownArgumentException(
                         f"The hook {hook_dict['hook_type']} takes the following indexed"
                         f"arguments -> {hook_args} which does not map to the arg {v}.",
                         context=context,
-                    )
+                    ) from None
 
 
 def run_hook(context: 'Context'):
@@ -635,7 +638,7 @@ def run_hook(context: 'Context'):
         except KeyError as e:
             raise exceptions.UnknownHookTypeException(
                 f"Key: {e} - Unknown", context=context
-            )
+            ) from None
         # Need to replace arrow keys as for the time being (pydantic 1.8.2) - multiple
         # aliases for the same field (type) can't be specified so doing this hack
         if '->' in hook_dict:
@@ -678,13 +681,17 @@ def run_hook(context: 'Context'):
                     "The parameter `kwargs` should be either a map or a string "
                     "reference to a map."
                 )
-                raise exceptions.UnknownArgumentException(error_msg, context=context)
+                raise exceptions.UnknownArgumentException(
+                    error_msg, context=context
+                ) from None
         else:
             error_msg = (
                 "The parameter `kwargs` should be either a map or a string reference "
                 "to a map."
             )
-            raise exceptions.UnknownArgumentException(error_msg, context=context)
+            raise exceptions.UnknownArgumentException(
+                error_msg, context=context
+            ) from None
 
     # Cleanup any unquoted fields -> common mistake that is hard to debug producing a
     #  nested dict that breaks parsing / hook calls. Ex foo: {{bar}} -> foo: "{{bar}}"
@@ -766,7 +773,7 @@ def walk_sync(context: 'Context', element):
                 if 'items' not in value:
                     raise exceptions.EmptyBlockException(
                         "Empty block hook.", context=context
-                    )
+                    ) from None
 
                 walk_sync(context, value)
                 context.key_path.pop()
@@ -849,7 +856,7 @@ def find_run_hook_method(
             f"The args {unknown_args} not recognized when running the hook/method "
             f"{hook_name}. Exiting.",
             context=context,
-        )
+        ) from None
 
     arg_dict = {}
     num_popped = 0
@@ -884,7 +891,7 @@ def find_run_hook_method(
         else:
             raise exceptions.UnknownInputArgumentException(
                 "Can't find the ", context=context
-            )
+            ) from None
 
     return hook(**kwargs, **arg_dict).exec()
 
@@ -915,13 +922,13 @@ def raise_if_args_exist(
                 f"Run the same command without the arg/kwarg/flag + \"help\" to see the "
                 f"available args/kwargs/flags.",
                 context=context,
-            )
+            ) from None
         else:
             raise exceptions.UnknownSourceException(
                 f"Could not find source = {args[0]} or as key / hook in parent tackle "
                 f"file.",
                 context=context,
-            )
+            ) from None
 
 
 def run_source(context: 'Context', args: list, kwargs: dict, flags: list) -> Optional:
@@ -957,7 +964,12 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list) -> Opt
         )
         # Run the default hook as there are no args. The outer context is then parsed
         #  as otherwise it would be unreachable.
-        default_hook_output = context.default_hook().exec()
+        try:
+            default_hook_output = context.default_hook().exec()
+        except ValidationError as e:
+            raise exceptions.UnknownInputArgumentException(
+                e.__str__(), context=context
+            ) from None
         # Return the output of the default hook
         # TODO: Determine what the meaning of a primitive type return means with some
         #  kind of outer context -> Should error (and be caught) if there is a conflict
@@ -1037,7 +1049,7 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list) -> Opt
                 f" provide an argument such as [] or run `tackle {context.input_string}"
                 f" help` to see more options.",
                 context=context,
-            )
+            ) from None
     else:
         walk_sync(context, context.input_context.copy())
 
@@ -1126,14 +1138,14 @@ def function_walk(
                 raise exceptions.FunctionCallException(
                     f"Return value '{return_}' is not found " f"in output.",
                     function=self,
-                )
+                ) from None
         elif isinstance(return_, list):
             if isinstance(tmp_context, list):
                 # TODO: This is not implemented (ie list outputs)
                 raise exceptions.FunctionCallException(
                     f"Can't have list return {return_} for " f"list output.",
                     function=self,
-                )
+                ) from None
             output = {}
             for i in return_:
                 # Can only return top level keys right now
@@ -1143,7 +1155,7 @@ def function_walk(
                     raise exceptions.FunctionCallException(
                         f"Return value '{i}' in return {return_} not found in output.",
                         function=self,
-                    )
+                    ) from None
             return tmp_context.public_context[return_]
         else:
             raise NotImplementedError(f"Return must be of list or string {return_}.")
@@ -1218,7 +1230,7 @@ def create_function_model(
                         f"Function field {k} with type={v} unknown. Must be one of {','.join(literals)}",
                         function_name=func_name,
                         context=context,
-                    )
+                    ) from None
                 if 'description' in v:
                     v = dict(v)
                     v['description'] = v['description'].__repr__()
@@ -1235,7 +1247,7 @@ def create_function_model(
                     f"where the type can be inferred.",
                     function_name=func_name,
                     context=context,
-                )
+                ) from None
         elif v in literals:
             new_func[k] = (locate(v).__name__, Field(...))
         elif isinstance(v, (str, int, float, bool)):
@@ -1351,7 +1363,7 @@ def extract_base_file(context: 'Context'):
     if context.input_context is None:
         raise exceptions.EmptyTackleFileException(
             f"Tackle file found at {path} is empty.", context=context
-        )
+        ) from None
 
     # Import the hooks and install requirements.txt if there is a ModuleNotFound error
     import_from_path(context, context.input_dir, skip_on_error=False)
@@ -1435,7 +1447,7 @@ def update_source(context: 'Context'):
         if tackle_file is None:
             raise exceptions.UnknownSourceException(
                 f"Could not find source = {first_arg}", context=context
-            )
+            ) from None
 
         context.input_file = os.path.basename(tackle_file)
         context.input_dir = Path(tackle_file).parent.absolute()

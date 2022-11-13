@@ -32,3 +32,15 @@ def test_parser_functions_raises_unknown_kwarg_hook(change_curdir_fixtures):
 def test_parser_functions_raises_unknown_flags_hook(change_curdir_fixtures):
     with pytest.raises(exceptions.UnknownInputArgumentException):
         tackle("cli-hook-no-context.yaml", 'run', global_flags=['NOT_HERE'])
+
+
+def test_parser_functions_raises_hook_kwarg_missing(chdir):
+    chdir('exceptions')
+    with pytest.raises(exceptions.UnknownInputArgumentException):
+        tackle("hook-kwarg-missing.yaml", 'foo', baz='bang')
+
+
+def test_parser_functions_raises_hook_kwarg_missing_default(chdir):
+    chdir('exceptions')
+    with pytest.raises(exceptions.UnknownInputArgumentException):
+        tackle("hook-kwarg-missing-default.yaml", baz='bang')
