@@ -1,5 +1,38 @@
 # Changelog
 
+## [0.4.0](https://github.com/robcxyz/tackle-box/compare/v0.3.0...v0.4.0) (2022-11-13)
+
+
+### Features
+
+* add ability to call hooks from declarative hook field defaults ([8e6d503](https://github.com/robcxyz/tackle-box/commit/8e6d5034a2854dcc9938de5cc849970794aa4bbe))
+* add ability to print output in yaml/toml/json from CLI ([417526d](https://github.com/robcxyz/tackle-box/commit/417526d2b3f50f4d0c23d6e7b701f99e26671327))
+* add help screen for running tackle files ([b054d2b](https://github.com/robcxyz/tackle-box/commit/b054d2bba85cc43574b7eac107bc4471fb2be9d9))
+* add hook_dirs field so that tests can import hooks from another directory ([c0b16b2](https://github.com/robcxyz/tackle-box/commit/c0b16b267052295701e52c4874a962cbac3ba7ca))
+* allow hooks args and kwargs to be supplied as a param ([a62b4db](https://github.com/robcxyz/tackle-box/commit/a62b4db9cf0d9ed4198a170d0f4e49be520b6bfa))
+* segregate hooks into public and private with ability to call them externally by supplying args/kwargs/flags via CLI ([2395f91](https://github.com/robcxyz/tackle-box/commit/2395f915eb463fded962461f348cdf940a5b4417))
+
+
+### Bug Fixes
+
+* add  in JinjaHook to avoid  error [#90](https://github.com/robcxyz/tackle-box/issues/90) ([ee3b036](https://github.com/robcxyz/tackle-box/commit/ee3b0366393b960f150bd019378f0a4295e5164a))
+* install requirements.txt install when there is a ModuleNotFound error on importing a provider's hook ([047f542](https://github.com/robcxyz/tackle-box/commit/047f542d4cfcbbbe6274bfca39099f676e5a8b47))
+
+
+### Refactors
+
+* field hook tests ([a2eff54](https://github.com/robcxyz/tackle-box/commit/a2eff54dc79f666454021086db5fda80f03f8a8d))
+
+
+### Provider Changes
+
+* add  hook ([ad5b86b](https://github.com/robcxyz/tackle-box/commit/ad5b86b3374edf72ccfb71f611bec6372d458167))
+* add  hook in tackle provider ([40cf028](https://github.com/robcxyz/tackle-box/commit/40cf028fbf8da8affe8b55cf1e56f7c460581271))
+* add ability to run tackle hook with args that map to default hooks args ([d1c72d2](https://github.com/robcxyz/tackle-box/commit/d1c72d23674734267ee7dfdeaea76afde8092549))
+* add skip_overwrite_files and skip_overwrite_files to generate hook ([95f31b0](https://github.com/robcxyz/tackle-box/commit/95f31b04be8bd07821650d704306241ed8724715))
+* add update section hook ([9fac6fb](https://github.com/robcxyz/tackle-box/commit/9fac6fb45425b752232c78762159e487e3029bc6))
+* add wip  hook for calling arbitrary CLIs ([2a15c82](https://github.com/robcxyz/tackle-box/commit/2a15c826316d9268a12b51404606b1d9ebcc8141))
+
 ## [0.3.0](https://github.com/robcxyz/tackle-box/compare/0.3.0-beta.5...v0.3.0) (2022-08-28)
 
 
