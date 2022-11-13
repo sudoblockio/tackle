@@ -148,6 +148,10 @@ def import_hook_from_path(
 
         # Import declarative hooks
         file_contents = read_config_file(file_path)
+        if file_contents is None:
+            if context.verbose:
+                print(f"Skipping importing {file_path} as the context is empty.")
+            return
         for k, v in file_contents.items():
             if re.match(r'^[a-zA-Z0-9\_]*(<\-)$', k):
                 hook_type = k[:-2]

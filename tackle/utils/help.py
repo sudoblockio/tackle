@@ -6,6 +6,7 @@ from typing import Any, List
 
 from tackle import exceptions
 from tackle.models import Context
+from tackle.hooks import LazyBaseFunction
 
 HELP_TEMPLATE = """usage: tackle {{input_string}} {% for i in general_kwargs %}{{i}} {% endfor %}
 {% if general_help %}
@@ -133,11 +134,18 @@ def get_methods_on_default_hook(context: 'Context') -> List[dict]:
     methods = []
 
     for k, v in context.public_hooks.items():
-        method_help = (
-            v.__fields__['function_dict'].default['help']
-            if 'help' in v.__fields__['function_dict'].default
-            else ''
-        )
+        # Handle hooks that could be in the `hooks` dir and will not be instantiated
+        if isinstance(v, LazyBaseFunction):
+            method_help = ''
+            if 'help' in v.function_dict:
+                method_help = v.function_dict['help']
+        else:
+            # Normal hook which has been instantiated
+            method_help = (
+                v.__fields__['function_dict'].default['help']
+                if 'help' in v.__fields__['function_dict'].default
+                else ''
+            )
 
         methods.append(
             HelpInput(
