@@ -2,6 +2,7 @@
 from typing import Any
 
 from tackle.models import BaseHook, Field
+from tackle import exceptions
 
 
 class AssertHook(BaseHook):
@@ -27,8 +28,13 @@ class AssertHook(BaseHook):
                 except AssertionError:
                     return False
             else:
-                assert self.input
-                return True
+                try:
+                    assert self.input
+                    return True
+                except AssertionError:
+                    raise exceptions.HookCallException(
+                        f"Error asserting {self.input}=={self.value}", context=self
+                    ) from None
         else:
             if not self.exit_on_failure:
                 try:
@@ -37,5 +43,10 @@ class AssertHook(BaseHook):
                 except AssertionError:
                     return False
             else:
-                assert self.input == self.value
-                return True
+                try:
+                    assert self.input == self.value
+                    return True
+                except AssertionError:
+                    raise exceptions.HookCallException(
+                        f"Error asserting {self.input}=={self.value}", context=self
+                    ) from None
