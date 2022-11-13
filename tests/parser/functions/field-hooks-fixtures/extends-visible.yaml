@@ -1,0 +1,32 @@
+
+base_1<_:
+  state:
+    default->: literal foo
+    visible: false
+  chain:
+    type: str
+    default->: literal foo
+    description: The chain to operate on (ie icon, eth, etc)
+  network:
+    type: str
+    default->: literal foo
+    description: The chain's network to operate on (ie mainnet, berlin, etc)
+  # Vars
+  network_info:
+    default->: literal foo
+    visible: false
+  network_state:
+    default->: literal foo
+    visible: false
+
+base_contract<_:
+  extends: base_1
+  contract:
+    type: str
+    default->: literal foo
+    description: The contract to run (ie bts, bmc, etc)
+
+foo<-:
+  extends: base_contract
+
+#f->: foo

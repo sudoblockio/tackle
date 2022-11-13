@@ -15,16 +15,14 @@ def test_function_default_hook_no_context_help(change_curdir_fixtures, capsys):
     #     print(out)
 
 
-def test_function_default_hook_no_context_method_call_help(
-    change_curdir_fixtures, capsys
-):
-    """Validate that we can run a default hook's method help."""
+def test_function_default_hook_no_context_method_call_help(chdir, capsys):
+    """Validate that we can run a hook method's help with visible field."""
+    chdir('field-hooks-fixtures')
     with pytest.raises(SystemExit):
-        tackle('cli-default-hook-no-context.yaml', 'do', 'help')
+        tackle('extends-visible.yaml', 'foo', 'help')
     out, err = capsys.readouterr()
     assert "usage: tackle" in out
-    # with capsys.disabled():
-    #     print(out)
+    assert "network_info" not in out
 
 
 def test_function_cli_hook_arg_help(change_curdir_fixtures, capsys):
@@ -56,6 +54,24 @@ def test_function_cli_no_default_hook(change_curdir_fixtures, capsys):
     assert "usage: tackle" in out
     # with capsys.disabled():
     #     print(out)
+
+
+def test_function_cli_default_hook_embedded(change_curdir_fixtures, capsys):
+    """Check when getting help with a method that it works."""
+    with pytest.raises(SystemExit):
+        tackle('cli-default-hook-embedded.yaml', 'run', 'do', 'help')
+    out, err = capsys.readouterr()
+    assert "usage: tackle" in out
+    # with capsys.disabled():
+    #     print(out)
+
+
+# def test_function_extends_visible(change_curdir_fixtures, capsys):
+#     """Check when there is no default hook we only display the available methods."""
+#     with pytest.raises(SystemExit):
+#         tackle('cli-no-default-hook.yaml', 'help')
+#     out, err = capsys.readouterr()
+#     assert "usage: tackle" in out
 
 
 def test_function_cli_tackle_help_no_arg(chdir):

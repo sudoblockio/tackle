@@ -44,6 +44,16 @@ def unpack_hook(
     for i in hook.__fields__['function_fields'].default.copy():
         # Consume the arg as what is left will be a method which will deal with later
         hook_field = hook.__fields__['function_dict'].default.pop(i)
+
+        # Skip fields that have a `visible=False` field
+        if isinstance(hook_field, ModelField):
+            # Methods fields are of type ModelField
+            # TODO: Determine this logic
+            pass
+        else:
+            if 'visible' in hook_field and not hook_field['visible']:
+                continue
+
         # Serialize help input
         if isinstance(hook_field, str):
             help_arg = HelpInput(

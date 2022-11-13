@@ -389,7 +389,7 @@ def parse_sub_context(
     ]
 
     if isinstance(indexed_key_path[-1], bytes):
-        # We are in a for loop so we need
+        # We are in a for loop
         input_dict = nested_get(
             element=context.input_context,
             keys=indexed_key_path[:-3],
@@ -398,6 +398,7 @@ def parse_sub_context(
             hook_dict[target] if i == decode_list_index(context.key_path[-1]) else None
             for i in range(decode_list_index(context.key_path[-1]) + 1)
         ]
+        # TODO: Figure out wtf is going on here...
         input_dict[indexed_key_path[-3]] = updated_item
         walk_sync(
             context,
