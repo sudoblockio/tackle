@@ -1,10 +1,13 @@
 
-
-
 bool->: literal true
 int->: literal 1
 float->: literal 1.0
 
+# Check same logic in the renderer
+bool_render->: {{bool}}
+int_render->: {{int}}
+float_render->: {{float}}
+
 # Needed special logic to not be converted to int
 hex->: literal 0x01
-
+hex_render->: {{hex}}

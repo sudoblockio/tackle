@@ -14,6 +14,27 @@ def strip_dashes(raw_arg: str) -> str:
     return raw_arg
 
 
+def literal_eval(input):
+    """
+    Wrapper for ast.literal eval that accounts for hex and bools which it normally
+     coerces to int/string respectively.
+    """
+    if isinstance(input, str) and input.startswith('0x'):
+        # Prevent hex from being coerced to int type
+        return input
+    else:
+        try:
+            return ast.literal_eval(input)
+        except (ValueError, SyntaxError):
+            # Fix ast.literal_eval coercing bools to strings
+            if input == 'true':
+                return True
+            elif input == 'false':
+                return False
+            else:
+                return input
+
+
 def split_input_string(input_string: str) -> list:
     """
     Split first on whitespace then regex each item to qualify if it needs to be
@@ -39,20 +60,7 @@ def split_input_string(input_string: str) -> list:
 
     output = []
     for i in input_list:
-        if isinstance(i, str) and i.startswith('0x'):
-            # Prevent hex from being coerced to int type
-            output.append(i)
-        else:
-            try:
-                output.append(ast.literal_eval(i))
-            except (ValueError, SyntaxError):
-                # Fix ast.literal_eval coercing bools to strings
-                if i == 'true':
-                    output.append(True)
-                elif i == 'false':
-                    output.append(False)
-                else:
-                    output.append(i)
+        output.append(literal_eval(i))
     return output
 
 

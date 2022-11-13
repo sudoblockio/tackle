@@ -1,5 +1,4 @@
 import re
-import ast
 from jinja2 import meta
 from jinja2.exceptions import UndefinedError, TemplateSyntaxError
 from inspect import signature
@@ -15,7 +14,7 @@ from tackle.exceptions import (
     MalformedTemplateVariableException,
 )
 from tackle.utils.imports import get_public_or_private_hook
-
+from tackle.utils.command import literal_eval
 
 if TYPE_CHECKING:
     from tackle.models import Context, JinjaHook
@@ -234,8 +233,5 @@ def render_string(context: 'Context', raw: str):
         # Raised when the wrong type is provided to a hook
         raise MissingTemplateArgsException(str(e), context=context) from None
 
-    try:
-        # This will error on strings
-        return ast.literal_eval(rendered_template)
-    except (ValueError, SyntaxError):
-        return rendered_template
+    # Return the literal type with a few exception handlers
+    return literal_eval(rendered_template)
