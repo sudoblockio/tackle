@@ -1109,11 +1109,11 @@ def function_walk(
         value = getattr(self, i)
         if isinstance(value, dict) and '->' in value:
             # For when the default has a hook in it
-            context = parse_tmp_context(
+            output = parse_tmp_context(
                 context=self, element={i: value}, existing_context=existing_context
             )
-            output = context
             existing_context.update(output)
+            input_element[i] = output[i]
         else:
             existing_context.update({i: getattr(self, i)})
 
