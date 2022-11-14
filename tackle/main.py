@@ -4,8 +4,8 @@ from typing import Union
 from tackle.models import Context
 from tackle.parser import update_source
 from tackle.utils.paths import find_nearest_tackle_file
-from tackle.exceptions import NoInputOrParentTackleException
 from tackle.utils.files import read_config_file
+from tackle import exceptions
 
 
 def get_global_kwargs(kwargs):
@@ -52,7 +52,9 @@ def tackle(
 
     # Handle the exception if no tackle file is found in parent directory
     if kwargs['input_string'] is None:
-        raise NoInputOrParentTackleException("No input or tackle file has been given.")
+        raise exceptions.NoInputOrParentTackleException(
+            "No input or tackle file has been given."
+        ) from None
 
     # Initialize context
     context = Context(**kwargs)
@@ -64,15 +66,22 @@ def tackle(
 
     if 'override' in kwargs and kwargs['override'] is not None:
         overrides = kwargs.pop('override')
-        if os.path.exists(overrides):
-            override_dict = read_config_file(overrides)
-            if override_dict is not None:
-                context.global_kwargs.update(override_dict)
+        if isinstance(overrides, str):
+            if os.path.exists(overrides):
+                override_dict = read_config_file(overrides)
+                if override_dict is not None:
+                    context.global_kwargs.update(override_dict)
+            else:
+                raise exceptions.UnknownInputArgumentException(
+                    f"The `override` input={overrides}, when given as a string must "
+                    f"be a path to an file. Exiting.",
+                    context=context,
+                )
+        elif isinstance(overrides, dict):
+            context.global_kwargs.update(overrides)
 
     # Main loop
     output = update_source(context)
     if output is None:
         return context.public_context
     return output
-
-    # return context.public_context

@@ -6,7 +6,7 @@ import pytest
 
 from tackle import tackle
 from tackle.cli import main
-from tackle.exceptions import NoInputOrParentTackleException
+from tackle import exceptions
 
 
 def test_main_cli_call_mock(mocker):
@@ -42,7 +42,7 @@ def test_main_cli_call_empty_no_parent_tackle_raises(chdir):
         chdir('/')
     else:
         chdir('\\')
-    with pytest.raises(NoInputOrParentTackleException):
+    with pytest.raises(exceptions.NoInputOrParentTackleException):
         tackle()
 
 
@@ -68,10 +68,16 @@ def test_main_from_cli_input_dict(change_curdir_fixtures, capsys):
     assert 'this' in capsys.readouterr().out
 
 
-def test_main_overrides(change_curdir_fixtures):
+def test_main_overrides_str(change_curdir_fixtures):
     """Test that we can override inputs."""
     o = tackle("dict-input.yaml", override="dict-input-overrides.yaml")
     # Should normally throw error with prompt
     assert o['this'] == "stuff"
     # Again, should raise error w/o override
     main(["dict-input.yaml", "--override", "dict-input-overrides.yaml"])
+
+
+def test_main_overrides_str_not_found_error(change_curdir_fixtures):
+    """Test that we get error on ."""
+    with pytest.raises(exceptions.UnknownInputArgumentException):
+        tackle("dict-input.yaml", override="not-exists")
