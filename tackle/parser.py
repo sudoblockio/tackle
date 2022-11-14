@@ -352,7 +352,7 @@ def render_hook_vars(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
             elif 'render_by_default' in Hook.__fields__[key].field_info.extra:
                 hook_dict[key] = render_variable(context, wrap_jinja_braces(value))
 
-            elif '{{' in value and '}}' in value:
+            elif ('{{' in value and '}}' in value) or ('{%' in value and '%}'):
                 hook_dict[key] = render_variable(context, value)
 
         elif isinstance(value, (list, dict)):

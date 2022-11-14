@@ -107,7 +107,7 @@ def render_string(context: 'Context', raw: str):
 
     :return: The literal value if the output is a string / list / dict / float / int
     """
-    if '{{' not in raw:
+    if ('{{' not in raw) and ('{%' not in raw):
         return raw
 
     try:
