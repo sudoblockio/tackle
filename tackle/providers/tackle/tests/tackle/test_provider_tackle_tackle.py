@@ -37,9 +37,12 @@ def test_provider_tackle_block_tackle(change_dir):
     assert 'things' in output
 
 
-def test_provider_tackle_remote(change_dir, clean_outputs):
+def test_provider_tackle_remote(change_dir):
     output = tackle('remote.yaml', no_input=True)
+
     assert output['project_slug'] == 'output'
+    assert output['tackle-fixture-unreleased']['this'] == 'that'
+    assert output['tackle-fixture-released']['released_hook'] == 'foo'
 
 
 def test_provider_tackle_kwargs_default(change_dir):

@@ -1,7 +1,5 @@
 
 project_slug: output
 
-license:
-  ->: tackle robcxyz/tackle-license --latest
-  context:
-    output: {{project_slug}}
+tackle-fixture-unreleased->: tackle robcxyz/tackle-fixture-unreleased --foo baz
+tackle-fixture-released->: tackle robcxyz/tackle-fixture-released --foo baz

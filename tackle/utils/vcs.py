@@ -311,6 +311,11 @@ def get_repo_source(repo: str, repo_version: str = None) -> str:
     else:
         latest_release = get_latest_release(repo_path=provider_dir)
         if version != latest_release and latest_release is not None:
+            # Condition where we have a newer release from a repo that has a release
             checkout_version(repo_path=provider_dir, version=latest_release)
+        elif latest_release is None:
+            # Condition where we have a repo that has no release so we just pull latest
+            default_branch = get_default_branch(repo_path=provider_dir)
+            checkout_version(repo_path=provider_dir, version=default_branch)
 
     return provider_dir
