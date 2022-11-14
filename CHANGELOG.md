@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/robcxyz/tackle-box/compare/v0.4.0...v0.4.1) (2022-11-14)
+
+
+### Bug Fixes
+
+* double calling hook with declarative hook field default calling hook ([91f9cd1](https://github.com/robcxyz/tackle-box/commit/91f9cd1cd3b374e174b2e72a173e3743c285a2bd))
+
 ## [0.4.0](https://github.com/robcxyz/tackle-box/compare/v0.3.0...v0.4.0) (2022-11-13)
 
 
