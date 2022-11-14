@@ -110,6 +110,10 @@ expanded:
 
 > Note: Positional arguments sometimes need quoting to make sure the lexer is able to group inputs together properly.
 
+## Hook Keyword Args
+
+In some cases, it is useful to have additional keyword args mapped to a specific variable. For instance with the [tackle hook](https://github.com/robcxyz/tackle-box/blob/main/tackle/providers/tackle/hooks/tackle.py) which wraps the tackle main call, the field, `kwargs: str = "extra_context"` allows additional ,
+
 ## Hooks in Jinja
 
 Hooks with can also be called as [jinja filters](jinja.md#jinja-filters) allowing them to be called in 2 additional ways. Jinja filters can be called with positional arguments as described in the previous section (ie `{{jinja_filter(arg1,arg2)}}`) or if they have a single positional input, with a pipe (ie `{{some_var | jinja_filter}}`). For instance the previous example could have been additionally called the following way:

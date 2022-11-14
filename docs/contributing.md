@@ -81,7 +81,7 @@ git clone git@github.com:your_name_here/tackle-box.git
 cd tackle-box/
 python3 -m venv env
 source env/bin/activate
-python setup.py develop
+python setup.py install
 ```
 
 4. Create a branch for local development:
@@ -96,7 +96,7 @@ Now you can make your changes locally.
 
 ```bash
 pip install tox
-tox
+make test
 ```
 
 Please note that tox runs lint check automatically, since we have a test environment for it.
@@ -119,9 +119,16 @@ You report will be placed to `htmlcov` directory. Please do not include this dir
 
 ```bash
 git add .
-git commit -m "Your detailed description of your changes."
+git commit -m "fix: some thing that is wrong #123"
 git push origin name-of-your-bugfix-or-feature
 ```
+
+This project uses [conventional commits](https://www.conventionalcommits.org/) which generates the [changelog](../CHANGELOG.md). PRs will be squashed accordingly.
+
+A little guide to how to prefix your commit message:
+- For changes that affect the core parser should be `feat`  
+- For fixes to issues use `fix` along with the issue number (ie #123)
+- For changes to a provider API use `provider`
 
 8. Submit a pull request through the GitHub website.
 

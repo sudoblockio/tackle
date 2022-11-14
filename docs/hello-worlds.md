@@ -22,7 +22,7 @@ The following is a collection of hello worlds ranging from simple to contrived t
 
 ### Running the `Hello world!` demo
 
-Alternatively, you can run some of these examples in tackle.
+You caan create a file `hello.yaml` and paste in the following or you can run some of these examples in tackle.
 
 ```shell
 tackle robcxyz/tackle-hello-world
@@ -35,9 +35,11 @@ Simply use the [print](https://robcxyz.github.io/tackle-box/providers/Console/pr
 hw->: print Hello world!
 ```
 
+Anytime a key is suffixed with an arrow going to the right, it means the key is calling a hook, in this case a print hook.
+
 ### Print with variables
 
-Using [jinja templating](https://robcxyz.github.io/tackle-box/jinja), the print hook can be called in [four different ways](https://robcxyz.github.io/tackle-box/jinja) using a variable.
+Using [jinja templating](https://robcxyz.github.io/tackle-box/jinja), the print hook can be called in [three different ways](https://robcxyz.github.io/tackle-box/jinja) using a variable.
 ```yaml
 words: Hello world!
 expanded:
@@ -45,7 +47,7 @@ expanded:
   objects: "{{words}}"
 compact->: print {{words}}
 jinja_extension->: "{{ print(words) }}"
-jinja_filter->: "{{ words | print }}"
+# Or combinations of the above
 ```
 
 > Note that key with arrow without an explicit hook is simply rendered
@@ -229,6 +231,12 @@ words<-:
 p->: words.say --target world!
 ```
 
+Which can also be called from the command line.
+
+```shell
+tackle hello-world.yaml
+```
+
 ### Calling other tackle files
 
 Every hook can be [imported](providers/Tackle/import.md) / [called](providers/Tackle/tackle.md) remotely from github repos with the same options as you would from the command line.
@@ -241,23 +249,42 @@ local-call->: tackle hello-world.yaml
 remote-call->: tackle robcxyz/tackle-hello-world --version v0.1.0
 ```
 
-## Future work
+### Self Documenting Declarative CLIs
 
-### Declarative CLIs
+Documentation can be embedded into the hooks.
 
-Hooks and fields can have documentation embedded in them.
-
+`tackle robcxyz/tackle-hello-world help`
 ```yaml
-greeter<-:
-  help: Something that greets
-  hi:
-    default: Yo
-    description: Initial greeting.
+<-:
+  help: This is the default hook
   target:
     type: str
-    description: Thing to greet.
+    description: The thing to say hello to
   exec<-:
-    p->: print {{hi}} {{target}}
+    greeting->: select Who to greet? --choices ['world','universe']
+    hi->: greeter --target {{greeting}}
+  greeting-method<-:
+    help: A method that greets
+    # ... Greeting options / logic
+greeter<-:
+  help: A reusable greeter object
+  target: str
+  exec<-:
+    hi->: print Hello {{target}}
+```
+
+Which when running `tackle hello.yaml help` produces its own help screen.
+
+```text
+usage: tackle hello.yaml [--target]
+
+This is the default hook
+
+options:
+    --target [str] The thing to say hello to
+methods:
+    greeting-method     A method that greets
+    greeter     A reusable greeter object
 ```
 
 > That [will] drive a `help` screen by running `tackle hello-world.yaml --help` -> **Coming soon**

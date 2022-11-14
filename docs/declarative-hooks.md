@@ -1,6 +1,6 @@
 # Declarative Hooks
 
-Declarative hooks are very similar to python hooks in that they offer a way interface with business logic from within a tackle file but instead of being written in python, they are written within tackle files themselves. They are useful when you want to create reusable logic, interface with schemas, or create CLI's with rich option sets out of tackle files. They have strongly typed input parameters and can have object-oriented properties such as inheritance and methods that can be passed between hooks.
+Declarative hooks are very similar to python hooks in that they offer a way interface with custom logic but instead of being written in python, they are written within tackle files themselves. They are useful when you want to create reusable logic, interface with schemas, or create self documenting CLI's out of tackle files. They have strongly typed input parameters and can have object-oriented properties such as inheritance and methods that can be passed between hooks.
 
 ### Basic Usage
 
@@ -65,7 +65,7 @@ call: world
 
 As the `return` key dereferences the `target` from the exec method.  
 
-> TODO: Future versions will allow more flexible return inputs
+> TODO: Future versions will allow more flexible return inputs [#93](https://github.com/robcxyz/tackle-box/issues/93).
 
 #### Input fields
 
@@ -99,9 +99,14 @@ some_hook<-:
     type: str
     default: foo
     regex: ^foo.*
+    description: A bar
 pass->: some_hook --input foo-bar
 fail->: some_hook --input bar
 ```
+
+When building [declarative CLIs](declarative-cli.md), one often populates the `description` field for the `help` screen so the method has docs.
+
+#### Field Default Type
 
 The type field does not need to be populated if given a default and the same type can be inferred.
 
@@ -115,6 +120,40 @@ call:
   ->: some_hook --input foo --try
   except:
     p->: print Wrong type!!
+```
+
+#### Fields With Hooks
+
+Hooks can be used for the field's default value and is useful if you want to call some hook when the value is not supplied. These hook field defaults can be written in a couple ways.
+
+```yaml
+a_hook<-:
+  literal_compact->: input
+  literal_expanded:
+    ->: input
+  field_default_compact:
+    type: str
+    default->: input
+```
+
+Each one of these will in the absense of supplying a value call the input hook as below.
+
+```text
+? literal_compact >>> foo
+? literal_expanded >>> bar
+? field_default_compact >>> baz
+```
+
+Resulting in the following context easily viewable with the following command:
+
+```shell
+tackle example.yaml a_hook -pf yam
+```
+
+```yaml
+literal_compact: foo
+literal_expanded: bar
+field_default_compact: baz
 ```
 
 #### Methods
@@ -157,4 +196,28 @@ p->: words.say --target world!
 
 Here we can see some base hook `base` which is then extended in the `words` hook.
 
-> Note: Future versions of tackle will support inheriting from common schemas like OpenAPI and have generic classes that
+> Note: Future versions of tackle will support inheriting from schema specs like OpenAPI.
+
+### Public vs Private Hooks
+
+Hooks are divided into two namespaces, public and private hooks which are mainly used to inform the display of a help screen. For instance when running `tackle example.yaml help` against this file:
+
+```yaml
+public<-:
+  help: A public hook
+private<_:
+  help: A private hook
+```
+
+Only the public hook is shown as below:
+
+```text
+usage: tackle example.yaml
+
+methods:
+    public     A public hook
+```
+
+Private hooks are those hooks that perform some internal reusable business logic whereas public hooks are those that you want the user to be able to call from the command line and be documented from the help screen.
+
+More info in [Declarative CLI](declarative-cli.md) docs on the details of the help screen and calling from the command line.

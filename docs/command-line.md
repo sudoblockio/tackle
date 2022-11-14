@@ -1,8 +1,10 @@
-# Command Line
+# Calling from the Command Line
 
 Tackle-box is extremely flexible on the inputs that it accepts to run against. Basically any file, directory, or repo are acceptable inputs or no input at all. This document describes the logic behind how tackle takes in inputs including how additional args, kwargs, and flags are interpreted from the command line.  
 
-Calling tackle from the command line and from within a tackle file with a [tackle hook](providers/tackle/tackle.md) is the same except for how additional arguments are interpreted.
+For how to structure files for a tackle provider, check out [creating providers](./creating-providers.md) or creating self documenting CLIs check out [declarative cli](./declarative-cli.md).
+
+> Note: Calling tackle from the command line or from within a tackle file with a [tackle hook](providers/tackle/tackle.md) is basically the same with the context being passed along calls.
 
 ## Targets
 
@@ -22,7 +24,7 @@ tackle some/file/location.yaml
 
 ### Directory
 
-Tackle can be called against any directory and looks for a "tackle file", a file that matches `tackle.yaml/yml/json` or `.tackle.yaml/yml/json` and runs against that.
+Tackle can be called against any directory and looks for a "tackle file", a file that matches `tackle.yaml/toml/json` or `.tackle.yaml/toml/json` and runs against that.
 
 ```shell
 tackle some/directory/location
@@ -50,13 +52,17 @@ Tackle can also run against a zip file.
 tackle path/to/some/zipfile.zip
 ```
 
-### No argument supplied
+### No target argument supplied
 
-When no input argument is supplied, tackle by default looks in the parent directories for the nearest tackle file and runs that. This is useful if you want to store a collection of calls at some location that you want to use from your present directory.
+When no input argument is supplied, tackle by default looks in the current then parent directories for the nearest tackle file and runs that. This is useful if you want to store a collection of calls at some location that you want to use from your present directory.
 
 ```shell
 tackle
 ```
+
+## Additional Args / Keyword Args / Flags
+
+When calling a target, additional args / kwargs / flags can be supplied via the command line or through calling a [tackle hook]() from within a tackle file.  
 
 ### Argument matches tackle file's key
 
@@ -114,7 +120,7 @@ Flags are the same as key value pairs but override with True.
 
 ## Additional Command Line Arguments
 
-### override
+### override / -o
 
 To override some inputs in the tackle file or to insert extra values, use the `override` option to point to a file with those extra values.  For instance:
 
@@ -122,10 +128,22 @@ To override some inputs in the tackle file or to insert extra values, use the `o
 tackle path/to/something --override some-file.yaml
 ```
 
-### print
+Calling from python allows for assignment of variables via dicts or kwargs. See the [testing providers docs](testing-providers.md) for more information on calling tackler from python.
+
+### --print / -p
 
 When the print flag is specified, the context after parsing is printed out to the screen which can then be piped to a file.
 
 ```shell
 tackle --print TARGET
+```
+
+### --print-format [json/yaml/toml] / -pf [json/yaml/toml]
+
+Regardless of if the print flag is selected, print the output in the arguments format.
+
+Must be one of json, yaml, or toml. Defaults to json.
+
+```shell
+tackle --pf yaml
 ```

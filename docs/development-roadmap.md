@@ -2,27 +2,10 @@
 
 Tackle-box is still a work in progress with the following new features planned.
 
-- [Help on Providers and Files](#help-on-providers-and-files)
 - [IDE Autocomplete](#ide-autocomplete)
 - [Providers allowing import of jinja extensions](#providers-allowing-import-of-jinja-extensions)
-
-## Help on Providers and Files
-
-No CLI is complete without some kind of help screen that describes the actions that can be taken. Early thinking was that these help dialogues could be triggered by running a reserved parameter `help` when calling tackle.  For instance running `tackle robcxyz/tackle-provider help` should display what the provider is able to do. These help items could be:
-
-- Keys calling hooks with a `help` kwarg
-- Public functions
-
-The format should be similar to other help screens (ie calling `tackle --help`) and make the tool more of a declarative CLI.
-
-If this happens, a reserved key could exist that would be the default action when calling the provider. For instance calling `tackle robcxyz/tackle-provider help` with this in the context:
-
-```yaml
-->:
-  help: This would be the providers general help section
-```
-
-Could further enrich a help screen with general provider information. Since the default behavior when running the hook is just to parse the whole file, wouldn't make sense to have this hook do anything more unless that is advantageous.  Need users input to make that call.  
+- [Provider registry](#provider-registry)
+- [Rewrite in compiled language](#rewrite-in-compiled-language)
 
 ## IDE Autocomplete
 
@@ -31,3 +14,11 @@ Need to extract the json schema from each hook and upload that to [schemastore.o
 ## Providers allowing import of jinja extensions
 
 Providers give a good import abstraction so it would be cool to be able to allow dynamically importing of various jinja extensions as well.
+
+## Provider registry
+
+If this tool gets enough traction, a provider registry will be made to allow users to find new hooks and providers similar to the [Terraform Registry](https://registry.terraform.io/) and [Ansible Galaxy](https://galaxy.ansible.com/. Users should be able to link a GitHub repo to the registry and provide metadata that will allow users to easily be able to search for the hook / provider that they need with auto-generated documentation similar to how the docs show [hook docs](providers/Prompts/index.md).
+
+## Rewrite in compiled language
+
+If this tool gets enough traction, it will be rewritten in a compiled language, most likely Rust. The current version is considered experimental with different patterns for expressing logic being formed. Future versions will maintain compatibility with python hooks and also support hooks being written in other languages.

@@ -35,3 +35,14 @@ class BoolHook(BaseHook):
 
     def exec(self) -> bool:
         return bool(self.input)
+
+
+class StrHook(BaseHook):
+    """Hook for casting a variable to a string type."""
+
+    hook_type: str = 'str'
+    input: Any = Field(..., description="Any variable input.", render_by_default=True)
+    args: list = ['input']
+
+    def exec(self) -> str:
+        return str(self.input)

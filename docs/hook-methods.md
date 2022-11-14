@@ -18,7 +18,7 @@ Hooks can be called in a loop based on specifying a list input in a `for` key an
 
 ```yaml
 printer:
-  ->: print "We are at item {{ item }} and index {{ index }}"
+  ->: var "We are at item {{ item }} and index {{ index }}"
   for:
     - stuff
     - things
@@ -42,6 +42,7 @@ a_list:
 printer:
   ->: print "We are at item {{ item }} and index {{ index }}"
   for: a_list
+printer_compact->: print "{{ item }}/{{ index }}" --for a_list
 ```
 
 Loop iterands can be of any type as in this example:
@@ -56,7 +57,7 @@ printer:
       type: things
 ```
 
-Additionally, jinja hooks can be used to do some logic that could help with some patterns. For instance the [keys]() hook can be used to create a list of keys from a map which can be used as an iterand.
+Additionally, jinja hooks can be used to do some logic that could help with some patterns. For instance the [keys](https://robcxyz.github.io/tackle-box/providers/Context/keys/) hook can be used to create a list of keys from a map which can be used as an iterand.
 
 ```yaml
 inputs:
@@ -157,7 +158,7 @@ And could have hooks embedded in it.
 ```yaml
 hello:
 ...
-  else: print('Hello me')
+  else: {{print('Hello me')}}
 ```
 
 Or simply could be a dictionary output with further hooks.
@@ -171,7 +172,7 @@ hello:
 
 > Currently only jinja hooks are supported as string values. Future could add support for `else->/else_>` compact hook calls.
 
-> Checkout the [match]() hook if needing to do a lot of conditionals which can satisfy regexes when catching cases.
+> Checkout the [match](https://robcxyz.github.io/tackle-box/providers/Logic/match/) hook if needing to do a lot of conditionals which can satisfy regexes when catching cases.
 
 ## Methods
 
@@ -187,7 +188,7 @@ contents:
 
 ### `merge`
 
-If the output of the hook call is a map, then one can merge that map into the parent keys.  For instance given this [`block` hook]():
+If the output of the hook call is a map, then one can merge that map into the parent keys.  For instance given this [`block` hook](https://robcxyz.github.io/tackle-box/providers/Tackle/block/):
 
 ```yaml
 stuff: things
@@ -210,13 +211,13 @@ stuff: more things
 To catch errors, use the `try` method which also can run a context in the case of failure in an `except` method.  For instance in both these example the print would execute.
 
 ```yaml
-a failed command->: command "exit 1" --try
-p->: print Hello world!
+a failed command->: command "foo bar" --try  # Would exit without try
+p->: print Hello world!  # This would print
 ```
 
 ```yaml
 a failed command:
-  ->: command "exit 1"
+  ->: command "foo bar"
   try: true
   except:
     p->: print Hello world!

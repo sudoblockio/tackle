@@ -43,27 +43,35 @@ nav:
   - Hook Methods: hook-methods.md
   - Python Hooks: python-hooks.md
   - Declarative Hooks: declarative-hooks.md
+  - Declarative CLIs: declarative-cli.md
   - Creating Providers: creating-providers.md
-  - Debugging: debugging-tackle.md
   - Memory Management: memory-management.md
   - Special Variables: special-variables.md
-  - Examples:
+  - Debugging: debugging-tackle.md
+  - Testing Providers: testing-providers.md
+  - Cookbook:
       #    - Tackle File Examples:
-#      - Index: examples/index.md
-      - Prompting: examples/prompting.md
-      - Reading and Writing Data: examples/reading-writing-data.md
-      - Context Manipulation: examples/context-manipulation.md
-      - Complex Logic: examples/complex-logic.md
-      - Generating Code: examples/generating-code.md
-      - Tutorials:
-          - Code Generation: tutorials/code-generation.md
-          - Kubernetes: tutorials/kubernetes.md
-          - Utilities: tutorials/utilities.md
+    - Index: examples/index.md
+    - Prompting: cookbook/prompting.md
+    - Reading and Writing Data: cookbook/reading-writing-data.md
+    - Context Manipulation: cookbook/context-manipulation.md
+    - Complex Logic: cookbook/complex-logic.md
+    - Generating Code: cookbook/generating-code.md
+  - Tutorials:
+    - Code Generation:
+      - Index: tutorials/code-generation/index.md
+      - Basics: tutorials/code-generation/basics.md
+      - Modules: tutorials/code-generation/modular.md
+      - Partial: tutorials/code-generation/partial.md
+#      - Stateful: tutorials/code-generation/stateful.md
+#    - Kubernetes: tutorials/kubernetes.md
+#    - Infrastructure: tutorials/infrastructure.md
+#    - Utilities: tutorials/utilities.md
   - Provider Docs->: "{{mkdocs_nav_list}}"
   - Development:
-      - Contributing: contributing.md
-      - Development Roadmap: development-roadmap.md
-      - Authors: authors.md
+    - Contributing: contributing.md
+    - Development Roadmap: development-roadmap.md
+    - Authors: authors.md
 
 markdown_extensions:
   - toc:

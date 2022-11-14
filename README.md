@@ -36,7 +36,7 @@ Tackle-box is an experimental DSL for building modular code generators and decla
   - Embed loops, conditionals, and other custom logic
   - Self documenting CLI to call logic
 - Ships with a collection of over [100 hooks](https://robcxyz.github.io/tackle-box) that act like plugins within your config file
-  - [Prompt for user inputs](https://robcxyz.github.io/tackle-box)
+  - [Prompt user for inputs](https://robcxyz.github.io/tackle-box)
   - [Generate code from templates](https://robcxyz.github.io/tackle-box/providers/Generate/)
   - Read and write [yaml](https://robcxyz.github.io/tackle-box/providers/Yaml/) / [toml](https://robcxyz.github.io/tackle-box/providers/Toml/) / [json](https://robcxyz.github.io/tackle-box/providers/Json/) [files](https://robcxyz.github.io/tackle-box/providers/Files/)
   - [Make http calls](https://robcxyz.github.io/tackle-box/providers/Web/)
@@ -57,21 +57,13 @@ pip install tackle-box
 
 **Quick Demo:** `tackle robcxyz/tackle-hello-world`
 
-### Use Cases
-
-- [Code Generation](https://robcxyz.github.io/tackle-box/tutorials/code-generation/)
-- [Declarative Utilities]() - wip
-- [Infrastructure-as-Code Management]() - wip
-- [Kubernetes Manifest Management]() - wip
-- [Toolchain Management]() - wip
-- [Repo Management]() - wip
-
 ### Hello world
 
 Check out the [docs](https://robcxyz.github.io/tackle-box/hello-worlds/) for >10 hello worlds that demonstrate the various aspects of the syntax with the simplest one using the [print](https://robcxyz.github.io/tackle-box/providers/Console/print/) hook.
 
 **hello.yaml**
 ```yaml
+# Any time a key ends with `->`, we are calling a hook
 hw->: print Hello world!
 ```
 
@@ -86,7 +78,13 @@ the:
     - Hello
     - cruel
     - world!
-hw->: print {{item}} --for the.words --if "item != 'cruel'"
+one liner->: print --for the.words --if "item != 'cruel'" {{item}}
+multiple lines:
+  ->: print
+  for:
+    - Hello
+    - world!
+# Or combinations of the above with other methods like try/except
 ```
 
 New hooks can be [made in python](https://robcxyz.github.io/tackle-box/python-hooks/)
@@ -100,29 +98,34 @@ class Greeter(BaseHook):
     target: str
     args: list = ['target']
     def exec(self):
-        print(f"Hello {self.target}")
+      expression = f"Hello {self.target}"
+      print(expression)
+      return expression
 ```
 
 Or can be [defined inline within your tackle file.](https://robcxyz.github.io/tackle-box/declarative-hooks/).
 
 ```yaml
+# Keys ending with `<-` mean we are creating a hook / method
 greeter<-:
   target: str
   args: ['target']
   exec<-:
-    hi->: print Hello {{target}}
+    expression->: print Hello {{target}}
+  return: expression
 ```
 
 And both can be [called in the same way](https://robcxyz.github.io/tackle-box/writing-tackle-files/).
 
 ```yaml
 hello: world!
-compact->: greeter {{hello}}
-expanded:
+With a flag->: greeter --target {{hello}}
+Target in argument->: greeter {{hello}}
+Expanded fields:
   ->: greeter
   target: {{hello}}
-jinja_extension->: {{ greeter(hello) }}
-# Or combinations of the above allowing chaining of hook calls.  
+Jinja template->: {{ greeter(hello) }}
+# Or combinations jinja and compact / expanded hooks allowing chaining of hook calls.  
 ```
 
 With the declarative hooks being callable from the command line:
@@ -140,9 +143,10 @@ Documentation can be embedded into the hooks.
   help: This is the default hook
   target:
     type: str
+    default->: input
     description: The thing to say hello to
   exec<-:
-    greeting->: select Who to greet? --choices ['world','universe']
+    greeting->: select Who to greet? --choices ['world',target]
     hi->: greeter --target {{greeting}}
   greeting-method<-:
     help: A method that greets
@@ -170,7 +174,21 @@ methods:
 
 Hooks can be imported, linked, and/or combined creating a web of CLIs.
 
+### Use Cases
+
+- [Code Generation](https://robcxyz.github.io/tackle-box/tutorials/code-generation/)
+
+**WIP Tutorials**
+
+- [Declarative Utilities]()
+- [Infrastructure-as-Code Management]()
+- [Kubernetes Manifest Management]()
+- [Toolchain Management]()
+
+[//]: # (- [Repo Management]&#40;&#41; - wip)
+
 ### Topics
+
 - [Writing Tackle Files](https://robcxyz.github.io/tackle-box/writing-tackle-files/)
 - [Creating Providers](https://robcxyz.github.io/tackle-box/creating-providers/)
 - [Python Hooks](https://robcxyz.github.io/tackle-box/python-hooks/)
@@ -178,8 +196,7 @@ Hooks can be imported, linked, and/or combined creating a web of CLIs.
 - [Blocks](https://robcxyz.github.io/tackle-box/writing-tackle-files/#blocks) and [Flow Control](https://robcxyz.github.io/tackle-box/hook-methods/)
 - [Memory Management](https://robcxyz.github.io/tackle-box/memory-management/)
 - [Special Variables](https://robcxyz.github.io/tackle-box/special-variables/)
-- [Declarative CLIs]() - wip
-- [Modular CLIs]() - wip
+- [Declarative CLIs](https://robcxyz.github.io/tackle-box/declarative-cli/)
 
 ### Contributing
 

@@ -48,6 +48,7 @@ gen->:
   append multiple hooks providers:
     ->: append provider_mkdocs_nav_list
     for: render_context.hooks
+    if: render_context.hooks|length != 1
     item:
       "{{item.hook_type}}": providers/{{ provider | title }}/{{ item.hook_type }}.md
   append to mkdocs_nav_list:

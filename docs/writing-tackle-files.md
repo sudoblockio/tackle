@@ -8,17 +8,32 @@ Tackle-box **sequentially** parses **arbitrary** json or yaml files with the par
 
 ### Hook Call Forms
 
-Hooks can be called in directly in expanded and compact forms or within jinja as an extensions or filters. For instance:
+Hooks can be called in directly in expanded and compact forms or within jinja as an extensions or filters. For instance running:
 
+**`example.yaml`**
 ```yaml
 expanded:
   ->: input
-  message: What is your name?
-compact->: input What is your name?
+  message: Say hello to?
+compact->: input Say hello to?
 # Or with jinja
-jinja_expression->: "{{ input('What is your name?'}}"
-question: What is your name?
-jinja_filter->: "{{question|input}}"
+jinja_expression->: "{{input('Say hello to?')}}"
+```
+
+Which when run with `tackle docs/scratch.yaml -pf yaml`:
+
+```text
+? Say hello to? Alice
+? Say hello to? Bob
+? Say hello to? Jane
+```
+
+Results in the following context:
+
+```yaml
+expanded: 'Alice'
+compact: 'Bob'
+jinja_expression: 'Jane'
 ```
 
 In this example we are calling the [input](providers/Prompts/input.md) hook that prompts for a string input which has one mapped argument, `message`, which in the compact form of calling [input](providers/Prompts/input.md) allows it to be written in a single line. The exact semantics of how arguments are mapped can be found in the [python hooks](python-hooks.md) and [declarative hooks](declarative-hooks.md) documentation.
@@ -28,11 +43,12 @@ The [input](providers/Prompts/input.md) hook has several parameters that are not
 ```yaml
 expanded:
   ->: input
-  message: What is your name?
-  default: robcxyz
+  message: Say hello to?
+  default: world
 # Equivalent to
-compact->: input What is your name? --default robcxyz
+compact->: input Say hello to? --default world
 # Notice the additional argument
+print->: print Hello {{compact}} Hello {{expanded}}
 ```
 
 ### Control Flow
@@ -122,12 +138,12 @@ code->:
     contex: ...
   gen->: tackle robcxyz/tackle-provider
   open->: command touch code.py
-  ...
+  # ...
 
 do->:
   if: action == 'do'
   check_schedule->: webbrowser https://calendar.google.com/
-  ...
+  # ...
 ```
 
 If this example was run, the user would be prompted for a selection which based on their input, the block of code hooks would be executed based on the `if` condition.  Under the hood the parser is re-writing the input to execute a `block` hook like this example though the code above makes it simpler:
@@ -152,7 +168,7 @@ stuff: things
 foo: bar
 
 code->:
-  ...
+  # ...
   foo: baz
   inner-context->: "{{ foo }}"
   outer-context->: "{{ stuff }}"
@@ -179,11 +195,13 @@ run_action:
   case:  
     code:
       gen->: tackle robcxyz/tackle-provider
-      ...
+      # ...
 
     do:
       if: action == 'do'
       check_schedule->: webbrowser https://calendar.google.com/
-      ...
+      # ...
 ```
+
+Check out the [declarative hooks](declarative-hooks.md) docs for patterns on how you can wrap this logic with reusable interfaces.
 
