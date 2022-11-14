@@ -1,0 +1,15 @@
+update_readme<-:
+  help: Update the multi-line.md table
+  exec:
+    rows:
+      - name: Stuff
+        desc: A thing
+      - name: Thing
+        desc: A stuff
+    update:
+      ->: update_section multi-line.md
+      content: |
+        | Name | Description |
+        |---|---|
+        {% for i in rows %}| {{i.name}} | {{i.desc}} |
+        {% endfor %}
