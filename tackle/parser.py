@@ -433,6 +433,10 @@ def parse_hook(
             # Render the remaining hook variables
             render_hook_vars(hook_dict, Hook, context)
 
+            # TODO: WIP - https://github.com/robcxyz/tackle-box/issues/104
+            tmp_no_input = (
+                None if 'no_input' not in hook_dict else hook_dict.pop('no_input')
+            )
             try:
                 hook = Hook(
                     **hook_dict,
@@ -441,7 +445,7 @@ def parse_hook(
                     private_context=context.private_context,
                     temporary_context=context.temporary_context,
                     existing_context=context.existing_context,
-                    no_input=context.no_input,
+                    no_input=context.no_input if tmp_no_input is None else tmp_no_input,
                     calling_directory=context.calling_directory,
                     calling_file=context.calling_file,
                     public_hooks=context.public_hooks,
@@ -451,6 +455,15 @@ def parse_hook(
                     env_=context.env_,
                     is_hook_call=True,
                 )
+            except TypeError as e:
+                # TODO: Improve -> This is an error when we have multiple of the same
+                #  base attribute. Should not conflict in the future when we do
+                #  composition on the context but for now, catching common error.
+                # TODO: WIP - https://github.com/robcxyz/tackle-box/issues/104
+                raise exceptions.UnknownInputArgumentException(
+                    str(e) + " - Can't assign duplicate base fields.", context=context
+                ) from None
+
             except ValidationError as e:
                 # Handle any try / except logic
                 if 'try' in hook_dict and hook_dict['try']:

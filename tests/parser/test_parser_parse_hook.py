@@ -48,3 +48,13 @@ def test_parser_ruamel_braces(change_curdir_fixtures):
     assert output['stuff'] == 'things'
     assert output['a']['b'] is None
     assert output['one'] == 'two'
+
+
+def test_parser_duplicate_values(change_curdir_fixtures):
+    """
+    Validate that when we give a hook with duplicate values as what was set in the
+     initial run (ie a tackle hook with `no_input` set), that we take the value from the
+     hook.
+    """
+    output = tackle('duplicate-values.yaml', verbose=True)
+    assert output['local']['two_args']
