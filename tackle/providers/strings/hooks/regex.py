@@ -67,7 +67,7 @@ class RegexMatchHook(BaseHook):
     [Docs](https://docs.python.org/3/library/re.html#re.match)
     """
 
-    hook_type: str = 'starts_with'
+    hook_type: str = 'regex_match'
 
     pattern: str = Field(..., description="A regex pattern to check.")
     string: str = Field(..., description="A string to check.")
