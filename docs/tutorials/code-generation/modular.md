@@ -22,8 +22,8 @@ Which will prompt you such as below:
   GPL Version 3
   BSD Version 3
   Closed source
-? Who are the license holders Me
-? What year to end the license (is perpetual basically so don't fret) 2022
+? Who are the license holders? Me
+? What year to end the license? 2022
 ```
 
 This provider can also be called from the command line:
@@ -39,6 +39,37 @@ tackle robcxyz/tackle-license help
 ```
 
 Hopefully over time, providers will be created that specialize in certain files / aspects of code and people can then stitch together templates more easily.
+
+#### Tackle provider versions  
+
+By default, tackle uses the latest github released version unless there is not official release in which case it uses the version in the default branch. Fortunately there is a way to pin the version of an imported tackle with the `checkout` flag which under the hood, is performing a `git checkout` command to get the proper version of the code. For instance:
+
+```yaml
+# Use the latest version in the default branch
+latest->: tackle robcxyz/tackle-provider --latest
+# If the branch was main, the following would be the same
+branch->: tackle robcxyz/tackle-provider --checkout main
+# Best practice is to pin to some versioned release  
+pinned->: tackle robcxyz/tackle-provider --checkout v0.1.0
+```
+
+#### Groups of tackle providers
+
+If one wanted to run a number of providers:
+
+```yaml
+providers:
+  ->: checkbox What additional items do you want to add to the generated code?
+  checked: true
+  choices:
+    - license
+    - makefile
+    - pre-commit
+
+call providers->: tackle robcxyz/tackle-{{item}} --for providers
+```
+
+Since the output of a [`checkbox`](../../providers/Prompts/checkbox.md) is a list, it can be used as the input to the `for` key and since it is a string, it is rendered by default.
 
 
 ## Splitting up Context
@@ -82,4 +113,6 @@ num_servers: 2
 
 This allows for lots of dev ops related code generation patterns in conjunction with other tools such as kubectl which tackle can wrap.
 
-[//]: # (TODO: Link to docs when done on kubectl wrapper)
+## Next Tutorials
+
+- [Partial code generation](partial.md)

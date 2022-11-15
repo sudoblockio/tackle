@@ -138,74 +138,13 @@ generate ci->: generate templates/.github {{project_slug}}
 
 > Note: Checkout the [`match`](../../providers/Logic/match.md) hook for creating other types of decision trees.
 
-
-
-## Next Tutorials
-
--
-
-
-### Using other tackle providers  
-
-Code generators are great at setting up boilerplate such as licenses and makefiles but each one shouldn't have to come up with its own license / makefile generator. Tackle box being modular is perfect for this where instead of implementing these items in your code generator, call these items as providers.
-
-For instance if you wanted to include a license, in the tackle file include:
-
-```yaml
-project_slug->: input   # This is the convention for naming the project's head directory
-license expanded:
-  ->: tackle robcxyz/tackle-license
-  context:
-    output: {{project_slug}}
-
-# Or in a more compact form
-license expanded->: tackle robcxyz/tackle-license --output {{project_slug}}
-```
-
-Which is itself a code generator and will generate the appropriate license and return a map including all the selections and context used to generate the license.
-
-#### Tackle provider versions  
-
-By default, tackle uses the latest github released version unless there is not official release in which case it uses the version in the default branch. Fortunately there is a way to pin the version of an imported tackle with the `checkout` flag which under the hood, is performing a `git checkout` command to get the proper version of the code. For instance:
-
-```yaml
-# Use the latest version in the default branch
-latest->: tackle robcxyz/tackle-provider --latest
-# If the branch was main, the following would be the same
-branch->: tackle robcxyz/tackle-provider --checkout main
-# Best practice is to pin to some versioned release  
-pinned->: tackle robcxyz/tackle-provider --checkout v0.1.0
-```
-
-#### Groups of tackle providers
-
-If one wanted to run a number of providers:
-
-```yaml
-providers:
-  ->: checkbox What additional items do you want to add to the generated code?
-  checked: true
-  choices:
-    - license
-    - makefile
-    - pre-commit
-
-call providers->: tackle robcxyz/tackle-{{item}} --for providers
-```
-
-#### Note on context
-
-Tackle has a memory management system which allows one to pass context from one tackle-file to another. In the above example calling the [license]() provider, one could have written it like:
-
-```yaml
-output->: input   # This is the convention for naming the project's head directory
-license->: tackle robcxyz/tackle-license
-```
-
-This is because the `output` key will be passed into the calling of the `tackle-license` provider.  
-
 ### Testing code generators
 
 Once you generate code, it is often helpful to then run the tests within that generated code to make sure it works. For examples on how to do this, checkout the [tackle-provider](https://github.com/robcxyz/tackle-provider) provider which generates the scaffolding to run a provider.
 
 In that provider you will see a [test](https://github.com/robcxyz/tackle-provider/blob/main/tests/test_this.py) which uses a number of fixtures from the [conftest.py](https://github.com/robcxyz/tackle-provider/blob/main/tests/conftest.py) which can be used to run the tests in the generated code.
+
+## Next Tutorials
+
+- [Modular code generators](modular.md)
+- [Partial code generation](partial.md)
