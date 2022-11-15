@@ -22,7 +22,8 @@ The following is a collection of hello worlds ranging from simple to contrived t
 
 ### Running the `Hello world!` demo
 
-You caan create a file `hello.yaml` and paste in the following or you can run some of these examples in tackle.
+**Locally + Copy / Paste**
+You can create a file `hello.yaml` and paste in the following or you can run some of these examples in tackle.
 
 ```shell
 tackle robcxyz/tackle-hello-world

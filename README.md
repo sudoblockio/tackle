@@ -111,7 +111,8 @@ greeter<-:
   target: str
   args: ['target']
   exec<-:
-    expression->: print Hello {{target}}
+    expression: Hello {{target}}
+    p->: print {{expression}}
   return: expression
 ```
 

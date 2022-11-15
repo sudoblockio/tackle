@@ -1,3 +1,13 @@
+scratch*.py
+scratch/
+.bak/
+pyvenv.cfg
+docs/scratch*
+docs/.hooks/*
+hold
+wip
+foresight-reports
+
 # mkdocs.yml is generated
 mkdocs.yml
 
@@ -77,13 +87,3 @@ target/
 
 # VS code
 .vscode
-
-scratch*.py
-scratch/
-.bak/
-pyvenv.cfg
-docs/scratch*
-hold
-wip
-
-foresight-reports
