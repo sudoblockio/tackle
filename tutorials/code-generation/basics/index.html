@@ -778,53 +778,6 @@
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next-tutorials" class="md-nav__link">
-    Next Tutorials
-  </a>
-  
-    <nav class="md-nav" aria-label="Next Tutorials">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#using-other-tackle-providers" class="md-nav__link">
-    Using other tackle providers
-  </a>
-  
-    <nav class="md-nav" aria-label="Using other tackle providers">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#tackle-provider-versions" class="md-nav__link">
-    Tackle provider versions
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#groups-of-tackle-providers" class="md-nav__link">
-    Groups of tackle providers
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#note-on-context" class="md-nav__link">
-    Note on context
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
           <li class="md-nav__item">
   <a href="#testing-code-generators" class="md-nav__link">
     Testing code generators
@@ -834,6 +787,13 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-tutorials" class="md-nav__link">
+    Next Tutorials
+  </a>
   
 </li>
       
@@ -3312,53 +3272,6 @@
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next-tutorials" class="md-nav__link">
-    Next Tutorials
-  </a>
-  
-    <nav class="md-nav" aria-label="Next Tutorials">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#using-other-tackle-providers" class="md-nav__link">
-    Using other tackle providers
-  </a>
-  
-    <nav class="md-nav" aria-label="Using other tackle providers">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#tackle-provider-versions" class="md-nav__link">
-    Tackle provider versions
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#groups-of-tackle-providers" class="md-nav__link">
-    Groups of tackle providers
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#note-on-context" class="md-nav__link">
-    Note on context
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
           <li class="md-nav__item">
   <a href="#testing-code-generators" class="md-nav__link">
     Testing code generators
@@ -3368,6 +3281,13 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-tutorials" class="md-nav__link">
+    Next Tutorials
+  </a>
   
 </li>
       
@@ -3487,51 +3407,14 @@
 <blockquote>
 <p>Note: Checkout the <a href="../../../providers/Logic/match/"><code>match</code></a> hook for creating other types of decision trees.</p>
 </blockquote>
-<h2 id="next-tutorials">Next Tutorials<a class="headerlink" href="#next-tutorials" title="Permanent link">&para;</a></h2>
-<p>-</p>
-<h3 id="using-other-tackle-providers">Using other tackle providers<a class="headerlink" href="#using-other-tackle-providers" title="Permanent link">&para;</a></h3>
-<p>Code generators are great at setting up boilerplate such as licenses and makefiles but each one shouldn't have to come up with its own license / makefile generator. Tackle box being modular is perfect for this where instead of implementing these items in your code generator, call these items as providers.</p>
-<p>For instance if you wanted to include a license, in the tackle file include:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">project_slug-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">input</span><span class="w">   </span><span class="c1"># This is the convention for naming the project&#39;s head directory</span><span class="w"></span>
-<span class="nt">license expanded</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tackle robcxyz/tackle-license</span><span class="w"></span>
-<span class="w">  </span><span class="nt">context</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">output</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="nv">project_slug</span><span class="p p-Indicator">}}</span><span class="w"></span>
-
-<span class="c1"># Or in a more compact form</span><span class="w"></span>
-<span class="nt">license expanded-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tackle robcxyz/tackle-license --output {{project_slug}}</span><span class="w"></span>
-</code></pre></div>
-<p>Which is itself a code generator and will generate the appropriate license and return a map including all the selections and context used to generate the license.</p>
-<h4 id="tackle-provider-versions">Tackle provider versions<a class="headerlink" href="#tackle-provider-versions" title="Permanent link">&para;</a></h4>
-<p>By default, tackle uses the latest github released version unless there is not official release in which case it uses the version in the default branch. Fortunately there is a way to pin the version of an imported tackle with the <code>checkout</code> flag which under the hood, is performing a <code>git checkout</code> command to get the proper version of the code. For instance:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Use the latest version in the default branch</span><span class="w"></span>
-<span class="nt">latest-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tackle robcxyz/tackle-provider --latest</span><span class="w"></span>
-<span class="c1"># If the branch was main, the following would be the same</span><span class="w"></span>
-<span class="nt">branch-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tackle robcxyz/tackle-provider --checkout main</span><span class="w"></span>
-<span class="c1"># Best practice is to pin to some versioned release  </span><span class="w"></span>
-<span class="nt">pinned-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tackle robcxyz/tackle-provider --checkout v0.1.0</span><span class="w"></span>
-</code></pre></div>
-<h4 id="groups-of-tackle-providers">Groups of tackle providers<a class="headerlink" href="#groups-of-tackle-providers" title="Permanent link">&para;</a></h4>
-<p>If one wanted to run a number of providers:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">providers</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">checkbox What additional items do you want to add to the generated code?</span><span class="w"></span>
-<span class="w">  </span><span class="nt">checked</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="w">  </span><span class="nt">choices</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">license</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">makefile</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pre-commit</span><span class="w"></span>
-
-<span class="nt">call providers-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tackle robcxyz/tackle-{{item}} --for providers</span><span class="w"></span>
-</code></pre></div>
-<h4 id="note-on-context">Note on context<a class="headerlink" href="#note-on-context" title="Permanent link">&para;</a></h4>
-<p>Tackle has a memory management system which allows one to pass context from one tackle-file to another. In the above example calling the <a href="">license</a> provider, one could have written it like:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">output-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">input</span><span class="w">   </span><span class="c1"># This is the convention for naming the project&#39;s head directory</span><span class="w"></span>
-<span class="nt">license-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tackle robcxyz/tackle-license</span><span class="w"></span>
-</code></pre></div>
-<p>This is because the <code>output</code> key will be passed into the calling of the <code>tackle-license</code> provider.  </p>
 <h3 id="testing-code-generators">Testing code generators<a class="headerlink" href="#testing-code-generators" title="Permanent link">&para;</a></h3>
 <p>Once you generate code, it is often helpful to then run the tests within that generated code to make sure it works. For examples on how to do this, checkout the <a href="https://github.com/robcxyz/tackle-provider">tackle-provider</a> provider which generates the scaffolding to run a provider.</p>
 <p>In that provider you will see a <a href="https://github.com/robcxyz/tackle-provider/blob/main/tests/test_this.py">test</a> which uses a number of fixtures from the <a href="https://github.com/robcxyz/tackle-provider/blob/main/tests/conftest.py">conftest.py</a> which can be used to run the tests in the generated code.</p>
+<h2 id="next-tutorials">Next Tutorials<a class="headerlink" href="#next-tutorials" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../modular/">Modular code generators</a></li>
+<li><a href="../partial/">Partial code generation</a></li>
+</ul>
 
 
   

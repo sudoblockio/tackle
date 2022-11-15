@@ -754,11 +754,38 @@
     Using Tackle Providers
   </a>
   
+    <nav class="md-nav" aria-label="Using Tackle Providers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tackle-provider-versions" class="md-nav__link">
+    Tackle provider versions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#groups-of-tackle-providers" class="md-nav__link">
+    Groups of tackle providers
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
   <a href="#splitting-up-context" class="md-nav__link">
     Splitting up Context
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-tutorials" class="md-nav__link">
+    Next Tutorials
   </a>
   
 </li>
@@ -3186,11 +3213,38 @@
     Using Tackle Providers
   </a>
   
+    <nav class="md-nav" aria-label="Using Tackle Providers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tackle-provider-versions" class="md-nav__link">
+    Tackle provider versions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#groups-of-tackle-providers" class="md-nav__link">
+    Groups of tackle providers
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
   <a href="#splitting-up-context" class="md-nav__link">
     Splitting up Context
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-tutorials" class="md-nav__link">
+    Next Tutorials
   </a>
   
 </li>
@@ -3226,8 +3280,8 @@
   GPL Version 3
   BSD Version 3
   Closed source
-? Who are the license holders Me
-? What year to end the license (is perpetual basically so don&#39;t fret) 2022
+? Who are the license holders? Me
+? What year to end the license? 2022
 </code></pre></div>
 <p>This provider can also be called from the command line:</p>
 <div class="highlight"><pre><span></span><code>tackle robcxyz/tackle-license
@@ -3236,6 +3290,28 @@
 <div class="highlight"><pre><span></span><code>tackle robcxyz/tackle-license <span class="nb">help</span>
 </code></pre></div>
 <p>Hopefully over time, providers will be created that specialize in certain files / aspects of code and people can then stitch together templates more easily.</p>
+<h4 id="tackle-provider-versions">Tackle provider versions<a class="headerlink" href="#tackle-provider-versions" title="Permanent link">&para;</a></h4>
+<p>By default, tackle uses the latest github released version unless there is not official release in which case it uses the version in the default branch. Fortunately there is a way to pin the version of an imported tackle with the <code>checkout</code> flag which under the hood, is performing a <code>git checkout</code> command to get the proper version of the code. For instance:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Use the latest version in the default branch</span><span class="w"></span>
+<span class="nt">latest-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tackle robcxyz/tackle-provider --latest</span><span class="w"></span>
+<span class="c1"># If the branch was main, the following would be the same</span><span class="w"></span>
+<span class="nt">branch-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tackle robcxyz/tackle-provider --checkout main</span><span class="w"></span>
+<span class="c1"># Best practice is to pin to some versioned release  </span><span class="w"></span>
+<span class="nt">pinned-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tackle robcxyz/tackle-provider --checkout v0.1.0</span><span class="w"></span>
+</code></pre></div>
+<h4 id="groups-of-tackle-providers">Groups of tackle providers<a class="headerlink" href="#groups-of-tackle-providers" title="Permanent link">&para;</a></h4>
+<p>If one wanted to run a number of providers:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">providers</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">checkbox What additional items do you want to add to the generated code?</span><span class="w"></span>
+<span class="w">  </span><span class="nt">checked</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="w">  </span><span class="nt">choices</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">license</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">makefile</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pre-commit</span><span class="w"></span>
+
+<span class="nt">call providers-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tackle robcxyz/tackle-{{item}} --for providers</span><span class="w"></span>
+</code></pre></div>
+<p>Since the output of a <a href="../../../providers/Prompts/checkbox/"><code>checkbox</code></a> is a list, it can be used as the input to the <code>for</code> key and since it is a string, it is rendered by default.</p>
 <h2 id="splitting-up-context">Splitting up Context<a class="headerlink" href="#splitting-up-context" title="Permanent link">&para;</a></h2>
 <p>Sometimes you want to break up your business logic or build hierarchical ways of merging config files, one could have a pattern such as:</p>
 <p><strong><code>child/tackle.yaml</code></strong>
@@ -3266,6 +3342,10 @@
 <span class="nt">num_servers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w"></span>
 </code></pre></div>
 <p>This allows for lots of dev ops related code generation patterns in conjunction with other tools such as kubectl which tackle can wrap.</p>
+<h2 id="next-tutorials">Next Tutorials<a class="headerlink" href="#next-tutorials" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../partial/">Partial code generation</a></li>
+</ul>
 
 
   

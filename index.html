@@ -3380,7 +3380,8 @@ pip install tackle-box
 <span class="w">  </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">str</span><span class="w"></span>
 <span class="w">  </span><span class="nt">args</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;target&#39;</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="w">  </span><span class="nt">exec&lt;-</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">expression-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print Hello {{target}}</span><span class="w"></span>
+<span class="w">    </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Hello {{target}}</span><span class="w"></span>
+<span class="w">    </span><span class="nt">p-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print {{expression}}</span><span class="w"></span>
 <span class="w">  </span><span class="nt">return</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">expression</span><span class="w"></span>
 </code></pre></div>
 <p>And both can be <a href="https://robcxyz.github.io/tackle-box/writing-tackle-files/">called in the same way</a>.</p>
