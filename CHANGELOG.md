@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.2](https://github.com/robcxyz/tackle-box/compare/v0.4.1...v0.4.2) (2022-11-14)
+
+
+### Bug Fixes
+
+* better excpetion to duplicate values and hacky logic for no_input [#104](https://github.com/robcxyz/tackle-box/issues/104) ([46237f8](https://github.com/robcxyz/tackle-box/commit/46237f8b50bf58126a31df2379844459951c6a0e))
+* checkout the right branch with unreleased providers ([ddb790d](https://github.com/robcxyz/tackle-box/commit/ddb790db18d559fff92239ad46798e027a2a23c9))
+
 ## [0.4.1](https://github.com/robcxyz/tackle-box/compare/v0.4.0...v0.4.1) (2022-11-14)
 
 
