@@ -5,6 +5,7 @@ import subprocess
 from collections.abc import MutableMapping
 
 from InquirerPy import prompt
+from InquirerPy.base.control import Choice
 
 from pydantic import BaseModel, ValidationError, validator
 from typing import Optional
@@ -186,7 +187,8 @@ class MetaGitHook(BaseHook):
     def prompt_repo_choices(self):
         """Prompt the user to select which items to operate on."""
         choices = [
-            {"name": f"{k} --> {v}", "checked": True} for k, v in self.repo_tree.items()
+            Choice({k: v}, name=f"{k} --> {v}", enabled=True)
+            for k, v in self.repo_tree.items()
         ]
         question = {
             'type': 'checkbox',
@@ -195,9 +197,8 @@ class MetaGitHook(BaseHook):
             'choices': choices,
         }
         repo_choices = prompt([question])['tmp']
-        self.repo_tree = {
-            k: v for k, v in self.repo_tree.items() if f"{k} --> {v}" in repo_choices
-        }
+        # Return a single dict with all the k/v in one
+        self.repo_tree = {list(i.keys())[0]: list(i.values())[0] for i in repo_choices}
 
     def get_command(self):
         """Get the git command to run."""
