@@ -255,14 +255,14 @@ def parse_repo_ref(repo):
         provider_name = repo_parts[4]
 
     elif len(repo.split('/')) == 2:
-        # Handle type robcxyz/tackle-box
+        # Handle type robcxyz/tackle
         repo_parts = repo.split('/')
         repo_prefix = 'https://github.com'
         organization = repo_parts[0]
         provider_name = repo_parts[1]
 
     elif repo.split('.')[1].startswith('com'):
-        # Handles type github.com/robcxyz/tackle-box
+        # Handles type github.com/robcxyz/tackle
         # TODO: This condition can be tightened
         repo_parts = repo.split('/')
         repo_prefix = 'https://' + repo_parts[0]

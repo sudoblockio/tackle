@@ -13,7 +13,7 @@
     description: |
       Some stuff that does things and stuff and things and stuff and things and stuff
       and things and stuff and things and stuff and things and stuff and.
-      # TODO: https://github.com/robcxyz/tackle-box/issues/92
+      # TODO: https://github.com/robcxyz/tackle/issues/92
 
   foo:
     type: str

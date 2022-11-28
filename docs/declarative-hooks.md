@@ -65,7 +65,7 @@ call: world
 
 As the `return` key dereferences the `target` from the exec method.  
 
-> TODO: Future versions will allow more flexible return inputs [#93](https://github.com/robcxyz/tackle-box/issues/93).
+> TODO: Future versions will allow more flexible return inputs [#93](https://github.com/robcxyz/tackle/issues/93).
 
 #### Input fields
 

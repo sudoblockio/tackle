@@ -16,10 +16,10 @@ if os.name == 'nt':
 #     assert context['cmd'] == context['cmd_arg']
 
 
-# TODO: https://github.com/robcxyz/tackle-box/issues/14
-# TODO: https://github.com/robcxyz/tackle-box/issues/71
+# TODO: https://github.com/robcxyz/tackle/issues/14
+# TODO: https://github.com/robcxyz/tackle/issues/71
 @pytest.mark.skipif(
-    sys.platform == 'darwin', reason="https://github.com/robcxyz/tackle-box/issues/71"
+    sys.platform == 'darwin', reason="https://github.com/robcxyz/tackle/issues/71"
 )
 def test_provider_system_hook_command_multi_line(change_dir):
     output = tackle('multi-line-cmd.yaml')
@@ -27,7 +27,7 @@ def test_provider_system_hook_command_multi_line(change_dir):
     assert output['singleline'].startswith('stuff and thing')
 
 
-# TODO: https://github.com/robcxyz/tackle-box/issues/13
+# TODO: https://github.com/robcxyz/tackle/issues/13
 # def test_provider_system_hook_interactive_shell(chdir):
 #     o = tackle('interactive.yaml')
 #     assert o

@@ -16,7 +16,7 @@ class RepoSource(BaseModel):
 
 class ImportHook(BaseHook):
     """
-    Hook for importing external tackle-box providers. Does not actually execute the
+    Hook for importing external tackle providers. Does not actually execute the
      base tackle in the provider but merely makes the hooks and functions available to
      be used in the context. Takes any type as an argument to build `src` and
      `version` import targets.

@@ -9,7 +9,7 @@ import subprocess
 from typing import TYPE_CHECKING
 
 # TODO: RM after dealing with namespace issue for validators
-# https://github.com/robcxyz/tackle-box/issues/43
+# https://github.com/robcxyz/tackle/issues/43
 # import random
 # import string
 
@@ -181,7 +181,7 @@ def import_hook_from_path(
 
     # TODO: RM after dealing with namespace issue for validators
     # Use a unique RUN_ID to prevent duplicate validator errors
-    # https://github.com/robcxyz/tackle-box/issues/43
+    # https://github.com/robcxyz/tackle/issues/43
     # _run_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
     # module_name = mod_name + '.hooks.' + file_base[0] + _run_id
     # TODO: Correct version

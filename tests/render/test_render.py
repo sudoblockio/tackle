@@ -9,7 +9,7 @@ from tackle.utils.files import read_config_file
 RENDERABLES = [
     # This test relates to https://github.com/pallets/jinja/issues/1580 where if we have
     # a variable that collides with a jinja globals it is ignored
-    # https://github.com/robcxyz/tackle-box/issues/19
+    # https://github.com/robcxyz/tackle/issues/19
     ({'dict': {'stuff': 'things'}}, '{{dict}}', {'stuff': 'things'}),
     ({'namespace': {'stuff': 'things'}}, '{{namespace}}', {'stuff': 'things'}),
     # Normal

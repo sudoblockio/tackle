@@ -22,7 +22,7 @@ body:
     id: version
     attributes:
       label: Version
-      description: What version of tackle-box are you running?
+      description: What version of tackle are you running?
       # TODO: Update this with tackle
       options:
         - 0.4.x

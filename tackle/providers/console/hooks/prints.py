@@ -92,7 +92,7 @@ class PprintHook(BaseHook):
                 if 'rich' in sys.modules:
                     # TODO: Line up these docs
                     # https://rich.readthedocs.io/en/stable/reference/pretty.html?highlight=pprint#rich.pretty.pprint
-                    # https://github.com/robcxyz/tackle-box/issues/57
+                    # https://github.com/robcxyz/tackle/issues/57
                     pprint(
                         self.objects,
                         max_length=self.width,

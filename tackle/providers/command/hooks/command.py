@@ -58,7 +58,7 @@ class CommandHook(BaseHook):
 
     def exec(self) -> Any:
         # TODO: Fix multi-line calls
-        # https://github.com/robcxyz/tackle-box/issues/14
+        # https://github.com/robcxyz/tackle/issues/14
         if self.multiline:
             commands = [self.command.replace('\n', ' ').split()]
         else:
@@ -86,7 +86,7 @@ class CommandHook(BaseHook):
                     while readable:
                         # TODO: Session is not interactive and fails below when interactive
                         #  prompts are displayed
-                        # https://github.com/robcxyz/tackle-box/issues/13
+                        # https://github.com/robcxyz/tackle/issues/13
                         # x = select(readable, [], [])[0]
                         for fd in select(readable, [], [])[0]:
                             try:

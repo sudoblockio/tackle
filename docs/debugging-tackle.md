@@ -1,6 +1,6 @@
 # Debugging
 
-Debugging is somewhat rudimentary at this stage of tackle-box but there are some options to for both debugging tackle files and hooks.  
+Debugging is somewhat rudimentary at this stage of tackle but there are some options to for both debugging tackle files and hooks.  
 
 1. Printing the context
 2. The [debug](providers/Tackle/debug.md) hook

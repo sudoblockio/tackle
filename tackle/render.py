@@ -213,7 +213,7 @@ def render_string(context: 'Context', raw: str):
                 f"doesn't have arguments. Consider changing."
             )
 
-        # Check for ambiguous globals like `namespace` tackle-box/issues/19
+        # Check for ambiguous globals like `namespace` tackle/issues/19
         match = re.search(r'\<class \'(.+?)\'>', rendered_template)
         if match:
             ambiguous_key = match.group(1).split('.')[-1].lower()

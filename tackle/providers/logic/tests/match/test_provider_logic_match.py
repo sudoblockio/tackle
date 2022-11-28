@@ -10,7 +10,7 @@ def test_hook_match_loop(change_dir):
     assert output
 
 
-# TODO: https://github.com/robcxyz/tackle-box/issues/66
+# TODO: https://github.com/robcxyz/tackle/issues/66
 #  Add merge to loop functions
 # def test_hook_match_block_loop(change_dir):
 #     """Check that we can merge from a looped block into a looped match."""
@@ -18,7 +18,7 @@ def test_hook_match_loop(change_dir):
 #     # Assertions in fixture
 #     assert output
 
-# TODO: https://github.com/robcxyz/tackle-box/issues/66
+# TODO: https://github.com/robcxyz/tackle/issues/66
 #  Fix basic block macro functionality
 # def test_hook_match_block_if(change_dir):
 #     """Check that any kind of first level block makes sense."""

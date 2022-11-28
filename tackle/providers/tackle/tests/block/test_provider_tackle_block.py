@@ -36,7 +36,7 @@ def test_provider_system_hook_block_looped(change_dir):
 def test_provider_system_hook_block_block_merge(change_dir):
     """Block with a merge."""
     output = tackle('block-merge.yaml', no_input=True)
-    # TODO: Update tests with https://github.com/robcxyz/tackle-box/issues/51
+    # TODO: Update tests with https://github.com/robcxyz/tackle/issues/51
     # assert output['things'] == 'here'
     assert output['stuff'] == 'things'
 
@@ -44,7 +44,7 @@ def test_provider_system_hook_block_block_merge(change_dir):
 def test_provider_system_hook_block_block(change_dir):
     """Complex block."""
     output = tackle('block.yaml', no_input=True)
-    # TODO: Update tests with https://github.com/robcxyz/tackle-box/issues/51
+    # TODO: Update tests with https://github.com/robcxyz/tackle/issues/51
     assert output['block']['things'] == 'here'
 
 

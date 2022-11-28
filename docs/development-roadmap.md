@@ -1,6 +1,6 @@
 # Development Roadmap
 
-Tackle-box is still a work in progress with the following new features planned.
+Tackle is still a work in progress with the following new features planned.
 
 - [IDE Autocomplete](#ide-autocomplete)
 - [Providers allowing import of jinja extensions](#providers-allowing-import-of-jinja-extensions)

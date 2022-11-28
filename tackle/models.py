@@ -61,7 +61,7 @@ class BaseContext(BaseModel):
         smart_union = True
 
     # TODO: RM after dealing with namespace issue for validators
-    # https://github.com/robcxyz/tackle-box/issues/43
+    # https://github.com/robcxyz/tackle/issues/43
     run_id: str = None
 
     def __init__(self, **data: Any):
@@ -253,7 +253,7 @@ class JinjaHook(BaseModel):
 
     class Config:
         # TODO: Had to add this to get `make test` to run.
-        #  https://github.com/robcxyz/tackle-box/issues/90
+        #  https://github.com/robcxyz/tackle/issues/90
         arbitrary_types_allowed = True
 
     def wrapped_exec(self, *args, **kwargs):

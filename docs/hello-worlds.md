@@ -31,7 +31,7 @@ tackle robcxyz/tackle-hello-world
 
 ### Single line print
 
-Simply use the [print](https://robcxyz.github.io/tackle-box/providers/Console/print/) hook.
+Simply use the [print](https://robcxyz.github.io/tackle/providers/Console/print/) hook.
 ```yaml
 hw->: print Hello world!
 ```
@@ -40,7 +40,7 @@ Anytime a key is suffixed with an arrow going to the right, it means the key is 
 
 ### Print with variables
 
-Using [jinja templating](https://robcxyz.github.io/tackle-box/jinja), the print hook can be called in [three different ways](https://robcxyz.github.io/tackle-box/jinja) using a variable.
+Using [jinja templating](https://robcxyz.github.io/tackle/jinja), the print hook can be called in [three different ways](https://robcxyz.github.io/tackle/jinja) using a variable.
 ```yaml
 words: Hello world!
 expanded:
@@ -55,7 +55,7 @@ jinja_extension->: "{{ print(words) }}"
 
 ### Interactive prompts
 
-There are several types of [prompt](https://robcxyz.github.io/tackle-box/providers/Prompts/) hooks which can also be used.
+There are several types of [prompt](https://robcxyz.github.io/tackle/providers/Prompts/) hooks which can also be used.
 
 ```yaml
 name->: input
@@ -78,7 +78,7 @@ Which looks like this before printing.
 
 ### Loops and conditionals
 
-Hooks can have [loops](https://robcxyz.github.io/tackle-box/hook-methods/#loops), [conditionals](https://robcxyz.github.io/tackle-box/hook-methods/#conditionals), and [other base methods](https://robcxyz.github.io/tackle-box/hook-methods/#methods).
+Hooks can have [loops](https://robcxyz.github.io/tackle/hook-methods/#loops), [conditionals](https://robcxyz.github.io/tackle/hook-methods/#conditionals), and [other base methods](https://robcxyz.github.io/tackle/hook-methods/#methods).
 ```yaml
 words:
   - Hello
@@ -147,7 +147,7 @@ output:
 
 ### Python hooks
 
-Hooks can be [written in python](https://robcxyz.github.io/tackle-box/python-hooks/). Simply add your code to a `hooks` directory and the hook will be available to be called from a tackle file.
+Hooks can be [written in python](https://robcxyz.github.io/tackle/python-hooks/). Simply add your code to a `hooks` directory and the hook will be available to be called from a tackle file.
 ```python
 from tackle import BaseHook
 
@@ -161,7 +161,7 @@ class Greeter(BaseHook):
 
 ### Declarative hooks
 
-Hooks can be [declaratively created](https://robcxyz.github.io/tackle-box/declarative-hooks/) with tackle. Arrows going to the left are basically reusable functions / methods.
+Hooks can be [declaratively created](https://robcxyz.github.io/tackle/declarative-hooks/) with tackle. Arrows going to the left are basically reusable functions / methods.
 
 ```yaml
 greeter<-:
@@ -184,7 +184,7 @@ jinja_filter->: "{{ hello | greeter }}"
 
 ### Strongly typed declarative hooks
 
-Declarative hooks are strongly typed objects with many [declarative fields](https://robcxyz.github.io/tackle-box/declarative-hooks#input-fields).
+Declarative hooks are strongly typed objects with many [declarative fields](https://robcxyz.github.io/tackle/declarative-hooks#input-fields).
 ```yaml
 words<-:
   hi:
@@ -201,7 +201,7 @@ Here we are also using the [values](providers/Context/values.md) hook which can 
 
 ### Declarative hook methods
 
-Declarative hooks can have [methods](https://robcxyz.github.io/tackle-box/declarative-hooks#methods) that extend the base.
+Declarative hooks can have [methods](https://robcxyz.github.io/tackle/declarative-hooks#methods) that extend the base.
 
 ```yaml
 words<-:
@@ -216,7 +216,7 @@ p->: words.say --hi Hello --target world!
 
 ### Declarative hooks inheritance
 
-Declarative hooks also support [inheritance](https://robcxyz.github.io/tackle-box/declarative-hooks#extending-hooks).
+Declarative hooks also support [inheritance](https://robcxyz.github.io/tackle/declarative-hooks#extending-hooks).
 ```yaml
 base<-:
   hi:

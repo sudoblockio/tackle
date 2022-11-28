@@ -1,4 +1,4 @@
-#https://github.com/robcxyz/tackle-box/issues/14
+#https://github.com/robcxyz/tackle/issues/14
 multiline:
   ->: command
   multiline: true

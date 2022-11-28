@@ -94,7 +94,7 @@ class RequestsPostHook(BaseHook, AuthMixin):
         render_by_default=True
     )
     # TODO: Fix alias so input_json -> json
-    #  https://github.com/robcxyz/tackle-box/issues/80
+    #  https://github.com/robcxyz/tackle/issues/80
     input_json: dict = Field(
         False,
         description="Whether to exit on non-200 response.",
@@ -139,7 +139,7 @@ class RequestsPutHook(BaseHook, AuthMixin):
         description="Dictionary, list of tuples, bytes, or file-like object to send in the body of the Request.",
     )
     # TODO: Fix alias so input_json -> json
-    #  https://github.com/robcxyz/tackle-box/issues/80
+    #  https://github.com/robcxyz/tackle/issues/80
     input_json: dict = Field(
         None,
         description="Json data to send in the body of the Request.",
@@ -177,7 +177,7 @@ class RequestsPatchHook(BaseHook, AuthMixin):
         description="Dictionary, list of tuples, bytes, or file-like object to send in the body of the Request.",
     )
     # TODO: Fix alias so input_json -> json
-    #  https://github.com/robcxyz/tackle-box/issues/80
+    #  https://github.com/robcxyz/tackle/issues/80
     input_json: dict = Field(
         None,
         description="Json data to send in the body of the Request.",

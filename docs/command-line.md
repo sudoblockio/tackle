@@ -1,6 +1,6 @@
 # Calling from the Command Line
 
-Tackle-box is extremely flexible on the inputs that it accepts to run against. Basically any file, directory, or repo are acceptable inputs or no input at all. This document describes the logic behind how tackle takes in inputs including how additional args, kwargs, and flags are interpreted from the command line.  
+Tackle is extremely flexible on the inputs that it accepts to run against. Basically any file, directory, or repo are acceptable inputs or no input at all. This document describes the logic behind how tackle takes in inputs including how additional args, kwargs, and flags are interpreted from the command line.  
 
 For how to structure files for a tackle provider, check out [creating providers](./creating-providers.md) or creating self documenting CLIs check out [declarative cli](./declarative-cli.md).
 

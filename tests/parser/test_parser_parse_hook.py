@@ -24,7 +24,7 @@ FIXTURES = [
     ('var-hook.yaml', 'var-hook-output.yaml'),
     ('toml.toml', 'toml.yaml'),
     # # Broken
-    # # TODO: https://github.com/robcxyz/tackle-box/issues/52
+    # # TODO: https://github.com/robcxyz/tackle/issues/52
     # ('bug-mixed-flags.yaml', 'bug-mixed-flags.yaml'),
     # ('document-hooks.yaml', 'document-hooks-expected.yaml'),
 ]

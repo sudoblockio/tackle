@@ -14,7 +14,7 @@ You can contribute in many ways:
 
 ### Create Tackle Providers / Hooks
 
-Providers / Hooks can be either contributed directly to tackle-box as a native provider or as external providers / hooks that can be imported remotely. Hooks that have general use cases can be contributed directly to tackle-box where as hooks that are more specialized should be created as external providers.
+Providers / Hooks can be either contributed directly to tackle as a native provider or as external providers / hooks that can be imported remotely. Hooks that have general use cases can be contributed directly to tackle where as hooks that are more specialized should be created as external providers.
 
 #### Native Providers
 
@@ -22,7 +22,7 @@ Native providers should come with documentation on how to use the hooks by writi
 
 ### Report Bugs
 
-Report bugs at [https://github.com/robcxyz/tackle-box/issues](https://github.com/robcxyz/tackle-box/issues).
+Report bugs at [https://github.com/robcxyz/tackle/issues](https://github.com/robcxyz/tackle/issues).
 
 If you are reporting a bug, please include:
 
@@ -43,7 +43,7 @@ Please do not combine multiple feature enhancements into a single pull request.
 
 ### Write Documentation
 
-Tackle-box could always use more documentation, whether as part of the official tackle-box docs, in docstrings, or even on the web in blog posts, articles, and such.
+Tackle could always use more documentation, whether as part of the official tackle docs, in docstrings, or even on the web in blog posts, articles, and such.
 
 If you want to review your changes on the documentation locally, you can do:
 
@@ -56,7 +56,7 @@ This will compile the documentation, open it in your browser and start watching 
 
 ### Submit Feedback
 
-The best way to send feedback is to file an issue at [https://github.com/robcxyz/tackle-box/issues](https://github.com/robcxyz/tackle-box/issues).
+The best way to send feedback is to file an issue at [https://github.com/robcxyz/tackle/issues](https://github.com/robcxyz/tackle/issues).
 
 If you are proposing a feature:
 
@@ -68,17 +68,17 @@ If you are proposing a feature:
 
 Here's how to set up `tackle` for local development.
 
-1. Fork the `tackle-box` repo on GitHub.
+1. Fork the `tackle` repo on GitHub.
 2. Clone your fork locally:
 
 ```bash
-git clone git@github.com:your_name_here/tackle-box.git
+git clone git@github.com:your_name_here/tackle.git
 ```
 
 3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development:
 
 ```bash
-cd tackle-box/
+cd tackle/
 python3 -m venv env
 source env/bin/activate
 python setup.py install
@@ -222,7 +222,7 @@ Core committers, use this section to:
 
 #### Command-Line Accessible
 
-* Provides a command-line utility that creates projects from tackle-boxes
+* Provides a command-line utility that creates projects from tackle
 * Extremely easy to use without having to think too hard
 * Flexible for more complex use via optional arguments
 
@@ -235,7 +235,7 @@ Core committers, use this section to:
 
 * Sets a standard baseline for project template creators, facilitating reuse
 * Minimizes the learning curve for those who already use Flask or Django
-* Minimizes scope of tackle-box codebase
+* Minimizes scope of tackle codebase
 
 #### Extensible
 
@@ -245,10 +245,10 @@ Being extendable by people with different ideas for Jinja2-based project templat
 * Aim for statelessness
 * Lets anyone write more opinionated tools
 
-Freedom for tackle-box users to build and extend.
+Freedom for tackle users to build and extend.
 
-* No officially-maintained tackle-box providers, only ones by individuals
-* Commercial project-friendly licensing, allowing for private tackle-box and private tackle-box-based tools
+* No officially-maintained tackle providers, only ones by individuals
+* Commercial project-friendly licensing, allowing for private tackle and private tackle-based tools
 
 #### Inclusive
 
@@ -266,7 +266,7 @@ Freedom for tackle-box users to build and extend.
 
 #### VCS-Hosted Templates
 
-Tackle-box providers are intentionally hosted VCS repos as-is.
+Tackle providers are intentionally hosted VCS repos as-is.
 
 * They are easily forkable
 * It's easy for users to browse forks and files
@@ -304,7 +304,7 @@ New features require a +1 from 2 other core committers (besides yourself).
 
 ### Process: Roadmap
 
-The roadmap located [here](https://github.com/robcxyz/tackle-box/milestones?direction=desc&sort=due_date&state=open)
+The roadmap located [here](https://github.com/robcxyz/tackle/milestones?direction=desc&sort=due_date&state=open)
 
 Due dates are flexible. Core committers can change them as needed. Note that GitHub sort on them is buggy.
 
@@ -374,7 +374,7 @@ Exceptions:
 
 Contributors may be given core commit privileges. Preference will be given to those with:
 
-1. Past contributions to cookiecutter or tackle-box and other open-source projects. Contributions to tackle-box include both code (both accepted and pending) and friendly participation in the issue tracker. Quantity and quality are considered.
+1. Past contributions to cookiecutter or tackle and other open-source projects. Contributions to tackle include both code (both accepted and pending) and friendly participation in the issue tracker. Quantity and quality are considered.
 2. A coding style that the other core committers find simple, minimal, and clean.
 3. Access to resources for cross-platform development and testing.
 4. Time to devote to the project regularly.

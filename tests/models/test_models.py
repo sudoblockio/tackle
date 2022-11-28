@@ -48,7 +48,7 @@ def temporary_uninstall():
     return f
 
 
-# https://github.com/robcxyz/tackle-box/issues/47
+# https://github.com/robcxyz/tackle/issues/47
 # def test_imports_import_native_providers(temporary_uninstall):
 #     """
 #     Validate that when we uninstall requests and import native providers that the

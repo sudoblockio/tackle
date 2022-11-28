@@ -9,12 +9,12 @@ from tackle.utils.command import unpack_args_kwargs_list
 
 
 def main(raw_args=None):
-    """Run a tackle box."""
+    """Run a tackle."""
     if raw_args is None:
         raw_args = sys.argv[1:]
 
     parser = argparse.ArgumentParser(
-        description="tackle-box is a DSL for creating declarative CLIs. Call tackle "
+        description="tackle is a DSL for creating declarative CLIs. Call tackle "
         "against files, directories, or repos with yaml/toml/json tackle "
         "files."
     )
@@ -100,7 +100,7 @@ def main(raw_args=None):
         "some dict to use with keys to additionally use when parsing a file.",
     )
     parser.add_argument(
-        '--version', action='version', version=f'tackle-box {__version__}'
+        '--version', action='version', version=f'tackle {__version__}'
     )
 
     args, unknown_args = parser.parse_known_args(raw_args)

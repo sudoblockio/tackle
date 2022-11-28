@@ -112,7 +112,7 @@ expanded:
 
 ## Hook Keyword Args
 
-In some cases, it is useful to have additional keyword args mapped to a specific variable. For instance with the [tackle hook](https://github.com/robcxyz/tackle-box/blob/main/tackle/providers/tackle/hooks/tackle.py) which wraps the tackle main call, the field, `kwargs: str = "extra_context"` allows additional ,
+In some cases, it is useful to have additional keyword args mapped to a specific variable. For instance with the [tackle hook](https://github.com/robcxyz/tackle/blob/main/tackle/providers/tackle/hooks/tackle.py) which wraps the tackle main call, the field, `kwargs: str = "extra_context"` allows additional ,
 
 ## Hooks in Jinja
 

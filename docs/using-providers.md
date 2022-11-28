@@ -22,7 +22,7 @@ call another tackle->: tackle path/to/local/or/remote/provider
 
 Note that at this time additional arguments / keys / flags do not work the same as when calling from the [command line](command-line.md#additional-arguments-keys-flags) and instead act like additional arguments / keys / flags for hooks and instead behave like [normal hook calls](writing-tackle-files.md#hook-call-forms).
 
-See [issue #83](https://github.com/robcxyz/tackle-box/issues/83) for details about mapping unknown arguments.
+See [issue #83](https://github.com/robcxyz/tackle/issues/83) for details about mapping unknown arguments.
 
 ### Importing hooks from a provider
 

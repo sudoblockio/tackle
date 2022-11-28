@@ -53,6 +53,6 @@
 {% if issue_numbers|length > 0 %}
 > Warning: Tracking issues relating to this hook
     {% for i in issue_numbers %}
-        - [{{ i }}](https://github.com/robcxyz/tackle-box/issues/{{ i }})
+        - [{{ i }}](https://github.com/robcxyz/tackle/issues/{{ i }})
     {% endfor %}
 {% endif %}

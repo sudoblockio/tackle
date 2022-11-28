@@ -87,7 +87,7 @@ Notice how the result of the default hook is made available to be used for rende
 
 Default hooks, like other declarative hooks, can have methods that can be embedded within one another. For given the example from the top, when running `tackle example.yaml greeting-method help`, we get a help screen like this:
 
-[//]: # (TODO: Update this with https://github.com/robcxyz/tackle-box/issues/101)
+[//]: # (TODO: Update this with https://github.com/robcxyz/tackle/issues/101)
 
 ```text
 usage: tackle example.yaml greeting-method
@@ -95,7 +95,7 @@ usage: tackle example.yaml greeting-method
 A method that greets
 ```
 
-> Note: Issue [#101](https://github.com/robcxyz/tackle-box/issues/101) updating this
+> Note: Issue [#101](https://github.com/robcxyz/tackle/issues/101) updating this
 
 ## Normal Hooks
 

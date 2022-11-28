@@ -86,19 +86,19 @@ if sys.argv[-1] == 'readme':
     sys.exit()
 
 setup(
-    name='tackle-box',
+    name='tackle',
     version=get_version(os.path.join('tackle', '__init__.py')),
     description=(
-        'Tackle box is a declarative DSL for building modular workflows and code '
+        'Tackle is a declarative DSL for building modular workflows and code '
         'generators. Tool is plugins based and can easily be extended by writing '
-        'additional hooks or importing external providers creating a web of '
-        'interoperable CLIs.'
+        'additional hooks or importing external providers that can be turned into a '
+        'self documenting CLI, all out of yaml, json, toml.'
     ),
     long_description=readme,
     long_description_content_type='text/markdown',
     author='Rob Cannon',
     author_email='robc.io.opensource@gmail.com',
-    url='https://github.com/robcxyz/tackle-box',
+    url='https://github.com/robcxyz/tackle',
     packages=find_packages(exclude=['tests*', 'logo*', 'docs*', '.github*']),
     package_dir={'tackle': 'tackle'},
     entry_points={'console_scripts': ['tackle = tackle.cli:main']},

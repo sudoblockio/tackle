@@ -1,5 +1,5 @@
 # print
-[Source](https://github.com/robcxyz/tackle-box/blob/main/tackle/providers/console/hooks/prints.py)
+[Source](https://github.com/robcxyz/tackle/blob/main/tackle/providers/console/hooks/prints.py)
 
 Hook for printing an input and returning the output. [Link](https://docs.python.org/3/library/functions.html#print)
 

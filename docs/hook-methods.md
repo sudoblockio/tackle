@@ -57,7 +57,7 @@ printer:
       type: things
 ```
 
-Additionally, jinja hooks can be used to do some logic that could help with some patterns. For instance the [keys](https://robcxyz.github.io/tackle-box/providers/Context/keys/) hook can be used to create a list of keys from a map which can be used as an iterand.
+Additionally, jinja hooks can be used to do some logic that could help with some patterns. For instance the [keys](https://robcxyz.github.io/tackle/providers/Context/keys/) hook can be used to create a list of keys from a map which can be used as an iterand.
 
 ```yaml
 inputs:
@@ -172,7 +172,7 @@ hello:
 
 > Currently only jinja hooks are supported as string values. Future could add support for `else->/else_>` compact hook calls.
 
-> Checkout the [match](https://robcxyz.github.io/tackle-box/providers/Logic/match/) hook if needing to do a lot of conditionals which can satisfy regexes when catching cases.
+> Checkout the [match](https://robcxyz.github.io/tackle/providers/Logic/match/) hook if needing to do a lot of conditionals which can satisfy regexes when catching cases.
 
 ## Methods
 
@@ -188,7 +188,7 @@ contents:
 
 ### `merge`
 
-If the output of the hook call is a map, then one can merge that map into the parent keys.  For instance given this [`block` hook](https://robcxyz.github.io/tackle-box/providers/Tackle/block/):
+If the output of the hook call is a map, then one can merge that map into the parent keys.  For instance given this [`block` hook](https://robcxyz.github.io/tackle/providers/Tackle/block/):
 
 ```yaml
 stuff: things
@@ -225,4 +225,4 @@ a failed command:
 
 ### `defer` - Coming soon
 
-Future versions of tackle fill have a `defer` functionality similar to Go where one can declare deferred actions that will run if there is a script error or when a tackle file / execution is finished.  Details still [being worked out](https://github.com/robcxyz/tackle-box/issues/37).
+Future versions of tackle fill have a `defer` functionality similar to Go where one can declare deferred actions that will run if there is a script error or when a tackle file / execution is finished.  Details still [being worked out](https://github.com/robcxyz/tackle/issues/37).

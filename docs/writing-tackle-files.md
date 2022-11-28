@@ -4,7 +4,7 @@ This document aims to provide an overview of the core parsing logic for tackle f
 
 ## Basics
 
-Tackle-box **sequentially** parses **arbitrary** json or yaml files with the parser only changing the data structure when hooks are called denoted by forward arrows, ie `->`/`_>` at the end of a key / item in a list. Hooks can perform a variety of different actions such as prompting for inputs, making web requests, or generating code and return values that are stored in the key they were called from. After any key / value / item in a list is parsed, it is available to be referenced / reused in additional hook calls through jinja rendering.
+Tackle **sequentially** parses **arbitrary** json or yaml files with the parser only changing the data structure when hooks are called denoted by forward arrows, ie `->`/`_>` at the end of a key / item in a list. Hooks can perform a variety of different actions such as prompting for inputs, making web requests, or generating code and return values that are stored in the key they were called from. After any key / value / item in a list is parsed, it is available to be referenced / reused in additional hook calls through jinja rendering.
 
 ### Hook Call Forms
 
@@ -53,7 +53,7 @@ print->: print Hello {{compact}} Hello {{expanded}}
 
 ### Control Flow
 
-Tackle-box also enables conditionals, loops, and other [base methods](hook-methods.md) that are also able to be expressed in both hook call forms.  For instance here we can see a `for` loop in both forms:
+Tackle also enables conditionals, loops, and other [base methods](hook-methods.md) that are also able to be expressed in both hook call forms.  For instance here we can see a `for` loop in both forms:
 
 ```yaml
 ttd:

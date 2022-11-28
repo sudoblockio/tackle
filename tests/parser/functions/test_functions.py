@@ -84,7 +84,7 @@ def test_function_method_args(change_curdir_fixtures):
 def test_function_method_call_from_default(change_curdir_fixtures):
     """
     Check that we can create a method that takes args.
-    See https://github.com/robcxyz/tackle-box/issues/99
+    See https://github.com/robcxyz/tackle/issues/99
     """
     output = tackle('method-call-from-default.yaml', target='foo')
     assert output['hi'] == 'Hello foo'

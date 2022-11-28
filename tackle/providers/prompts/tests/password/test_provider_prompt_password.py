@@ -1,6 +1,6 @@
 # from tackle.main import tackle
 #
-# # TODO: https://github.com/robcxyz/tackle-box/issues/46
+# # TODO: https://github.com/robcxyz/tackle/issues/46
 #
 # def test_provider_prompts_password_hook(change_dir, mocker):
 #     mocker.patch(

@@ -18,4 +18,4 @@ Most code generators out there have only one way of building a render context.  
   - Input spec
   - User points to an OpenAPI spec
 
-Tackle-box being more of a DSL allows all these configuration options in a completely modular way with the only catch, that you need to explicitly declare all the functionality in a tackle file.  This tutorial walks through how to setup code generators based on each of the above patterns.
+Tackle being more of a DSL allows all these configuration options in a completely modular way with the only catch, that you need to explicitly declare all the functionality in a tackle file.  This tutorial walks through how to setup code generators based on each of the above patterns.
