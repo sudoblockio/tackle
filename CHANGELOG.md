@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.4.3](https://github.com/robcxyz/tackle/compare/v0.4.2...v0.4.3) (2022-11-28)
+
+
+### Bug Fixes
+
+* duplicate hook  to ([4828bb5](https://github.com/robcxyz/tackle/commit/4828bb587996355f0e557af153bdeb637817ab70))
+* prompt in  hook ([4bbbd23](https://github.com/robcxyz/tackle/commit/4bbbd23447f4825c468aa169d8dee289961f1e62))
+
+
+### Refactors
+
+* tackle-box to tackle ([3977a85](https://github.com/robcxyz/tackle/commit/3977a85646fecdcfc4c1d1d15abf3698ea3d9bf3))
+
 ## [0.4.2](https://github.com/robcxyz/tackle-box/compare/v0.4.1...v0.4.2) (2022-11-14)
 
 
