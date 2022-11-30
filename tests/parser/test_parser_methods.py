@@ -1,14 +1,53 @@
+import pytest
 from ruamel.yaml import YAML
 from tackle import tackle
+from tackle import exceptions
 
 
 def test_parser_methods_merge(change_curdir_fixtures):
+    """Verify we can run tackle against a fixture and merge it up to equal the same."""
     yaml = YAML()
     with open('petstore.yaml') as f:
         expected_output = yaml.load(f)
 
     output = tackle('merge-petstore-compact.yaml')
     assert output == expected_output
+
+
+def test_parser_methods_merge_list_value(change_curdir_fixtures):
+    """Validate that when in a list, running a hook with a merge overwrites the list."""
+    # Note: this is kind of strong... But what else is it supposed to mean? Don't use
+    # merge for values...
+    output = tackle('merge-list-value.yaml')
+    assert output['resources'] == 'foo'
+
+
+def test_parser_methods_merge_list_loop(change_curdir_fixtures):
+    """
+    Validate that when in a list, running a hook in a for loop with a merge appends to
+     the list.
+    """
+    output = tackle('merge-list-loop.yaml')
+    assert len(output['resources']) == 5
+
+
+def test_parser_methods_merge_dict_loop_dict(change_curdir_fixtures):
+    """
+    Validate that when in a dict, running a hook in a for loop with a merge adds new
+     keys to the output.
+    """
+    # TODO: Associated with https://github.com/robcxyz/tackle/issues/107
+    output = tackle('merge-dict-loop-dict.yaml')
+    assert output['resources']['foo-2']
+
+
+def test_parser_methods_merge_dict_loop_exception(change_curdir_fixtures):
+    """
+    Validate exception that when in a dict, running a hook in a for loop with a merge
+     with the hook output being a value.
+    """
+    with pytest.raises(exceptions.AppendMergeException):
+        tackle('merge-dict-loop-exception.yaml')
 
 
 def test_parser_methods_try(chdir):

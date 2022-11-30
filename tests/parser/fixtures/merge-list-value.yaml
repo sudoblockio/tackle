@@ -1,0 +1,6 @@
+resources:
+  - name: operator
+    type: helm
+  - name: Cluster role
+    type: manifest
+  - ->: literal foo --merge
