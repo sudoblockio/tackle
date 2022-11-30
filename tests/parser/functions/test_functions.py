@@ -128,6 +128,19 @@ def test_function_import_func_from_hooks_dir(change_curdir_fixtures):
     # assert o['jinja_filter'] == 'things'
 
 
+def test_function_import_func_from_hooks_dir_context_preserved(change_curdir_fixtures):
+    """
+    Check that when we run inside a nested dir, that a declarative hook carries context
+    such as calling_directory.
+    """
+    os.chdir(os.path.join('func-provider', 'a-dir'))
+    o = tackle()
+    assert o['compact'] == 'a-default'
+    assert o['jinja_extension_default'] == 'a-default'
+    assert o['jinja_extension'] == 'things'
+    assert o['calling_dir'].endswith('a-dir')
+
+
 def test_function_method_no_default(change_curdir_fixtures):
     """Assert that method calls with base fields with no default can be run."""
     o = tackle('method-call-no-default.yaml')

@@ -60,6 +60,7 @@ def create_jinja_hook(context: 'Context', hook: 'ModelMetaclass') -> 'JinjaHook'
             private_hooks=context.private_hooks,
             key_path=context.key_path,
             verbose=context.verbose,
+            env_=context.env_,
         ),
     )
 

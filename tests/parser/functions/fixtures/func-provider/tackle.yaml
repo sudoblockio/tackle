@@ -6,3 +6,5 @@ jinja_extension->: var {{a_funky(stuff)}}
 compact->: a_funky
 compact_arg->: a_funky stuff
 #jinja_filter->: var {{stuff|a_funky}}
+
+calling_dir->: {{calling_directory}}

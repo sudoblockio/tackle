@@ -1086,6 +1086,7 @@ def parse_tmp_context(context: Context, element: Any, existing_context: dict):
         calling_directory=context.calling_directory,
         calling_file=context.calling_file,
         verbose=context.verbose,
+        env_=context.env_,
     )
     walk_sync(context=tmp_context, element=element)
 
@@ -1093,7 +1094,7 @@ def parse_tmp_context(context: Context, element: Any, existing_context: dict):
 
 
 def function_walk(
-    self: Type[ModelMetaclass],
+    self: 'Context',
     input_element: Union[list, dict],
     return_: Union[list, dict] = None,
 ) -> Any:
@@ -1140,6 +1141,7 @@ def function_walk(
         no_input=self.no_input,
         calling_directory=self.calling_directory,
         calling_file=self.calling_file,
+        env_=self.env_,
     )
     walk_sync(context=tmp_context, element=input_element.copy())
 
@@ -1287,8 +1289,12 @@ def create_function_model(
             **function_input.dict(include={'args', 'render_exclude'}),
             **{'function_dict': (dict, function_dict)},  # Preserve for `extends` key
             # https://github.com/robcxyz/tackle/issues/99
-            **{'public_hooks': context.public_hooks},
-            **{'private_hooks': context.private_hooks},
+            public_hooks=context.public_hooks,
+            private_hooks=context.private_hooks,
+            calling_directory=context.calling_directory,
+            calling_file=context.calling_file,
+            # Causes TypeError in pydantic -> __subclasscheck__
+            # env_=context.env_,
         )
     except NameError as e:
         if 'shadows a BaseModel attribute' in e.args[0]:
