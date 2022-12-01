@@ -16,7 +16,7 @@ from tackle.utils.dicts import merge
 class YamlHook(BaseHook):
     """
     Hook for modifying a yaml in place (ie read, transform, and write back to the file
-    in one operation).
+     in one operation). WIP -> Contributions welcome.
     """
 
     hook_type: str = 'yaml_in_place'

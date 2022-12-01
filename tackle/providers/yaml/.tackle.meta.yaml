@@ -27,3 +27,53 @@ hook_examples:
   yaml:
     - ->: var "{{examples[0]}}" --no_recursion
     - ->: var "{{examples[1]}}" --no_recursion
+
+  yaml_in_place:
+# TODO: ERROR
+
+#    - description: Write to a file with a filter
+#      content: |
+#        a_map:
+#          key: value
+#          stuff: things
+#          foo: bar
+#
+#        filter a map and write to file:
+#          _>: yaml_in_place
+#          path: file-to-write.yaml
+#          content: "{{ a_map }}"
+#          filter:
+#            - foo
+#            - .*key$  # Takes regex
+#      output: |
+#        # file-to-write.yaml
+
+    - description: Update keys in a yaml file
+      content: |
+        update a key in output.yaml:
+          _>: yaml_in_place output.yaml --in_place
+          update:
+            key-to-update:
+              stuff: things
+
+    - description: Filter out items in a list
+      content: |
+        things:
+          - stuff
+          - things
+          - _stuff
+          - _thing
+          - _foo
+          - bar_
+
+        out:
+          ->: yaml_in_place
+          contents: "{{ things }}"
+          path: output.yaml
+          remove:
+           - ^_
+           - _$
+      output: |
+        # output.yaml -> just a list
+        - stuff
+        - things

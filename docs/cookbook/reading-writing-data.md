@@ -26,12 +26,14 @@ expanded:
 
 ### The `yaml_in_place` / `json_in_place` / `toml_in_place` hooks
 
+> Note this is a WIP. Input welcome.
+
 Yaml / json / toml can be updated in place, ie without having to both read and write the file over consecutive hook calls.
 
 **Docs**
 
-- [`yaml_in_place`][../providers/Yaml/yaml_in_place.md]
-- [`json_in_place`][../providers/Json/json_in_place.md]
-- [`toml_in_place`][../providers/Toml/toml_in_place.md]
+- [`yaml_in_place`](../providers/Yaml/yaml_in_place.md)
+- [`json_in_place`](../providers/Json/json_in_place.md) - WIP
+- [`toml_in_place`](../providers/Toml/toml_in_place.md) - WIP
 
-> NOTE: These are still a WIP
+> NOTE: These are still a WIP. Focus is on yaml_in_place and then will be shared by json and toml.
