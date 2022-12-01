@@ -7,7 +7,7 @@ class ListdirHook(BaseHook):
     """Hook for `listdir`. Lists the contents of a directory."""
 
     hook_type: str = 'listdir'
-    path: str = Field(None, description="Path to directory to list contents.")
+    path: str = Field('.', description="Path to directory to list contents.")
     sort: bool = Field(False, description="Boolean to sort the output")
     ignore_hidden_files: bool = Field(
         None, description="Boolean to ignore hidden files"
