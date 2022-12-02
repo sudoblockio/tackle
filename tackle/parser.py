@@ -906,7 +906,15 @@ def find_run_hook_method(
                 "Can't find the ", context=context
             ) from None
 
-    return hook(**kwargs, **arg_dict).exec()
+    try:
+        Hook = hook(**kwargs, **arg_dict)
+    except ValidationError as e:
+        raise exceptions.MalformedFunctionFieldException(
+            str(e),
+            function_name=hook.identifier.split(".")[-1],
+            context=context,
+        ) from None
+    return Hook.exec()
 
 
 def raise_if_args_exist(

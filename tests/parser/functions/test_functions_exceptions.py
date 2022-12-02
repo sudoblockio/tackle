@@ -54,3 +54,11 @@ def test_parser_functions_raises_hook_kwarg_missing_default(chdir):
     chdir('exceptions')
     with pytest.raises(exceptions.UnknownInputArgumentException):
         tackle("hook-kwarg-missing-default.yaml", baz='bang')
+
+
+def test_parser_functions_raises_validation_missing_field(chdir):
+    from tackle.cli import main
+
+    chdir('exceptions')
+    with pytest.raises(exceptions.MalformedFunctionFieldException):
+        main(["missing-field.yaml", "stuff"])
