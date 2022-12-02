@@ -28,3 +28,9 @@ def test_provider_paths_base_dir_name(change_dir):
 
     assert output['base'] == 'tests'
     assert 'paths' in output['dir']
+
+
+def test_provider_paths_glob(change_dir):
+    output = tackle('glob.yaml')
+
+    assert 'dirs' in output['g']
