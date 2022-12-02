@@ -1127,7 +1127,14 @@ def function_walk(
                 context=self, element={i: value}, existing_context=existing_context
             )
             existing_context.update(output)
-            input_element[i] = output[i]
+            try:
+                input_element[i] = output[i]
+            except KeyError:
+                raise exceptions.FunctionCallException(
+                    f"Error parsing declarative hook field='{i}'. Must produce an "
+                    f"output for the field's default.",
+                    function=self,
+                ) from None
         else:
             existing_context.update({i: getattr(self, i)})
 

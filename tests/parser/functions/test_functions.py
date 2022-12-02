@@ -133,7 +133,7 @@ def test_function_import_func_from_hooks_dir_context_preserved(change_curdir_fix
     Check that when we run inside a nested dir, that a declarative hook carries context
     such as calling_directory.
     """
-    os.chdir(os.path.join('func-provider', 'a-dir'))
+    os.chdir(os.path.join('func-provider-hook', 'a-dir'))
     o = tackle()
     assert o['compact'] == 'a-default'
     assert o['jinja_extension_default'] == 'a-default'
