@@ -1,6 +1,7 @@
 import pytest
 
 from tackle import tackle
+from tackle.cli import main
 from tackle import exceptions
 
 
@@ -57,8 +58,12 @@ def test_parser_functions_raises_hook_kwarg_missing_default(chdir):
 
 
 def test_parser_functions_raises_validation_missing_field(chdir):
-    from tackle.cli import main
-
     chdir('exceptions')
     with pytest.raises(exceptions.MalformedFunctionFieldException):
         main(["missing-field.yaml", "stuff"])
+
+
+def test_parser_functions_raises_(chdir):
+    chdir('exceptions')
+    with pytest.raises(exceptions.MalformedFunctionFieldException):
+        main(["str-value.yaml", "stuff"])

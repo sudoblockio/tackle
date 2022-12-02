@@ -1196,15 +1196,23 @@ def create_function_model(
     context: 'Context', func_name: str, func_dict: dict
 ) -> Type[BaseFunction]:
     """Create a model from the function input dict."""
+    if func_name.endswith(('<-', '<_')):
+        func_name = func_name[:-2]
+
     if func_dict is None:
         raise exceptions.EmptyFunctionException(
             "Can't have an empty function", context=context, function_name=func_name
         )
+    if not isinstance(func_dict, dict):
+        raise exceptions.MalformedFunctionFieldException(
+            "Input to a declarative hook must be a map. This could change in future"
+            " versions.",
+            context=context,
+            function_name=func_name,
+        ) from None
+
     # Macro to expand all keys properly so that a field's default can be parsed
     func_dict = function_field_to_parseable_macro(func_dict, context, func_name)
-
-    if func_name.endswith(('<-', '<_')):
-        func_name = func_name[:-2]
 
     # Implement inheritance
     if 'extends' in func_dict and func_dict['extends'] is not None:
