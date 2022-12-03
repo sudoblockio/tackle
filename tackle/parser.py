@@ -539,7 +539,7 @@ def evaluate_args(
     TODO: This needs to be re-thought. Right now we parse the inputs without regard
      for the types of the argument mapping. What could be better is if we know the types
      of the arg mapping ahead of time and then try to assemble the most logical mapping
-     afterwards. So if the mapping consists of a [str, list], then the if the first
+     afterwards. So if the mapping consists of a [str, list], then if the first
      args are strs then we can ignore the list part. Right now it would just join all
      the strings together if they are part of last arg mapping.
     TODO: Improve error handling.
@@ -548,6 +548,9 @@ def evaluate_args(
         - Single types then into unions?
     - If type cannot be infered (ie Any) then do ast as literal
     """
+    # Flag to inform if we are at end of args and need to pop the rest
+    pop_all: bool = False
+
     hook_args: list = Hook.__fields__['args'].default
     for i, v in enumerate(args):
         # Iterate over the input args
@@ -560,19 +563,23 @@ def evaluate_args(
             elif Hook.__fields__[hook_args[i]].type_ == str:
                 # Was parsed on spaces so reconstructed.
                 value = ' '.join(args[i:])
+                pop_all = True
             elif Hook.__fields__[hook_args[i]].type_ in (bool, float, int):
                 # TODO: Incomplete
                 value = args[i]
             elif isinstance(Hook.__fields__[hook_args[i]], list):
                 # If list then all the remaining items
                 value = args[i:]
+                pop_all = True
             elif isinstance(v, str):
                 # Make assumption the rest of the args can be reconstructed as above
                 value = ' '.join(args[i:])
+                pop_all = True
             elif isinstance(v, (bool, float, int)):
                 # TODO: Incomplete
                 if len(args[i:]) > 1:
                     value = args[i:]
+                    pop_all = True
                 else:
                     value = args[i]
             else:
@@ -585,7 +592,10 @@ def evaluate_args(
                     ) from None
                 value = args[i]
             hook_dict[hook_args[i]] = value
-            args.pop(0)
+            if pop_all:
+                args.clear()
+            else:
+                args.pop(0)
             return
         else:
             # The hooks arguments are indexed
@@ -899,12 +909,21 @@ def find_run_hook_method(
         elif arg == 'help':
             # Exit 0
             run_help(context=context, hook=hook)
-        elif 'args' in hook.__fields__:
-            evaluate_args(args, arg_dict, Hook=hook, context=context)
-        else:
+        # elif 'args' not in hook.__fields__:
+        elif hook.__fields__['args'].default == []:  # noqa
+            hook_name = hook.identifier.split('.')[-1]
+            if hook_name == '':
+                msg = "default hook"
+            else:
+                msg = f"hook='{hook_name}'"
             raise exceptions.UnknownInputArgumentException(
-                "Can't find the ", context=context
+                f"The {msg} was supplied the arg='{arg}' and does not take any "
+                "arguments. Exiting.",
+                context=context,
             ) from None
+
+    if 'args' in hook.__fields__:
+        evaluate_args(args, arg_dict, Hook=hook, context=context)
 
     try:
         Hook = hook(**kwargs, **arg_dict)

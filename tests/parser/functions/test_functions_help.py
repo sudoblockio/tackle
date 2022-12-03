@@ -105,5 +105,5 @@ def test_function_cli_tackle_help_with_arg(chdir):
 def test_function_cli_tackle_arg_error(chdir):
     """Check that when we give a bad key, even with help we get an exception."""
     chdir(os.path.join('fixtures', 'a-tackle'))
-    with pytest.raises(exceptions.UnknownArgumentException):
+    with pytest.raises(exceptions.UnknownInputArgumentException):
         tackle('bad-key', 'help')

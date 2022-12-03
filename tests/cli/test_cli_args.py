@@ -3,6 +3,7 @@ from tackle.cli import main
 
 COMMANDS = [
     (['global-kwarg.yaml', '--key_a', '"stuff and things"'], 'stuff and things'),
+    (['input.yaml', 'bar', 'baz', '-pf', 'yaml'], 'foo: bar baz'),
 ]
 
 
@@ -10,7 +11,8 @@ COMMANDS = [
 def test_cli_commands(change_curdir_fixtures, command, expected_output, capsys):
     """Assert output comes out of cli."""
     main(command)
-    assert expected_output in capsys.readouterr().out
+    output = capsys.readouterr().out
+    assert expected_output in output
 
 
 def test_cli_command_find_in_parent(chdir_fixture, capsys):

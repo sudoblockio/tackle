@@ -49,11 +49,8 @@ PRINTS = ["--print", "-p"]
 
 
 @pytest.mark.parametrize("input_string", PRINTS)
-def test_cli_parse_args_print_option(
-    mocker, change_curdir_fixtures, capsys, input_string
-):
+def test_cli_parse_args_print_option(change_curdir_fixtures, capsys, input_string):
     """When no arg is given we should find the closest tackle file."""
-    mocker.patch("tackle.main.tackle", autospec=True, return_value={})
     main([input_string])
     assert '{"stuff": "things"}' in capsys.readouterr().out
 

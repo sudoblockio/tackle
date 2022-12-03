@@ -37,3 +37,10 @@ def test_function_model_extraction_in_directory(
     output = capsys.readouterr().out
 
     assert json.loads(output) == expected_output
+
+
+def test_function_cli_multiple_args(change_curdir_fixtures, capsys):
+    main(['supplied-args-param-str.yaml', 'foo', 'bing', 'bang', '-pf', 'yaml'])
+    output = capsys.readouterr().out
+
+    assert 'bar: bing bang' in output
