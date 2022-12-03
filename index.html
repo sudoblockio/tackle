@@ -3354,7 +3354,7 @@
 - Generic utilities like SSH registries and dotfile managers
 - Combinations of all of the above and anything else you can think of</p>
 <blockquote>
-<p>If this project gets enough adoption / stars, it will be re-written in a compiled language. </p>
+<p>If this project gets enough adoption / stars, it will be re-written in a compiled language.</p>
 </blockquote>
 <h3 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h3>
 <ul>
@@ -3394,16 +3394,17 @@ pip install tackle
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Hello</span><span class="w"></span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cruel</span><span class="w"></span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">world!</span><span class="w"></span>
-<span class="nt">one liner-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print --for the.words --if &quot;item != &#39;cruel&#39;&quot; {{item}}</span><span class="w"></span>
+<span class="nt">one liner-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print {{item}} --for the.words --if &quot;item != &#39;cruel&#39;&quot;</span><span class="w"></span>
 <span class="nt">multiple lines</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print</span><span class="w"></span>
+<span class="w">  </span><span class="nt">objects</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="nv">item</span><span class="p p-Indicator">}}</span><span class="w"></span>
 <span class="w">  </span><span class="nt">for</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Hello</span><span class="w"></span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">world!</span><span class="w"></span>
+<span class="w">  </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">item != &#39;cruel&#39;</span><span class="w"></span>
 <span class="c1"># Or combinations of the above with other methods like try/except</span><span class="w"></span>
 </code></pre></div></p>
-<p>New hooks can be <a href="https://robcxyz.github.io/tackle/python-hooks/">made in python</a>
- which under the hood is a <a href="https://github.com/pydantic/pydantic">pydantic</a> model.</p>
+<p>New hooks can be <a href="https://robcxyz.github.io/tackle/python-hooks/">made in python</a> which under the hood is a <a href="https://github.com/pydantic/pydantic">pydantic</a> model.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">tackle</span> <span class="kn">import</span> <span class="n">BaseHook</span>
 
 <span class="k">class</span> <span class="nc">Greeter</span><span class="p">(</span><span class="n">BaseHook</span><span class="p">):</span>
@@ -3425,7 +3426,7 @@ pip install tackle
 <span class="w">    </span><span class="nt">p-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print {{expression}}</span><span class="w"></span>
 <span class="w">  </span><span class="nt">return</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">expression</span><span class="w"></span>
 </code></pre></div>
-<p>And both can be <a href="https://robcxyz.github.io/tackle/writing-tackle-files/">called in the same way</a>.</p>
+<p>And both can be <a href="https://robcxyz.github.io/tackle/writing-tackle-files/">called the same way</a>.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">hello</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">world!</span><span class="w"></span>
 <span class="nt">With a flag-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">greeter --target {{hello}}</span><span class="w"></span>
 <span class="nt">Target in argument-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">greeter {{hello}}</span><span class="w"></span>
@@ -3436,7 +3437,7 @@ pip install tackle
 <span class="c1"># Or combinations jinja and compact / expanded hooks allowing chaining of hook calls.  </span><span class="w"></span>
 </code></pre></div>
 <p>With the declarative hooks being callable from the command line:</p>
-<div class="highlight"><pre><span></span><code>tackle hello.yaml --target world!
+<div class="highlight"><pre><span></span><code>tackle hello.yaml greeter --target world!
 <span class="c1"># Or from a github repo</span>
 tackle robcxyz/tackle-hello-world --checkout v0.1.0
 </code></pre></div>
