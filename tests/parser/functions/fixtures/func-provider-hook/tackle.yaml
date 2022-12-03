@@ -1,0 +1,11 @@
+
+<-:
+  stuff: things
+
+  jinja_extension_default->: var {{a_funky()}}
+  jinja_extension->: var {{a_funky(stuff)}}
+  compact->: a_funky
+  compact_arg->: a_funky stuff
+  #jinja_filter->: var {{stuff|a_funky}}
+
+  calling_dir->: "{{calling_directory}}"
