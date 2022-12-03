@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.4.4](https://github.com/robcxyz/tackle/compare/v0.4.3...v0.4.4) (2022-12-03)
+
+
+### Bug Fixes
+
+* carry call_directory and env through hook calls ([cfe1431](https://github.com/robcxyz/tackle/commit/cfe1431c4031218e4d4273e9e58e2371f789fdc7))
+* error parsing multiple args in declarative hook [#106](https://github.com/robcxyz/tackle/issues/106) ([6181275](https://github.com/robcxyz/tackle/commit/6181275184dd0829115becb2957cfca73647b0b4))
+
+
+### Provider Changes
+
+* add default to listdir path ([30357ce](https://github.com/robcxyz/tackle/commit/30357ce4aa222aa5112407056652222022f60139))
+* add glob hook ([1a4b20f](https://github.com/robcxyz/tackle/commit/1a4b20f46c8d9f87b9888e31ccbdc60f6e5b4014))
+
 ## [0.4.3](https://github.com/robcxyz/tackle/compare/v0.4.2...v0.4.3) (2022-11-28)
 
 
