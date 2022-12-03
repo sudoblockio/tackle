@@ -29,7 +29,7 @@ Tackle is an experimental DSL for building modular code generators and declarati
 
 [//]: # (- Declarative makefile alternatives for advanced toolchain management)
 
-> If this project gets enough adoption / stars, it will be re-written in a compiled language. 
+> If this project gets enough adoption / stars, it will be re-written in a compiled language.
 
 ### Features
 
@@ -79,17 +79,18 @@ the:
     - Hello
     - cruel
     - world!
-one liner->: print --for the.words --if "item != 'cruel'" {{item}}
+one liner->: print {{item}} --for the.words --if "item != 'cruel'"
 multiple lines:
   ->: print
+  objects: {{item}}
   for:
     - Hello
     - world!
+  if: item != 'cruel'
 # Or combinations of the above with other methods like try/except
 ```
 
-New hooks can be [made in python](https://robcxyz.github.io/tackle/python-hooks/)
- which under the hood is a [pydantic](https://github.com/pydantic/pydantic) model.
+New hooks can be [made in python](https://robcxyz.github.io/tackle/python-hooks/) which under the hood is a [pydantic](https://github.com/pydantic/pydantic) model.
 
 ```python
 from tackle import BaseHook
@@ -117,7 +118,7 @@ greeter<-:
   return: expression
 ```
 
-And both can be [called in the same way](https://robcxyz.github.io/tackle/writing-tackle-files/).
+And both can be [called the same way](https://robcxyz.github.io/tackle/writing-tackle-files/).
 
 ```yaml
 hello: world!
@@ -133,7 +134,7 @@ Jinja template->: {{ greeter(hello) }}
 With the declarative hooks being callable from the command line:
 
 ```shell
-tackle hello.yaml --target world!
+tackle hello.yaml greeter --target world!
 # Or from a github repo
 tackle robcxyz/tackle-hello-world --checkout v0.1.0
 ```
