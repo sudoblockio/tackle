@@ -3,15 +3,11 @@ import os
 from ruamel.yaml import YAML
 
 from tackle import tackle
-from tackle.exceptions import (
-    FunctionCallException,
-    HookParseException,
-    MalformedFunctionFieldException,
-)
 
 FIXTURES = [
-    ('call.yaml', 'call-output.yaml'),
-    ('return.yaml', 'return-output.yaml'),
+    # ('call.yaml', 'call-output.yaml'),
+    # ('return.yaml', 'return-output.yaml'),
+    ('return-render.yaml', 'return-output.yaml'),
 ]
 
 
@@ -141,6 +137,16 @@ def test_function_import_func_from_hooks_dir_context_preserved(change_curdir_fix
     assert o['calling_dir'].endswith('a-dir')
 
 
+def test_function_import_func_from_hooks_dir_context_preserved2(change_curdir_fixtures):
+    """
+    Check that when we run inside a nested dir, that a declarative hook carries context
+    such as calling_directory.
+    """
+    os.chdir(os.path.join('func-provider-method', 'a-dir'))
+    o = tackle()
+    assert o
+
+
 def test_function_method_no_default(change_curdir_fixtures):
     """Assert that method calls with base fields with no default can be run."""
     o = tackle('method-call-no-default.yaml')
@@ -162,51 +168,3 @@ def test_function_method_no_default(change_curdir_fixtures):
 #     """Check what compact hooks do."""
 #     output = tackle('compact.yaml')
 #     assert output
-
-
-def test_function_method_base_validate(change_curdir_fixtures):
-    """Check that when a method uses a base attribute, that validation still happens."""
-    with pytest.raises(Exception) as e:
-        tackle('method-base-validate.yaml')
-    assert 'string does not match regex' in e.value.message
-
-
-EXCEPTION_FIXTURES = [
-    # Check that return string not found caught
-    ('return-str-not-found.yaml', FunctionCallException),
-    # Check that type checking works with no exec method.
-    ('no-exec-type-error.yaml', HookParseException),
-    # Check args are required when they are not supplied.
-    ('field-require.yaml', HookParseException),
-    # Check that type is one of literals.
-    ('field-bad-type.yaml', MalformedFunctionFieldException),
-    # Check that type or default is given.
-    ('field-type-or-default.yaml', MalformedFunctionFieldException),
-]
-
-
-@pytest.mark.parametrize("fixture,exception", EXCEPTION_FIXTURES)
-def test_function_raises_exceptions(change_curdir_fixtures, fixture, exception):
-    with pytest.raises(exception):
-        tackle(fixture)
-
-
-FIELD_TYPE_EXCEPTION_FIXTURES = [
-    ('str', 'str'),
-    ('dict', 'str'),
-    ('list', 'str'),
-    ('str', 'type'),
-    ('dict', 'type'),
-    ('list', 'type'),
-    ('str', 'default'),
-    ('dict', 'default'),
-    ('list', 'default'),
-]
-
-
-@pytest.mark.parametrize("type_,field_input", FIELD_TYPE_EXCEPTION_FIXTURES)
-def test_function_raises_exceptions_field_types(chdir, type_, field_input):
-    """Check that a validation error is returned for each type of field definition."""
-    chdir(os.path.join('fixtures', 'field-type-exceptions'))
-    with pytest.raises(HookParseException):
-        tackle(f'field-types-{type_}-error-{field_input}.yaml')

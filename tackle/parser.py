@@ -100,6 +100,16 @@ def get_hook(hook_type, context: 'Context') -> Type[BaseHook]:
         #  separate from the declarative hook.
         for method in hook_parts:
             new_hook = None
+
+            # TODO: Fix this -> https://github.com/robcxyz/tackle/issues/113
+            # When hooks are in `hooks` dir we apparently need to instantiate the base
+            if isinstance(h, LazyBaseFunction):
+                h = create_function_model(
+                    context=context,
+                    func_name=method,
+                    func_dict=h.function_dict.copy(),
+                )
+
             try:
                 new_hook = h.__fields__[method].default
             except (IndexError, KeyError):
