@@ -1,8 +1,56 @@
+import os
 import pytest
 
 from tackle import tackle
 from tackle.cli import main
 from tackle import exceptions
+
+EXCEPTION_FIXTURES = [
+    # Check that return string not found caught
+    ('return-str-not-found.yaml', exceptions.FunctionCallException),
+    # Check that type checking works with no exec method.
+    ('no-exec-type-error.yaml', exceptions.HookParseException),
+    # Check args are required when they are not supplied.
+    ('field-require.yaml', exceptions.HookParseException),
+    # Check that type is one of literals.
+    ('field-bad-type.yaml', exceptions.MalformedFunctionFieldException),
+    # Check that type or default is given.
+    ('field-type-or-default.yaml', exceptions.MalformedFunctionFieldException),
+]
+
+
+@pytest.mark.parametrize("fixture,exception", EXCEPTION_FIXTURES)
+def test_function_raises_exceptions(change_curdir_fixtures, fixture, exception):
+    with pytest.raises(exception):
+        tackle(fixture)
+
+
+FIELD_TYPE_EXCEPTION_FIXTURES = [
+    ('str', 'str'),
+    ('dict', 'str'),
+    ('list', 'str'),
+    ('str', 'type'),
+    ('dict', 'type'),
+    ('list', 'type'),
+    ('str', 'default'),
+    ('dict', 'default'),
+    ('list', 'default'),
+]
+
+
+def test_function_method_base_validate(change_curdir_fixtures):
+    """Check that when a method uses a base attribute, that validation still happens."""
+    with pytest.raises(Exception) as e:
+        tackle('method-base-validate.yaml')
+    assert 'string does not match regex' in e.value.message
+
+
+@pytest.mark.parametrize("type_,field_input", FIELD_TYPE_EXCEPTION_FIXTURES)
+def test_function_raises_exceptions_field_types(chdir, type_, field_input):
+    """Check that a validation error is returned for each type of field definition."""
+    chdir(os.path.join('fixtures', 'field-type-exceptions'))
+    with pytest.raises(exceptions.HookParseException):
+        tackle(f'field-types-{type_}-error-{field_input}.yaml')
 
 
 def test_parser_functions_exceptions_try_in_default(chdir):
