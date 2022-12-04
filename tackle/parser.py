@@ -1190,6 +1190,7 @@ def function_walk(
     walk_sync(context=tmp_context, element=input_element.copy())
 
     if return_:
+        return_ = render_variable(tmp_context, return_)
         if isinstance(return_, str):
             if return_ in tmp_context.public_context:
                 return tmp_context.public_context[return_]

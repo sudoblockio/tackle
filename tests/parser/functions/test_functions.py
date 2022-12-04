@@ -5,8 +5,8 @@ from ruamel.yaml import YAML
 from tackle import tackle
 
 FIXTURES = [
-    # ('call.yaml', 'call-output.yaml'),
-    # ('return.yaml', 'return-output.yaml'),
+    ('call.yaml', 'call-output.yaml'),
+    ('return.yaml', 'return-output.yaml'),
     ('return-render.yaml', 'return-output.yaml'),
 ]
 
