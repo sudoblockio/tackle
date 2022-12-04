@@ -1,4 +1,5 @@
 from ruamel.yaml import YAML
+from ruamel.yaml.composer import ComposerError
 import os
 from typing import Union
 
@@ -33,8 +34,14 @@ class YamlHook(BaseHook):
             return self.path
 
         else:
-            with open(self.path, 'r') as f:
-                data = yaml.load(f)
+            try:
+                with open(self.path, 'r') as f:
+                    data = yaml.load(f)
+            except ComposerError:
+                data = []
+                with open(self.path, 'r') as f:
+                    for doc in yaml.load_all(f):
+                        data.append(doc)
 
             # TODO: Improve this - https://github.com/robcxyz/tackle/issues/56
             import json

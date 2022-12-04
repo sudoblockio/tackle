@@ -23,6 +23,12 @@ def test_provider_system_hook_yaml_read(change_dir, clean_outputs):
     assert read['stuff'] == 'things'
 
 
+def test_provider_system_hook_list_yaml(change_dir, clean_outputs):
+    output = tackle('list_yaml_read.yaml', no_input=True)
+
+    assert len(output['y']) > 1
+
+
 def test_provider_system_hook_yaml_write(change_dir, clean_outputs):
     tackle('write.yaml', no_input=True)
     yaml = YAML()
