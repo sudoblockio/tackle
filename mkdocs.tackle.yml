@@ -1,6 +1,6 @@
 site_name: tackle
 site_description: Declarative DSL for building modular workflows and code generators.
-site_url: https://robcxyz.github.io/tackle
+site_url: https://sudoblockio.github.io/tackle
 theme:
   name: material
   palette:
@@ -27,8 +27,8 @@ theme:
   #  logo: img/icon-white.svg
   #  favicon: img/favicon.png
   language: en
-repo_name: robcxyz/tackle
-repo_url: https://github.com/robcxyz/tackle
+repo_name: sudoblockio/tackle
+repo_url: https://github.com/sudoblockio/tackle
 edit_uri: ''
 nav:
   #  - Usage Docs:

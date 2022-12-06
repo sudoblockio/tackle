@@ -43,6 +43,7 @@ class DictPopHook(BaseHook, smart_union=True):
             target_context, set_key_path = get_target_and_key(
                 self, key_path=encode_key_path(self.src, self.sep)
             )
+            print(target_context)
 
             self.src = nested_get(
                 element=target_context,

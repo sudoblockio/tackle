@@ -43,7 +43,7 @@ class MatchHook(BaseHook):
         if self.verbose:
             print(
                 "You are likely going to hit a bug."
-                "https://github.com/robcxyz/tackle/issues/67"
+                "https://github.com/sudoblockio/tackle/issues/67"
             )
         return {key[:-2]: output}
         # return output

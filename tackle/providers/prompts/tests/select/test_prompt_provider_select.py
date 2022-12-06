@@ -1,6 +1,6 @@
 # from tackle import tackle
 #
-# # TODO: https://github.com/robcxyz/tackle/issues/46
+# # TODO: https://github.com/sudoblockio/tackle/issues/46
 #
 #
 # def test_provider_select_list_this(change_dir, mocker):

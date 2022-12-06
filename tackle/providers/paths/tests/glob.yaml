@@ -1,1 +1,3 @@
-g->: glob *
+star->: glob *
+
+file->: glob child.yaml

@@ -1,5 +1,5 @@
 """
-TODO: https://github.com/robcxyz/tackle/issues/100
+TODO: https://github.com/sudoblockio/tackle/issues/100
  Should change
 """
 import yaml

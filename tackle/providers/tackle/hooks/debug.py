@@ -40,6 +40,7 @@ class DebugHook(BaseHook):
         pprint(print_context)
 
     def exec(self) -> None:
+        print(f"Debug at key_path={self.key_path}")
         if self.context is not None:
             if self.context in self._contexts:
                 output = getattr(self, f'{self.context}_context')

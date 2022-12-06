@@ -1,6 +1,6 @@
 # from tackle.main import tackle
 #
-# # TODO: https://github.com/robcxyz/tackle/issues/46
+# # TODO: https://github.com/sudoblockio/tackle/issues/46
 #
 # def test_provider_pyinquirer_input_hook(change_dir, mocker):
 #     # mocker.patch(

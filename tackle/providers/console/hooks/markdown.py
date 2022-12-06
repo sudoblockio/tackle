@@ -16,7 +16,7 @@ class MarkdownPrintHook(BaseHook):
     args: list = ['text']
 
     # TODO: Map this https://rich.readthedocs.io/en/stable/reference/markdown.html?highlight=markdown%20#rich.markdown.Markdown
-    # https://github.com/robcxyz/tackle/issues/57
+    # https://github.com/sudoblockio/tackle/issues/57
     def exec(self):
         console = Console()
         console.print(Markdown(self.text, justify='left', inline_code_lexer='python'))

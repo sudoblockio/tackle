@@ -1,4 +1,0 @@
-this: "{{ that }}"
-
-call->: tackle .tackle.meta.yaml
-

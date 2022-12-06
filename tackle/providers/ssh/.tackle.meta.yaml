@@ -1,0 +1,34 @@
+name: SSH Provider
+
+description: Hooks to run command and open shells on remote clients. WIP
+
+examples:
+#  - name: "[copy](copy.md)"
+#    description: Copy a file or directory single file
+#    content: |
+#      compact->: copy path/to/file output/path
+#      expanded:
+#        ->: jinja
+#        template: path/to/file
+#        output: output/path
+#
+#  - name: "[chmod](chmod.md)"
+#    description: Change directory permissions
+#    content->: file tests/file/chmod.yaml
+
+hook_examples:
+  ssh:
+    - description: Basic
+      content: |
+        ssh-session:
+          ->: ssh_interactive
+          host: 1.2.3.4
+          username: postgres  
+          password: nunyabiznis
+          host: 1.2.3.4
+          port: 5432  # default
+
+          query: select * from information_schema.tables
+
+        print->: {{item.table_catalog}} --for query
+

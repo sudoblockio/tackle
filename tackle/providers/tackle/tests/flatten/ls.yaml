@@ -15,7 +15,7 @@ ls<-:
     type: str
     description: The path to directory to list
     default: .
-    skip: true
+#    skip: true
 
   args: ['FILE']
   exec:

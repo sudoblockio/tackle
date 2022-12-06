@@ -1,16 +1,18 @@
-<img align="right" width="280" height="280" src="https://raw.githubusercontent.com/robcxyz/tackle/main/docs/assets/logo-box.png">
+<img align="right" width="280" height="280" src="https://raw.githubusercontent.com/sudoblockio/tackle/main/docs/assets/logo-box.png">
+
+[//]: # (TODO: update codecov url)
 
 # tackle
 
 [![pypi](https://img.shields.io/pypi/v/tackle.svg)](https://pypi.python.org/pypi/tackle)
 [![python](https://img.shields.io/pypi/pyversions/tackle.svg)](https://pypi.python.org/pypi/tackle)
-[![codecov](https://codecov.io/gh/robcxyz/tackle/branch/main/graphs/badge.svg?branch=main)](https://codecov.io/github/robcxyz/tackle?branch=main)
-[![codeql](https://github.com/robcxyz/tackle/actions/workflows/codeql.yml/badge.svg)](https://github.com/robcxyz/tackle/actions/workflows/codeql.yml)
+[![codecov](https://codecov.io/gh/robcxyz/tackle/branch/main/graphs/badge.svg?branch=main)](https://codecov.io/github/sudoblockio/tackle?branch=main)
+[![codeql](https://github.com/sudoblockio/tackle/actions/workflows/codeql.yml/badge.svg)](https://github.com/sudoblockio/tackle/actions/workflows/codeql.yml)
 [![Foresight Docs](https://api-public.service.runforesight.com/api/v1/badge/success?repoId=4abde40b-565a-4557-afc0-983461857bb4)](https://docs.runforesight.com/)
 [![Foresight Docs](https://api-public.service.runforesight.com/api/v1/badge/test?repoId=4abde40b-565a-4557-afc0-983461857bb4)](https://docs.runforesight.com/)
 [![Foresight Docs](https://api-public.service.runforesight.com/api/v1/badge/utilization?repoId=4abde40b-565a-4557-afc0-983461857bb4)](https://docs.runforesight.com/)
 
-[//]: # ([![main-tests]&#40;https://github.com/robcxyz/tackle/actions/workflows/main.yml/badge.svg&#41;]&#40;https://github.com/robcxyz/tackle/actions&#41;)
+[//]: # ([![main-tests]&#40;https://github.com/sudoblockio/tackle/actions/workflows/main.yml/badge.svg&#41;]&#40;https://github.com/sudoblockio/tackle/actions&#41;)
 
 * [Documentation](https://sudoblockio.github.io/tackle)
 * [Discord](https://discord.gg/7uVUfUVD7K)
@@ -56,7 +58,7 @@ python -m venv env && source env/bin/activate
 pip install tackle
 ```
 
-**Quick Demo:** `tackle robcxyz/tackle-hello-world`
+**Quick Demo:** `tackle sudoblockio/tackle-hello-world`
 
 ### Hello world
 
@@ -68,7 +70,7 @@ Check out the [docs](https://sudoblockio.github.io/tackle/hello-worlds/) for >10
 hw->: print Hello world!
 ```
 
-To run, call `tackle hello.yaml`. Can also be [version controlled](https://sudoblockio.github.io/tackle/creating-providers/) -> [`tackle robcxyz/tackle-hello-world`](https://github.com/robcxyz/tackle-hello-world).
+To run, call `tackle hello.yaml`. Can also be [version controlled](https://sudoblockio.github.io/tackle/creating-providers/) -> [`tackle sudoblockio/tackle-hello-world`](https://github.com/sudoblockio/tackle-hello-world).
 
 Can also use [loops, conditionals, and other base methods](https://sudoblockio.github.io/tackle/hook-methods/).
 
@@ -136,7 +138,7 @@ With the declarative hooks being callable from the command line:
 ```shell
 tackle hello.yaml greeter --target world!
 # Or from a github repo
-tackle robcxyz/tackle-hello-world --checkout v0.1.0
+tackle sudoblockio/tackle-hello-world --checkout v0.1.0
 ```
 
 Documentation can be embedded into the hooks.

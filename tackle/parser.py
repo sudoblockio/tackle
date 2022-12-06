@@ -101,7 +101,7 @@ def get_hook(hook_type, context: 'Context') -> Type[BaseHook]:
         for method in hook_parts:
             new_hook = None
 
-            # TODO: Fix this -> https://github.com/robcxyz/tackle/issues/113
+            # TODO: Fix this -> https://github.com/sudoblockio/tackle/issues/113
             # When hooks are in `hooks` dir we apparently need to instantiate the base
             if isinstance(h, LazyBaseFunction):
                 h = create_function_model(
@@ -123,6 +123,10 @@ def get_hook(hook_type, context: 'Context') -> Type[BaseHook]:
                 if i not in new_hook.function_dict:
                     # Base method should not override child.
                     new_hook.function_dict[i] = h.__fields__['function_dict'].default[i]
+                    if new_hook.function_fields is None:
+                        new_hook.function_fields = []
+
+                    new_hook.function_fields.append(i)
 
             # Methods that are of type LazyBaseFunction which need to have the base
             # instantiated before getting the hook. Allows nested methods for functions.
@@ -236,7 +240,7 @@ def merge_block_output(
      keys from the key path and move them up one level.
     """
     if append_hook_value:
-        # TODO: https://github.com/robcxyz/tackle/issues/66
+        # TODO: https://github.com/sudoblockio/tackle/issues/66
         #  Allow merging into lists
         if isinstance(context.key_path_block[-1], bytes):
             # An exception maybe needed here or this error is snubbed.
@@ -357,7 +361,7 @@ def render_hook_vars(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
             # TODO: When we build our own custom Field function then this will change
             # TODO: This causes errors when the field is aliased as the lookup doesn't
             #  work and needs a deeper introspection.
-            #  https://github.com/robcxyz/tackle/issues/80
+            #  https://github.com/sudoblockio/tackle/issues/80
             #  Fixing with custom Field def should fix this.
             elif 'render_by_default' in Hook.__fields__[key].field_info.extra:
                 hook_dict[key] = render_variable(context, wrap_jinja_braces(value))
@@ -443,7 +447,7 @@ def parse_hook(
             # Render the remaining hook variables
             render_hook_vars(hook_dict, Hook, context)
 
-            # TODO: WIP - https://github.com/robcxyz/tackle/issues/104
+            # TODO: WIP - https://github.com/sudoblockio/tackle/issues/104
             tmp_no_input = (
                 None if 'no_input' not in hook_dict else hook_dict.pop('no_input')
             )
@@ -469,7 +473,7 @@ def parse_hook(
                 # TODO: Improve -> This is an error when we have multiple of the same
                 #  base attribute. Should not conflict in the future when we do
                 #  composition on the context but for now, catching common error.
-                # TODO: WIP - https://github.com/robcxyz/tackle/issues/104
+                # TODO: WIP - https://github.com/sudoblockio/tackle/issues/104
                 raise exceptions.UnknownInputArgumentException(
                     str(e) + " - Can't assign duplicate base fields.", context=context
                 ) from None
@@ -1341,7 +1345,7 @@ def create_function_model(
             **new_func,
             **function_input.dict(include={'args', 'render_exclude'}),
             **{'function_dict': (dict, function_dict)},  # Preserve for `extends` key
-            # https://github.com/robcxyz/tackle/issues/99
+            # https://github.com/sudoblockio/tackle/issues/99
             public_hooks=context.public_hooks,
             private_hooks=context.private_hooks,
             calling_directory=context.calling_directory,

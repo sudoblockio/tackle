@@ -33,4 +33,4 @@ def test_provider_paths_base_dir_name(change_dir):
 def test_provider_paths_glob(change_dir):
     output = tackle('glob.yaml')
 
-    assert 'dirs' in output['g']
+    assert 'dirs' in output['star']

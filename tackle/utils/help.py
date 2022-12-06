@@ -75,7 +75,7 @@ def unpack_hook(
                     function_name=hook_name,
                 ) from None
         elif isinstance(hook_field, ModelField):
-            # TODO: https://github.com/robcxyz/tackle/issues/91
+            # TODO: https://github.com/sudoblockio/tackle/issues/91
             # If enabling inheritance for base vars in to the help, then this will
             # neeed to be active.
             # help_arg = HelpInput(

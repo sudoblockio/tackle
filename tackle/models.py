@@ -61,7 +61,7 @@ class BaseContext(BaseModel):
         smart_union = True
 
     # TODO: RM after dealing with namespace issue for validators
-    # https://github.com/robcxyz/tackle/issues/43
+    # https://github.com/sudoblockio/tackle/issues/43
     run_id: str = None
 
     def __init__(self, **data: Any):
@@ -86,7 +86,10 @@ class Context(BaseContext):
         None, description="A str for a file or dict to override inputs with."
     )
 
-    context_functions: list = None
+    function_fields: list = None
+    function_dict: dict = None
+
+    # return_: bool = False
 
     hook_dirs: list = Field(
         None, description="A list of additional directories to import hooks."
@@ -253,7 +256,7 @@ class JinjaHook(BaseModel):
 
     class Config:
         # TODO: Had to add this to get `make test` to run.
-        #  https://github.com/robcxyz/tackle/issues/90
+        #  https://github.com/sudoblockio/tackle/issues/90
         arbitrary_types_allowed = True
 
     def wrapped_exec(self, *args, **kwargs):
@@ -283,6 +286,7 @@ class JinjaHook(BaseModel):
             public_hooks=self.context.public_hooks,
             key_path=self.context.key_path,
             verbose=self.context.verbose,
+            env_=self.context.env_,
         ).exec()
         return output
 

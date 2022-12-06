@@ -15,3 +15,9 @@ def test_provider_tackle_flatten_kubectl(change_dir):
 
     assert output['apply']['args']
     assert output['delete']['args']
+
+
+def test_provider_tackle_flatten_method(change_dir):
+    output = tackle('method.yaml', no_input=True)
+
+    assert output

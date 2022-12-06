@@ -99,9 +99,7 @@ def main(raw_args=None):
         help="A string to a file to use as overrides when parsing a tackle file or "
         "some dict to use with keys to additionally use when parsing a file.",
     )
-    parser.add_argument(
-        '--version', action='version', version=f'tackle {__version__}'
-    )
+    parser.add_argument('--version', action='version', version=f'tackle {__version__}')
 
     args, unknown_args = parser.parse_known_args(raw_args)
 

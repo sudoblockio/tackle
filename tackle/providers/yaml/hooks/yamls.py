@@ -43,7 +43,7 @@ class YamlHook(BaseHook):
                     for doc in yaml.load_all(f):
                         data.append(doc)
 
-            # TODO: Improve this - https://github.com/robcxyz/tackle/issues/56
+            # TODO: Improve this - https://github.com/sudoblockio/tackle/issues/56
             import json
 
             data = json.loads(json.dumps(data))

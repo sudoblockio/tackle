@@ -47,7 +47,7 @@ class ContributionNeededException(Exception):
         self.message = (
             f"Unimplemented / needs to be built "
             f"- PLEASE HELP -> "
-            f"https://github.com/robcxyz/tackle/blob/main/{self.file_location()}"
+            f"https://github.com/sudoblockio/tackle/blob/main/{self.file_location()}"
             f"\n{self.extra_message}"
         )
         super().__init__(self.message)

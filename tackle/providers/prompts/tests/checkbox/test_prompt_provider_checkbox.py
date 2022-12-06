@@ -16,7 +16,7 @@ def test_provider_prompt_checkbox_list_no_input(change_dir):
     assert output['selection'] == ['stuff', 'things']
 
 
-# # TODO: https://github.com/robcxyz/tackle/issues/46
+# # TODO: https://github.com/sudoblockio/tackle/issues/46
 # def test_provider_prompt_checkbox_list(change_dir, mocker):
 #     mocker.patch(
 #         'tackle.providers.prompts.hooks.checkbox.prompt',
