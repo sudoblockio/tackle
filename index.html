@@ -3342,52 +3342,52 @@
 <a href="https://docs.runforesight.com/"><img alt="Foresight Docs" src="https://api-public.service.runforesight.com/api/v1/badge/test?repoId=4abde40b-565a-4557-afc0-983461857bb4" /></a>
 <a href="https://docs.runforesight.com/"><img alt="Foresight Docs" src="https://api-public.service.runforesight.com/api/v1/badge/utilization?repoId=4abde40b-565a-4557-afc0-983461857bb4" /></a></p>
 <ul>
-<li><a href="https://robcxyz.github.io/tackle">Documentation</a></li>
+<li><a href="https://sudoblockio.github.io/tackle">Documentation</a></li>
 <li><a href="https://discord.gg/7uVUfUVD7K">Discord</a></li>
 <li><a href="https://pypi.org/project/tackle/">PyPI</a></li>
 <li><a href="LICENSE">BSD License</a></li>
 </ul>
-<p>Tackle is an experimental DSL for building modular code generators and declarative CLIs. Built as a fork of <a href="https://github.com/cookiecutter/cookiecutter">cookiecutter</a>, it can make any config file dynamic or into a CLI with both strong and weakly typed programmable flow control common to a general purpose programming language. Basically you can write a fully functional Turing-complete program out of a config file. It's wild.</p>
+<p>Tackle is an experimental general purpose configuration for building modular code generators and declarative CLIs. Built as a fork of <a href="https://github.com/cookiecutter/cookiecutter">cookiecutter</a>, it can make any config file dynamic or into a CLI with both strong and weakly typed programmable flow control common to a general purpose programming language. Basically you can write a fully functional Turing-complete program out of a config file. It's wild.</p>
 <p><strong>With tackle, you can build:</strong>
 - Modular code generators / repo scaffolding tools that can be updated over time
 - Interactive glue code for infrastructure-as-code deployment strategies
-- Generic utilities like SSH registries and dotfile managers
+- Generic utilities like SSH helpers and dotfile managers
 - Combinations of all of the above and anything else you can think of</p>
 <blockquote>
-<p>If this project gets enough adoption / stars, it will be re-written in a compiled language.</p>
+<p>If this project gets enough adoption / stars, it will be re-written in a compiled language, either Go or Rust. Give it a star if you'd like to see that.</p>
 </blockquote>
 <h3 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Makes arbitrary yaml / json / toml <a href="https://robcxyz.github.io/tackle/hook-methods/">dynamic</a></li>
+<li>Makes arbitrary yaml / json / toml <a href="https://sudoblockio.github.io/tackle/hook-methods/">dynamic</a></li>
 <li>Embed loops, conditionals, and other custom logic</li>
 <li>Self documenting CLI to call logic</li>
-<li>Ships with a collection of over <a href="https://robcxyz.github.io/tackle">100 hooks</a> that act like plugins within your config file</li>
-<li><a href="https://robcxyz.github.io/tackle">Prompt user for inputs</a></li>
-<li><a href="https://robcxyz.github.io/tackle/providers/Generate/">Generate code from templates</a></li>
-<li>Read and write <a href="https://robcxyz.github.io/tackle/providers/Yaml/">yaml</a> / <a href="https://robcxyz.github.io/tackle/providers/Toml/">toml</a> / <a href="https://robcxyz.github.io/tackle/providers/Json/">json</a> <a href="https://robcxyz.github.io/tackle/providers/Files/">files</a></li>
-<li><a href="https://robcxyz.github.io/tackle/providers/Web/">Make http calls</a></li>
-<li><a href="https://robcxyz.github.io/tackle/providers/Command/">Run arbitrary system commands</a></li>
-<li><a href="https://robcxyz.github.io/tackle/providers/Context/">Manipulate the context</a></li>
-<li><a href="https://robcxyz.github.io/tackle/providers/Tackle/tackle/">Run other tackle files</a></li>
+<li>Ships with a collection of over <a href="https://sudoblockio.github.io/tackle">100 hooks</a> that act like plugins within your config file</li>
+<li><a href="https://sudoblockio.github.io/tackle">Prompt user for inputs</a></li>
+<li><a href="https://sudoblockio.github.io/tackle/providers/Generate/">Generate code from templates</a></li>
+<li>Read and write <a href="https://sudoblockio.github.io/tackle/providers/Yaml/">yaml</a> / <a href="https://sudoblockio.github.io/tackle/providers/Toml/">toml</a> / <a href="https://sudoblockio.github.io/tackle/providers/Json/">json</a> <a href="https://sudoblockio.github.io/tackle/providers/Files/">files</a></li>
+<li><a href="https://sudoblockio.github.io/tackle/providers/Web/">Make http calls</a></li>
+<li><a href="https://sudoblockio.github.io/tackle/providers/Command/">Run arbitrary system commands</a></li>
+<li><a href="https://sudoblockio.github.io/tackle/providers/Context/">Manipulate the context</a></li>
+<li><a href="https://sudoblockio.github.io/tackle/providers/Tackle/tackle/">Run other tackle files</a></li>
 <li>Modular design allows creating / importing new hooks easy</li>
-<li>Supports both <a href="https://robcxyz.github.io/tackle/python-hooks/">python</a> and <a href="https://robcxyz.github.io/tackle/declarative-hooks/">declarative</a> hooks which can be imported / called / defined in-line or within jinja templates</li>
+<li>Supports both <a href="https://sudoblockio.github.io/tackle/python-hooks/">python</a> and <a href="https://sudoblockio.github.io/tackle/declarative-hooks/">declarative</a> hooks which can be imported / called / defined in-line or within jinja templates</li>
 </ul>
 <h3 id="install">Install<a class="headerlink" href="#install" title="Permanent link">&para;</a></h3>
 <blockquote>
-<p>Note: tackle can install dependencies on its own. Check <a href="https://robcxyz.github.io/tackle/installation#best-installation-method">docs</a> for advanced installation methods to isolate tackle from your system python.</p>
+<p>Note: tackle can install dependencies on its own. Check <a href="https://sudoblockio.github.io/tackle/installation#best-installation-method">docs</a> for advanced installation methods to isolate tackle from your system python.</p>
 </blockquote>
 <div class="highlight"><pre><span></span><code>python -m venv env <span class="o">&amp;&amp;</span> <span class="nb">source</span> env/bin/activate
 pip install tackle
 </code></pre></div>
 <p><strong>Quick Demo:</strong> <code>tackle robcxyz/tackle-hello-world</code></p>
 <h3 id="hello-world">Hello world<a class="headerlink" href="#hello-world" title="Permanent link">&para;</a></h3>
-<p>Check out the <a href="https://robcxyz.github.io/tackle/hello-worlds/">docs</a> for &gt;10 hello worlds that demonstrate the various aspects of the syntax with the simplest one using the <a href="https://robcxyz.github.io/tackle/providers/Console/print/">print</a> hook, one of <a href="https://robcxyz.github.io/tackle/installation#best-installation-method">&gt;100 hooks</a>.</p>
+<p>Check out the <a href="https://sudoblockio.github.io/tackle/hello-worlds/">docs</a> for &gt;10 hello worlds that demonstrate the various aspects of the syntax with the simplest one using the <a href="https://sudoblockio.github.io/tackle/providers/Console/print/">print</a> hook, one of <a href="https://sudoblockio.github.io/tackle/installation#best-installation-method">&gt;100 hooks</a>.</p>
 <p><strong>hello.yaml</strong>
 <div class="highlight"><pre><span></span><code><span class="c1"># Any time a key ends with `-&gt;`, we are calling a hook</span><span class="w"></span>
 <span class="nt">hw-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print Hello world!</span><span class="w"></span>
 </code></pre></div></p>
-<p>To run, call <code>tackle hello.yaml</code>. Can also be <a href="https://robcxyz.github.io/tackle/creating-providers/">version controlled</a> -&gt; <a href="https://github.com/robcxyz/tackle-hello-world"><code>tackle robcxyz/tackle-hello-world</code></a>.</p>
-<p>Can also use <a href="https://robcxyz.github.io/tackle/hook-methods/">loops, conditionals, and other base methods</a>.</p>
+<p>To run, call <code>tackle hello.yaml</code>. Can also be <a href="https://sudoblockio.github.io/tackle/creating-providers/">version controlled</a> -&gt; <a href="https://github.com/robcxyz/tackle-hello-world"><code>tackle robcxyz/tackle-hello-world</code></a>.</p>
+<p>Can also use <a href="https://sudoblockio.github.io/tackle/hook-methods/">loops, conditionals, and other base methods</a>.</p>
 <p><strong>hello.yaml</strong>
 <div class="highlight"><pre><span></span><code><span class="nt">the</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">words</span><span class="p">:</span><span class="w"></span>
@@ -3404,7 +3404,7 @@ pip install tackle
 <span class="w">  </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">item != &#39;cruel&#39;</span><span class="w"></span>
 <span class="c1"># Or combinations of the above with other methods like try/except</span><span class="w"></span>
 </code></pre></div></p>
-<p>New hooks can be <a href="https://robcxyz.github.io/tackle/python-hooks/">made in python</a> which under the hood is a <a href="https://github.com/pydantic/pydantic">pydantic</a> model.</p>
+<p>New hooks can be <a href="https://sudoblockio.github.io/tackle/python-hooks/">made in python</a> which under the hood is a <a href="https://github.com/pydantic/pydantic">pydantic</a> model.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">tackle</span> <span class="kn">import</span> <span class="n">BaseHook</span>
 
 <span class="k">class</span> <span class="nc">Greeter</span><span class="p">(</span><span class="n">BaseHook</span><span class="p">):</span>
@@ -3416,7 +3416,7 @@ pip install tackle
       <span class="nb">print</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
       <span class="k">return</span> <span class="n">expression</span>
 </code></pre></div>
-<p>Or can be <a href="https://robcxyz.github.io/tackle/declarative-hooks/">defined inline within your tackle file.</a>.</p>
+<p>Or can be <a href="https://sudoblockio.github.io/tackle/declarative-hooks/">defined inline within your tackle file, imported remotely, or in a <code>hooks</code> directory.</a>.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Keys ending with `&lt;-` mean we are creating a hook / method</span><span class="w"></span>
 <span class="nt">greeter&lt;-</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">str</span><span class="w"></span>
@@ -3426,7 +3426,7 @@ pip install tackle
 <span class="w">    </span><span class="nt">p-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print {{expression}}</span><span class="w"></span>
 <span class="w">  </span><span class="nt">return</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">expression</span><span class="w"></span>
 </code></pre></div>
-<p>And both can be <a href="https://robcxyz.github.io/tackle/writing-tackle-files/">called the same way</a>.</p>
+<p>And both can be <a href="https://sudoblockio.github.io/tackle/writing-tackle-files/">called the same way</a>.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">hello</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">world!</span><span class="w"></span>
 <span class="nt">With a flag-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">greeter --target {{hello}}</span><span class="w"></span>
 <span class="nt">Target in argument-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">greeter {{hello}}</span><span class="w"></span>
@@ -3474,7 +3474,7 @@ methods:
 <p>Hooks can be imported, linked, and/or combined creating a web of CLIs.</p>
 <h3 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h3>
 <ul>
-<li><a href="https://robcxyz.github.io/tackle/tutorials/code-generation/">Code Generation</a></li>
+<li><a href="https://sudoblockio.github.io/tackle/tutorials/code-generation/">Code Generation</a></li>
 </ul>
 <p><strong>WIP Tutorials</strong></p>
 <ul>
@@ -3485,20 +3485,20 @@ methods:
 </ul>
 <h3 id="topics">Topics<a class="headerlink" href="#topics" title="Permanent link">&para;</a></h3>
 <ul>
-<li><a href="https://robcxyz.github.io/tackle/writing-tackle-files/">Writing Tackle Files</a></li>
-<li><a href="https://robcxyz.github.io/tackle/creating-providers/">Creating Providers</a></li>
-<li><a href="https://robcxyz.github.io/tackle/python-hooks/">Python Hooks</a></li>
-<li><a href="https://robcxyz.github.io/tackle/declarative-hooks/">Declarative Hooks</a></li>
-<li><a href="https://robcxyz.github.io/tackle/writing-tackle-files/#blocks">Blocks</a> and <a href="https://robcxyz.github.io/tackle/hook-methods/">Flow Control</a></li>
-<li><a href="https://robcxyz.github.io/tackle/memory-management/">Memory Management</a></li>
-<li><a href="https://robcxyz.github.io/tackle/special-variables/">Special Variables</a></li>
-<li><a href="https://robcxyz.github.io/tackle/declarative-cli/">Declarative CLIs</a></li>
+<li><a href="https://sudoblockio.github.io/tackle/writing-tackle-files/">Writing Tackle Files</a></li>
+<li><a href="https://sudoblockio.github.io/tackle/creating-providers/">Creating Providers</a></li>
+<li><a href="https://sudoblockio.github.io/tackle/python-hooks/">Python Hooks</a></li>
+<li><a href="https://sudoblockio.github.io/tackle/declarative-hooks/">Declarative Hooks</a></li>
+<li><a href="https://sudoblockio.github.io/tackle/writing-tackle-files/#blocks">Blocks</a> and <a href="https://sudoblockio.github.io/tackle/hook-methods/">Flow Control</a></li>
+<li><a href="https://sudoblockio.github.io/tackle/memory-management/">Memory Management</a></li>
+<li><a href="https://sudoblockio.github.io/tackle/special-variables/">Special Variables</a></li>
+<li><a href="https://sudoblockio.github.io/tackle/declarative-cli/">Declarative CLIs</a></li>
 </ul>
 <h3 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permanent link">&para;</a></h3>
 <p>Contributions are welcome but please be advised of the following notes.</p>
 <ul>
-<li>This project uses <a href="https://www.conventionalcommits.org/">conventional commits</a> which generates the <a href="./CHANGELOG.md">changelog</a> with <a href="">release-please-action</a> in the <a href="">release</a> CI workflow. If commits have been made outside of this convention they will be squashed accordingly.</li>
-<li>For making changes to providers, please include test coverage using the existing fixtures and patterns from prior tests or communicate any suggestions that deviate from this style. Tests should be runnable from the test's directory and via <code>make test</code>.</li>
+<li>This project uses <a href="https://www.conventionalcommits.org/">conventional commits</a> which generates the <a href="./CHANGELOG.md">changelog</a> with <a href="https://github.com/google-github-actions/release-please-action">release-please-action</a> in the <a href="https://github.com/sudoblockio/tackle/blob/main/.github/workflows/release.yml">release</a> CI workflow. If commits have been made outside of this convention they will be squashed accordingly.</li>
+<li>For making changes to providers, please include test coverage using the existing fixtures and patterns from prior tests or communicate any suggestions that deviate from this style. It definitely can be improved but consistency is more important than making directed improvements. Tests should be runnable from the test's directory and via <code>make test</code>.</li>
 <li>For making changes to the core parser, please create a proposal first outlining your suggestions with examples before spending time working on code.</li>
 </ul>
 <p>It is very easy to create new providers / hooks with tackle. Over time, it will adopt the same import pattern of what Ansible does where all provider / hooks (modules) are stored in version controlled locations. In the meantime, please feel free to contribute to this repository for hooks that have general applicability or create your own hooks in other repositories that are more bespoke / opinionated in nature.</p>

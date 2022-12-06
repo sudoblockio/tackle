@@ -3461,7 +3461,7 @@
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bar</span><span class="w"></span>
 <span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">things</span><span class="w"></span>
 </code></pre></div>
-<p>Additionally, jinja hooks can be used to do some logic that could help with some patterns. For instance the <a href="https://robcxyz.github.io/tackle/providers/Context/keys/">keys</a> hook can be used to create a list of keys from a map which can be used as an iterand.</p>
+<p>Additionally, jinja hooks can be used to do some logic that could help with some patterns. For instance the <a href="https://sudoblockio.github.io/tackle/providers/Context/keys/">keys</a> hook can be used to create a list of keys from a map which can be used as an iterand.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">inputs</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">foo</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stuff</span><span class="w"></span>
@@ -3542,7 +3542,7 @@
 </code></pre></div></p>
 <blockquote>
 <p>Currently only jinja hooks are supported as string values. Future could add support for <code>else-&gt;/else_&gt;</code> compact hook calls.</p>
-<p>Checkout the <a href="https://robcxyz.github.io/tackle/providers/Logic/match/">match</a> hook if needing to do a lot of conditionals which can satisfy regexes when catching cases.</p>
+<p>Checkout the <a href="https://sudoblockio.github.io/tackle/providers/Logic/match/">match</a> hook if needing to do a lot of conditionals which can satisfy regexes when catching cases.</p>
 </blockquote>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="chdir"><code>chdir</code><a class="headerlink" href="#chdir" title="Permanent link">&para;</a></h3>
@@ -3552,7 +3552,7 @@
 <span class="w">  </span><span class="nt">chdir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">path/to/some/dir</span><span class="w"></span>
 </code></pre></div>
 <h3 id="merge"><code>merge</code><a class="headerlink" href="#merge" title="Permanent link">&para;</a></h3>
-<p>If the output of the hook call is a map, then one can merge that map into the parent keys.  For instance given this <a href="https://robcxyz.github.io/tackle/providers/Tackle/block/"><code>block</code> hook</a>:</p>
+<p>If the output of the hook call is a map, then one can merge that map into the parent keys.  For instance given this <a href="https://sudoblockio.github.io/tackle/providers/Tackle/block/"><code>block</code> hook</a>:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">stuff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">things</span><span class="w"></span>
 
 <span class="nt">to merge-&gt;</span><span class="p">:</span><span class="w"></span>

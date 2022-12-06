@@ -3301,6 +3301,10 @@
 <span class="w">    </span><span class="nt">stuff</span><span class="p">:</span><span class="w"></span>
 <span class="w">      </span><span class="nt">things-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print foo</span><span class="w"></span>
 </code></pre></div></p>
+<p>And of course it can be expressed in a single line.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">name-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">input What is your name?</span><span class="w"></span>
+<span class="nt">hello-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print &quot;Hello {{ name }}!&quot; --if &quot;name != &#39;Rob&#39;&quot; --else &quot;Hello me&quot;</span><span class="w"></span>
+</code></pre></div>
 <h3 id="when">When<a class="headerlink" href="#when" title="Permanent link">&para;</a></h3>
 <p><code>when</code> takes effect before for loops which <code>if</code> operates after.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">words</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;Hello&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;cruel&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;world!&#39;</span><span class="p p-Indicator">]</span><span class="w"></span>

@@ -3459,12 +3459,12 @@ You can create a file <code>hello.yaml</code> and paste in the following or you 
 <div class="highlight"><pre><span></span><code>tackle robcxyz/tackle-hello-world
 </code></pre></div>
 <h3 id="single-line-print">Single line print<a class="headerlink" href="#single-line-print" title="Permanent link">&para;</a></h3>
-<p>Simply use the <a href="https://robcxyz.github.io/tackle/providers/Console/print/">print</a> hook.
+<p>Simply use the <a href="https://sudoblockio.github.io/tackle/providers/Console/print/">print</a> hook.
 <div class="highlight"><pre><span></span><code><span class="nt">hw-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print Hello world!</span><span class="w"></span>
 </code></pre></div></p>
 <p>Anytime a key is suffixed with an arrow going to the right, it means the key is calling a hook, in this case a print hook.</p>
 <h3 id="print-with-variables">Print with variables<a class="headerlink" href="#print-with-variables" title="Permanent link">&para;</a></h3>
-<p>Using <a href="https://robcxyz.github.io/tackle/jinja">jinja templating</a>, the print hook can be called in <a href="https://robcxyz.github.io/tackle/jinja">three different ways</a> using a variable.
+<p>Using <a href="https://sudoblockio.github.io/tackle/jinja">jinja templating</a>, the print hook can be called in <a href="https://sudoblockio.github.io/tackle/jinja">three different ways</a> using a variable.
 <div class="highlight"><pre><span></span><code><span class="nt">words</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Hello world!</span><span class="w"></span>
 <span class="nt">expanded</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print</span><span class="w"></span>
@@ -3477,7 +3477,7 @@ You can create a file <code>hello.yaml</code> and paste in the following or you 
 <p>Note that key with arrow without an explicit hook is simply rendered</p>
 </blockquote>
 <h3 id="interactive-prompts">Interactive prompts<a class="headerlink" href="#interactive-prompts" title="Permanent link">&para;</a></h3>
-<p>There are several types of <a href="https://robcxyz.github.io/tackle/providers/Prompts/">prompt</a> hooks which can also be used.</p>
+<p>There are several types of <a href="https://sudoblockio.github.io/tackle/providers/Prompts/">prompt</a> hooks which can also be used.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">name-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">input</span><span class="w"></span>
 <span class="nt">target</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">select Say hi to who?</span><span class="w"></span>
@@ -3493,7 +3493,7 @@ You can create a file <code>hello.yaml</code> and paste in the following or you 
   universe
 </code></pre></div>
 <h3 id="loops-and-conditionals">Loops and conditionals<a class="headerlink" href="#loops-and-conditionals" title="Permanent link">&para;</a></h3>
-<p>Hooks can have <a href="https://robcxyz.github.io/tackle/hook-methods/#loops">loops</a>, <a href="https://robcxyz.github.io/tackle/hook-methods/#conditionals">conditionals</a>, and <a href="https://robcxyz.github.io/tackle/hook-methods/#methods">other base methods</a>.
+<p>Hooks can have <a href="https://sudoblockio.github.io/tackle/hook-methods/#loops">loops</a>, <a href="https://sudoblockio.github.io/tackle/hook-methods/#conditionals">conditionals</a>, and <a href="https://sudoblockio.github.io/tackle/hook-methods/#methods">other base methods</a>.
 <div class="highlight"><pre><span></span><code><span class="nt">words</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Hello</span><span class="w"></span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cruel</span><span class="w"></span>
@@ -3545,7 +3545,7 @@ a-block-&gt;:
 <p>You can still use the output of a private hook but only within the tackle file that it is being called. By default, the public context moves with the call between tackle files.</p>
 </blockquote>
 <h3 id="python-hooks">Python hooks<a class="headerlink" href="#python-hooks" title="Permanent link">&para;</a></h3>
-<p>Hooks can be <a href="https://robcxyz.github.io/tackle/python-hooks/">written in python</a>. Simply add your code to a <code>hooks</code> directory and the hook will be available to be called from a tackle file.
+<p>Hooks can be <a href="https://sudoblockio.github.io/tackle/python-hooks/">written in python</a>. Simply add your code to a <code>hooks</code> directory and the hook will be available to be called from a tackle file.
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">tackle</span> <span class="kn">import</span> <span class="n">BaseHook</span>
 
 <span class="k">class</span> <span class="nc">Greeter</span><span class="p">(</span><span class="n">BaseHook</span><span class="p">):</span>
@@ -3556,7 +3556,7 @@ a-block-&gt;:
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div></p>
 <h3 id="declarative-hooks">Declarative hooks<a class="headerlink" href="#declarative-hooks" title="Permanent link">&para;</a></h3>
-<p>Hooks can be <a href="https://robcxyz.github.io/tackle/declarative-hooks/">declaratively created</a> with tackle. Arrows going to the left are basically reusable functions / methods.</p>
+<p>Hooks can be <a href="https://sudoblockio.github.io/tackle/declarative-hooks/">declaratively created</a> with tackle. Arrows going to the left are basically reusable functions / methods.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">greeter&lt;-</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">str</span><span class="w"></span>
 <span class="w">  </span><span class="nt">args</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;target&#39;</span><span class="p p-Indicator">]</span><span class="w"></span>
@@ -3573,7 +3573,7 @@ a-block-&gt;:
 <span class="nt">jinja_filter-&gt;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">hello</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">greeter</span><span class="nv"> </span><span class="s">}}&quot;</span><span class="w"></span>
 </code></pre></div></p>
 <h3 id="strongly-typed-declarative-hooks">Strongly typed declarative hooks<a class="headerlink" href="#strongly-typed-declarative-hooks" title="Permanent link">&para;</a></h3>
-<p>Declarative hooks are strongly typed objects with many <a href="https://robcxyz.github.io/tackle/declarative-hooks#input-fields">declarative fields</a>.
+<p>Declarative hooks are strongly typed objects with many <a href="https://sudoblockio.github.io/tackle/declarative-hooks#input-fields">declarative fields</a>.
 <div class="highlight"><pre><span></span><code><span class="nt">words&lt;-</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">hi</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">str</span><span class="w"></span>
@@ -3587,7 +3587,7 @@ a-block-&gt;:
 <p>Note an error would be thrown if the <code>hi</code> key did not satisfy the regex.</p>
 </blockquote>
 <h3 id="declarative-hook-methods">Declarative hook methods<a class="headerlink" href="#declarative-hook-methods" title="Permanent link">&para;</a></h3>
-<p>Declarative hooks can have <a href="https://robcxyz.github.io/tackle/declarative-hooks#methods">methods</a> that extend the base.</p>
+<p>Declarative hooks can have <a href="https://sudoblockio.github.io/tackle/declarative-hooks#methods">methods</a> that extend the base.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">words&lt;-</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">hi</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Wadup</span><span class="w"></span>
 <span class="w">  </span><span class="nt">say&lt;-</span><span class="p">:</span><span class="w"></span>
@@ -3598,7 +3598,7 @@ a-block-&gt;:
 <span class="nt">p-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">words.say --hi Hello --target world!</span><span class="w"></span>
 </code></pre></div>
 <h3 id="declarative-hooks-inheritance">Declarative hooks inheritance<a class="headerlink" href="#declarative-hooks-inheritance" title="Permanent link">&para;</a></h3>
-<p>Declarative hooks also support <a href="https://robcxyz.github.io/tackle/declarative-hooks#extending-hooks">inheritance</a>.
+<p>Declarative hooks also support <a href="https://sudoblockio.github.io/tackle/declarative-hooks#extending-hooks">inheritance</a>.
 <div class="highlight"><pre><span></span><code><span class="nt">base&lt;-</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">hi</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Hello</span><span class="w"></span>
