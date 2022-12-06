@@ -43,6 +43,13 @@ hello:
       things->: print foo
 ```
 
+And of course it can be expressed in a single line.
+
+```yaml
+name->: input What is your name?
+hello->: print "Hello {{ name }}!" --if "name != 'Rob'" --else "Hello me"
+```
+
 ### When
 
 `when` takes effect before for loops which `if` operates after.
