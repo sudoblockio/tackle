@@ -21,7 +21,7 @@
 
 [//]: # (* [Slack]&#40;https://join.slack.com/t/slack-y748219/shared_invite/zt-1cqreswyd-5qDBE53QlY97mQOI6DhcKw&#41;)
 
-Tackle is an experimental general purpose configuration for building modular code generators and declarative CLIs. Built as a fork of [cookiecutter](https://github.com/cookiecutter/cookiecutter), it can make any config file dynamic or into a CLI with both strong and weakly typed programmable flow control common to a general purpose programming language. Basically you can write a fully functional Turing-complete program out of a config file. It's wild.
+Tackle is an experimental general purpose configuration language for building modular code generators and declarative CLIs. Built as a fork of [cookiecutter](https://github.com/cookiecutter/cookiecutter), it can make any config file dynamic or into a CLI with both strong and weakly typed programmable flow control common to a general purpose programming language. Basically you can write a fully functional Turing-complete program out of a config file. It's wild.
 
 **With tackle, you can build:**
 - Modular code generators / repo scaffolding tools that can be updated over time
