@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.4.5](https://github.com/sudoblockio/tackle/compare/v0.4.4...v0.4.5) (2022-12-06)
+
+
+### Bug Fixes
+
+* error using method from hook from  dir [#113](https://github.com/sudoblockio/tackle/issues/113) ([1dbf214](https://github.com/sudoblockio/tackle/commit/1dbf2142b29d2c4e3bf07308556ee17e241804a5))
+* render return in dcl hook ([9970987](https://github.com/sudoblockio/tackle/commit/99709873845124128fb92ec1c61e3a030f2d29bb))
+
+
+### Provider Changes
+
+* allow yaml hook to read documents as lists ([f2fa091](https://github.com/sudoblockio/tackle/commit/f2fa09168bd8784eeab14e1160a9680a7b304c80))
+
+
+### Refactors
+
+* clean up function_exceptions test ([7c73c31](https://github.com/sudoblockio/tackle/commit/7c73c312e25777bb30c3d329549d3dc44e0a80be))
+* more stuff to sudoblockio ([77615b1](https://github.com/sudoblockio/tackle/commit/77615b160d77122e3520aab5d90d38e258986df1))
+* move repo to sudoblockio ([33b3a6d](https://github.com/sudoblockio/tackle/commit/33b3a6d9438e47452f881de3d423683f0f4d2712))
+
 ## [0.4.4](https://github.com/robcxyz/tackle/compare/v0.4.3...v0.4.4) (2022-12-03)
 
 
