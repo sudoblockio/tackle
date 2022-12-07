@@ -325,7 +325,7 @@ def render_hook_vars(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
                 default_kwargs = Hook.__fields__['kwargs'].default
                 if default_kwargs not in hook_dict:
                     hook_dict[default_kwargs] = {}
-                hook_dict[default_kwargs][key] = value
+                hook_dict[default_kwargs][key] = render_variable(context, value)
                 hook_dict.pop(key)
                 continue
 
