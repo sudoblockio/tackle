@@ -19,7 +19,9 @@ class GenerateHook(BaseHook, smart_union=True):
     """
     Hook for generating project outputs. Recursively renders all files and folders in a
      given target directory to an output. If there is a "templates" directory and a file
-     or directory that matches the `templates` input param, use that as target.
+     or directory that matches the `templates` input param, use that as target. Paths
+     to templates and output are cross-platform but should be written with `/` path
+     separators.
     """
 
     hook_type: str = 'generate'
