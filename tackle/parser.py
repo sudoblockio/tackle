@@ -177,8 +177,13 @@ def evaluate_for(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
     hook_dict.pop('for')
 
     # Need add an empty list in the value so we have something to append to
-    target_context, key_path = get_target_and_key(context)
-    nested_set(target_context, key_path, [])
+    if 'merge' not in hook_dict:
+        target_context, key_path = get_target_and_key(context)
+        nested_set(target_context, key_path, [])
+    elif not hook_dict['merge']:
+        target_context, key_path = get_target_and_key(context)
+        # If we are merging into a list / dict, we don't want init a list
+        nested_set(target_context, key_path, [])
 
     # Account for nested contexts and justify the new keys based on the key path within
     #  blocks by trimming the key_path_block from the key_path.
@@ -268,11 +273,6 @@ def merge_output(
     append_hook_value: bool = False,
 ):
     """Merge the contents into it's top level set of keys."""
-    if append_hook_value:
-        raise exceptions.AppendMergeException(
-            "Can't merge from for loop.", context=context
-        ) from None
-
     if context.key_path[-1] in ('->', '_>'):
         # Expanded key - Remove parent key from key path
         key_path = context.key_path[:-2] + [context.key_path[-1]]
@@ -280,13 +280,27 @@ def merge_output(
         # Compact key
         key_path = context.key_path[:-1] + [context.key_path[-1][-2:]]
 
+    if append_hook_value:
+        if isinstance(key_path[-3], bytes):
+            set_key(context=context, value=hook_output_value, key_path=key_path[:-1])
+        elif isinstance(hook_output_value, (str, int, float, bool)):
+            raise exceptions.AppendMergeException(
+                "Can't merge str/int/float/bool into dict from for loop.",
+                context=context,
+            ) from None
+        else:
+            # TODO: This needs fixing for merging from loop into dict
+            #  https://github.com/robcxyz/tackle/issues/107
+            tmp_key_path = key_path[:-3] + [key_path[-2]]
+            set_key(context=context, value=hook_output_value, key_path=tmp_key_path)
+        return
+
     # Can't merge into top level keys without merging k/v individually
     if len(key_path) == 1:
         # This is only valid for dict output
         if isinstance(hook_output_value, (dict, OrderedDict)):
             for k, v in hook_output_value.items():
                 set_key(context=context, value=v, key_path=[k] + key_path)
-            return
         else:
             raise exceptions.TopLevelMergeException(
                 "Can't merge non maps into top level keys.", context=context
@@ -295,7 +309,6 @@ def merge_output(
         if isinstance(hook_output_value, dict):
             for k, v in hook_output_value.items():
                 set_key(context=context, value=v, key_path=key_path + [k])
-            return
         else:
             set_key(context=context, value=hook_output_value, key_path=key_path)
 
@@ -373,9 +386,7 @@ def render_hook_vars(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
             hook_dict[key] = render_variable(context, value)
 
 
-def parse_sub_context(
-    context: 'Context', hook_dict: dict, target: str, append_hook_value: bool = None
-):
+def parse_sub_context(context: 'Context', hook_dict: dict, target: str):
     """
     Reparse a subcontext as in the case with `else` and `except` where you have to
     handle the negative side of the either `if` or `try`. Works on both looped and
@@ -387,14 +398,12 @@ def parse_sub_context(
         set_key(
             context=context,
             value=render_variable(context, hook_dict[target]),
-            append_hook_value=append_hook_value,
         )
         return
     elif isinstance(hook_target, (bool, int, float)):
         set_key(
             context=context,
             value=hook_target,
-            append_hook_value=append_hook_value,
         )
         return
 
@@ -532,7 +541,6 @@ def parse_hook(
                 set_key(
                     context=context,
                     value=hook_output_value,
-                    append_hook_value=append_hook_value,
                 )
 
     elif 'else' in hook_dict:

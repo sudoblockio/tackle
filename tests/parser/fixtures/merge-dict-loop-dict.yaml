@@ -1,0 +1,4 @@
+resources:
+  name: operator
+  type: helm
+  do some merge->: literal {'foo-{{index}}':'foo-{{index}}'} --for [1,2,3] --merge

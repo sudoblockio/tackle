@@ -216,7 +216,6 @@ def set_key(
     context: 'Context',
     value: Any,
     key_path: list = None,
-    append_hook_value: bool = False,
 ):
     """
     Wrap nested_set to set keys for both public and private hook calls.
