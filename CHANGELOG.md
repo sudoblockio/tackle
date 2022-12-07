@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.6](https://github.com/sudoblockio/tackle/compare/v0.4.5...v0.4.6) (2022-12-07)
+
+
+### Bug Fixes
+
+* render vars coming from  field in hook that maps a dict to fields ([df6846b](https://github.com/sudoblockio/tackle/commit/df6846b6b8aaf8e3de7b8eebc6735c90a463a1c5))
+
 ## [0.4.5](https://github.com/sudoblockio/tackle/compare/v0.4.4...v0.4.5) (2022-12-06)
 
 
