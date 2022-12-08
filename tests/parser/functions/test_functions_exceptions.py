@@ -111,7 +111,17 @@ def test_parser_functions_raises_validation_missing_field(chdir):
         main(["missing-field.yaml", "stuff"])
 
 
-def test_parser_functions_raises_(chdir):
+def test_parser_functions_raises_when_value_is_str(chdir):
     chdir('exceptions')
     with pytest.raises(exceptions.MalformedFunctionFieldException):
         main(["str-value.yaml", "stuff"])
+
+
+# TODO: This is risky to implement an error catcher here as the error happens in
+#  `function_walk` and then down in `walk_sync` and think many errors can happen then.
+#  Should catch earlier with some kind of validation stage.
+#  https://github.com/sudoblockio/tackle/issues/125
+# def test_parser_functions_raises_empty_hook(chdir):
+#     chdir('exceptions')
+#     with pytest.raises(exceptions.MalformedFunctionFieldException):
+#         main(["empty-hook.yaml", "foo"])
