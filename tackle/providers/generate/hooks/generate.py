@@ -70,8 +70,11 @@ class GenerateHook(BaseHook, smart_union=True):
     def _init_paths(self):
         if isinstance(self.copy_without_render, str):
             self.copy_without_render = [self.copy_without_render]
-
         self.output = os.path.expanduser(os.path.expandvars(self.output))
+
+        # Fix paths to be cross-platform with `/` being default in config
+        self.output = os.path.join(*self.output.split('/'))
+
         if 'nt' in os.name:
             self.file_path_separator_ = '\\'
             if not self.output.startswith('\\'):
