@@ -6,7 +6,7 @@
 
 [![pypi](https://img.shields.io/pypi/v/tackle.svg)](https://pypi.python.org/pypi/tackle)
 [![python](https://img.shields.io/pypi/pyversions/tackle.svg)](https://pypi.python.org/pypi/tackle)
-[![codecov](https://codecov.io/gh/robcxyz/tackle/branch/main/graphs/badge.svg?branch=main)](https://codecov.io/github/sudoblockio/tackle?branch=main)
+[![codecov](https://codecov.io/gh/sudoblockio/tackle/branch/main/graphs/badge.svg?branch=main)](https://codecov.io/github/sudoblockio/tackle?branch=main)
 [![codeql](https://github.com/sudoblockio/tackle/actions/workflows/codeql.yml/badge.svg)](https://github.com/sudoblockio/tackle/actions/workflows/codeql.yml)
 [![Foresight Docs](https://api-public.service.runforesight.com/api/v1/badge/success?repoId=4abde40b-565a-4557-afc0-983461857bb4)](https://docs.runforesight.com/)
 [![Foresight Docs](https://api-public.service.runforesight.com/api/v1/badge/test?repoId=4abde40b-565a-4557-afc0-983461857bb4)](https://docs.runforesight.com/)
@@ -202,6 +202,10 @@ Hooks can be imported, linked, and/or combined creating a web of CLIs.
 - [Memory Management](https://sudoblockio.github.io/tackle/memory-management/)
 - [Special Variables](https://sudoblockio.github.io/tackle/special-variables/)
 - [Declarative CLIs](https://sudoblockio.github.io/tackle/declarative-cli/)
+
+### Warning on Whitespaces
+
+tackle relies heavily on parsing based on whitespaces which if you are not careful can easily bite you. Whenever you need to have some whitespaces preserved, make sure to quote the entire expression.
 
 ### Contributing
 
