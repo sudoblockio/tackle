@@ -318,8 +318,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#warning-on-whitespaces" class="md-nav__link">
-    Warning on Whitespaces
+  <a href="#known-issues" class="md-nav__link">
+    Known Issues
   </a>
   
 </li>
@@ -3345,8 +3345,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#warning-on-whitespaces" class="md-nav__link">
-    Warning on Whitespaces
+  <a href="#known-issues" class="md-nav__link">
+    Known Issues
   </a>
   
 </li>
@@ -3549,8 +3549,13 @@ methods:
 <li><a href="https://sudoblockio.github.io/tackle/special-variables/">Special Variables</a></li>
 <li><a href="https://sudoblockio.github.io/tackle/declarative-cli/">Declarative CLIs</a></li>
 </ul>
-<h3 id="warning-on-whitespaces">Warning on Whitespaces<a class="headerlink" href="#warning-on-whitespaces" title="Permanent link">&para;</a></h3>
-<p>tackle relies heavily on parsing based on whitespaces which if you are not careful can easily bite you. Whenever you need to have some whitespaces preserved, make sure to quote the entire expression.</p>
+<h3 id="known-issues">Known Issues<a class="headerlink" href="#known-issues" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Windows Support</strong></li>
+<li>tackle is lacking some windows support as shown in the <a href="https://github.com/sudoblockio/tackle/actions/workflows/main-windows.yml">failed tests</a>. If you are a windows user, it is highly recommended to use WSL. <strong>Please get in touch</strong> if you are motivated to fix these tests to make tackle fully cross-platform. It probably isn't that hard to fix them as they mostly are due to differences in how windows handles paths.</li>
+<li><strong>Whitespaces</strong></li>
+<li>tackle relies heavily on parsing based on whitespaces which if you are not careful can easily bite you. Whenever you need to have some whitespaces preserved, make sure to quote the entire expression.</li>
+</ul>
 <h3 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permanent link">&para;</a></h3>
 <p>Contributions are welcome but please be advised of the following notes.</p>
 <ul>

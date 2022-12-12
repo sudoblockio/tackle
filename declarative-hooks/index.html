@@ -3495,13 +3495,13 @@
 <span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">str</span><span class="w"></span>
 <span class="w">    </span><span class="nt">default-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">input</span><span class="w"></span>
 </code></pre></div>
-<p>Each one of these will in the absense of supplying a value call the input hook as below.</p>
+<p>Each one of these will in the absense of supplying a value call the <a href="https://sudoblockio.github.io/tackle/providers/Prompts/input/">input</a> hook as below.</p>
 <div class="highlight"><pre><span></span><code>? literal_compact &gt;&gt;&gt; foo
 ? literal_expanded &gt;&gt;&gt; bar
 ? field_default_compact &gt;&gt;&gt; baz
 </code></pre></div>
 <p>Resulting in the following context easily viewable with the following command:</p>
-<div class="highlight"><pre><span></span><code>tackle example.yaml a_hook -pf yam
+<div class="highlight"><pre><span></span><code>tackle example.yaml a_hook -pf yaml
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="nt">literal_compact</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">foo</span><span class="w"></span>
 <span class="nt">literal_expanded</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bar</span><span class="w"></span>
@@ -3522,6 +3522,9 @@
 <blockquote>
 <p>Future versions are contemplating ways to do method overloading based on types. Stay tuned.</p>
 </blockquote>
+<p>Additionally, methods are callable from the command line. For instance if the above was in a file <code>.tackle.yaml</code>, you could call the method with:</p>
+<div class="highlight"><pre><span></span><code>tackle words say --hi Hello --target world!
+</code></pre></div>
 <h4 id="extending-hooks">Extending Hooks<a class="headerlink" href="#extending-hooks" title="Permanent link">&para;</a></h4>
 <p>Tackle has the notion of extending hooks from base hooks similar to inheritance patterns found in OOP languages. This is useful if you have a schema that you want to use in multiple hooks or you want to create generic methods that apply to multiple schemas. For instance:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">base&lt;-</span><span class="p">:</span><span class="w"></span>
