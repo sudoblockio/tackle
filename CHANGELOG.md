@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.7](https://github.com/sudoblockio/tackle/compare/v0.4.6...v0.4.7) (2022-12-12)
+
+
+### Bug Fixes
+
+* override blocks / nested inputs ([3601fd5](https://github.com/sudoblockio/tackle/commit/3601fd556d207911ccd501c1bd9a8bae48a9c35a))
+* override inputs so that they are able to apply to declarative hook execs and are passed through remote calls ([d3ccf0a](https://github.com/sudoblockio/tackle/commit/d3ccf0aed8fd60d3e287a98cc166e5817f859023))
+
 ## [0.4.6](https://github.com/sudoblockio/tackle/compare/v0.4.5...v0.4.6) (2022-12-07)
 
 
