@@ -850,17 +850,30 @@ def update_input_context(input_dict: dict, update_dict: dict) -> dict:
         if k in input_dict:
             input_dict.update({k: v})
         elif f"{k}->" in input_dict:
-            # Replace the keys and value in the same position it was in
-            input_dict = {
-                key if key != f"{k}->" else k: value if key != f"{k}->" else v
-                for key, value in input_dict.items()
-            }
+            # If value is a dict, recurse into this dict
+            if isinstance(v, dict):
+                input_dict[f"{k}->"] = update_input_context(
+                    input_dict=input_dict[f"{k}->"],
+                    update_dict=update_dict[k],
+                )
+            else:
+                # Replace the keys and value in the same position it was in
+                input_dict = {
+                    key if key != f"{k}->" else k: value if key != f"{k}->" else v
+                    for key, value in input_dict.items()
+                }
         elif f"{k}_>" in input_dict:
             # Same but for private hooks
-            input_dict = {
-                key if key != f"{k}_>" else k: value if key != f"{k}_>" else v
-                for key, value in input_dict.items()
-            }
+            if isinstance(v, dict):
+                input_dict[f"{k}->"] = update_input_context(
+                    input_dict=input_dict[f"{k}_>"],
+                    update_dict=update_dict[k],
+                )
+            else:
+                input_dict = {
+                    key if key != f"{k}_>" else k: value if key != f"{k}_>" else v
+                    for key, value in input_dict.items()
+                }
     return input_dict
 
 

@@ -1,0 +1,8 @@
+
+foo:
+  this: stuff
+  that: things
+  this_private: stuff
+  that_private: things
+
+bar: baz

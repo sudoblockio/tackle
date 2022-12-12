@@ -92,18 +92,20 @@ def test_main_overrides_str(change_curdir_fixtures):
     main(["dict-input.yaml", "--override", "dict-input-overrides.yaml"])
 
 
-def test_main_overrides_str_for_func(change_curdir_fixtures):
+@pytest.mark.parametrize("input_file", ["func-input.yaml", "func-exec-input.yaml"])
+def test_main_overrides_str_for_func(change_curdir_fixtures, input_file):
     """Test that we can override inputs for a default hook."""
-    o = tackle("func-input.yaml", override="dict-input-overrides.yaml")
+    o = tackle(input_file, override="dict-input-overrides.yaml")
     # Should normally throw error with prompt
     assert o['this'] == "stuff"
 
 
-def test_main_overrides_str_for_func_exec(change_curdir_fixtures):
-    """Test that we can override inputs for a default hook."""
-    o = tackle("func-exec-input.yaml", override="dict-input-overrides.yaml")
+def test_main_overrides_str_for_block(change_curdir_fixtures):
+    """Test that we can override inputs in a block."""
+    o = tackle("block-input.yaml", override="block-input-overrides.yaml")
     # Should normally throw error with prompt
-    assert o['this'] == "stuff"
+    assert o['foo']['this'] == "stuff"
+    assert o['bar'] == 'baz'
 
 
 def test_main_overrides_str_not_found_error(change_curdir_fixtures):
