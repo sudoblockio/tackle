@@ -136,7 +136,7 @@ a_hook<-:
     default->: input
 ```
 
-Each one of these will in the absense of supplying a value call the input hook as below.
+Each one of these will in the absense of supplying a value call the [input](https://sudoblockio.github.io/tackle/providers/Prompts/input/) hook as below.
 
 ```text
 ? literal_compact >>> foo
@@ -147,7 +147,7 @@ Each one of these will in the absense of supplying a value call the input hook a
 Resulting in the following context easily viewable with the following command:
 
 ```shell
-tackle example.yaml a_hook -pf yam
+tackle example.yaml a_hook -pf yaml
 ```
 
 ```yaml
@@ -174,6 +174,12 @@ p->: words.say --hi Hello --target world!
 Here you can see that there is method `say` that when called executes its own `exec` method which is able to access the base attribute `hi`.  This is useful in many contexts where one wants to extend base objects with additional functionality.
 
 > Future versions are contemplating ways to do method overloading based on types. Stay tuned.
+
+Additionally, methods are callable from the command line. For instance if the above was in a file `.tackle.yaml`, you could call the method with:
+
+```shell
+tackle words say --hi Hello --target world!
+```
 
 #### Extending Hooks
 

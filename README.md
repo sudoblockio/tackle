@@ -1,7 +1,5 @@
 <img align="right" width="280" height="280" src="https://raw.githubusercontent.com/sudoblockio/tackle/main/docs/assets/logo-box.png">
 
-[//]: # (TODO: update codecov url)
-
 # tackle
 
 [![pypi](https://img.shields.io/pypi/v/tackle.svg)](https://pypi.python.org/pypi/tackle)
@@ -203,9 +201,13 @@ Hooks can be imported, linked, and/or combined creating a web of CLIs.
 - [Special Variables](https://sudoblockio.github.io/tackle/special-variables/)
 - [Declarative CLIs](https://sudoblockio.github.io/tackle/declarative-cli/)
 
-### Warning on Whitespaces
+### Known Issues
 
-tackle relies heavily on parsing based on whitespaces which if you are not careful can easily bite you. Whenever you need to have some whitespaces preserved, make sure to quote the entire expression.
+- **Windows Support**
+  - tackle is lacking some windows support as shown in the [failed tests](https://github.com/sudoblockio/tackle/actions/workflows/main-windows.yml). If you are a windows user, it is highly recommended to use WSL. **Please get in touch** if you are motivated to fix these tests to make tackle fully cross-platform. It probably isn't that hard to fix them as they mostly are due to differences in how windows handles paths.
+- **Whitespaces**
+  - tackle relies heavily on parsing based on whitespaces which if you are not careful can easily bite you. Whenever you need to have some whitespaces preserved, make sure to quote the entire expression.
+
 
 ### Contributing
 

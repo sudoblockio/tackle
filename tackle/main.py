@@ -9,7 +9,7 @@ from tackle import exceptions
 
 
 def get_global_kwargs(kwargs):
-    """Check for unknown kwargs and return so they can be consumed later."""
+    """Check for unknown kwargs and return so that they can be consumed later."""
     global_kwargs = {}
     for k, v in kwargs.items():
         if k not in Context.__fields__ and k != 'override':
@@ -70,7 +70,6 @@ def tackle(
             if os.path.exists(overrides):
                 override_dict = read_config_file(overrides)
                 if override_dict is not None:
-                    # context.global_kwargs.update(override_dict)
                     context.override_context.update(override_dict)
             else:
                 raise exceptions.UnknownInputArgumentException(
@@ -80,9 +79,6 @@ def tackle(
                 )
         elif isinstance(overrides, dict):
             context.override_context.update(overrides)
-
-            # context.global_kwargs.update(overrides)
-            # context.global_kwargs.pop('override')
 
     # Main loop
     output = update_source(context)
