@@ -4,12 +4,13 @@ from InquirerPy import prompt
 from typing import Any
 from tackle.models import BaseHook, Field
 from tackle.utils.dicts import get_readable_key_path
+from tackle import exceptions
 
 
 class InquirerRawListHook(BaseHook):
     """
     Hook for PyInquirer 'rawlist' type prompts. Similar to `select` hook with less
-    flexibility. [Source example](https://github.com/CITGuru/PyInquirer/blob/master/examples/rawlist.py)
+    flexibility. [Source example](https://github.com/kazhala/InquirerPy/blob/master/examples/rawlist.py)
     """
 
     hook_type: str = 'rawlist'
@@ -40,6 +41,8 @@ class InquirerRawListHook(BaseHook):
             except KeyboardInterrupt:
                 print("Exiting...")
                 sys.exit(0)
+            except EOFError:
+                raise exceptions.PromptHookCallException(context=self)
             return response['tmp']
 
         elif self.default:

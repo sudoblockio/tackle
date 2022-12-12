@@ -5,6 +5,7 @@ from typing import Any, List, Union
 
 from tackle.models import BaseHook, Field
 from tackle.utils.dicts import get_readable_key_path
+from tackle import exceptions
 
 
 class InquirerListHook(BaseHook, smart_union=True):
@@ -12,7 +13,7 @@ class InquirerListHook(BaseHook, smart_union=True):
     Hook for PyInquirer 'list' type prompts, a single selector that returns a string.
      Takes in two forms of `choices` inputs, list of string or list of maps with the
      key as the question and the value as the output.
-     [Source example](https://github.com/CITGuru/PyInquirer/blob/master/examples/list.py)
+     [Source example](https://github.com/kazhala/InquirerPy/blob/master/examples/list.py)
     """
 
     hook_type: str = 'select'
@@ -81,6 +82,8 @@ class InquirerListHook(BaseHook, smart_union=True):
             except KeyboardInterrupt:
                 print("Exiting...")
                 sys.exit(0)
+            except EOFError:
+                raise exceptions.PromptHookCallException(context=self)
             return response['tmp']
 
         elif isinstance(self.choices[0], str):

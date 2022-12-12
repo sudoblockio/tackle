@@ -147,10 +147,27 @@ class TackleParserException(Exception):
 
 class HookCallException(TackleParserException):
     """
-    Exception for an unknown field in a hook.
+    Exception when calling a hook.
 
-    Raised when field has been provided not declared in the hook type.
+    Raised within a python hook.
     """
+
+
+class PromptHookCallException(TackleParserException):
+    """
+    Exception when calling a prompt hook typically in automation.
+
+    Raised within a python hook.
+    """
+
+    def __init__(self, context: 'Union[Context, BaseContext]'):
+        super().__init__(
+            extra_message="Error calling hook most likely due to hook being called in "
+            "automation where no input was given for key. Try setting "
+            "the key with an `override` if that is the case. Check: "
+            "https://sudoblockio.github.io/tackle/testing-providers/#testing-tackle-scripts",  # noqa
+            context=context,
+        )
 
 
 class HookParseException(TackleParserException):

@@ -4,12 +4,13 @@ from InquirerPy import prompt
 from typing import Any
 from tackle.models import BaseHook, Field
 from tackle.utils.dicts import get_readable_key_path
+from tackle import exceptions
 
 
 class InquirerExpandHook(BaseHook):
     """
     Hook for PyInquirer `expand` type prompt.
-     [Source example](https://github.com/CITGuru/PyInquirer/blob/master/examples/expand.py)
+     [Source example](https://github.com/kazhala/InquirerPy/blob/master/examples/expand.py)
     """
 
     hook_type: str = 'expand'
@@ -38,6 +39,8 @@ class InquirerExpandHook(BaseHook):
             except KeyboardInterrupt:
                 print("Exiting...")
                 sys.exit(0)
+            except EOFError:
+                raise exceptions.PromptHookCallException(context=self)
             return response['tmp']
 
         elif self.default:

@@ -5,12 +5,13 @@ from typing import Any
 
 from tackle.models import BaseHook, Field
 from tackle.utils.dicts import get_readable_key_path
+from tackle import exceptions
 
 
 class InquirerEditorHook(BaseHook):
     """
     Hook for PyInquirer `editor` type prompts. Opens an editor like nano to fill in a
-     field. [Source example](https://github.com/CITGuru/PyInquirer/blob/master/examples/editor.py)
+     field. [Source example](https://github.com/kazhala/InquirerPy/blob/master/examples/editor.py)
     """
 
     hook_type: str = 'editor'
@@ -37,6 +38,8 @@ class InquirerEditorHook(BaseHook):
             except KeyboardInterrupt:
                 print("Exiting...")
                 sys.exit(0)
+            except EOFError:
+                raise exceptions.PromptHookCallException(context=self)
             return response['tmp']
 
         elif self.default:

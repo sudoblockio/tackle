@@ -6,12 +6,13 @@ from typing import Any
 
 from tackle.models import BaseHook, Field
 from tackle.utils.dicts import get_readable_key_path
+from tackle import exceptions
 
 
 class InquirerPasswordHook(BaseHook):
     """
     Hook for PyInquirer `password` type prompts. Masks the input as the user types it
-     in. [Source example](https://github.com/CITGuru/PyInquirer/blob/master/examples/password.py)
+     in. [Source example](https://github.com/kazhala/InquirerPy/blob/master/examples/password.py)
     """
 
     hook_type: str = 'password'
@@ -39,6 +40,8 @@ class InquirerPasswordHook(BaseHook):
             except KeyboardInterrupt:
                 print("Exiting...")
                 sys.exit(0)
+            except EOFError:
+                raise exceptions.PromptHookCallException(context=self)
             return response['tmp']
 
         elif self.default:

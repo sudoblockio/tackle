@@ -6,6 +6,7 @@ from typing import Union, List, Dict
 
 from tackle.models import BaseHook, Field
 from tackle.utils.dicts import get_readable_key_path
+from tackle import exceptions
 
 
 class InquirerCheckboxHook(BaseHook):
@@ -13,7 +14,7 @@ class InquirerCheckboxHook(BaseHook):
     Hook for PyInquirer `checkbox` type prompts. Allows the user to multi-select from a
      list of choices and outputs a list. Takes in three forms of `choices` inputs. A
      list of string, a list of maps with all keys having a `name` field per the original
-     [spec](https://github.com/CITGuru/PyInquirer/blob/master/examples/checkbox.py), or
+     [spec](https://github.com/kazhala/InquirerPy/blob/master/examples/checkbox.py), or
      list of maps with the key as the question, the value as the output.
     """
 
@@ -145,4 +146,6 @@ class InquirerCheckboxHook(BaseHook):
         except KeyboardInterrupt:
             print("Exiting...")
             sys.exit(0)
+        except EOFError:
+            raise exceptions.PromptHookCallException(context=self)
         return response['tmp']

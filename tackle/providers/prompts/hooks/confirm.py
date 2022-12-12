@@ -3,12 +3,13 @@ from InquirerPy import prompt
 
 from tackle.models import BaseHook, Field
 from tackle.utils.dicts import get_readable_key_path
+from tackle import exceptions
 
 
 class InquirerConfirmHook(BaseHook):
     """
     Hook to confirm with a message and return a boolean.
-     [Source example](https://github.com/CITGuru/PyInquirer/blob/master/examples/confirm.py)
+     [Source example](https://github.com/kazhala/InquirerPy/blob/master/examples/confirm.py)
     """
 
     hook_type: str = 'confirm'
@@ -37,6 +38,8 @@ class InquirerConfirmHook(BaseHook):
             except KeyboardInterrupt:
                 print("Exiting...")
                 sys.exit(0)
+            except EOFError:
+                raise exceptions.PromptHookCallException(context=self)
             return response['tmp']
 
         elif self.default:
