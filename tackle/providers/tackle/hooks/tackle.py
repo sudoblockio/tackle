@@ -5,7 +5,7 @@ import tackle as tkl
 from tackle.models import BaseHook, Field
 
 
-class TackleHook(BaseHook):
+class TackleHook(BaseHook, smart_union=True):
     """Hook for calling external tackle providers."""
 
     hook_type: str = 'tackle'
@@ -103,6 +103,7 @@ class TackleHook(BaseHook):
             global_args=self.additional_args,
             find_in_parent=self.find_in_parent,
             verbose=self.verbose,
+            override_context=self.override_context,
         )
 
         return output_context

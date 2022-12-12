@@ -14,8 +14,6 @@ EXCEPTION_FIXTURES = [
     ('field-require.yaml', exceptions.HookParseException),
     # Check that type is one of literals.
     ('field-bad-type.yaml', exceptions.MalformedFunctionFieldException),
-    # Check that type or default is given.
-    ('field-type-or-default.yaml', exceptions.MalformedFunctionFieldException),
 ]
 
 

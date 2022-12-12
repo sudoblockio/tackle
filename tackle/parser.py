@@ -477,6 +477,7 @@ def parse_hook(
                     verbose=context.verbose,
                     env_=context.env_,
                     is_hook_call=True,
+                    override_context=context.override_context,
                 )
             except TypeError as e:
                 # TODO: Improve -> This is an error when we have multiple of the same
@@ -840,20 +841,27 @@ def walk_sync(context: 'Context', element):
         set_key(context=context, value=element)
 
 
-def update_input_context_with_kwargs(context: 'Context', kwargs: dict):
+def update_input_context(input_dict: dict, update_dict: dict) -> dict:
     """
-    Update the input dict with kwargs which in this context are treated as overriding
-    the keys. Takes into account if the key is a hook and replaces that.
+    Update the input dict with update_dict which in this context are treated as
+     overriding the keys. Takes into account if the key is a hook and replaces that.
     """
-    for k, v in kwargs.items():
-        if k in context.input_context:
-            context.input_context.update({k: v})
-        elif f"{k}->" in context.input_context:
+    for k, v in update_dict.items():
+        if k in input_dict:
+            input_dict.update({k: v})
+        elif f"{k}->" in input_dict:
             # Replace the keys and value in the same position it was in
-            context.input_context = {
+            input_dict = {
                 key if key != f"{k}->" else k: value if key != f"{k}->" else v
-                for key, value in context.input_context.items()
+                for key, value in input_dict.items()
             }
+        elif f"{k}_>" in input_dict:
+            # Same but for private hooks
+            input_dict = {
+                key if key != f"{k}_>" else k: value if key != f"{k}_>" else v
+                for key, value in input_dict.items()
+            }
+    return input_dict
 
 
 def update_hook_with_kwargs_and_flags(hook: ModelMetaclass, kwargs: dict) -> dict:
@@ -1097,9 +1105,19 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list) -> Opt
     else:
         # If there are no declarative hooks defined, use the kwargs to override values
         #  within the context.
-        update_input_context_with_kwargs(context=context, kwargs=kwargs)
+        context.input_context = update_input_context(
+            input_dict=context.input_context,
+            update_dict=kwargs,
+        )
+        # Apply overrides
+        context.input_context = update_input_context(
+            input_dict=context.input_context,
+            update_dict=context.override_context,
+        )
 
     for i in flags:
+        # TODO: This should use `update_input_context` as we don't know if the key has
+        #  a hook in it -> Right? It has not been expanded...
         # Process flags by setting key to true
         context.input_context.update({i: True})
 
@@ -1136,6 +1154,7 @@ def parse_tmp_context(context: Context, element: Any, existing_context: dict):
         calling_file=context.calling_file,
         verbose=context.verbose,
         env_=context.env_,
+        override_context=context.override_context,
     )
     walk_sync(context=tmp_context, element=element)
 
@@ -1152,8 +1171,8 @@ def function_walk(
      many returnable string keys. Function is meant to be implanted into a function
      object and called either as `exec` or some other arbitrary method.
     """
-    if input_element is None:
-        # If there is no `exec` method, input_element is None so we infer that the
+    if input_element == {}:
+        # If there is no `exec` method, input_element is {} so we infer that the
         # input fields are to be returned. This is useful if the user would like to
         # validate a dict easily with a function and is the only natural meaning of
         # a function call without an exec method.
@@ -1198,6 +1217,7 @@ def function_walk(
         calling_directory=self.calling_directory,
         calling_file=self.calling_file,
         env_=self.env_,
+        override_context=self.override_context,
     )
     walk_sync(context=tmp_context, element=input_element.copy())
 
@@ -1256,6 +1276,11 @@ def create_function_model(
     # Macro to expand all keys properly so that a field's default can be parsed
     func_dict = function_field_to_parseable_macro(func_dict, context, func_name)
 
+    # Apply overrides to input fields
+    for k, v in context.override_context.items():
+        if k in func_dict:
+            func_dict[k] = v
+
     # Implement inheritance
     if 'extends' in func_dict and func_dict['extends'] is not None:
         base_hook = get_hook(func_dict['extends'], context)
@@ -1267,11 +1292,17 @@ def create_function_model(
 
     # fmt: off
     # Validate raw input params against pydantic object where values will be used later
-    exec_ = None
+    exec_ = {}
     if 'exec' in func_dict:
         exec_ = func_dict.pop('exec')
     elif 'exec<-' in func_dict:
         exec_ = func_dict.pop('exec<-')
+
+    # Apply overrides to exec_
+    exec_ = update_input_context(
+        input_dict=exec_,
+        update_dict=context.override_context,
+    )
 
     # Special vars
     function_input = FunctionInput(
@@ -1322,12 +1353,7 @@ def create_function_model(
                 else:
                     new_func[k] = (type(v['default']), Field(**v))
             else:
-                raise exceptions.MalformedFunctionFieldException(
-                    f"Function field {k} must have either a `type` or `default` field "
-                    f"where the type can be inferred.",
-                    function_name=func_name,
-                    context=context,
-                ) from None
+                new_func[k] = (dict, v)
         elif v in literals:
             new_func[k] = (locate(v).__name__, Field(...))
         elif isinstance(v, (str, int, float, bool)):
@@ -1358,6 +1384,7 @@ def create_function_model(
             private_hooks=context.private_hooks,
             calling_directory=context.calling_directory,
             calling_file=context.calling_file,
+            override_context=context.override_context,
             # Causes TypeError in pydantic -> __subclasscheck__
             # env_=context.env_,
         )

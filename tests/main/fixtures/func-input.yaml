@@ -1,0 +1,7 @@
+
+<-:
+  this->: input This?
+
+  that->: input That?
+
+  foo: 1

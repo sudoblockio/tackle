@@ -61,6 +61,7 @@ def create_jinja_hook(context: 'Context', hook: 'ModelMetaclass') -> 'JinjaHook'
             key_path=context.key_path,
             verbose=context.verbose,
             env_=context.env_,
+            override_context=context.override_context,
         ),
     )
 

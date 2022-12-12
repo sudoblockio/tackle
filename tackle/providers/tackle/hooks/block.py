@@ -39,6 +39,7 @@ class BlockHook(BaseHook):
             calling_directory=self.calling_directory,
             calling_file=self.calling_file,
             verbose=self.verbose,
+            override_context=self.override_context,
         )
         walk_sync(context=tmp_context, element=self.items.copy())
 

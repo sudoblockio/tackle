@@ -42,6 +42,7 @@ class BaseContext(BaseModel):
     private_context: Union[dict, list] = None
     temporary_context: Union[dict, list] = None
     existing_context: dict = {}
+    override_context: dict = Field({}, description="A dict to override inputs with.")
 
     key_path: list = []
     key_path_block: list = []
@@ -82,14 +83,9 @@ class Context(BaseContext):
     input_string: str = None
     input_dir: str = None
     input_file: str = None
-    override_context: Union[str, dict] = Field(
-        None, description="A str for a file or dict to override inputs with."
-    )
 
     function_fields: list = None
     function_dict: dict = None
-
-    # return_: bool = False
 
     hook_dirs: list = Field(
         None, description="A list of additional directories to import hooks."

@@ -54,6 +54,8 @@ def test_main_input_dict(change_curdir_fixtures):
     input_dict = {
         'this': 1,
         'that': 2,
+        'this_private': 1,
+        'that_private': 2,
         'stuff': 'things',  # Missing key
         'foo': 2,  # Non-hook key
     }
@@ -64,7 +66,20 @@ def test_main_input_dict(change_curdir_fixtures):
 
 def test_main_from_cli_input_dict(change_curdir_fixtures, capsys):
     """Test same as above but from command line."""
-    main(["dict-input.yaml", "--this", "1", "--that", "2", "--print"])
+    main(
+        [
+            "dict-input.yaml",
+            "--this",
+            "1",
+            "--that",
+            "2",
+            "--this_private",
+            "1",
+            "--that_private",
+            "2",
+            "--print",
+        ]
+    )
     assert 'this' in capsys.readouterr().out
 
 
@@ -75,6 +90,20 @@ def test_main_overrides_str(change_curdir_fixtures):
     assert o['this'] == "stuff"
     # Again, should raise error w/o override
     main(["dict-input.yaml", "--override", "dict-input-overrides.yaml"])
+
+
+def test_main_overrides_str_for_func(change_curdir_fixtures):
+    """Test that we can override inputs for a default hook."""
+    o = tackle("func-input.yaml", override="dict-input-overrides.yaml")
+    # Should normally throw error with prompt
+    assert o['this'] == "stuff"
+
+
+def test_main_overrides_str_for_func_exec(change_curdir_fixtures):
+    """Test that we can override inputs for a default hook."""
+    o = tackle("func-exec-input.yaml", override="dict-input-overrides.yaml")
+    # Should normally throw error with prompt
+    assert o['this'] == "stuff"
 
 
 def test_main_overrides_str_not_found_error(change_curdir_fixtures):
