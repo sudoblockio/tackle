@@ -113,7 +113,7 @@ greeter<-:
   target: str
   args: ['target']
   exec<-:
-    expression: Hello {{target}}
+    expression->: var Hello {{target}}  # var hook renders variables
     p->: print {{expression}}
   return: expression
 ```
@@ -128,7 +128,7 @@ Expanded fields:
   ->: greeter
   target: {{hello}}
 Jinja template->: {{ greeter(hello) }}
-# Or combinations jinja and compact / expanded hooks allowing chaining of hook calls.  
+# Or combinations jinja and compact / expanded hooks allowing chaining of hook calls.
 ```
 
 With the declarative hooks being callable from the command line:
@@ -136,7 +136,7 @@ With the declarative hooks being callable from the command line:
 ```shell
 tackle hello.yaml greeter --target world!
 # Or from a github repo
-tackle sudoblockio/tackle-hello-world --checkout v0.1.0
+tackle sudoblockio/tackle-hello-world greeter --target world!
 ```
 
 Documentation can be embedded into the hooks.
