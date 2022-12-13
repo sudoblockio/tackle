@@ -3477,7 +3477,7 @@ pip install tackle
 <span class="w">  </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">str</span><span class="w"></span>
 <span class="w">  </span><span class="nt">args</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;target&#39;</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="w">  </span><span class="nt">exec&lt;-</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Hello {{target}}</span><span class="w"></span>
+<span class="w">    </span><span class="nt">expression-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">var Hello {{target}}</span><span class="w">  </span><span class="c1"># var hook renders variables</span><span class="w"></span>
 <span class="w">    </span><span class="nt">p-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print {{expression}}</span><span class="w"></span>
 <span class="w">  </span><span class="nt">return</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">expression</span><span class="w"></span>
 </code></pre></div>
@@ -3489,12 +3489,12 @@ pip install tackle
 <span class="w">  </span><span class="nt">-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">greeter</span><span class="w"></span>
 <span class="w">  </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="nv">hello</span><span class="p p-Indicator">}}</span><span class="w"></span>
 <span class="nt">Jinja template-&gt;</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">greeter(hello)</span><span class="w"> </span><span class="p p-Indicator">}}</span><span class="w"></span>
-<span class="c1"># Or combinations jinja and compact / expanded hooks allowing chaining of hook calls.  </span><span class="w"></span>
+<span class="c1"># Or combinations jinja and compact / expanded hooks allowing chaining of hook calls.</span><span class="w"></span>
 </code></pre></div>
 <p>With the declarative hooks being callable from the command line:</p>
 <div class="highlight"><pre><span></span><code>tackle hello.yaml greeter --target world!
 <span class="c1"># Or from a github repo</span>
-tackle sudoblockio/tackle-hello-world --checkout v0.1.0
+tackle sudoblockio/tackle-hello-world greeter --target world!
 </code></pre></div>
 <p>Documentation can be embedded into the hooks.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">&lt;-</span><span class="p">:</span><span class="w"></span>
