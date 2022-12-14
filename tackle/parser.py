@@ -505,7 +505,7 @@ def parse_hook(
 
                     msg += (
                         f"\n Check the docs for more information on the hook -> "
-                        f"https://robcxyz.github.io/tackle/providers/"
+                        f"https://sudoblockio.github.io/tackle/providers/"
                         f"{provider_doc_url_str}/{hook_dict['hook_type']}/"
                     )
                 raise exceptions.HookParseException(str(msg), context=context) from None
