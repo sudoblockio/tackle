@@ -1398,6 +1398,7 @@ def create_function_model(
             calling_directory=context.calling_directory,
             calling_file=context.calling_file,
             override_context=context.override_context,
+            no_input=context.no_input,
             # Causes TypeError in pydantic -> __subclasscheck__
             # env_=context.env_,
         )
