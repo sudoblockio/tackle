@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.8](https://github.com/sudoblockio/tackle/compare/v0.4.7...v0.4.8) (2022-12-14)
+
+
+### Bug Fixes
+
+* no_input not being carried into declarative hook calls ([236aa4a](https://github.com/sudoblockio/tackle/commit/236aa4a39e378c77dac23753e7ef2ee14081b429))
+
 ## [0.4.7](https://github.com/sudoblockio/tackle/compare/v0.4.6...v0.4.7) (2022-12-12)
 
 
