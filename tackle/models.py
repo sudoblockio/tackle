@@ -38,8 +38,8 @@ class BaseContext(BaseModel):
     verbose: bool = False
 
     input_context: Union[dict, list] = None
-    public_context: Union[dict, list] = None
-    private_context: Union[dict, list] = None
+    public_context: Union[dict, list] = {}
+    private_context: Union[dict, list] = {}
     temporary_context: Union[dict, list] = None
     existing_context: dict = {}
     override_context: dict = Field({}, description="A dict to override inputs with.")

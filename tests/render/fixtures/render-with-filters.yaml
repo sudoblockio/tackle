@@ -1,0 +1,3 @@
+
+contract_name: Big Deal Token
+project_slug->: var contract_name|replace(' ','_')|replace('-','_')|replace('.','_')|trim()

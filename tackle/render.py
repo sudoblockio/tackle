@@ -215,14 +215,33 @@ def render_string(context: 'Context', raw: str):
                 f"doesn't have arguments. Consider changing."
             )
 
-        # Check for ambiguous globals like `namespace` tackle/issues/19
+        # Check for ambiguous globals like `namespace`
+        # TODO: tackle/issues/19 -> This is hacky af... Need to redo this with visitor
         match = re.search(r'\<class \'(.+?)\'>', rendered_template)
         if match:
             ambiguous_key = match.group(1).split('.')[-1].lower()
-            if ambiguous_key in context.public_context:
-                rendered_template = context.public_context[ambiguous_key]
-            elif match.group(1) in context.existing_context:
-                rendered_template = context.existing_context[ambiguous_key]
+            if context.temporary_context and ambiguous_key in context.temporary_context:
+                ambiguous_key_rendered = context.temporary_context[ambiguous_key]
+            elif ambiguous_key in context.public_context:
+                ambiguous_key_rendered = context.public_context[ambiguous_key]
+            elif context.private_context and ambiguous_key in context.private_context:
+                ambiguous_key_rendered = context.private_context[ambiguous_key]
+            elif context.existing_context and ambiguous_key in context.existing_context:
+                ambiguous_key_rendered = context.existing_context[ambiguous_key]
+            else:
+                raise UnknownTemplateVariableException(
+                    f"Unknown ambiguous key {ambiguous_key}. Tracking issue at "
+                    f"tackle/issues/19",
+                    context=context,
+                ) from None
+            if isinstance(ambiguous_key_rendered, str):
+                rendered_template = (
+                    rendered_template[: match.regs[0][0]]
+                    + ambiguous_key_rendered
+                    + rendered_template[match.regs[0][1] :]
+                )
+            else:
+                rendered_template = ambiguous_key_rendered
 
     except TypeError as e:
         # Raised when the wrong type is provided to a hook
