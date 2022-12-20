@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.9](https://github.com/sudoblockio/tackle/compare/v0.4.8...v0.4.9) (2022-12-20)
+
+
+### Bug Fixes
+
+* allow ambiguous keys like 'namespace' to be used as string renderables ([c1f1886](https://github.com/sudoblockio/tackle/commit/c1f18862feced7c32aaf4538b4b2737cebacfea3))
+
 ## [0.4.8](https://github.com/sudoblockio/tackle/compare/v0.4.7...v0.4.8) (2022-12-14)
 
 
