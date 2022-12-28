@@ -3393,9 +3393,9 @@
 <a href="https://pypi.python.org/pypi/tackle"><img alt="python" src="https://img.shields.io/pypi/pyversions/tackle.svg" /></a>
 <a href="https://codecov.io/github/sudoblockio/tackle?branch=main"><img alt="codecov" src="https://codecov.io/gh/sudoblockio/tackle/branch/main/graphs/badge.svg?branch=main" /></a>
 <a href="https://github.com/sudoblockio/tackle/actions/workflows/codeql.yml"><img alt="codeql" src="https://github.com/sudoblockio/tackle/actions/workflows/codeql.yml/badge.svg" /></a>
-<a href="https://docs.runforesight.com/"><img alt="Foresight Docs" src="https://api-public.service.runforesight.com/api/v1/badge/success?repoId=4abde40b-565a-4557-afc0-983461857bb4" /></a>
-<a href="https://docs.runforesight.com/"><img alt="Foresight Docs" src="https://api-public.service.runforesight.com/api/v1/badge/test?repoId=4abde40b-565a-4557-afc0-983461857bb4" /></a>
-<a href="https://docs.runforesight.com/"><img alt="Foresight Docs" src="https://api-public.service.runforesight.com/api/v1/badge/utilization?repoId=4abde40b-565a-4557-afc0-983461857bb4" /></a></p>
+<a href="https://docs.runforesight.com/"><img alt="Foresight Docs" src="https://api-public.service.runforesight.com/api/v1/badge/success?repoId=d40e333a-c337-4337-ab95-9c4c34d47f9e" /></a>
+<a href="https://docs.runforesight.com/"><img alt="Foresight Docs" src="https://api-public.service.runforesight.com/api/v1/badge/test?repoId=d40e333a-c337-4337-ab95-9c4c34d47f9e" /></a>
+<a href="https://docs.runforesight.com/"><img alt="Foresight Docs" src="https://api-public.service.runforesight.com/api/v1/badge/utilization?repoId=d40e333a-c337-4337-ab95-9c4c34d47f9e" /></a></p>
 <ul>
 <li><a href="https://sudoblockio.github.io/tackle">Documentation</a></li>
 <li><a href="https://discord.gg/7uVUfUVD7K">Discord</a></li>
@@ -3436,7 +3436,7 @@ pip install tackle
 </code></pre></div>
 <p><strong>Quick Demo:</strong> <code>tackle sudoblockio/tackle-hello-world</code></p>
 <h3 id="hello-world">Hello world<a class="headerlink" href="#hello-world" title="Permanent link">&para;</a></h3>
-<p>Check out the <a href="https://sudoblockio.github.io/tackle/hello-worlds/">docs</a> for &gt;10 hello worlds that demonstrate the various aspects of the syntax with the simplest one using the <a href="https://sudoblockio.github.io/tackle/providers/Console/print/">print</a> hook, one of <a href="https://sudoblockio.github.io/tackle/installation#best-installation-method">&gt;100 hooks</a>.</p>
+<p>Check out the <a href="https://sudoblockio.github.io/tackle/hello-worlds/">docs</a> for &gt;10 hello worlds that demonstrate the various aspects of the syntax with the simplest one using the <a href="https://sudoblockio.github.io/tackle/providers/Console/print/">print</a> hook, one of <a href="https://sudoblockio.github.io/tackle/providers/Collections/">&gt;100 hooks</a>.</p>
 <p><strong>hello.yaml</strong>
 <div class="highlight"><pre><span></span><code><span class="c1"># Any time a key ends with `-&gt;`, we are calling a hook</span><span class="w"></span>
 <span class="nt">hw-&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">print Hello world!</span><span class="w"></span>
@@ -3491,7 +3491,7 @@ pip install tackle
 <span class="nt">Jinja template-&gt;</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">greeter(hello)</span><span class="w"> </span><span class="p p-Indicator">}}</span><span class="w"></span>
 <span class="c1"># Or combinations jinja and compact / expanded hooks allowing chaining of hook calls.</span><span class="w"></span>
 </code></pre></div>
-<p>With the declarative hooks being callable from the command line:</p>
+<p>With the declarative hooks being <a href="https://sudoblockio.github.io/tackle/declarative-cli/">callable from the command line</a>:</p>
 <div class="highlight"><pre><span></span><code>tackle hello.yaml greeter --target world!
 <span class="c1"># Or from a github repo</span>
 tackle sudoblockio/tackle-hello-world greeter --target world!
@@ -3526,17 +3526,17 @@ methods:
     greeting-method     A method that greets
     greeter     A reusable greeter object
 </code></pre></div>
-<p>Hooks can be imported, linked, and/or combined creating a web of CLIs.</p>
+<p>Hooks can be imported <a href="https://sudoblockio.github.io/tackle/declarative-cli/#importing-hooks">within a tackle provider</a> or <a href="https://sudoblockio.github.io/tackle/providers/Tackle/import/">through hooks</a>, <a href="https://sudoblockio.github.io/tackle/providers/Tackle/tackle/">linked</a>, and/or <a href="https://sudoblockio.github.io/tackle/declarative-hooks/#extending-hooks">combined</a> creating a web of CLIs.</p>
 <h3 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h3>
 <ul>
 <li><a href="https://sudoblockio.github.io/tackle/tutorials/code-generation/">Code Generation</a></li>
 </ul>
 <p><strong>WIP Tutorials</strong></p>
 <ul>
-<li><a href="">Declarative Utilities</a></li>
-<li><a href="">Infrastructure-as-Code Management</a></li>
-<li><a href="">Kubernetes Manifest Management</a></li>
-<li><a href="">Toolchain Management</a></li>
+<li>Declarative Utilities</li>
+<li>Infrastructure-as-Code Management</li>
+<li>Kubernetes Manifest Management</li>
+<li>Toolchain Management</li>
 </ul>
 <h3 id="topics">Topics<a class="headerlink" href="#topics" title="Permanent link">&para;</a></h3>
 <ul>
@@ -3554,7 +3554,7 @@ methods:
 <li><strong>Windows Support</strong></li>
 <li>tackle is lacking some windows support as shown in the <a href="https://github.com/sudoblockio/tackle/actions/workflows/main-windows.yml">failed tests</a>. If you are a windows user, it is highly recommended to use WSL. <strong>Please get in touch</strong> if you are motivated to fix these tests to make tackle fully cross-platform. It probably isn't that hard to fix them as they mostly are due to differences in how windows handles paths.</li>
 <li><strong>Whitespaces</strong></li>
-<li>tackle relies heavily on parsing based on whitespaces which if you are not careful can easily bite you. Whenever you need to have some whitespaces preserved, make sure to quote the entire expression.</li>
+<li>tackle relies heavily on parsing based on whitespaces which if you are not careful can easily bite you. Whenever you need to have some whitespaces preserved, make sure to quote the entire expression. Future work will be put in to overhaul the <a href="https://github.com/sudoblockio/tackle/blob/main/tackle/utils/command.py#L52">regex based parser</a> with a PEG parser like <a href="https://github.com/erikrose/parsimonious">parsimonious</a>.</li>
 </ul>
 <h3 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permanent link">&para;</a></h3>
 <p>Contributions are welcome but please be advised of the following notes.</p>
