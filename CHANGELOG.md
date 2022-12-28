@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.10](https://github.com/sudoblockio/tackle/compare/v0.4.9...v0.4.10) (2022-12-28)
+
+
+### Provider Changes
+
+* add more options to filter hidden files / dirs in  hook ([bb53f3d](https://github.com/sudoblockio/tackle/commit/bb53f3d90e0a672b96b02f6ea1e047814bd83f02))
+
 ## [0.4.9](https://github.com/sudoblockio/tackle/compare/v0.4.8...v0.4.9) (2022-12-20)
 
 
