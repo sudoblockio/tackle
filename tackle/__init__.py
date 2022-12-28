@@ -1,5 +1,5 @@
 """Main package for tackle."""
-__version__ = "0.4.9"  # x-release-please-version
+__version__ = "0.4.10"  # x-release-please-version
 
 from tackle.models import BaseHook
 from tackle.models import Field
