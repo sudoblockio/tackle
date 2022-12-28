@@ -6,9 +6,9 @@
 [![python](https://img.shields.io/pypi/pyversions/tackle.svg)](https://pypi.python.org/pypi/tackle)
 [![codecov](https://codecov.io/gh/sudoblockio/tackle/branch/main/graphs/badge.svg?branch=main)](https://codecov.io/github/sudoblockio/tackle?branch=main)
 [![codeql](https://github.com/sudoblockio/tackle/actions/workflows/codeql.yml/badge.svg)](https://github.com/sudoblockio/tackle/actions/workflows/codeql.yml)
-[![Foresight Docs](https://api-public.service.runforesight.com/api/v1/badge/success?repoId=4abde40b-565a-4557-afc0-983461857bb4)](https://docs.runforesight.com/)
-[![Foresight Docs](https://api-public.service.runforesight.com/api/v1/badge/test?repoId=4abde40b-565a-4557-afc0-983461857bb4)](https://docs.runforesight.com/)
-[![Foresight Docs](https://api-public.service.runforesight.com/api/v1/badge/utilization?repoId=4abde40b-565a-4557-afc0-983461857bb4)](https://docs.runforesight.com/)
+[![Foresight Docs](https://api-public.service.runforesight.com/api/v1/badge/success?repoId=d40e333a-c337-4337-ab95-9c4c34d47f9e)](https://docs.runforesight.com/)
+[![Foresight Docs](https://api-public.service.runforesight.com/api/v1/badge/test?repoId=d40e333a-c337-4337-ab95-9c4c34d47f9e)](https://docs.runforesight.com/)
+[![Foresight Docs](https://api-public.service.runforesight.com/api/v1/badge/utilization?repoId=d40e333a-c337-4337-ab95-9c4c34d47f9e)](https://docs.runforesight.com/)
 
 [//]: # ([![main-tests]&#40;https://github.com/sudoblockio/tackle/actions/workflows/main.yml/badge.svg&#41;]&#40;https://github.com/sudoblockio/tackle/actions&#41;)
 
@@ -60,7 +60,7 @@ pip install tackle
 
 ### Hello world
 
-Check out the [docs](https://sudoblockio.github.io/tackle/hello-worlds/) for >10 hello worlds that demonstrate the various aspects of the syntax with the simplest one using the [print](https://sudoblockio.github.io/tackle/providers/Console/print/) hook, one of [>100 hooks](https://sudoblockio.github.io/tackle/installation#best-installation-method).
+Check out the [docs](https://sudoblockio.github.io/tackle/hello-worlds/) for >10 hello worlds that demonstrate the various aspects of the syntax with the simplest one using the [print](https://sudoblockio.github.io/tackle/providers/Console/print/) hook, one of [>100 hooks](https://sudoblockio.github.io/tackle/providers/Collections/).
 
 **hello.yaml**
 ```yaml
@@ -131,7 +131,7 @@ Jinja template->: {{ greeter(hello) }}
 # Or combinations jinja and compact / expanded hooks allowing chaining of hook calls.
 ```
 
-With the declarative hooks being callable from the command line:
+With the declarative hooks being [callable from the command line](https://sudoblockio.github.io/tackle/declarative-cli/):
 
 ```shell
 tackle hello.yaml greeter --target world!
@@ -175,7 +175,7 @@ methods:
     greeter     A reusable greeter object
 ```
 
-Hooks can be imported, linked, and/or combined creating a web of CLIs.
+Hooks can be imported [within a tackle provider](https://sudoblockio.github.io/tackle/declarative-cli/#importing-hooks) or [through hooks](https://sudoblockio.github.io/tackle/providers/Tackle/import/), [linked](https://sudoblockio.github.io/tackle/providers/Tackle/tackle/), and/or [combined](https://sudoblockio.github.io/tackle/declarative-hooks/#extending-hooks) creating a web of CLIs.
 
 ### Use Cases
 
@@ -183,10 +183,10 @@ Hooks can be imported, linked, and/or combined creating a web of CLIs.
 
 **WIP Tutorials**
 
-- [Declarative Utilities]()
-- [Infrastructure-as-Code Management]()
-- [Kubernetes Manifest Management]()
-- [Toolchain Management]()
+- Declarative Utilities
+- Infrastructure-as-Code Management
+- Kubernetes Manifest Management
+- Toolchain Management
 
 [//]: # (- [Repo Management]&#40;&#41; - wip)
 
@@ -206,8 +206,7 @@ Hooks can be imported, linked, and/or combined creating a web of CLIs.
 - **Windows Support**
   - tackle is lacking some windows support as shown in the [failed tests](https://github.com/sudoblockio/tackle/actions/workflows/main-windows.yml). If you are a windows user, it is highly recommended to use WSL. **Please get in touch** if you are motivated to fix these tests to make tackle fully cross-platform. It probably isn't that hard to fix them as they mostly are due to differences in how windows handles paths.
 - **Whitespaces**
-  - tackle relies heavily on parsing based on whitespaces which if you are not careful can easily bite you. Whenever you need to have some whitespaces preserved, make sure to quote the entire expression.
-
+  - tackle relies heavily on parsing based on whitespaces which if you are not careful can easily bite you. Whenever you need to have some whitespaces preserved, make sure to quote the entire expression. Future work will be put in to overhaul the [regex based parser](https://github.com/sudoblockio/tackle/blob/main/tackle/utils/command.py#L52) with a PEG parser like [parsimonious](https://github.com/erikrose/parsimonious).
 
 ### Contributing
 
