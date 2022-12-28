@@ -20,3 +20,10 @@ list_input:
     - dirs/dir1
     - dirs/dir2
   path: "{{ item }}"
+
+only_files->: listdir dirs --only_files
+only_directories->: listdir dirs --only_directories
+
+ignore_hidden->: listdir dirs --ignore_hidden
+ignore_hidden_directories->: listdir dirs --ignore_hidden_directories
+ignore_hidden_files->: listdir dirs --ignore_hidden_files
