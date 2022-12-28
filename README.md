@@ -92,6 +92,7 @@ multiple lines:
 
 New hooks can be [made in python](https://sudoblockio.github.io/tackle/python-hooks/) which under the hood is a [pydantic](https://github.com/pydantic/pydantic) model.
 
+**.hooks/hello.py**
 ```python
 from tackle import BaseHook
 
@@ -107,6 +108,7 @@ class Greeter(BaseHook):
 
 Or can be [defined inline within your tackle file, imported remotely, or in a `hooks` directory.](https://sudoblockio.github.io/tackle/declarative-hooks/).
 
+**.hooks/hello.yaml**
 ```yaml
 # Keys ending with `<-` mean we are creating a hook / method
 greeter<-:
@@ -120,6 +122,7 @@ greeter<-:
 
 And both can be [called the same way](https://sudoblockio.github.io/tackle/writing-tackle-files/).
 
+**tackle.yaml**
 ```yaml
 hello: world!
 With a flag->: greeter --target {{hello}}
@@ -141,6 +144,7 @@ tackle sudoblockio/tackle-hello-world greeter --target world!
 
 Documentation can be embedded into the hooks.
 
+**hello.yaml**
 ```yaml
 <-:
   help: This is the default hook
