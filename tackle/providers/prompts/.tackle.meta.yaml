@@ -113,14 +113,18 @@ hook_examples:
           ● things
 
   checkbox:
-    - description: The basic versions of the `select` can be called in these ways
-      content->: "{{select_content}}"
-      output_text->: "{{select_output_text}}"
-      output->: "{{select_output}}"
+    - description: The basic versions of the `checkbox` hook can be called in these ways
+      content->: "{{checkbox_content}}"
+      output_text->: "{{checkbox_output_text}}"
+      output->: "{{checkbox_output}}"
 
-    - description: Other versions can use custom prompts for the choices
+    - description: Other versions can use custom prompts for the choices and output the key.
       content->: file tests/checkbox/map.yaml
+      output_text: |
+        ? What you do?
+        ❯ ◉ I do stuff
+          ◉ I do things
       output: |
-        ? What you do?  (Use arrow keys)
-         ❯ I do stuff
-           I do things
+        selection:
+          - stuff
+          - things
