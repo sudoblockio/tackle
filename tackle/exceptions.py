@@ -135,6 +135,9 @@ class TackleParserException(Exception):
     """Base parser exception class."""
 
     def __init__(self, extra_message: str, context: 'Union[Context, BaseContext]'):
+        if context.current_file is None:
+            context.current_file = context.calling_file
+
         self.message = (
             f"Error parsing input_file='{context.current_file}' at "
             f"key_path='{get_readable_key_path(key_path=context.key_path)}' \n"
