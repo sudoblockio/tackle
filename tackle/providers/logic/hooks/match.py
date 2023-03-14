@@ -74,7 +74,11 @@ class MatchHook(BaseHook):
                         context=self,
                     ) from None
 
-        raise Exception(f"Value `{self.value}` not found in {self.case.keys()}")
+        raise HookCallException(
+            f"Value `{self.value}` not found in "
+            f"{' ,'.join([i for i in list(self.case)])}",
+            context=self,
+        ) from None
 
     def run_key(self, value):
         self.skip_output: bool = True

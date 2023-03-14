@@ -1,0 +1,8 @@
+
+
+foo: bar
+
+error:
+  ->: match foo
+  case:
+    baz: biz

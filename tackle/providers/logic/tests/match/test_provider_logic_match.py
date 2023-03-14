@@ -60,3 +60,8 @@ def test_hook_match_value_wrong_hook_type(change_dir):
     """
     with pytest.raises(HookCallException):
         tackle('wrong-hook-type.yaml')
+
+
+def test_hook_match_non_existant_key(change_dir):
+    with pytest.raises(HookCallException):
+        tackle('non-existant-key.yaml')
