@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.11](https://github.com/sudoblockio/tackle/compare/v0.4.10...v0.4.11) (2023-03-14)
+
+
+### Bug Fixes
+
+* add better exception handling for missing key in match hook ([64c9ee1](https://github.com/sudoblockio/tackle/commit/64c9ee1236ddee7045361108ff3734ba7ace547e))
+* error context showing None for ([4b1d1fe](https://github.com/sudoblockio/tackle/commit/4b1d1fe380041249d6b24dcddfd603828f77e23a))
+
 ## [0.4.10](https://github.com/sudoblockio/tackle/compare/v0.4.9...v0.4.10) (2022-12-28)
 
 
