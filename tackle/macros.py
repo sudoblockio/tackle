@@ -68,6 +68,9 @@ def blocks_macro(context: 'Context'):
     )
     value = input_dict[indexed_key_path[-1]]
 
+    if value is None:
+        raise exceptions.HookCallException("Empty hook call found.", context=context)
+
     for k, v in list(input_dict.items()):
         if k == indexed_key_path[-1]:
             nested_set(context.input_context, key_path, {arrow[0]: 'block'})

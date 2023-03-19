@@ -1,24 +1,20 @@
 """Test the input source part of the parser."""
 import pytest
 
-from tackle.exceptions import (
-    EmptyTackleFileException,
-    UnknownArgumentException,
-    UnknownSourceException,
-    HookParseException,
-)
+from tackle import exceptions
 
 # from tackle import tackle
 from tackle.cli import main
 
 INPUT_SOURCES = [
     # TODO: empty should now be running help screen
-    # ("empty-with-functions.yaml", EmptyTackleFileException),
-    ("empty.yaml", EmptyTackleFileException),
-    ("out-of-range-arg.yaml", UnknownArgumentException),
-    ("non-existent.yaml", UnknownSourceException),
-    ("hook-input-validation-error.yaml", HookParseException),
-    ("function-input-validation-error.yaml", HookParseException),
+    # ("empty-with-functions.yaml", exceptions.EmptyTackleFileException),
+    ("empty-hook-call.yaml", exceptions.HookCallException),
+    ("empty.yaml", exceptions.EmptyTackleFileException),
+    ("out-of-range-arg.yaml", exceptions.UnknownArgumentException),
+    ("non-existent.yaml", exceptions.UnknownSourceException),
+    ("hook-input-validation-error.yaml", exceptions.HookParseException),
+    ("function-input-validation-error.yaml", exceptions.HookParseException),
 ]
 
 
