@@ -74,7 +74,7 @@ def get_provider_requirements():
 INSTALL_REQUIREMENTS = [
     'Jinja2>3.0.0',
     # 'requests>=2.23.0',  # This would be needed if we allowed url sources
-    'pydantic>=1.8.0',
+    'pydantic>=1.8.0,<2.0.0',
     'InquirerPy>=0.3.3',
     'ruamel.yaml>=0.17.0',
     'rich>=12.6.0',
