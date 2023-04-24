@@ -1165,6 +1165,8 @@ def parse_tmp_context(context: Context, element: Any, existing_context: dict):
         no_input=context.no_input,
         calling_directory=context.calling_directory,
         calling_file=context.calling_file,
+        current_file=context.current_file,
+        current_directory=context.current_directory,
         verbose=context.verbose,
         env_=context.env_,
         override_context=context.override_context,
@@ -1229,6 +1231,8 @@ def function_walk(
         no_input=self.no_input,
         calling_directory=self.calling_directory,
         calling_file=self.calling_file,
+        current_file=self.current_file,
+        current_directory=self.current_directory,
         env_=self.env_,
         override_context=self.override_context,
     )
@@ -1397,6 +1401,8 @@ def create_function_model(
             private_hooks=context.private_hooks,
             calling_directory=context.calling_directory,
             calling_file=context.calling_file,
+            current_file=context.current_file,
+            current_directory=context.current_directory,
             override_context=context.override_context,
             no_input=context.no_input,
             # Causes TypeError in pydantic -> __subclasscheck__
@@ -1475,6 +1481,7 @@ def extract_base_file(context: 'Context'):
     if context.calling_file is None:
         context.calling_file = context.input_file
     context.current_file = path
+    context.current_directory = os.path.abspath(os.path.dirname(path))
 
     try:
         context.input_context = read_config_file(path)

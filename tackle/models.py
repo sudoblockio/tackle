@@ -55,6 +55,7 @@ class BaseContext(BaseModel):
     calling_directory: str = None
     calling_file: str = None
     current_file: str = None
+    current_directory: str = None
 
     env_: Any = None
 

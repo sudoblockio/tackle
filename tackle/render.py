@@ -56,6 +56,8 @@ def create_jinja_hook(context: 'Context', hook: 'ModelMetaclass') -> 'JinjaHook'
             no_input=context.no_input,
             calling_directory=context.calling_directory,
             calling_file=context.calling_file,
+            current_file=context.current_file,
+            current_director=context.current_directory,
             public_hooks=context.public_hooks,
             private_hooks=context.private_hooks,
             key_path=context.key_path,
