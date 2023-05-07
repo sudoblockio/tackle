@@ -2,7 +2,7 @@ import os
 from typing import Union
 
 from tackle.models import Context
-from tackle.parser import update_source
+from tackle.parser import parse_source
 from tackle.utils.paths import find_nearest_tackle_file
 from tackle.utils.files import read_config_file
 from tackle import exceptions
@@ -81,7 +81,7 @@ def tackle(
             context.override_context.update(overrides)
 
     # Main loop
-    output = update_source(context)
+    output = parse_source(context)
     if output is None:
         return context.public_context
     return output

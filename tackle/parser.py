@@ -53,7 +53,7 @@ from tackle.utils.dicts import (
     decode_list_index,
     set_key,
     get_target_and_key,
-    smush_key_path,
+    remove_arrows_from_key_path,
     get_readable_key_path,
     cleanup_unquoted_strings,
 )
@@ -463,7 +463,7 @@ def parse_sub_context(context: 'Context', hook_dict: dict, target: str):
         ]
         # TODO: Figure out wtf is going on here...
         input_dict[indexed_key_path[-3]] = updated_item
-        walk_sync(
+        walk_element(
             context,
             element=input_dict[indexed_key_path[-3]][
                 decode_list_index(context.key_path[-1])
@@ -477,7 +477,7 @@ def parse_sub_context(context: 'Context', hook_dict: dict, target: str):
         )
         arrow = context.key_path[-1]
         input_dict[indexed_key_path[-2]] = {arrow: 'block', 'items': hook_dict[target]}
-        walk_sync(context, element=input_dict[indexed_key_path[-2]])
+        walk_element(context, element=input_dict[indexed_key_path[-2]])
 
 
 def parse_hook(
@@ -686,7 +686,7 @@ def evaluate_args(
                     ) from None
 
 
-def run_hook(context: 'Context'):
+def run_hook_at_key_path(context: 'Context'):
     """
     Run the hook by qualifying the input argument and matching the input params with the
      hook's `_args` which are then overlayed into a hook kwargs. Also interprets
@@ -719,7 +719,9 @@ def run_hook(context: 'Context'):
         try:
             hook_dict = nested_get(
                 context.input_context,
-                smush_key_path(context.key_path[:-1][len(context.key_path_block) :]),
+                remove_arrows_from_key_path(
+                    context.key_path[:-1][len(context.key_path_block) :]
+                ),
             ).copy()
         except KeyError as e:
             raise exceptions.UnknownHookTypeException(
@@ -809,7 +811,7 @@ def run_hook(context: 'Context'):
     )
 
 
-def walk_sync(context: 'Context', element):
+def walk_element(context: 'Context', element):
     """
     Traverse an object looking for hook calls and running those hooks. Here we are
      keeping track of which keys are traversed in a list called `key_path` with strings
@@ -830,14 +832,14 @@ def walk_sync(context: 'Context', element):
             # Public hook calls
             context.key_path.append('->')
             context.input_string = element['->']
-            run_hook(context)
+            run_hook_at_key_path(context)
             context.key_path.pop()
             return
         elif '_>' in element.keys():
             # Private hook calls
             context.key_path.append('_>')
             context.input_string = element['_>']
-            run_hook(context)
+            run_hook_at_key_path(context)
             context.key_path.pop()
             return
         elif element == {}:
@@ -883,11 +885,11 @@ def walk_sync(context: 'Context', element):
                         "Empty block hook.", context=context
                     ) from None
 
-                walk_sync(context, value)
+                walk_element(context, value)
                 context.key_path.pop()
             else:
                 # Recurse
-                walk_sync(context, v)
+                walk_element(context, v)
                 context.key_path.pop()
     # Non-hook calls recurse through inputs
     elif isinstance(element, list):
@@ -897,7 +899,7 @@ def walk_sync(context: 'Context', element):
         else:
             for i, v in enumerate(element.copy()):
                 context.key_path.append(encode_list_index(i))
-                walk_sync(context, v)
+                walk_element(context, v)
                 context.key_path.pop()
     else:
         set_key(context=context, value=element)
@@ -962,7 +964,7 @@ def update_hook_with_kwargs_and_flags(hook: ModelMetaclass, kwargs: dict) -> dic
     return kwargs
 
 
-def find_run_hook_method(
+def run_declarative_hook(
     context: 'Context', hook: ModelMetaclass, args: list, kwargs: dict
 ) -> Any:
     """
@@ -1104,7 +1106,9 @@ def raise_if_args_exist(
             ) from None
 
 
-def run_source(context: 'Context', args: list, kwargs: dict, flags: list) -> Optional:
+def parse_source_args(
+    context: 'Context', args: list, kwargs: dict, flags: list
+) -> Optional:
     """
     Process global args/kwargs/flags based on if the args relate to the default hook or
      some public hook (usually declarative). Once the hook has been identified, the
@@ -1172,7 +1176,7 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list) -> Opt
             # interpreted as methods which always get priority over consuming the arg
             # as an arg within the hook itself.
             public_hook = args.pop(0)  # Consume arg
-            context.public_context = find_run_hook_method(
+            context.public_context = run_declarative_hook(
                 context=context,
                 hook=context.public_hooks[public_hook],
                 args=args,
@@ -1186,7 +1190,7 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list) -> Opt
                 flags=flags,
             )
         elif context.default_hook:
-            context.public_context = find_run_hook_method(
+            context.public_context = run_declarative_hook(
                 context=context, hook=context.default_hook, args=args, kwargs=kwargs
             )
             raise_if_args_exist(  # Raise if there are any args left
@@ -1236,7 +1240,7 @@ def run_source(context: 'Context', args: list, kwargs: dict, flags: list) -> Opt
                 context=context,
             ) from None
     else:
-        walk_sync(context, context.input_context.copy())
+        walk_element(context, context.input_context.copy())
 
 
 def parse_tmp_context(context: Context, element: Any, existing_context: dict):
@@ -1261,7 +1265,7 @@ def parse_tmp_context(context: Context, element: Any, existing_context: dict):
         env_=context.env_,
         override_context=context.override_context,
     )
-    walk_sync(context=tmp_context, element=element)
+    walk_element(context=tmp_context, element=element)
 
     return tmp_context.public_context
 
@@ -1324,7 +1328,7 @@ def function_walk(
         env_=self.env_,
         override_context=self.override_context,
     )
-    walk_sync(context=tmp_context, element=input_element.copy())
+    walk_element(context=tmp_context, element=input_element.copy())
 
     if return_:
         return_ = render_variable(tmp_context, return_)
@@ -1622,7 +1626,7 @@ def import_local_provider_source(context: 'Context', provider_dir: str):
     extract_base_file(context)
 
 
-def update_source(context: 'Context'):
+def parse_source(context: 'Context'):
     """
     Locate the repository directory from a template reference. This is the main parser
     for determining the source of the context and calls the succeeding parsing
@@ -1688,4 +1692,4 @@ def update_source(context: 'Context'):
     # or would be very confusing if writing a provider to always refer to it's own path.
     with work_in(context.input_dir):
         # Main parsing logic
-        return run_source(context, args, kwargs, flags)
+        return parse_source_args(context, args, kwargs, flags)

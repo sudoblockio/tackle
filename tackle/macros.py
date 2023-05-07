@@ -5,7 +5,7 @@ from tackle.utils.dicts import (
     nested_delete,
     nested_set,
     get_target_and_key,
-    smush_key_path,
+    remove_arrows_from_key_path,
 )
 
 from tackle import exceptions
@@ -113,7 +113,7 @@ def compact_hook_call_macro(context: 'Context', element: str) -> dict:
 
     value = nested_get(
         element=context.input_context,
-        keys=smush_key_path(old_key_path)[:-1],
+        keys=remove_arrows_from_key_path(old_key_path)[:-1],
     )
 
     replacement = {context.key_path[-1]: new_key[0]}

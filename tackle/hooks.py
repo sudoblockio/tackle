@@ -65,7 +65,11 @@ def import_from_path(
     hooks_dir_name: str = None,
     skip_on_error: bool = True,
 ):
-    """Append a provider with a given path."""
+    """
+    Update the public / private provider dicts with hooks found in the __init__.py,
+     as `hook_types = ["hook_type"]` which will be imported as LazyBaseHooks
+     provider (value).
+    """
     # Look for `.hooks` or `hooks` dir
     if hooks_dir_name is None:
         provider_contents = os.listdir(provider_path)
@@ -155,20 +159,12 @@ def import_hook_from_path(
         for k, v in file_contents.items():
             if re.match(r'^[a-zA-Z0-9\_]*(<\-)$', k):
                 hook_type = k[:-2]
-                # context.public_context[hook_type] = LazyBaseFunction(
-                #     function_dict=v,
-                #     # function_fields=[],
-                # )
                 context.public_hooks[hook_type] = LazyBaseFunction(
                     function_dict=v,
                     # function_fields=[],
                 )
             elif re.match(r'^[a-zA-Z0-9\_]*(<\_)$', k):
                 hook_type = k[:-2]
-                # context.private_context[hook_type] = LazyBaseFunction(
-                #     function_dict=v,
-                #     # function_fields=[],
-                # )
                 context.private_hooks[hook_type] = LazyBaseFunction(
                     function_dict=v,
                     # function_fields=[],
