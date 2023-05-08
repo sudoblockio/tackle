@@ -21,7 +21,7 @@ INPUT_SOURCES = [
 @pytest.mark.parametrize("input_string,output", INPUT_SOURCES)
 def test_cli_parse_args(mocker, change_dir_base, input_string, output):
     """Mock the main call and verify the args get passed in right through the CLI."""
-    mock = mocker.patch("tackle.main.update_source", autospec=True, return_value={})
+    mock = mocker.patch("tackle.main.parse_source", autospec=True, return_value={})
     main(input_string.split(' '))
 
     assert mock.called
@@ -36,7 +36,7 @@ def test_cli_parse_args(mocker, change_dir_base, input_string, output):
 
 def test_cli_parse_args_empty(mocker, change_curdir_fixtures):
     """When no arg is given we should find the closest tackle file."""
-    mock = mocker.patch("tackle.main.update_source", autospec=True, return_value={})
+    mock = mocker.patch("tackle.main.parse_source", autospec=True, return_value={})
     main([])
 
     assert mock.called

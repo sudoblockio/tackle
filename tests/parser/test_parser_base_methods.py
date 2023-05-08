@@ -14,7 +14,12 @@ def test_parser_methods_merge(change_curdir_fixtures):
     assert output == expected_output
 
 
-def test_parser_methods_merge_list_value(change_curdir_fixtures):
+@pytest.fixture()
+def fixture_dir(chdir):
+    chdir("base-method-fixtures")
+
+
+def test_parser_methods_merge_list_value(fixture_dir):
     """Validate that when in a list, running a hook with a merge overwrites the list."""
     # Note: this is kind of strong... But what else is it supposed to mean? Don't use
     # merge for values...
@@ -22,7 +27,7 @@ def test_parser_methods_merge_list_value(change_curdir_fixtures):
     assert output['resources'] == 'foo'
 
 
-def test_parser_methods_merge_list_loop(change_curdir_fixtures):
+def test_parser_methods_merge_list_loop(fixture_dir):
     """
     Validate that when in a list, running a hook in a for loop with a merge appends to
      the list.
@@ -31,17 +36,18 @@ def test_parser_methods_merge_list_loop(change_curdir_fixtures):
     assert len(output['resources']) == 5
 
 
-def test_parser_methods_merge_dict_loop_dict(change_curdir_fixtures):
+def test_parser_methods_merge_dict_loop_dict(fixture_dir):
     """
     Validate that when in a dict, running a hook in a for loop with a merge adds new
      keys to the output.
     """
-    # TODO: Associated with https://github.com/robcxyz/tackle/issues/107
     output = tackle('merge-dict-loop-dict.yaml')
     assert output['resources']['foo-2']
+    # TODO: Associated with https://github.com/robcxyz/tackle/issues/107
+    # assert output['resources']['foo-1']
 
 
-def test_parser_methods_merge_dict_loop_exception(change_curdir_fixtures):
+def test_parser_methods_merge_dict_loop_exception(fixture_dir):
     """
     Validate exception that when in a dict, running a hook in a for loop with a merge
      with the hook output being a value.
@@ -50,16 +56,14 @@ def test_parser_methods_merge_dict_loop_exception(change_curdir_fixtures):
         tackle('merge-dict-loop-exception.yaml')
 
 
-def test_parser_methods_try(chdir):
+def test_parser_methods_try(fixture_dir):
     """Use try which should not have any output"""
-    chdir("method-fixtures")
     output = tackle('method-try.yaml')
     assert output == {}
 
 
-def test_parser_methods_except(chdir):
+def test_parser_methods_except(fixture_dir):
     """Use try which should not have any output"""
-    chdir("method-fixtures")
     output = tackle('method-except.yaml')
     assert output['compact'] == 'foo'
     assert output['str'] == 'foo'
@@ -69,16 +73,14 @@ def test_parser_methods_except(chdir):
     assert output['listed']['hook_call'][1]['stuff'] == 'things'
 
 
-def test_parser_methods_when(chdir):
+def test_parser_methods_when(fixture_dir):
     """Use try which should not have any output"""
-    chdir("method-fixtures")
     output = tackle('method-when.yaml')
     assert 'expanded' not in output
 
 
-def test_parser_methods_else_hooks(chdir):
+def test_parser_methods_else_hooks(fixture_dir):
     """Use try which should not have any output"""
-    chdir("method-fixtures")
     output = tackle('method-else.yaml')
     assert output['compact'] == 'foo'
     assert output['str'] == 'foo'
@@ -89,15 +91,13 @@ def test_parser_methods_else_hooks(chdir):
     assert output['listed']['hook_call'][1]['stuff'] == 'things'
 
 
-def test_parser_list_comprehension(chdir):
+def test_parser_list_comprehension(fixture_dir):
     """Test that we can do list comprehensions."""
-    chdir("method-fixtures")
     output = tackle('list-comprehension.yaml')
     assert len(output['nodes']) == 1
 
 
-def test_parser_validation_with_try_except(chdir):
+def test_parser_validation_with_try_except(fixture_dir):
     """Test that we can do list comprehensions."""
-    chdir("method-fixtures")
     output = tackle('try-validation-except.yaml')
     assert 'p' in output['call']

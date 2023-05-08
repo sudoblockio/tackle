@@ -11,7 +11,7 @@ from tackle import exceptions
 
 def test_main_cli_call_mock(mocker):
     """Check the main function runs properly."""
-    mock = mocker.patch("tackle.main.update_source")
+    mock = mocker.patch("tackle.main.parse_source")
     main("stuff")
     assert mock.called
 
@@ -21,7 +21,7 @@ def test_main_cli_call_empty(change_curdir_fixtures, mocker):
     Check that when no arg is given that we find the closes tackle file which
     could be in the parent directory.
     """
-    mock = mocker.patch("tackle.main.update_source")
+    mock = mocker.patch("tackle.main.parse_source")
     main([])
     assert mock.called
     local_tackle = os.path.join(os.path.abspath('.'), '.tackle.yaml')

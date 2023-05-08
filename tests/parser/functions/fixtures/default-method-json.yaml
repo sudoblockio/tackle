@@ -1,6 +1,0 @@
-
-
-compact<-:
-  foo: bar
-
-do->: compact.json()

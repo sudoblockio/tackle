@@ -2,6 +2,7 @@ some_hook<-:
   input:
     type: str
 call:
+#  Validation error since input is str
   ->: some_hook --input ['foo'] --try
   except:
     p->: print Wrong type!!

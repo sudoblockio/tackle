@@ -1,5 +1,0 @@
-foo<-:
-  bar: baz
-  args: ['bar']
-
-call->: foo --args ['bing','bling']

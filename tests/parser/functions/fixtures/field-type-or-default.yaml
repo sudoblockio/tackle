@@ -1,5 +1,0 @@
-greeter<-:
-  in:
-    foo: bar
-
-foo->: greeter

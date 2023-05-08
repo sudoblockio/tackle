@@ -1,9 +1,0 @@
-
-str_dict_default<-:
-  a_str:
-    default: str
-
-str_dict_default_call:
-  ->: str_dict_default
-  a_str:
-    stuff: things

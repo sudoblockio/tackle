@@ -21,6 +21,6 @@ INPUT_SOURCES = [
 @pytest.mark.parametrize("input_file,exception", INPUT_SOURCES)
 def test_parser_raises_exceptions(chdir, input_file, exception):
     """Test raising exceptions."""
-    chdir('exceptions')
+    chdir('exceptions-fixtures')
     with pytest.raises(exception):
         main([input_file])
