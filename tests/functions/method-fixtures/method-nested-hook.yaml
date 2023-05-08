@@ -1,0 +1,17 @@
+
+greeter<-:
+  bar: baz
+  call<-:
+    in:
+      type: str
+
+    home<-:
+      destination:
+        type: str
+
+#t->: greeter.call --in foo
+#jinja_method->: "{{greeter.call(in='foo')}}"
+#jinja_base->: "{{greeter(bar='foo')}}"
+#
+jinja_method_home->: "{{greeter.call.home(in='foo',destination='earth')}}"
+t_home->: greeter call home --in foo --destination earth

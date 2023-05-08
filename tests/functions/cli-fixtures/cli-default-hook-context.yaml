@@ -1,0 +1,21 @@
+
+<-:
+  help: A CLI thing
+
+  stuff: things
+  do<-:
+    bar: baz
+    exec:
+      d->: var {{bar}}
+
+  exec<-:
+    p->: var {{stuff}}
+
+foo: bar
+
+run<-:
+  help: Run da foo
+  foo: bar
+  exec:
+    p->: print {{foo}}
+

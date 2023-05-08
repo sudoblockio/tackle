@@ -1,0 +1,9 @@
+
+list_dict<-:
+  a_list:
+    type: list
+
+list_dict_call:
+  ->: list_dict
+  a_list:
+    stuff: things

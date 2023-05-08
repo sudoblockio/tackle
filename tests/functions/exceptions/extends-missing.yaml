@@ -1,0 +1,8 @@
+
+greeter_exec<-:
+  extends: greeter_base
+  exec:
+    p->: var {{item}} --for words
+  return: p
+
+t->: greeter_exec

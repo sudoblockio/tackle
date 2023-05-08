@@ -1,0 +1,11 @@
+
+dict_default<-:
+  a_str:
+    default:
+      stuff: things
+
+dict_default_call:
+  ->: dict_default
+  a_str:
+    - stuff
+    - things

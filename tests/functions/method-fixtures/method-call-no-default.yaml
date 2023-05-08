@@ -1,0 +1,16 @@
+greeter<-:
+  word:
+    type: str
+
+  say<-:
+    exec:
+      v->: var {{word}}
+
+compact->: greeter say --word foo
+
+expanded:
+  ->: greeter say
+  word: foo
+
+jinja_method->: "{{greeter.say(word='foo')}}"
+jinja_base->: "{{greeter(word='foo')}}"

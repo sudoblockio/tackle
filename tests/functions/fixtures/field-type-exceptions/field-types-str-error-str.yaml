@@ -1,0 +1,7 @@
+str_hook<-:
+  a_str: str
+
+str_call:
+  ->: str_hook
+  a_str:
+    stuff: things

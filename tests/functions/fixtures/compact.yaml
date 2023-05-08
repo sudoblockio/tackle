@@ -1,0 +1,12 @@
+
+
+compact<-: print this --help Thing that does stuff
+
+expanded<-:
+  exec<-: print this
+
+this:
+  foo->: expanded
+
+that:
+  bing: bang

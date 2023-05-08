@@ -1,0 +1,13 @@
+
+# return
+# call:
+#  - foo
+#  - bar:
+# Printing "foo"
+# Help not possible
+
+a_list<-:
+  - foo
+  - bar->: print foo
+
+call->: a_list

@@ -1,0 +1,5 @@
+
+<-:
+  a_field: str
+  exec:
+    t->: a_funky func_method

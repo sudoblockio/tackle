@@ -1,0 +1,10 @@
+
+dict_dict<-:
+  a_dict:
+    type: dict
+
+dict_dict_call:
+  ->: dict_dict
+  a_dict:
+    - stuff
+    - things

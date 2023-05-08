@@ -1,0 +1,20 @@
+
+
+first_base<-:
+  words:
+    - hello
+    - world
+
+second_base<-:
+  extends: first_base
+  words:
+    - stuff
+    - things
+
+embedded_exec<-:
+  extends: second_base
+  exec:
+    p->: var {{item}} --for words
+  return: p
+
+t->: greeter_exec

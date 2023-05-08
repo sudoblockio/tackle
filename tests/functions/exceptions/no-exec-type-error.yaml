@@ -1,0 +1,8 @@
+no_arg<-:
+  target: str
+
+no_arg_call:
+  ->: no_arg
+  target: ['world']  # Should be string
+
+# Should raise ValidationError

@@ -1,0 +1,11 @@
+
+list_dict_default<-:
+  a_list:
+    default:
+      - stuff
+      - things
+
+list_dict_default_call:
+  ->: list_dict_default
+  a_list:
+    stuff: things

@@ -1,0 +1,9 @@
+
+
+compact<-:
+  foo: bar
+
+  exec<-:
+    p->: print {{self}}
+
+do->: compact.json()

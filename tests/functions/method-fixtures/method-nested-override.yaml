@@ -1,0 +1,41 @@
+
+method_overlap<-:
+  home:
+    default: baz
+
+  call<-:
+    home:
+      type: str
+
+    out<-:
+      home: earth
+
+method_overlap_jinja->: "{{method_overlap.call.out()}}"
+method_overlap_compact->: method_overlap call out --home foo
+
+attribute_override<-:
+  home:
+    default: bar
+
+  call<-:
+    home:
+      default: baz
+
+    out<-:
+      home:
+        default: bing
+
+attribute_override_jinja->: "{{attribute_override.call.out()}}"
+attribute_override_compact->: attribute_override call out
+
+nested<-:
+  home:
+    default: bar
+
+  call<-:
+    out<-:
+      home:
+        default: baz
+
+nested_jinja->: "{{nested.call.out()}}"
+nexted_compact->: nested call out

@@ -1,0 +1,18 @@
+
+<-:
+  help: A CLI thing
+
+  stuff: things
+
+  foo:
+    bar:
+      baz: 42
+  do<-:
+    bar: baz
+    exec:
+      d->: var {{bar}}
+
+  exec<-:
+    p->: var {{stuff}}
+
+  args: ['stuff']

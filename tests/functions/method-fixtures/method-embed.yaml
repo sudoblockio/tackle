@@ -1,0 +1,13 @@
+greeter<-:
+  say<-:
+    words:
+      - Hello
+      - world!
+    exec:
+      v->: var {{item}} --for words
+
+    twice<-:
+      exec:
+        v->: var {{item}} --for words
+
+do->: greeter say twice

@@ -1,0 +1,10 @@
+
+greeter<-:
+  bar: baz
+  call<-:
+    in:
+      type: str
+
+t->: greeter call --in foo
+jinja_method->: "{{greeter.call(in='foo')}}"
+jinja_base->: "{{greeter(bar='foo')}}"

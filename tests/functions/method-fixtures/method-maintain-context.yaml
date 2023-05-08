@@ -1,0 +1,10 @@
+greeter<-:
+  words:
+    - Hello
+    - world!
+  say<-:
+    exec:
+      v->: var {{item}} --for words
+
+do_greeter->: greeter say
+jinja_call->: {{greeter.say()}}

@@ -1,0 +1,16 @@
+
+<-:
+  f: foo
+
+  # Can't find here
+  gen<-:
+    f: str
+    args:
+      - f
+    exec:
+      p->: print {{f}}
+
+  exec:
+    # Fails here
+    h->: gen {{f}}
+

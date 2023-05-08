@@ -1,0 +1,7 @@
+list_hook<-:
+  a_list: list
+
+list_call:
+  ->: list_hook
+  a_list:
+    stuff: things

@@ -1,0 +1,12 @@
+compact:
+  foo: bar
+  do: baz
+expanded:
+  foo: bar
+  do: baz
+global:
+  foo: bar
+  do: baz
+#filter:
+#  foo: bar
+#  do: baz

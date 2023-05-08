@@ -1,0 +1,5 @@
+
+generate<-:
+  help: Generators
+docker<-:
+  help: Run docker stack

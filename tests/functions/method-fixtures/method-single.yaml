@@ -1,0 +1,9 @@
+greeter<-:
+  say<-:
+    words:
+      - Hello
+      - world!
+    exec:
+      v->: var {{item}} --for words
+
+do->: greeter say
