@@ -154,7 +154,7 @@ def enrich_hook(
                         method.function_fields = []
                     method.function_fields.append(i)
 
-            # Methods that are of type LazyBaseFunction which need to have the base
+            # Methods are of type LazyBaseFunction which need to have the base
             # instantiated before getting the hook. Allows nested methods for functions.
             # if isinstance(method, LazyBaseFunction):
             method = create_function_model(
@@ -200,79 +200,6 @@ def enrich_hook(
                 hook.__fields__[k].default = v
 
     return hook
-
-
-def evaluate_for(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
-    """Run the parse_hook function in a loop and return a list of outputs."""
-    loop_targets = render_variable(context, wrap_jinja_braces(hook_dict['for']))
-
-    if len(loop_targets) == 0:
-        return
-
-    hook_dict.pop('for')
-
-    # Need add an empty list in the value so we have something to append to
-    if 'merge' not in hook_dict:
-        target_context, key_path = get_target_and_key(context)
-        nested_set(target_context, key_path, [])
-    elif not hook_dict['merge']:
-        target_context, key_path = get_target_and_key(context)
-        # If we are merging into a list / dict, we don't want init a list
-        nested_set(target_context, key_path, [])
-
-    # Account for nested contexts and justify the new keys based on the key path within
-    #  blocks by trimming the key_path_block from the key_path.
-    if len(context.key_path_block) != 0:
-        tmp_key_path = context.key_path[
-            len(context.key_path_block) - len(context.key_path) :
-        ]  # noqa
-        if context.temporary_context is None:
-            context.temporary_context = {} if isinstance(tmp_key_path[0], str) else []
-        tmp_key_path = [i for i in tmp_key_path if i not in ('->', '_>')]
-        nested_set(context.temporary_context, tmp_key_path, [])
-
-    for i, l in (
-        enumerate(loop_targets)
-        if not render_variable(context, hook_dict.get('reverse', None))
-        else reversed(list(enumerate(loop_targets)))
-    ):
-        if context.existing_context is None:
-            context.existing_context = {}
-        # Create temporary variables in the context to be used in the loop.
-        context.existing_context.update({'index': i, 'item': l})
-        # Append the index to the keypath
-        context.key_path.append(encode_list_index(i))
-
-        # Reparse the hook with the new temp vars in place
-        parse_hook(
-            context=context,
-            hook_dict=hook_dict.copy(),
-            hook=Hook,
-            append_hook_value=True,
-        )
-        context.key_path.pop()
-
-    # Remove temp variables
-    try:
-        context.existing_context.pop('item')
-        context.existing_context.pop('index')
-    except KeyError:
-        pass
-
-
-def evaluate_if(hook_dict: dict, context: 'Context', append_hook_value: bool) -> bool:
-    """Evaluate the if/when condition and return bool."""
-    if hook_dict.get('when', None) is not None:
-        result = render_variable(context, wrap_jinja_braces(hook_dict['when']))
-        hook_dict.pop('when')
-        return result
-    if hook_dict.get('for', None) is not None and not append_hook_value:
-        # We qualify `if` conditions within for loop logic
-        return True
-    if hook_dict.get('if', None) is None:
-        return True
-
-    return render_variable(context, wrap_jinja_braces(hook_dict['if']))
 
 
 def merge_block_output(
@@ -354,6 +281,7 @@ def merge_output(
 
 
 def run_hook_in_dir(hook: Type[BaseHook]) -> Any:
+    """Run the `exec` method in a dir is `chdir` is specified."""
     if hook.chdir:
         path = os.path.abspath(os.path.expanduser(hook.chdir))
         if os.path.isdir(path):
@@ -369,7 +297,11 @@ def run_hook_in_dir(hook: Type[BaseHook]) -> Any:
         return hook.exec()  # noqa
 
 
-def render_hook_vars(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
+def render_hook_vars(
+    context: 'Context',
+    hook_dict: dict,
+    Hook: ModelMetaclass,
+):
     """Render the hook variables."""
     for key, value in list(hook_dict.items()):
         if key not in Hook.__fields__ and key not in BASE_METHODS:
@@ -426,12 +358,16 @@ def render_hook_vars(hook_dict: dict, Hook: ModelMetaclass, context: 'Context'):
             hook_dict[key] = render_variable(context, value)
 
 
-def parse_sub_context(context: 'Context', hook_dict: dict, target: str):
+def parse_sub_context(
+    context: 'Context',
+    hook_dict: dict,
+    target: str,
+):
     """
     Reparse a subcontext as in the case with `else` and `except` where you have to
-    handle the negative side of the either `if` or `try`. Works on both looped and
-    normal runs by checking the last item in the key path. Then overwrites the input
-    with a new context.
+     handle the negative side of the either `if` or `try`. Works on both looped and
+     normal runs by checking the last item in the key path. Then overwrites the input
+     with a new context.
     """
     hook_target = hook_dict[target]
     if isinstance(hook_target, str):
@@ -480,6 +416,208 @@ def parse_sub_context(context: 'Context', hook_dict: dict, target: str):
         walk_element(context, element=input_dict[indexed_key_path[-2]])
 
 
+def new_hook(
+    context: 'Context',
+    hook_dict: dict,
+    hook: ModelMetaclass,
+):
+    """Create a new instantiated hook."""
+    # TODO: WIP - https://github.com/sudoblockio/tackle/issues/104
+    tmp_no_input = None if 'no_input' not in hook_dict else hook_dict.pop('no_input')
+
+    try:
+        hook = hook(
+            **hook_dict,
+            input_context=context.input_context,
+            public_context=context.public_context,
+            private_context=context.private_context,
+            temporary_context=context.temporary_context,
+            existing_context=context.existing_context,
+            no_input=context.no_input if tmp_no_input is None else tmp_no_input,
+            calling_directory=context.calling_directory,
+            calling_file=context.calling_file,
+            public_hooks=context.public_hooks,
+            private_hooks=context.private_hooks,
+            key_path=context.key_path,
+            verbose=context.verbose,
+            env_=context.env_,
+            is_hook_call=True,
+            override_context=context.override_context,
+        )
+    except TypeError as e:
+        # TODO: Improve -> This is an error when we have multiple of the same
+        #  base attribute. Should not conflict in the future when we do
+        #  composition on the context but for now, catching common error.
+        # TODO: WIP - https://github.com/sudoblockio/tackle/issues/104
+        raise exceptions.UnknownInputArgumentException(
+            str(e) + " - Can't assign duplicate base fields.", context=context
+        ) from None
+
+    except ValidationError as e:
+        # Handle any try / except logic
+        if 'try' in hook_dict and hook_dict['try']:
+            if 'except' in hook_dict and hook_dict['except']:
+                parse_sub_context(context, hook_dict, target='except')
+            return
+
+        msg = str(e)
+        if hook.identifier.startswith('tackle.providers'):
+            id_list = hook.identifier.split('.')
+            provider_doc_url_str = id_list[2].title()
+            # Replace the validated object name (ex PrintHook) with the
+            # hook_type field that users would more easily know.
+            msg = msg.replace(id_list[-1], f"{hook_dict['hook_type']} hook")
+
+            msg += (
+                f"\n Check the docs for more information on the hook -> "
+                f"https://sudoblockio.github.io/tackle/providers/"
+                f"{provider_doc_url_str}/{hook_dict['hook_type']}/"
+            )
+        raise exceptions.HookParseException(str(msg), context=context) from None
+    return hook
+
+
+def parse_hook_execute(
+    context: 'Context',
+    hook_dict: dict,
+    Hook: ModelMetaclass,
+    append_hook_value: bool = None,
+):
+    """Parse the remaining arguments such as try/except and merge"""
+    # Render the remaining hook variables
+    render_hook_vars(context=context, hook_dict=hook_dict, Hook=Hook)
+
+    # Instantiate the hook
+    hook = new_hook(context=context, hook_dict=hook_dict, hook=Hook)
+    if hook is None:
+        return
+
+    # Main exec logic
+    if hook.try_:
+        try:
+            hook_output_value = run_hook_in_dir(hook)
+        except Exception as e:
+            if hook.verbose:
+                print(e)
+            if hook.except_:
+                parse_sub_context(context=context, hook_dict=hook_dict, target='except')
+            return
+    else:
+        # Normal hook run
+        hook_output_value = run_hook_in_dir(hook)
+
+    if hook.skip_output:
+        if hook.merge:
+            merge_block_output(
+                hook_output_value=hook_output_value,
+                context=context,
+                append_hook_value=append_hook_value,
+            )
+    elif hook.merge:
+        merge_output(
+            hook_output_value=hook_output_value,
+            context=context,
+            append_hook_value=append_hook_value,
+        )
+    else:
+        set_key(
+            context=context,
+            value=hook_output_value,
+        )
+
+
+def evaluate_for(context: 'Context', hook_dict: dict, Hook: ModelMetaclass):
+    """Run the parse_hook function in a loop and return a list of outputs."""
+    loop_targets = render_variable(context, wrap_jinja_braces(hook_dict['for']))
+
+    if len(loop_targets) == 0:
+        return
+
+    hook_dict.pop('for')
+
+    # Need add an empty list in the value so we have something to append to
+    if 'merge' not in hook_dict:
+        target_context, key_path = get_target_and_key(context)
+        nested_set(target_context, key_path, [])
+    elif not hook_dict['merge']:
+        target_context, key_path = get_target_and_key(context)
+        # If we are merging into a list / dict, we don't want init a list
+        nested_set(target_context, key_path, [])
+
+    # Account for nested contexts and justify the new keys based on the key path within
+    #  blocks by trimming the key_path_block from the key_path.
+    if len(context.key_path_block) != 0:
+        tmp_key_path = context.key_path[
+            len(context.key_path_block) - len(context.key_path) :
+        ]  # noqa
+        if context.temporary_context is None:
+            context.temporary_context = {} if isinstance(tmp_key_path[0], str) else []
+        tmp_key_path = [i for i in tmp_key_path if i not in ('->', '_>')]
+        nested_set(context.temporary_context, tmp_key_path, [])
+
+    for i, l in (
+        enumerate(loop_targets)
+        if not render_variable(context, hook_dict.get('reverse', None))
+        else reversed(list(enumerate(loop_targets)))
+    ):
+        if context.existing_context is None:
+            context.existing_context = {}
+        # Create temporary variables in the context to be used in the loop.
+        context.existing_context.update({'index': i, 'item': l})
+        # Append the index to the keypath
+        context.key_path.append(encode_list_index(i))
+
+        # Reparse the hook with the new temp vars in place
+        parse_hook(
+            context=context,
+            hook_dict=hook_dict.copy(),
+            hook=Hook,
+            append_hook_value=True,
+        )
+        context.key_path.pop()
+
+    # Remove temp variables
+    try:
+        context.existing_context.pop('item')
+        context.existing_context.pop('index')
+    except KeyError:
+        pass
+
+
+def parse_hook_loop(
+    context: 'Context',
+    hook_dict: dict,
+    hook: ModelMetaclass,
+    append_hook_value: bool = None,
+):
+    if 'for' in hook_dict:
+        # This runs the current function in a loop with `append_hook_value` set so
+        # that keys are appended in the loop.
+        evaluate_for(context, hook_dict, hook)
+    else:
+        parse_hook_execute(
+            context=context,
+            hook_dict=hook_dict,
+            Hook=hook,
+            append_hook_value=append_hook_value,
+        )
+
+
+def evaluate_if(hook_dict: dict, context: 'Context', append_hook_value: bool) -> bool:
+    """Evaluate the if/when condition and return bool."""
+    if hook_dict.get('when', None) is not None:
+        result = render_variable(context, wrap_jinja_braces(hook_dict['when']))
+        hook_dict.pop('when')
+        return result
+    if hook_dict.get('for', None) is not None and not append_hook_value:
+        # We qualify `if` conditions within for loop logic
+        return True
+    if hook_dict.get('if', None) is None:
+        return True
+
+    return render_variable(context, wrap_jinja_braces(hook_dict['if']))
+
+
 def parse_hook(
     context: 'Context',
     hook_dict: dict,
@@ -488,105 +626,12 @@ def parse_hook(
 ):
     """Parse input dict for loop and when logic and calls hooks."""
     if evaluate_if(hook_dict, context, append_hook_value):
-
-        if 'for' in hook_dict:
-            # This runs the current function in a loop with `append_hook_value` set so
-            # that keys are appended in the loop.
-            evaluate_for(hook_dict, hook, context)
-            return
-
-        else:
-            # Render the remaining hook variables
-            render_hook_vars(hook_dict, hook, context)
-
-            # TODO: WIP - https://github.com/sudoblockio/tackle/issues/104
-            tmp_no_input = (
-                None if 'no_input' not in hook_dict else hook_dict.pop('no_input')
-            )
-            try:
-                hook = hook(
-                    **hook_dict,
-                    input_context=context.input_context,
-                    public_context=context.public_context,
-                    private_context=context.private_context,
-                    temporary_context=context.temporary_context,
-                    existing_context=context.existing_context,
-                    no_input=context.no_input if tmp_no_input is None else tmp_no_input,
-                    calling_directory=context.calling_directory,
-                    calling_file=context.calling_file,
-                    public_hooks=context.public_hooks,
-                    private_hooks=context.private_hooks,
-                    key_path=context.key_path,
-                    verbose=context.verbose,
-                    env_=context.env_,
-                    is_hook_call=True,
-                    override_context=context.override_context,
-                )
-            except TypeError as e:
-                # TODO: Improve -> This is an error when we have multiple of the same
-                #  base attribute. Should not conflict in the future when we do
-                #  composition on the context but for now, catching common error.
-                # TODO: WIP - https://github.com/sudoblockio/tackle/issues/104
-                raise exceptions.UnknownInputArgumentException(
-                    str(e) + " - Can't assign duplicate base fields.", context=context
-                ) from None
-
-            except ValidationError as e:
-                # Handle any try / except logic
-                if 'try' in hook_dict and hook_dict['try']:
-                    if 'except' in hook_dict and hook_dict['except']:
-                        parse_sub_context(context, hook_dict, target='except')
-                    return
-
-                msg = str(e)
-                if hook.identifier.startswith('tackle.providers'):
-                    id_list = hook.identifier.split('.')
-                    provider_doc_url_str = id_list[2].title()
-                    # Replace the validated object name (ex PrintHook) with the
-                    # hook_type field that users would more easily know.
-                    msg = msg.replace(id_list[-1], f"{hook_dict['hook_type']} hook")
-
-                    msg += (
-                        f"\n Check the docs for more information on the hook -> "
-                        f"https://sudoblockio.github.io/tackle/providers/"
-                        f"{provider_doc_url_str}/{hook_dict['hook_type']}/"
-                    )
-                raise exceptions.HookParseException(str(msg), context=context) from None
-
-            # Main exec logic
-            if hook.try_:
-                try:
-                    hook_output_value = run_hook_in_dir(hook)
-                except Exception as e:
-                    if hook.verbose:
-                        print(e)
-                    if hook.except_:
-                        parse_sub_context(context, hook_dict, target='except')
-                    return
-            else:
-                # Normal hook run
-                hook_output_value = run_hook_in_dir(hook)
-
-            if hook.skip_output:
-                if hook.merge:
-                    merge_block_output(
-                        hook_output_value=hook_output_value,
-                        context=context,
-                        append_hook_value=append_hook_value,
-                    )
-                return
-            elif hook.merge:
-                merge_output(
-                    hook_output_value=hook_output_value,
-                    context=context,
-                    append_hook_value=append_hook_value,
-                )
-            else:
-                set_key(
-                    context=context,
-                    value=hook_output_value,
-                )
-
+        parse_hook_loop(
+            context=context,
+            hook_dict=hook_dict,
+            hook=hook,
+            append_hook_value=append_hook_value,
+        )
     elif 'else' in hook_dict:
         parse_sub_context(context, hook_dict, target='else')
 
@@ -599,8 +644,8 @@ def evaluate_args(
 ):
     """
     Associate hook arguments provided in the call with hook attributes. Parses the
-    hook's `args` attribute to know how to map arguments are mapped to where and
-    deal with rendering by default.
+     hook's `args` attribute to know how to map arguments are mapped to where and
+     deal with rendering by default.
 
     TODO: This needs to be re-thought. Right now we parse the inputs without regard
      for the types of the argument mapping. What could be better is if we know the types
@@ -987,6 +1032,13 @@ def run_declarative_hook(
             f"{hook_name}. Exiting.",
             context=context,
         ) from None
+
+    if isinstance(hook, LazyBaseFunction):
+        hook = create_function_model(
+            context=context,
+            func_name=context.input_string,
+            func_dict=hook.function_dict.copy(),
+        )
 
     arg_dict = {}
     num_popped = 0
