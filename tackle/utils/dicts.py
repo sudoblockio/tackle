@@ -203,7 +203,7 @@ def get_target_and_key(context: 'Context', key_path: list = None) -> (Any, list)
     return target_context, output_key_path
 
 
-def smush_key_path(key_path: list) -> list:
+def remove_arrows_from_key_path(key_path: list) -> list:
     """Remove the arrows from a key path."""
     output = []
     for i in key_path:
