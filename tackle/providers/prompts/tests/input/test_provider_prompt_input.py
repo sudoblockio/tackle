@@ -5,7 +5,7 @@
 # def test_provider_pyinquirer_input_hook(change_dir, mocker):
 #     # mocker.patch(
 #     #     # 'tackle.providers.prompts.hooks.input.prompt',
-#     #     'tackle.main.update_source',
+#     #     'tackle.main.parse_source',
 #     #     return_value={"tmp": True},
 #     #     autospec=True
 #     # )

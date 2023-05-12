@@ -2,7 +2,7 @@ import pytest
 
 from tackle import tackle
 from tackle.models import Context
-from tackle.parser import update_source
+from tackle.parser import parse_source
 
 FIXTURES = [
     'expanded-string.yaml',
@@ -18,7 +18,7 @@ def test_provider_system_hook_import(change_dir, target):
     context = Context(input_string=target)
     # num_providers = len(context.provider_hooks.keys())
     num_providers = len(context.private_hooks.keys())
-    update_source(context)
+    parse_source(context)
     # assert num_providers < len(context.provider_hooks.keys())
     assert num_providers < len(context.private_hooks.keys())
     # assert 'tackle.providers.tackle-demos' in context.providers.hook_types
