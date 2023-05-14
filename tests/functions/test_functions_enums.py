@@ -19,4 +19,12 @@ def test_functions_composition_enum_basic(fixture_dir):
     assert output['failure_default']
 
     assert output['success']['color'] == 'blue'
+    assert output['success']['color_default'] == 'red'
     assert output['success_default']['color'] == 'blue'
+    assert output['success_default']['color_default'] == 'green'
+
+
+def test_functions_composition_enum_basic_1(fixture_dir):
+    output = tackle('scratch.yaml')
+
+    assert output

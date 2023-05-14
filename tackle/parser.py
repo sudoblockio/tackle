@@ -12,6 +12,7 @@
   - Insert the output into the appropriate key within the output context
 """
 from collections import OrderedDict
+import enum
 from functools import partialmethod
 import os
 from pydantic import Field, create_model, ValidationError
@@ -1491,6 +1492,15 @@ def create_function_model(
 
     # fmt: on
     new_func = {'hook_type': func_name, 'function_fields': []}
+
+    # First pass through the func_dict to parse out the methods
+    for k, v in func_dict.copy().items():
+        if k.endswith(('<-', '<_')):
+            # Implement method which is instantiated later in `enrich_hook`
+            new_func[k[:-2]] = (Callable, LazyBaseFunction(function_dict=v))
+            func_dict.pop(k)
+            continue
+
     literals = ('str', 'int', 'float', 'bool', 'dict', 'list')  # strings to match
     # Create function fields from anything left over in the function dict
     for k, v in func_dict.items():
@@ -1506,6 +1516,17 @@ def create_function_model(
             continue
 
         elif isinstance(v, dict):
+            if 'enum' in v:
+                enum_type = enum.Enum(k, {i: i for i in v['enum']})
+                if 'default' not in v:
+                    new_func[k] = (enum_type, ...)
+                else:
+                    new_func[k] = (enum_type, v['default'])
+
+                # TODO: Clean up this logic
+                new_func['function_fields'].append(k)
+                continue
+
             if 'type' in v:
                 # TODO: Qualify type in enum -> Type
                 type_ = v['type']

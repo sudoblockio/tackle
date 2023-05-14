@@ -3,6 +3,7 @@ Utils for modifying complex dictionaries generally based on an encoded key_path 
 a list of strings for key value lookups and byte encoded integers for items in a list.
 """
 from typing import Union, Any, TYPE_CHECKING
+from enum import Enum
 from ruamel.yaml.constructor import CommentedKeyMap
 
 if TYPE_CHECKING:
@@ -75,7 +76,7 @@ def get_readable_key_path(key_path: list) -> str:
 def nested_delete(element, keys):
     """
     Delete items in a generic element (list / dict) based on a key path in the form of
-    a list with strings for keys and byte encoded integers for indexes in a list.
+     a list with strings for keys and byte encoded integers for indexes in a list.
     """
     num_elements = len(keys)
 
@@ -146,8 +147,9 @@ def nested_get(element, keys):
 def nested_set(element, keys, value, index: int = 0):
     """
     Set the value of an arbitrary object based on a key_path in the form of a list
-    with strings for keys and byte encoded integers for indexes in a list. This function
-    recurses through the element until it is at the end of the keys where it sets it.
+     with strings for keys and byte encoded integers for indexes in a list. This
+     function recurses through the element until it is at the end of the keys where it
+     sets it.
 
     :param element: A generic dictionary or list
     :param keys: List of string and byte encoded integers.
@@ -157,6 +159,10 @@ def nested_set(element, keys, value, index: int = 0):
     num_elements = len(keys)
     # Check if we are at the last element of the list to insert the value
     if index == num_elements - 1:
+        # Check is value is enum and evaluate it as value so it is serializable.
+        if isinstance(value, Enum):
+            value = value.value
+
         if isinstance(keys[-1], bytes):
             element.insert(decode_list_index(keys[-1]), value)
         else:
@@ -278,7 +284,7 @@ def cleanup_unquoted_strings(element: Union[dict, list]):
 def merge(a, b, path=None, update=True):
     """
     See https://stackoverflow.com/questions/7204805/python-dictionaries-of-dictionaries-merge
-    Merges b into a
+     Merges b into a.
     """
     if path is None:
         path = []
