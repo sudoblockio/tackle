@@ -224,8 +224,9 @@ def import_hooks_from_dir(
         if skip_on_error:
             try:
                 import_hook_from_path(context, mod_name, f)
-            except (ModuleNotFoundError, ConfigError, ImportError):
-                logger.debug(f"Skipping importing {f}")
+            except (ModuleNotFoundError, ConfigError, ImportError) as e:
+                if context.verbose:
+                    logger.info(f"Skipping importing {f} - {e}")
                 continue
         else:
             import_hook_from_path(context, mod_name, f)
