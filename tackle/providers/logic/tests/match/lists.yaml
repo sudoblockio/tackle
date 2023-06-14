@@ -1,17 +1,13 @@
-region: ams
+region: r1
 
 vms:
   ->: match region
   case:
-    sng:
-      - ip: 139
+    r0:
+      - ip: 123
         name: foo
-    ams:
-      - ip: 108
+    r1:
+      - ip: 456
         name: bar
-      - ip: 209
-        name: stuff
-      - ip: 199
-        name: things
-      - ip: 95
-        name: baz
+
+assert->: assert "{{vms[0].ip}}" 456

@@ -2,4 +2,6 @@ stuff: things
 block->:
   merge: true
   stuff: here
-  things->: var "{{ stuff }}" --if "{{ stuff == 'things' }}"
+  # Because temporary context takes precedence over public
+  not_things->: var "{{ stuff }}" --if "{{ stuff == 'things' }}"
+  things->: var "{{ stuff }}" --if "{{ stuff == 'here' }}"

@@ -1,0 +1,14 @@
+matcher: blocker
+
+block_loop_merge->:
+  foo: foo
+  matches:
+    ->: match matcher
+    case:
+      blocker->:
+        # Should error because the parent is a map
+        merge: true
+        try: true
+        except: foo
+        for: [3,4]
+        foo: bar

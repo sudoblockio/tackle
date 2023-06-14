@@ -1,0 +1,9 @@
+foo: bar
+
+error:
+  ->: match foo
+  case:
+    blah: blah
+    '*->': var foo
+#    Should  be this
+#    '.*->': var foo

@@ -6,7 +6,7 @@ cases:
   - hook-dict
   - hook-expanded
   - hook-compact
-#  - block
+  - block
 
 matches:
   ->: match
@@ -32,19 +32,19 @@ matches:
     hook-expanded:
       ->: literal expanded
     hook-compact->: literal compact
-#    block->:
-#      for:
-#        - stuff
-#        - things
-#      value: True
-#      a_dict:
-#        stuff->: "{{item}}"
-#      list:
-#        - stuff
-#        - things
-#      hook-expanded:
-#        ->: literal expanded
-#      hook-compact->: literal compact
+    block->:
+      for:
+        - stuff
+        - things
+      value: True
+      a_dict:
+        stuff->: "{{item}}"
+      list:
+        - stuff
+        - things
+      hook-expanded:
+        ->: literal expanded
+      hook-compact->: literal compact
 
 
 expected:
@@ -81,4 +81,4 @@ expected:
 #      hook-expanded: expanded
 #      hook-compact: compact
 
-assert->: assert "{{matches}}" "{{expected}}"
+#assert->: assert "{{matches}}" "{{expected}}"

@@ -1,0 +1,29 @@
+foo: bar
+
+normal_str:
+  ->: match foo
+  case:
+    _: foo
+    blah: blah
+
+normal_dict:
+  ->: match foo
+  case:
+    _:
+      foo: bar
+    blah: blah
+
+hook_call:
+  ->: match foo
+  case:
+    _->: literal foo
+    blah: blah
+
+normal_dict_hook:
+  ->: match foo
+  case:
+    _:
+      foo: bar
+      stuff:
+        ->: literal things
+    blah: blah

@@ -1,0 +1,33 @@
+
+matcher: blocker
+
+block->:
+  stuff: things
+  render_inner->: "{{stuff}}"
+  render_outer->: "{{matcher}}"
+  matches:
+    ->: match matcher
+    case:
+      blocker->:
+        foo: bar
+        render_inner->: "{{foo}}"
+        render_outer->: "{{matcher}}"
+  check->: "{{matches}}"
+
+block_loop->:
+  foo: foo
+  matches:
+    ->: match matcher
+    case:
+      blocker->:
+        for: [3,4]
+        foo: bar
+        render_inner->: "{{foo}}"
+        render_outer->: "{{matcher}}"
+        iter->: "{{item}}"
+  check->: "{{matches}}"
+
+block_loop_output:
+  matches:
+    - foo: bar
+#      ...

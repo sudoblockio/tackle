@@ -1,7 +1,7 @@
 from typing import Union
 
 from tackle.models import BaseHook, Context, Field
-from tackle.parser import walk_sync
+from tackle.parser import walk_element
 
 
 class BlockHook(BaseHook):

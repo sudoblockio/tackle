@@ -1,20 +1,17 @@
 stuff: things
 ablock->:
   merge: true
-#  furry:
-#    ->: confirm
-#    message: Are our friends furry?
-#  friend: dog
-#
-#  beer->: tackle fake-tackle
-#
-#  things:
-#    ->: var "{{ block.beer.things }}"
 
   test_block:
     ->: block
     items:
       my_dog:
         ->: var stuff
-#        input: block.friend
-#        if: block.friend == 'dog'
+
+
+ablock_macro->:
+  merge: true
+
+  test_block_macro->:
+    my_dog:
+      ->: var stuff

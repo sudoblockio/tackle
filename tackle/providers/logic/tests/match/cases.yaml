@@ -6,7 +6,7 @@ fallback_dict:
     hook-expanded:
       ->: print expanded
     hook-compact->: print compact
-    '^foo': this
+    '^foo.*': this
     '.*': foo
 
 b_dict: foobar
@@ -17,5 +17,5 @@ matched_dict:
     hook-expanded:
       ->: print expanded
     hook-compact->: print compact
-    '^foo': this
+    '^foo.*': this
     '.*': foo

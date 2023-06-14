@@ -1,0 +1,9 @@
+
+matcher: blocker
+
+matches:
+  ->: match matcher
+  case:
+    blocker:
+      # Should not render
+      foo->: "{{bar}}"

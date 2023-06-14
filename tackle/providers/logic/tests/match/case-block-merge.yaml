@@ -1,0 +1,14 @@
+matcher: blocker
+
+block:
+  ->: match matcher
+  case:
+    blocker->:
+      merge: true
+      foo: bar
+
+call:
+  ->: match matcher --merge
+  case:
+    blocker->:
+      bar: bar

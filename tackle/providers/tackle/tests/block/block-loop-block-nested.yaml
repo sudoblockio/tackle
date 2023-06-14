@@ -1,0 +1,10 @@
+
+block1->:
+  for: [1,2]
+  baz: bar
+  block2->:
+    foo:
+      bar: baz
+#    render->: "{{foo}}"
+#    iter->: "{{item}}"
+  this->: "{{block2.foo.bar}}"

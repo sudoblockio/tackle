@@ -1,14 +1,15 @@
 
-matcher_true: blocker_true
+matcher: bock_true
 
 matches_true:
-  ->: match matcher_true
+  ->: match matcher
   case:
-    blocker_true->:
+    bock_true->:
       if: true
       value: True
-      a_dict:
-        stuff->: "{{cases}}"
+      stuff: things
+      dict:
+        stuff->: "{{stuff}}"
       list:
         - stuff
         - things
@@ -16,17 +17,20 @@ matches_true:
         ->: literal expanded
       hook-compact->: literal compact
 
-matcher_false: blocker_false
 
+# This should exist in output as empty key
 matches_false:
-  ->: match matcher_false
+  ->: match matcher
   case:
-    blocker_false->:
+    # This key should not exist
+    bock_true->:
       if: false
       value: True
 
+
 expected:
   value: True
+  stuff: things
   dict:
     stuff: things
   list:
@@ -35,4 +39,4 @@ expected:
   hook-expanded: expanded
   hook-compact: compact
 
-#assert->: assert "{{matches_true}}" "{{expected}}"
+assert->: assert "{{matches_true}}" "{{expected}}"

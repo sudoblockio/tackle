@@ -1,0 +1,30 @@
+
+matcher: blocker
+
+matches:
+  ->: match matcher
+  case:
+    blocker->:
+      value: True
+      stuff: things
+      dict:
+        stuff->: "{{stuff}}"
+      list:
+        - stuff
+        - things
+      hook-expanded:
+        ->: literal expanded
+      hook-compact->: literal compact
+
+expected:
+  value: True
+  stuff: things
+  dict:
+    stuff: things
+  list:
+    - stuff
+    - things
+  hook-expanded: expanded
+  hook-compact: compact
+
+assert->: assert "{{matches}}" "{{expected}}"

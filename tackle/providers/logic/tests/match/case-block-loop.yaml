@@ -9,8 +9,8 @@ matches:
         - stuff
         - things
       value: True
-      a_dict:
-        stuff->: "{{case}}"
+      dict:
+        stuff->: "{{item}}"
       list:
         - stuff
         - things

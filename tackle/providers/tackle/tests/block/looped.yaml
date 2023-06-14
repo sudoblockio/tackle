@@ -6,6 +6,7 @@ blocker->:
   for: alist
   priv_compact_>: "{{item}}"
   var1: foo
+  use_var1->: "{{var1}}"
   compact->: "{{item}}"
   var2: bar
   expanded:

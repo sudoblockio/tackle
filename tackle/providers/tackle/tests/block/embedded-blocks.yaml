@@ -6,7 +6,7 @@ blocker->:
   friend: dog
   test_block->:
     if: stuff == 'things'
-    my_dog->: print Penny # --if "friend == 'dog'"
+    my_dog->: "{{blocker.friend}}"
 
 after->:
   if: true
