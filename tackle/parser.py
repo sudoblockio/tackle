@@ -29,7 +29,9 @@ from typing import Type, Any, Union, Callable, Optional
 from tackle import exceptions
 from tackle.hooks import (
     import_from_path,
+    import_with_fallback_install,
     LazyBaseFunction,
+    LazyImportHook,
 )
 from tackle.macros import (
     var_hook_macro,
@@ -48,6 +50,9 @@ from tackle.models import (
 from tackle.render import render_variable
 from tackle.settings import settings
 from tackle.utils.dicts import (
+    get_readable_key_path,
+    get_set_temporary_context,
+    get_target_and_key,
     nested_get,
     nested_delete,
     nested_set,
@@ -421,15 +426,20 @@ def parse_sub_context(
 def new_hook(
     context: 'Context',
     hook_dict: dict,
-    hook: ModelMetaclass,
+    Hook: ModelMetaclass,
 ):
     """Create a new instantiated hook."""
     # TODO: WIP - https://github.com/sudoblockio/tackle/issues/104
     tmp_no_input = None if 'no_input' not in hook_dict else hook_dict.pop('no_input')
 
+    skip_output = Hook.__fields__['skip_output']  # Use later
     try:
-        hook = hook(
+        hook = Hook(
             **hook_dict,
+            no_input=context.no_input if tmp_no_input is None else tmp_no_input,
+            temporary_context={} if skip_output.default else context.temporary_context,
+            key_path=context.key_path,
+            key_path_block=context.key_path_block,
             input_context=context.input_context,
             public_context=context.public_context,
             private_context=context.private_context,
@@ -463,8 +473,8 @@ def new_hook(
             return
 
         msg = str(e)
-        if hook.identifier.startswith('tackle.providers'):
-            id_list = hook.identifier.split('.')
+        if Hook.identifier.startswith('tackle.providers'):
+            id_list = Hook.identifier.split('.')
             provider_doc_url_str = id_list[2].title()
             # Replace the validated object name (ex PrintHook) with the
             # hook_type field that users would more easily know.
@@ -490,7 +500,7 @@ def parse_hook_execute(
     render_hook_vars(context=context, hook_dict=hook_dict, Hook=Hook)
 
     # Instantiate the hook
-    hook = new_hook(context=context, hook_dict=hook_dict, hook=Hook)
+    hook = new_hook(context=context, hook_dict=hook_dict, Hook=Hook)
     if hook is None:
         return
 
@@ -509,12 +519,22 @@ def parse_hook_execute(
         hook_output_value = run_hook_in_dir(hook)
 
     if hook.skip_output:
+        # hook property that is only true for `block`/`match` hooks which write to the
+        # contexts themselves, thus their output is normally skipped except for merges.
         if hook.merge:
+            # In this case we take the public context and overwrite the current context
+            # with the output indexed back one key.
             merge_block_output(
                 hook_output_value=hook_output_value,
                 context=context,
                 append_hook_value=append_hook_value,
             )
+        elif context.temporary_context is not None:
+            # Write the indexed output to the `temporary_context` as it was only written
+            # to the `public_context` and not maintained between items in a list
+            if not isinstance(context.key_path[-1], bytes):
+                get_set_temporary_context(context)
+
     elif hook.merge:
         merge_output(
             hook_output_value=hook_output_value,
@@ -537,25 +557,12 @@ def evaluate_for(context: 'Context', hook_dict: dict, Hook: ModelMetaclass):
 
     hook_dict.pop('for')
 
-    # Need add an empty list in the value so we have something to append to
+    # Need add an empty list in the value so we have something to append to except when
+    # we are merging.
     if 'merge' not in hook_dict:
-        target_context, key_path = get_target_and_key(context)
-        nested_set(target_context, key_path, [])
+        set_key(context=context, value=[])
     elif not hook_dict['merge']:
-        target_context, key_path = get_target_and_key(context)
-        # If we are merging into a list / dict, we don't want init a list
-        nested_set(target_context, key_path, [])
-
-    # Account for nested contexts and justify the new keys based on the key path within
-    #  blocks by trimming the key_path_block from the key_path.
-    if len(context.key_path_block) != 0:
-        tmp_key_path = context.key_path[
-            len(context.key_path_block) - len(context.key_path) :
-        ]  # noqa
-        if context.temporary_context is None:
-            context.temporary_context = {} if isinstance(tmp_key_path[0], str) else []
-        tmp_key_path = [i for i in tmp_key_path if i not in ('->', '_>')]
-        nested_set(context.temporary_context, tmp_key_path, [])
+        set_key(context=context, value=[])
 
     for i, l in (
         enumerate(loop_targets)

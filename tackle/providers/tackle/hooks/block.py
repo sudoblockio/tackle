@@ -41,6 +41,6 @@ class BlockHook(BaseHook):
             verbose=self.verbose,
             override_context=self.override_context,
         )
-        walk_sync(context=tmp_context, element=self.items.copy())
+        walk_element(context=tmp_context, element=self.items.copy())
 
         return self.public_context

@@ -218,6 +218,44 @@ def remove_arrows_from_key_path(key_path: list) -> list:
     return output
 
 
+def set_temporary_context(
+        context: 'Context',
+        value: Any,
+        key_path: list,
+) -> None:
+    tmp_key_path = key_path[(len(context.key_path_block) - len(key_path)):]
+
+    if context.temporary_context is None:
+        context.temporary_context = {} if isinstance(tmp_key_path[0], str) else []
+    tmp_key_path = [i for i in tmp_key_path if i not in ('->', '_>')]
+
+    if len(tmp_key_path) == 0:
+        # Nothing to set in tmp context
+        return
+
+    nested_set(context.temporary_context, tmp_key_path, value)
+
+
+def get_set_temporary_context(
+        context: 'Context',
+) -> None:
+    """
+    Used in hooks with indented contexts (ie block/match), it gets the output of the
+     target context (public / private) sets that value within the temporary context
+     so that it can be used for rendering.
+    """
+    target_context, set_key_path = get_target_and_key(
+        context=context,
+        key_path=context.key_path
+    )
+    value = nested_get(element=target_context, keys=set_key_path)
+    set_temporary_context(
+        context=context,
+        value=value,
+        key_path=context.key_path,
+    )
+
+
 def set_key(
     context: 'Context',
     value: Any,
