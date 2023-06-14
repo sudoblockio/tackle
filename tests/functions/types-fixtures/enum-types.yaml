@@ -1,0 +1,27 @@
+
+
+Schema<-:
+  foo:
+    type: str
+    default: bar
+  color:
+    type: string
+    enum:
+      - red
+      - green
+      - blue
+
+  color_default:
+    type: string
+    default: red
+    enum:
+      - red
+      - green
+      - blue
+
+
+success->: Schema --color blue
+success_default->: Schema --color blue --color_default green
+
+failure->: Schema --color grey --try --except true
+failure_default->: Schema --color blue --color_default grey --try --except true

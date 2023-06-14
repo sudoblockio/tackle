@@ -1,0 +1,19 @@
+base<-:
+  foo: bar
+
+obj<-:
+  stuff: things
+  bar:
+    type: dict[str, base]
+
+check_ok:
+  ->: obj
+  bar:
+    bar:
+      foo: baz
+
+check_false:
+  ->: obj --try --except 1
+  bar:
+    bar:
+      not  foo: baz
