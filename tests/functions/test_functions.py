@@ -200,3 +200,20 @@ def test_function_method_no_default(chdir):
 #     """Check what compact hooks do."""
 #     output = tackle('compact.yaml')
 #     assert output
+
+@pytest.fixture()
+def extends_fixtures(chdir):
+    chdir('extends-fixtures')
+
+
+def test_function_extends_str(extends_fixtures):
+    """Check that we can extend a base function."""
+    output = tackle('extends.yaml')
+    assert output['t'] == ['hello', 'world']
+
+
+def test_function_extends_list(extends_fixtures):
+    """Check that we can extend a base function with a list of other functions."""
+    output = tackle('extends-list.yaml')
+    assert output['t'] == ['hello', 'dude']
+

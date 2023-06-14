@@ -1,0 +1,20 @@
+
+greeter_base1<-:
+  words:
+    - hello
+    - dude
+
+greeter_base2<-:
+  words:
+    - hello
+    - world
+
+greeter_exec<-:
+  extends:
+    - greeter_base1
+    - greeter_base2
+  exec:
+    p->: var {{item}} --for words
+  return: p
+
+t->: greeter_exec

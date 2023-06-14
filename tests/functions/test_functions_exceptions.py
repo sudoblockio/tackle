@@ -16,6 +16,8 @@ EXCEPTION_FIXTURES = [
     ('field-bad-type.yaml', exceptions.MalformedFunctionFieldException),
     # Check when extends is used with a missing base.
     ('extends-missing.yaml', exceptions.MalformedFunctionFieldException),
+    # Check when extends is a dict an error is thrown
+    ('extends-dict.yaml', exceptions.MalformedFunctionFieldException),
 ]
 
 

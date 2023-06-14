@@ -131,6 +131,14 @@ def enrich_hook(
             func_name=context.input_string,
             func_dict=hook.function_dict.copy(),
         )
+    elif isinstance(hook, LazyImportHook):
+        import_with_fallback_install(
+            context=context,
+            mod_name=hook.mod_name,
+            path=hook.hooks_path,
+        )
+        hook = get_public_or_private_hook(context=context, hook_type=hook.hook_type)
+
 
     # Handle args
     for n, arg in enumerate(args):
@@ -1517,8 +1525,69 @@ def parse_function_type(
     # Treat it as a plain name - Safe eval as already qualified as literal
     return eval(type_str)
 
+
+def function_extends_merge_hook(
+        context: 'Context',
+        func_name: str,
+        func_dict: dict,
+        extends: str,
+):
+    base_hook = get_hook(
+        context=context,
+        hook_type=extends,
+        # TODO: this would change if allowing extends to get instantiated with
+        #  actual vars. Should be done when allowing dicts for extends.
+        args=[],
+        kwargs={},
+    )
+    if base_hook is None:
+        raise exceptions.MalformedFunctionFieldException(
+            f"In the declarative hook `{func_name}`, the 'extends' reference to "
+            f"`{extends}` can not be found.",
+            function_name=func_name,
+            context=context,
+        ) from None
+    return {**base_hook().function_dict, **func_dict}
+
+
+def function_extends(
+        context: 'Context',
+        func_name: str,
+        func_dict: dict,
+):
+    """
+    Implement the `extends` functionality which takes either a string reference or list
+     of string references to declarative hooks whose fields will be merged together.
+    """
+    extends = func_dict.pop('extends')
+    if isinstance(extends, str):
+        return function_extends_merge_hook(
+            context=context,
+            func_name=func_name,
+            func_dict=func_dict,
+            extends=extends,
+        )
+
+    elif isinstance(extends, list):
+        for i in extends:
+            if not isinstance(i, str):
+                break
+            return function_extends_merge_hook(
+                context=context,
+                func_name=func_name,
+                func_dict=func_dict,
+                extends=i,
+            )
+    raise exceptions.MalformedFunctionFieldException(
+        "The field `extends` can only be a string or list of string references to "
+        "hooks to merge together.", context=context, function_name=func_name,
+    ) from None
+
+
 def create_function_model(
-    context: 'Context', func_name: str, func_dict: dict
+        context: 'Context',
+        func_name: str,
+        func_dict: dict,
 ) -> Type[BaseFunction]:
     """Create a model from the function input dict."""
     if func_name.endswith(('<-', '<_')):
@@ -1546,11 +1615,10 @@ def create_function_model(
 
     # Implement inheritance
     if 'extends' in func_dict and func_dict['extends'] is not None:
-        base_hook = get_hook(
+        func_dict = function_extends(
             context=context,
-            hook_type=func_dict['extends'],
-            args=[],
-            kwargs={},
+            func_name=func_name,
+            func_dict=func_dict,
         )
         if base_hook is None:
             raise exceptions.MalformedFunctionFieldException(
@@ -1649,7 +1717,7 @@ def create_function_model(
                     new_func[k] = (type(v['default']), Field(**v))
             else:
                 new_func[k] = (dict, v)
-        elif v in LITERAL_TYPES:
+        elif isinstance(v, str) and v in LITERAL_TYPES:
             new_func[k] = (locate(v).__name__, Field(...))
         elif isinstance(v, (str, int, float, bool)):
             new_func[k] = v
@@ -1720,7 +1788,11 @@ def extract_functions(context: 'Context'):
     for k, v in context.input_context.copy().items():
         if re.match(r'^[a-zA-Z0-9\_]*(<\-|<\_)$', k):  # noqa
             # TODO: RM arrow and put in associated access modifier namespace
-            Function = create_function_model(context, k, v)
+            Function = create_function_model(
+                context=context,
+                func_name=k,
+                func_dict=v,
+            )
             function_name = k[:-2]
             arrow = k[-2:]
             if function_name == "":
