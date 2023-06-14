@@ -161,6 +161,7 @@ def list_to_var_macro(context: 'Context', element: list) -> dict:
 
 
 def raise_on_private_hook(k: str, context: 'Context', func_name: str):
+    # TODO: Remove this and turn it into marking the field as non-exportable
     raise exceptions.MalformedFunctionFieldException(
         f"The field {k} can not be a private hook call (ie ending in '_>') as there is "
         f"no situation this makes sense.",
@@ -212,6 +213,7 @@ def function_field_to_parseable_macro(
             raise_on_private_hook(k, context=context, func_name=func_name)
 
         elif 'default->' in v:
+            # TODO: Generalize this so that all fields are parsed
             new_value = func_dict[k].pop('default->')
             func_dict[k]['default'] = {'->': new_value}
 

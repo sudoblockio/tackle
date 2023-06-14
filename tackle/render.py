@@ -100,15 +100,18 @@ def add_jinja_hook_methods(
 
 
 # wrapped_exec calls exec on the `hook` integrating any positional args
-def render_string(context: 'Context', raw: str):
+def render_string(context: 'Context', raw: str) -> Any:
     """
     Render strings by first extracting renderable variables then build a render context
-    from the public_context, then existing context, and last looks up special variables.
-    After the value has been rendered it is returned as literal so as to preserve the
-    original type of the value.
+     from the public_context, then existing context, and last looks up special
+     variables. After the value has been rendered it is returned as literal so as to
+     preserve the original type of the value.
 
     :return: The literal value if the output is a string / list / dict / float / int
     """
+    if not isinstance(raw, str):
+        return raw
+
     if ('{{' not in raw) and ('{%' not in raw):
         return raw
 

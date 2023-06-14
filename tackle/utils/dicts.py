@@ -144,7 +144,7 @@ def nested_get(element, keys):
     return nested_get(element[keys[0]], keys[1:])
 
 
-def nested_set(element, keys, value, index: int = 0):
+def nested_set(element: Union[dict, list], keys: list, value: Any, index: int = 0):
     """
     Set the value of an arbitrary object based on a key_path in the form of a list
      with strings for keys and byte encoded integers for indexes in a list. This
@@ -189,7 +189,11 @@ def nested_set(element, keys, value, index: int = 0):
     nested_set(element, keys, value, index + 1)
 
 
-def get_target_and_key(context: 'Context', key_path: list = None) -> (Any, list):
+def get_target_and_key(
+        context: 'Context',
+        key_path: list = None,
+) -> (Any, list):
+    """Get the target context and key to `set_key` from."""
     target_context = context.public_context
 
     if key_path is None:
@@ -209,7 +213,9 @@ def get_target_and_key(context: 'Context', key_path: list = None) -> (Any, list)
     return target_context, output_key_path
 
 
-def remove_arrows_from_key_path(key_path: list) -> list:
+def remove_arrows_from_key_path(
+        key_path: list
+) -> list:
     """Remove the arrows from a key path."""
     output = []
     for i in key_path:
@@ -257,18 +263,18 @@ def get_set_temporary_context(
 
 
 def set_key(
-    context: 'Context',
-    value: Any,
-    key_path: list = None,
+        context: 'Context',
+        value: Any,
+        key_path: list = None,
 ):
     """
     Wrap nested_set to set keys for both public and private hook calls.
 
     For public hook calls, qualifies if the hook is compact form (ie key->) or expanded
-    (ie key: {->:..}) before setting the output. For private hook calls, the key and
-    all parent keys without additional objects are deleted later as they might be
-    used in rendering so they are added as well but their key paths are tracked for
-    later deletion.
+     (ie key: {->:..}) before setting the output. For private hook calls, the key and
+     all parent keys without additional objects are deleted later as they might be
+     used in rendering so they are added as well but their key paths are tracked for
+     later deletion.
     """
     if key_path is None:
         key_path = context.key_path
@@ -277,15 +283,7 @@ def set_key(
     nested_set(target_context, set_key_path, value)
 
     if len(context.key_path_block) != 0:
-        tmp_key_path = key_path[(len(context.key_path_block) - len(key_path)) :]
-        if context.temporary_context is None:
-            context.temporary_context = {} if isinstance(tmp_key_path[0], str) else []
-        tmp_key_path = [i for i in tmp_key_path if i not in ('->', '_>')]
-
-        if tmp_key_path:
-            # Assert that the list is not empty - handles cases where we are appending
-            #  a value from a list.
-            nested_set(context.temporary_context, tmp_key_path, value)
+        set_temporary_context(context=context, value=value, key_path=key_path)
 
 
 def _clean_item(element: Union[dict, list], item: Union[int, str], value: Any):

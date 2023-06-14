@@ -59,9 +59,7 @@ from tackle.utils.dicts import (
     encode_list_index,
     decode_list_index,
     set_key,
-    get_target_and_key,
     remove_arrows_from_key_path,
-    get_readable_key_path,
     cleanup_unquoted_strings,
 )
 from tackle.utils.command import unpack_args_kwargs_string
@@ -94,7 +92,6 @@ BASE_METHODS = [
 ]
 
 
-# # TODO: Update name
 def get_hook(
     context: 'Context',
     hook_type: str,
@@ -232,6 +229,7 @@ def merge_block_output(
         if isinstance(context.key_path_block[-1], bytes):
             # An exception maybe needed here or this error is snubbed.
             pass
+        # set_key(context=context, value=hook_output_value)
         raise exceptions.AppendMergeException(
             "Can't merge from for loop.", context=context
         ) from None
@@ -451,14 +449,12 @@ def new_hook(
             input_context=context.input_context,
             public_context=context.public_context,
             private_context=context.private_context,
-            temporary_context=context.temporary_context,
             existing_context=context.existing_context,
-            no_input=context.no_input if tmp_no_input is None else tmp_no_input,
             calling_directory=context.calling_directory,
+            current_file=context.input_file,
             calling_file=context.calling_file,
             public_hooks=context.public_hooks,
             private_hooks=context.private_hooks,
-            key_path=context.key_path,
             verbose=context.verbose,
             env_=context.env_,
             is_hook_call=True,
@@ -557,12 +553,10 @@ def parse_hook_execute(
 
 
 def evaluate_for(context: 'Context', hook_dict: dict, Hook: ModelMetaclass):
-    """Run the parse_hook function in a loop and return a list of outputs."""
+    """Run the parse_hook function in a loop with temporary variables."""
     loop_targets = render_variable(context, wrap_jinja_braces(hook_dict['for']))
-
     if len(loop_targets) == 0:
         return
-
     hook_dict.pop('for')
 
     # Need add an empty list in the value so we have something to append to except when
@@ -1057,6 +1051,7 @@ def run_declarative_hook(
             func_dict=hook.function_dict.copy(),
         )
 
+    # Handle args
     arg_dict = {}
     num_popped = 0
     for i, arg in enumerate(args.copy()):
@@ -1076,13 +1071,11 @@ def run_declarative_hook(
                 if j not in func_dict:
                     func_dict[j] = hook.__fields__[j]
 
-            new_hook = create_function_model(
+            hook = create_function_model(
                 context=context,
                 func_name=hook.__fields__[arg].name,
                 func_dict=func_dict,
             )
-
-            hook = new_hook
         elif isinstance(hook, LazyBaseFunction) and (
             arg + '<-' in hook.function_dict or arg + '<_' in hook.function_dict
         ):
@@ -1113,6 +1106,7 @@ def run_declarative_hook(
             run_help(context=context, hook=hook)
 
         elif hook.__fields__['args'].default == []:  # noqa
+            # Throw error as we have nothing to map the arg to
             hook_name = hook.identifier.split('.')[-1]
             if hook_name == '':
                 msg = "default hook"
@@ -1124,6 +1118,7 @@ def run_declarative_hook(
                 context=context,
             ) from None
 
+    # Handle the `args` field which maps to args
     if 'args' in hook.__fields__:
         evaluate_args(args, arg_dict, Hook=hook, context=context)
 
@@ -1330,6 +1325,7 @@ def parse_tmp_context(context: Context, element: Any, existing_context: dict):
         no_input=context.no_input,
         calling_directory=context.calling_directory,
         calling_file=context.calling_file,
+        # current_file=context.current_file,
         verbose=context.verbose,
         env_=context.env_,
         override_context=context.override_context,
@@ -1359,9 +1355,9 @@ def get_complex_field(
 
 
 def function_walk(
-    self: 'Context',
-    input_element: Union[list, dict],
-    return_: Union[list, dict] = None,
+        self: 'Context',
+        input_element: Union[list, dict],
+        return_: Union[list, dict] = None,
 ) -> Any:
     """
     Walk an input_element for a function and either return the whole context or one or
@@ -1450,6 +1446,7 @@ def function_walk(
         else:
             raise NotImplementedError(f"Return must be of list or string {return_}.")
     return tmp_context.public_context
+
 
 LITERAL_TYPES: set = {'str', 'int', 'float', 'bool', 'dict', 'list'}  # strings to match
 
@@ -1620,15 +1617,6 @@ def create_function_model(
             func_name=func_name,
             func_dict=func_dict,
         )
-        if base_hook is None:
-            raise exceptions.MalformedFunctionFieldException(
-                f"In the declarative hook `{func_name}`, the 'extends' reference to "
-                f"`{func_dict['extends']}` can not be found.",
-                function_name=func_name,
-                context=context,
-            )
-        func_dict = {**base_hook().function_dict, **func_dict}
-        func_dict.pop('extends')
 
     # Persisted with object for `extends`. Used later
     function_dict = func_dict.copy()
