@@ -1,0 +1,6 @@
+resources:
+  name: operator
+  do some merge->: literal [1,2,3] --merge
+#  This overwrites resources -> len = 2
+#  https://github.com/sudoblockio/tackle/issues/163
+  do another merge->: literal [2,3] --merge

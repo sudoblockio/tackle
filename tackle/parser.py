@@ -136,7 +136,6 @@ def enrich_hook(
         )
         hook = get_public_or_private_hook(context=context, hook_type=hook.hook_type)
 
-
     # Handle args
     for n, arg in enumerate(args):
         # If help and last arg
@@ -262,17 +261,25 @@ def merge_output(
 
     if append_hook_value:
         if isinstance(key_path[-3], bytes):
-            set_key(context=context, value=hook_output_value, key_path=key_path[:-1])
+            # We are merging into a list so we need to keep track of the starting
+            # index from which we are merging into, the incremented position.
+            incremented_position = encode_list_index(
+                decode_list_index(key_path[-3]) + decode_list_index(key_path[-1])
+            )
+            tmp_key_path = key_path[:-3] + [incremented_position] + [key_path[-2]]
+            set_key(context=context, value=hook_output_value, key_path=tmp_key_path)
         elif isinstance(hook_output_value, (str, int, float, bool)):
             raise exceptions.AppendMergeException(
                 "Can't merge str/int/float/bool into dict from for loop.",
                 context=context,
             ) from None
+        elif isinstance(hook_output_value, dict):
+            # We are merging into a dict
+            for k, v in hook_output_value.items():
+                tmp_key_path = key_path[:-3] + [key_path[-2]] + [k]
+                set_key(context=context, value=v, key_path=tmp_key_path)
         else:
-            # TODO: This needs fixing for merging from loop into dict
-            #  https://github.com/robcxyz/tackle/issues/107
-            tmp_key_path = key_path[:-3] + [key_path[-2]]
-            set_key(context=context, value=hook_output_value, key_path=tmp_key_path)
+            raise NotImplementedError("Please raise issue with example if seeing this.")
         return
 
     # Can't merge into top level keys without merging k/v individually
@@ -1336,7 +1343,7 @@ def parse_tmp_context(context: Context, element: Any, existing_context: dict):
 
 
 def get_complex_field(
-        field: Any,
+    field: Any,
 ) -> Type:
     """
     Takes an input field such as `list[str]` which can include uncalled hooks and calls
@@ -1355,9 +1362,9 @@ def get_complex_field(
 
 
 def function_walk(
-        self: 'Context',
-        input_element: Union[list, dict],
-        return_: Union[list, dict] = None,
+    self: 'Context',
+    input_element: Union[list, dict],
+    return_: Union[list, dict] = None,
 ) -> Any:
     """
     Walk an input_element for a function and either return the whole context or one or
@@ -1452,9 +1459,9 @@ LITERAL_TYPES: set = {'str', 'int', 'float', 'bool', 'dict', 'list'}  # strings 
 
 
 def parse_function_type(
-        context: Context,
-        type_str: str,
-        func_name: str,
+    context: Context,
+    type_str: str,
+    func_name: str,
 ):
     """
     Parse the `type` field within a declarative hook and use recursion to parse the
@@ -1473,7 +1480,8 @@ def parse_function_type(
                 context=context,
                 type_str=arg,
                 func_name=func_name,
-            ) for arg in re.split(r',(?![^[\]]*])', type_args_str)
+            )
+            for arg in re.split(r',(?![^[\]]*])', type_args_str)
         ]
         # Get base type
         base_type = parse_function_type(
@@ -1491,7 +1499,8 @@ def parse_function_type(
             else:
                 raise exceptions.MalformedFunctionFieldException(
                     "The type `Optional` only takes one arg.",
-                    context=context, function_name=func_name,
+                    context=context,
+                    function_name=func_name,
                 ) from None
         else:
             return base_type[tuple(type_args)]
@@ -1507,7 +1516,9 @@ def parse_function_type(
             except AttributeError:
                 raise exceptions.MalformedFunctionFieldException(
                     f"The type `{type_str}` is not recognized. Must be in python's "
-                    f"`typing` module.", context=context, function_name=func_name,
+                    f"`typing` module.",
+                    context=context,
+                    function_name=func_name,
                 ) from None
             return type_
         elif isinstance(hook, LazyBaseFunction):
@@ -1524,10 +1535,10 @@ def parse_function_type(
 
 
 def function_extends_merge_hook(
-        context: 'Context',
-        func_name: str,
-        func_dict: dict,
-        extends: str,
+    context: 'Context',
+    func_name: str,
+    func_dict: dict,
+    extends: str,
 ):
     base_hook = get_hook(
         context=context,
@@ -1548,9 +1559,9 @@ def function_extends_merge_hook(
 
 
 def function_extends(
-        context: 'Context',
-        func_name: str,
-        func_dict: dict,
+    context: 'Context',
+    func_name: str,
+    func_dict: dict,
 ):
     """
     Implement the `extends` functionality which takes either a string reference or list
@@ -1577,14 +1588,16 @@ def function_extends(
             )
     raise exceptions.MalformedFunctionFieldException(
         "The field `extends` can only be a string or list of string references to "
-        "hooks to merge together.", context=context, function_name=func_name,
+        "hooks to merge together.",
+        context=context,
+        function_name=func_name,
     ) from None
 
 
 def create_function_model(
-        context: 'Context',
-        func_name: str,
-        func_dict: dict,
+    context: 'Context',
+    func_name: str,
+    func_dict: dict,
 ) -> Type[BaseFunction]:
     """Create a model from the function input dict."""
     if func_name.endswith(('<-', '<_')):
@@ -1676,7 +1689,8 @@ def create_function_model(
                 if 'type' in v:
                     raise exceptions.MalformedFunctionFieldException(
                         'Enums are implicitly typed.',
-                        context=context, function_name=func_name
+                        context=context,
+                        function_name=func_name,
                     )
                 enum_type = enum.Enum(k, {i: i for i in v['enum']})
                 if 'default' in v:

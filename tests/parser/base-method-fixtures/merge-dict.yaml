@@ -1,0 +1,4 @@
+resources:
+  name: operator
+  type: helm
+  do some merge->: literal {'foo':'foo'} --merge

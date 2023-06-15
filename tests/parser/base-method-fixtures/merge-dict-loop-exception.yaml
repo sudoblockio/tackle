@@ -1,4 +1,5 @@
 resources:
   name: operator
   type: helm
+#  Should error since it is a value, not a map
   do some merge->: literal foo-{{index}} --for [1,2,3] --merge

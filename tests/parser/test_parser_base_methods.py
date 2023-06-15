@@ -19,6 +19,13 @@ def fixture_dir(chdir):
     chdir("base-method-fixtures")
 
 
+def test_parser_methods_merge_dict(fixture_dir):
+    """Validate merging a dict into a dict."""
+    output = tackle('merge-dict.yaml')
+    assert output['resources']['name'] == 'operator'
+    assert output['resources']['foo'] == 'foo'
+
+
 def test_parser_methods_merge_list_value(fixture_dir):
     """Validate that when in a list, running a hook with a merge overwrites the list."""
     # Note: this is kind of strong... But what else is it supposed to mean? Don't use
@@ -27,13 +34,22 @@ def test_parser_methods_merge_list_value(fixture_dir):
     assert output['resources'] == 'foo'
 
 
-def test_parser_methods_merge_list_loop(fixture_dir):
+def test_parser_methods_merge_list_loop_value(fixture_dir):
     """
     Validate that when in a list, running a hook in a for loop with a merge appends to
      the list.
     """
-    output = tackle('merge-list-loop.yaml')
+    output = tackle('merge-list-loop-value.yaml')
     assert len(output['resources']) == 5
+    assert output['resources'][2] == 'foo-0'
+
+
+def test_parser_methods_merge_list_loop_dict(fixture_dir):
+    """Same as above but with a dict."""
+    output = tackle('merge-list-loop-dict.yaml')
+    assert len(output['resources']) == 5
+    assert output['resources'][2]['foo-0'] == 'foo-0'
+    assert output['resources'][3]['foo-1'] == 'foo-1'
 
 
 def test_parser_methods_merge_dict_loop_dict(fixture_dir):
@@ -42,9 +58,9 @@ def test_parser_methods_merge_dict_loop_dict(fixture_dir):
      keys to the output.
     """
     output = tackle('merge-dict-loop-dict.yaml')
-    assert output['resources']['foo-2']
-    # TODO: Associated with https://github.com/robcxyz/tackle/issues/107
-    # assert output['resources']['foo-1']
+    assert output['resources']['foo-2'] == 'foo-2'
+    assert output['resources']['name'] == 'operator'
+    assert output['resources']['foo-1'] == 'foo-1'
 
 
 def test_parser_methods_merge_dict_loop_exception(fixture_dir):
@@ -54,6 +70,14 @@ def test_parser_methods_merge_dict_loop_exception(fixture_dir):
     """
     with pytest.raises(exceptions.AppendMergeException):
         tackle('merge-dict-loop-exception.yaml')
+
+
+# def test_parser_methods_merge_list_dict(fixture_dir):
+#     """Validate when we merge a list into a dict that it overwrites the contents."""
+#     output = tackle('merge-list-dict.yaml')
+#     # TODO: Determine how to merge twice into a list
+#     #  https://github.com/sudoblockio/tackle/issues/163
+#     assert output
 
 
 def test_parser_methods_try(fixture_dir):
