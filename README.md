@@ -6,9 +6,6 @@
 [![python](https://img.shields.io/pypi/pyversions/tackle.svg)](https://pypi.python.org/pypi/tackle)
 [![codecov](https://codecov.io/gh/sudoblockio/tackle/branch/main/graphs/badge.svg?branch=main)](https://codecov.io/github/sudoblockio/tackle?branch=main)
 [![codeql](https://github.com/sudoblockio/tackle/actions/workflows/codeql.yml/badge.svg)](https://github.com/sudoblockio/tackle/actions/workflows/codeql.yml)
-[![Foresight Docs](https://api-public.service.runforesight.com/api/v1/badge/success?repoId=d40e333a-c337-4337-ab95-9c4c34d47f9e)](https://docs.runforesight.com/)
-[![Foresight Docs](https://api-public.service.runforesight.com/api/v1/badge/test?repoId=d40e333a-c337-4337-ab95-9c4c34d47f9e)](https://docs.runforesight.com/)
-[![Foresight Docs](https://api-public.service.runforesight.com/api/v1/badge/utilization?repoId=d40e333a-c337-4337-ab95-9c4c34d47f9e)](https://docs.runforesight.com/)
 
 [//]: # ([![main-tests]&#40;https://github.com/sudoblockio/tackle/actions/workflows/main.yml/badge.svg&#41;]&#40;https://github.com/sudoblockio/tackle/actions&#41;)
 
@@ -19,7 +16,7 @@
 
 [//]: # (* [Slack]&#40;https://join.slack.com/t/slack-y748219/shared_invite/zt-1cqreswyd-5qDBE53QlY97mQOI6DhcKw&#41;)
 
-Tackle is an experimental general purpose configuration language for building modular code generators and declarative CLIs. Built as a fork of [cookiecutter](https://github.com/cookiecutter/cookiecutter), it can make any config file dynamic or into a CLI with both strong and weakly typed programmable flow control common to a general purpose programming language. Basically you can write a fully functional Turing-complete program out of a config file. It's wild.
+Tackle is an experimental general purpose configuration language for building modular code generators and declarative CLIs. Built as a fork of [cookiecutter](https://github.com/cookiecutter/cookiecutter), it can make any config file into a CLI with both strong and weakly typed programmable flow control common to a general purpose programming language. Basically you can write a fully functional Turing-complete program out of a config file. It's wild.
 
 **With tackle, you can build:**
 - Modular code generators / repo scaffolding tools that can be updated over time
@@ -46,6 +43,7 @@ Tackle is an experimental general purpose configuration language for building mo
   - [Run other tackle files](https://sudoblockio.github.io/tackle/providers/Tackle/tackle/)
 - Modular design allows creating / importing new hooks easy
   - Supports both [python](https://sudoblockio.github.io/tackle/python-hooks/) and [declarative](https://sudoblockio.github.io/tackle/declarative-hooks/) hooks which can be imported / called / defined in-line or within jinja templates
+  - Hooks can be composed of other hooks allowing complex objects to be validated and operated against
 
 ### Install
 
@@ -149,7 +147,7 @@ Documentation can be embedded into the hooks.
 <-:
   help: This is the default hook
   target:
-    type: str
+    type: union[str, int]
     default->: input
     description: The thing to say hello to
   exec<-:
@@ -158,6 +156,7 @@ Documentation can be embedded into the hooks.
   greeting-method<-:
     help: A method that greets
     # ... Greeting options / logic
+    extends: greeter
 greeter<-:
   help: A reusable greeter object
   target: str
@@ -179,7 +178,7 @@ methods:
     greeter     A reusable greeter object
 ```
 
-Hooks can be imported [within a tackle provider](https://sudoblockio.github.io/tackle/declarative-cli/#importing-hooks) or [through hooks](https://sudoblockio.github.io/tackle/providers/Tackle/import/), [linked](https://sudoblockio.github.io/tackle/providers/Tackle/tackle/), and/or [combined](https://sudoblockio.github.io/tackle/declarative-hooks/#extending-hooks) creating a web of CLIs.
+Hooks can be imported [within a tackle provider](https://sudoblockio.github.io/tackle/declarative-cli/#importing-hooks) or [through hooks](https://sudoblockio.github.io/tackle/providers/Tackle/import/), [linked](https://sudoblockio.github.io/tackle/providers/Tackle/tackle/), and/or combined with [inheritance](https://sudoblockio.github.io/tackle/declarative-hooks/#extending-hooks) or [composition](https://sudoblockio.github.io/tackle/declarative-hooks/#extending-hooks) creating a web of CLIs.
 
 ### Use Cases
 
