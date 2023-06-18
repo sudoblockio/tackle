@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.5.0](https://github.com/sudoblockio/tackle/compare/v0.4.11...v0.5.0) (2023-06-18)
+
+
+### Features
+
+* add enum as field type for declarative hooks ([5982df2](https://github.com/sudoblockio/tackle/commit/5982df29fc0c729be134903cc66d845d618b9134))
+* remove need to calling hook methods with a period [#158](https://github.com/sudoblockio/tackle/issues/158) - refactor get_hook ([6da2cbe](https://github.com/sudoblockio/tackle/commit/6da2cbea525445f927c2d4a9fea501f436c5cd21))
+
+
+### Bug Fixes
+
+* add better exception handling for hook call ([877c3fb](https://github.com/sudoblockio/tackle/commit/877c3fb94e7627f5f3d24632112fdd956ccb0a1b))
+* allow hook merging into dicts ([#107](https://github.com/sudoblockio/tackle/issues/107)) and fix index issue with merging into lists ([2bccc8c](https://github.com/sudoblockio/tackle/commit/2bccc8c010166c6595af65d246cce6986e3aef36))
+* calling hook with kwargs field within loop [#166](https://github.com/sudoblockio/tackle/issues/166) ([db76ea8](https://github.com/sudoblockio/tackle/commit/db76ea806485aa03957b87cfcf0085ef88824b7b))
+* match / block hook not handling existing contexts properly [#57](https://github.com/sudoblockio/tackle/issues/57) [#45](https://github.com/sudoblockio/tackle/issues/45) [#51](https://github.com/sudoblockio/tackle/issues/51) ([f47e211](https://github.com/sudoblockio/tackle/commit/f47e21160c40acfb779401e0306a5bf3a0796100))
+
+
+### Refactors
+
+* many functions within the parser ([62bdf21](https://github.com/sudoblockio/tackle/commit/62bdf21c9416d4ab161b448c5353de9c49c8f45d))
+
 ## [0.4.11](https://github.com/sudoblockio/tackle/compare/v0.4.10...v0.4.11) (2023-03-14)
 
 
