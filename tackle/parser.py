@@ -500,6 +500,33 @@ def new_hook(
     return hook
 
 
+def update_hook_with_kwargs_field(context: 'Context', hook_dict: dict):
+    """
+    In order to facilitate instantiating objects with dicts, a `kwargs` key can be used
+     to load the object. For instance `->: a_hook --kwargs a_dict`
+    """
+    hook_kwargs = hook_dict.pop('kwargs')
+    if isinstance(hook_kwargs, dict):
+        hook_dict.update(hook_kwargs)
+    elif isinstance(hook_kwargs, str):
+        try:
+            hook_dict.update(
+                render_variable(context=context, raw=wrap_jinja_braces(hook_kwargs))
+            )
+        except ValueError:
+            raise exceptions.UnknownArgumentException(
+                "The parameter `kwargs` should be either a map or a string "
+                "reference to a map.",
+                context=context,
+            ) from None
+    else:
+        raise exceptions.UnknownArgumentException(
+            "The parameter `kwargs` should be either a map or a string reference "
+            "to a map.",
+            context=context,
+        ) from None
+
+
 def parse_hook_execute(
     context: 'Context',
     hook_dict: dict,
@@ -507,6 +534,9 @@ def parse_hook_execute(
     append_hook_value: bool = None,
 ):
     """Parse the remaining arguments such as try/except and merge"""
+    if 'kwargs' in hook_dict:
+        update_hook_with_kwargs_field(context=context, hook_dict=hook_dict)
+
     # Render the remaining hook variables
     render_hook_vars(context=context, hook_dict=hook_dict, Hook=Hook)
 
@@ -810,13 +840,7 @@ def run_hook_at_key_path(context: 'Context'):
     if hook is None:
         exceptions.raise_unknown_hook(context, first_arg)
 
-    if isinstance(hook, LazyBaseFunction):
-        pass
-
-    try:
-        hook_dict['hook_type'] = hook.__fields__['hook_type'].default
-    except KeyError:
-        raise Exception
+    hook_dict['hook_type'] = hook.__fields__['hook_type'].default
 
     # `args` can be a kwarg (ie `tackle --args foo`) and is manually added to args var
     if 'args' in kwargs:
@@ -835,33 +859,6 @@ def run_hook_at_key_path(context: 'Context'):
         hook_dict[k] = v
     for i in flags:
         hook_dict[i] = True
-
-    if 'kwargs' in hook_dict:
-        hook_kwargs = hook_dict.pop('kwargs')
-        if isinstance(hook_kwargs, dict):
-            hook_dict.update(hook_kwargs)
-        elif isinstance(hook_kwargs, str):
-            try:
-                hook_dict.update(
-                    render_variable(context=context, raw=wrap_jinja_braces(hook_kwargs))
-                )
-            except ValueError:
-                error_msg = (
-                    "The parameter `kwargs` should be either a map or a string "
-                    "reference to a map."
-                )
-                raise exceptions.UnknownArgumentException(
-                    error_msg, context=context
-                ) from None
-        else:
-            error_msg = (
-                "The parameter `kwargs` should be either a map or a string reference "
-                "to a map."
-            )
-            raise exceptions.UnknownArgumentException(
-                error_msg, context=context
-            ) from None
-
     # Cleanup any unquoted fields -> common mistake that is hard to debug producing a
     #  nested dict that breaks parsing / hook calls. Ex foo: {{bar}} -> foo: "{{bar}}"
     cleanup_unquoted_strings(hook_dict)

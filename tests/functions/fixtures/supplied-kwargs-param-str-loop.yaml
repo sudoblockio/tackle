@@ -1,0 +1,8 @@
+foo<-:
+  bar: baz
+
+call:
+  ->: foo --kwargs {{item}}
+  for:
+    - bar: bing
+    - bar: bang

@@ -21,6 +21,13 @@ def test_function_supplied_kwargs_param_str(change_curdir_fixtures):
     assert output['kwarg'] == output['call']
 
 
+def test_function_supplied_kwargs_param_str_loop(change_curdir_fixtures):
+    """Check that we can use kwargs within a loop"""
+    output = tackle('supplied-kwargs-param-str-loop.yaml')
+    assert output['call'][0]['bar'] == 'bing'
+    assert len(output['call']) == 2
+
+
 def test_function_supplied_args_param_str(change_curdir_fixtures):
     """Test that we can populate a functions args with an `args` key as str."""
     output = tackle('supplied-args-param-str.yaml')
