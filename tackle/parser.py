@@ -514,6 +514,7 @@ def parse_hook_execute(
     append_hook_value: bool = None,
 ):
     """Parse the remaining arguments such as try/except and merge"""
+    # Parse `kwargs` field which is a dict that will map to hook fields
     if 'kwargs' in hook_dict:
         update_hook_with_kwargs_field(context=context, hook_dict=hook_dict)
 
@@ -572,6 +573,12 @@ def parse_hook_execute(
 def evaluate_for(context: 'Context', hook_dict: dict, Hook: ModelMetaclass):
     """Run the parse_hook function in a loop with temporary variables."""
     loop_targets = render_variable(context, wrap_jinja_braces(hook_dict['for']))
+    if not isinstance(loop_targets, list):
+        raise exceptions.MalformedTemplateVariableException(
+            f"The `for` field must be a list or string reference to a list. The value "
+            f"is of type `{type(loop_targets).__name__}`.", context=context,
+        )
+
     if len(loop_targets) == 0:
         return
     hook_dict.pop('for')
