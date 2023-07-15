@@ -153,7 +153,25 @@ def test_function_import_func_from_hooks_dir_call_method(change_curdir_fixtures)
     assert o['t']['p'] == 'a-default'
 
 
-def test_function_import_func_from_hooks_dir_call_function_cli(change_curdir_fixtures):
+def test_function_run_hook_in_parent_preserve_context(change_curdir_fixtures):
+    """
+    Verify that we can call a hook in a parent dir and have some sensible environment
+     variables to work with.
+    """
+    os.chdir(os.path.join('func-provider-hook', 'a-dir'))
+    o = tackle('funcs.yaml', find_in_parent=True)
+    assert o
+
+
+def test_function_merge_field_into_hook(change_curdir_fixtures):
+    """Verify that we can merge a dict into the parent's field."""
+    os.chdir('functions')
+    x = os.listdir()
+    o = tackle('merge-field.yaml', 'foo')
+    assert o
+
+
+def test_function_import_func_from_hooks_dir_context_preserved2(change_curdir_fixtures):
     """
     Check that we can call a function on an imported hook from a hooks directory when
      calling with args like in CLI.

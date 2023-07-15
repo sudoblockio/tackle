@@ -195,6 +195,9 @@ def run_help(context: 'Context', hook: ModelMetaclass = None):
     if context.input_string[-4:] == 'help':
         context.input_string = context.input_string[:-4]
 
+    # Determine max width of each kwarg / arg / method for formatting
+
+
     template = Template(HELP_TEMPLATE)
     help_rendered = template.render(
         args=args,

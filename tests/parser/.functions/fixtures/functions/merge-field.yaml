@@ -1,0 +1,8 @@
+
+base<-:
+  bar: baz
+
+foo<-:
+  help: Foo
+  baz: bing
+  a_field->: base --merge

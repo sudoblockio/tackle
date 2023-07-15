@@ -1,17 +1,6 @@
 import pytest
-from ruamel.yaml import YAML
 from tackle import tackle
 from tackle import exceptions
-
-
-def test_parser_methods_merge(change_curdir_fixtures):
-    """Verify we can run tackle against a fixture and merge it up to equal the same."""
-    yaml = YAML()
-    with open('petstore.yaml') as f:
-        expected_output = yaml.load(f)
-
-    output = tackle('merge-petstore-compact.yaml')
-    assert output == expected_output
 
 
 @pytest.fixture()

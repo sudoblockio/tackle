@@ -1,0 +1,5 @@
+upper->: random_string --case upper
+# this should now be lower
+lower_default->: random_string
+# this should now be lower but forced...
+lower->: random_string --case lower

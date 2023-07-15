@@ -27,3 +27,12 @@ def test_collections_hook_distinct(change_dir):
     output = tackle('distinct.yaml')
     for i in output['distincts']:
         assert i in ['stuff', 'foo', 'things']
+
+
+def test_collections_hook_range(change_dir):
+    o = tackle('range.yaml')
+    assert o['forward_1'] == [0, 1, 2]
+    assert o['forward_2'] == [1, 2]
+    assert o['backward_2'] == [3, 2]
+    assert o['forward_3'] == [0, 2, 4]
+    assert o['backward_3'] == [6, 4]

@@ -1,4 +1,3 @@
-"""Test the input source part of the parser."""
 import pytest
 
 from tackle import exceptions

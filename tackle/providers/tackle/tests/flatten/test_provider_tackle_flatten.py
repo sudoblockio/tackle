@@ -21,3 +21,9 @@ def test_provider_tackle_flatten_method(change_dir):
     output = tackle('method.yaml', no_input=True)
 
     assert output
+
+
+def test_provider_tackle_flatten_splat(change_dir):
+    output = tackle('splat.yaml', no_input=True)
+
+    assert output

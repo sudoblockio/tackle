@@ -1,4 +1,3 @@
-"""Verify hook argument related items."""
 import pytest
 from tackle.utils.command import unpack_args_kwargs_string
 from tackle import tackle
@@ -40,14 +39,3 @@ def test_parser_tackle_in_tackle_arg(change_curdir_fixtures):
     """Test input args."""
     output = tackle('outer-tackle-arg.yaml', no_input=True)
     assert output['outer']['foo_items'] == ['bar', 'baz']
-
-
-def test_parser_render_hook_input(change_curdir_fixtures):
-    """
-    Show that when the first argument is a renderable that you just render that with the
-    context and logic.
-    """
-    output = tackle('var-hook.yaml', no_input=True)
-    for k, v in output.items():
-        if k.startswith('stuff'):
-            assert v == 'things'

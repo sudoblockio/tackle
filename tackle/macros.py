@@ -131,7 +131,7 @@ def compact_hook_call_macro(context: 'Context', element: str) -> dict:
 def list_to_var_macro(context: 'Context', element: list) -> dict:
     """
     Convert arrow keys with a list as the value to `var` hooks via a re-write to the
-    input.
+     input.
     """
     # TODO: Convert this to a block. Issue is that keys are not rendered by default so
     #  when str items in a list are parsed, they are not rendered by default. Should

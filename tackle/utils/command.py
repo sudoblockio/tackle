@@ -67,7 +67,14 @@ def split_input_string(input_string: str) -> list:
 def unpack_args_kwargs_string(input_string: str) -> (list, dict, list):
     """Split up based on whitespace input args and pass to unpack_args_kwargs_list."""
     input_list = split_input_string(input_string)
-    return unpack_args_kwargs_list(input_list)
+
+    args, kwargs, flags = unpack_args_kwargs_list(input_list)
+
+    clean_kwargs = {k.replace('-', '_'): v for k, v in kwargs.items()}
+    clean_flags = [i.replace('-', '_') for i in flags]
+
+    return args, clean_kwargs, clean_flags
+    # return unpack_args_kwargs_list(input_list)
 
 
 def assert_if_flag(arg: str):

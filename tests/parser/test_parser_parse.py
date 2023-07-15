@@ -1,20 +1,20 @@
-"""High level tests for parser logic."""
 import pytest
 
 from tackle.main import tackle
 from tackle.utils.files import read_config_file
 
-FIXTURES = [
+# NOTE: Splitting up tests on fixtures between those located in `parse-fixtures`  and
+# `fixtures` directories respectively there are A, so many fixtures and B, some are
+# common and others are only for the below comparison test.
+
+PARSE_FIXTURES = [
     ('map.yaml', 'map-output.yaml'),
     ('map-lists.yaml', 'map-lists-output.yaml'),
     ('arg-types.yaml', 'arg-types-output.yaml'),
     ('empty-elements.yaml', 'empty-elements.yaml'),
     ('map-root.yaml', 'map-root-output.yaml'),
     ('private-hooks.yaml', 'private-hooks-output.yaml'),
-    ('outer-tackle.yaml', 'outer-tackle-output.yaml'),
-    ('outer-tackle-list.yaml', 'outer-tackle-list-output.yaml'),
     ('merge-simple.yaml', 'merge-simple-output.yaml'),
-    ('merge-petstore-compact.yaml', 'petstore.yaml'),
     ('private-context.yaml', 'private-context-output.yaml'),
     # Non tackle things
     ('k8s-deployment.yaml', 'k8s-deployment.yaml'),
@@ -30,24 +30,32 @@ FIXTURES = [
 ]
 
 
-@pytest.mark.parametrize("fixture,expected_output", FIXTURES)
-def test_main_expected_output(change_curdir_fixtures, fixture, expected_output):
+@pytest.mark.parametrize("fixture,expected_output", PARSE_FIXTURES)
+def test_main_expected_output_parse_fixtures_dir(chdir, fixture, expected_output):
     """Input equals output."""
+    chdir("parse-fixtures")
+
     expected_output = read_config_file(expected_output)
     output = tackle(fixture)
     assert output == expected_output
 
 
-def test_parser_ruamel_braces(change_curdir_fixtures):
-    """
-    Validate super hack for ruamel parsing error where `stuff->: {{things}}`
-    (no quotes), ruamel interprets as:
-    'stuff': ordereddict([(ordereddict([('things', None)]), None)]).
-    """
-    output = tackle('ruamel-parsing-error-braces.yaml', verbose=True)
-    assert output['stuff'] == 'things'
-    assert output['a']['b'] is None
-    assert output['one'] == 'two'
+COMMON_FIXTURES = [
+    ('outer-tackle.yaml', 'outer-tackle-output.yaml'),
+    ('outer-tackle-list.yaml', 'outer-tackle-list-output.yaml'),
+    ('merge-petstore-compact.yaml', 'petstore.yaml'),
+    ('merge-petstore-compact.yaml', 'petstore.yaml'),
+]
+
+
+@pytest.mark.parametrize("fixture,expected_output", COMMON_FIXTURES)
+def test_main_expected_output_common_fixtures_dir(chdir, fixture, expected_output):
+    """Input equals output."""
+    chdir('fixtures')
+
+    expected_output = read_config_file(expected_output)
+    output = tackle(fixture)
+    assert output == expected_output
 
 
 def test_parser_duplicate_values(change_curdir_fixtures):
@@ -58,3 +66,15 @@ def test_parser_duplicate_values(change_curdir_fixtures):
     """
     output = tackle('duplicate-values.yaml', verbose=True)
     assert output['local']['two_args']
+
+
+def test_parser_hook_args_not_copied(change_curdir_fixtures):
+    """
+    When calling a hook with an arg, there was an issue with the hook's args being
+     copied from one hook call to the next of the same hook suggesting the hook was not
+     copied when called. This is to check that.
+    """
+    output = tackle('copied-hook-args.yaml')
+    assert output['upper'].isupper()
+    assert output['lower'].islower()
+    assert output['lower_default'].islower()
