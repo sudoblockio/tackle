@@ -818,16 +818,16 @@ def run_hook_at_key_path(context: 'Context'):
         hook_dict = {}
 
     # Look up the hook from the imported providers
-    hook = get_hook(
+    Hook = get_hook(
         context=context,
         hook_type=first_arg,
         args=args,
         kwargs=kwargs,
     )
-    if hook is None:
+    if Hook is None:
         exceptions.raise_unknown_hook(context, first_arg)
 
-    hook_dict['hook_type'] = hook.__fields__['hook_type'].default
+    hook_dict['hook_type'] = Hook.__fields__['hook_type'].default
 
     # `args` can be a kwarg (ie `tackle --args foo`) and is manually added to args var
     if 'args' in kwargs:
@@ -840,7 +840,7 @@ def run_hook_at_key_path(context: 'Context'):
             args += [hook_args]
 
     # Associate hook arguments provided in the call with hook attributes
-    evaluate_args(args=args, hook_dict=hook_dict, Hook=hook, context=context)
+    evaluate_args(args=args, hook_dict=hook_dict, Hook=Hook, context=context)
     # Add any kwargs
     for k, v in kwargs.items():
         hook_dict[k] = v
@@ -854,7 +854,7 @@ def run_hook_at_key_path(context: 'Context'):
     parse_hook(
         context=context,
         hook_dict=hook_dict,
-        hook=hook,
+        hook=Hook,
     )
 
 
