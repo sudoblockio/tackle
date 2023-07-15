@@ -190,26 +190,6 @@ def enrich_hook(
                 context=context,
             )
 
-    # Handle kwargs
-    for k, v in kwargs.items():
-        if k == 'args':
-            # TODO: I thought this would work
-            # args.append(v)
-            # But just passing works. Reason is the above duplicates the arg. No idea...
-            pass
-        elif k == 'kwargs':
-            pass
-        elif k in hook.__fields__:
-            # TODO: consolidate with `update_hook_with_kwargs_and_flags` - same same
-            if hook.__fields__[k].type_ == bool:
-                # Handle flags where default is true
-                if hook.__fields__[k].default:
-                    hook.__fields__[k].default = False
-                else:
-                    hook.__fields__[k].default = True
-            else:
-                hook.__fields__[k].default = v
-
     return hook
 
 
