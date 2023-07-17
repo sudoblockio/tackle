@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.5.1](https://github.com/sudoblockio/tackle/compare/v0.5.0...v0.5.1) (2023-07-17)
+
+
+### Bug Fixes
+
+* issue with hook defaults being overwritten when called - remove unneeded code modifies hook ([d1dbde0](https://github.com/sudoblockio/tackle/commit/d1dbde0b2fb4cfcf163d6845bca1d1755fbc06f2))
+* regression in how args are parsed in main ([c9369b2](https://github.com/sudoblockio/tackle/commit/c9369b2a92e575befd35c54ca38624d73269ddb7))
+
 ## [0.5.0](https://github.com/sudoblockio/tackle/compare/v0.4.11...v0.5.0) (2023-06-18)
 
 
