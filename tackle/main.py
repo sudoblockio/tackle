@@ -42,8 +42,9 @@ def tackle(
         kwargs['input_string'] = args[0]
         if len(args) != 1:
             kwargs['global_args'] = []
-            for i in args:
-                kwargs['global_args'].append(i)
+            for i in range(1, len(args)):
+                # Append all but the first arg which is parsed separately
+                kwargs['global_args'].append(args[i])
 
     # Handle empty calls which fallback to finding the closest tackle file
     # in the parent directory
