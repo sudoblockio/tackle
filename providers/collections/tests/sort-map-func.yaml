@@ -1,0 +1,11 @@
+<-:
+  exec:
+    a_list:
+      - foo: bing
+        name: 2
+      - foo: bar
+        name: 1
+      - foo: baz
+        name: 3
+
+    sort_a_map->: sort a_list --key foo

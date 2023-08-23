@@ -1,12 +1,13 @@
 import sys
-from pydantic.main import ModelMetaclass, ModelField, ValidationError
-from pydantic import BaseModel
+# from pydantic.main import ModelMetaclass, ModelField, ValidationError
+
+from pydantic import BaseModel, ValidationError
 from jinja2 import Template
 from typing import Any, List
 
 from tackle import exceptions
-from tackle.models import Context
-from tackle.hooks import LazyBaseFunction
+from tackle.models import Context, LazyBaseHook
+
 
 HELP_TEMPLATE = """usage: tackle {{input_string}} {% for i in general_kwargs %}{{i}} {% endfor %}
 {% if general_help %}
@@ -33,7 +34,7 @@ class HelpInput(BaseModel):
 
 
 def unpack_hook(
-    context: 'Context', hook: ModelMetaclass
+    context: 'Context', hook: BaseModel
 ) -> (List[dict], List[dict], List[dict], List[dict]):
     """Unpack arguments (args/kwargs/flags/methods) from hook."""
     args = []
@@ -42,9 +43,9 @@ def unpack_hook(
     methods = []
 
     # kwargs + flags
-    for i in hook.__fields__['function_fields'].default.copy():
+    for i in hook.model_fields['function_fields'].default.copy():
         # Consume the arg as what is left will be a method which will deal with later
-        hook_field = hook.__fields__['function_dict'].default.pop(i)
+        hook_field = hook.model_fields['function_dict'].default.pop(i)
 
         # Skip fields that have a `visible=False` field
         if isinstance(hook_field, ModelField):
@@ -93,7 +94,7 @@ def unpack_hook(
             kwargs.append(help_arg.dict())
 
     # args
-    for arg in hook.__fields__['args'].default:
+    for arg in hook.model_fields['args'].default:
         # Check kwargs
         arg_data = [i for i in kwargs if i['name'] == arg]
         if len(arg_data) == 1:
@@ -107,13 +108,13 @@ def unpack_hook(
                 raise exceptions.MalformedFunctionFieldException(
                     "The args don't match a key word arg or flag.",
                     # TODO: Fix
-                    function_name=hook.__fields__,
+                    function_name=hook.model_fields,
                     context=context,
                 ) from None
         args.append(arg_data)
 
     # methods
-    for k, v in hook.__fields__['function_dict'].default.items():
+    for k, v in hook.model_fields['function_dict'].default.items():
         if k.endswith('<-') and k not in ['exec', 'exec<-']:
             methods.append(
                 HelpInput(
@@ -135,15 +136,15 @@ def get_methods_on_default_hook(context: 'Context') -> List[dict]:
 
     for k, v in context.public_hooks.items():
         # Handle hooks that could be in the `hooks` dir and will not be instantiated
-        if isinstance(v, LazyBaseFunction):
+        if isinstance(v, LazyBaseHook):
             method_help = ''
-            if 'help' in v.function_dict:
-                method_help = v.function_dict['help']
+            if 'help' in v.input_raw:
+                method_help = v.input_raw['help']
         else:
             # Normal hook which has been instantiated
             method_help = (
-                v.__fields__['function_dict'].default['help']
-                if 'help' in v.__fields__['function_dict'].default
+                v.model_fields['function_dict'].default['help']
+                if 'help' in v.model_fields['function_dict'].default
                 else ''
             )
 
@@ -157,7 +158,7 @@ def get_methods_on_default_hook(context: 'Context') -> List[dict]:
     return methods
 
 
-def run_help(context: 'Context', hook: ModelMetaclass = None):
+def run_help(context: 'Context', hook: BaseModel = None):
     """
     Print the help screen then exit. Help can be displayed in three different scenarios.
     1. For the base (no args) -> this shows default / other function's help
@@ -168,8 +169,8 @@ def run_help(context: 'Context', hook: ModelMetaclass = None):
     if hook is not None:
         # We have a default hook or method
         general_help = (
-            hook.__fields__['function_dict'].default.pop('help')
-            if 'help' in hook.__fields__['function_dict'].default
+            hook.model_fields['function_dict'].default.pop('help')
+            if 'help' in hook.model_fields['function_dict'].default
             else None
         )
 

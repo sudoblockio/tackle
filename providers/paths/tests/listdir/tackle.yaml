@@ -1,0 +1,33 @@
+string_input:
+  ->: listdir
+  path: dir
+
+
+string_input_sorted:
+  ->: listdir
+  path: dir
+  sort: true
+  ignore_hidden_files: true
+
+string_input_hidden:
+  ->: listdir
+  path: dir
+  ignore_hidden_files: true
+
+list_input:
+  ->: listdir
+  for:
+    - dirs/dir1
+    - dirs/dir2
+  path: "{{ item }}"
+
+only_files->: listdir dirs --only_files
+only_directories->: listdir dirs --only_directories
+
+ignore_hidden->: listdir dirs --ignore_hidden
+ignore_hidden_directories->: listdir dirs --ignore_hidden_directories
+ignore_hidden_files->: listdir dirs --ignore_hidden_files
+
+exclude_files_str->: listdir dirs --exclude dir1
+exclude_files_str_re->: listdir dirs --exclude ^dir
+exclude_files_list->: listdir dirs --exclude ['dir1','dir2']

@@ -6,7 +6,7 @@ docs/scratch*
 docs/.hooks/*
 hold
 wip
-foresight-reports
+.old
 
 # mkdocs.yml is generated
 mkdocs.yml

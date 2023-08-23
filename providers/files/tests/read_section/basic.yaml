@@ -1,0 +1,5 @@
+foo:
+  ->: read_section file.md
+  start: '--start-here--'
+  end: '--end-here--'
+

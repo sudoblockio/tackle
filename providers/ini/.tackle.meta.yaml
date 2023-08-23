@@ -1,0 +1,25 @@
+name: Ini File Provider
+
+description: Wraps ini library to read and write.
+
+examples:
+  - name: Read ini
+    description: Read a ini file into a key
+    content: |
+      compact->: ini path/to/file.ini
+      expanded:
+        ->: ini
+        path: path/to/file.ini
+
+  - name: Write ini
+    description: Read a ini file into a key
+    content: |
+      stuff:
+        and: things
+      compact->: ini path/to/file.ini "{{stuff}}"
+      expanded:
+        ->: ini
+        path: path/to/file.ini
+        contents: "{{ stuff }}"
+
+#hook_examples->: "{{examples}}"

@@ -9,8 +9,9 @@ from tackle.utils.dicts import get_readable_key_path
 if TYPE_CHECKING:
     from typing import Type, Union
     from pydantic.main import ModelMetaclass
-    from tackle.models import Context, BaseFunction, BaseHook, BaseContext
+    # from tackle.models import Context, BaseFunction, BaseHook, BaseContext
 
+    from tackle.models_new import Context, Source, Data
 
 def raise_unknown_hook(context: 'Context', hook_type: str, method: bool = None):
     """Raise an exception for when there is a missing hook with some context."""
@@ -134,12 +135,9 @@ class FunctionCallException(TackleFunctionCallException):
 class TackleParserException(Exception):
     """Base parser exception class."""
 
-    def __init__(self, extra_message: str, context: 'Union[Context, BaseContext]'):
-        if context.current_file is None:
-            context.current_file = context.calling_file
-
+    def __init__(self, extra_message: str, context: 'Context'):
         self.message = (
-            f"Error parsing input_file='{context.current_file}' at "
+            f"Error parsing input_file='{context.path.current.file}' at "
             f"key_path='{get_readable_key_path(key_path=context.key_path)}' \n"
             f"{extra_message}"
         )
@@ -258,48 +256,22 @@ class MalformedTemplateVariableException(TackleParserException):
 #
 # Parser input exceptions
 #
-class TackleParserInputException(Exception):
+class TackleSourceParserException(Exception):
     """Base input parser exception class."""
 
-    def __init__(self, extra_message: str, context: 'Context' = None):
-        self.message = (
-            f"Error parsing input_file='{context.input_file}' \n" f"{extra_message}"
-        )
+    def __init__(self, message: str, context: 'Context' = None):
+        self.message = message
         if not context.verbose:
             sys.tracebacklimit = 0
         super().__init__(self.message)
 
 
-# class TackleFileInitialParsingException(TackleParserInputException):
-#     """
-#     Exception when base tackle file is empty.
-#
-#     Raised when calling files / providers.
-#     """
-
-
-class EmptyTackleFileException(TackleParserInputException):
-    """
-    Exception when base tackle file is empty.
-
-    Raised when calling files / providers.
-    """
-
-
-class UnknownSourceException(TackleParserInputException):
+class UnknownSourceException(TackleSourceParserException):
     """
     Exception for ambiguous source.
 
     Raised when tackle cannot determine which directory is the project
     template, e.g. more than one dir appears to be a template dir.
-    """
-
-
-class UnknownInputArgumentException(TackleParserInputException):
-    """
-    Exception for unknown extra arguments.
-
-    Raised when tackle cannot determine what the extra argument means.
     """
 
 
@@ -476,4 +448,73 @@ class TackleFileInitialParsingException(TackleGeneralException):
     Exception when parsing a tackle file.
 
     Raised when first parsing a file.
+    """
+
+
+#
+# Import exceptions
+#
+class TackleParserInputException(Exception):
+    """Base input parser exception class."""
+
+    def __init__(self, extra_message: str, context: 'Context' = None):
+
+        self.message = (
+            f"Error parsing  \n" f"{extra_message}"
+        )
+        if not context.verbose:
+            sys.tracebacklimit = 0
+        super().__init__(self.message)
+
+
+class TackleImportException(TackleImportError):
+    """
+    Exception when importing a tackle provider.
+
+    Raised when first importing hooks.
+    """
+
+class TackleImportException(Exception):
+    """Base input parser exception class."""
+
+    def __init__(self, extra_message: str, context: 'Context', file: str = None):
+        if file is None:
+            file = context.source.file
+        self.message = (
+            f"Error parsing input_file='{file}' \n" f"{extra_message}"
+        )
+        if not context.verbose:
+            sys.tracebacklimit = 0
+        super().__init__(self.message)
+
+class UnknownInputArgumentException(TackleParserInputException):
+    """
+    Exception for unknown extra arguments.
+
+    Raised when tackle cannot determine what the extra argument means.
+    """
+
+
+
+# class TackleFileInitialParsingException(TackleParserInputException):
+#     """
+#     Exception when base tackle file is empty.
+#
+#     Raised when calling files / providers.
+#     """
+
+
+class EmptyTackleFileException(TackleImportException):
+    """
+    Exception when base tackle file is empty.
+
+    Raised when calling files / providers.
+    """
+
+
+class TackleHookImportException(TackleImportException):
+    """
+    Exception for a malformed templatable argument.
+
+    Raised when rendering variables.
     """

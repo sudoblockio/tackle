@@ -18,6 +18,17 @@ def read_user_yes_no(question, default_value):
     return prompt([question])['tmp']
 
 
+def confirm_prompt(question: str, default_value: bool = True) -> bool:
+    """Ask user yes or no for generic question."""
+    question = {
+        'type': 'confirm',
+        'name': 'tmp',
+        'message': question,
+        'default': default_value,
+    }
+    return prompt([question])['tmp']
+
+
 def prompt_and_delete(path, no_input=False):
     """
     Ask user if it's okay to delete the previously-downloaded file/directory.

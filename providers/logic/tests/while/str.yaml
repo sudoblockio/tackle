@@ -1,0 +1,11 @@
+foo: bar
+
+key:
+  ->: while
+  condition: item == 'bar'
+  do: var foo
+
+key_output:
+  - bar
+
+check->: assert map map_output

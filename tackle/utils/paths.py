@@ -6,19 +6,24 @@ import shutil
 import stat
 import logging
 import re
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
-from tackle.exceptions import ContextFileNotFound, InvalidConfiguration
+from tackle import exceptions
+
+if TYPE_CHECKING:
+    from tackle.models_new import Context
 
 logger = logging.getLogger(__name__)
 
-CONTEXT_FILES = {
+DEFAULT_TACKLE_FILES = {
     '.tackle.yaml',
     '.tackle.yml',
     '.tackle.json',
+    '.tackle.toml',
     'tackle.yaml',
     'tackle.yml',
     'tackle.json',
+    'tackle.toml',
 }
 
 
@@ -146,95 +151,132 @@ def is_repo_url(value) -> bool:
     # return bool(REPO_REGEX.match(value))
 
 
-def is_directory_with_tackle(value) -> bool:
-    """Return true if directory."""
-    if os.path.isdir(value):
-        contents = os.listdir(value)
-        for i in CONTEXT_FILES:
-            if i in contents:
-                return True
-    return False
+DEFAULT_TACKLE_FILES = {
+    '.tackle.yaml',
+    '.tackle.yml',
+    '.tackle.json',
+    '.tackle.toml',
+    'tackle.yaml',
+    'tackle.yml',
+    'tackle.json',
+    'tackle.toml',
+}
 
+DEFAULT_HOOKS_DIRECTORIES = {
+    'hooks',
+    '.hooks',
+}
 
-def is_file(value) -> bool:
-    """Return True if the input looks like a file."""
-    FILE_REGEX = re.compile(
-        r"""^.*\.(yaml|yml|json|toml)$""",
-        re.VERBOSE,
-    )
-    return bool(FILE_REGEX.match(value))
-
-
-def find_tackle_file(provider_dir) -> str:
-    """Find the tackle files based on some defaults and return the path."""
-    provider_contents = os.listdir(provider_dir)
-    for i in provider_contents:
-        if i in CONTEXT_FILES:
-            return os.path.join(provider_dir, i)
-
-    raise InvalidConfiguration(f"Can't find tackle file in {provider_dir}")
-
-
-def find_in_parent(dir: str, targets: list, fallback=None) -> str:
-    """Recursively search in parent directories for a path to a target file."""
-    for i in os.listdir(dir):
-        if i in targets:
+def find_hooks_directory_in_dir(dir: str) -> str:
+    for i in os.scandir(dir):
+        if i.is_dir() and i.name in DEFAULT_HOOKS_DIRECTORIES:
             return os.path.abspath(os.path.join(dir, i))
+
+
+def find_tackle_file_in_dir(dir: str) -> str:
+    """Return the path to a tackle file if it exists in a dir."""
+    for i in os.scandir(dir):
+        if i.is_file() and i.name in DEFAULT_TACKLE_FILES:
+            return os.path.abspath(os.path.join(dir, i))
+
+
+def find_tackle_base_in_parent_dir(
+        dir: str,
+        fallback=None,
+) -> Optional[str]:
+    """
+    Recursively search in parent directories for a tackle base which is defined as
+     a directory with either a tackle file or a hooks directory.
+    """
+    hooks_directory = find_hooks_directory_in_dir(dir=dir)
+    if hooks_directory is not None:
+        return dir
+    tackle_file = find_tackle_file_in_dir(dir=dir)
+    if tackle_file is not None:
+        return dir
 
     if os.path.abspath(dir) == '/':
         if fallback:
             return fallback
         else:
-            raise NotADirectoryError(
-                f'The {targets} target doesn\'t exist in the parent directories.'
-            )
-    return find_in_parent(
+            return None
+    return find_tackle_base_in_parent_dir(
         dir=os.path.dirname(os.path.abspath(dir)),
-        targets=targets,
         fallback=fallback,
     )
 
 
-def find_nearest_tackle_file() -> Optional[str]:
-    """
-    Find the nearest tackle file from a set of default tackle files.
-    :return: Path or None if not found
-    """
-    tackle_file_location = find_in_parent(os.curdir, CONTEXT_FILES, fallback=True)
-    if isinstance(tackle_file_location, bool):
-        return None
+def find_tackle_base_in_parent_dir_with_exception(
+        context: 'Context',
+        dir: str,
+        fallback=None,
+) -> str:
+    """Call find_tackle_base_in_parent_dir and raise if no base is in parent."""
+    base = find_tackle_base_in_parent_dir(dir=dir, fallback=fallback)
+    if base is None:
+        targets = list(DEFAULT_TACKLE_FILES) + list(DEFAULT_HOOKS_DIRECTORIES)
+        raise exceptions.UnknownSourceException(
+            f'The `find_in_parent` argument was specified and no valid tackle base'
+            f' was detected, ie a directory with a valid tackle file or hooks'
+            f' directory which is one of {" ,".join(targets)}', context=context
+        )
+    return base
 
-    return tackle_file_location
+
+def is_directory_with_tackle(dir: str) -> bool:
+    """Return true if directory."""
+    if not os.path.isdir(dir):
+        return False
+    for i in os.scandir(dir):
+        if i.is_dir() and i.name in DEFAULT_HOOKS_DIRECTORIES:
+            return True
+        if i.is_file() and i.name in DEFAULT_TACKLE_FILES:
+            return True
+    return False
 
 
-def repository_has_tackle_file(repo_directory: str, context_file=None):
-    """
-    Determine if `repo_directory` contains a valid context file. Acceptable choices
-    are `tackle.yaml`, `tackle.yml`, `tackle.json`, `cookiecutter.json` in order of
-    precedence.
-
-    :param repo_directory: The candidate repository directory.
-    :param context_file: eg. `tackle.yaml`.
-    :return: The path to the context file
-    """
-    if context_file:
-        # The supplied context file exists
-        context_file = os.path.join(os.path.abspath(repo_directory), context_file)
-        if os.path.isfile(context_file):
-            return context_file
-        else:
-            raise ContextFileNotFound(
-                f"Can't find supplied context_file at {context_file}"
-            )
-
-    repo_directory_exists = os.path.isdir(repo_directory)
-    if repo_directory_exists:
-        # Check for valid context files as default
-        for f in CONTEXT_FILES:
-            if os.path.isfile(os.path.join(repo_directory, f)):
-                return f
+def is_file(value: str, directory: Optional[str]) -> bool:
+    """Return True if the input looks like a file."""
+    FILE_REGEX = re.compile(
+        r"""^.*\.(yaml|yml|json|toml)$""",
+        re.VERBOSE,
+    )
+    if bool(FILE_REGEX.match(value)):
+        if directory is not None:
+            value = os.path.join(directory, value)
+        return os.path.isfile(value)
     else:
-        return None
+        return False
+
+
+# def repository_has_tackle_file(repo_directory: str, context_file=None):
+#     """
+#     Determine if `repo_directory` contains a valid context file. Acceptable choices
+#     are `tackle.yaml`, `tackle.yml`, `tackle.json`, `cookiecutter.json` in order of
+#     precedence.
+#
+#     :param repo_directory: The candidate repository directory.
+#     :param context_file: eg. `tackle.yaml`.
+#     :return: The path to the context file
+#     """
+#     if context_file:
+#         # The supplied context file exists
+#         context_file = os.path.join(os.path.abspath(repo_directory), context_file)
+#         if os.path.isfile(context_file):
+#             return context_file
+#         else:
+#             raise exceptions.ContextFileNotFound(
+#                 f"Can't find supplied context_file at {context_file}"
+#             )
+#
+#     repo_directory_exists = os.path.isdir(repo_directory)
+#     if repo_directory_exists:
+#         # Check for valid context files as default
+#         for f in TACKLE_BASE_ITEMS:
+#             if os.path.isfile(os.path.join(repo_directory, f)):
+#                 return f
+#     else:
+#         return None
 
 
 @contextlib.contextmanager

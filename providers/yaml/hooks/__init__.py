@@ -1,0 +1,3 @@
+hook_types = [
+    "yaml",
+]

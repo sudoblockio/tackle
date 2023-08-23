@@ -4,16 +4,18 @@ from jinja2.exceptions import UndefinedError, TemplateSyntaxError
 from inspect import signature
 from typing import TYPE_CHECKING, Any, Callable
 from pydantic import ValidationError
-from pydantic.main import ModelMetaclass
 
-from tackle.hooks import LazyBaseFunction
+
+# from pydantic.main import BaseModel
+from pydantic import BaseModel
+
+from tackle.models import LazyBaseHook
 from tackle.special_vars import special_variables
 from tackle.exceptions import (
     UnknownTemplateVariableException,
     MissingTemplateArgsException,
     MalformedTemplateVariableException,
 )
-from tackle.utils.imports import get_public_or_private_hook
 from tackle.utils.command import literal_eval
 
 if TYPE_CHECKING:
@@ -43,7 +45,7 @@ def render_variable(context: 'Context', raw: Any):
         return raw
 
 
-def create_jinja_hook(context: 'Context', hook: 'ModelMetaclass') -> 'JinjaHook':
+def create_jinja_hook(context: 'Context', hook: 'BaseModel') -> 'JinjaHook':
     """Create a jinja hook which is callable via wrapped_exec."""
     from tackle.models import JinjaHook, BaseContext
 
@@ -71,22 +73,22 @@ def add_jinja_hook_methods(
     jinja_hook: 'JinjaHook',
 ):
     """Recursively look through hook and add methods to jinja hook so that if"""
-    from tackle.parser import create_function_model
+    from tackle.hooks_new import create_function_model
 
     for k, v in jinja_hook.hook.__fields__.items():
         if v.type_ == Callable:
             # Enrich the method with the base attributes
             for i in jinja_hook.hook.__fields__['function_fields'].default:
                 # Don't override attributes within the method
-                if i not in v.default.function_dict:
-                    v.default.function_dict[i] = jinja_hook.hook.__fields__[
+                if i not in v.default.input_raw:
+                    v.default.input_raw[i] = jinja_hook.hook.__fields__[
                         'function_dict'
                     ].default[i]
 
             # Build the function with a copy of the dict, so it can be called twice
             # without losing methods
             method_base = create_function_model(
-                context=context, func_name=k, func_dict=v.default.function_dict.copy()
+                context=context, func_name=k, func_dict=v.default.input_raw.copy()
             )
 
             # Create the jinja method with
@@ -134,14 +136,14 @@ def render_string(context: 'Context', raw: str) -> Any:
     unknown_variables = []
     for v in variables:
         # Variables in the current public_context take precedence
-        if context.temporary_context and v in context.temporary_context:
-            render_context.update({v: context.temporary_context[v]})
-        elif context.public_context and v in context.public_context:
-            render_context.update({v: context.public_context[v]})
-        elif context.private_context and v in context.private_context:
-            render_context.update({v: context.private_context[v]})
-        elif context.existing_context and v in context.existing_context:
-            render_context.update({v: context.existing_context[v]})
+        if context.data.temporary and v in context.data.temporary:
+            render_context.update({v: context.data.temporary[v]})
+        elif context.data.public and v in context.data.public:
+            render_context.update({v: context.data.public[v]})
+        elif context.data.private and v in context.data.private:
+            render_context.update({v: context.data.private[v]})
+        elif context.data.existing and v in context.data.existing:
+            render_context.update({v: context.data.existing[v]})
         elif v in special_variables:
             # If it is a special variable we need to check if the call requires
             # arguments, only context supported now.
@@ -164,21 +166,21 @@ def render_string(context: 'Context', raw: str) -> Any:
         # hooks which need to be inserted into the global env so that they can be called
         for i in unknown_variables:
             if i in context.public_hooks or i in context.private_hooks:
+                from tackle.hooks import get_public_or_private_hook, create_declarative_hook
+
                 hook = get_public_or_private_hook(context, i)
 
                 # Keep track of the hook put in globals so that it can be removed later
                 used_hooks.append(i)
 
-                if isinstance(hook, LazyBaseFunction):
+                if isinstance(hook, LazyBaseHook):
                     # In this case the hook was imported from the `hooks` directory and
                     # it needs to be created before being put in the jinja.globals.
-                    from tackle.parser import create_function_model
-
-                    hook = create_function_model(
+                    hook = create_declarative_hook(
                         context=context,
-                        func_name=i,
+                        hook_name=i,
                         # Copying allows calling hook twice - TODO: carry over arrow
-                        func_dict=hook.function_dict.copy(),
+                        hook_input_raw=hook.input_raw.copy(),
                     )
 
                     # Replace the provider hooks with instantiated function

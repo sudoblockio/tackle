@@ -4,7 +4,9 @@ a list of strings for key value lookups and byte encoded integers for items in a
 """
 from typing import Union, Any, TYPE_CHECKING
 from enum import Enum
-from ruamel.yaml.constructor import CommentedKeyMap
+
+# from ruamel.yaml.comments import CommentedKeyMap
+from ruyaml.comments import CommentedKeyMap
 
 if TYPE_CHECKING:
     from tackle.models import Context
@@ -186,7 +188,7 @@ def nested_set(element: Union[dict, list], keys: list, value: Any, index: int = 
         else:
             element.insert(decode_list_index(keys[index]), {})
         element = element[decode_list_index(keys[index])]
-    nested_set(element, keys, value, index + 1)
+    nested_set(element=element, keys=keys, value=value, index=index + 1)
 
 
 def get_target_and_key(
@@ -194,7 +196,7 @@ def get_target_and_key(
         key_path: list = None,
 ) -> (Any, list):
     """Get the target context and key to `set_key` from."""
-    target_context = context.public_context
+    target_context = context.data.public
 
     if key_path is None:
         key_path = context.key_path
@@ -345,3 +347,40 @@ def merge(a, b, path=None, update=True):
         else:
             a[key] = b[key]
     return a
+
+
+def update_input_context(input_dict: dict, update_dict: dict) -> dict:
+    """
+    Update the input dict with update_dict which in this context are treated as
+     overriding the keys. Takes into account if the key is a hook and replaces that.
+    """
+    for k, v in update_dict.items():
+        if k in input_dict:
+            input_dict.update({k: v})
+        # TODO: Make this dry -> split into another function
+        elif f"{k}->" in input_dict:
+            # If value is a dict, recurse into this dict
+            if isinstance(v, dict):
+                input_dict[f"{k}->"] = update_input_context(
+                    input_dict=input_dict[f"{k}->"],
+                    update_dict=update_dict[k],
+                )
+            else:
+                # Replace the keys and value in the same position it was in
+                input_dict = {
+                    key if key != f"{k}->" else k: value if key != f"{k}->" else v
+                    for key, value in input_dict.items()
+                }
+        elif f"{k}_>" in input_dict:
+            # Same but for private hooks
+            if isinstance(v, dict):
+                input_dict[f"{k}->"] = update_input_context(
+                    input_dict=input_dict[f"{k}_>"],
+                    update_dict=update_dict[k],
+                )
+            else:
+                input_dict = {
+                    key if key != f"{k}_>" else k: value if key != f"{k}_>" else v
+                    for key, value in input_dict.items()
+                }
+    return input_dict

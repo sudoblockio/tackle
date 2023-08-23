@@ -6,6 +6,19 @@ i.e. key->: hook arg --kwarg thing
 import ast
 import re
 
+from tackle.types import DocumentValueType
+
+
+def get_global_kwargs(kwargs: dict, model_fields: dict):
+    """Check for unknown kwargs and return so that they can be consumed later."""
+    global_kwargs = {}
+    for k, v in kwargs.items():
+        if k not in model_fields and k != 'override':
+            global_kwargs.update({k: v})
+    if global_kwargs == {}:
+        return None
+    return global_kwargs
+
 
 def strip_dashes(raw_arg: str) -> str:
     """Remove dashes prepended to string for arg splitting."""
@@ -85,11 +98,9 @@ def assert_if_flag(arg: str):
     return bool(FLAG_REGEX.match(arg))
 
 
-def unpack_args_kwargs_list(input_list: list) -> (list, dict, list):
+def unpack_args_kwargs_list(input_list: list) -> (list[DocumentValueType], dict, list):
     """
-    Take the input template and unpack the args and kwargs if they exist.
-    Updates the command_args and command_kwargs with a list of strings and
-    list of dicts respectively.
+    Take the input_list of strings and unpack the args, kwargs, and flags
     """
     input_list_length = len(input_list)
     args = []

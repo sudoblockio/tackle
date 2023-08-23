@@ -1,4 +1,0 @@
-compact->: http_get https://httpbin.org/get
-expanded:
-  ->: http_get
-  url: https://httpbin.org/get

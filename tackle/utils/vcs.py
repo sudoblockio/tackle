@@ -148,6 +148,14 @@ def clone(repo_url, checkout=None, clone_to_dir='.', no_input=False):
     return repo_dir
 
 
+def fetch(repo_path: str):
+    subprocess.check_output(
+        ['git', 'fetch'],
+        cwd=repo_path,
+        stderr=subprocess.STDOUT,
+    )
+
+
 def is_vcs_installed(repo_type):
     """
     Check if the version control system for a repo type is installed.
@@ -291,11 +299,8 @@ def get_repo_source(repo: str, repo_version: str = None) -> str:
         # Clone if dir does not exist (new provider)
         clone(repo_url, clone_to_dir=org_dir)
     else:
-        subprocess.check_output(
-            ['git', 'fetch'],
-            cwd=provider_dir,
-            stderr=subprocess.STDOUT,
-        )
+        # Fetch latest tags
+        fetch(repo_path=provider_dir)
 
     # Get the default branch of the repo
     # If a version is specified, then check that first
