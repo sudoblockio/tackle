@@ -1,0 +1,5 @@
+foo: bar
+
+return->: true
+
+should-not-be-here: true

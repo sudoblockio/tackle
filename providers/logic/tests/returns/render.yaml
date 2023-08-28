@@ -1,0 +1,5 @@
+foo: true
+
+doesn't matter->: return "{{foo}}"
+
+should-not-be-here: true
