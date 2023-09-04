@@ -2,7 +2,7 @@
 from tackle.main import tackle
 
 
-def test_special_variables(change_curdir_fixtures):
+def test_special_variables(change_dir):
     """Verify Jinja2 time extension work correctly."""
     output = tackle('special-variables.yaml')
     assert len(output) > 8

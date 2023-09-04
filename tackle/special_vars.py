@@ -81,39 +81,39 @@ def _provider_dir():
 
 
 def _calling_directory(context: 'Context'):
-    return context.calling_directory
+    return context.path.calling.directory
 
 
 def _calling_file(context: 'Context'):
-    return context.calling_file
+    return context.path.calling.file
 
 
 def _current_file(context: 'Context'):
-    return context.input_file
+    return context.source.file
 
 
 def _current_directory(context: 'Context'):
-    return context.input_dir
+    return context.source.directory
 
 
 def _this(context: 'Context'):
-    return dict(context.public_context)
+    return context.data.public
 
 
 def _public_context(context: 'Context'):
-    return context.public_context
+    return context.data.public
 
 
 def _private_context(context: 'Context'):
-    return context.private_context
+    return context.data.private
 
 
 def _temporary_context(context: 'Context'):
-    return context.temporary_context
+    return context.data.temporary
 
 
 def _existing_context(context: 'Context'):
-    return context.existing_context
+    return context.data.existing
 
 
 def _key_path(context: 'Context'):
