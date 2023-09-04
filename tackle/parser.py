@@ -22,6 +22,8 @@ from typing import Any, Callable, Optional
 
 from tackle import exceptions
 from tackle.macros import run_macros
+from tackle.macros.key_macros import var_hook_macro
+
 from tackle.models import (
     LazyBaseHook,
     LazyImportHook,
@@ -32,7 +34,7 @@ from tackle.models import (
     AnyHookType,
     Hooks,
 )
-from tackle.hooks import create_declarative_hook
+from tackle.hooks import create_dcl_hook
 from tackle.hooks import get_hook
 from tackle.render import render_variable
 from tackle.utils.paths import work_in
@@ -164,102 +166,55 @@ def run_hook_in_dir(hook: CompiledHookType) -> Any:
 
 def render_hook_vars(
         context: 'Context',
-        hook_dict: dict,
+        hook_call: HookCallInput,
         Hook: CompiledHookType,
 ):
     """Render the hook variables."""
-    render_exclude = Hook.model_fields['render_exclude'].default
-    for k, v in hook_dict.items():
+    for k, v in hook_call.model_extra.items():
+        render_exclude = Hook.model_fields['render_exclude'].default
         if render_exclude and k in render_exclude:
             continue
-        if k not in Hook.model_fields.keys():
-            # If the hook has a `kwargs` field, then map it to that field.
-            if Hook.model_fields['kwargs'].default is not None:
-                default_kwargs = Hook.model_fields['kwargs'].default
-                print(default_kwargs)
-                if default_kwargs not in hook_dict:
-                    hook_dict[default_kwargs] = {}
-                hook_dict[default_kwargs][k] = render_variable(context, v)
-                hook_dict.pop(k)
-                continue
 
-            # Get a list of possible fields for hook before raising error.
-            possible_fields = [
-                f"{key}: {value.annotation.__name__}"
-                for key, value in Hook.model_fields.items()
-                if key not in BaseHook.model_fields
-            ]
-            # TODO: Include link to docs -> Will need to also include provider name
-            #  and then differentiate between lazy imported hooks which already have the
-            #  provider and the ones that don't
+        if k not in Hook.model_fields:
+            if Hook.model_fields['kwargs'].default is None:
+                # The Hook has some extra field in it and we don't have a `kwargs` field
+                # which will map extra args to a field so we need to raise here.
+                raise exceptions.UnknownFieldInputException(f"", context=context, Hook=Hook)
+            else:
+                # Map the extra fields to the `kwargs` field
+                kwargs_field = Hook.model_fields['kwargs'].default
+                if Hook.model_fields[kwargs_field].annotation == dict:
+                    # TODO: Fix this - broken - can't change model and we don't want
+                    #  to copy again
+                    hook_call.model_extra[kwargs_field] = {k: render_variable(context, v)}
+                    continue
+                else:
+                    # Extra args must be a
+                    raise
 
-            # TODO: Test with many types of Hooks - Lazy Function etc - I don't think
-            #  they all will resolve
-            provider_name = Hook.provider_name.title()
-            base_url = "https://sudoblockio.github.io/tackle/providers"
-            url = f"{base_url}/{provider_name}/{hook_type}/"
-            raise exceptions.UnknownInputArgumentException(
-                f"Key={k} not in hook={hook_dict['hook_type']}. Possible values are "
-                f"{', '.join(possible_fields)}. \n\n See {url}"
-                ,  # noqa
-                context=context,
-            ) from None
+        if Hook.model_fields['render_by_default'].default:
+            hook_call.model_extra[k] = render_variable(context, wrap_jinja_braces(v))
 
-    for key, value in list(hook_dict.items()):
-        if key not in Hook.model_fields.keys():
-            # If the hook has a `kwargs` field, then map it to that field.
-            if Hook.model_fields['kwargs'].default is not None:
-                default_kwargs = Hook.model_fields['kwargs'].default
-                print(default_kwargs)
-                if default_kwargs not in hook_dict:
-                    hook_dict[default_kwargs] = {}
-                hook_dict[default_kwargs][key] = render_variable(context, value)
-                hook_dict.pop(key)
-                continue
+        if isinstance(Hook.model_fields[k].json_schema_extra['render_by_default'], bool):
+            if Hook.model_fields[k].json_schema_extra['render_by_default']:
+                # hook_call.model_extra[k] = render_variable(context, wrap_jinja_braces(v))
+                v = wrap_jinja_braces(v)
 
-            # Get a list of possible fields for hook before raising error.
-            possible_fields = [
-                f"{k}: {v.type_.__name__}"
-                for k, v in Hook.model_fields.items()
-                if k not in BaseHook.model_fields
-            ]
-            # TODO: Include link to docs -> Will need to also include provider name
-            #  and then differentiate between lazy imported hooks which already have the
-            #  provider and the ones that don't
-            raise exceptions.UnknownInputArgumentException(
-                f"Key={key} not in hook={hook_dict['hook_type']}. Possible values are "
-                f"{', '.join(possible_fields)}",
-                context=context,
-            ) from None
+        # if k not in Hook.model_fields.keys():
+        #     # If the hook has a `kwargs` field, then map it to that field.
 
-        # if key in Hook.Config.alias_to_fields:
-        #     # Skip any keys used in logic as these are evaluated / rendered separately
-        #     continue
+        if isinstance(v, str):
+            hook_call.model_extra[k] = render_variable(context, v)
 
-        # if key in Hook.model_fields['render_exclude'].default:
-        #     # Skip anything that has been marked excluded. Needed for things like block
-        #     # hooks which will have templating within the inputs
-        #     continue
-
-        if isinstance(value, str):
-            # Check Hook private vars for rendering by default which wraps bare strings
-            if Hook.model_fields['render_by_default'].default is not None \
-                    and key in Hook.model_fields['render_by_default'].default:
-                hook_dict[key] = render_variable(context, wrap_jinja_braces(value))
-
-            # TODO: When we build our own custom Field function then this will change
             # TODO: This causes errors when the field is aliased as the lookup doesn't
             #  work and needs a deeper introspection.
             #  https://github.com/sudoblockio/tackle/issues/80
             #  Fixing with custom Field def should fix this.
-            elif 'render_by_default' in Hook.model_fields[key].metadata_lookup:
-                hook_dict[key] = render_variable(context, wrap_jinja_braces(value))
+            # if ('{{' in v and '}}' in v) or ('{%' in v and '%}'):
+            #     hook_call.model_extra[k] = render_variable(context, v)
 
-            elif ('{{' in value and '}}' in value) or ('{%' in value and '%}'):
-                hook_dict[key] = render_variable(context, value)
-
-        elif isinstance(value, (list, dict)):
-            hook_dict[key] = render_variable(context, value)
+        elif isinstance(v, (list, dict)):
+            hook_call.model_extra[k] = render_variable(context, v)
 
 
 def parse_sub_context(
@@ -338,7 +293,7 @@ def new_hook(
             hook_call=hook_call,
             no_input=no_input,
             skip_output=skip_output,
-            **hook_call.hook_dict,
+            **hook_call.model_extra,
         )
     except TypeError as e:
         # TODO: Improve -> This is an error when we have multiple of the same
@@ -422,14 +377,18 @@ def parse_hook_execute(
             kwargs=hook_call.kwargs,
         )
 
-    if Hook.model_fields['kwargs'].default:
-        # Need to map additional args to
-        hook_call.hook_dict[Hook.model_fields['kwargs'].default].update()
+    # # If the hook has a `kwargs: str` field defined, we map the additional args to that
+    # # field
+    # if Hook.model_fields['kwargs'].default:
+    #     # TODO: This is needed but not here unless we want to manually iterate through
+    #     #  all the fields in the hook and check if they exist or not. Best to do this
+    #     #  at hook instantiation time
+    #     hook_call.model_extra[Hook.model_fields['kwargs'].default].update()
 
     # Render the remaining hook variables
     render_hook_vars(
         context=context,
-        hook_dict=hook_call.hook_dict,
+        hook_call=hook_call,
         Hook=Hook,
     )
 
@@ -504,7 +463,8 @@ def evaluate_for(
                 raw=wrap_jinja_braces(hook_call.for_),
             )
             # Assume the names as we don't have any other context
-            # TODO: Support lists of default variables names? ie i, v + k, v
+            # TODO: Support lists of default variables names?
+            #  ie i (list), k + v (dict)
             index_name = 'index'
             if isinstance(loop_targets, list):
                 key_name = None
@@ -513,7 +473,7 @@ def evaluate_for(
                 key_name = 'key'
                 value_name = 'value'
 
-        elif len(for_split) == 2:
+        elif len(for_split) == 2:  # We have the syntax of `for: foo in bar`
             # Render second variable which should be a list or dict
             loop_targets = render_variable(
                 context=context,
@@ -548,21 +508,22 @@ def evaluate_for(
     if isinstance(loop_targets, list):
         if hook_call.merge:
             set_key(context=context, value=[])
-        elif not hook_call['merge']:
+        # TODO: Wtf is going on here?
+        elif not hook_call.merge:
             set_key(context=context, value=[])
         for i, l in (
                 enumerate(loop_targets)
-                if not render_variable(context, hook_call.get('reverse', None))
+                if not render_variable(context, hook_call.reverse)
                 else reversed(list(enumerate(loop_targets)))
         ):
             # Create temporary variables in the context to be used in the loop.
-            context.existing_context.update({index_name: i, value_name: l})
+            context.data.existing.update({index_name: i, value_name: l})
             # Append the index to the keypath
             context.key_path.append(encode_list_index(i))
             # Reparse the hook with the new temp vars in place
             parse_hook(
                 context=context,
-                hook_call=hook_call.copy(),
+                hook_call=hook_call.__copy__(),
                 Hook=Hook,
                 append_hook_value=True,
             )
@@ -595,8 +556,8 @@ def evaluate_for(
 
     # Remove temp variables
     try:
-        context.existing_context.pop(value_name)
-        context.existing_context.pop(index_name)
+        context.data.existing.pop(value_name)
+        context.data.existing.pop(index_name)
     except KeyError:
         pass
 
@@ -646,8 +607,10 @@ def evaluate_if(
         # We qualify `if` conditions within for loop logic
         return True
     elif hook_call.if_ is None:
+        # `if` does not exist so True
         return True
     else:
+        # Render the `if` condition
         return raise_if_not_bool(
             return_value=render_variable(context, wrap_jinja_braces(hook_call.if_)),
             method='if'
@@ -783,6 +746,8 @@ def run_hook_at_key_path(
      special cases where you have a string or list input of renderable variables.
     """
     args, kwargs, flags = unpack_args_kwargs_string(input_string=hook_str)
+    args = var_hook_macro(args)
+
     # Look up the hook from the imported providers
     first_arg = args.pop(0)
     Hook = get_hook(
@@ -834,7 +799,7 @@ def run_hook_at_key_path(
 
 def walk_document(context: 'Context', value: DocumentValueType):
     """
-    Traverse an object looking for hook calls and running those hooks. Here we are
+    Traverse a document looking for hook calls and running those hooks. Here we are
      keeping track of which keys are traversed in a list called `key_path` with strings
      as dict keys and byte encoded integers for list indexes.
     """
@@ -857,8 +822,12 @@ def walk_document(context: 'Context', value: DocumentValueType):
         elif '_>' in value.keys():
             # Private hook calls
             context.key_path.append('_>')
-            context.input_string = value['_>']
-            run_hook_at_key_path(context=context, hook_dict=value)
+            # context.input_string = value['_>']
+            run_hook_at_key_path(
+                context=context,
+                hook_dict=value,
+                hook_str=value.pop('_>'),
+            )
             context.key_path.pop()
             return
         # elif value == {} and context.key_path:
@@ -867,7 +836,6 @@ def walk_document(context: 'Context', value: DocumentValueType):
             return
 
         for k, v in value.copy().items():
-
             if isinstance(v, CommentedMap):
                 # This is for a common parsing error that messes up values with braces.
                 # For instance `stuff->: {{things}}` (no quotes), ruamel interprets as
@@ -890,9 +858,9 @@ def walk_document(context: 'Context', value: DocumentValueType):
             if k[-2:] in ('->', '_>') and (v is None or isinstance(v, dict)):
                 # Here we re-write the input to turn empty hooks into block hooks
                 # blocks_macro(context)
-                context.key_path[-1] = k[:-2]
+                # context.key_path[-1] = k[:-2]
                 value = nested_get(
-                    element=context.input_context,
+                    element=context.data.input,
                     keys=context.key_path[
                          (len(context.key_path_block) - len(context.key_path)):
                          ],
@@ -911,6 +879,9 @@ def walk_document(context: 'Context', value: DocumentValueType):
                 # Recurse
                 walk_document(context, v)
                 context.key_path.pop()
+                if context.break_:
+                    return
+
     # Non-hook calls recurse through inputs
     elif isinstance(value, list):
         # Handle empty lists
@@ -1004,7 +975,7 @@ def run_declarative_hook(
                 if j not in func_dict:
                     func_dict[j] = hook.model_fields[j]
 
-            hook = create_declarative_hook(
+            hook = create_dcl_hook(
                 context=context,
                 hook_name=hook.model_fields[arg].name,
                 hook_input_raw=func_dict,
@@ -1028,7 +999,7 @@ def run_declarative_hook(
                     # Base method should not override child.
                     if j not in func_dict:
                         func_dict[j] = hook.input_raw[j]
-            hook = create_declarative_hook(
+            hook = create_dcl_hook(
                 context=context,
                 hook_name=arg,
                 hook_input_raw=func_dict,
