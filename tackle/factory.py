@@ -108,9 +108,10 @@ def get_overrides(
 def new_data(
         *,
         context: Context,
-        data: Optional[Data] = None,
         input: dict | list | None = None,
-        overrides: Union[str, dict] = None,
+        overrides: str | dict | None = None,
+        existing_data: dict | None = None,
+        data: Data | None = None,
 ) -> Data:
     """
 
@@ -124,15 +125,33 @@ def new_data(
             # function and to bypass the source logic, we simply create the data object
             # with the raw data which is the only way context can have data here.
             data = context.data
+
+    if existing_data is None:
+        existing_data = {}
+    elif isinstance(existing_data, str):
+        # We have a reference to a file
+        # TODO: Perhaps also qualify as source
+        raise NotImplementedError
+    elif not isinstance(existing_data, dict):
+        raise exceptions.UnknownInputArgumentException(f"", context=context)
+
+    if data.existing is None:
+        data.existing = {}
+
     if data.overrides is None:
         data.overrides = {}
+
     if data.public is not None:
         # If we were passed a data object by calling tackle from tackle then the
         # parent's public data is used as existing which is immutable
         if isinstance(data.public, dict):
-            data.existing = data.public
+            data.existing.update(data.public)
         else:
             data.existing = {}
+        # We update the existing data here because it should override any data coming in
+        # from the public data potentially passed through
+        data.existing.update(existing_data)
+
         # Wipe the public data as we don't know the type yet -> ie list or dict
         data.public = None
 
@@ -150,6 +169,9 @@ def new_data(
     else:
         data.public = {}
         data.private = {}
+
+    if data.existing is None:
+        data.existing = {}
 
     return data
 
@@ -426,7 +448,7 @@ def new_context(
         _data: 'Data' = None,
         # Unknown args/kwargs preserved for parsing
         **kwargs: dict,
-):
+) -> 'Context':
     """Create a new context. See tackle.main.tackle for options which wraps this."""
     context = Context(
         no_input=no_input if no_input is not None else False,
@@ -450,12 +472,14 @@ def new_context(
         context=context,
         _path=_path,
     )
+    print()
     context.data = new_data(
         context=context,
-        data=_data,
         input=input,
         overrides=overrides,
+        data=_data,
     )
+    print()
     create_hooks(
         context=context,
         hooks=_hooks,

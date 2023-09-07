@@ -16,30 +16,21 @@ import os
 import re
 from pydantic import ValidationError
 import logging
-from ruyaml.constructor import CommentedKeyMap, CommentedMap
-
-from typing import Any, Callable, Optional
+from typing import Any, Callable
 
 from tackle import exceptions
-from tackle.macros import run_macros
-from tackle.macros.key_macros import var_hook_macro
-
+from tackle.macros.key_macros import var_hook_macro, key_macro
 from tackle.models import (
     LazyBaseHook,
-    LazyImportHook,
     Context,
-    BaseHook,
     HookCallInput,
     CompiledHookType,
-    AnyHookType,
-    Hooks,
 )
 from tackle.hooks import create_dcl_hook
 from tackle.hooks import get_hook
 from tackle.render import render_variable
 from tackle.utils.paths import work_in
 from tackle.utils.dicts import (
-    get_readable_key_path,
     get_set_temporary_context,
     get_target_and_key,
     nested_get,
@@ -49,8 +40,6 @@ from tackle.utils.dicts import (
     decode_list_index,
     set_key,
     update_input_context,
-    remove_arrows_from_key_path,
-    cleanup_unquoted_strings,
 )
 from tackle.utils.command import unpack_args_kwargs_string
 from tackle.utils.help import run_help
@@ -170,7 +159,7 @@ def render_hook_vars(
         Hook: CompiledHookType,
 ):
     """Render the hook variables."""
-    for k, v in hook_call.model_extra.items():
+    for k, v in hook_call.model_extra.copy().items():
         render_exclude = Hook.model_fields['render_exclude'].default
         if render_exclude and k in render_exclude:
             continue
@@ -179,14 +168,16 @@ def render_hook_vars(
             if Hook.model_fields['kwargs'].default is None:
                 # The Hook has some extra field in it and we don't have a `kwargs` field
                 # which will map extra args to a field so we need to raise here.
-                raise exceptions.UnknownFieldInputException(f"", context=context, Hook=Hook)
+                raise exceptions.UnknownFieldInputException(f"", context=context,
+                                                            Hook=Hook)
             else:
                 # Map the extra fields to the `kwargs` field
                 kwargs_field = Hook.model_fields['kwargs'].default
                 if Hook.model_fields[kwargs_field].annotation == dict:
                     # TODO: Fix this - broken - can't change model and we don't want
                     #  to copy again
-                    hook_call.model_extra[kwargs_field] = {k: render_variable(context, v)}
+                    hook_call.model_extra[kwargs_field] = {
+                        k: render_variable(context, v)}
                     continue
                 else:
                     # Extra args must be a
@@ -195,9 +186,9 @@ def render_hook_vars(
         if Hook.model_fields['render_by_default'].default:
             hook_call.model_extra[k] = render_variable(context, wrap_jinja_braces(v))
 
-        if isinstance(Hook.model_fields[k].json_schema_extra['render_by_default'], bool):
+        if isinstance(Hook.model_fields[k].json_schema_extra['render_by_default'],
+                      bool):
             if Hook.model_fields[k].json_schema_extra['render_by_default']:
-                # hook_call.model_extra[k] = render_variable(context, wrap_jinja_braces(v))
                 v = wrap_jinja_braces(v)
 
         # if k not in Hook.model_fields.keys():
@@ -285,7 +276,8 @@ def new_hook(
     # TODO: WIP - https://github.com/sudoblockio/tackle/issues/104
     # Both no_input and skip_output can be used in both the hook call and hook
     # definition.
-    no_input = Hook.model_fields['skip_output'].default | hook_call.no_input | context.no_input  # noqa
+    no_input = Hook.model_fields[
+                   'skip_output'].default | hook_call.no_input | context.no_input  # noqa
     skip_output = Hook.model_fields['skip_output'].default | hook_call.skip_output
     try:
         hook = Hook(
@@ -405,8 +397,7 @@ def parse_hook_execute(
     if hook_call.try_:
         try:
             hook_output_value = run_hook_in_dir(hook=hook)
-        except Exception as e:
-            logger.debug("")
+        except Exception:  # noqa  - We want to catch all exceptions
             if hook_call.except_:
                 parse_sub_context(
                     context=context,
@@ -803,8 +794,8 @@ def walk_document(context: 'Context', value: DocumentValueType):
      keeping track of which keys are traversed in a list called `key_path` with strings
      as dict keys and byte encoded integers for list indexes.
     """
-    if len(context.key_path) != 0:
-        value = run_macros(context=context, value=value)
+    # if len(context.key_path) != 0:
+    #     value = run_macros(context=context, value=value)
 
     if isinstance(value, dict):
         # Handle expanded expressions - ie key:\n  ->: hook_type args
@@ -836,51 +827,28 @@ def walk_document(context: 'Context', value: DocumentValueType):
             return
 
         for k, v in value.copy().items():
-            if isinstance(v, CommentedMap):
-                # This is for a common parsing error that messes up values with braces.
-                # For instance `stuff->: {{things}}` (no quotes), ruamel interprets as
-                # 'stuff': ordereddict([(ordereddict([('things', None)]), None)]) which
-                # technically is accurate but generally users would never actually do.
-                # Since it is common to forget to quote, this is a helper to try to
-                # catch that error and fix it.  Warning -> super hacky....
-                if len(v) == 1:
-                    value_ = next(iter(v.values()))
-                    key_ = next(iter(v.keys()))
-                    if value_ is None and isinstance(key_, CommentedKeyMap):
-                        if context.verbose:
-                            _key_path = get_readable_key_path(context.key_path)
-                            msg = f"Handling unquoted template at key path {_key_path}."
-                            print(msg)
-                        v = "{{" + next(iter(next(iter(v.keys())))) + "}}"
-
+            # if isinstance(v, CommentedMap):
+            #     # This is for a common parsing error that messes up values with braces.
+            #     # For instance `stuff->: {{things}}` (no quotes), ruamel interprets as
+            #     # 'stuff': ordereddict([(ordereddict([('things', None)]), None)]) which
+            #     # technically is accurate but generally users would never actually do.
+            #     # Since it is common to forget to quote, this is a helper to try to
+            #     # catch that error and fix it.  Warning -> super hacky....
+            #     if len(v) == 1:
+            #         value_ = next(iter(v.values()))
+            #         key_ = next(iter(v.keys()))
+            #         if value_ is None and isinstance(key_, CommentedKeyMap):
+            #             if context.verbose:
+            #                 _key_path = get_readable_key_path(context.key_path)
+            #                 msg = f"Handling unquoted template at key path {_key_path}."
+            #                 print(msg)
+            #             v = "{{" + next(iter(next(iter(v.keys())))) + "}}"
             context.key_path.append(k)
-            # Special case where we have an empty hook, expanded or compact
-            if k[-2:] in ('->', '_>') and (v is None or isinstance(v, dict)):
-                # Here we re-write the input to turn empty hooks into block hooks
-                # blocks_macro(context)
-                # context.key_path[-1] = k[:-2]
-                value = nested_get(
-                    element=context.data.input,
-                    keys=context.key_path[
-                         (len(context.key_path_block) - len(context.key_path)):
-                         ],
-                )
-                # Finally check if the `items` key exists in the input_context.  If not
-                #  then we have an empty hook which will cause an ambiguous
-                #  ValidationError for missing field
-                if 'items' not in value:
-                    raise exceptions.EmptyBlockException(
-                        "Empty block hook.", context=context
-                    ) from None
-
-                walk_document(context, value)
-                context.key_path.pop()
-            else:
-                # Recurse
-                walk_document(context, v)
-                context.key_path.pop()
-                if context.break_:
-                    return
+            v = key_macro(context=context, value=v)
+            walk_document(context, v)
+            context.key_path.pop()
+            if context.break_:
+                return
 
     # Non-hook calls recurse through inputs
     elif isinstance(value, list):
