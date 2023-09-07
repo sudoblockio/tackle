@@ -173,6 +173,9 @@ def new_data(
     if data.existing is None:
         data.existing = {}
 
+    if data.temporary is None:
+        data.temporary = {}
+
     return data
 
 
