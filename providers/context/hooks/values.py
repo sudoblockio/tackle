@@ -26,7 +26,10 @@ class DictValuesHook(BaseHook):
             key_path = self.src
 
         if key_path is not None:
-            target_context, trim_key_path = get_target_and_key(self, key_path=key_path)
+            target_context, trim_key_path = get_target_and_key(
+                context=self.context,
+                key_path=key_path,
+            )
 
             self.src = nested_get(
                 element=target_context,

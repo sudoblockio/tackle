@@ -1,13 +1,4 @@
 
-list:
-  - stuff
-  - things
-
-embedded:
-  list:
-    - stuff
-    - things
-
 a_dict:
   stuff: 1
   things: foo
@@ -37,6 +28,3 @@ pop_map:
   ->: pop
   src: "{{ a_map }}"
   item: stuff
-
-pop list_>: pop list 0
-pop embedded list_>: pop embedded/list

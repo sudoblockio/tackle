@@ -31,20 +31,20 @@ class ListAppendHook(BaseHook):
             key_path = encode_key_path(self.src, self.sep)
             # When appending within a block, we try to append to output dict then
             # fallback on trying to append to the existing context
-            target_context, set_key_path = get_target_and_key(self, key_path=key_path)
+            target_context, set_key_path = get_target_and_key(self.context, key_path=key_path)
 
             try:
-                self.src = nested_get(
+                target = nested_get(
                     element=target_context,
                     keys=set_key_path,
                 )
             except KeyError:
-                self.src = nested_get(
+                target = nested_get(
                     element=self.temporary_context,
                     keys=set_key_path,
                 )
 
-            self.src.append(self.item)
+            target.append(self.item)
         else:
             self.src.append(self.item)
             return self.src

@@ -22,6 +22,15 @@ def test_provider_system_hook_dicts_pop(change_dir):
     assert output['arg_1'] == ['stuff']
     assert 'foo' not in output['arg_2']
     assert 'baz' in output['arg_2']
+
+
+def test_provider_system_hook_dicts_pop_data(change_dir):
+    """
+    Check we can mutate the data in the context.
+    See https://github.com/pydantic/pydantic/issues/7390
+    Have issue with pydantic 1.x to 2.x
+    """
+    output = tackle('pop-in-place.yaml')
     assert output['embedded']['list'] == ['stuff']
     assert output['list'] == ['things']
 

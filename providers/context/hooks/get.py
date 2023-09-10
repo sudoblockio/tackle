@@ -1,8 +1,6 @@
 from typing import Union, Any
 
-from pydantic import Field
-
-from tackle import BaseHook
+from tackle import BaseHook, Field
 from tackle.utils.dicts import encode_key_path, nested_get
 from tackle.exceptions import HookCallException
 
@@ -38,7 +36,7 @@ class GetKeyHook(BaseHook):
         for i in ['public', 'private', 'temporary', 'existing']:
             try:
                 value = nested_get(
-                    element=getattr(self, f'{i}_context'),
+                    element=getattr(self.context.data, i),
                     keys=encode_key_path(self.path, self.sep),
                 )
             except KeyError:
