@@ -1,0 +1,19 @@
+adict:
+  foo: bar
+  baz: bing
+
+expanded_value:
+  ->: var {{value}}
+  for: adict
+
+expanded_key:
+  ->: var {{key}}
+  for: adict
+
+expanded_index:
+  ->: var {{index}}
+  for: adict
+
+compact_key->: var {{key}} --for adict
+compact_value->: var {{value}} --for adict
+compact_index->: var {{index}} --for adict

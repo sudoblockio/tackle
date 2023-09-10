@@ -14,7 +14,7 @@
 from collections import OrderedDict
 import os
 import re
-from pydantic import ValidationError
+from pydantic import ValidationError, BaseModel
 import logging
 from typing import Any, Callable
 
@@ -29,6 +29,7 @@ from tackle.models import (
 from tackle.hooks import create_dcl_hook
 from tackle.hooks import get_hook
 from tackle.render import render_variable
+from tackle.settings import settings
 from tackle.utils.paths import work_in
 from tackle.utils.dicts import (
     get_set_temporary_context,
@@ -439,30 +440,41 @@ def parse_hook_execute(
         )
 
 
-def evaluate_for(
+class ForVariableNames(BaseModel):
+    loop_targets: list | dict = None
+    index_name: str = None
+    value_name: str = None
+    key_name: str | None = None
+
+
+def get_for_loop_variable_names(
         context: 'Context',
         hook_call: HookCallInput,
-        Hook: CompiledHookType,
-):
-    """Run the parse_hook function in a loop with temporary variables."""
+) -> ForVariableNames:
+    key_name = None
+    value_name = None
+    index_name = 'index'
+
     if isinstance(hook_call.for_, str):
         for_split = hook_call.for_.split(' in ')
-        if len(for_split) == 1:
+        if len(for_split) == 1:  # We don't have a `foo in bar` type of expression
             # Render first variable which should be a list or dict
             loop_targets = render_variable(
                 context=context,
                 raw=wrap_jinja_braces(hook_call.for_),
             )
             # Assume the names as we don't have any other context
-            # TODO: Support lists of default variables names?
-            #  ie i (list), k + v (dict)
-            index_name = 'index'
             if isinstance(loop_targets, list):
-                key_name = None
                 value_name = 'item'
-            else:
+            elif isinstance(loop_targets, dict):
                 key_name = 'key'
                 value_name = 'value'
+            else:
+                exceptions.raise_malformed_for_loop_key(
+                    context=context,
+                    raw=hook_call.for_,
+                    loop_targets=loop_targets,
+                )
 
         elif len(for_split) == 2:  # We have the syntax of `for: foo in bar`
             # Render second variable which should be a list or dict
@@ -471,44 +483,111 @@ def evaluate_for(
                 raw=wrap_jinja_braces(for_split[1]),
             )
             names_split = [i.strip() for i in for_split[0].split(',')]
-            if len(names_split) == 1:
-                index_name = 'index'
-                key_name = 'key'
-                value_name = names_split[0]
-            elif len(names_split) == 2:
-                index_name = 'index'
-                key_name = names_split[0]
-                value_name = names_split[1]
+            if isinstance(loop_targets, list):
+                if len(names_split) == 1:
+                    value_name = 'value'
+                elif len(names_split) == 2:
+                    index_name = names_split[0]
+                    value_name = names_split[1]
+                else:
+                    # TODO: Link to flow control section of docs for loops
+                    docs_link = f"{exceptions.DOCS_DOMAIN}/"
+                    raise exceptions.MalformedTemplateVariableException(
+                        "The supplied args are not valid. Must be in form "
+                        f"value, [index]. See docs {docs_link}/",
+                        context=context)
+            elif isinstance(loop_targets, dict):
+                if len(names_split) == 1:
+                    key_name = names_split[0]
+                    value_name = 'value'
+                elif len(names_split) == 2:
+                    key_name = names_split[0]
+                    value_name = names_split[1]
+                elif len(names_split) == 3:
+                    key_name = names_split[0]
+                    value_name = names_split[1]
+                    index_name = names_split[2]
+                else:
+                    # TODO: Link to flow control section of docs for loops
+                    docs_link = f"{exceptions.DOCS_DOMAIN}/"
+                    raise exceptions.MalformedTemplateVariableException(
+                        "The supplied args are not valid. Must be in form "
+                        f"key, [value], [index]. See docs {docs_link}", context=context)
             else:
-                raise exceptions.MalformedTemplateVariableException
+                exceptions.raise_malformed_for_loop_key(
+                    context=context,
+                    raw=hook_call.for_,
+                    loop_targets=loop_targets,
+                )
         else:
-            raise exceptions.MalformedTemplateVariableException
-    else:
-        index_name = 'index'
-        value_name = 'item'
-        loop_targets = hook_call.for_
+            raise exceptions.MalformedTemplateVariableException(
+            f"For some reason you put `in` twice in the `for` key - "
+            f"{hook_call.for_}. Don't do that...", context=context)
 
-    if not isinstance(loop_targets, (list, dict)):
+
+    elif isinstance(hook_call.for_, list):
+        # We have a list literal supplied and assume variable names
+        loop_targets = hook_call.for_
+        value_name = 'item'
+        index_name = 'index'
+
+    elif isinstance(hook_call.for_, dict):
+        # We have a dict literal supplied and assume variable names
+        loop_targets = hook_call.for_
+        key_name = 'key'
+        value_name = 'value'
+        index_name = 'index'
+
+    else:
+        # This is probably impossible to hit since we already validate this model.
+        actual_type = type(hook_call.for_).__name__
         raise exceptions.MalformedTemplateVariableException(
-            f"The `for` field must be a list or string reference to a list. The value "
-            f"is of type `{type(loop_targets).__name__}`.", context=context,
+            f"The `for` field must be a list/object or string reference to "
+            f"a list/object. The value is of type `{actual_type}`.", context=context,
         ) from None
-    if len(loop_targets) == 0:
+
+    try:
+        return ForVariableNames(
+            loop_targets=loop_targets,
+            key_name=key_name,
+            value_name=value_name,
+            index_name=index_name,
+        )
+    except ValidationError as e:
+        raise exceptions.MalformedTemplateVariableException(
+            f"The `for` field after parsing is invalid - \n{e.__str__}.",
+            context=context,
+        ) from None
+
+
+def evaluate_for(
+        context: 'Context',
+        hook_call: HookCallInput,
+        Hook: CompiledHookType,
+):
+    """Run the parse_hook function in a loop with temporary variables."""
+    vars = get_for_loop_variable_names(context=context, hook_call=hook_call)
+    hook_call.for_ = None
+
+    if len(vars.loop_targets) == 0:
         return
 
-    if isinstance(loop_targets, list):
+    if isinstance(vars.loop_targets, list):
         if hook_call.merge:
             set_key(context=context, value=[])
         # TODO: Wtf is going on here?
         elif not hook_call.merge:
             set_key(context=context, value=[])
         for i, l in (
-                enumerate(loop_targets)
+                enumerate(vars.loop_targets)
                 if not render_variable(context, hook_call.reverse)
-                else reversed(list(enumerate(loop_targets)))
+                else reversed(list(enumerate(vars.loop_targets)))
         ):
             # Create temporary variables in the context to be used in the loop.
-            context.data.existing.update({index_name: i, value_name: l})
+            context.data.existing.update({
+                vars.index_name: i,
+                vars.value_name: l,
+            })
             # Append the index to the keypath
             context.key_path.append(encode_list_index(i))
             # Reparse the hook with the new temp vars in place
@@ -520,18 +599,22 @@ def evaluate_for(
             )
             context.key_path.pop()
 
-    elif isinstance(loop_targets, dict):
+    elif isinstance(vars.loop_targets, dict):
         if hook_call.merge:
-            set_key(context=context, value={})
+            set_key(context=context, value=[])
         elif not hook_call.merge:
-            set_key(context=context, value={})
-        for i, l in (
-                enumerate(loop_targets.items())
-                if not render_variable(context, hook_call.get('reverse', None))
-                else reversed(list(enumerate(loop_targets)))
+            set_key(context=context, value=[])
+        for i, (k, v) in (
+                enumerate(vars.loop_targets.items())
+                if not render_variable(context, hook_call.reverse)
+                else reversed(list(enumerate(vars.loop_targets)))
         ):
             # Create temporary variables in the context to be used in the loop.
-            context.existing_context.update({index_name: i, value_name: l})
+            context.data.existing.update({
+                vars.index_name: i,
+                vars.value_name: v,
+                vars.key_name: k,
+            })
             # Append the index to the keypath
             context.key_path.append(encode_list_index(i))
             # Reparse the hook with the new temp vars in place
@@ -547,10 +630,12 @@ def evaluate_for(
 
     # Remove temp variables
     try:
-        context.data.existing.pop(value_name)
-        context.data.existing.pop(index_name)
+        context.data.existing.pop(vars.key_name)
+        context.data.existing.pop(vars.value_name)
+        context.data.existing.pop(vars.index_name)
     except KeyError:
         pass
+
 
 
 def parse_hook_loop(
@@ -709,14 +794,19 @@ def evaluate_args(
             except IndexError:
                 if len(hook_args) == 0:
                     # TODO: Give more info on possible methods
-                    hook_name = Hook.identifier.split('.')[-1]
-                    if hook_name == '':
-                        hook_name = 'default'
-                    raise exceptions.UnknownArgumentException(
-                        f"The {hook_name} hook does not take any "
-                        f"arguments. Hook argument {v} caused an error.",
-                        context=context,
-                    ) from None
+                    # hook_name = Hook.identifier.split('.')[-1]
+                    # if hook_name == '':
+                    #     hook_name = 'default'
+                    # raise exceptions.UnknownArgumentException(
+                    #     f"The {hook_name} hook does not take any "
+                    #     f"arguments. Hook argument {v} caused an error.",
+                    #     context=context,
+                    # ) from None
+                    raise exceptions.UnknownArgumentException("",
+                                                              context=context,
+                                                              ) from None
+
+
                 else:
                     raise exceptions.UnknownArgumentException(
                         f"The hook {hook_dict['hook_type']} takes the following indexed"
@@ -861,7 +951,11 @@ def walk_document(context: 'Context', value: DocumentValueType):
                 walk_document(context, v)
                 context.key_path.pop()
     else:
-        set_key(context=context, value=value)
+        try:
+            set_key(context=context, value=value)
+        except AttributeError as e:
+            print(e)
+            raise e
 
 
 def get_hook_kwargs_from_input_kwargs(
@@ -905,15 +999,18 @@ def run_declarative_hook(
 
     if kwargs != {}:
         # We were given extra kwargs / flags so should throw error
-        hook_name = hook.identifier.split('.')[-1]
-        if hook_name == '':
-            hook_name = 'default'
-        unknown_args = ' '.join([f"{k}={v}" for k, v in kwargs.items()])
-        raise exceptions.UnknownInputArgumentException(
-            f"The args {unknown_args} not recognized when running the hook/method "
-            f"{hook_name}. Exiting.",
-            context=context,
-        ) from None
+        # hook_name = hook.identifier.split('.')[-1]
+        # if hook_name == '':
+        #     hook_name = 'default'
+        # unknown_args = ' '.join([f"{k}={v}" for k, v in kwargs.items()])
+        # raise exceptions.UnknownInputArgumentException(
+        #     f"The args {unknown_args} not recognized when running the hook/method "
+        #     f"{hook_name}. Exiting.",
+        #     context=context,
+        # ) from None
+        raise exceptions.UnknownInputArgumentException(f"",
+                                                       context=context,
+                                                       ) from None
 
     # if isinstance(hook, LazyBaseFunction):
     #     hook = create_function_model(

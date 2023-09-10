@@ -1,0 +1,21 @@
+expanded_key:
+  ->: var {{key}}
+  for:
+    foo: bar
+    baz: bing
+
+expanded_value:
+  ->: var {{value}}
+  for:
+    foo: bar
+    baz: bing
+
+expanded_index:
+  ->: var {{index}}
+  for:
+    foo: bar
+    baz: bing
+
+compact_key->: var {{key}} --for {'foo':'bar','baz':'bing'}
+compact_value->: var {{value}} --for {'foo':'bar','baz':'bing'}
+compact_index->: var {{index}} --for {'foo':'bar','baz':'bing'}

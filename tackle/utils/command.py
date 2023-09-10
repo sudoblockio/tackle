@@ -1,7 +1,12 @@
 """
 Utils for handling command arguments along with unpacking hook arguments. Used in cli
 to unpack input args/kwargs and in parser to unpack hook calls -
-i.e. key->: hook arg --kwarg thing
+
+i.e. key->: hook arg --kwarg thing --flag
+Parsed into args=['arg'], kwargs={'kwarg':'thing'}, flags=['flag']
+
+NOTE: This is dirty code but works. Should be replaced by PEG parser. See proposals
+TODO: Link to proposals
 """
 import ast
 import re
@@ -47,22 +52,25 @@ def literal_eval(input):
             else:
                 return input
 
+# Inspired from https://stackoverflow.com/a/524796/12642712
+# Split on whitespace or `=`
+# When quotes are preceded by `,:{[(=`, ignore
+# Don't split between quotes with `,:]})`
+# Otherwise split on quotes
+# Repeated for single quotes
+SPLIT_PATTERN = re.compile(
+    "( |(?<!,|\:|\(|\{|\[|=)\\\"(?!\,|\:|\)|\}|\]).*?\\\"(?!\}|\])|(?<!\,|\:|\(|\{|\[|=)'(?!,|\:|\)|\}|\]).*?'(?!\}|\]))"
+)
 
 def split_input_string(input_string: str) -> list:
     """
     Split first on whitespace then regex each item to qualify if it needs to be
-    interpreted as literal.
+     interpreted as literal.
     """
-    # Inspired from https://stackoverflow.com/a/524796/12642712
-    # Split on whitespace or `=`
-    # When quotes are preceded by `,:{[(=`, ignore
-    # Don't split between quotes with `,:]})`
-    # Otherwise split on quotes
-    # Repeated for single quotes
     input_list = [
         i
         for i in re.split(
-            "( |(?<!,|\:|\(|\{|\[|=)\\\"(?!\,|\:|\)|\}|\]).*?\\\"(?!\}|\])|(?<!\,|\:|\(|\{|\[|=)'(?!,|\:|\)|\}|\]).*?'(?!\}|\]))",  # noqa
+            SPLIT_PATTERN,
             input_string,
         )
         if i.strip()
@@ -98,10 +106,36 @@ def assert_if_flag(arg: str):
     return bool(FLAG_REGEX.match(arg))
 
 
+def get_kwargs_till_flag(
+        input_list: list,
+        i: int,
+        input_list_length: int
+) -> (list, int):
+    """
+    Get the remaining kwargs till we hit another flag (ie kwarg or flag - something
+     with `--` in it). Need this so that we can join the kwarg in order into a single
+     string.
+    """
+    kwargs = []
+    i += 1
+    while i < input_list_length:
+        raw_arg = input_list[i]
+        if assert_if_flag(raw_arg):
+            return ' '.join(kwargs), i - 1
+
+        # Look ahead for if the last item is a flag
+        if i + 1 > input_list_length:
+            next_raw_arg = input_list[i + 1]
+            if assert_if_flag(next_raw_arg):
+                return ' '.join(kwargs), i
+        else:
+            kwargs.append(raw_arg)
+            i += 1
+    return ' '.join(kwargs), i
+
+
 def unpack_args_kwargs_list(input_list: list) -> (list[DocumentValueType], dict, list):
-    """
-    Take the input_list of strings and unpack the args, kwargs, and flags
-    """
+    """Take the input_list of strings and unpack the args, kwargs, and flags."""
     input_list_length = len(input_list)
     args = []
     kwargs = {}
@@ -128,10 +162,16 @@ def unpack_args_kwargs_list(input_list: list) -> (list[DocumentValueType], dict,
                         flags.append(strip_dashes(raw_arg))
                     else:
                         # Field is a kwarg
-                        kwargs.update({strip_dashes(raw_arg): input_list[i + 1]})
-                        i += 1
+                        new_kwarg, new_index = get_kwargs_till_flag(
+                            input_list=input_list,
+                            i=i,
+                            input_list_length=input_list_length,
+                        )
+                        kwargs.update({strip_dashes(raw_arg): new_kwarg})
+                        i = new_index
                 else:
                     # Field is a kwarg
+                    # TODO: Should this be part of joining logic?
                     kwargs.update({strip_dashes(raw_arg): input_list[i + 1]})
                     i += 1
             else:

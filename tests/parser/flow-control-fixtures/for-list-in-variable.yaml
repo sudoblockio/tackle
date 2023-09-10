@@ -1,0 +1,13 @@
+alist:
+  - bar
+  - baz
+
+expanded_value:
+  ->: var {{v}}
+  for: i, v in alist
+
+expanded_index:
+  ->: var {{i}}
+  for: i, v in alist
+
+compact->: var {{v}} --for i, v in alist

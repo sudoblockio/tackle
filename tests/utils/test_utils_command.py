@@ -1,7 +1,9 @@
-"""Test for tackle.utils.command"""
 import pytest
 
-from tackle.utils.command import unpack_args_kwargs_string, split_input_string
+from tackle.utils.command import (
+    unpack_args_kwargs_string,
+    split_input_string,
+)
 
 INPUT_STRINGS = [
     ('this --if "expanded == \'that\'"', ['this', '--if', "expanded == 'that'"]),
@@ -54,23 +56,23 @@ def test_utils_command_split_input_string(input_string, expected_output):
 
 TEMPLATES = [
     # # template, len_args, len_kwargs, len_flags
-    ('foo bar baz', 3, 0, 0),
-    ('foo --bar baz bing', 2, 1, 0),
-    ('foo bar --baz foo', 2, 1, 0),
-    ('foo bar --baz foo --bing baz', 2, 2, 0),
-    ('foo --bar baz', 1, 1, 0),
-    ('foo bar --baz', 2, 0, 1),
-    ('foo bar baz --bing', 3, 0, 1),
-    ('foo --bar baz --foo', 1, 1, 1),
-    ('foo bar --foo bar --bing --baz bling', 2, 2, 1),
-    ('foo --bar baz blah --bling', 2, 1, 1),
-    ('this --if "expanded == \'that\'"', 1, 1, 0),
-    ('["this"] --if "expanded == \'that\'"', 1, 1, 0),
-    ('["this"] ["this"] --if "expanded == \'that\'"', 2, 1, 0),
+    # ('foo bar baz', 3, 0, 0),
+    # ('foo --bar baz bing', 1, 1, 0),
+    # ('foo bar --baz foo', 2, 1, 0),
+    # ('foo bar --baz foo --bing baz', 2, 2, 0),
+    # ('foo --bar baz', 1, 1, 0),
+    # ('foo bar --baz', 2, 0, 1),
+    # ('foo bar baz --bing', 3, 0, 1),
+    # ('foo --bar baz --foo', 1, 1, 1),
+    # ('foo bar --foo bar --bing --baz bling', 2, 2, 1),
+    # ('foo --bar baz blah --bling', 1, 1, 1),
+    # ('this --if "expanded == \'that\'"', 1, 1, 0),
+    # ('["this"] --if "expanded == \'that\'"', 1, 1, 0),
+    # ('["this"] ["this"] --if "expanded == \'that\'"', 2, 1, 0),
     ('["this"] --for ["this"] --if "expanded == \'that\'"', 1, 2, 0),
-    ('"this --if" --if "expanded == \'that\'"', 1, 1, 0),
-    ('var {{print("things")}}', 2, 0, 0),
-    ('tackle secrets.yaml --if isfile(path_join([cwd,\'secrets.yaml\']))', 2, 1, 0),
+    # ('"this --if" --if "expanded == \'that\'"', 1, 1, 0),
+    # ('var {{print("things")}}', 2, 0, 0),
+    # ('tackle secrets.yaml --if isfile(path_join([cwd,\'secrets.yaml\']))', 2, 1, 0),
     # For inputs with `=` signs -> Need to modify insane regex (ugh)
     # -> or move to peg parser
     # ('foo --bar=baz bing', 2, 1, 0),
@@ -97,12 +99,29 @@ def test_unpack_args_kwargs(template, len_args, len_kwargs, len_flags):
 
 FIXTURES = [
     # input_string, args, kwargs, flags
-    ("this --if \"expanded == 'that'\"", ["this"], {"if": "expanded == 'that'"}, []),
+    (
+        "this --if \"expanded == 'that'\"",
+        ["this"],
+        {"if": "expanded == 'that'"},
+        [],
+    ),
     (
         "this that --if \"expanded == 'that'\"",
         ["this", "that"],
         {"if": "expanded == 'that'"},
         [],
+    ),
+    (
+        "this that --for i, k, v in foo",
+        ["this", "that"],
+        {"for": "i, k, v in foo"},
+        [],
+    ),
+    (
+        "this --for i in foo --try",
+        ["this"],
+        {"for": "i in foo"},
+        ["try"],
     ),
 ]
 

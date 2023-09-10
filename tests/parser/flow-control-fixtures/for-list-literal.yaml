@@ -1,0 +1,13 @@
+expanded_value:
+  ->: var {{item}}
+  for:
+    - bar
+    - baz
+
+expanded_index:
+  ->: var {{index}}
+  for:
+    - bar
+    - baz
+
+compact->: var {{item}} --for ['bar','baz']
