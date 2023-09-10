@@ -1,8 +1,7 @@
 import os
 from pathlib import Path
-from typing import Union, Optional, TYPE_CHECKING
+from typing import Union, Optional
 
-# from ruamel.yaml.parser import ParserError
 from ruyaml.parser import ParserError
 
 from tackle import exceptions
@@ -42,9 +41,9 @@ def create_hooks(
         raise Exception("Should never happen...")
 
     if context.hooks.private is None:
-        context.hooks.private = {}
+        # context.hooks.private = {}
         # Initialize the native providers / hooks
-        import_native_providers(context=context)
+        context.hooks.private = import_native_providers(context=context)
 
     if context.hooks.public is None:
         context.hooks.public = {}
@@ -475,14 +474,12 @@ def new_context(
         context=context,
         _path=_path,
     )
-    print()
     context.data = new_data(
         context=context,
         input=input,
         overrides=overrides,
         data=_data,
     )
-    print()
     create_hooks(
         context=context,
         hooks=_hooks,

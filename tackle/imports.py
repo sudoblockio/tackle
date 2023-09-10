@@ -5,8 +5,7 @@ import logging
 import subprocess
 from pydantic import ValidationError, PydanticUserError
 from pydantic._internal._model_construction import ModelMetaclass  # noqa
-
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from tackle import exceptions
 from tackle.utils.files import read_config_file
@@ -15,12 +14,12 @@ from tackle.models import BaseHook
 from tackle.utils.prompts import confirm_prompt
 
 if TYPE_CHECKING:
-    from tackle.models import Context
+    from tackle.models import Context, GenericHookType
 
 logger = logging.getLogger(__name__)
 
 
-def import_python_hooks_from_file(
+def get_module_from_path(
         context: 'Context',
         module_name: str,
         file_path: str,
@@ -41,14 +40,29 @@ def import_python_hooks_from_file(
         except Exception as e:
             print(e)
             raise
+    return mod
+
+
+def is_base_hook_subclass(key: str, value: Any) -> bool:
+    return not key.startswith('_') \
+            and isinstance(value, ModelMetaclass) \
+            and issubclass(value, BaseHook) \
+            and key != 'BaseHook'
+
+
+def import_python_hooks_from_file(
+        context: 'Context',
+        module_name: str,
+        file_path: str,
+):
+    mod = get_module_from_path(
+        context=context,
+        module_name=module_name,
+        file_path=file_path,
+    )
     # Loop through all the module items and add the hooks
     for k, v in mod.__dict__.items():
-        if (
-                not k.startswith('_')
-                and isinstance(v, ModelMetaclass)
-                and issubclass(v, BaseHook)
-                and k != 'BaseHook'
-        ):
+        if is_base_hook_subclass(key=k, value=v):
             if v.model_fields['is_public'].default:
                 context.hooks.public[v.model_fields['hook_type'].default] = v
             else:
@@ -94,39 +108,6 @@ def import_hooks_from_file(
             module_name=module_name,
             file_path=file_path,
         )
-        # try:
-        #     module_name = provider_name + '.hooks.' + file_base
-        # except Exception as e:
-        #     print(e)
-        #     pass
-        # loader = importlib.machinery.SourceFileLoader(module_name, path=file_path)
-        # if sys.version_info.minor < 10:
-        #     mod = loader.load_module()
-        # else:
-        #     spec = importlib.util.spec_from_loader(loader.name, loader)
-        #     mod = importlib.util.module_from_spec(spec)
-        #     sys.modules[spec.name] = mod
-        #     try:
-        #         loader.exec_module(mod)
-        #     except (ValidationError, PydanticUserError) as e:
-        #         raise exceptions.TackleHookImportException(
-        #             e.__str__(), context=context, file=file_path
-        #         )
-        #     except Exception as e:
-        #         print(e)
-        #         raise
-        # # Loop through all the module items and add the hooks
-        # for k, v in mod.__dict__.items():
-        #     if (
-        #             not k.startswith('_')
-        #             and isinstance(v, ModelMetaclass)
-        #             and issubclass(v, BaseHook)
-        #             and k != 'BaseHook'
-        #     ):
-        #         if v.model_fields['is_public'].default:
-        #             context.hooks.public[v.model_fields['hook_type'].default] = v
-        #         else:
-        #             context.hooks.private[v.model_fields['hook_type'].default] = v
 
 
 # def get_hooks_from_hooks_init(
@@ -156,7 +137,6 @@ def import_hooks_from_file(
 
 def import_hooks_from_hooks_directory(
         context: 'Context',
-        # hooks: Hooks,
         provider_name: str,
         hooks_directory: str,
 ):
@@ -176,30 +156,59 @@ def import_hooks_from_hooks_directory(
     for file in os.scandir(hooks_directory):
         import_hooks_from_file(
             context=context,
-            # hooks=hooks,
             provider_name=provider_name,
             file_path=file.path,
         )
 
 
-def import_native_providers(context: 'Context'):
+def import_native_hooks_from_directory(
+        context: 'Context',
+        provider_name: str,
+        hooks_directory: str,
+        native_hooks: dict[str, 'GenericHookType'],
+) -> dict[str, 'GenericHookType']:
+    for file in os.scandir(hooks_directory):
+        # file_base, extension = os.path.splitext(file.path)
+        directory, filename = os.path.split(file.path)
+        file_base, file_extension = os.path.splitext(filename)
+
+        if file_extension == ".py":
+            module_name = provider_name + '.hooks.' + file_base
+            mod = get_module_from_path(
+                context=context,
+                module_name=module_name,
+                file_path=file.path,
+            )
+            # Loop through all the module items and add the hooks
+            for k, v in mod.__dict__.items():
+                if is_base_hook_subclass(key=k, value=v):
+                    native_hooks[v.model_fields['hook_type'].default] = v
+
+    return native_hooks
+
+
+def import_native_providers(context: 'Context') -> dict[str, 'GenericHookType']:
     """
     Import the native providers. First qualifies if we are running locally (ie the
      `local_install` setting is active in which case we need to manually import all the
-      native provides. Otherwise just use the cached native providers as we would under
+      native provides. Otherwise, just use the cached native providers as we would under
       normal runs. Importing providers adds about .7 seconds each time we run tackle.
     """
+    native_hooks = {}
+
     native_providers_directory = os.path.join(
         os.path.dirname(os.path.abspath(__file__)), '..', 'providers'
     )
     if settings.local_install:
         for i in os.scandir(native_providers_directory):
             if i.is_dir() and i.name != '__pycache__':
-                import_hooks_from_hooks_directory(
+                import_native_hooks_from_directory(
                     context=context,
                     hooks_directory=os.path.join(i.path, 'hooks'),
                     provider_name=i.name,
+                    native_hooks=native_hooks,
                 )
+        return native_hooks
     else:
         raise NotImplemented
 
