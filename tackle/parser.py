@@ -175,20 +175,25 @@ def render_hook_vars(
                 # Map the extra fields to the `kwargs` field
                 kwargs_field = Hook.model_fields['kwargs'].default
                 if Hook.model_fields[kwargs_field].annotation == dict:
-                    # TODO: Fix this - broken - can't change model and we don't want
-                    #  to copy again
-                    hook_call.model_extra[kwargs_field] = {
-                        k: render_variable(context, v)}
+                    if kwargs_field not in hook_call.model_extra:
+                        hook_call.model_extra[kwargs_field] = {}
+                    hook_call.model_extra[kwargs_field].update({
+                        k: render_variable(context, v)
+                    })
+                    hook_call.model_extra.pop(k)
                     continue
                 else:
-                    # Extra args must be a
-                    raise
+                    # Mapping additional kwargs must be to a dict field
+                    raise exceptions.BadHookKwargsRefException(
+                        "The hook's kwargs field references a non-dict field. Need to"
+                        " fix this in the hook's definition to reference a dict field.",
+                        context=context, hook=Hook,
+                    )
 
         if Hook.model_fields['render_by_default'].default:
             hook_call.model_extra[k] = render_variable(context, wrap_jinja_braces(v))
 
-        if isinstance(Hook.model_fields[k].json_schema_extra['render_by_default'],
-                      bool):
+        if isinstance(Hook.model_fields[k].json_schema_extra['render_by_default'], bool):
             if Hook.model_fields[k].json_schema_extra['render_by_default']:
                 v = wrap_jinja_braces(v)
 
