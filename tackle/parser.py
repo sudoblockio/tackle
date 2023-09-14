@@ -216,8 +216,7 @@ def render_hook_vars(
 
 def parse_sub_context(
         context: 'Context',
-        hook_call: HookCallInput,
-        target: str,
+        hook_target: Any,
 ):
     """
     Reparse a subcontext as in the case with `else` and `except` where you have to
@@ -230,7 +229,7 @@ def parse_sub_context(
     if isinstance(hook_target, str):
         set_key(
             context=context,
-            value=render_variable(context, hook_call[target]),
+            value=render_variable(context, hook_target),
         )
         return
     elif isinstance(hook_target, (bool, int, float)):
@@ -247,11 +246,11 @@ def parse_sub_context(
     if isinstance(indexed_key_path[-1], bytes):
         # We are in a for loop
         input_dict = nested_get(
-            element=context.input_context,
+            element=context.data.input,
             keys=indexed_key_path[:-3],
         )
         updated_item = [
-            hook_call[target] if i == decode_list_index(context.key_path[-1]) else None
+            hook_target if i == decode_list_index(context.key_path[-1]) else None
             for i in range(decode_list_index(context.key_path[-1]) + 1)
         ]
         # TODO: Figure out wtf is going on here...
@@ -265,11 +264,11 @@ def parse_sub_context(
 
     else:
         input_dict = nested_get(
-            element=context.input_context,
+            element=context.data.input,
             keys=indexed_key_path[:-2],
         )
         arrow = context.key_path[-1]
-        input_dict[indexed_key_path[-2]] = {arrow: 'block', 'items': hook_call[target]}
+        input_dict[indexed_key_path[-2]] = {arrow: 'block', 'items': hook_target}
         walk_document(context, value=input_dict[indexed_key_path[-2]])
 
 
@@ -306,7 +305,10 @@ def new_hook(
         # Handle any try / except logic
         if 'try' in hook_call and hook_call['try']:
             if 'except' in hook_call and hook_call['except']:
-                parse_sub_context(context=context, hook_call=hook_call, target='except')
+                parse_sub_context(
+                    context=context,
+                    hook_target=hook_call.except_,
+                )
             return
 
         msg = str(e)
@@ -407,8 +409,7 @@ def parse_hook_execute(
             if hook_call.except_:
                 parse_sub_context(
                     context=context,
-                    hook_call=hook_call.except_,
-                    target='except',
+                    hook_target=hook_call.except_,
                 )
             return
     else:
@@ -720,8 +721,7 @@ def parse_hook(
     elif hook_call.else_:
         parse_sub_context(
             context=context,
-            hook_call=hook_call.else_,
-            target='else',
+            hook_target=hook_call.else_,
         )
 
 
@@ -889,9 +889,6 @@ def walk_document(context: 'Context', value: DocumentValueType):
      keeping track of which keys are traversed in a list called `key_path` with strings
      as dict keys and byte encoded integers for list indexes.
     """
-    # if len(context.key_path) != 0:
-    #     value = run_macros(context=context, value=value)
-
     if isinstance(value, dict):
         # Handle expanded expressions - ie key:\n  ->: hook_type args
         if '->' in value.keys():
@@ -916,7 +913,6 @@ def walk_document(context: 'Context', value: DocumentValueType):
             )
             context.key_path.pop()
             return
-        # elif value == {} and context.key_path:
         elif value == {}:
             set_key(context=context, value={})
             return
