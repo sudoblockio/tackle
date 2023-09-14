@@ -518,3 +518,24 @@ class TackleHookImportException(TackleImportException):
 
     Raised when rendering variables.
     """
+
+
+class TackleHookCreationException(Exception):
+    """Base input parser exception class."""
+
+    def __init__(self, extra_message: str, context: 'Context', hook: 'CompiledHookType'):
+        self.message = (
+            f"Error using hook='{hook.hook_type}' \n" f"{extra_message}"
+        )
+        if not context.verbose:
+            sys.tracebacklimit = 0
+        super().__init__(self.message)
+
+
+class BadHookKwargsRefException(TackleHookCreationException):
+    """
+    Exception for mapping a hook's kwargs field to a non-dict type.
+
+    Raised when rendering a hooks vars and unknown fields are mapped via a kwargs
+     attribute which references a non-dict field.
+    """
