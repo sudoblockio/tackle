@@ -281,8 +281,11 @@ def new_hook(
     # TODO: WIP - https://github.com/sudoblockio/tackle/issues/104
     # Both no_input and skip_output can be used in both the hook call and hook
     # definition.
-    no_input = Hook.model_fields[
-                   'skip_output'].default | hook_call.no_input | context.no_input  # noqa
+    no_input = (
+            Hook.model_fields['skip_output'].default |
+            hook_call.no_input |
+            context.no_input
+    )
     skip_output = Hook.model_fields['skip_output'].default | hook_call.skip_output
     try:
         hook = Hook(
@@ -428,10 +431,10 @@ def parse_hook_execute(
                 append_hook_value=append_hook_value,
             )
         elif context.data.temporary is not None:
-            # Write the indexed output to the `temporary_context` as it was only written
-            # to the `public_context` and not maintained between items in a list
+            # Write the indexed output to the `data.temporary` as it was only written
+            # to the `data.public` and not maintained between items in a list
             if not isinstance(context.key_path[-1], bytes):
-                get_set_temporary_context(context)
+                get_set_temporary_context(context=context)
 
     elif hook_call.merge:
         merge_output(
@@ -607,6 +610,7 @@ def evaluate_for(
 
     elif isinstance(vars.loop_targets, dict):
         if hook_call.merge:
+            # To merge into a list
             set_key(context=context, value=[])
         elif not hook_call.merge:
             set_key(context=context, value=[])
@@ -894,22 +898,25 @@ def walk_document(context: 'Context', value: DocumentValueType):
         if '->' in value.keys():
             # Public hook calls
             context.key_path.append('->')
-            # context.input_string = value['->']
+            # We need to copy this value because it could be reused in a loop
+            v = value.copy()
+            hook_str = v.pop('->')
             run_hook_at_key_path(
                 context=context,
-                hook_dict=value,
-                hook_str=value.pop('->'),
+                hook_dict=v,
+                hook_str=hook_str,
             )
             context.key_path.pop()
             return
         elif '_>' in value.keys():
             # Private hook calls
             context.key_path.append('_>')
-            # context.input_string = value['_>']
+            v = value.copy()
+            hook_str = v.pop('_>')
             run_hook_at_key_path(
                 context=context,
-                hook_dict=value,
-                hook_str=value.pop('_>'),
+                hook_dict=v,
+                hook_str=hook_str,
             )
             context.key_path.pop()
             return
@@ -917,26 +924,11 @@ def walk_document(context: 'Context', value: DocumentValueType):
             set_key(context=context, value={})
             return
 
-        for k, v in value.copy().items():
-            # if isinstance(v, CommentedMap):
-            #     # This is for a common parsing error that messes up values with braces.
-            #     # For instance `stuff->: {{things}}` (no quotes), ruamel interprets as
-            #     # 'stuff': ordereddict([(ordereddict([('things', None)]), None)]) which
-            #     # technically is accurate but generally users would never actually do.
-            #     # Since it is common to forget to quote, this is a helper to try to
-            #     # catch that error and fix it.  Warning -> super hacky....
-            #     if len(v) == 1:
-            #         value_ = next(iter(v.values()))
-            #         key_ = next(iter(v.keys()))
-            #         if value_ is None and isinstance(key_, CommentedKeyMap):
-            #             if context.verbose:
-            #                 _key_path = get_readable_key_path(context.key_path)
-            #                 msg = f"Handling unquoted template at key path {_key_path}."
-            #                 print(msg)
-            #             v = "{{" + next(iter(next(iter(v.keys())))) + "}}"
+        # Iterate through all the keys now of a dict since we know it is not a hook
+        for k, v in value.items():
             context.key_path.append(k)
             v = key_macro(context=context, value=v)
-            walk_document(context, v)
+            walk_document(context=context, value=v)  # recurse
             context.key_path.pop()
             if context.break_:
                 return

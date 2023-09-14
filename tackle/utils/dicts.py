@@ -204,8 +204,8 @@ def get_target_and_key(
     output_key_path = []
     for i in key_path:
         if i == '_>':
-            if context.private_context is None:
-                context.private_context = (
+            if context.data.private is None:
+                context.data.private = (
                     {} if isinstance(output_key_path[0], str) else []
                 )
             target_context = context.private_context
@@ -233,15 +233,19 @@ def set_temporary_context(
 ) -> None:
     tmp_key_path = key_path[(len(context.key_path_block) - len(key_path)):]
 
-    if context.temporary_context is None:
-        context.temporary_context = {} if isinstance(tmp_key_path[0], str) else []
+    # Check if temp data is None and create an empty dict otherwise
+    if context.data.temporary is None or len(context.data.temporary) == 0:
+        if isinstance(tmp_key_path[0], bytes):
+            # We don't need to worry about tmp data when we are inside of a list
+            return
+        context.data.temporary = {}
     tmp_key_path = [i for i in tmp_key_path if i not in ('->', '_>')]
 
     if len(tmp_key_path) == 0:
         # Nothing to set in tmp context
         return
 
-    nested_set(context.temporary_context, tmp_key_path, value)
+    nested_set(element=context.data.temporary, keys=tmp_key_path, value=value)
 
 
 def get_set_temporary_context(
