@@ -952,6 +952,7 @@ def walk_document(context: 'Context', value: DocumentValueType):
                 walk_document(context, v)
                 context.key_path.pop()
     else:
+        # Nothing left to do but run the hook
         try:
             set_key(context=context, value=value)
         except AttributeError as e:
