@@ -1,6 +1,14 @@
 from tackle.main import tackle
 
 
+def test_provider_system_hook_block_block(change_dir):
+    """Complex block."""
+    output = tackle('block.yaml', no_input=True)
+
+    assert output['block']['things'] == 'here'
+    assert output['block']['test_block']
+
+
 def test_provider_system_hook_block_tackle(change_dir):
     """Simple block test."""
     output = tackle('merge.yaml', no_input=True)
@@ -16,9 +24,11 @@ def test_provider_system_hook_block_embedded_blocks(change_dir):
 
     assert output['stuff'] == 'things'
     assert output['blocker']['things'] == 'things'
+    assert output['blocker']['test_block']['my_dog'] == 'dog'
+    assert output['blocker']['test_block']['my_public_dog'] == 'dog'
 
 
-def test_provider_system_hook_block_embedded_blocks_2(change_dir):
+def test_provider_system_hook_block_embedded_lists(change_dir):
     """Complex block."""
     output = tackle('embedded-lists.yaml')
     assert output['one'][1]['two'][0]['three']
@@ -41,13 +51,6 @@ def test_provider_system_hook_block_block_merge(change_dir):
     assert output['test_block']['my_dog'] == 'things'
     assert output['test_block_macro']['my_dog'] == 'things'
     assert len(output) == 3
-
-
-def test_provider_system_hook_block_block(change_dir):
-    """Complex block."""
-    output = tackle('block.yaml', no_input=True)
-    assert output['block']['things'] == 'here'
-    assert output['block']['test_block']
 
 
 def test_hook_block_block_loop_block(change_dir):

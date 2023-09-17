@@ -1,6 +1,6 @@
 from typing import Union
 
-from tackle.models import BaseHook, Context, Field
+from tackle import BaseHook, Field, Context
 from tackle.parser import walk_document
 
 
@@ -19,28 +19,21 @@ class BlockHook(BaseHook):
     )
 
     skip_output: bool = True
-    _render_exclude = {'items'}
+    render_exclude: list = ['items']
 
     def exec(self) -> Union[dict, list]:
-        if self.temporary_context is None:
-            self.temporary_context = {}
 
         tmp_context = Context(
-            public_hooks=self.public_hooks,
-            private_hooks=self.private_hooks,
-            public_context=self.public_context,
-            private_context=self.private_context,
-            temporary_context=self.temporary_context,
-            existing_context=self.existing_context,
-            input_context=self.items,
-            key_path=self.key_path.copy(),
-            key_path_block=self.key_path.copy(),
-            no_input=self.no_input,
-            calling_directory=self.calling_directory,
-            calling_file=self.calling_file,
-            verbose=self.verbose,
-            override_context=self.override_context,
+            # overrides=self.context.data.overrides,
+            verbose=self.context.verbose,
+            no_input=self.context.no_input,
+            key_path=self.context.key_path.copy(),
+            key_path_block=self.context.key_path.copy(),
+            path=self.context.path,
+            data=self.context.data,
+            hooks=self.context.hooks,
         )
+
         walk_document(context=tmp_context, value=self.items.copy())
 
-        return self.public_context
+        return tmp_context.data.public

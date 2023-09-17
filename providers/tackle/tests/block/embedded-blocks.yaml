@@ -6,9 +6,9 @@ blocker->:
   friend: dog
   test_block->:
     if: stuff == 'things'
-    my_dog->: "{{blocker.friend}}"
+    my_dog->: "{{friend}}"
+    my_public_dog->: "{{blocker.friend}}"
 
 after->:
   if: true
   thing: stuffs
-
