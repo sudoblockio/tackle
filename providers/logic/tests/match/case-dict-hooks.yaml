@@ -16,4 +16,4 @@ expected:
   - expanded
   - compact
 
-assert->: assert "{{matches}}" "{{expected}}"
+check->: assert "{{matches}}" "{{expected}}"

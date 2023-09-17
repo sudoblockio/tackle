@@ -1,8 +1,8 @@
-"""Match hook."""
 from typing import Union, Optional, Any
 import re
 
-from tackle.models import BaseHook, Context, Field
+from tackle import BaseHook, Context, Field
+from tackle.models import HookCallInput
 from tackle.parser import walk_document
 from tackle.render import render_string
 from tackle.exceptions import HookCallException
@@ -17,7 +17,9 @@ class MatchHook(BaseHook):
 
     hook_type: str = 'match'
     value: str = Field(
-        ..., render_by_default=True, description="The value to match against."
+        ...,
+        render_by_default=True,
+        description="The value to match against."
     )
     case: dict = Field(
         ...,
@@ -28,56 +30,45 @@ class MatchHook(BaseHook):
     args: list = ['value']
 
     skip_output: bool = True
-    _render_exclude = {'case'}
+    render_exclude: list = ['case']
     _docs_order = 3
 
     def run_key(self, value):
-        if self.temporary_context is None:
-            self.temporary_context = {}
 
         tmp_context = Context(
-            input_context=value,
-            key_path=self.key_path.copy(),
-            key_path_block=self.key_path.copy(),
-            public_hooks=self.public_hooks,
-            private_hooks=self.private_hooks,
-            public_context=self.public_context,
-            private_context=self.private_context,
-            temporary_context=self.temporary_context,
-            existing_context=self.existing_context,
-            no_input=self.no_input,
-            calling_directory=self.calling_directory,
-            calling_file=self.calling_file,
-            verbose=self.verbose,
-            override_context=self.override_context,
+            # overrides=self.context.data.overrides,
+            verbose=self.context.verbose,
+            no_input=self.context.no_input,
+            key_path=self.context.key_path.copy(),
+            key_path_block=self.context.key_path.copy(),
+            path=self.context.path,
+            data=self.context.data,
+            hooks=self.context.hooks,
         )
+
         walk_document(context=tmp_context, value=value.copy())
 
-        return tmp_context.public_context
+        return tmp_context.data.public
 
     def block_macro(self, key: str, val: dict) -> dict:
         """Take matched input dict and create a `block` hook to parse."""
         # Remove the merge which will be inserted into the parsed block hook.
-        merge = self.merge if 'merge' not in val else val['merge']
+        merge = self.hook_call.merge if 'merge' not in val else val['merge']
         if merge:
             # Do this because arrows can stack up and mess up merge
-            self.key_path = self.key_path[:-1]
+            self.context.key_path = self.context.key_path[:-1]
             # We now don't want the hook to be merged
-            self.merge = False
+            self.hook_call.merge = False
+
+        block_hook_input = HookCallInput(**val)
 
         output = {
             key[-2:]: 'block',
             'merge': merge,
-            'items': {},
+            'items': block_hook_input.model_extra,
         }
-        # Have a collection of fields that are part of the base.
-        aliases = [v.alias for _, v in BaseHook.__fields__.items()] + ['->', '_>']
-        for k, v in val.items():
-            if k not in aliases:
-                # Set the keys under the `items` key per the block hook's input
-                output['items'].update({k: v})
-            else:
-                output.update({k: v})
+        output.update(block_hook_input.__dict__)
+
         return output
 
     def match_case(self, v: Any):
@@ -94,7 +85,7 @@ class MatchHook(BaseHook):
             return self.run_key(v)
         elif isinstance(v, (str, int)):
             self.skip_output = False
-            return render_string(self, v)
+            return render_string(self.context, v)
         self.skip_output = False
         return v
 
@@ -108,7 +99,7 @@ class MatchHook(BaseHook):
         else:
             raise HookCallException(
                 f"Matched value must be of type string or dict, not {v}.",
-                context=self,
+                context=self.context,
             ) from None
 
     def exec(self) -> Optional[Union[dict, list]]:
@@ -127,7 +118,7 @@ class MatchHook(BaseHook):
                 raise HookCallException(
                     f"Error in match hook case '{k}'\n{e}\nMalformed regex. Must "
                     f"with python's `re` module syntax.",
-                    context=self,
+                    context=self.context,
                 ) from None
             if _match:
                 return self.match_case(v=v)
@@ -145,5 +136,5 @@ class MatchHook(BaseHook):
         raise HookCallException(
             f"Value `{self.value}` not found in "
             f"{' ,'.join([i for i in list(self.case)])}",
-            context=self,
+            context=self.context,
         ) from None

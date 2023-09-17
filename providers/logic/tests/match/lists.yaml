@@ -10,4 +10,4 @@ vms:
       - ip: 456
         name: bar
 
-assert->: assert "{{vms[0].ip}}" 456
+check->: assert "{{vms[0].ip}}" 456

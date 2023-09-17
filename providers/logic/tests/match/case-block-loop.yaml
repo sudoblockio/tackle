@@ -38,4 +38,4 @@ expected:
     hook-expanded: expanded
     hook-compact: compact
 
-assert->: assert "{{matches}}" "{{expected}}"
+check->: assert "{{matches}}" "{{expected}}"

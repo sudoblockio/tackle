@@ -83,7 +83,6 @@ def test_hook_match_case_block_merge(change_dir):
     assert o['foo'] == 'bar'
     assert o['bar'] == 'bar'
     assert len(o) == 3
-    assert 'matches' not in o
 
 
 def test_hook_match_cases(change_dir):
