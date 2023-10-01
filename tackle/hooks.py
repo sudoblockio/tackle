@@ -1,30 +1,26 @@
 import enum
+from functools import partialmethod, partial
 import re
-from functools import partialmethod
-from pydoc import locate
 import typing
 from typing import TYPE_CHECKING, Union, Any, Type, Callable, Optional
-
 from pydantic import ValidationError, field_validator
-from pydantic.fields import FieldInfo
+import pydoc
 
 from tackle import exceptions
-from tackle.contexts import new_context
-from tackle.pydantic.create_model import create_model
-from tackle.pydantic.fields import Field
+from tackle.factory import new_context
+from tackle.imports import import_with_fallback_install
 from tackle.macros.hook_macros import hook_macros
 from tackle.render import render_variable
-from tackle.utils.dicts import update_input_context
-from tackle.imports import import_with_fallback_install
-from tackle.types import DocumentType, DocumentKeyType, DocumentValueType
-
-from tackle.pydantic.config import DclHookModelConfig
-from tackle.pydantic.field_types import TypeInput
+from tackle.pydantic.create_model import create_model
+from tackle.pydantic.field_types import FieldInput
+from tackle.pydantic.fields import Field
+from tackle.utils.dicts import update_input_dict
+from tackle.types import DocumentValueType, DocumentType
 from tackle.models import (
     BaseHook,
     HookCallInput,
     DclHookInput,
-    # BaseDclHook,
+    BaseDclHook,
     LazyBaseHook,
     Context,
     AnyHookType,
@@ -79,7 +75,7 @@ def get_complex_field(field: Any) -> Type:
 
 
 def hook_walk(
-        self: 'BaseHook',
+        hook: 'BaseHook',
         input_element: Union[list, dict],
         return_: Union[list, dict] = None,
 ) -> Any:
@@ -90,22 +86,22 @@ def hook_walk(
     """
     if input_element is None:
         # No `exec` method so we'll just be returning the included fields from model
-        return self.model_dump(include=set(self.hook_input.hook_fields_))
+        return hook.model_dump(include=set(hook.hook_input.model_extra.keys()))
 
     # We have exec data so we need to parse that which will be the return of the hook
-    if self.context.data.public:
+    if hook.context.data.public:
         # Move the public data to an existing context
-        existing_context = self.context.data.public.copy()
-        existing_context.update(self.existing_context)
+        existing_context = hook.context.data.public.copy()
+        # existing_context.update(hook.existing_context)
     else:
         existing_context = {}
 
-    for k, v in self.hook_input.hook_fields_.items():
+    for k, v in hook.hook_input.model_extra.items():
         # Update a function's existing context with the already matched args
         if isinstance(v, dict) and '->' in v:
             # For when the default has a hook in it
             output = parse_tmp_context(
-                context=self.context,
+                context=hook.context,
                 element={k: v},
                 existing_context=existing_context,
             )
@@ -116,13 +112,17 @@ def hook_walk(
                 raise exceptions.FunctionCallException(
                     f"Error parsing declarative hook field='{k}'. Must produce an "
                     f"output for the field's default.",
-                    function=self,  # noqa
+                    function=hook,  # noqa
                 ) from None
         else:
             # Otherwise just the value itself
-            existing_context.update({k: get_complex_field(v)})
+            # existing_context.update({k: get_complex_field(v)})
+            existing_context.update({k: getattr(hook, k)})
 
-    hook_context = new_context(_hooks=self.context.hooks)
+    hook_context = new_context(
+        _hooks=hook.context.hooks,
+        existing_data=existing_context,
+    )
 
     from tackle.parser import walk_document
 
@@ -136,14 +136,14 @@ def hook_walk(
             else:
                 raise exceptions.FunctionCallException(
                     f"Return value '{return_}' is not found " f"in output.",
-                    function=self,  # noqa
+                    function=hook,  # noqa
                 ) from None
         elif isinstance(return_, list):
             if isinstance(hook_context, list):
                 # TODO: This is not implemented (ie list outputs)
                 raise exceptions.FunctionCallException(
                     f"Can't have list return {return_} for " f"list output.",
-                    function=self,  # noqa
+                    function=hook,  # noqa
                 ) from None
             output = {}
             for i in return_:
@@ -153,12 +153,12 @@ def hook_walk(
                 else:
                     raise exceptions.FunctionCallException(
                         f"Return value '{i}' in return {return_} not found in output.",
-                        function=self,  # noqa
+                        function=hook,  # noqa
                     ) from None
             return hook_context.public_context[return_]
         else:
             raise NotImplementedError(f"Return must be of list or string {return_}.")
-    return hook_context.public_context
+    return hook_context.data.public
 
 
 LITERAL_TYPES: set = {'str', 'int', 'float', 'bool', 'dict', 'list'}  # strings to match
@@ -224,9 +224,25 @@ def hook_extends(
     ) from None
 
 
-def walk_hook_document(context: 'Context', value: DocumentValueType) -> Callable:
+def walk_hook_document(context: 'Context', value: DocumentType):
     from tackle.parser import walk_document
     return walk_document(context=context, value=value)
+
+
+def get_public_data_from_walk(context: 'Context', value: DocumentType) -> DocumentType:
+    walk_hook_document(context=context, value=value)
+
+    return context.data.public
+
+
+def create_default_factory_walker(
+        context: 'Context',
+        value: DocumentValueType,
+) -> Callable[[], Any]:
+
+    tmp_context = new_context(_hooks=context.hooks)
+
+    return partial(get_public_data_from_walk, tmp_context, value)
 
 
 def create_validator(
@@ -234,9 +250,9 @@ def create_validator(
         context: 'Context',
         value: DocumentValueType,
         field: str,
-):
+) -> Callable:
     validator_function = field_validator(field)(
-        partialmethod(walk_hook_document, context, value)
+        partial(walk_hook_document, context, value)
     )
     return validator_function
 
@@ -250,6 +266,11 @@ def parse_hook_type(
     Parse the `type` field within a declarative hook and use recursion to parse the
      string into real types.
     """
+    if type_str in LITERAL_TYPES:
+        # We have a literal type (ie `str`, `list`, `int`, etc)
+        # return pydoc.locate(type_str).__name__
+        return pydoc.locate(type_str)
+
     type_str = type_str.strip()
     # Check if it's a generic type with type arguments
     if '[' in type_str:
@@ -307,11 +328,6 @@ def parse_hook_type(
         elif isinstance(hook, LazyBaseHook):
             # We have a hook we need to build
             raise Exception("Should never happen...")
-            # return create_declarative_hook(
-            #     context=context,
-            #     hook_name=type_str,
-            #     hook_input_raw=hook.function_dict.copy(),
-            # )
         else:
             return hook
     # Treat it as a plain name - Safe to eval as type_str will always be a literal type
@@ -326,48 +342,86 @@ def update_field_dict_with_type(
         hook_name: str,
         field_dict: dict,
 ):
+    """
+
+    """
     try:
-        type_input = TypeInput(**value)
+        field_input = FieldInput(**value)
     except ValidationError as e:
         raise exceptions.UnknownInputArgumentException(e, context=context)
 
-    if type_input.enum is not None:
-        if type_input.type:
+    if field_input.enum is not None:
+        if field_input.type:
             raise exceptions.MalformedFunctionFieldException(
                 'Enums are implicitly typed.',
                 context=context,
                 function_name=hook_name,
             )
-        enum_type = enum.Enum(key, {i: i for i in type_input.enum})
-        if type_input.default:
-            field_dict[key] = (enum_type, type_input.default)
+        enum_type = enum.Enum(key, {i: i for i in field_input.enum})
+        if field_input.default:
+            field_dict[key] = (enum_type, field_input.default)
         else:
             field_dict[key] = (enum_type, ...)
-    elif type_input.type:
-        if type_input.type in LITERAL_TYPES:
-            parsed_type = locate(type_input.type).__name__
-        else:
-            parsed_type = parse_hook_type(
-                context=context,
-                type_str=type_input.type,
-                func_name=hook_name,
-            )
-        if type_input.default is not None:
-            # We have a default and thus need to check
-            pass
-
-        if type_input.description:
-            type_input.description = type_input.description.__repr__()
-        field_dict[key] = (parsed_type, Field(**value))
-    elif type_input.default:
-        if isinstance(type_input.default, dict) and '->' in type_input.default:
-            # For hooks in the default fields.
-            field_dict[key] = ()
-            field_dict[key] = (Any, Field(**value))
-        else:
-            field_dict[key] = (type(type_input.default), Field(**value))
+    # elif field_input.type:
+    #     if field_input.type in LITERAL_TYPES:
+    #         parsed_type = pydoc.locate(field_input.type).__name__
+    #     else:
+    #         parsed_type = parse_hook_type(
+    #             context=context,
+    #             type_str=field_input.type,
+    #             func_name=hook_name,
+    #         )
+    #     if field_input.default is not None:
+    #         # We have a default and thus need to check
+    #         pass
+    #     if field_input.description:
+    #         field_input.description = field_input.description.__repr__()
+    #     field_dict[key] = (
+    #         parsed_type,
+    #         Field(**value,
+    #               default_factory=create_default_factory_walker(
+    #                   context=context,
+    #                   value=value,
+    #               )))
+    # elif field_input.default:
+    #     if isinstance(field_input.default, dict) and '->' in field_input.default:
+    #         # For hooks in the default fields.
+    #         field_dict[key] = (Any, Field(**value))
+    #     else:
+    #         field_dict[key] = (type(field_input.default), Field(**value))
     else:
-        field_dict[key] = (dict, value)
+        if field_input.description:
+            field_input.description = field_input.description.__repr__()
+
+        if field_input.parse_keys is None:
+            default_factory = None
+        elif 'default' in field_input.parse_keys:
+            default_factory = create_default_factory_walker(
+                context=context,
+                value=value['default'],
+            )
+            # Default is replaced with default factory
+            value.pop('default')
+        else:
+            # TODO: Implement the ability to make additional keys call hooks. Need to
+            #  develop use case first though as right now it is not clear unless it is
+            #  a default value which
+            raise NotImplementedError
+
+        field_dict[key] = (
+            parse_hook_type(
+                context=context,
+                type_str=field_input.type,
+                func_name=hook_name,
+            ),
+            Field(
+                **value,
+                default_factory=default_factory,
+                # This should cause error - dupl instantiation
+                # description=field_input.description
+            ))
+    # else:
+    #     field_dict[key] = (dict, value)
 
 
 def create_dcl_hook_fields(
@@ -376,7 +430,7 @@ def create_dcl_hook_fields(
         hook_name: str,
 ) -> dict[str, tuple]:
     field_dict: dict[str, tuple] = {}
-    for k, v in hook_input.hook_fields_.items():
+    for k, v in hook_input.model_extra.items():
         if '<-' in v:
             # Public method
             field_dict[k] = (Callable, LazyBaseHook(input_raw=v, is_public=True))
@@ -385,9 +439,6 @@ def create_dcl_hook_fields(
             # Private method
             field_dict[k] = (Callable, LazyBaseHook(input_raw=v, is_public=False))
             continue
-        elif v is None:
-            # Null value means not-required
-            field_dict[k] = (Any, None)
         elif isinstance(v, dict):
             # Dict types are special
             update_field_dict_with_type(
@@ -398,11 +449,11 @@ def create_dcl_hook_fields(
                 field_dict=field_dict,
             )
         elif isinstance(v, str) and v in LITERAL_TYPES:
-            field_dict[k] = (locate(v).__name__, Field(...))
-        elif isinstance(v, (str, int, float, bool)):
-            field_dict[k] = (type(v), v)
-        elif isinstance(v, list):
-            field_dict[k] = (list, v)
+            # Input of form `foo: str|int|list...` which means it is typed and required
+            field_dict[k] = (pydoc.locate(v).__name__, Field(...))
+        elif isinstance(v, (str, int, float, bool, list, dict)):
+            # Input of form `foo: some_value` so we infer type and give default value
+            field_dict[k] = (type(v), Field(v))
         elif isinstance(v, LazyBaseHook):
             # Is encountered when inheritance is imposed and calling function methods
             field_dict[k] = (v.type_, v.default)
@@ -426,37 +477,43 @@ DEFAULT_METHODS = new_default_methods()
 def new_dcl_hook_input(
         context: 'Context',
         hook_name: str,
-        hook_input_raw: dict | str,
+        hook_input_dict: dict | str,
 ) -> DclHookInput:
+    """
+    Create the hook_input which are keys supplied in the hook definition that inform how
+     the hook should be compiled. All the fields are serialized with the extra vars
+     being the inputs to the hook.
+    """
     # Apply overrides to hook_input_raw
-    hook_input_raw = update_input_context(
-        input_dict=hook_input_raw,
+    hook_input_dict = update_input_dict(
+        input_dict=hook_input_dict,
         update_dict=context.data.overrides,
     )
 
     # Implement inheritance
-    if 'extends' in hook_input_raw and hook_input_raw['extends'] is not None:
-        hook_input_raw = hook_extends(
+    if 'extends' in hook_input_dict and hook_input_dict['extends'] is not None:
+        hook_input_dict = hook_extends(
             context=context,
             func_name=hook_name,
-            func_dict=hook_input_raw,
+            func_dict=hook_input_dict,
         )
 
     try:
-        hook_input = DclHookInput(**hook_input_raw)
-    except ValidationError:
+        hook_input = DclHookInput(**hook_input_dict)
+    except ValidationError as e:
         raise exceptions.HookParseException(
-            "", context=context
+            f"Invalid input for creating hook=`{hook_name}`. \n {e}",
+            context=context
         )
 
     if hook_input.exec_ is not None and isinstance(hook_input.exec_, dict):
         # Update exec with overrides
-        hook_input.exec_ = update_input_context(
+        hook_input.exec_ = update_input_dict(
             input_dict=hook_input.exec_,
             update_dict=context.data.overrides,
         )
 
-    # validators
+    # Validators
     if hook_input.validators is not None:
         for k, _ in hook_input.validators.items():
             if k not in hook_input.hook_fields_:
@@ -467,25 +524,33 @@ def new_dcl_hook_input(
                 )
             # TODO: give partialmethods on the
             # hook_input.validators[k] = partialmethod(walk_hook_document, context=context)
-            setattr(hook_input.validators, k, partialmethod(walk_hook_document, context=context))
+            setattr(
+                hook_input.validators,
+                k,
+                partialmethod(walk_hook_document, context=context)
+            )
 
     return hook_input
 
 
-def create_declarative_hook(
+def create_dcl_hook(
         context: 'Context',
         hook_name: str,
         hook_input_raw: dict | str,
 ) -> 'Type[BaseHook]':
     """Create a model from the function input dict."""
     # Macro to expand all keys properly so that a field's default can be parsed
-    hook_input_raw = hook_macros(context=context, hook_input_raw=hook_input_raw)
+    hook_input_dict = hook_macros(
+        context=context,
+        hook_input_raw=hook_input_raw,
+        hook_name=hook_name,
+    )
 
-    # Serialize known inputs
+    # Serialize known inputs. Implements extends and
     hook_input = new_dcl_hook_input(
         context=context,
         hook_name=hook_name,
-        hook_input_raw=hook_input_raw,
+        hook_input_dict=hook_input_dict,
     )
 
     # First pass through the func_dict to parse out the methods
@@ -495,24 +560,32 @@ def create_declarative_hook(
         hook_name=hook_name,
     )
 
-    from tackle.models import BaseDclHook
+    # hook_input_types = {k: ( v.annotation, v.default) for k, v in hook_input.__dict__.items()}
+    # hook_input_types = {k: v for k, v in hook_input.__dict__.items()}
+    # hook_input_types = {k: getattr(BaseDclHook, k) for k, v in hook_input.__dict__.items()}
+
     # Create a function with the __module__ default to pydantic.main
     try:
-        Function = create_model(
+        print()
+        Hook = create_model(
             hook_name,
             __base__=BaseDclHook,
+            # __base__=hook_input,
             __config__=hook_input.hook_model_config_,
             __validators__=hook_input.validators,
             hook_type=(str, hook_name),
+            # This is just to preserve the inputs - consider removing
             hook_input=(HookCallInput, hook_input),
-            # hook_fields_set_=hook_input.hook_fields_set_,
+            # **hook_input.__dict__,
+            help=(str, hook_input.help),
+            args=(list, hook_input.args),
             **field_dict,
         )
     except NameError as e:
         if 'shadows a BaseModel attribute' in e.args[0]:
             shadowed_arg = e.args[0].split('\"')[1]
             extra = "a different value"
-            raise exceptions.ShadowedFunctionFieldException(
+            raise exceptions.ShadowedHookFieldException(
                 f"The function field \'{shadowed_arg}\' is reserved. Use {extra}.",
                 function_name=hook_name,
                 context=context,
@@ -524,7 +597,7 @@ def create_declarative_hook(
 
     # Create an 'exec' method on the function that can be called later.
     setattr(
-        Function,
+        Hook,
         'exec',
         partialmethod(hook_walk, hook_input.exec_, hook_input.return_),
     )
@@ -535,10 +608,10 @@ def create_declarative_hook(
     #     no_input=context.no_input,
     # ).wrapped_exec
 
-    return Function
+    return Hook
 
 
-def create_declarative_method(
+def create_dcl_method(
         context: 'Context',
         hook: AnyHookType,
         arg: str,
@@ -555,7 +628,7 @@ def create_declarative_method(
                 method.hook_fields = []
             method.hook_fields.append(i)
 
-    return create_declarative_hook(
+    return create_dcl_hook(
         context=context,
         hook_name=arg,
         hook_input_raw=method.input_raw.copy(),
@@ -588,8 +661,8 @@ def enrich_hook(
             #  for bypassing the processing of args for later logic
             pass
         # If arg in methods, compile hook
-        elif arg in Hook.model_fields and Hook.model_fields[arg].type_ == Callable:
-            Hook = create_declarative_method(
+        elif arg in Hook.model_fields and Hook.model_fields[arg].annotation == Callable:
+            Hook = create_dcl_method(
                 context=context,
                 hook=Hook,
                 arg=args.pop(0)
@@ -618,15 +691,25 @@ def upgrade_lazy_hook(
         hook_type: str,
         Hook: AnyHookType | None,
 ) -> CompiledHookType | None:
+    """
+    Upgrade lazy hooks to compiled hooks.
+
+    TODO: Describe what these are
+    TODO: Hook should be reinserted into hooks so as to avoid duplicate compilation?
+        This is a question as we need to verify using a hook twice doesn't store data
+        in the instantiated hook. Would need to make a copy of the hook potentially
+    """
     if Hook is None:
         return Hook
     # This gets hit when you use an imported declarative hook
     if isinstance(Hook, LazyBaseHook):
-        Hook = create_declarative_hook(
+        Hook = create_dcl_hook(
             context=context,
             hook_name=hook_type,
             hook_input_raw=Hook.input_raw.copy(),
         )
+        # TODO: See if there is any issue reinserting this into the appropriate hook
+        #  access group. Issue is access groups
     elif isinstance(Hook, LazyImportHook):
         import_with_fallback_install(
             context=context,
@@ -637,6 +720,13 @@ def upgrade_lazy_hook(
             context=context,
             hook_type=Hook.hook_type,
         )
+        # Reinserting upgraded hook back in appropriate hook access group
+        #  TODO: Test this
+        # if Hook.is_public:
+        #     context.hooks.public[hook_type] = Hook
+        # else:
+        #     context.hooks.private[hook_type] = Hook
+
     return Hook
 
 
