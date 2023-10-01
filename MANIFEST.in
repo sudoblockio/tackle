@@ -4,7 +4,7 @@ include HISTORY.md
 include LICENSE
 include README.md
 
-recursive-include tackle/providers *
+recursive-include providers *
 recursive-include tackle/utils *
 
 recursive-include tests *
