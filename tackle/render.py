@@ -1,25 +1,18 @@
+from types import MethodType
 import re
-from jinja2 import meta
+from jinja2 import meta, StrictUndefined
 from jinja2.exceptions import UndefinedError, TemplateSyntaxError
 from inspect import signature
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any
 from pydantic import ValidationError
 
-
-# from pydantic.main import BaseModel
-from pydantic import BaseModel
-
-from tackle.models import LazyBaseHook
+from tackle import exceptions
 from tackle.special_vars import special_variables
-from tackle.exceptions import (
-    UnknownTemplateVariableException,
-    MissingTemplateArgsException,
-    MalformedTemplateVariableException,
-)
 from tackle.utils.command import literal_eval
 
 if TYPE_CHECKING:
-    from tackle.models import Context, JinjaHook
+    from typing import Type
+    from tackle.models import Context, BaseHook
 
 
 def render_variable(context: 'Context', raw: Any):
@@ -44,61 +37,35 @@ def render_variable(context: 'Context', raw: Any):
     else:
         return raw
 
+def _wrapped_exec(Hook: 'Type[BaseHook]', *args, **kwargs):
+    """
+    Function that is temporarily inserted into jinja globals so that it is callable
+     when rendering a hook in a jinja template. At this point the uninstantiated hook
+     will have a context object on it which is not normal
+    """
+    from tackle.parser import evaluate_args
 
-def create_jinja_hook(context: 'Context', hook: 'BaseModel') -> 'JinjaHook':
-    """Create a jinja hook which is callable via wrapped_exec."""
-    from tackle.models import JinjaHook, BaseContext
-
-    return JinjaHook(
-        hook=hook,
-        context=BaseContext(
-            input_context=context.input_context,
-            public_context=context.public_context,
-            existing_context=context.existing_context,
-            no_input=context.no_input,
-            calling_directory=context.calling_directory,
-            calling_file=context.calling_file,
-            public_hooks=context.public_hooks,
-            private_hooks=context.private_hooks,
-            key_path=context.key_path,
-            verbose=context.verbose,
-            env_=context.env_,
-            override_context=context.override_context,
-        ),
+    args_list = list(args)
+    for i in args_list:
+        # TODO: RM?
+        if isinstance(i, StrictUndefined):
+            raise exceptions.TooManyTemplateArgsException(
+                "Too many arguments supplied to hook call",
+                context=Hook.context
+            )
+    evaluate_args(
+        args=args_list,
+        hook_dict=kwargs,
+        Hook=Hook,
+        context=Hook.context
     )
 
-
-def add_jinja_hook_methods(
-    context: 'Context',
-    jinja_hook: 'JinjaHook',
-):
-    """Recursively look through hook and add methods to jinja hook so that if"""
-    from tackle.hooks_new import create_function_model
-
-    for k, v in jinja_hook.hook.__fields__.items():
-        if v.type_ == Callable:
-            # Enrich the method with the base attributes
-            for i in jinja_hook.hook.__fields__['function_fields'].default:
-                # Don't override attributes within the method
-                if i not in v.default.input_raw:
-                    v.default.input_raw[i] = jinja_hook.hook.__fields__[
-                        'function_dict'
-                    ].default[i]
-
-            # Build the function with a copy of the dict, so it can be called twice
-            # without losing methods
-            method_base = create_function_model(
-                context=context, func_name=k, func_dict=v.default.input_raw.copy()
-            )
-
-            # Create the jinja method with
-            jinja_method = create_jinja_hook(context, method_base)
-
-            # Add the jinja method's exec as an attribute of the base's wrapped exec so
-            # that it can be called within the jinja globals along with the wrapped exec
-            jinja_method.set_method(k, jinja_method.wrapped_exec)
-
-            add_jinja_hook_methods(context, jinja_method)
+    hook = Hook(
+        context=Hook.context,
+        no_input=Hook.model_fields['no_input'].default | Hook.context.no_input,
+        **kwargs,
+    )
+    return hook.exec()
 
 
 # wrapped_exec calls exec on the `hook` integrating any positional args
@@ -118,9 +85,12 @@ def render_string(context: 'Context', raw: str) -> Any:
         return raw
 
     try:
+        # TODO: Parse out filters based on `|`, check if the filter exists in the env,
+        #  if not, then compile the hook so that it is callable.
+        #  https://github.com/sudoblockio/tackle/issues/85
         template = context.env_.from_string(raw)
     except TemplateSyntaxError as e:
-        raise MalformedTemplateVariableException(
+        raise exceptions.MalformedTemplateVariableException(
             str(e).capitalize() + f" in {raw}", context=context
         ) from None
 
@@ -156,7 +126,7 @@ def render_string(context: 'Context', raw: str) -> Any:
                 # TODO: This should support callable special vars
                 raise NotImplementedError
             else:
-                raise ValueError("This should never happen.")
+                raise Exception("This should never happen...")
         else:
             unknown_variables.append(v)
 
@@ -165,40 +135,34 @@ def render_string(context: 'Context', raw: str) -> Any:
         # Unknown variables can be real unknown variables, preloaded jinja globals or
         # hooks which need to be inserted into the global env so that they can be called
         for i in unknown_variables:
-            if i in context.public_hooks or i in context.private_hooks:
-                from tackle.hooks import get_public_or_private_hook, create_declarative_hook
+            # TODO: We probably need to split here for methods
 
-                hook = get_public_or_private_hook(context, i)
+            if i in context.hooks.public or i in context.hooks.private:
+                from tackle.hooks import get_public_or_private_hook, create_dcl_hook
+
+                Hook = get_public_or_private_hook(context, i)
 
                 # Keep track of the hook put in globals so that it can be removed later
                 used_hooks.append(i)
 
-                if isinstance(hook, LazyBaseHook):
-                    # In this case the hook was imported from the `hooks` directory and
-                    # it needs to be created before being put in the jinja.globals.
-                    hook = create_declarative_hook(
-                        context=context,
-                        hook_name=i,
-                        # Copying allows calling hook twice - TODO: carry over arrow
-                        hook_input_raw=hook.input_raw.copy(),
-                    )
+                # Add context to Hook which is later reinstantiated in _wrapped_exec
+                # Prior attempts at this used a partial which threw an error in jinja
+                # when using args since jinja uses a `context` property which then
+                # threw a duplicate input variable exception to the callable
+                Hook.context = context
+                Hook.wrapped_exec = MethodType(_wrapped_exec, Hook)
 
-                    # Replace the provider hooks with instantiated function
-                    # context.provider_hooks[i] = hook
-                    # TODO: carry over arrow to know where to put hook
-
-                # Create the jinja method with
-                jinja_hook = create_jinja_hook(context, hook)
+                # Old version kept for posterity
+                # _wrapped_exec_with_context = partial(_wrapped_exec, context=context)
+                # Hook.wrapped_exec = MethodType(_wrapped_exec_with_context, Hook)
 
                 # Iterate recursively through hook fields looking for methods as
                 # type Callables and create attributes on their base function so
                 # that those methods can be called individually.
-                add_jinja_hook_methods(context, jinja_hook)
+                # add_jinja_hook_methods(context, jinja_hook)
 
-                # Add the hook to the jinja environment globals along with all hook
-                # methods
-                context.env_.globals[i] = jinja_hook.wrapped_exec
-
+                # Add the callable hook to the jinja environment globals
+                context.env_.globals[i] = Hook.wrapped_exec
             else:
                 # An error will be thrown later when the variable can't be rendered
                 pass
@@ -211,7 +175,7 @@ def render_string(context: 'Context', raw: str) -> Any:
         for i in used_hooks:
             context.env_.globals.pop(i)
 
-        # # TODO: RM?
+        # TODO: RM?
         if rendered_template.startswith('<bound method'):
             # Handle unknown variables that are the same as hook_types issues/55
             raise UndefinedError(
@@ -234,7 +198,7 @@ def render_string(context: 'Context', raw: str) -> Any:
             elif context.existing_context and ambiguous_key in context.existing_context:
                 ambiguous_key_rendered = context.existing_context[ambiguous_key]
             else:
-                raise UnknownTemplateVariableException(
+                raise exceptions.UnknownTemplateVariableException(
                     f"Unknown ambiguous key {ambiguous_key}. Tracking issue at "
                     f"tackle/issues/19",
                     context=context,
@@ -252,12 +216,12 @@ def render_string(context: 'Context', raw: str) -> Any:
         # Raised when the wrong type is provided to a hook
         # TODO: Consider detecting when StrictUndefined is part of e and raise an
         #  UnknownVariable type of error
-        raise UnknownTemplateVariableException(str(e), context=context) from None
+        raise exceptions.UnknownTemplateVariableException(str(e), context=context) from None
     except UndefinedError as e:
-        raise UnknownTemplateVariableException(str(e), context=context) from None
+        raise exceptions.UnknownTemplateVariableException(str(e), context=context) from None
     except ValidationError as e:
         # Raised when the wrong type is provided to a hook
-        raise MissingTemplateArgsException(str(e), context=context) from None
+        raise exceptions.MissingTemplateArgsException(str(e), context=context) from None
 
     # Return the literal type with a few exception handlers
     return literal_eval(rendered_template)
