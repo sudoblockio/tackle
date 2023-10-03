@@ -1,0 +1,13 @@
+
+foo<-:
+  stuff:
+    type: list
+    default:
+      - things
+  exec:
+    in->: var stuff
+    type->: var type(stuff)
+  args: ['stuff']
+
+default->: foo
+with_args->: foo ['bar']

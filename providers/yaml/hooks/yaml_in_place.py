@@ -5,11 +5,9 @@ TODO: https://github.com/sudoblockio/tackle/issues/100
 from ruyaml import YAML
 import re
 import os
-from pydantic import Field
-
 from typing import Union, Dict, List, Any
 
-from tackle.models import BaseHook
+from tackle import BaseHook, Field
 from tackle.utils.dicts import merge
 
 
@@ -19,7 +17,7 @@ class YamlHook(BaseHook):
      in one operation). WIP -> Contributions welcome.
     """
 
-    hook_type: str = 'yaml_in_place'
+    hook_name: str = 'yaml_in_place'
 
     path: str = Field(..., description="The file path to put read or write to.")
     remove: Union[List, str] = Field(
@@ -65,16 +63,18 @@ class YamlHook(BaseHook):
             self.write = True
             pass
         if self.in_place:
+            yaml = YAML()
             # We are modifying in place. Context is read from path
             self.write = True
             with open(self.path, 'r') as f:
-                self.contents = yaml.safe_load(f)
+                self.contents = yaml.load(f)
         elif not self.contents:
+            yaml = YAML()
             # We are reading. Contents is read from path
             self.write = False
             mode = self.mode or 'r'
             with open(self.path, mode) as f:
-                self.contents = yaml.safe_load(f)
+                self.contents = yaml.load(f)
 
     def _append_each_item(self, append_item):
         if isinstance(self.append_keys, str):
@@ -132,6 +132,7 @@ class YamlHook(BaseHook):
 
         if self.write:
             mode = self.mode or 'w'
+            yaml = YAML()
             with open(self.path, mode) as f:
                 yaml.dump(self.contents, f)
                 return self.contents

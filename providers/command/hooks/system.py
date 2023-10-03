@@ -1,12 +1,12 @@
 import os
 
-from tackle.models import BaseHook, Field
+from tackle import BaseHook, Field
 
 
 class OsSystemHook(BaseHook):
     """Run system commands via os.system(command). WIP"""
 
-    hook_type: str = 'os_system'
+    hook_name: str = 'os_system'
 
     command: str = Field(..., description="A shell command.")
     args: list = ['command']

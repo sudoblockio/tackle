@@ -8,7 +8,7 @@ from tackle.exceptions import HookCallException
     # 'list',
     # 'str',
 ])
-def test_hook_while(change_dir, fixture):
+def test_hook_while(fixture):
     """"""
     output = tackle(f'{fixture}.yaml')
     # Assertions in fixture

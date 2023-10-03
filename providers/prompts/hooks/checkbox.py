@@ -4,7 +4,7 @@ from InquirerPy.base.control import Choice
 
 from typing import Union, List, Dict
 
-from tackle.models import BaseHook, Field
+from tackle import BaseHook, Field
 from tackle.utils.dicts import get_readable_key_path
 from tackle import exceptions
 
@@ -18,7 +18,7 @@ class InquirerCheckboxHook(BaseHook):
      list of maps with the key as the question, the value as the output.
     """
 
-    hook_type: str = 'checkbox'
+    hook_name: str = 'checkbox'
 
     message: str = Field(None, description="String message to show when prompting.")
     # default: Any = Field([], description="Default for the return value")

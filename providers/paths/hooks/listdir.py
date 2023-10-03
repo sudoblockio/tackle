@@ -2,13 +2,13 @@ import os
 import re
 from typing import Union
 
-from tackle.models import BaseHook, Field
+from tackle import BaseHook, Field
 
 
 class ListdirHook(BaseHook):
     """Hook for `listdir`. Lists the contents of a directory."""
 
-    hook_type: str = 'listdir'
+    hook_name: str = 'listdir'
     path: str = Field('.', description="Path to directory to list contents.")
     sort: bool = Field(False, description="Boolean to sort the output")
     ignore_hidden: bool = Field(

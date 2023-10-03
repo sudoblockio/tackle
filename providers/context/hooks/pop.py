@@ -10,7 +10,7 @@ class DictPopHook(BaseHook):
     Follows python's [pop](https://docs.python.org/3/tutorial/datastructures.html)
     """
 
-    hook_type: str = 'pop'
+    hook_name: str = 'pop'
 
     # fmt: off
     src: Union[dict, str, list] = Field(

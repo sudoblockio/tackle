@@ -3,7 +3,7 @@ import sys
 from InquirerPy import prompt
 from typing import Any, List, Union
 
-from tackle.models import BaseHook, Field
+from tackle import BaseHook, Field
 from tackle.utils.dicts import get_readable_key_path
 from tackle import exceptions
 
@@ -16,7 +16,7 @@ class InquirerListHook(BaseHook):
      [Source example](https://github.com/kazhala/InquirerPy/blob/master/examples/list.py)
     """
 
-    hook_type: str = 'select'
+    hook_name: str = 'select'
 
     message: str = Field(None, description="String message to show when prompting.")
     choices: Union[List[str], List[dict]] = Field(

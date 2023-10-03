@@ -5,7 +5,7 @@ import shutil
 import os
 
 from tackle.main import tackle
-from tackle.providers.generate.hooks.exceptions import (
+from providers.generate.hooks.exceptions import (
     UndefinedVariableInTemplate,
     GenerateHookTemplateNotFound,
 )
@@ -24,7 +24,7 @@ FIXTURES = [
 
 
 @pytest.mark.parametrize("fixture", FIXTURES)
-def test_provider_system_hook_generate_fixtures(change_dir, fixture):
+def test_provider_system_hook_generate_fixtures(fixture):
     output = tackle(fixture, no_input=True)
     assert not output['init']
 
@@ -42,12 +42,12 @@ ERRORS = [
 
 
 @pytest.mark.parametrize("fixture,error", ERRORS)
-def test_provider_system_hook_generate_error(change_dir, fixture, error):
+def test_provider_system_hook_generate_error(fixture, error):
     with pytest.raises(error):
         tackle(fixture)
 
 
-def test_hook_generate_copy_without_render(change_dir):
+def test_hook_generate_copy_without_render():
     tackle("copy-without-render.yaml")
     yaml = YAML()
     with open(os.path.join('output', '.hidden.yaml')) as f:
@@ -61,7 +61,7 @@ def test_hook_generate_copy_without_render(change_dir):
     shutil.rmtree('output')
 
 
-def test_hook_generate_looped(change_dir):
+def test_hook_generate_looped():
     output = tackle("looped.yaml")
 
     assert len(output['networks']) == 2
@@ -69,14 +69,14 @@ def test_hook_generate_looped(change_dir):
     shutil.rmtree('output')
 
 
-def test_hook_generate_skip_overwrite_files(change_dir):
+def test_hook_generate_skip_overwrite_files():
     """Validate that we can skip rendering a file with `skip_overwrite_files`."""
     output = tackle("skip-overwrite-files.yaml")
 
     assert output['verify']['stuff'] == 'foo'
 
 
-def test_hook_generate_skip_if_file_exists(change_dir):
+def test_hook_generate_skip_if_file_exists():
     """Validate that we can skip rendering a file with `skip_if_file_exists`."""
     output = tackle("skip-overwrite-files.yaml")
 

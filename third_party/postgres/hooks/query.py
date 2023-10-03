@@ -8,7 +8,7 @@ class PostgresQuery(BaseHook):
     as the response.
     """
 
-    hook_type = "postgres_query"
+    hook_name = "postgres_query"
 
     # fmt: off
     query: str = Field(..., description="The query to run.")

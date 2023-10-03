@@ -1,11 +1,11 @@
 """Example."""
-from tackle.models import BaseHook
+from tackle import BaseHook
 
 
 class ThingHook(BaseHook):
     """Do stuff and things."""
 
-    hook_type: str = 'thing'
+    hook_name: str = 'thing'
     stuff: str
 
     def exec(self):

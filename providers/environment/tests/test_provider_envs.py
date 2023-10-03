@@ -15,7 +15,7 @@ def tmp_env_var():
             del os.environ[v]
 
 
-def test_provider_env_hook_envs(change_dir, tmp_env_var):
+def test_provider_env_hook_envs(tmp_env_var):
     if platform.system() == 'Windows':
         # Need to support this later
         pytest.skip()

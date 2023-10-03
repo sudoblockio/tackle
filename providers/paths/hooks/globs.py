@@ -1,13 +1,13 @@
 import sys
 import glob
 
-from tackle.models import BaseHook, Field
+from tackle import BaseHook, Field
 from tackle import exceptions
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from tackle.models import Context
+    from tackle import Context
 
 
 def raise_version_error_msg(field_name, version: int, context: 'Context'):
@@ -23,7 +23,7 @@ class GlobHook(BaseHook):
      that match pathname, which must be a string containing a path specification.
     """
 
-    hook_type: str = 'glob'
+    hook_name: str = 'glob'
     pathname: str = Field(..., description="The path to file or directory")
     root_dir: str = Field(None, description="The root dir to run glob from.")
     dir_fd: int = Field(

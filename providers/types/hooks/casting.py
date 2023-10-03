@@ -1,13 +1,13 @@
 """Data type hook."""
 from typing import Any
-from pydantic import Field
-from tackle.models import BaseHook
+
+from tackle import BaseHook, Field
 
 
 class IntegerHook(BaseHook):
     """Hook for casting a variable to an integer type."""
 
-    hook_type: str = 'int'
+    hook_name: str = 'int'
     input: Any = Field(..., description="Any variable input.", render_by_default=True)
     args: list = ['input']
 
@@ -18,7 +18,7 @@ class IntegerHook(BaseHook):
 class FloatHook(BaseHook):
     """Hook for casting a variable to a float type."""
 
-    hook_type: str = 'float'
+    hook_name: str = 'float'
     input: Any = Field(..., description="Any variable input.", render_by_default=True)
     args: list = ['input']
 
@@ -29,7 +29,7 @@ class FloatHook(BaseHook):
 class BoolHook(BaseHook):
     """Hook for casting a variable to a bool type."""
 
-    hook_type: str = 'bool'
+    hook_name: str = 'bool'
     input: Any = Field(..., description="Any variable input.", render_by_default=True)
     args: list = ['input']
 
@@ -40,7 +40,7 @@ class BoolHook(BaseHook):
 class StrHook(BaseHook):
     """Hook for casting a variable to a string type."""
 
-    hook_type: str = 'str'
+    hook_name: str = 'str'
     input: Any = Field(..., description="Any variable input.", render_by_default=True)
     args: list = ['input']
 

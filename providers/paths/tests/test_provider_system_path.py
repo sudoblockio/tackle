@@ -3,7 +3,7 @@ import os
 from tackle.main import tackle
 
 
-def test_provider_system_hook_path(change_dir):
+def test_provider_system_hook_path():
     context = tackle('parent.yaml')
 
     assert context['path_isdir']
@@ -14,7 +14,7 @@ def test_provider_system_hook_path(change_dir):
     assert context['find_in_parent_fallback'] == context['find_in_parent_dir']
 
 
-def test_provider_system_hook_path_child(change_dir):
+def test_provider_system_hook_path_child():
     context = tackle('child.yaml')
 
     assert len(context['find_in_child']) == 2
@@ -23,14 +23,14 @@ def test_provider_system_hook_path_child(change_dir):
     assert context['isfile']
 
 
-def test_provider_paths_base_dir_name(change_dir):
+def test_provider_paths_base_dir_name():
     output = tackle('base-dir-name.yaml')
 
     assert output['base'] == 'tests'
     assert 'paths' in output['dir']
 
 
-def test_provider_paths_glob(change_dir):
+def test_provider_paths_glob():
     output = tackle('glob.yaml')
 
     assert 'dirs' in output['star']

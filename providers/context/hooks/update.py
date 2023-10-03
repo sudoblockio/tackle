@@ -15,7 +15,7 @@ class DictUpdateHook(BaseHook):
      string / int / float values.
     """
 
-    hook_type: str = 'update'
+    hook_name: str = 'update'
 
     # fmt: off
     src: Union[dict, str, list] = Field(

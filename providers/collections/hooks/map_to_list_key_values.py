@@ -7,7 +7,7 @@
 #      map. Useful for some operations that require maps as lists with these keys.
 #     """
 #
-#     hook_type: str = 'map_to_list_key_values'
+#     hook_name: str = 'map_to_list_key_values'
 #     # fmt: off
 #     src: dict = Field(
 #         ..., description="A map to extract the keys out of.", render_by_default=True)

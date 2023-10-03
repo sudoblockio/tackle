@@ -17,7 +17,7 @@ def clean_files():
             shutil.rmtree(f)
 
 
-def test_provider_system_hook_file(change_dir, clean_files):
+def test_provider_system_hook_file(clean_files):
     tackle('tackle.yaml')
     assert 'thing.yaml' in os.listdir()
     assert 'stuff' in os.listdir()
@@ -25,7 +25,7 @@ def test_provider_system_hook_file(change_dir, clean_files):
     assert len(os.listdir('stuff')) == 3
 
 
-def test_provider_system_hook_file_shred(change_dir, clean_files):
+def test_provider_system_hook_file_shred(clean_files):
     files = ['stuff', 'thing', 'foo']
     for f in files:
         file = open(f, "w")
@@ -47,12 +47,12 @@ def fix_file_perms():
     os.chmod('tackle.yaml', int('0o644', 8))
 
 
-def test_provider_system_hook_file_chmod(change_dir, fix_file_perms):
+def test_provider_system_hook_file_chmod(fix_file_perms):
     tackle('chmod.yaml')
     assert oct(os.stat('tackle.yaml').st_mode)[-3:] == "600"
 
 
-def test_provider_files_remove(change_dir, fix_file_perms):
+def test_provider_files_remove(fix_file_perms):
     o = tackle('remove.yaml')
     assert o['if_file']
     assert not o['not_file']
@@ -60,7 +60,7 @@ def test_provider_files_remove(change_dir, fix_file_perms):
     assert not o['not_files']
 
 
-def test_provider_system_hook_file_file(change_dir):
+def test_provider_system_hook_file_file():
     """Verify file hook can read and write."""
     o = tackle('file.yaml')
     assert os.path.exists('rm.txt')

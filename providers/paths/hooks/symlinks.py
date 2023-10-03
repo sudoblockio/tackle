@@ -1,6 +1,6 @@
 import os
 
-from tackle.models import BaseHook, Field
+from tackle import BaseHook, Field
 
 
 class SymlinkHook(BaseHook):
@@ -9,7 +9,7 @@ class SymlinkHook(BaseHook):
     [`os.symlink`](https://www.geeksforgeeks.org/python-os-symlink-method/)
     """
 
-    hook_type: str = 'symlink'
+    hook_name: str = 'symlink'
     src: str = Field(
         ..., description="String or list of sources, either a directories or files"
     )

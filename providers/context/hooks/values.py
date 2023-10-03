@@ -7,7 +7,7 @@ from tackle.utils.dicts import encode_key_path, nested_get, get_target_and_key
 class DictValuesHook(BaseHook):
     """Hook for returning the values of a dict as a list."""
 
-    hook_type: str = 'values'
+    hook_name: str = 'values'
 
     # fmt: off
     src: Union[dict, str, list] = Field(

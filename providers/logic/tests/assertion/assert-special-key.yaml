@@ -1,0 +1,4 @@
+this: that
+
+assert->: |
+    {{this}} that

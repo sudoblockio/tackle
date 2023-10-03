@@ -11,7 +11,7 @@ def clean_up_outputs():
     os.unlink('dst.yaml')
 
 
-def test_provider_system_hook_symlink_overwrite(change_dir, clean_up_outputs):
+def test_provider_system_hook_symlink_overwrite(clean_up_outputs):
     output = tackle('tackle.yaml', no_input=True)
 
     assert output['read'] == {'foo': 'bar'}

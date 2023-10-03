@@ -6,7 +6,7 @@ import pytest
 
 
 @pytest.fixture()
-def clean_files(change_dir):
+def clean_files():
     """Clean the run."""
     yield
     files = ['output', os.path.join('output', 'foo')]
@@ -17,13 +17,13 @@ def clean_files(change_dir):
             shutil.rmtree(f)
 
 
-def test_provider_system_hook_file(change_dir, clean_files):
+def test_provider_system_hook_file(clean_files):
     o = tackle('tackle.yaml')
     assert os.path.isdir('output')
     assert os.path.exists(o['join'])
 
 
-def test_provider_system_hook_file_args(change_dir, clean_files):
+def test_provider_system_hook_file_args(clean_files):
     o = tackle('tackle.yaml')
     assert os.path.isdir('output')
     assert os.path.exists(o['join'])

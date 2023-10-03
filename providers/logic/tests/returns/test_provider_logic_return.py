@@ -7,7 +7,7 @@ from tackle import tackle
     'render',
     'special-key',
 ])
-def test_hook_return_basic(change_dir, fixture):
+def test_hook_return_basic(fixture):
     output = tackle(f'{fixture}.yaml')
 
     # Output should always just be a true bool

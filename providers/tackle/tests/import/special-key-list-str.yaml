@@ -1,0 +1,11 @@
+import->:
+  - robcxyz/tackle-fixture-released
+  - robcxyz/tackle-fixture-unreleased
+---
+import->:
+  - robcxyz/tackle-fixture-released --latest
+  - robcxyz/tackle-fixture-unreleased
+---
+import->:
+  - robcxyz/tackle-fixture-released --version v0.1.0
+  - robcxyz/tackle-fixture-unreleased

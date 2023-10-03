@@ -10,7 +10,7 @@ class DeleteKeyHook(BaseHook):
      for indexes in a list.
     """
 
-    hook_type: str = 'delete'
+    hook_name: str = 'delete'
     # fmt: off
     path: Union[list, str] = Field(
         ..., description="A list or string with a separator for the path to the value "

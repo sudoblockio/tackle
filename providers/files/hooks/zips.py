@@ -1,13 +1,11 @@
 """Terraform hooks."""
 from __future__ import print_function
 from __future__ import unicode_literals
-
 import logging
 import os
 import zipfile
-from pydantic import Field
 
-from tackle.models import BaseHook
+from tackle import BaseHook, Field
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +13,7 @@ logger = logging.getLogger(__name__)
 class ZipHook(BaseHook):
     """Hook to zip a file or directory."""
 
-    hook_type: str = 'zipfile'
+    hook_name: str = 'zipfile'
 
     input: str = Field(..., description="Input path")
     output: str = Field(..., description="Output path")
@@ -38,7 +36,7 @@ class ZipHook(BaseHook):
 class UnzipHook(BaseHook):
     """Hook to unzip a file."""
 
-    hook_type: str = 'unzipfile'
+    hook_name: str = 'unzipfile'
 
     input: str = Field(..., description="Input path")
     output: str = Field(".", description="Output path, default to current directory")

@@ -1,12 +1,12 @@
 from typing import List
 
-from tackle.models import BaseHook, Field
+from tackle import BaseHook, Field
 
 
 class SplitHook(BaseHook):
     """Hook for splitting a string into as list based on a separator."""
 
-    hook_type: str = 'split'
+    hook_name: str = 'split'
 
     input: str = Field(..., description="A string to split into a list")
     separator: str = Field("/", description="String separator")
@@ -21,7 +21,7 @@ class SplitHook(BaseHook):
 class JoinHook(BaseHook):
     """Join a list of strings with a separator."""
 
-    hook_type: str = 'join'
+    hook_name: str = 'join'
 
     input: List[str] = Field(
         ..., description="A list of strings to join.", render_by_default=True

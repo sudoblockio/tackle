@@ -15,7 +15,7 @@ class MatchHook(BaseHook):
      away. All matched values are ran as hooks.
     """
 
-    hook_type: str = 'match'
+    hook_name: str = 'match'
     value: str = Field(
         ...,
         render_by_default=True,

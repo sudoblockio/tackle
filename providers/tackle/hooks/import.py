@@ -2,14 +2,13 @@ import os
 from typing import Any
 from pydantic import BaseModel, Field
 
-from tackle.models import BaseHook
-from tackle.imports import import_hooks_from_hooks_directory
+from tackle import BaseHook
+from tackle.imports import import_hooks_from_hooks_directory, import_hooks_from_file
 from tackle.utils.vcs import get_repo_source
 
 
 class RepoSource(BaseModel):
     """Repo object."""
-
     src: str
     version: str = None
 
@@ -22,7 +21,7 @@ class ImportHook(BaseHook):
      `version` import targets.
     """
 
-    hook_type: str = 'import'
+    hook_name: str = 'import2'
     src: Any = Field(..., description="A str/list/dict as above.")
     version: str = Field(None, description="Version of src for remote imports.")
     args: list = ['src']
@@ -47,7 +46,8 @@ class ImportHook(BaseHook):
         elif isinstance(self.src, list):
             for i in self.src:
                 if isinstance(i, str):
-                    import_from_path(self, i)
+                    # import_hooks_from_file(context=self.context, i)
+                    pass
                 if isinstance(i, dict):
                     # dict types validated above and transposed through same logic
                     repo_source = RepoSource(**i)
@@ -63,6 +63,7 @@ class ImportHook(BaseHook):
             # Don't even check if path is directory as one would never use a dict here
             repo_source = RepoSource(**self.src)
             provider_dir = get_repo_source(
-                repo=repo_source.src, repo_version=repo_source.version
+                repo=repo_source.src,
+                repo_version=repo_source.version,
             )
             self.provider_hooks.import_from_path(provider_path=provider_dir)

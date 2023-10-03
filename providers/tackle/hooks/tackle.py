@@ -2,16 +2,16 @@ from pydantic import SecretStr
 from typing import Union
 
 import tackle as tkl
-from tackle.models import BaseHook, Field
+from tackle import BaseHook, Field
 
 
 class TackleHook(BaseHook):
     """Hook for calling external tackle providers."""
 
-    hook_type: str = 'tackle'
+    hook_name: str = 'tackle'
 
     # fmt: off
-    input_string: str = Field(
+    input_arg: str = Field(
         None,
         description="The input can be one of repo, file path, directory with "
                     "tackle.yaml, zip file, or if left blank parent tackle file."
@@ -28,10 +28,10 @@ class TackleHook(BaseHook):
     extra_context: dict = Field(
         None,
         description="Any additional context to use when calling the hook. Like existing context.")
-    context: dict = Field(
-        None,
-        description="A context to use that overrides the current context."
-    )
+    # context: dict = Field(
+    #     None,
+    #     description="A context to use that overrides the current context."
+    # )
     password: SecretStr = Field(None, description="A password to use for repo inputs.")
     directory: str = Field(
         None,
@@ -51,11 +51,15 @@ class TackleHook(BaseHook):
     )
     # fmt: on
 
-    args: list = ['input_string', 'additional_args']
+    args: list = ['input_arg', 'additional_args']
     kwargs: str = 'override'
     _docs_order = 0
 
     def exec(self) -> dict:
+        if self.input_arg is None:
+            # If not given, assume we're looking for default tackle file in current dir
+            self.input_arg = '.'
+
         existing_context = {}
 
         if self.override != {}:
@@ -64,20 +68,17 @@ class TackleHook(BaseHook):
             # (allowing for calling of declarative hooks with args / kwargs)
             existing_context.update(self.override)
 
-        if self.context:
-            existing_context.update(self.context)
+        if self.context.data.existing:
+            existing_context.update(self.context.data.existing)
 
-        if self.existing_context:
-            existing_context.update(self.existing_context)
+        if self.context.data.temporary:
+            existing_context.update(self.context.data.temporary)
 
-        if self.temporary_context:
-            existing_context.update(self.temporary_context)
+        # if self.private_context:
+        #     existing_context.update(self.private_context)
 
-        if self.private_context:
-            existing_context.update(self.private_context)
-
-        if self.public_context:
-            existing_context.update(self.public_context)
+        if self.context.data.public:
+            existing_context.update(self.context.data.public)
 
         if self.extra_context:
             existing_context.update(self.extra_context)
@@ -86,24 +87,22 @@ class TackleHook(BaseHook):
             self.additional_args = [self.additional_args]
 
         output_context = tkl.main.tackle(
-            self.input_string,
+            self.input_arg,
             checkout=self.checkout,
             latest=self.latest,
-            password=self.password,
             directory=self.directory,
-            calling_directory=self.calling_directory,
-            calling_file=self.calling_file,
-            # Evaluated
-            existing_context=existing_context,
-            # Implicit
-            public_hooks=self.public_hooks,
-            private_hooks=self.private_hooks,
             no_input=self.no_input,
-            global_kwargs=self.override,
-            global_args=self.additional_args,
             find_in_parent=self.find_in_parent,
-            verbose=self.verbose,
-            override_context=self.override_context,
+            verbose=self.context.verbose,
+            overrides=self.override,
+            existing_data=existing_context,
+            # Evaluated
+            # existing_context=existing_context,
+            _paths=self.context.path,
+            _data=self.context.data.__copy__(),
+            # Implicit
+            _hooks=self.context.hooks,
         )
+
 
         return output_context

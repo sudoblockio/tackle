@@ -7,65 +7,65 @@ from tackle import BaseHook, Field
 
 
 class DebugHook(BaseHook):
-    """Hook for debugging that prints the output context and pauses runtime."""
+    """Hook for debugging that prints the output data and pauses runtime."""
 
-    hook_type: str = 'debug'
+    hook_name: str = 'debug'
     key: str = Field(None, description="A path to a key to debug")
-    context: str = Field(
+    data: str = Field(
         None,
-        description="Which context to examine. One of `public`, `private`, "
+        description="Which data to examine. One of `public`, `private`, "
         "`temporary`, or `existing`. Omit for all.",
     )
 
-    _contexts: list = ['public', 'private', 'temporary', 'existing']
+    _datas: list = ['public', 'private', 'temporary', 'existing']
 
     args: list = ['key']
 
-    def print_key(self, print_context):
+    def print_key(self, print_data):
         if self.key is not None:
-            if self.key in print_context:
-                pprint(print_context[self.key])
+            if self.key in print_data:
+                pprint(print_data[self.key])
                 return True
             else:
                 return False
         else:
-            pprint(print_context[self.key])
+            pprint(print_data[self.key])
 
-    def print_context(self, print_context, context_name: str):
-        print(f"[bold magenta]{context_name.title()} Context[/bold magenta]")
+    def print_data(self, print_data, data_name: str):
+        print(f"[bold magenta]{data_name.title()} Context[/bold magenta]")
 
         # TODO: Improve this -> The builtin pprint is better now since it does the
         #  first level as the top level keys.
-        # pretty = Pretty(dict(print_context))
+        # pretty = Pretty(dict(print_data))
         # panel = Panel(pretty)
         # print(panel)
-        pprint(print_context)
+        pprint(print_data)
 
     def exec(self) -> None:
-        print(f"Debug at key_path={self.key_path}")
-        if self.context is not None:
-            if self.context in self._contexts:
-                output = getattr(self, f'{self.context}_context')
+        print(f"Debug at key_path={self.context.key_path}")
+        if self.data is not None:
+            if self.data in self._datas:
+                output = getattr(self, f'{self.data}_data')
                 if output is not None:
-                    self.print_context(output, self.context)
+                    self.print_data(output, self.data)
                 else:
-                    print(f"Debugging {self.context} not possible because it is empty.")
+                    print(f"Debugging {self.data} not possible because it is empty.")
             else:
                 print(
-                    f"Input context in debug hook `{self.context}` must be one of "
+                    f"Input data in debug hook `{self.data}` must be one of "
                     f"`public`, `private`, `temporary`, or `existing`"
                 )
         else:
             printed = None
-            for i in self._contexts:
-                output = getattr(self, f'{i}_context')
+            for i in self._datas:
+                output = getattr(self.context.data, f'{i}')
                 if output is not None and output != {}:
                     if self.key is not None:
                         if self.key in output:
-                            self.print_context(output[self.key], i)
+                            self.print_data(output[self.key], i)
                             printed = True
                     else:
-                        self.print_context(output, i)
+                        self.print_data(output, i)
                 else:
                     continue
 

@@ -1,6 +1,6 @@
 import re
 
-from tackle.models import BaseHook, Field
+from tackle import BaseHook, Field
 
 
 class StartsWithHook(BaseHook):
@@ -9,7 +9,7 @@ class StartsWithHook(BaseHook):
     [Docs](https://www.tutorialspoint.com/python/string_startswith.htm)
     """
 
-    hook_type: str = 'starts_with'
+    hook_name: str = 'starts_with'
 
     input: str = Field(..., description="A string to check")
     match: str = Field(..., description="The chars to match")
@@ -38,7 +38,7 @@ class EndsWithHook(BaseHook):
     [Docs](https://www.tutorialspoint.com/python/string_startswith.htm)
     """
 
-    hook_type: str = 'ends_with'
+    hook_name: str = 'ends_with'
 
     input: str = Field(..., description="A string to check")
     match: str = Field(..., description="The chars to match")
@@ -67,7 +67,7 @@ class RegexMatchHook(BaseHook):
     [Docs](https://docs.python.org/3/library/re.html#re.match)
     """
 
-    hook_type: str = 'regex_match'
+    hook_name: str = 'regex_match'
 
     pattern: str = Field(..., description="A regex pattern to check.")
     string: str = Field(..., description="A string to check.")

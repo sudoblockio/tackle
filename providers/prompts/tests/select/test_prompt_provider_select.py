@@ -3,7 +3,7 @@
 # # TODO: https://github.com/sudoblockio/tackle/issues/46
 #
 #
-# def test_provider_select_list_this(change_dir, mocker):
+# def test_provider_select_list_this(mocker):
 #     mocker.patch(
 #         'tackle.providers.prompts.hooks.select.prompt', return_value={"tmp": "things"}
 #     )
@@ -11,7 +11,7 @@
 #     assert output['selection'] == 'things'
 #
 #
-# def test_provider_select_list(change_dir, mocker):
+# def test_provider_select_list(mocker):
 #     mocker.patch(
 #         'tackle.providers.prompts.hooks.select.prompt', return_value={"tmp": "things"}
 #     )
@@ -19,7 +19,7 @@
 #     assert output['selection'] == 'things'
 #
 #
-# def test_provider_select_list_index(change_dir, mocker):
+# def test_provider_select_list_index(mocker):
 #     mocker.patch(
 #         'tackle.providers.prompts.hooks.select.prompt', return_value={"tmp": "things"}
 #     )
@@ -27,7 +27,7 @@
 #     assert output['selection'] == 1
 #
 #
-# def test_provider_select_map(change_dir, mocker):
+# def test_provider_select_map(mocker):
 #     mocker.patch(
 #         'tackle.providers.prompts.hooks.select.prompt',
 #         return_value={"tmp": "I do things"},
@@ -36,7 +36,7 @@
 #     assert output['selection'] == 'things'
 #
 #
-# def test_provider_select_map_index(change_dir, mocker):
+# def test_provider_select_map_index(mocker):
 #     mocker.patch(
 #         'tackle.providers.prompts.hooks.select.prompt',
 #         return_value={"tmp": "I do things"},
@@ -45,7 +45,7 @@
 #     assert output['selection'] == 1
 
 
-# def test_provider_select_no_msg(change_dir, mocker):
+# def test_provider_select_no_msg(mocker):
 #     mocker.patch(
 #         'tackle.providers.prompts.hooks.select.prompt', return_value={"tmp": "things"}
 #     )

@@ -8,7 +8,7 @@ from tackle.models import BaseHook, Field
 
 class GraphQlHook(BaseHook):
     """Hook to call graphql queries."""
-    hook_type: str = 'graphql'
+    hook_name: str = 'graphql'
     url: str = Field(
         None,
         description="",

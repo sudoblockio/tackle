@@ -6,7 +6,7 @@
 #     Hook for github raw content.
 #     """
 #
-#     hook_type: str = 'github_raw'
+#     hook_name: str = 'github_raw'
 #
 #     org: str = Field(None, description="The github username or org.")
 #     repo: str = Field(None, description="The repo name.")

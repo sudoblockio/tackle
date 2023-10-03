@@ -18,7 +18,8 @@ short->: "{{a_list}}"
 
 tpl: "{{a_var_that_doesnt_exist}}"
 
-embed->: var tpl --no_recursion
+embed_bare->: var tpl --no_recursion
+embed->: var {{tpl}} --no_recursion
 
 list_of_lists:
   ->: var

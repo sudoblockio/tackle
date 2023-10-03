@@ -7,10 +7,9 @@ import shutil
 import os
 from itertools import chain
 from select import select
-from pydantic import Field
 from typing import Any
 
-from tackle.models import BaseHook
+from tackle import BaseHook, Field
 from tackle.exceptions import HookCallException
 
 if os.name != 'nt':
@@ -33,7 +32,7 @@ class CommandFailedException(Exception):
 class CommandHook(BaseHook):
     """Run system commands."""
 
-    hook_type: str = 'command'
+    hook_name: str = 'command'
 
     command: str = Field(..., description="A shell command.")
     ignore_error: bool = Field(False, description="Ignore errors.")
@@ -133,7 +132,7 @@ class CommandHook(BaseHook):
 # class CommandHook(BaseHook):
 #     """System commands."""
 #
-#     hook_type: str = 'command'
+#     hook_name: str = 'command'
 #
 #     command: str = Field(..., description="A shell command.")
 #     ignore_error: bool = Field(False, description="Ignore errors.")

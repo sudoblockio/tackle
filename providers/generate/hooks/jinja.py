@@ -13,7 +13,7 @@ class JinjaHook(BaseHook):
      a file, otherwise the rendered contents are output as a string.
     """
 
-    hook_type: str = 'jinja'
+    hook_name: str = 'jinja'
     # fmt: off
     template: str = Field(...,
                           description="Path to the template to render relative to `file_system_loader`.")

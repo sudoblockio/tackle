@@ -15,7 +15,7 @@ def clean_things():
         os.remove('things.py')
 
 
-def test_provider_system_hook_jinja(change_dir, clean_things):
+def test_provider_system_hook_jinja(clean_things):
     context = tackle()
     assert context['foo'] == 'bar'
     yaml = YAML()
@@ -24,7 +24,7 @@ def test_provider_system_hook_jinja(change_dir, clean_things):
     assert output == "x = 'bar'"
 
 
-def test_provider_system_hook_jinja_existing_context(change_dir, clean_things):
+def test_provider_system_hook_jinja_existing_context(clean_things):
     context = tackle('existing-context.yaml')
     assert context['foo'] == 'bar'
     yaml = YAML()

@@ -1,12 +1,12 @@
 from typing import Any
 
-from tackle.models import BaseHook, Field
+from tackle import BaseHook, Field
 
 
 class LiteralHook(BaseHook):
     """Literally return the input."""
 
-    hook_type: str = 'literal'
+    hook_name: str = 'literal'
     input: Any = Field(..., description="Any variable input.")
 
     args: list = ['input']

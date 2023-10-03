@@ -7,7 +7,7 @@ from tackle import BaseHook, Field
 class DateTimeNowHook(BaseHook):
     """Hook for updating dict objects with items."""
 
-    hook_type: str = 'date_now'
+    hook_name: str = 'date_now'
     format: str = Field(
         "%m-%d-%Y",
         description="Date time formatting per [the official docs](https://docs.python.org/2/library/datetime.html#strftime-and-strptime-behavior)",

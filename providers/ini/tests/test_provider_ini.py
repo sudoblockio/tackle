@@ -4,7 +4,7 @@ from tackle.main import tackle
 
 
 @pytest.fixture()
-def clean_outputs(change_dir):
+def clean_outputs():
     """Remove all the files prefixed with output before and after test."""
     files = [f for f in os.listdir() if f.split('.')[0].startswith('output')]
     for f in files:
@@ -15,7 +15,7 @@ def clean_outputs(change_dir):
         os.remove(f)
 
 
-def test_provider_ini_read(change_dir, clean_outputs):
+def test_provider_ini_read(clean_outputs):
     output = tackle()
     assert os.path.exists('output.ini')
     assert output['read']['section']['stuff'] == 'things'

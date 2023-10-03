@@ -2,13 +2,13 @@ from rich.console import Console
 from rich.table import Table
 from typing import List, Any
 
-from tackle.models import BaseHook, Field
+from tackle import BaseHook, Field
 
 
 class TableHook(BaseHook):
     """Hook for creating tables with rich - github.com/willmcgugan/rich."""
 
-    hook_type: str = 'table'
+    hook_name: str = 'table'
 
     column_names: List = Field([], description="List of column names")
     sort: bool = Field(False, description="Boolean to sort contents or contents_split")

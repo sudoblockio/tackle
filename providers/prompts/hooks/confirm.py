@@ -1,7 +1,7 @@
 import sys
 from InquirerPy import prompt
 
-from tackle.models import BaseHook, Field
+from tackle import BaseHook, Field
 from tackle.utils.dicts import get_readable_key_path
 from tackle import exceptions
 
@@ -12,7 +12,7 @@ class InquirerConfirmHook(BaseHook):
      [Source example](https://github.com/kazhala/InquirerPy/blob/master/examples/confirm.py)
     """
 
-    hook_type: str = 'confirm'
+    hook_name: str = 'confirm'
 
     default: bool = Field(True, description="Default choice.")
     message: str = Field(None, description="String message to show when prompting.")

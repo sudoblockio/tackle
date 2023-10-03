@@ -1,7 +1,6 @@
 from typing import Any
-from pydantic import Field
 
-from tackle.models import BaseHook
+from tackle import BaseHook, Field
 from tackle.render import render_variable
 
 
@@ -11,17 +10,21 @@ class VarHook(BaseHook):
      otherwise you wouldn't need this hook at all. Does recursion when the value being
      rendered is still renderable - ie a template within a template.
     """
-
-    hook_type: str = 'var'
-    input: Any = Field(..., description="Any variable input.", render_by_default=True)
+    hook_name: str = 'var'
+    input: Any = Field(
+        ...,
+        description="Any variable input.",
+        render_by_default=True,
+    )
     no_recursion: bool = Field(
-        False, description="Don't recursively render embedded templates."
+        False,
+        description="Don't recursively render embedded templates."
     )
 
     args: list = ['input']
 
     def _render_var(self, input) -> Any:
-        output = render_variable(self, input)
+        output = render_variable(context=self.context, raw=input)
         if output == input:
             return output
         else:

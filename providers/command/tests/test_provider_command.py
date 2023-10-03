@@ -11,7 +11,7 @@ if os.name == 'nt':
 
 
 # No idea why this fails - same command...
-# def test_provider_system_hook_command(change_dir):
+# def test_provider_system_hook_command():
 #     context = tackle('list-dir.yaml')
 #     assert context['cmd'] == context['cmd_arg']
 
@@ -21,7 +21,7 @@ if os.name == 'nt':
 @pytest.mark.skipif(
     sys.platform == 'darwin', reason="https://github.com/sudoblockio/tackle/issues/71"
 )
-def test_provider_system_hook_command_multi_line(change_dir):
+def test_provider_system_hook_command_multi_line():
     output = tackle('multi-line-cmd.yaml')
     assert output['multiline'].startswith('stuff and thing')
     assert output['singleline'].startswith('stuff and thing')
@@ -33,21 +33,21 @@ def test_provider_system_hook_command_multi_line(change_dir):
 #     assert o
 
 
-# def test_provider_system_hook_shell_exit(change_dir):
+# def test_provider_system_hook_shell_exit():
 #     with pytest.raises(FileNotFoundError):
 #         tackle('exit.yaml')
 #
 #
-# def test_provider_system_hook_shell_exit_long(change_dir):
+# def test_provider_system_hook_shell_exit_long():
 #     with pytest.raises(HookCallException):
 #         tackle('exit-long.yaml')
 
 
-def test_provider_system_hook_shell_exit_ignore(change_dir):
+def test_provider_system_hook_shell_exit_ignore():
     o = tackle('exit-ignore.yaml')
     assert o
 
 
-def test_provider_system_hook_command_exit_ignore(change_dir):
+def test_provider_system_hook_command_exit_ignore():
     o = tackle('exit-ignore.yaml')
     assert o

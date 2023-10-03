@@ -2,7 +2,7 @@ import random
 import string
 from pydantic import validator
 
-from tackle.models import BaseHook, Field
+from tackle import BaseHook, Field
 from tackle.exceptions import HookCallException
 
 
@@ -11,7 +11,7 @@ class RandomStringHook(BaseHook):
 
     # TODO: Update this interface?  Rm string_case replace with --lower/upper flag?
 
-    hook_type: str = 'random_string'
+    hook_name: str = 'random_string'
     length: int = Field(8, description="Length of the random string.")
     case: str = Field('lower', description="Case of output, one of `upper` or `lower`")
     upper: bool = Field(False, description="Flag for upper case. Overrides `case`.")
@@ -44,7 +44,7 @@ class RandomStringHook(BaseHook):
 class RandomHexHook(BaseHook):
     """Hook  for `random_hex`. Lists the contents of a directory."""
 
-    hook_type: str = 'random_hex'
+    hook_name: str = 'random_hex'
     length: int = Field(8, description="Number for number of digits - default 8")
 
     args: list = ['length']

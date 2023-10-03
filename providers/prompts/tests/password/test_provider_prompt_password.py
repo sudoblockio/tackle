@@ -2,7 +2,7 @@
 #
 # # TODO: https://github.com/sudoblockio/tackle/issues/46
 #
-# def test_provider_prompts_password_hook(change_dir, mocker):
+# def test_provider_prompts_password_hook(mocker):
 #     mocker.patch(
 #         'tackle.providers.prompts.hooks.password.prompt', return_value={"tmp": True}
 #     )

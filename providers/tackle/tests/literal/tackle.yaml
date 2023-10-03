@@ -1,0 +1,4 @@
+t:
+  ->: literal foo
+
+g_>: literal foo

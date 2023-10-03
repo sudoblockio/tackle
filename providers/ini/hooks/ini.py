@@ -2,7 +2,7 @@ import os
 import configparser
 from typing import Union
 
-from tackle.models import BaseHook, Field
+from tackle import BaseHook, Field
 
 
 class IniHook(BaseHook):
@@ -11,7 +11,7 @@ class IniHook(BaseHook):
      provided, otherwise it writes the `data` to `path`.
     """
 
-    hook_type: str = 'ini'
+    hook_name: str = 'ini'
     path: str = Field(..., description="The file path to put read or write to.")
     data: Union[dict, list, str] = Field(
         None,

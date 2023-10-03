@@ -2,7 +2,7 @@ import json
 import os
 from typing import Union
 
-from tackle.models import BaseHook, Field
+from tackle import BaseHook, Field
 
 
 class JsonHook(BaseHook):
@@ -11,7 +11,7 @@ class JsonHook(BaseHook):
      provided, otherwise it writes the `data` to `path`.
     """
 
-    hook_type: str = 'json'
+    hook_name: str = 'json'
     path: str = Field(..., description="The file path to put read or write to.")
     data: Union[dict, list, str] = Field(
         None,
@@ -42,7 +42,7 @@ class JsonifyHook(BaseHook):
      provided, otherwise it writes the `data` to `path`.
     """
 
-    hook_type: str = 'jsonify'
+    hook_name: str = 'jsonify'
     data: Union[dict, list, str] = Field(
         ...,
         description="Map/list or renderable string to a map/list key to write.",

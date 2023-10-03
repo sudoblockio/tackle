@@ -5,7 +5,7 @@ import paramiko
 class SshInteractiveQuery(BaseHook):
     """Interactive shell session hook."""
 
-    hook_type = "ssh_interactive"
+    hook_name = "ssh_interactive"
 
     # fmt: off
     host: str = Field(None, description="Host address.")

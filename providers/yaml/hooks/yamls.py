@@ -3,7 +3,7 @@ from ruyaml.composer import ComposerError
 import os
 from typing import Union
 
-from tackle.models import BaseHook, Field
+from tackle import BaseHook, Field
 
 
 class YamlHook(BaseHook):
@@ -11,7 +11,7 @@ class YamlHook(BaseHook):
     Hook for reading and writing yaml. Hook reads from `path` if no `data` field is
      provided, otherwise it writes the `data` to `path`.
     """
-    hook_type: str = 'yaml'
+    hook_name: str = 'yaml'
     path: str = Field(..., description="The file path to put read or write to.")
     data: Union[dict, list, str] = Field(
         None,
@@ -53,7 +53,7 @@ class YamlHook(BaseHook):
 class YamlEncodeHook(BaseHook):
     """Hook for converting a dict to a yaml encoded string."""
 
-    hook_type: str = 'yamlencode'
+    hook_name: str = 'yamlencode'
     data: Union[dict, list, str] = Field(
         ...,
         description="Map/list or renderable string to data to convert to yaml string.",
@@ -76,7 +76,7 @@ class YamlEncodeHook(BaseHook):
 class YamlDecodeHook(BaseHook):
     """Hook for decoding a yaml string to a dict."""
 
-    hook_type: str = 'yamldecode'
+    hook_name: str = 'yamldecode'
     data: str = Field(..., description="Yaml string to convert to dict.")
     args: list = ['data']
 

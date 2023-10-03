@@ -2,7 +2,7 @@ import sys
 from InquirerPy import prompt
 
 from typing import Any
-from tackle.models import BaseHook, Field
+from tackle import BaseHook, Field
 from tackle.utils.dicts import get_readable_key_path
 from tackle import exceptions
 
@@ -13,7 +13,7 @@ class InquirerRawListHook(BaseHook):
     flexibility. [Source example](https://github.com/kazhala/InquirerPy/blob/master/examples/rawlist.py)
     """
 
-    hook_type: str = 'rawlist'
+    hook_name: str = 'rawlist'
 
     default: Any = Field(None, description="Default choice.")
     message: str = Field(None, description="String message to show when prompting.")
@@ -27,7 +27,7 @@ class InquirerRawListHook(BaseHook):
 
         if not self.no_input:
             question = {
-                'type': self.hook_type,
+                'type': self.hook_name,
                 'name': 'tmp',
                 'message': self.message,
                 'choices': self.choices,

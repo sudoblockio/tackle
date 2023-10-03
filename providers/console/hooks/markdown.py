@@ -7,7 +7,7 @@ from tackle import BaseHook, Field
 class MarkdownPrintHook(BaseHook):
     """Hook for printing markdown and returning the output."""
 
-    hook_type: str = 'markdown'
+    hook_name: str = 'markdown'
     text: str = Field(..., description="The text to render as markdown.")
     justify: str = Field(
         None, description="Justify value for paragraphs. Defaults to None."

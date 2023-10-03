@@ -1,7 +1,7 @@
 from tackle import tackle
 
 
-def test_provider_system_hook_listdir(change_dir):
+def test_provider_system_hook_listdir():
     output = tackle()
 
     assert len(output['string_input']) == 3

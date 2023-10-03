@@ -2,14 +2,14 @@
 from tackle.main import tackle
 
 
-def test_provider_strings_split(change_dir):
+def test_provider_strings_split():
     output = tackle('split.yaml')
 
     assert output['compact'] == output['expanded']
     assert output['compact'][0] == 'stuff'
 
 
-def test_provider_strings_join(change_dir):
+def test_provider_strings_join():
     output = tackle('join.yaml')
 
     assert output['a_str'] == ['things', 'stuffs']

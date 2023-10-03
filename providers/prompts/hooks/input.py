@@ -2,7 +2,7 @@ import sys
 from InquirerPy import prompt
 
 from typing import Any
-from tackle.models import BaseHook, Field
+from tackle import BaseHook, Field
 from tackle.utils.dicts import get_readable_key_path
 from tackle import exceptions
 
@@ -13,7 +13,7 @@ class InquirerInputHook(BaseHook):
      [Source example](https://github.com/kazhala/InquirerPy/blob/master/examples/input.py)
     """
 
-    hook_type: str = 'input'
+    hook_name: str = 'input'
 
     message: str = Field(None, description="String message to show when prompting.")
     default: Any = Field(None, description="Default choice.")
@@ -44,7 +44,7 @@ class InquirerInputHook(BaseHook):
                 print("Exiting...")
                 sys.exit(0)
             except EOFError:
-                raise exceptions.PromptHookCallException(context=self)
+                raise exceptions.PromptHookCallException(context=self.context)
             return response['tmp']
 
         elif self.default:

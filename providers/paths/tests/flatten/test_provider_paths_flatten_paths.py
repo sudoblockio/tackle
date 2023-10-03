@@ -1,7 +1,7 @@
 from tackle.main import tackle
 
 
-def test_provider_paths_flatten(change_dir):
+def test_provider_paths_flatten():
     output = tackle()
     assert output['flattened'][0] == 'one/baz/stuff.yaml'
     assert output['flattened'][9] == 'complex/alist/another_list/things.py'

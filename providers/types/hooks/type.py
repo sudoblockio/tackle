@@ -1,15 +1,19 @@
 """Data type hook."""
 from typing import Any
-from pydantic import Field
-from tackle.models import BaseHook
+
+from tackle import BaseHook, Field
 
 
 class TypeHook(BaseHook):
     """Hook for getting the type of a variable."""
 
-    hook_type: str = 'type'
+    hook_name: str = 'type'
 
-    input: Any = Field(..., description="Any variable input.", render_by_default=True)
+    input: Any = Field(
+        ...,
+        description="Any variable input.",
+        render_by_default=True,
+    )
 
     args: list = ['input']
 

@@ -1,14 +1,13 @@
 import os.path
 import fnmatch
 from typing import Union
-from pydantic import Field
 from pathlib import Path
 from jinja2 import FileSystemLoader
 from jinja2.exceptions import UndefinedError
 import shutil
 from typing import List
 
-from tackle.models import BaseHook
+from tackle import BaseHook, Field
 from .exceptions import (
     UndefinedVariableInTemplate,
     GenerateHookTemplateNotFound,
@@ -25,7 +24,7 @@ class GenerateHook(BaseHook):
      separators.
     """
 
-    hook_type: str = 'generate'
+    hook_name: str = 'generate'
     # fmt: off
     templates: Union[str, list] = Field(
         "templates",
@@ -78,11 +77,13 @@ class GenerateHook(BaseHook):
         if 'nt' in os.name:
             self.file_path_separator_ = '\\'
             if not self.output.startswith('\\'):
-                self.output = os.path.join(self.calling_directory, self.output)
+                self.output = os.path.join(
+                    self.context.path.calling.directory, self.output)
         else:
             self.file_path_separator_ = '/'
             if not self.output.startswith('/'):
-                self.output = os.path.join(self.calling_directory, self.output)
+                self.output = os.path.join(
+                    self.context.path.calling.directory, self.output)
 
     def _init_context(self):
         # Update the render_context that will be used
@@ -90,10 +91,10 @@ class GenerateHook(BaseHook):
             return
 
         # fmt: off
-        existing_context = self.existing_context if self.existing_context is not None else {}
-        temporary_context = self.temporary_context if self.temporary_context is not None else {}
-        private_context = self.private_context if self.private_context is not None else {}
-        public_context = self.public_context if self.public_context is not None else {}
+        existing_context = self.context.data.existing if self.context.data.temporary is not None else {}
+        temporary_context = self.context.data.temporary if self.context.data.temporary is not None else {}
+        private_context = self.context.data.private if self.context.data.private is not None else {}
+        public_context = self.context.data.public if self.context.data.public is not None else {}
         # fmt: on
 
         self.render_context = {
@@ -118,9 +119,9 @@ class GenerateHook(BaseHook):
         # https://stackoverflow.com/questions/42368678/jinja-environment-is-not-supporting-absolute-paths
         # Need to add root to support absolute paths
         if isinstance(self.file_system_loader, str):
-            self.env_.loader = FileSystemLoader([self.file_system_loader, '/'])
+            self.context.env_.loader = FileSystemLoader([self.file_system_loader, '/'])
         else:
-            self.env_.loader = FileSystemLoader(self.file_system_loader + ['/'])
+            self.context.env_.loader = FileSystemLoader(self.file_system_loader + ['/'])
 
         if isinstance(self.templates, str):
             self.generate_target(self.templates)
@@ -184,7 +185,7 @@ class GenerateHook(BaseHook):
 
         # Render the path right away as templating mangles things later - also logical
         # to render file names.  Who wants to generate files with templates in the name?
-        file_name_template = self.env_.from_string(str(output_path))
+        file_name_template = self.context.env_.from_string(str(output_path))
         try:
             output_path = file_name_template.render(self.render_context)
         except UndefinedError as e:
@@ -201,7 +202,7 @@ class GenerateHook(BaseHook):
             return
 
         try:
-            file_contents_template = self.env_.get_template(os.path.abspath(input_file))
+            file_contents_template = self.context.env_.get_template(os.path.abspath(input_file))
         except UnicodeDecodeError:
             # Catch binary files with this hack and copy them over
             # TODO: Perhaps improve? In cookiecutter they used a package binary-or-not

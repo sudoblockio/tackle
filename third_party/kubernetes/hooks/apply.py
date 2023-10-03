@@ -6,7 +6,7 @@ from tackle.models import BaseHook, Field
 class K8sApplyHook(BaseHook):
     """Hook for getting current kubeconfig context."""
 
-    hook_type: str = 'k8s_apply'
+    hook_name: str = 'k8s_apply'
 
     yaml_dir: str = Field(...)
 

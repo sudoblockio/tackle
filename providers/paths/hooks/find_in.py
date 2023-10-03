@@ -1,12 +1,10 @@
 import os
 from typing import Any, TYPE_CHECKING
-from pydantic import Field
 
-from tackle import BaseHook
-from tackle import exceptions
+from tackle import BaseHook, Field, exceptions
 
 if TYPE_CHECKING:
-    from tackle.models_new import Context
+    from tackle import Context
 
 
 def find_in_parent(
@@ -29,6 +27,7 @@ def find_in_parent(
                 context=context,
             )
     return find_in_parent(
+        context=context,
         dir=os.path.dirname(os.path.abspath(dir)),
         targets=targets,
         fallback=fallback,
@@ -38,7 +37,7 @@ def find_in_parent(
 class FindInParentHook(BaseHook):
     """Hook to find the absolute path to a file or directory in parent directories."""
 
-    hook_type: str = 'find_in_parent'
+    hook_name: str = 'find_in_parent'
     target: str = Field(
         ..., description="The name of the file to find the absolute path to"
     )
@@ -64,7 +63,7 @@ class FindInParentHook(BaseHook):
 class FindInChildHook(BaseHook):
     """Hook to find the absolute path to a file or directory in child directories."""
 
-    hook_type: str = 'find_in_child'
+    hook_name: str = 'find_in_child'
     target: str = Field(
         ..., description="The name of the file to find the absolute path to"
     )

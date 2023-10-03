@@ -6,11 +6,11 @@ from tackle import BaseHook, Field
 class ConcatenateHook(BaseHook):
     """Hook for concatenating a list of items."""
 
-    hook_type: str = 'concat'
-    # fmt: off
+    hook_name: str = 'concat'
     src: list = Field(
-        ..., description="A list to concatenate the items of.", render_by_default=True)
-    # fmt: on
+        ...,
+        description="A list to concatenate the items of.",
+        render_by_default=True)
 
     args: list = ['src']
 

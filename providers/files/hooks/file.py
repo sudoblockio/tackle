@@ -5,7 +5,7 @@ import shutil
 from distutils.dir_util import copy_tree
 from typing import List, Union, Any, Optional
 
-from tackle.models import BaseHook, Field
+from tackle import BaseHook, Field
 from tackle.exceptions import HookCallException
 
 
@@ -32,7 +32,7 @@ def expand_path(path):
 class CopyHook(BaseHook):
     """Hook coying a file/files or directory/directories to a location."""
 
-    hook_type: str = 'copy'
+    hook_name: str = 'copy'
     src: Union[List, str] = Field(
         ..., description="String or list of sources, either a directories or files"
     )
@@ -68,7 +68,7 @@ class CopyHook(BaseHook):
 class MoveHook(BaseHook):
     """Hook  for moving a directory or directories to a location."""
 
-    hook_type: str = 'move'
+    hook_name: str = 'move'
     src: Union[List, str] = Field(
         ..., description="String or list of sources, either directories or files"
     )
@@ -99,7 +99,7 @@ class MoveHook(BaseHook):
 class RemoveHook(BaseHook):
     """Hook for removing a directory or directories."""
 
-    hook_type: str = 'remove'
+    hook_name: str = 'remove'
     path: Union[List, str] = Field(
         ..., description="String or list of paths to remove."
     )
@@ -145,7 +145,7 @@ def wipe(f, passes=30):
 class ShredHook(BaseHook):
     """Hook for shredding file/files."""
 
-    hook_type: str = 'shred'
+    hook_name: str = 'shred'
     src: Union[List, str] = Field(
         ..., description="String or list of sources, either directories or files"
     )
@@ -167,7 +167,7 @@ class ShredHook(BaseHook):
 class ChmodHook(BaseHook):
     """Hook for changing the mode of a path or paths."""
 
-    hook_type: str = 'chmod'
+    hook_name: str = 'chmod'
     path: Union[str, list] = Field(
         ..., description="String or list of paths, either directories or files."
     )
@@ -193,7 +193,7 @@ class ChmodHook(BaseHook):
 class CreateFileHook(BaseHook):
     """Hook to create an empty file - like touch."""
 
-    hook_type: str = 'create_file'
+    hook_name: str = 'create_file'
     path: Union[str, list] = Field(
         ..., description="String or list of paths to create files at."
     )
@@ -213,7 +213,7 @@ class CreateFileHook(BaseHook):
 class FileHook(BaseHook):
     """Hook to read or write a file."""
 
-    hook_type: str = 'file'
+    hook_name: str = 'file'
     path: str = Field(
         ..., description="Path to read a file or write file if contents are given."
     )

@@ -12,7 +12,7 @@ class SortHook(BaseHook):
      output.
     """
 
-    hook_type: str = 'sort'
+    hook_name: str = 'sort'
     # fmt: off
     src: Union[list, dict, str] = Field(
         ...,
@@ -88,7 +88,7 @@ class SortHook(BaseHook):
         for i in contexts:
             try:
                 value = nested_get(
-                    element=getattr(self, f'{i}_context'),
+                    element=getattr(self.context.data, i),
                     keys=encode_key_path(self.src, self.sep),
                 )
             except KeyError:

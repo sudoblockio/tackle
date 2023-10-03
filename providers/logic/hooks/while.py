@@ -1,6 +1,6 @@
 from typing import Union
 
-from tackle.models import Context, BaseHook, Field
+from tackle import Context, BaseHook, Field
 from tackle.parser import walk_document
 from tackle.render import render_string
 from tackle.exceptions import HookCallException
@@ -15,7 +15,7 @@ class MatchHook(BaseHook):
     Not Implemented yet.
     """
 
-    hook_type: str = 'while'
+    hook_name: str = 'while'
     condition: str = Field(
         ..., description="A jinja expression to evaluated on each pass through `run`."
     )

@@ -1,6 +1,6 @@
 import webbrowser
 
-from tackle.models import BaseHook, Field
+from tackle import BaseHook, Field
 
 
 class WebBrowserHook(BaseHook):
@@ -10,7 +10,7 @@ class WebBrowserHook(BaseHook):
      module.
     """
 
-    hook_type: str = 'webbrowser'
+    hook_name: str = 'webbrowser'
     # fmt: off
     url: str = Field(..., description="String url to open in browser.")
     new: int = Field(0, description="If new is 1, a new browser window is opened if possible. If new is 2, a new browser page (“tab”) is opened if possible.")

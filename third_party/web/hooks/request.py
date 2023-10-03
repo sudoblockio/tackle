@@ -7,7 +7,7 @@ from pydantic import BaseModel
 import requests
 from requests.auth import HTTPBasicAuth
 
-from tackle.models import BaseHook, Field
+from tackle import BaseHook, Field
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +46,7 @@ class RequestsGetHook(BaseHook, AuthMixin):
     [Link](https://docs.python-requests.org/en/latest/api/#requests.get)
     """
 
-    hook_type: str = 'http_get'
+    hook_name: str = 'http_get'
 
     # fmt: off
     url: str = Field(..., description="URL for the new request object.")
@@ -79,7 +79,7 @@ class RequestsPostHook(BaseHook, AuthMixin):
     [Link](https://docs.python-requests.org/en/latest/api/#requests.post)
     """
 
-    hook_type: str = 'http_post'
+    hook_name: str = 'http_post'
 
     # fmt: off
     url: str = Field(..., description="URL for the new request object.")
@@ -126,7 +126,7 @@ class RequestsPutHook(BaseHook, AuthMixin):
     [Link](https://docs.python-requests.org/en/latest/api/#requests.put)
     """
 
-    hook_type: str = 'http_put'
+    hook_name: str = 'http_put'
 
     # fmt: on
     url: str = Field(..., description="URL for the new request object.")
@@ -169,7 +169,7 @@ class RequestsPatchHook(BaseHook, AuthMixin):
     [Link](https://docs.python-requests.org/en/latest/api/#requests.patch)
     """
 
-    hook_type: str = 'http_patch'
+    hook_name: str = 'http_patch'
 
     # fmt: off
     url: str = Field(..., description="URL for the new request object.")
@@ -214,7 +214,7 @@ class RequestsDeleteHook(BaseHook, AuthMixin):
     [Link](https://docs.python-requests.org/en/latest/api/#requests.delete)
     """
 
-    hook_type: str = 'http_delete'
+    hook_name: str = 'http_delete'
 
     # fmt: off
     url: str = Field(..., description="URL for the new request object.")

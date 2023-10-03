@@ -2,7 +2,7 @@ import pytest
 from tackle import tackle
 from tackle import exceptions
 
-def test_hook_match_loop(change_dir):
+def test_hook_match_loop():
     """Run a loop of different match cases."""
     output = tackle('loop.yaml')
     assert output["matches"][0]
@@ -15,7 +15,7 @@ def test_hook_match_loop(change_dir):
     assert output["matches"][5] == 'compact'
 
 
-def test_hook_match_block_match_block(change_dir):
+def test_hook_match_block_match_block():
     """Check that we can maintain correct context with match in nested blocks."""
     output = tackle('block-match-block.yaml')
     assert len(output['block']) == 5  # 5 keys
@@ -26,7 +26,7 @@ def test_hook_match_block_match_block(change_dir):
     assert output['block_loop']['matches'] == output['block_loop']['check']
 
 
-def test_hook_match_block_loop_match_block(change_dir):
+def test_hook_match_block_loop_match_block():
     """Check that we can merge from a looped block into a looped match."""
     output = tackle('block-loop-match-block.yaml')
     assert len(output['block']) == 2
@@ -37,27 +37,27 @@ def test_hook_match_block_loop_match_block(change_dir):
     assert output['block_loop'][1]['matches'][0]['iter'] == 3
 
 
-def test_hook_match_case_dict(change_dir):
+def test_hook_match_case_dict():
     """Make sure dicts without plain arrows in key are simply passed."""
     output = tackle('case-dict.yaml')
     assert output['matches']['foo->'] == "{{bar}}"
 
 
-def test_hook_match_case_block_loop(change_dir):
+def test_hook_match_case_block_loop():
     """Check that we can do match within a loop of a block."""
     o = tackle('case-block-loop.yaml')
     # Assertions in file
     assert o
 
 
-def test_hook_match_case_block(change_dir):
+def test_hook_match_case_block():
     """Check that we can do match within a loop of a block."""
     o = tackle('case-block.yaml')
     # Assertions in file
     assert o
 
 
-def test_hook_match_case_block_if(change_dir):
+def test_hook_match_case_block_if():
     """Check that any kind of first level block makes sense."""
     output = tackle('case-block-if.yaml')
     # Assertions in fixture
@@ -67,14 +67,14 @@ def test_hook_match_case_block_if(change_dir):
     # assert output['matches_false'] == {}
 
 
-def test_hook_match_case_dict_hooks(change_dir):
+def test_hook_match_case_dict_hooks():
     """Check that with dicts we can render hooks."""
     output = tackle('case-dict-hooks.yaml')
     # Assertions in file
     assert output
 
 
-def test_hook_match_case_block_merge(change_dir):
+def test_hook_match_case_block_merge():
     """
     Check that we can do a merge from a block which is the same as a merge from top
      level hook call.
@@ -85,7 +85,7 @@ def test_hook_match_case_block_merge(change_dir):
     assert len(o) == 3
 
 
-def test_hook_match_cases(change_dir):
+def test_hook_match_cases():
     """Validate that regex matches work."""
     output = tackle('cases.yaml')
     assert output['matched_dict'] == 'this'

@@ -2,5 +2,5 @@ tackle:
   ->: tackle https://github.com/robcxyz/tackle
   directory: tackle/providers/tackle/tests/tackle
   context_file: local.yaml
-  existing_context:
-    foo: bing
+#  existing_context:
+#    foo: bing

@@ -7,7 +7,7 @@ from tackle.utils.dicts import nested_get, encode_key_path, get_target_and_key
 class ListAppendHook(BaseHook):
     """Hook for updating dict objects with items."""
 
-    hook_type: str = 'append'
+    hook_name: str = 'append'
     # fmt: off
     src: Union[list, str] = Field(
         ..., description="A list append to and output the result or a str with "
