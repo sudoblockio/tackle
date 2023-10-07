@@ -1206,74 +1206,57 @@ def parse_input_args_for_hooks(context: 'Context'):
         )
 
 
-def get_declarative_hooks(context: 'Context'):
-    """
-    Iterates through all the keys of the raw_input and creates the default, public, or
-     private hooks lazily.
-    """
-    for k, v in context.data.hooks_input.items():
-        function_name = k[:-2]
-        arrow = k[-2:]
-        dcl_hook = LazyBaseHook(
-            input_raw=v,
-            is_public=True if arrow == '<-' else False,
-        )
-        if function_name == "":
-            # dcl_hook is the default hook
-            context.hooks.default = dcl_hook
-        elif arrow == '<-':  # public hook
-            context.hooks.public[function_name] = dcl_hook
-        elif arrow == '<_':  # private hook
-            context.hooks.private[function_name] = dcl_hook
-        else:
-            raise Exception("This should never happen")
-
-
 def split_input_data(context: 'Context'):
     """
-    Split the raw_input from a tackle file into pre/post_input objects if the data is an
-     object skipping if it is a list.
+    Split the raw_input from a tackle file into pre/post_input objects along with
+     pulling out any declarative hooks and putting them into the public / private keys
+     of the hooks class.
 
-     pre_input - data before the last hook definition
-     post_input - data after the last hook definition
+     pre_input - data before the first hook definition
+     post_input - data after the first hook definition
 
-     This allows us to import hooks so that they are available before the args/kwargs
-     are used to evaluate them. See TODO [docs]
+     This allows us to import hooks on the top of a document so that they are available
+     for use before the hooks are compiles and the args/kwargs are used to call them.
+     See TODO [docs]
     """
-    context.data.hooks_input = {}
-    if isinstance(context.data.raw_input, dict):
-        context.data.pre_input = {}
-        context.data.post_input = {}
-
-    elif isinstance(context.data.raw_input, list):
-        # List inputs won't be helpful in the pre input data so ignoring
-        context.data.pre_input = []
-        context.data.post_input = context.data.raw_input
-        # Dcl hooks can only be defined in objects, not lists unless there is some
-        # good reason to support that. Nothing else to do here
+    if isinstance(context.data.raw_input, list):
+        # Nothing to do. Our input is a list and no hooks or pre/post data can be built
+        # TODO: When parsing yaml - check if we have a split document (ie with `---`)
+        #  which will be read as a list in which case we need to split that up somehow
         return
     else:
         raise Exception("This should never happen")
 
-    # Left with dict that we will now split into pre input, dcl hooks, and post input
-    pre_data_buffer = {}
+    pre_data_flag = True
     for k, v in context.data.raw_input.items():
-        # Check if it has a left arrow (hook definition)
-        if re.match(r'^[a-zA-Z0-9\_]*(<\-|<\_)$', k):  # noqa
-            context.data.hooks_input.update({k: v})
-            # Clear the buffer
-            context.data.pre_input.update(pre_data_buffer)
-            pre_data_buffer = {}
+        hook_flag = re.match(r'^[a-zA-Z0-9\_]*(<\-|<\_)$', k)  # noqa
+        if pre_data_flag and not hook_flag:
+            context.data.pre_input.update({k: v})
+        elif hook_flag:
+            pre_data_flag = False
+            function_name = k[:-2]
+            arrow = k[-2:]
+            dcl_hook = LazyBaseHook(
+                input_raw=v,
+                is_public=True if arrow == '<-' else False,
+            )
+            if function_name == "":
+                # dcl_hook is the default hook
+                context.hooks.default = dcl_hook
+            elif arrow == '<-':  # public hook
+                context.hooks.public[function_name] = dcl_hook
+            elif arrow == '<_':  # private hook
+                context.hooks.private[function_name] = dcl_hook
+            else:
+                raise Exception("This should never happen")
         else:
-            pre_data_buffer.update({k: v})
-    # All remaining data must be declared after the last hook so part of post_input
-    context.data.post_input = pre_data_buffer
+            context.data.post_input.update({k: v})
 
 
 def parse_context(context: 'Context', call_hooks: bool = True):
     """
-    Main entrypoint to parsing a context. Called without the hooks arg normally, with
-     hooks arg when importing declarative hooks from provider.
+    Main entrypoint to parsing a context. When importing tackle providers, we don't want
+     to call_hooks so it is set to false. Otherwise, we might call hooks (ie true).
     """
     # Split the input data so that the pre/post inputs are separated from the hooks
     split_input_data(context=context)
@@ -1282,7 +1265,6 @@ def parse_context(context: 'Context', call_hooks: bool = True):
         context.data.input = context.data.pre_input
         walk_document(context=context, value=context.data.pre_input)
     # Get the remaining declarative hooks out of the context
-    get_declarative_hooks(context=context)
     if call_hooks:  # Run except on import
         # We give hooks on import and don't want to evaluate args then
         parse_input_args_for_hooks(context=context)  # Evaluate args for calling hooks
