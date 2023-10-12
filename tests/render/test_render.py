@@ -1,10 +1,9 @@
 import pytest
 
 from tackle.models import Context
-from tackle.render import render_string
+from tackle.render import render_string, add_jinja_hook_to_jinja_globals
 from tackle import tackle
 from tackle.utils.files import read_config_file
-
 
 RENDERABLES = [
     # This test relates to https://github.com/pallets/jinja/issues/1580 where if we have
@@ -38,18 +37,61 @@ FILES = [
 
 
 @pytest.mark.parametrize("file,expected_output", FILES)
-def test_render_files(change_curdir_fixtures, file, expected_output):
+def test_render_files(cd_fixtures, file, expected_output):
     o = tackle(file)
     expected_output = dict(read_config_file(expected_output))
     assert o == expected_output
 
 
-def test_render_hook_call_multiple(change_curdir_fixtures):
+METHOD_ADD_FIXTURES = [
+    ("no_exec", "{{no_exec()}}", "{'foo': 'bar'}"),
+    ("no_exec", "{{no_exec(foo='baz')}}", "{'foo': 'baz'}"),
+    ("no_exec_arg", "{{no_exec_arg('baz')}}", "{'foo': 'baz'}"),
+    ("with_exec", "{{with_exec()}}", "{'baz': 'bar'}"),
+    ("with_exec", "{{with_exec(foo='bar')}}", "{'baz': 'bar'}"),
+    ("with_exec", "{{with_exec('bar')}}", "{'baz': 'bar'}"),
+    ("with_method", "{{with_method.a_method()}}", "{'bin': 'bar', 'din': 'ban'}"),
+    ("with_method", "{{with_method.a_method('fin')}}", "{'bin': 'fin', 'din': 'ban'}"),
+    (
+        "with_method",
+        "{{with_method.a_method(foo='fin')}}",
+        "{'bin': 'fin', 'din': 'ban'}"
+    ),
+    (
+        "with_method_multiple_args",
+        "{{with_method_multiple_args.a_method('fin')}}",
+        "{'bin': 'bar', 'din': 'fin'}"
+    ),
+    (
+        "embedded_methods",
+        "{{embedded_methods.a_method.b_method('fin')}}",
+        "{'bin': 'bar', 'din': 'ban', 'lin': 'fin'}"
+    ),
+]
+
+
+@pytest.mark.parametrize("hook_name,render_input,expected_output",METHOD_ADD_FIXTURES)
+def test_render_add_jinja_hook_to_jinja_globals(
+        cd_fixtures,
+        hook_name,
+        render_input,
+        expected_output,
+):
+    context = tackle('jinja-hook-insert.yaml', return_context=True)
+    add_jinja_hook_to_jinja_globals(context=context, hook_name=hook_name, used_hooks=[])
+    template = context.env_.from_string(render_input)
+    rendered_template = template.render({})
+
+    assert context.env_.globals[hook_name]
+    assert rendered_template == expected_output
+
+
+def test_render_hook_call_multiple(cd_fixtures):
     """
     Check that when we run a hook multiple times, that we don't carry over the prior
-    hook calls arguments which may not be instantiated on the second hook call. This
-    happens when the hook that was called is left in the jinja env's globals and not
-    removed which makes the hook not an `unknown_variable` so it uses the prior args.
+     hook calls arguments which may not be instantiated on the second hook call. This
+     happens when the hook that was called is left in the jinja env's globals and not
+     removed which makes the hook not an `unknown_variable` so it uses the prior args.
     """
     o = tackle('multiple-hook-renders.yaml')
     assert o['first'] == "foo,stuff"

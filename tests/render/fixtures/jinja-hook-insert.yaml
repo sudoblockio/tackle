@@ -1,0 +1,43 @@
+no_exec<-:
+  foo: bar
+
+no_exec_arg<-:
+  foo: bar
+  args: ['foo']
+
+with_exec<-:
+  foo: bar
+  args: ['foo']
+  exec:
+    baz->: "{{foo}}"
+
+with_method<-:
+  foo: bar
+  a_method<-:
+    baz: ban
+    args: ['foo']
+    exec:
+      bin->: "{{foo}}"
+      din->: "{{baz}}"
+
+with_method_multiple_args<-:
+  foo: bar
+  args: ['foo']
+  a_method<-:
+    baz: ban
+    args: ['baz']
+    exec:
+      bin->: "{{foo}}"
+      din->: "{{baz}}"
+
+embedded_methods<-:
+  foo: bar
+  a_method<-:
+    baz: ban
+    b_method<-:
+      faz: ban
+      args: ['faz']
+      exec:
+        bin->: "{{foo}}"
+        din->: "{{baz}}"
+        lin->: "{{faz}}"
