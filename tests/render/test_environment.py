@@ -12,7 +12,7 @@ def test_env_should_come_with_default_extensions():
     # assert 'get' in c.env_.filters
 
 
-def test_env_should_evaluate_is_defined(change_curdir_fixtures):
+def test_env_should_evaluate_is_defined(cd_fixtures):
     """Verify that the `is defined` works when rendering."""
     o = tackle('is-defined.yaml', no_input=True)
     assert 'defined' in o

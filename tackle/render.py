@@ -40,6 +40,11 @@ def create_render_context(
         context: 'Context',
         variables: set[str],
 ) -> (dict, list[str]):
+    """
+    Take the unknown variables and build a dict used for rendering these variables by
+     checking in the various data objects for keys that can be used for rendering.
+     Descending priorities = temporary, public, private, existing, special_variables
+    """
     render_context = {}
     unknown_variables = []
     for v in variables:
@@ -165,6 +170,53 @@ def add_jinja_hook_to_jinja_globals(
         context.env_.globals[hook_name] = jinja_hook
 
 
+def handle_ambiguous_keys(
+        context: 'Context',
+        rendered_template: str,
+        used_hooks: list[str],
+) -> str:
+    """
+    After rendering a string, we need to check if the user mistakenly rendered a jinja
+     globals callable like `namespace` or `range` which could be in context.data.*.
+    """
+    # TODO: RM?
+    if rendered_template.startswith('<tackle.render.JinjaHook object at 0x'):
+        # Handle unknown variables that are the same as hook_name issues/55
+        raise UndefinedError(
+            f"A variable `{'/'.join(used_hooks)}` is the same as a hook and either not"
+            f" declared as a variable or doesn't have arguments. Consider changing."
+        )
+
+    # Check for ambiguous globals like `namespace`
+    # TODO: tackle/issues/19 -> This is hacky af... Need to redo this with visitor
+    match = re.search(r'\<class \'(.+?)\'>', rendered_template)
+    if match:
+        ambiguous_key = match.group(1).split('.')[-1].lower()
+        if context.data.temporary and ambiguous_key in context.data.temporary:
+            ambiguous_key_rendered = context.temporary_context[ambiguous_key]
+        elif ambiguous_key in context.data.public:
+            ambiguous_key_rendered = context.data.public[ambiguous_key]
+        elif context.data.private and ambiguous_key in context.private_context:
+            ambiguous_key_rendered = context.data.private[ambiguous_key]
+        elif context.data.existing and ambiguous_key in context.data.existing:
+            ambiguous_key_rendered = context.data.existing[ambiguous_key]
+        else:
+            raise exceptions.UnknownTemplateVariableException(
+                f"Unknown ambiguous key {ambiguous_key}. Tracking issue at "
+                f"tackle/issues/19",
+                context=context,
+            ) from None
+        if isinstance(ambiguous_key_rendered, str):
+            rendered_template = (
+                    rendered_template[: match.regs[0][0]]
+                    + ambiguous_key_rendered
+                    + rendered_template[match.regs[0][1]:]
+            )
+        else:
+            rendered_template = ambiguous_key_rendered
+    return rendered_template
+
+
 def render_string(context: 'Context', raw: str) -> Any:
     """
     Render strings by first extracting renderable variables then build a render context
@@ -223,56 +275,28 @@ def render_string(context: 'Context', raw: str) -> Any:
         # have not been re-instantiated.
         for i in used_hooks:
             context.env_.globals.pop(i)
-
-        # TODO: RM?
-        if rendered_template.startswith('<bound method'):
-            # Handle unknown variables that are the same as hook_name issues/55
-            raise UndefinedError(
-                f"A variable `{'/'.join(used_hooks)}` is the same as "
-                f"a hook and either not declared as a variable or "
-                f"doesn't have arguments. Consider changing."
-            )
-
-        # Check for ambiguous globals like `namespace`
-        # TODO: tackle/issues/19 -> This is hacky af... Need to redo this with visitor
-        match = re.search(r'\<class \'(.+?)\'>', rendered_template)
-        if match:
-            ambiguous_key = match.group(1).split('.')[-1].lower()
-            if context.data.temporary and ambiguous_key in context.data.temporary:
-                ambiguous_key_rendered = context.temporary_context[ambiguous_key]
-            elif ambiguous_key in context.data.public:
-                ambiguous_key_rendered = context.data.public[ambiguous_key]
-            elif context.data.private and ambiguous_key in context.private_context:
-                ambiguous_key_rendered = context.data.private[ambiguous_key]
-            elif context.data.existing and ambiguous_key in context.data.existing:
-                ambiguous_key_rendered = context.data.existing[ambiguous_key]
-            else:
-                raise exceptions.UnknownTemplateVariableException(
-                    f"Unknown ambiguous key {ambiguous_key}. Tracking issue at "
-                    f"tackle/issues/19",
-                    context=context,
-                ) from None
-            if isinstance(ambiguous_key_rendered, str):
-                rendered_template = (
-                        rendered_template[: match.regs[0][0]]
-                        + ambiguous_key_rendered
-                        + rendered_template[match.regs[0][1]:]
-                )
-            else:
-                rendered_template = ambiguous_key_rendered
+        # Hacky function to handle keys that are the same as jinja globals like
+        # namespace or range - These could actually be renderable from context.data
+        rendered_template = handle_ambiguous_keys(
+            context=context,
+            rendered_template=rendered_template,
+            used_hooks=used_hooks,
+        )
 
     except TypeError as e:
         # Raised when the wrong type is provided to a hook
         # TODO: Consider detecting when StrictUndefined is part of e and raise an
         #  UnknownVariable type of error
-        raise exceptions.UnknownTemplateVariableException(str(e),
-                                                          context=context) from None
+        raise exceptions.UnknownTemplateVariableException(
+            str(e), context=context
+        ) from None
     except UndefinedError as e:
-        raise exceptions.UnknownTemplateVariableException(str(e),
-                                                          context=context) from None
+        raise exceptions.UnknownTemplateVariableException(
+            str(e),
+            context=context
+        ) from None
     except ValidationError as e:
         # Raised when the wrong type is provided to a hook
         raise exceptions.MissingTemplateArgsException(str(e), context=context) from None
-
     # Return the literal type with a few exception handlers
     return literal_eval(rendered_template)
