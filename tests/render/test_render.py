@@ -1,8 +1,8 @@
 import pytest
 
-from tackle.models import Context
 from tackle.render import render_string, add_jinja_hook_to_jinja_globals
 from tackle import tackle
+from tackle.factory import new_context
 from tackle.utils.files import read_config_file
 
 RENDERABLES = [
@@ -15,14 +15,14 @@ RENDERABLES = [
     # Normal
     ({'adict': {'stuff': 'things'}}, '{{adict}}', {'stuff': 'things'}),
     ({'list': ['stuff', 'things']}, '{{list}}', ['stuff', 'things']),
-    # Dashes don't work ->
+    # Dashes don't work...
     # ({'a-dash': 'dash'}, '{{a-dash}}', 'dash'),
 ]
 
 
 @pytest.mark.parametrize("input_context,raw,expected_output", RENDERABLES)
 def test_render_string_inputs(input_context, raw, expected_output):
-    context = Context(public_context=input_context)
+    context = new_context(existing_data=input_context)
     output = render_string(context=context, raw=raw)
 
     assert output == expected_output

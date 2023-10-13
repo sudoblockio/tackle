@@ -151,8 +151,11 @@ def add_jinja_hook_to_jinja_globals(
         # Create a JinjaHook class which will house the Hook and have a __call__ method
         jinja_hook = JinjaHook(Hook=Hook, context=context)
 
-        # Add any methods which could exist but are not known until they are called
-        add_jinja_hook_methods(context=context, jinja_hook=jinja_hook)
+        # Only compile methods for jinja hooks which so happen to have hook_method_set
+        # TODO: Clean this up when we wrap hooks with callable classes
+        if 'hook_method_set' in Hook.model_fields:
+            # Add any methods which could exist but are not known until they are called
+            add_jinja_hook_methods(context=context, jinja_hook=jinja_hook)
 
         # Keep track of the hook put in globals so that it can be removed later
         # because each time you call a hook it could be compiled differently
@@ -235,14 +238,14 @@ def render_string(context: 'Context', raw: str) -> Any:
         match = re.search(r'\<class \'(.+?)\'>', rendered_template)
         if match:
             ambiguous_key = match.group(1).split('.')[-1].lower()
-            if context.temporary_context and ambiguous_key in context.temporary_context:
+            if context.data.temporary and ambiguous_key in context.data.temporary:
                 ambiguous_key_rendered = context.temporary_context[ambiguous_key]
-            elif ambiguous_key in context.public_context:
-                ambiguous_key_rendered = context.public_context[ambiguous_key]
-            elif context.private_context and ambiguous_key in context.private_context:
-                ambiguous_key_rendered = context.private_context[ambiguous_key]
-            elif context.existing_context and ambiguous_key in context.existing_context:
-                ambiguous_key_rendered = context.existing_context[ambiguous_key]
+            elif ambiguous_key in context.data.public:
+                ambiguous_key_rendered = context.data.public[ambiguous_key]
+            elif context.data.private and ambiguous_key in context.private_context:
+                ambiguous_key_rendered = context.data.private[ambiguous_key]
+            elif context.data.existing and ambiguous_key in context.data.existing:
+                ambiguous_key_rendered = context.data.existing[ambiguous_key]
             else:
                 raise exceptions.UnknownTemplateVariableException(
                     f"Unknown ambiguous key {ambiguous_key}. Tracking issue at "
