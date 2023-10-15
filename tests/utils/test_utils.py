@@ -240,7 +240,7 @@ def test_prompt_should_not_ask_if_no_input_and_rm_repo_file(mocker, tmp_path):
         ]
     ),
 )
-def test_valid_read_config_file(valid_config_file, change_curdir_fixtures):
+def test_valid_read_config_file(valid_config_file, cd_fixtures):
     """Validate generic reader works properly."""
     output = tackle.utils.files.read_config_file(valid_config_file)
     assert output == {'project_slug': 'best_eva', 'stuff': 'things'}

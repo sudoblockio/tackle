@@ -64,14 +64,13 @@ def import_python_hooks_from_file(
     for k, v in mod.__dict__.items():
         if is_base_hook_subclass(key=k, value=v):
             if v.model_fields['is_public'].default:
-                context.hooks.public[v.model_fields['hook_type'].default] = v
+                context.hooks.public[v.model_fields['hook_name'].default] = v
             else:
-                context.hooks.private[v.model_fields['hook_type'].default] = v
+                context.hooks.private[v.model_fields['hook_name'].default] = v
 
 
 def import_hooks_from_file(
         context: 'Context',
-        # hooks: Hooks,
         provider_name: str,
         file_path: str,
 ):
@@ -87,6 +86,7 @@ def import_hooks_from_file(
     elif file_extension == 'pyc':
         return
     elif file_extension in ('yaml', 'yml', 'json', 'toml'):
+        # We are trying to import dcl hooks
         from tackle.parser import parse_context
 
         file_contents = read_config_file(
@@ -96,9 +96,11 @@ def import_hooks_from_file(
         if file_contents is None:
             logger.debug(f"Skipping importing {file_path} as the context is empty.")
             return
+        # Temporarily hold the raw input in another var to parse the file contents
         old_raw_input = context.data.raw_input
         context.data.raw_input = file_contents
         parse_context(context=context, call_hooks=False)
+        # Bring the raw input back
         context.data.raw_input = old_raw_input
 
     elif file_extension == "py":
@@ -123,13 +125,13 @@ def import_hooks_from_file(
 #             path=hooks_init_path,
 #         )
 #         mod = loader.load_module()
-#         hook_types = getattr(mod, 'hook_types', [])
-#         for h in hook_types:
+#         hook_names = getattr(mod, 'hook_names', [])
+#         for h in hook_names:
 #             new_hook = LazyImportHook(
 #                 hooks_path=hooks_directory,
 #                 mod_name=provider_name,
 #                 provider_name=provider_name,
-#                 hook_type=h,
+#                 hook_name=h,
 #             )
 #             hooks_dict[h] = new_hook
 #     return hooks_dict
@@ -168,7 +170,6 @@ def import_native_hooks_from_directory(
         native_hooks: dict[str, 'GenericHookType'],
 ) -> dict[str, 'GenericHookType']:
     for file in os.scandir(hooks_directory):
-        # file_base, extension = os.path.splitext(file.path)
         directory, filename = os.path.split(file.path)
         file_base, file_extension = os.path.splitext(filename)
 
@@ -182,7 +183,7 @@ def import_native_hooks_from_directory(
             # Loop through all the module items and add the hooks
             for k, v in mod.__dict__.items():
                 if is_base_hook_subclass(key=k, value=v):
-                    native_hooks[v.model_fields['hook_type'].default] = v
+                    native_hooks[v.model_fields['hook_name'].default] = v
 
     return native_hooks
 

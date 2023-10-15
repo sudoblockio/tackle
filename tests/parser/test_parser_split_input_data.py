@@ -1,19 +1,7 @@
 import pytest
 
-from tackle import tackle
 from tackle.parser import split_input_data
 from tackle.factory import new_context
-
-
-@pytest.fixture()
-def new_fixtures(chdir):
-    chdir('new-fixtures')
-
-
-def test_init(new_fixtures):
-    output = tackle('init.yaml')
-
-
 
 SPLIT_INPUT_FIXTURES: list[tuple[dict, tuple[int, int, int]]] = [
     (
@@ -63,6 +51,7 @@ SPLIT_INPUT_FIXTURES: list[tuple[dict, tuple[int, int, int]]] = [
         (0, 0, 1),
     ),
 ]
+
 
 @pytest.mark.parametrize("raw_input,counts", SPLIT_INPUT_FIXTURES)
 def test_split_input_data(raw_input, counts):

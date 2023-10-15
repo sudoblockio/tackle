@@ -52,19 +52,19 @@ def test_get_repo_source(
     )
 
 
-def test_get_repo_version(change_dir_base):
+def test_get_repo_version(change_base_dir):
     """Test get_repo_version."""
     version = get_repo_version('.')
     assert len(version) > 3
 
 
-def test_get_default_branch(change_dir_base):
+def test_get_default_branch(change_base_dir):
     """Test getting the default branch of current repo."""
     branch = get_default_branch('.')
     assert branch == 'main'
 
 
-def test_get_latest_release(change_dir_base):
+def test_get_latest_release(change_base_dir):
     """Get the latest release in repo."""
     release = get_latest_release('.')
     assert len(release) > 4

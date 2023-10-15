@@ -1,6 +1,6 @@
 """Tests for tackle.utils.dicts"""
 import pytest
-from ruamel.yaml import YAML
+from ruyaml import YAML
 
 from tackle.utils.dicts import (
     encode_list_index,
@@ -257,6 +257,16 @@ CLEANUP_UNQUOTED_STRINGS_FIXTURES = [
         """,
         {'foo': {'bar': [{'baz': 1, 'bing': 'baz'}]}},
     ),
+    # TODO: Fix me
+    # (
+    #     """
+    #     foo:
+    #       bar:
+    #         - baz: 1
+    #           {{baz}}: {{baz}}
+    #     """,
+    #     {'foo': {'bar': [{'baz': 1, '{{baz}}': '{{baz}}'}]}},
+    # ),
 ]
 
 

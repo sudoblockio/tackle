@@ -25,13 +25,14 @@ from tackle.types import (
 )
 
 
+# TODO: RM
 class LazyImportHook(BaseModel):
     """Object to hold hook metadata so that it can be imported only when called."""
 
     hooks_path: str
     mod_name: str
     provider_name: str
-    hook_type: str
+    hook_name: str
     is_public: bool = False
 
     def wrapped_exec(self, **kwargs):
@@ -39,7 +40,7 @@ class LazyImportHook(BaseModel):
             mod_name=self.mod_name,
             hooks_directory=self.hooks_path,
         )
-        return kwargs['provider_hooks'][self.hook_type].wrapped_exec()
+        return kwargs['provider_hooks'][self.hook_name].wrapped_exec()
 
 
 class LazyBaseHook(BaseModel):
@@ -54,11 +55,11 @@ class LazyBaseHook(BaseModel):
                     "carrier for the function's schema until it is compiled with "
                     "`create_function_model`.",
     )
-    hook_fields: set = Field(
-        set(),
-        description="List of fields used to 1, enrich functions without exec method, "
-                    "and 2, inherit base attributes into methods. Basically a helper.",
-    )
+    # hook_fields: set = Field(
+    #     set(),
+    #     description="List of fields used to 1, enrich functions without exec method, "
+    #                 "and 2, inherit base attributes into methods. Basically a helper.",
+    # )
     is_public: bool = Field(..., description="Public or private.")
 
 
@@ -128,9 +129,15 @@ class Paths(BaseModel):
     tackle: Source = Field(None, description="??? - There was a reason...")
 
 
-class InputArguments(BaseModel):
-    args: list = Field(None, description="")
-    kwargs: dict = Field(None, description="")
+# class InputArguments(BaseModel):
+#     args: list = Field(None, description="")
+#     kwargs: dict = Field(None, description="")
+
+class InputArguments:
+    def __init__(self, args: list, kwargs: dict):
+        self.args: list = args
+        self.kwargs: dict = kwargs
+
 
 
 class StrictEnvironment(Environment):
@@ -173,7 +180,7 @@ class HookBase(BaseModel):
         render_by_default=True,
     )
     args: list[str] | None = Field(
-        None,
+        [],
         description="A list of fields map arguments. See [docs]() for details."
     )
     kwargs: str | None = Field(
@@ -248,7 +255,8 @@ class HookCallInput(BaseModel):
     )
     kwargs: Union[str, dict, type(None)] = Field(
         None,
-        description="A dict to map to inputs for a hook. Strings rendered by default.",
+        description="A dict to map to inputs for a hook. String inputs rendered by"
+                    " default but must be references to dicts.",
         render_by_default=True,
     )
     skip_output: bool | None = Field(
@@ -256,26 +264,23 @@ class HookCallInput(BaseModel):
         description="A flag to not set the key. Can also be set in hook definition.",
         render_by_default=True,
     )
+    return_: bool | None = Field(
+        False,
+        description="Flag to indicate whether to stop parsing and return the current"
+                    " public data.",
+        alias="return",
+    )
     no_input: bool | None = Field(
         False,
         description="A flag to skip any prompting. Can also be set from command line.",
         render_by_default=True,
     )
 
-    # Populated from extra vars in validator
-    hook_dict: dict = Field(
-        ...,
-        description="Dict of all extra fields.",
+    # We'll be accessing all extra fields via __pydantic_fields_set__ instance attribute
+    model_config = ConfigDict(
+        extra='allow',
+        populate_by_name=True,
     )
-
-    @model_validator(mode='before')
-    def build_hook_dict(cls, values: dict[str, Any]) -> dict[str, Any]:
-        extra: dict[str, Any] = {}
-        for field_name in list(values):
-            if field_name not in cls.model_fields:
-                extra[field_name] = values.pop(field_name)
-        values['hook_dict'] = extra
-        return values
 
 
 # Note we have a circular dependency between BaseHook having Context and Context having
@@ -284,23 +289,33 @@ class HookCallInput(BaseModel):
 GenericHookType = Union[ModelMetaclass, LazyBaseHook, LazyImportHook]
 
 
-class HookMethods(BaseModel):
-    """Small model to hold public / private methods."""
-    public: dict = {}
-    private: dict = {}
-    default: dict
+class HookMethods:
+    def __int__(self, public: dict, private: dict, default: dict):
+        self.public = public
+        self.private = private
+        self.default = default
 
 
-class Hooks(BaseModel):
+# class Hooks(BaseModel):
+#     """Collection of hooks to call. Kept generic to break circular dependency."""
+#     public: dict[str, GenericHookType] = None
+#     private: dict[str, GenericHookType] = None
+#     native: dict[str, GenericHookType] = None
+#     default: GenericHookType = None
+#
+#     model_config = ConfigDict(
+#         arbitrary_types_allowed=True,
+#     )
+
+class Hooks:
     """Collection of hooks to call. Kept generic to break circular dependency."""
-    public: dict[str, GenericHookType] = None
-    private: dict[str, GenericHookType] = None
-    native: dict[str, GenericHookType] = None
-    default: GenericHookType = None
 
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-    )
+    def __init__(self):
+        self.public: dict[str, GenericHookType] = {}
+        self.private: dict[str, GenericHookType] = {}
+        self.native: dict[str, GenericHookType] = {}
+        self.default: dict = {}
+
 
 
 class Context(BaseModel):
@@ -330,6 +345,7 @@ class Context(BaseModel):
         description="An indexed version of the key path used within blocks to maintain"
                     " temporary data for rendering. See [docs]()"
     )
+    break_: bool = Field(False)
     env_: Any = Field(StrictEnvironment(), description="Used internally for rendering.")
 
     model_config = ConfigDict(
@@ -345,13 +361,23 @@ class BaseHook(HookBase):
     """
     Base class that all python hooks extend. 
     """
-    hook_type: str = Field(..., description="Name of the hook.")
-    context: Context = Field(
-        ...,
+    hook_name: str = Field(..., description="Name of the hook.")
+    # context: Context = Field(
+    #     ...,
+    #     description="Context which can be manipulated within the hook.",
+    # )
+    # hook_call: HookCallInput = Field(
+    #     ...,
+    #     description="Items from the call of the hook.",
+    # )
+
+    # NOTE: context + hook_call Optional be
+    context: Context | None = Field(
+        None,
         description="Context which can be manipulated within the hook.",
     )
-    hook_call: HookCallInput = Field(
-        ...,
+    hook_call: HookCallInput | None = Field(
+        None,
         description="Items from the call of the hook.",
     )
 
@@ -364,23 +390,38 @@ class BaseHook(HookBase):
 
 class DclHookInput(BaseModel):
     """Function input model. Used to validate the raw function input."""
+    help: str | None = Field(
+        None,
+        description="A string to display when calling with the `help` argument."
+    )
     extends: Union[str, list[str]] | None = Field(
         None,
-        description="A string or list of hook types to inherit from. See"
-                    " [docs]()."
+        description="A string or list of hook types to inherit from. See  [docs]()."
     )
+    args: list[str] | str | None = Field(
+        None,
+        description="A string or list of strings references to field names to map"
+                    " arguments to.",
+    )
+
+    @field_validator('args')
+    def args_str_to_list(cls, v):
+        if isinstance(v, str):
+            return [v]
+        return v
+
     # Note: Needs underscore suffix to differentiate from internal exec
     exec_: Any = Field(
         None,
         description="An exec method to run after validating input variables. See"
                     " [docs]().",
-        aliases="exec",
+        alias="exec",
     )
     return_: Any = Field(
         None,
         # TODO: Move to macro?
         description="",
-        aliases="return",
+        alias="return",
     )
     type: str | None = Field(
         None,
@@ -408,30 +449,28 @@ class DclHookInput(BaseModel):
         alias="model_config",  # Does not interfere with actual `model_config`
     )
 
-
-
-    hook_fields_set_: set = Field(set(), description="Used internally to track fields.")
-    hook_fields_: dict = Field(
-        {},
-        description="Raw version of the hook's fields parsed out as any extra fields in"
-                    " validator.")
-
-    @model_validator(mode='before')
-    def move_extra(cls, values: dict[str, Any]) -> dict[str, Any]:
-        extra: dict[str, Any] = {}
-        for field_name in list(values):
-            if field_name not in cls.model_fields:
-                extra[field_name] = values.pop(field_name)
-        values['hook_fields_'] = extra
-        return values
+    # hook_fields_set_: set = Field(set(), description="Used internally to track fields.")
+    # hook_fields_: dict = Field(
+    #     {},
+    #     description="Raw version of the hook's fields parsed out as any extra fields in"
+    #                 " validator.")
 
     model_config = ConfigDict(
-        extra='ignore',
+        extra='allow',
         validate_assignment=True
     )
 
     def exec(self):
         return self.model_dump(include=self.hook_fields_)
+
+
+# Set of DclHookInput fields that account for anything with aliases
+DCL_HOOK_FIELDS = {
+    DclHookInput.model_fields[i].alias
+    if DclHookInput.model_fields[i].alias is not None else
+    i for i in DclHookInput.model_fields.keys()
+}
+
 
 class BaseDclHook(BaseHook):
     """Base model when creating new functions."""
@@ -439,23 +478,7 @@ class BaseDclHook(BaseHook):
 
 
 # HookType = Union[LazyBaseFunction, LazyImportHook, BaseHook]
-AnyHookType = Union[
-    BaseHook,
-    DclHookInput,
-    LazyBaseHook,
-    LazyImportHook,
-]
-CompiledHookType = Union[
-    BaseHook,
-    DclHookInput,
-]
+AnyHookType = BaseHook | DclHookInput | LazyBaseHook | LazyImportHook
+HookDictType = dict[str, AnyHookType]
 
-
-class NewHook(BaseHook):
-    hook_type: str = 'foo'
-
-
-nh = NewHook(context=Context(), hook_call=HookCallInput())
-d = DclHookInput(hook_type='foo', context=Context(), hook_call=HookCallInput())
-h = Hooks()
-c = Context()
+CompiledHookType = BaseHook | DclHookInput

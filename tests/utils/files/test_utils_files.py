@@ -1,28 +1,39 @@
 import pytest
+from typing import Type
 
 from tackle.utils.files import read_config_file
-from tackle.exceptions import ContextDecodingException, UnsupportedBaseFileTypeException
+from tackle import exceptions
+
+READ_CONFIG_FILE_FIXTURES: list[tuple[str, dict | str]] = [
+    # file,expected_output
+    ('document.yaml', {'this': 'that'}),
+    ('ok.yaml', {'this': 'that'}),
+    ('ok.toml', {'this': {'stuff': 'things'}}),
+    ('ok.json', {'this': {'stuff': 'things'}}),
+]
 
 
-def test_read_config_file(change_curdir_fixtures):
-    # assert read_config_file('documents.yaml') == [{'this': 'that'}, {'this': 'that'}]
-    assert read_config_file('document.yaml')['this'] == 'that'
-    assert read_config_file('file.yaml') == {'this': 'that'}
-    assert read_config_file('ok.toml')['this'] == {'stuff': 'things'}
-
-    with pytest.raises(ContextDecodingException):
-        read_config_file('bad.json')
-
-    with pytest.raises(UnsupportedBaseFileTypeException):
-        read_config_file('bad.things')
-
-    with pytest.raises(FileNotFoundError):
-        read_config_file('bad')
+@pytest.mark.parametrize('file,expected_output', READ_CONFIG_FILE_FIXTURES)
+def test_utils_files_read_config_file_parameterized(file, expected_output):
+    """Check that we can read various file types."""
+    output = read_config_file(file)
+    assert output == expected_output
 
 
-def test_read_config_file_comments(change_curdir_fixtures):
+def test_utils_files_read_config_file_documents():
+    """Check when the yaml is a separated document (ie has `---` it is read as list."""
     document = read_config_file('documents.yaml')
     assert document[0]['this'] == 'that'
 
-    document = read_config_file('document.yaml')
-    assert document['this'] == 'that'
+
+FILES_EXCEPTIONS: list[tuple[str, Type[Exception]]] = [
+    ('bad.json', exceptions.FileLoadingException),
+    ('bad.things', exceptions.UnsupportedBaseFileTypeException),
+    ('bad', exceptions.TackleFileNotFoundError),
+]
+
+
+@pytest.mark.parametrize('file,exception', FILES_EXCEPTIONS)
+def test_utils_files_exceptions(file, exception):
+    with pytest.raises(exception):
+        read_config_file(file)

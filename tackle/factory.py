@@ -1,7 +1,6 @@
 import os
 from pathlib import Path
 from typing import Union, Optional
-
 from ruyaml.parser import ParserError
 
 from tackle import exceptions
@@ -28,27 +27,20 @@ def format_path_to_name(path: str) -> str:
 
 def create_hooks(
         context: 'Context',
-        hooks: Hooks = None,
+        _hooks: Hooks = None,
         hooks_dir: str = None,
 ):
-    if hooks is None:
-        if context.hooks is None:
-            context.hooks = Hooks()
-    elif context.hooks is None:
+    if _hooks is None and context.hooks is None:
+        context.hooks = Hooks()
+    elif context.hooks is None and _hooks is not None:
         # Otherwise we have hooks passed in
-        context.hooks = hooks
+        context.hooks = _hooks
     else:
         raise Exception("Should never happen...")
 
-    if context.hooks.private is None:
-        # context.hooks.private = {}
+    if not context.hooks.private:
         # Initialize the native providers / hooks
         context.hooks.private = import_native_providers(context=context)
-
-    if context.hooks.public is None:
-        context.hooks.public = {}
-    if context.hooks.default is None:
-        context.hooks.default = {}
 
     if hooks_dir is not None:
         # Provided by command line arg
@@ -109,14 +101,14 @@ def new_data(
         context: Context,
         input: dict | list | None = None,
         overrides: str | dict | None = None,
-        existing_data: dict | None = None,
-        data: Data | None = None,
+        existing_data: str | dict | None = None,
+        _data: Data | None = None,
 ) -> Data:
     """
 
     """
     # Data can be passed from one tackle call to another
-    if data is None:
+    if _data is None:
         if context.data is None:
             data = Data()
         else:
@@ -124,13 +116,15 @@ def new_data(
             # function and to bypass the source logic, we simply create the data object
             # with the raw data which is the only way context can have data here.
             data = context.data
+    else:
+        # Data has been passed
+        data = _data
 
     if existing_data is None:
         existing_data = {}
     elif isinstance(existing_data, str):
         # We have a reference to a file
-        # TODO: Perhaps also qualify as source
-        raise NotImplementedError
+        existing_data = read_config_file(existing_data)
     elif not isinstance(existing_data, dict):
         raise exceptions.UnknownInputArgumentException(f"", context=context)
 
@@ -143,16 +137,14 @@ def new_data(
     if data.public is not None:
         # If we were passed a data object by calling tackle from tackle then the
         # parent's public data is used as existing which is immutable
-        if isinstance(data.public, dict):
-            data.existing.update(data.public)
+        if isinstance(_data.public, dict):
+            data.existing.update(_data.public)
         else:
             data.existing = {}
-        # We update the existing data here because it should override any data coming in
-        # from the public data potentially passed through
-        data.existing.update(existing_data)
 
         # Wipe the public data as we don't know the type yet -> ie list or dict
         data.public = None
+        data.private = None
 
     get_overrides(context=context, data=data, overrides=overrides)
 
@@ -172,8 +164,22 @@ def new_data(
     if data.existing is None:
         data.existing = {}
 
-    if data.temporary is None:
-        data.temporary = {}
+    # Finally update the existing data
+    data.existing.update(existing_data)
+
+    data.hooks_input = {}  # Container for any declarative hooks
+    if isinstance(data.raw_input, dict):
+        data.pre_input = {}
+        data.post_input = {}
+    elif isinstance(context.data.raw_input, list):
+        # List inputs won't be helpful in the pre input data so ignoring
+        context.data.pre_input = []
+        context.data.post_input = context.data.raw_input
+        # Dcl hooks can only be defined in objects, not lists unless there is some
+        # good reason to support that. Nothing else to do here
+    else:
+        raise Exception("This should never happen since it is caught in parsing error.")
+
 
     return data
 
@@ -260,8 +266,6 @@ def new_source_from_non_string_args(
     else:
         source.base_dir = source.directory
 
-
-
     if source.file is not None:
         base_directory = find_tackle_base_in_parent_dir(dir=os.path.abspath('.'))
         if isinstance(first_arg, (dict, list)):
@@ -310,7 +314,12 @@ def new_source(
             source.hooks_dir = find_hooks_directory_in_dir(dir=source.base_dir)
         elif not isinstance(first_arg, str):
 
-            pass
+            raise Exception(
+                "We should not be here - first arg should have been put as ref to"
+                "something that can be parsed. If it is not string, then it should be "
+                "put as the raw_input and call it a day - ie return data? But that does "
+                "not work in our factory..."
+            )
 
         # Zipfile
         elif first_arg.lower().endswith('.zip'):
@@ -348,7 +357,7 @@ def new_source(
         # Directory
         elif is_directory_with_tackle(first_arg):
             # Special case where the input is a path to a directory with a provider
-            source.base_dir = first_arg
+            source.base_dir = os.path.abspath(first_arg)
             # source.name = os.path.basename(source.base_dir)
             source.name = format_path_to_name(path=source.base_dir)
             update_source(
@@ -362,7 +371,7 @@ def new_source(
             if directory is not None:
                 file_path = os.path.join(directory, first_arg)
             else:
-                file_path = first_arg
+                file_path = os.path.abspath(first_arg)
             source.file = os.path.basename(file_path)
             source.directory = source.base_dir = str(Path(file_path).parent.absolute())
             # source.name = '_'.join(source.file.split('.')[:-1])
@@ -411,9 +420,11 @@ def new_inputs(
     Create a `input` object which holds the args/kwargs to create a source and then
      get consumed by the parser.
     """
-    if args is None:
+    if args == (None, ):
+        # This happens when there is no input to the commandline
         args = []
     else:
+        # This happens
         args = list(args)
 
     if kwargs is None:
@@ -440,7 +451,7 @@ def new_context(
         # Data
         input: dict | list | None = None,
         overrides: Union[str, dict] = None,
-
+        existing_data: str | dict | None = None,
         # Context
         no_input: bool = None,
         verbose: bool = None,
@@ -452,6 +463,7 @@ def new_context(
         **kwargs: dict,
 ) -> 'Context':
     """Create a new context. See tackle.main.tackle for options which wraps this."""
+    print()
     context = Context(
         no_input=no_input if no_input is not None else False,
         verbose=verbose if verbose is not None else False,
@@ -478,11 +490,12 @@ def new_context(
         context=context,
         input=input,
         overrides=overrides,
-        data=_data,
+        existing_data=existing_data,
+        _data=_data,
     )
     create_hooks(
         context=context,
-        hooks=_hooks,
+        _hooks=_hooks,
         hooks_dir=hooks_dir,
     )
 

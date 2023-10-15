@@ -13,9 +13,10 @@ FILE_FIXTURES = [
 
 
 @pytest.mark.parametrize("file,is_file_result", FILE_FIXTURES)
-def test_is_file(file, is_file_result):
+def test_is_file(file, is_file_result, mocker):
     """Validate is_file regex."""
-    assert is_file(file) == is_file_result
+    mocker.patch('os.path.isfile', return_value=True)
+    assert is_file(file, None) == is_file_result
 
 
 REPO_FIXTURES = [
@@ -31,6 +32,6 @@ REPO_FIXTURES = [
 
 
 @pytest.mark.parametrize("repo,is_repo_result", REPO_FIXTURES)
-def test_is_repo_url(repo, is_repo_result, change_dir_base):
+def test_is_repo_url(repo, is_repo_result, change_base_dir):
     """Validate is_repo_url regex."""
     assert is_repo_url(repo) == is_repo_result

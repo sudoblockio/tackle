@@ -16,7 +16,7 @@ def mock_download():
             chunk = zf.read(1024)
 
 
-def test_unzip_local_file(mocker, tmpdir, change_curdir_fixtures):
+def test_unzip_local_file(mocker, tmpdir, cd_fixtures):
     """Local file reference can be unzipped."""
     mock_prompt_and_delete = mocker.patch(
         'tackle.utils.zipfile.prompt_and_delete',
@@ -36,7 +36,7 @@ def test_unzip_local_file(mocker, tmpdir, change_curdir_fixtures):
 
 
 def test_unzip_protected_local_file_environment_password(
-    mocker, tmpdir, change_curdir_fixtures
+    mocker, tmpdir, cd_fixtures
 ):
     """In `unzip()`, the environment can be used to provide a repo password."""
     mock_prompt_and_delete = mocker.patch(
@@ -58,7 +58,7 @@ def test_unzip_protected_local_file_environment_password(
 
 
 def test_unzip_protected_local_file_bad_environment_password(
-    mocker, tmpdir, change_curdir_fixtures
+    mocker, tmpdir, cd_fixtures
 ):
     """In `unzip()`, an error occurs if the environment has a bad password."""
     mocker.patch(
@@ -78,7 +78,7 @@ def test_unzip_protected_local_file_bad_environment_password(
 
 
 def test_unzip_protected_local_file_user_password_with_noinput(
-    mocker, tmpdir, change_curdir_fixtures
+    mocker, tmpdir, cd_fixtures
 ):
     """Can't unpack a password-protected repo in no_input mode."""
     mocker.patch(
@@ -98,7 +98,7 @@ def test_unzip_protected_local_file_user_password_with_noinput(
 
 
 def test_unzip_protected_local_file_user_password(
-    mocker, tmpdir, change_curdir_fixtures
+    mocker, tmpdir, cd_fixtures
 ):
     """A password-protected local file reference can be unzipped."""
     mock_prompt_and_delete = mocker.patch(
@@ -120,7 +120,7 @@ def test_unzip_protected_local_file_user_password(
 
 
 def test_unzip_protected_local_file_user_bad_password(
-    mocker, tmpdir, change_curdir_fixtures
+    mocker, tmpdir, cd_fixtures
 ):
     """Error in `unzip()`, if user can't provide a valid password."""
     mocker.patch(
@@ -142,7 +142,7 @@ def test_unzip_protected_local_file_user_bad_password(
         )
 
 
-def test_empty_zip_file(mocker, tmpdir, change_curdir_fixtures):
+def test_empty_zip_file(mocker, tmpdir, cd_fixtures):
     """In `unzip()`, an empty file raises an error."""
     mocker.patch(
         'tackle.utils.zipfile.prompt_and_delete',
@@ -159,7 +159,7 @@ def test_empty_zip_file(mocker, tmpdir, change_curdir_fixtures):
         )
 
 
-def test_non_repo_zip_file(mocker, tmpdir, change_curdir_fixtures):
+def test_non_repo_zip_file(mocker, tmpdir, cd_fixtures):
     """In `unzip()`, a repository must have a top level directory."""
     mocker.patch(
         'tackle.utils.zipfile.prompt_and_delete',
@@ -176,7 +176,7 @@ def test_non_repo_zip_file(mocker, tmpdir, change_curdir_fixtures):
         )
 
 
-def test_bad_zip_file(mocker, tmpdir, change_curdir_fixtures):
+def test_bad_zip_file(mocker, tmpdir, cd_fixtures):
     """In `unzip()`, a corrupted zip file raises an error."""
     mocker.patch(
         'tackle.utils.zipfile.prompt_and_delete',
@@ -196,7 +196,7 @@ def test_bad_zip_file(mocker, tmpdir, change_curdir_fixtures):
 # TODO: These tests worked until removing requests dependency.
 # Requests could be added back later in which case these can be enabled.
 
-# def test_unzip_url(mocker, tmpdir, change_curdir_fixtures):
+# def test_unzip_url(mocker, tmpdir, cd_fixtures):
 #     """In `unzip()`, a url will be downloaded and unzipped."""
 #     mock_prompt_and_delete = mocker.patch(
 #         'tackle.utils.zipfile.prompt_and_delete',
@@ -224,7 +224,7 @@ def test_bad_zip_file(mocker, tmpdir, change_curdir_fixtures):
 #     assert not mock_prompt_and_delete.called
 
 
-# def test_unzip_url_existing_cache(mocker, tmpdir, change_curdir_fixtures):
+# def test_unzip_url_existing_cache(mocker, tmpdir, cd_fixtures):
 #     """Url should be downloaded and unzipped, old zip file will be removed."""
 #     mock_prompt_and_delete = mocker.patch(
 #         'tackle.utils.zipfile.prompt_and_delete',
@@ -256,7 +256,7 @@ def test_bad_zip_file(mocker, tmpdir, change_curdir_fixtures):
 #     assert mock_prompt_and_delete.call_count == 1
 
 
-# def test_unzip_url_existing_cache_no_input(mocker, tmpdir, change_curdir_fixtures):
+# def test_unzip_url_existing_cache_no_input(mocker, tmpdir, cd_fixtures):
 #     """If no_input is provided, the existing file should be removed."""
 #     request = mocker.MagicMock()
 #     request.iter_content.return_value = mock_download()
@@ -282,7 +282,7 @@ def test_bad_zip_file(mocker, tmpdir, change_curdir_fixtures):
 #     assert output_dir.startswith(tempfile.gettempdir())
 
 
-# def test_unzip_should_abort_if_no_redownload(mocker, tmpdir, change_curdir_fixtures):
+# def test_unzip_should_abort_if_no_redownload(mocker, tmpdir, cd_fixtures):
 #     """Should exit without cloning anything If no redownload."""
 #     mocker.patch(
 #         'tackle.utils.zipfile.prompt_and_delete',
