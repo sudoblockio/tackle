@@ -1,9 +1,6 @@
-from abc import ABC
-from jinja2 import Environment, StrictUndefined
 from pydantic import (
     BaseModel,
     field_validator,
-    model_validator,
     ConfigDict,
 )
 from pydantic._internal._model_construction import ModelMetaclass
@@ -12,17 +9,11 @@ from typing import (
     Union,
     Optional,
     Callable,
-    Literal,
-    Type,
 )
 
 from tackle.pydantic.fields import Field
 from tackle.pydantic.validators import DclHookValidator
 from tackle.pydantic.config import DclHookModelConfig
-from tackle.types import (
-    DocumentType,
-    DocumentObjectType,
-)
 
 
 # TODO: RM
@@ -63,11 +54,6 @@ class LazyBaseHook(BaseModel):
     is_public: bool = Field(..., description="Public or private.")
 
 
-class TackleLockHook(BaseModel):
-    public: dict[str, Union[LazyBaseHook, LazyImportHook]] = {}
-    private: dict[str, Union[LazyBaseHook, LazyImportHook]] = {}
-
-
 class TackleLockProvider(BaseModel):
     type: str = None
     version: str = None
@@ -85,71 +71,6 @@ class TackleLock(BaseModel):
 class PythonRequirement(BaseModel):
     package_name: str
     version: str = 'latest'
-
-
-class Source(BaseModel):
-    input_string: str = Field(None, description="")
-
-    checkout: str = Field(None, description="")
-    latest: bool = Field(None, description="")
-    find_in_parent: bool = Field(None, description="")
-
-    directory: str = Field(None, description="")
-    file: str = Field(None, description="Set as kwarg or ")
-
-    base_dir: str = Field(None, description="")
-    hooks_dir: str = Field(None, description="")
-    name: str = Field(None, description="")
-
-
-class Data(BaseModel):
-    input: DocumentType = Field(None)
-
-    raw_input: DocumentType = Field(None)
-    pre_input: DocumentType = Field(None)
-    post_input: DocumentType = Field(None)
-    hooks_input: DocumentObjectType = Field(None)
-
-    public: DocumentType = Field(None)
-    private: DocumentType = Field(None)
-    temporary: DocumentType = Field(None)
-    existing: DocumentObjectType = Field(None)
-
-    overrides: DocumentObjectType = Field(None)
-
-
-class Paths(BaseModel):
-    """
-    Object to keep track of the current and prior set of paths that tackle was called
-     in. Very useful when calling multiple tackle providers that
-    context.source.current.path
-    """
-    current: Source = Field(None, description="Current tackle provider.")
-    calling: Source = Field(None, description="The originally called provider.")
-    tackle: Source = Field(None, description="??? - There was a reason...")
-
-
-# class InputArguments(BaseModel):
-#     args: list = Field(None, description="")
-#     kwargs: dict = Field(None, description="")
-
-class InputArguments:
-    def __init__(self, args: list, kwargs: dict):
-        self.args: list = args
-        self.kwargs: dict = kwargs
-
-
-
-class StrictEnvironment(Environment):
-    """Create strict Jinja2 environment.
-
-    Jinja2 environment will raise error on undefined variable in template-
-    rendering context.
-    """
-
-    def __init__(self, **kwargs):
-        super(StrictEnvironment, self).__init__(undefined=StrictUndefined, **kwargs)
-        # TODO: Add imports for jinja hook filters
 
 
 class HookBase(BaseModel):
@@ -286,7 +207,7 @@ class HookCallInput(BaseModel):
 # Note we have a circular dependency between BaseHook having Context and Context having
 # Hooks which is a collection of BaseHooks. We prefer carrying Context into BaseHook
 # since this is user facing so breaking circular dependency here with ModelMetaclass
-GenericHookType = Union[ModelMetaclass, LazyBaseHook, LazyImportHook]
+GenericHookType = Union[ModelMetaclass, LazyBaseHook]
 
 
 class HookMethods:
@@ -296,90 +217,13 @@ class HookMethods:
         self.default = default
 
 
-# class Hooks(BaseModel):
-#     """Collection of hooks to call. Kept generic to break circular dependency."""
-#     public: dict[str, GenericHookType] = None
-#     private: dict[str, GenericHookType] = None
-#     native: dict[str, GenericHookType] = None
-#     default: GenericHookType = None
-#
-#     model_config = ConfigDict(
-#         arbitrary_types_allowed=True,
-#     )
-
-class Hooks:
-    """Collection of hooks to call. Kept generic to break circular dependency."""
-
-    def __init__(self):
-        self.public: dict[str, GenericHookType] = {}
-        self.private: dict[str, GenericHookType] = {}
-        self.native: dict[str, GenericHookType] = {}
-        self.default: dict = {}
-
-
-
-class Context(BaseModel):
-    # Supplied via command line 
-    no_input: Optional[bool] = Field(
-        False,
-        description="A boolean to suppress any inputs and use defaults while parsing."
-    )
-    verbose: Optional[bool] = Field(
-        False,
-        description="A boolean to show internal logs while parsing."
-    )
-
-    # Internal data objects 
-    input: InputArguments = None
-    source: Source = None
-    hooks: Hooks = None
-    data: Data = None
-    path: Paths = None
-    key_path: list[Union[str, bytes]] = Field(
-        None,
-        description="A list of parsed keys in an object / or byte encoded indexes for"
-                    " items in an array. Used to track position within a document."
-    )
-    key_path_block: list[Union[str, bytes]] = Field(
-        None,
-        description="An indexed version of the key path used within blocks to maintain"
-                    " temporary data for rendering. See [docs]()"
-    )
-    break_: bool = Field(False)
-    env_: Any = Field(StrictEnvironment(), description="Used internally for rendering.")
-
-    model_config = ConfigDict(
-        extra='forbid',
-        arbitrary_types_allowed=True,
-        validate_assignment=True,
-    )
-
-
-# Note we have a circular dependency between Context having Hooks and BaseHook having 
+# Note we have a circular dependency between Context having Hooks and BaseHook having
 # Context where we prefer carrying into BaseHook since this is user facing. 
 class BaseHook(HookBase):
     """
     Base class that all python hooks extend. 
     """
     hook_name: str = Field(..., description="Name of the hook.")
-    # context: Context = Field(
-    #     ...,
-    #     description="Context which can be manipulated within the hook.",
-    # )
-    # hook_call: HookCallInput = Field(
-    #     ...,
-    #     description="Items from the call of the hook.",
-    # )
-
-    # NOTE: context + hook_call Optional be
-    context: Context | None = Field(
-        None,
-        description="Context which can be manipulated within the hook.",
-    )
-    hook_call: HookCallInput | None = Field(
-        None,
-        description="Items from the call of the hook.",
-    )
 
     model_config = ConfigDict(
         extra='forbid',
@@ -478,7 +322,7 @@ class BaseDclHook(BaseHook):
 
 
 # HookType = Union[LazyBaseFunction, LazyImportHook, BaseHook]
-AnyHookType = BaseHook | DclHookInput | LazyBaseHook | LazyImportHook
+AnyHookType = BaseHook | DclHookInput | LazyBaseHook
 HookDictType = dict[str, AnyHookType]
 
 CompiledHookType = BaseHook | DclHookInput
