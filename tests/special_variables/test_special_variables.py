@@ -1,5 +1,7 @@
-"""Tests dict rendering special variables."""
 from tackle.main import tackle
+from typing import Any
+
+SPECIAL_VARIABLE_FIXTURES: list[str, str, str]
 
 
 def test_special_variables(change_dir):
