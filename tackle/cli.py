@@ -6,7 +6,7 @@ from tackle import __version__
 from tackle.utils.log import configure_logger
 from tackle.main import tackle
 from tackle.utils.command import unpack_args_kwargs_list
-from tackle.models import Context
+from tackle.context import Context
 
 
 def _validate_print_format(print_format: str):
@@ -16,6 +16,39 @@ def _validate_print_format(print_format: str):
             f"Must be one of json (default) / yaml / toml."
         )
         sys.exit(1)
+
+
+def print_public_data(context: 'Context', print_format: str):
+    output = context.data.public
+    if print_format is None:
+        if context.source.file is not None:
+            print_format = context.source.file.split('.')[-1]
+            _validate_print_format(print_format=print_format)
+    else:
+        # Assume yaml?
+        print_format = 'yaml'
+
+    if isinstance(output, (dict, list)):
+        if print_format == 'json':  # noqa
+            import json
+
+            print(json.dumps(output))
+        elif print_format == 'yaml':
+            from ruyaml import YAML
+
+            yaml = YAML()
+            yaml.dump(output, sys.stdout)
+        elif print_format == 'toml':
+            # From https://realpython.com/python-toml/#load-toml-with-python
+            try:
+                from tomli import dumps as toml_dumps
+            except ModuleNotFoundError:
+                from tomllib import dumps as toml_dumps
+
+            print(toml_dumps(output))
+    else:
+        # Simply a value - not object or array
+        print(output)
 
 
 def main(raw_args=None):
@@ -141,7 +174,7 @@ def main(raw_args=None):
     )
 
     # Hack to take the first arg and make a list of args with every unknown arg
-    input_args = [args.inputs].extend(input_args)
+    input_args = [args.inputs] + input_args
     input_kwargs.update({i: True for i in input_flags})  # Same for kwargs
 
     # Handle printing variable which isn't needed in core logic
@@ -159,48 +192,18 @@ def main(raw_args=None):
     )
 
     context = tackle(
-        input_args,
+        *input_args,
         **input_kwargs,
-        input_string=args.input_string,
+        # input_string=args.input_string,
         checkout=args.checkout,
         latest=args.latest,
         directory=args.directory,
-        file=args.file,
+        # file=args.file,
         find_in_parent=args.find_in_parent,
     )
 
     if print_enabled:
-        output = context.data.public
-        if print_format is None:
-            if context.source.file is not None:
-                print_format = context.source.file.split('.')[-1]
-                _validate_print_format(print_format=print_format)
-        else:
-            # Assume yaml?
-            print_format = 'yaml'
-
-        if isinstance(output, (dict, list)):
-            if print_format == 'json':  # noqa
-                import json
-
-                print(json.dumps(output))
-            elif print_format == 'yaml':
-                from ruyaml import YAML
-
-                yaml = YAML()
-                yaml.dump(output, sys.stdout)
-            elif print_format == 'toml':
-                # From https://realpython.com/python-toml/#load-toml-with-python
-                try:
-                    from tomli import dumps as toml_dumps
-                except ModuleNotFoundError:
-                    from tomllib import dumps as toml_dumps
-
-                print(toml_dumps(output))
-        else:
-            # Simply a value - not object or array
-            print(output)
-
+        print_public_data(context=context, print_format=print_format)
 
 if __name__ == "__main__":
     main(sys.argv[1:])
