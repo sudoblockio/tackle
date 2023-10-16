@@ -4,7 +4,7 @@ from typing import Union, Optional
 from ruyaml.parser import ParserError
 
 from tackle import exceptions
-from tackle.models import Context, Data, InputArguments, Source, Hooks, Paths
+from tackle.context import Context, Data, InputArguments, Source, Hooks, Paths
 from tackle.settings import settings
 from tackle.utils.paths import (
     is_repo_url,
@@ -13,7 +13,7 @@ from tackle.utils.paths import (
     find_tackle_file_in_dir,
     find_hooks_directory_in_dir,
     find_tackle_base_in_parent_dir,
-    find_tackle_base_in_parent_dir_with_exception
+    find_tackle_base_in_parent_dir_with_exception,
 )
 from tackle.utils.vcs import get_repo_source
 from tackle.utils.zipfile import unzip
@@ -27,7 +27,7 @@ def format_path_to_name(path: str) -> str:
 
 def create_hooks(
         context: 'Context',
-        _hooks: Hooks = None,
+        _hooks: 'Hooks' = None,
         hooks_dir: str = None,
 ):
     if _hooks is None and context.hooks is None:
@@ -38,8 +38,12 @@ def create_hooks(
     else:
         raise Exception("Should never happen...")
 
-    if not context.hooks.private:
+    if context.hooks.public is None:
+        context.hooks.public = {}
+
+    if context.hooks.private is None:
         # Initialize the native providers / hooks
+        context.hooks.private = {}
         context.hooks.private = import_native_providers(context=context)
 
     if hooks_dir is not None:
@@ -58,24 +62,25 @@ def create_hooks(
         )
 
 
-def extract_base_file(context: 'Context', data: 'Data'):
+def extract_base_file(context: 'Context') -> list | dict:
     """Read the tackle file and initialize input_context."""
     if context.source.file:
         try:
-            data.raw_input = read_config_file(context.source.file)
+            raw_input = read_config_file(context.source.file)
         except ParserError as e:
             raise exceptions.TackleFileInitialParsingException(e) from None  # noqa
-        if data.raw_input is None:
+        if raw_input is None:
             raise exceptions.EmptyTackleFileException(
                 f"Tackle file found at {os.path.join(context.source.directory)} is empty.",
                 context=context
             ) from None
     else:
-        data.raw_input = {}
+        raw_input = {}
+    return raw_input
 
 
 def get_overrides(
-        context: Context,
+        context: 'Context',
         data: Optional['Data'],
         overrides: Union[str, dict],
 ):
@@ -98,7 +103,7 @@ def get_overrides(
 
 def new_data(
         *,
-        context: Context,
+        context: 'Context',
         input: dict | list | None = None,
         overrides: str | dict | None = None,
         existing_data: str | dict | None = None,
@@ -149,7 +154,7 @@ def new_data(
     get_overrides(context=context, data=data, overrides=overrides)
 
     if input is None:
-        extract_base_file(context=context, data=data)
+        data.raw_input = extract_base_file(context=context)
     else:
         data.raw_input = input
 
@@ -171,22 +176,21 @@ def new_data(
     if isinstance(data.raw_input, dict):
         data.pre_input = {}
         data.post_input = {}
-    elif isinstance(context.data.raw_input, list):
+    elif isinstance(data.raw_input, list):
         # List inputs won't be helpful in the pre input data so ignoring
-        context.data.pre_input = []
-        context.data.post_input = context.data.raw_input
+        data.pre_input = []
+        data.post_input = data.raw_input
         # Dcl hooks can only be defined in objects, not lists unless there is some
         # good reason to support that. Nothing else to do here
     else:
         raise Exception("This should never happen since it is caught in parsing error.")
-
 
     return data
 
 
 def new_path(
         *,
-        context: Context,
+        context: 'Context',
         _path: Optional[Paths],
 ) -> Paths:
     if _path is None:
@@ -205,7 +209,7 @@ def new_path(
 
 
 def update_source(
-        context: Context,
+        context: 'Context',
         source: Source,
         directory: str,
         file: str,
@@ -248,7 +252,7 @@ def update_source(
 
 
 def new_source_from_non_string_args(
-        context: Context,
+        context: 'Context',
         source: Source,
         first_arg: str,
         directory: str = None,
@@ -282,7 +286,7 @@ def new_source_from_non_string_args(
 
 
 def new_source(
-        context: Context,
+        context: 'Context',
         checkout: str = None,
         latest: bool = None,
         directory: str = None,
@@ -314,12 +318,15 @@ def new_source(
             source.hooks_dir = find_hooks_directory_in_dir(dir=source.base_dir)
         elif not isinstance(first_arg, str):
 
-            raise Exception(
-                "We should not be here - first arg should have been put as ref to"
-                "something that can be parsed. If it is not string, then it should be "
-                "put as the raw_input and call it a day - ie return data? But that does "
-                "not work in our factory..."
-            )
+            # Will be picked up later in data as the input_raw to be parsed
+            source.raw = first_arg
+
+            # raise Exception(
+            #     "We should not be here - first arg should have been put as ref to"
+            #     "something that can be parsed. If it is not string, then it should be "
+            #     "put as the raw_input and call it a day - ie return data? But that does "
+            #     "not work in our factory..."
+            # )
 
         # Zipfile
         elif first_arg.lower().endswith('.zip'):
@@ -329,7 +336,6 @@ def new_source(
                 no_input=context.no_input,
                 # password=password,  # TODO: RM - Should prompt?
             )
-            # source.name = '_'.join(first_arg.split('.')[:-1])
             source.name = format_path_to_name(path=first_arg)
             update_source(
                 context=context,
@@ -420,11 +426,11 @@ def new_inputs(
     Create a `input` object which holds the args/kwargs to create a source and then
      get consumed by the parser.
     """
-    if args == (None, ):
-        # This happens when there is no input to the commandline
+    if args == (None,):
+        # Happens when there is no input to the commandline
         args = []
     else:
-        # This happens
+        # Happens when we use tackle as package
         args = list(args)
 
     if kwargs is None:
