@@ -1,13 +1,13 @@
 from pydantic import SecretStr
 from typing import Union
+import copy
 
 import tackle as tkl
-from tackle import BaseHook, Field
+from tackle import BaseHook, Field, Context
 
 
 class TackleHook(BaseHook):
     """Hook for calling external tackle providers."""
-
     hook_name: str = 'tackle'
 
     # fmt: off
@@ -24,15 +24,17 @@ class TackleHook(BaseHook):
         False,
         description="For remote providers, use the latest commit."
     )
-    context_file: str = Field(None, description="The file to run inside a repo input.")
+    context_file: str = Field(
+        None,
+        description="The file to run inside a repo input.",
+    )
     extra_context: dict = Field(
         None,
         description="Any additional context to use when calling the hook. Like existing context.")
-    # context: dict = Field(
-    #     None,
-    #     description="A context to use that overrides the current context."
-    # )
-    password: SecretStr = Field(None, description="A password to use for repo inputs.")
+    password: SecretStr = Field(
+        None,
+        description="A password to use for repo inputs.",
+    )
     directory: str = Field(
         None,
         description="The directory to run inside for repo inputs."
@@ -40,12 +42,14 @@ class TackleHook(BaseHook):
     find_in_parent: bool = Field(
         False,
         description="Search for target in parent directory. Only relevant for local "
-                    "targets.")
-
-    override: dict = Field({}, description="A dictionary of keys to override.")
-
+                    "targets.",
+    )
+    override: dict = Field(
+        {},
+        description="A dictionary of keys to override.",
+    )
     additional_args: Union[list, str] = Field(
-        None,
+        [],
         description="Arguments to pass on either directly as a string or as a list of "
                     "strings."
     )
@@ -55,7 +59,7 @@ class TackleHook(BaseHook):
     kwargs: str = 'override'
     _docs_order = 0
 
-    def exec(self) -> dict:
+    def exec(self, context: Context) -> dict | list:
         if self.input_arg is None:
             # If not given, assume we're looking for default tackle file in current dir
             self.input_arg = '.'
@@ -68,17 +72,17 @@ class TackleHook(BaseHook):
             # (allowing for calling of declarative hooks with args / kwargs)
             existing_context.update(self.override)
 
-        if self.context.data.existing:
-            existing_context.update(self.context.data.existing)
+        if context.data.existing:
+            existing_context.update(context.data.existing)
 
-        if self.context.data.temporary:
-            existing_context.update(self.context.data.temporary)
+        if context.data.temporary:
+            existing_context.update(context.data.temporary)
 
         # if self.private_context:
         #     existing_context.update(self.private_context)
 
-        if self.context.data.public:
-            existing_context.update(self.context.data.public)
+        if context.data.public:
+            existing_context.update(context.data.public)
 
         if self.extra_context:
             existing_context.update(self.extra_context)
@@ -86,23 +90,25 @@ class TackleHook(BaseHook):
         if isinstance(self.additional_args, str):
             self.additional_args = [self.additional_args]
 
+        pass
+
         output_context = tkl.main.tackle(
-            self.input_arg,
+            *(self.input_arg, *self.additional_args),
             checkout=self.checkout,
             latest=self.latest,
             directory=self.directory,
             no_input=self.no_input,
             find_in_parent=self.find_in_parent,
-            verbose=self.context.verbose,
+            verbose=context.verbose,
             overrides=self.override,
             existing_data=existing_context,
-            # Evaluated
-            # existing_context=existing_context,
-            _paths=self.context.path,
-            _data=self.context.data.__copy__(),
+            # Evaluated in factory
+            _paths=context.path,
+            # TODO: Handle this in factory? Don't want to copy every time?
+            _data=copy.deepcopy(context.data),
             # Implicit
-            _hooks=self.context.hooks,
+            _hooks=context.hooks,
+            **self.override
         )
-
 
         return output_context

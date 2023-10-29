@@ -2,7 +2,7 @@ import re
 from inspect import signature
 from jinja2 import meta, StrictUndefined
 from jinja2.exceptions import UndefinedError, TemplateSyntaxError
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Type
 from pydantic import ValidationError
 
 from tackle import exceptions
@@ -81,7 +81,7 @@ class JinjaHook:
      I
     """
 
-    def __init__(self, Hook: 'BaseHook', context: 'Context'):
+    def __init__(self, Hook: Type['BaseHook'], context: 'Context'):
         self.Hook = Hook
         self.context = context
 
@@ -110,15 +110,11 @@ class JinjaHook:
             kwargs.pop('no_input') if 'no_input' in kwargs else False
         )
 
-        # TODO: Why is there a type error here?
-        # TODO: RM context for inspecting func sig or context
-        hook = self.Hook(
-            no_input=no_input,
-            context=self.context,
-            **kwargs,
-        )
-        return hook.exec()
-
+        from tackle.parser import run_hook_exec
+        hook = self.Hook(no_input=no_input, **kwargs)
+        # return hook.exec()
+        # No hook with hook
+        return run_hook_exec(context=self.context, hook=hook)
 
 def add_jinja_hook_methods(context: 'Context', jinja_hook: JinjaHook):
     """
@@ -148,26 +144,27 @@ def add_jinja_hook_to_jinja_globals(
         used_hooks: list[str],
 ):
     """Add any unknown variables that are the same as hooks to the jinja globals."""
-    if hook_name in context.hooks.public or hook_name in context.hooks.private:
-        from tackle.hooks import get_public_or_private_hook, create_dcl_hook, get_hook
+    from tackle.hooks import get_hooks_from_namespace
 
-        Hook = get_public_or_private_hook(context=context, hook_name=hook_name)
+    Hook = get_hooks_from_namespace(context=context, hook_name=hook_name)
+    if Hook is None:
+        return
 
-        # Create a JinjaHook class which will house the Hook and have a __call__ method
-        jinja_hook = JinjaHook(Hook=Hook, context=context)
+    # Create a JinjaHook class which will house the Hook and have a __call__ method
+    jinja_hook = JinjaHook(Hook=Hook, context=context)
 
-        # Only compile methods for jinja hooks which so happen to have hook_method_set
-        # TODO: Clean this up when we wrap hooks with callable classes
-        if 'hook_method_set' in Hook.model_fields:
-            # Add any methods which could exist but are not known until they are called
-            add_jinja_hook_methods(context=context, jinja_hook=jinja_hook)
+    # Only compile methods for jinja hooks which so happen to have hook_method_set
+    # TODO: Clean this up when we wrap hooks with callable classes
+    if 'hook_method_set' in Hook.model_fields:
+        # Add any methods which could exist but are not known until they are called
+        add_jinja_hook_methods(context=context, jinja_hook=jinja_hook)
 
-        # Keep track of the hook put in globals so that it can be removed later
-        # because each time you call a hook it could be compiled differently
-        used_hooks.append(hook_name)
+    # Keep track of the hook put in globals so that it can be removed later
+    # because each time you call a hook it could be compiled differently
+    used_hooks.append(hook_name)
 
-        # Add the callable hook to the jinja environment globals
-        context.env_.globals[hook_name] = jinja_hook
+    # Add the callable hook to the jinja environment globals
+    context.env_.globals[hook_name] = jinja_hook
 
 
 def handle_ambiguous_keys(

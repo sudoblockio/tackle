@@ -24,7 +24,7 @@ def test_provider_tackle_local():
     assert output['additional_context']['read_stuff']['stuff'] == 'things'
 
 def test_provider_tackle_local_no_context():
-    output = tackle('local-no-context.yaml', no_input=True)
+    output = tackle('local-no-context.yaml')
     assert output['shell']['foo'] == 'bar'
 
 
