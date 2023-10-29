@@ -1,11 +1,10 @@
-from typing import Union, Optional, Any
 import re
+from typing import Union, Optional, Any
 
-from tackle import BaseHook, Context, Field
+from tackle import BaseHook, Context, Field, exceptions
 from tackle.models import HookCallInput
 from tackle.parser import walk_document
 from tackle.render import render_string
-from tackle.exceptions import HookCallException
 
 
 class MatchHook(BaseHook):
@@ -28,39 +27,49 @@ class MatchHook(BaseHook):
     )
 
     args: list = ['value']
-
     skip_output: bool = True
     render_exclude: list = ['case']
     _docs_order = 3
 
-    def run_key(self, value):
-
+    def run_key(self, context: Context, value: Any):
         tmp_context = Context(
-            # overrides=self.context.data.overrides,
-            verbose=self.context.verbose,
-            no_input=self.context.no_input,
-            key_path=self.context.key_path.copy(),
-            key_path_block=self.context.key_path.copy(),
-            path=self.context.path,
-            data=self.context.data,
-            hooks=self.context.hooks,
+            # overrides=context.data.overrides,
+            verbose=context.verbose,
+            no_input=context.no_input,
+            key_path=context.key_path.copy(),
+            key_path_block=context.key_path.copy(),
+            path=context.path,
+            data=context.data,
+            hooks=context.hooks,
         )
 
         walk_document(context=tmp_context, value=value.copy())
 
         return tmp_context.data.public
 
-    def block_macro(self, key: str, val: dict) -> dict:
+    def block_macro(
+            self,
+            context: Context,
+            hook_call: HookCallInput,
+            key: str,
+            val: dict,
+    ) -> dict:
         """Take matched input dict and create a `block` hook to parse."""
         # Remove the merge which will be inserted into the parsed block hook.
-        merge = self.hook_call.merge if 'merge' not in val else val['merge']
+        merge = hook_call.merge if 'merge' not in val else val['merge']
         if merge:
             # Do this because arrows can stack up and mess up merge
-            self.context.key_path = self.context.key_path[:-1]
+            context.key_path = context.key_path[:-1]
             # We now don't want the hook to be merged
-            self.hook_call.merge = False
+            hook_call.merge = False
 
         block_hook_input = HookCallInput(**val)
+        # TODO: This is likely where the reference is lost for hook_call. Before we
+        #  stored the reference in the hook which carried it over to the
+        #  hook.skip_output logic in the parser but now we have a new hook so this the
+        #  the original reference is lost since we are in a new hook_call reference.
+        #  This is an edge case but super useful. Tracking at
+        #  https://github.com/sudoblockio/tackle/issues/184
 
         output = {
             key[-2:]: 'block',
@@ -71,7 +80,7 @@ class MatchHook(BaseHook):
 
         return output
 
-    def match_case(self, v: Any):
+    def match_case(self, context: Context, v: Any):
         # Normal dicts
         if isinstance(v, dict) and not ('->' in v or '_>' in v):
             # TODO: Determine if `match` hook should parse dictionaries by default
@@ -82,27 +91,56 @@ class MatchHook(BaseHook):
             return v
         # Dicts that are expanded hooks
         elif isinstance(v, dict):
-            return self.run_key(v)
+            return self.run_key(context=context, value=v)
         elif isinstance(v, (str, int)):
             self.skip_output = False
-            return render_string(self.context, v)
+            return render_string(context, v)
         self.skip_output = False
         return v
 
-    def match_case_block(self, k: str, v: Any):
+    def match_case_block(
+            self,
+            context: Context,
+            hook_call: HookCallInput,
+            k: str,
+            v: Any,
+    ):
         # Return the value indexed without arrow
         if isinstance(v, str):
-            return self.run_key({k[:-2]: {k[-2:]: v + ' --merge'}})
+            return self.run_key(
+                context=context,
+                value={k[:-2]: {k[-2:]: v + ' --merge'}},
+            )
         elif isinstance(v, dict):
             # We are in a block
-            return self.run_key(self.block_macro(k, v))
+            return self.run_key(
+                context=context,
+                value=self.block_macro(
+                    context=context,
+                    hook_call=hook_call,
+                    key=k,
+                    val=v
+                ),
+            )
         else:
-            raise HookCallException(
+            raise exceptions.HookCallException(
                 f"Matched value must be of type string or dict, not {v}.",
-                context=self.context,
+                context=context,
             ) from None
 
-    def exec(self) -> Optional[Union[dict, list]]:
+    def exec(
+            self,
+            context: Context,
+            hook_call: HookCallInput,
+    ) -> Optional[Union[dict, list]]:
+        if hook_call is None:
+            # This only happens when match is called within jinja rendering which
+            # doesn't make sense from a usability perspective.
+            raise exceptions.HookCallException(
+                "Error calling match hook. Can't use within jinja rendering.",
+                context=context,
+            )
+
         default_value = None
         default_key = None
         # Condition catches everything except expanded hook calls and blocks (ie key->)
@@ -115,26 +153,36 @@ class MatchHook(BaseHook):
             try:
                 _match = re.fullmatch(k, self.value)
             except re.error as e:
-                raise HookCallException(
+                raise exceptions.HookCallException(
                     f"Error in match hook case '{k}'\n{e}\nMalformed regex. Must "
                     f"with python's `re` module syntax.",
-                    context=self.context,
+                    context=context,
                 ) from None
             if _match:
-                return self.match_case(v=v)
+                return self.match_case(context=context, v=v)
 
             # TODO: This regex needs to be modified to not match empty hooks
             #  ie - `->`: x - should not match everything
             # Case where we have an arrow in a key - ie `key->: ...`
             elif re.fullmatch(k[:-2], self.value) and k[-2:] in ('->', '_>'):
-                return self.match_case_block(k, v)
+                return self.match_case_block(
+                    context=context,
+                    hook_call=hook_call,
+                    k=k,
+                    v=v,
+                )
         if default_key is not None:
             if '->' in default_key or '_>' in default_key:
-                return self.match_case_block(k=default_key, v=default_value)
-            return self.match_case(v=default_value)
+                return self.match_case_block(
+                    context=context,
+                    hook_call=hook_call,
+                    k=default_key,
+                    v=default_value,
+                )
+            return self.match_case(context=context, v=default_value)
 
-        raise HookCallException(
+        raise exceptions.HookCallException(
             f"Value `{self.value}` not found in "
             f"{' ,'.join([i for i in list(self.case)])}",
-            context=self.context,
+            context=context,
         ) from None
