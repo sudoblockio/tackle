@@ -93,12 +93,11 @@ class RequestsPostHook(BaseHook, AuthMixin):
         description="Dictionary, list of tuples, bytes, or file-like object to send in the body of the Request.",
         render_by_default=True
     )
-    # TODO: Fix alias so input_json -> json
-    #  https://github.com/sudoblockio/tackle/issues/80
     input_json: dict = Field(
         False,
-        description="Whether to exit on non-200 response.",
-        render_by_default=True
+        description="A json payload to post.",
+        render_by_default=True,
+        alias='json'
     )
     no_exit: bool = Field(False, description="Whether to exit on non-200 response.")
     # fmt: on
@@ -138,12 +137,11 @@ class RequestsPutHook(BaseHook, AuthMixin):
         None,
         description="Dictionary, list of tuples, bytes, or file-like object to send in the body of the Request.",
     )
-    # TODO: Fix alias so input_json -> json
-    #  https://github.com/sudoblockio/tackle/issues/80
     input_json: dict = Field(
         None,
-        description="Json data to send in the body of the Request.",
-        render_by_default=True
+        description="A json payload to put.",
+        render_by_default=True,
+        alias='json'
     )
     no_exit: bool = Field(False, description="Whether to exit on non-200 response.")
     # fmt: off
@@ -182,12 +180,11 @@ class RequestsPatchHook(BaseHook, AuthMixin):
         None,
         description="Dictionary, list of tuples, bytes, or file-like object to send in the body of the Request.",
     )
-    # TODO: Fix alias so input_json -> json
-    #  https://github.com/sudoblockio/tackle/issues/80
     input_json: dict = Field(
         None,
-        description="Json data to send in the body of the Request.",
+        description="A json payload to patch.",
         render_by_default=True,
+        alias='json'
     )
     no_exit: bool = Field(False, description="Whether to exit on non-200 response.")
     # fmt: off
