@@ -2,7 +2,7 @@ import sys
 from InquirerPy import prompt
 
 from typing import Any
-from tackle import BaseHook, Field
+from tackle import BaseHook, Field, Context
 from tackle.utils.dicts import get_readable_key_path
 from tackle import exceptions
 
@@ -20,9 +20,9 @@ class InquirerExpandHook(BaseHook):
 
     args: list = ['message', 'default']
 
-    def exec(self) -> list:
+    def exec(self, context: Context) -> list:
         if self.message is None:
-            self.message = get_readable_key_path(self.key_path) + ' >>>'
+            self.message = get_readable_key_path(context.key_path) + ' >>>'
 
         if not self.no_input:
             question = {
@@ -40,7 +40,7 @@ class InquirerExpandHook(BaseHook):
                 print("Exiting...")
                 sys.exit(0)
             except EOFError:
-                raise exceptions.PromptHookCallException(context=self)
+                raise exceptions.PromptHookCallException(context=context)
             return response['tmp']
 
         elif self.default:

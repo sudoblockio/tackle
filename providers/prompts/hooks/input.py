@@ -2,7 +2,7 @@ import sys
 from InquirerPy import prompt
 
 from typing import Any
-from tackle import BaseHook, Field
+from tackle import BaseHook, Field, Context
 from tackle.utils.dicts import get_readable_key_path
 from tackle import exceptions
 
@@ -21,9 +21,9 @@ class InquirerInputHook(BaseHook):
     args: list = ['message']
     _docs_order = 0
 
-    def exec(self) -> str:
+    def exec(self, context: 'Context') -> str:
         if self.message is None:
-            self.message = get_readable_key_path(self.key_path) + ' >>>'
+            self.message = get_readable_key_path(context.key_path) + ' >>>'
 
         if self.default is not None and not isinstance(self.default, str):
             self.default = str(self.default)
@@ -44,7 +44,7 @@ class InquirerInputHook(BaseHook):
                 print("Exiting...")
                 sys.exit(0)
             except EOFError:
-                raise exceptions.PromptHookCallException(context=self.context)
+                raise exceptions.PromptHookCallException(context=context)
             return response['tmp']
 
         elif self.default:

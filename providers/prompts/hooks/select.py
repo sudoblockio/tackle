@@ -3,7 +3,7 @@ import sys
 from InquirerPy import prompt
 from typing import Any, List, Union
 
-from tackle import BaseHook, Field
+from tackle import BaseHook, Field, Context
 from tackle.utils.dicts import get_readable_key_path
 from tackle import exceptions
 
@@ -31,9 +31,9 @@ class InquirerListHook(BaseHook):
     args: list = ['message']
     _docs_order = 1
 
-    def exec(self) -> Any:
+    def exec(self, context: Context) -> Any:
         if self.message is None:
-            self.message = get_readable_key_path(self.key_path) + ' >>>'
+            self.message = get_readable_key_path(context.key_path) + ' >>>'
 
         # Figure out what type of dictionary it is
         choices_type = None
@@ -43,7 +43,7 @@ class InquirerListHook(BaseHook):
             choices_type = type(v)
 
         if choices_type == str:
-            answer = self._run_prompt()
+            answer = self._run_prompt(context=context)
             if self.index:
                 return self.choices.index(answer)
             else:
@@ -54,7 +54,7 @@ class InquirerListHook(BaseHook):
             for i in choice_list:
                 self.choices.append(list(i.keys())[0])
 
-            answer = self._run_prompt()
+            answer = self._run_prompt(context=context)
             for i, v in enumerate(choice_list):
                 if answer == list(v.keys())[0]:
                     if self.index:
@@ -67,7 +67,7 @@ class InquirerListHook(BaseHook):
                 "choices as keys and output selection as the value."
             )
 
-    def _run_prompt(self):
+    def _run_prompt(self, context: Context):
         if not self.no_input:
             question = {
                 'type': 'list',
@@ -83,7 +83,7 @@ class InquirerListHook(BaseHook):
                 print("Exiting...")
                 sys.exit(0)
             except EOFError:
-                raise exceptions.PromptHookCallException(context=self)
+                raise exceptions.PromptHookCallException(context=context)
             return response['tmp']
 
         elif isinstance(self.choices[0], str):

@@ -2,9 +2,9 @@ import sys
 from InquirerPy import prompt
 from InquirerPy.base.control import Choice
 
-from typing import Union, List, Dict
+from typing import Union
 
-from tackle import BaseHook, Field
+from tackle import BaseHook, Field, Context
 from tackle.utils.dicts import get_readable_key_path
 from tackle import exceptions
 
@@ -22,7 +22,7 @@ class InquirerCheckboxHook(BaseHook):
 
     message: str = Field(None, description="String message to show when prompting.")
     # default: Any = Field([], description="Default for the return value")
-    choices: Union[List[str], List[Dict]] = Field(
+    choices: Union[list[str], list[dict]] = Field(
         ...,
         description="Either a list of strings or dictionary .",
         render_by_default=True,
@@ -41,9 +41,9 @@ class InquirerCheckboxHook(BaseHook):
     args: list = ['message']
     _docs_order: int = 2
 
-    def exec(self) -> list:
+    def exec(self, context: Context) -> list:
         if self.message is None:
-            self.message = get_readable_key_path(self.key_path) + ' >>>'
+            self.message = get_readable_key_path(context.key_path) + ' >>>'
 
         choices_type = None
         for i, v in enumerate(self.choices):
@@ -63,7 +63,7 @@ class InquirerCheckboxHook(BaseHook):
                 for x in self.choices
             ]
 
-            answer = self._run_prompt()
+            answer = self._run_prompt(context=context)
             if self.index:
                 output = []
                 for i, v in enumerate(choice_list):
@@ -92,7 +92,7 @@ class InquirerCheckboxHook(BaseHook):
                 if self.index:
                     # TODO: Fix this - low priority
                     raise Exception("Can't index checkbox calls in normal form.")
-                return self._run_prompt()
+                return self._run_prompt(context=context)
 
             # Otherwise we expect to reindex the key as the output per this:
             # choices = ['How much stuff?': 'stuff', 'How many things?': 'things']
@@ -113,7 +113,7 @@ class InquirerCheckboxHook(BaseHook):
                 {'name': x, 'value': x} if isinstance(x, str) else x for x in choices
             ]
 
-            answer = self._run_prompt()
+            answer = self._run_prompt(context=context)
 
             # This is for reindexing the output
             output = []
@@ -126,7 +126,7 @@ class InquirerCheckboxHook(BaseHook):
                         output.append(v[val])
             return output
 
-    def _run_prompt(self):
+    def _run_prompt(self, context: Context):
         if self.checked:
             choices = [
                 Choice(**i, enabled=True) if isinstance(i, dict) else i
@@ -147,5 +147,5 @@ class InquirerCheckboxHook(BaseHook):
             print("Exiting...")
             sys.exit(0)
         except EOFError:
-            raise exceptions.PromptHookCallException(context=self)
+            raise exceptions.PromptHookCallException(context=context)
         return response['tmp']

@@ -1,53 +1,40 @@
-# from tackle import tackle
-#
-# # TODO: https://github.com/sudoblockio/tackle/issues/46
-#
-#
-# def test_provider_select_list_this(mocker):
-#     mocker.patch(
-#         'tackle.providers.prompts.hooks.select.prompt', return_value={"tmp": "things"}
-#     )
-#     output = tackle('test.yaml')
-#     assert output['selection'] == 'things'
-#
-#
-# def test_provider_select_list(mocker):
-#     mocker.patch(
-#         'tackle.providers.prompts.hooks.select.prompt', return_value={"tmp": "things"}
-#     )
-#     output = tackle('list.yaml')
-#     assert output['selection'] == 'things'
-#
-#
-# def test_provider_select_list_index(mocker):
-#     mocker.patch(
-#         'tackle.providers.prompts.hooks.select.prompt', return_value={"tmp": "things"}
-#     )
-#     output = tackle('list_index.yaml')
-#     assert output['selection'] == 1
-#
-#
-# def test_provider_select_map(mocker):
-#     mocker.patch(
-#         'tackle.providers.prompts.hooks.select.prompt',
-#         return_value={"tmp": "I do things"},
-#     )
-#     output = tackle('map.yaml')
-#     assert output['selection'] == 'things'
-#
-#
-# def test_provider_select_map_index(mocker):
-#     mocker.patch(
-#         'tackle.providers.prompts.hooks.select.prompt',
-#         return_value={"tmp": "I do things"},
-#     )
-#     output = tackle('map_index.yaml')
-#     assert output['selection'] == 1
+import pytest
+
+from tackle import Context
+from providers.prompts.hooks.select import InquirerListHook
 
 
-# def test_provider_select_no_msg(mocker):
-#     mocker.patch(
-#         'tackle.providers.prompts.hooks.select.prompt', return_value={"tmp": "things"}
-#     )
-#     output = tackle('no-msg.yaml')
-#     assert output['selection'] == 'things'
+@pytest.fixture()
+def run_mocked_hook(mocker):
+    def f(return_value, **kwargs):
+        # Patch the `prompt` method which is called by the hook and will since it
+        # requires user input from terminal
+        mocker.patch(
+            'providers.prompts.hooks.select.prompt',
+            return_value=return_value
+        )
+        context = Context(key_path=[])
+        hook = InquirerListHook(**kwargs)
+        output = hook.exec(context=context)
+
+        return output
+
+    return f
+
+
+def test_provider_prompt_select_basic(run_mocked_hook):
+    output = run_mocked_hook(
+        return_value={'tmp': 'things'},
+        choices=['stuff', 'things']
+    )
+
+    assert output == 'things'
+
+
+def test_provider_prompt_select_map(run_mocked_hook):
+    output = run_mocked_hook(
+        return_value={'tmp': 'foo'},
+        choices=[{'foo': 'stuff'}, {'bar': 'things'}],
+    )
+
+    assert output == 'stuff'
