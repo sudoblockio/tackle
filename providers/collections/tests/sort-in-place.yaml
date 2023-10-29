@@ -1,15 +1,15 @@
 
 a_list:
-  - foo
-  - bar
-  - baz
+  - foo_a
+  - bar_a
+  - baz_a
 
 sort_a_list->: sort a_list
 
 b_list:
-  - foo
-  - bar
-  - baz
+  - foo_b
+  - bar_b
+  - baz_b
 
 # Should not sort in place
 sort_in_list->: sort "{{b_list}}"

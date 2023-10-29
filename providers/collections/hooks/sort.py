@@ -1,7 +1,7 @@
 from operator import itemgetter
 from typing import Union, Optional
 
-from tackle import BaseHook, Field
+from tackle import BaseHook, Field, Context
 from tackle.utils.dicts import encode_key_path, nested_get
 from tackle.exceptions import HookCallException
 
@@ -82,13 +82,13 @@ class SortHook(BaseHook):
             }
             return sorted_dict
 
-    def get_src(self):
+    def get_src(self, context: Context):
         value = None
         contexts = ['public', 'private', 'temporary', 'existing']
         for i in contexts:
             try:
                 value = nested_get(
-                    element=getattr(self.context.data, i),
+                    element=getattr(context.data, i),
                     keys=encode_key_path(self.src, self.sep),
                 )
             except KeyError:
@@ -101,11 +101,11 @@ class SortHook(BaseHook):
             raise HookCallException(
                 f"Could not find {self.src} in any of the contexts (ie in "
                 f"{','.join(contexts)}).",
-                hook=self,
+                context=context,
             )
         return value
 
-    def exec(self) -> Optional[Union[list, dict]]:
+    def exec(self, context: Context) -> Optional[Union[list, dict]]:
         if (
             isinstance(self.src, str)
             or self.src_is_key_path
@@ -114,11 +114,11 @@ class SortHook(BaseHook):
             self.src_is_key_path = True
 
             if self.in_place:
-                self.src = self.get_src()
-                return self.sort(self.src)
+                src = self.get_src(context=context)
+                return self.sort(src)
                 # return self.src
             else:
-                src = self.get_src()
+                src = self.get_src(context=context)
                 self.sort(src)
                 return src
         else:

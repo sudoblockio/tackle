@@ -29,16 +29,16 @@ examples:
   - name: "[concatenate](concatenate.md)"
     description: Concatenate two lists.
     content: |
-      list_1:
+      list_1_>:  # Notice this is private block so won't be in output
         - foo
         - bar
-      list_2:
+      list_2_>:
         - stuff
         - things
-      out->: concat [list_1,list_2]
+      out->: concat {{list_1}} {{list_2}}
 
     output: |
-      ...
+      # Only `out` key now 
       out:
         - foo
         - bar

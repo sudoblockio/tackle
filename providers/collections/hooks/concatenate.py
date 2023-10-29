@@ -7,10 +7,13 @@ class ConcatenateHook(BaseHook):
     """Hook for concatenating a list of items."""
 
     hook_name: str = 'concat'
+    # Relates to https://github.com/sudoblockio/tackle/issues/183 where we might want to
+    # `render_by_default` src
     src: list = Field(
         ...,
         description="A list to concatenate the items of.",
-        render_by_default=True)
+        # render_by_default=True,
+    )
 
     args: list = ['src']
 

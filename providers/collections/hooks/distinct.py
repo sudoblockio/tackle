@@ -1,6 +1,6 @@
 from typing import Union, Optional
 
-from tackle import BaseHook, Field
+from tackle import BaseHook, Field, Context
 from tackle.utils.dicts import nested_get, encode_key_path
 
 
@@ -20,19 +20,19 @@ class DistinctHook(BaseHook):
 
     args: list = ['src']
 
-    def exec(self) -> Optional[list]:
+    def exec(self, context: Context) -> Optional[list]:
         if isinstance(self.src, str) or self.src_is_key_path:
             self.src = encode_key_path(self.src, self.sep)
             # When appending within a block, we try to append to output dict then
             # fallback on trying to append to the existing context
             try:
                 self.src = nested_get(
-                    element=self.context.data.public,
+                    element=context.data.public,
                     keys=self.src,
                 )
             except KeyError:
                 self.src = nested_get(
-                    element=self.context.data.existing,
+                    element=context.data.existing,
                     keys=self.src,
                 )
         # TODO: Raise better error if retrieved key path is not a list

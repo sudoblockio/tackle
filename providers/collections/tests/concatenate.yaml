@@ -1,10 +1,7 @@
-
-list_1:
+list_1_>:
   - foo
   - bar
-
-list_2:
+list_2_>:
   - stuff
   - things
-
-out->: concat [list_1,list_2]
+out->: concat {{list_1}} {{list_2}}
