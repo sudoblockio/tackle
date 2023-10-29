@@ -202,6 +202,7 @@ def update_hook_vars(
      which skips rendering a field. And last it renders any fields wrapped in jinja
      braces.
     """
+    # TODO: Split out to own file.
     for k, v in hook_call.model_extra.copy().items():
         # Need to check for the unquoted yaml string error here as we miss it in the
         # initial run of the macro since the key is embedded so we run it again here.
@@ -282,14 +283,24 @@ def update_hook_vars(
         if Hook.model_fields[k].json_schema_extra is not None:
             # Need to check for this field in the `json_schema_extra`
             if 'render_by_default' in Hook.model_fields[k].json_schema_extra:
-                if not isinstance(Hook.model_fields[k].json_schema_extra['render_by_default'], bool):
+                if not isinstance(
+                        Hook.model_fields[k].json_schema_extra['render_by_default'],
+                        bool
+                ):
                     raise exceptions.MalformedHookDefinitionException(
                         f"The `render_by_default` field in key=`{k}` must be a boolean.",
                         context=context, hook=Hook,
                     )
                 if Hook.model_fields[k].json_schema_extra['render_by_default']:
-                    hook_call.model_extra[k] = render_variable(context, wrap_jinja_braces(v))
-                    continue
+                    if isinstance(v, str):
+                        hook_call.model_extra[k] = render_variable(context, wrap_jinja_braces(v))
+                        continue
+                    # Relates to https://github.com/sudoblockio/tackle/issues/183
+                    # Where we might want to have variadic arguments.
+                    else:
+                        logger.warning(f"Encountered a `render_by_default` field={k} "
+                                       f"of type {type(v)}. Skipping rendering...")
+
         # Finally render any field that is left over with jinja braces
         hook_call.model_extra[k] = render_variable(context, v)
 
@@ -1046,7 +1057,7 @@ def run_declarative_hook(
     """
     Given a hook, extract out the kwargs based on the hook's fields along with mapping
      the args to the hook which will either compile the methods or map to the a hook's
-     field. Finally it will then run the hook.
+     field. Finally, run the hook.
 
     Note: this is a lot of the same logic as seen in other places a hook is called but
      specific to declarative hooks which are called from the command line. Other
@@ -1067,9 +1078,10 @@ def run_declarative_hook(
             hook_input_raw=Hook.input_raw.copy(),
         )
 
-    # Consume input kwargs and set them as defaults + validate with hook's field type
+    # Handle kwargs
     kwargs = {}
     for k, v in context.input.kwargs.copy().items():
+        # Consume input kwargs and set them as defaults + validate with hook's field type
         if k in Hook.model_fields:
             kwargs.update({k: context.input.kwargs.pop(k)})
 
@@ -1101,8 +1113,20 @@ def run_declarative_hook(
                 hook_name=arg,
                 hook_input_raw=hook_dict,
             )
+        elif arg == 'help' and i == len(context.input.args) - 1:
+            # Prioritize help if it is the last arg
+            run_help(context=context, Hook=Hook)  # Exit 0
 
-        elif Hook.model_fields['args'].default == []:  # noqa
+        elif Hook.model_fields['args'].default:
+            # Handle the `args` field which maps to args
+            if 'args' in Hook.model_fields:
+                evaluate_args(
+                    context=context,
+                    args=context.input.args,
+                    hook_dict=arg_dict,
+                    Hook=Hook,
+                )
+        else:
             # Throw error as we have nothing to map the arg to
             hook_name = Hook.model_fields['hook_name'].default
             if hook_name == DEFAULT_HOOK_NAME:
@@ -1114,20 +1138,7 @@ def run_declarative_hook(
                 "arguments. Exiting.",
                 context=context,
             ) from None
-        elif arg == 'help' and i == len(context.input.args) - 1:
-            # Exit 0
-            run_help(context=context, Hook=Hook)
 
-    # # TODO: Remove? Should have been mapped by now and this does not apply to command
-    # #  line called hooks...
-    # # Handle the `args` field which maps to args
-    # if 'args' in Hook.model_fields:
-    #     evaluate_args(
-    #         context=context,
-    #         args=context.input.args,
-    #         hook_dict=arg_dict,
-    #         Hook=Hook,
-    #     )
     try:
         hook = Hook(**kwargs, **arg_dict)
     except ValidationError as e:
@@ -1234,12 +1245,12 @@ def parse_input_args_for_hooks(context: 'Context'):
             input_dict=context.data.input,
             update_dict=context.input.kwargs,
         )
-    # TODO: This should be moved - It is not part of this logic
-    # Apply overrides
-    context.data.input = update_input_dict(
-        input_dict=context.data.input,
-        update_dict=context.data.overrides,
-    )
+    # # TODO: This should be moved - It is not part of this logic
+    # # Apply overrides
+    # context.data.input = update_input_dict(
+    #     input_dict=context.data.input,
+    #     update_dict=context.data.overrides,
+    # )
 
 
 def split_input_data(context: 'Context'):
