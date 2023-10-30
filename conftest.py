@@ -10,8 +10,8 @@ import tempfile
 from tackle.settings import settings
 from tackle.factory import new_context
 from tackle.imports import import_native_providers
-from tackle.models import Context
-
+# from tackle.models import Context
+from tackle.context import Context
 
 @pytest.fixture(scope="function")
 def change_dir(request):
@@ -89,10 +89,12 @@ def patch_native_provider_import(session_mocker):
     Importing the native providers is expensive and needs to be done on startup so to
      avoid this we patch it and auto-use the value which is always the same.
     """
-    session_mocker.patch(
+    mock = session_mocker.patch(
         'tackle.factory.import_native_providers',
         return_value=import_native_providers(Context()),
     )
+    yield mock
+
 
 @pytest.fixture(scope='function')
 def cd(request):
@@ -104,3 +106,31 @@ def cd(request):
         os.chdir(os.path.join(request.fspath.dirname, path))
 
     return f
+
+
+@pytest.fixture(scope='function')
+def cd_fixtures(cd):
+    """Change to current directories fixtures."""
+    cd('fixtures')
+
+
+@pytest.fixture(scope='function', autouse=True)
+def cd_cwd(request):
+    """Change to current directory - default for all tests."""
+    os.chdir(request.fspath.dirname)
+
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--skip-slow", action="store_true", default=False, help="skip slow tests"
+    )
+
+def pytest_configure(config):
+    config.addinivalue_line("markers", "slow: mark test as slow to run")
+
+def pytest_collection_modifyitems(config, items):
+    if config.getoption("--skip-slow"):
+        skip_slow = pytest.mark.skip(reason="skipped slow test")
+        for item in items:
+            if "slow" in item.keywords:
+                item.add_marker(skip_slow)

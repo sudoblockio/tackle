@@ -1,6 +1,27 @@
-PYPI_SERVER = pypitest
-
 .DEFAULT_GOAL := help
+
+VENV_NAME?=venv
+VENV_ACTIVATE=. $(VENV_NAME)/bin/activate
+PYTHON=${VENV_NAME}/bin/python3
+
+.PHONY: all
+all: venv
+
+venv: $(VENV_NAME)/bin/activate
+	$(VENV_NAME)/bin/activate: requirements.txt
+	test -d $(VENV_NAME) || virtualenv -p python3 $(VENV_NAME)
+	${PYTHON} -m pip install -U pip
+	${PYTHON} -m pip install -r requirements.txt
+	touch $(VENV_NAME)/bin/activate
+
+.PHONY: clean
+clean:
+	rm -rf $(VENV_NAME)
+
+.PHONY: run
+run:
+	$(VENV_ACTIVATE) && python3 my_script.py
+
 
 install:  ## Install all the requirements
 	@echo "+ $@"
@@ -33,14 +54,18 @@ lint: ## Check code style with flake8
 	@echo "+ $@"
 	@tox -e lint
 
-# TODO: Fix
 .PHONY: test
-test:  clean-pyc ## Run tests quickly with the default Python
+test:  clean-pyc  ## Run tests quickly with the default Python
+	@echo "+ $@"
+	@tox -e py -- --skip-slow
+
+.PHONY: test-all
+test-all:  clean-pyc  ## Run all tests including the slow ones with the default Python
 	@echo "+ $@"
 	@tox -e py
 
-.PHONY: test-all
-test-all: ## Run tests on every Python version with tox
+.PHONY: test-all-python-versions
+test-all-python-versions: ## Run tests on every Python version with tox
 	@echo "+ $@"
 	@tox
 
@@ -72,7 +97,7 @@ servedocs: docs ## Rebuild docs automatically
 release: clean ## Package and upload release
 	@echo "+ $@"
 	@python setup.py sdist bdist_wheel
-	@twine upload -r $(PYPI_SERVER) dist/*
+	@twine upload -r pypitest dist/*
 
 .PHONY: sdist
 sdist: clean ## Build sdist distribution
