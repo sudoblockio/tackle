@@ -210,6 +210,9 @@ class BaseHook(HookBase):
         extra='forbid',
         arbitrary_types_allowed=True,
         validate_assignment=True,
+        # TODO: Make this dynamic when config is exposed. This is fine for now as there
+        #  is no reason to have enum's in raw form.
+        use_enum_values=True,
     )
 
 

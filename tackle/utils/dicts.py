@@ -161,10 +161,6 @@ def nested_set(element: Union[dict, list], keys: list, value: Any, index: int = 
     num_elements = len(keys)
     # Check if we are at the last element of the list to insert the value
     if index == num_elements - 1:
-        # Check is value is enum and evaluate it as value so it is serializable.
-        if isinstance(value, Enum):
-            value = value.value
-
         if isinstance(keys[-1], bytes):
             element.insert(decode_list_index(keys[-1]), value)
         else:
