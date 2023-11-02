@@ -241,7 +241,7 @@ def update_source(
                 f" {source.base_dir}. Exiting...",
                 context=context
             ) from None
-        source.file = os.path.basename(file_path)
+        source.file = file_path
     elif source.file is None:
         file = find_tackle_file_in_dir(dir=source.directory)
         if file is None:
