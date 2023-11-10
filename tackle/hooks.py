@@ -256,12 +256,32 @@ def create_validator(
     )
     return validator_function
 
+GenericFieldType = typing.TypeVar('GenericFieldType')
+
+
+def get_hook_field_type(type_str: str) -> GenericFieldType | None:
+    from pydantic import networks as pydantic_network_types
+    from pydantic import types as pydantic_types
+    import ipaddress as ipaddress_types
+    import datetime as datetime_types
+
+    if hasattr(typing, type_str):
+        return getattr(typing, type_str)
+    elif hasattr(ipaddress_types, type_str):
+        return getattr(ipaddress_types, type_str)
+    elif hasattr(datetime_types, type_str):
+        return getattr(datetime_types, type_str)
+    elif hasattr(pydantic_types, type_str):
+        return getattr(pydantic_types, type_str)
+    elif hasattr(pydantic_network_types, type_str):
+        return getattr(pydantic_network_types, type_str)
+
 
 def parse_hook_type(
         context: Context,
         type_str: str,
-        func_name: str,
-):
+        hook_name: str,
+) -> GenericFieldType:
     """
     Parse the `type` field within a declarative hook and use recursion to parse the
      string into real types.
@@ -283,7 +303,7 @@ def parse_hook_type(
             parse_hook_type(
                 context=context,
                 type_str=arg,
-                func_name=func_name,
+                hook_name=hook_name,
             )
             for arg in re.split(r',(?![^[\]]*])', type_args_str)
         ]
@@ -291,7 +311,7 @@ def parse_hook_type(
         base_type = parse_hook_type(
             context=context,
             type_str=base_type_str,
-            func_name=func_name,
+            hook_name=hook_name,
         )
 
         if len(type_args) == 0:
@@ -301,35 +321,40 @@ def parse_hook_type(
             if len(type_args) == 1:
                 return base_type[type_args[0]]
             else:
-                raise exceptions.MalformedFunctionFieldException(
+                raise exceptions.MalformedHookFieldException(
                     "The type `Optional` only takes one arg.",
                     context=context,
-                    function_name=func_name,
+                    hook_name=hook_name,
                 ) from None
         else:
             return base_type[tuple(type_args)]
 
     # Check if it's a generic type without type arguments
+    type_ = get_hook_field_type(type_str=type_str)
+    if type_ is not None:
+        return type_
+
     if hasattr(typing, type_str):
         return getattr(typing, type_str)
     elif type_str not in LITERAL_TYPES:
-        hook = get_public_or_private_hook(context=context, hook_type=type_str)
-        if hook is None:
+        Hook = get_hooks_from_namespace(context=context, hook_name=type_str)
+        if Hook is None:
             try:
                 type_ = getattr(typing, type_str.title())
             except AttributeError:
-                raise exceptions.MalformedFunctionFieldException(
+                raise exceptions.MalformedHookFieldException(
                     f"The type `{type_str}` is not recognized. Must be in python's "
-                    f"`typing` module.",
+                    f"`typing` module, pydantic types, datetime, ipaddress, or a "
+                    f"tackle hook.",
                     context=context,
-                    function_name=func_name,
+                    hook_name=hook_name,
                 ) from None
             return type_
-        elif isinstance(hook, LazyBaseHook):
+        elif isinstance(Hook, LazyBaseHook):
             # We have a hook we need to build
             raise Exception("Should never happen...")
         else:
-            return hook
+            return Hook
     # Treat it as a plain name - Safe to eval as type_str will always be a literal type
     return eval(type_str)
 
