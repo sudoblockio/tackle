@@ -34,10 +34,12 @@ class DclHookModelConfig(BaseModel):
     # whether to use the used alias (or first alias for "field required" errors) instead of field_names
     # to construct error `loc`s, default True
     loc_by_alias: bool = Field(True, description="")
-    alias_generator: Callable[[str], str] | None = Field(None, description="")
+
+    # TODO: Support this
+    # alias_generator: Callable[[str], str] | None = Field(None, description="")
     ignored_types: tuple[type, ...] = Field((), description="")
     allow_inf_nan: bool = Field(True, description="")
-    json_schema_extra: dict[str, object] | JsonSchemaExtraCallable | None
+    # json_schema_extra: dict[str, object] | JsonSchemaExtraCallable | None
     json_encoders: dict[type[object], JsonEncoder] | None = Field(None, description="")
 
     # new in V2
@@ -54,11 +56,3 @@ class DclHookModelConfig(BaseModel):
     hide_input_in_errors: bool = Field(False, description="")
     defer_build: bool = Field(False, description="")
     schema_generator: type[GenerateSchema] | None = Field(None, description="")
-
-
-def new_dcl_hook_model_config(context: 'Context') -> DclHookModelConfig:
-    """Validate inputs for hook model config with error handling."""
-    try:
-        return DclHookModelConfig()
-    except ValidationError as e:
-        raise exceptions.UnknownInputArgumentException(e, context=context)

@@ -2,20 +2,16 @@
 Declarative hook macros. Handles all the inputs to hooks (ie `hook_name<-`). Removes
 any arrows from keys based on if they are hook calls or methods.
 """
-from typing import TYPE_CHECKING
+import pydoc
+from typing import TYPE_CHECKING, Any, Annotated
+from ruyaml.constructor import CommentedSeq, ScalarFloat, CommentedMap
+from pydantic.fields import FieldInfo
 
-from tackle import exceptions
+from tackle import exceptions, Context
+from tackle.models import DclHookInput, DCL_HOOK_FIELDS, HookFieldValidator
 
-from tackle.models import DclHookInput
+LITERAL_TYPES = {'list', 'dict', 'str', 'int', 'float', 'bytes', 'bool'}
 
-if TYPE_CHECKING:
-    from tackle.models import Context
-
-FUNCTION_ARGS = {
-    DclHookInput.model_fields[i].alias
-    if DclHookInput.model_fields[i].alias is not None else
-    i for i in DclHookInput.model_fields.keys()
-}
 
 
 def dict_hook_method_macros():
@@ -112,6 +108,9 @@ def expand_default_factory(
 
 def infer_type_from_default(value: dict):
     """When a `default` field exists but not a `type` we infer the type."""
+    if 'enum' in value:
+        # enum fields don't get a type by default
+        return
     if 'default' in value and 'type' not in value:
         # Has default field but not a type so assuming the type is the default.
         default = value['default']
@@ -147,39 +146,6 @@ def is_field(value: dict) -> bool:
     return False
 
 
-def create_default_factory(
-        context: Context,
-        hook_name: str,
-        value: dict,
-        value_is_factory: bool = False,
-):
-    """
-    Create a default_factory field out of the value which is a callable that parses the
-     data calling hooks if they exist.
-    """
-    from tackle.parser import create_dict_default_factory_executor
-
-    if value_is_factory:
-        default_factory = value
-    else:
-        default_factory = value.pop('default_factory')
-
-    if isinstance(default_factory, (dict, list)):
-        default_factory_value = default_factory
-    else:
-        raise exceptions.MalformedHookFieldException(
-            "The default_factory must be a string (compact hook call), "
-            "dict, or list which will be parsed.",
-            context=context, hook_name=hook_name,
-        )
-
-    value['default_factory'] = create_dict_default_factory_executor(
-        context=context,
-        value=default_factory_value,
-    )
-
-
-
 def dict_field_hook_macro(
         context: Context,
         hook_name: str,
@@ -197,7 +163,13 @@ def dict_field_hook_macro(
      field: {default->: a_hook args}
      field: {random_key: {->: a_hook args}}
 
-    In all these cases it makes a callable parseable dict as a default_factory.
+    In all these cases it is expanded to:
+
+    field:
+      type: Any  # Only if `type` does not exist
+      default_factory:
+        field->: a_hook args
+        return->: {{field}}
     """
     # Transform fields ending in a hook call to a field with a default factory
     update_default_factory_hook_fields(context, hook_name=hook_name, value=value)
@@ -211,15 +183,29 @@ def dict_field_hook_macro(
     # Check minimal fields to see if we can just return the value as a default factory
     if not is_field(value):
         # Just make dict values parseable
-        create_default_factory(
-            context=context,
-            hook_name=hook_name,
-            value=value,
-            value_is_factory=True,
-        )
+        # create_default_factory(
+        #     context=context,
+        #     hook_name=hook_name,
+        #     value=value,
+        #     value_is_factory=True,
+        # )
+        value['default_factory'] = value
         value['type'] = 'Any'
         return value
 
+    # Make the default_factory callable
+    # if 'default_factory' in value:
+    #     create_default_factory(context, hook_name=hook_name, value=value)
+
+    # if 'validator' in value:
+    #     create_field_validator(
+    #         context=context,
+    #         hook_name=hook_name,
+    #         key=key,
+    #         value=value,
+    #         validator_field=value.pop('validator'),
+    #     )
+    return value
 
 
 def str_field_hook_macro(
@@ -251,42 +237,52 @@ def hook_dict_macro(
         hook_name: str,
 ) -> dict:
     """Remove any arrows from keys."""
-    new_hook_input = {}
-    # Special case where we don't need an arrow
-    if 'exec' in hook_input_raw:
-        new_hook_input['exec<-'] = hook_input_raw.pop('exec')
+    output = {}
+    # Special case where we don't need an arrow which can often be forgotten
+    if 'exec<-' in hook_input_raw:
+        output['exec'] = hook_input_raw.pop('exec<-')
+
+    if 'exec<_' in hook_input_raw:
+        raise exceptions.MalformedHookFieldException(
+            "Right now we don't support private exec methods. See 'Private `exec`"
+            " Method proposal", context=context, hook_name=hook_name,
+        )
 
     for k, v in hook_input_raw.items():
-        if k.endswith(('<-', '<_')):
+        if k in DCL_HOOK_FIELDS:
+            # Don't run a macro on any field that is part of base
+            output[k] = v
+        elif k.endswith(('<-', '<_')):
             # We have a method. Value handled elsewhere
-            new_hook_input[k[-2:]] = {k[-2:]: v}
+            output[k[:-2]] = {k[-2:]: v}
         elif k.endswith(('->', '_>')):
-            if not isinstance(v, str):
-                raise exceptions.UnknownInputArgumentException(
-                    f"Hook definition fields ending with arrow (ie `{k}`) must have"
-                    f" string values.", context=context
-                )
-            arrow = k[-2:]
-            # exclude = True if arrow == '_>' else False
-            new_hook_input[k[:-2]] = {
-                'default': v,
-                'exclude': True if arrow == '_>' else False,
-                'parse_keys': ['default']
-            }
+            output[k[:-2]] = str_field_hook_macro(
+                context=context,
+                hook_name=hook_name,
+                key=k,
+                value=v,
+            )
         elif v is None:
-            new_hook_input[k] = {'type': 'Any', 'default': None}
+            output[k] = {'type': 'Any', 'default': None}
         elif isinstance(v, str) and v in LITERAL_TYPES:
-            new_hook_input[k] = {'type': v}
+            output[k] = {'type': v}
         elif isinstance(v, dict):
-            # dict inputs need to be checked for keys with an arrow (ie default->)
-            # TODO: Traverse and apply logic
-
-            new_hook_input[k] = v
+            output[k] = dict_field_hook_macro(
+                context=context,
+                hook_name=hook_name,
+                key=k,
+                value=v,
+            )
+        elif isinstance(v, CommentedSeq):
+            output[k] = {'type': 'list', 'default': v}
+        elif isinstance(v, FieldInfo):
+            # output[k] = v
+            raise
         else:
             # Otherwise just put as default value with same type
-            new_hook_input[k] = {'type': type(v).__name__, 'default': v}
+            output[k] = {'type': type(v).__name__, 'default': v}
 
-    return new_hook_input
+    return output
 
 
 def str_hook_macro(hook_input_raw: str) -> dict:
@@ -300,14 +296,26 @@ def str_hook_macro(hook_input_raw: str) -> dict:
     return {'tmp_in->': hook_input_raw, 'tmp_out->': 'return {{tmp_in}}'}
 
 
-def hook_macros(context: 'Context', hook_input_raw: dict | str) -> dict:
+def hook_macros(
+        context: 'Context',
+        hook_input_raw: dict | str,
+        hook_name: str,
+) -> dict:
     """
     Macro to update the keys of a declarative hook definition and parse out any methods.
     """
-
     if isinstance(hook_input_raw, str):
-        return str_hook_macro(hook_input_raw=hook_input_raw)
+        value = str_hook_macro(hook_input_raw=hook_input_raw)
+        return hook_dict_macro(
+            context=context,
+            hook_input_raw=value,
+            hook_name=hook_name,
+        )
     elif isinstance(hook_input_raw, dict):
-        return dict_hook_macro(context=context, hook_input_raw=hook_input_raw)
+        return hook_dict_macro(
+            context=context,
+            hook_input_raw=hook_input_raw,
+            hook_name=hook_name,
+        )
     else:
         raise Exception("This should never happen...")

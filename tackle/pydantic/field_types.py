@@ -8,13 +8,13 @@ if TYPE_CHECKING:
     from tackle.models import Context
 
 
-class TypeInput(BaseModel):
+class FieldInput(BaseModel):
     """
     Model to validate inputs into declarative hook fields. It is the model version of
      the inputs into tackle.pydantic.fields.Field for serialization purposes.
     """
     type: str | None = Field(None, description="")
-    enum: list[Any] | None = Field(None, description="")
+    enum: list | None = Field(None, description="")
     validator: dict | None = Field(None, description="")
     validators: list[dict] | None = Field(None, description="")
     render_exclude: list | None = Field(None, description="")
@@ -23,6 +23,7 @@ class TypeInput(BaseModel):
     # pydantic fields
     default: Any = Field(None, description="")
     default_factory: Callable[[], Any] | None = Field(None, description="")
+    # default_factory: dict | None = Field(None, description="")
     alias: str | None = Field(None, description="")
     alias_priority: int | None = Field(None, description="")
     # validation_alias: str | AliasPath | AliasChoices | None = Field(None, description="")
@@ -53,10 +54,9 @@ class TypeInput(BaseModel):
     min_length: int | None = Field(None, description="")
     max_length: int | None = Field(None, description="")
 
+    # Internal field to keep track of the type of field
+    __hook_field_type__: str = None
 
-def new_hook_type_input(context: 'Context') -> TypeInput:
-    """Validate inputs for hook model config with error handling."""
-    try:
-        return TypeInput()
-    except ValidationError as e:
-        raise exceptions.UnknownInputArgumentException(e, context=context)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.__hook_field_type__ = 'literal'
