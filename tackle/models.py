@@ -1,3 +1,4 @@
+import enum
 from pydantic import (
     BaseModel,
     field_validator,
@@ -8,11 +9,9 @@ from typing import (
     Any,
     Union,
     Optional,
-    Callable,
 )
 
-from tackle.pydantic.fields import Field
-from tackle.pydantic.validators import DclHookValidator
+from pydantic import Field
 from tackle.pydantic.config import DclHookModelConfig
 
 
@@ -46,11 +45,6 @@ class LazyBaseHook(BaseModel):
                     "carrier for the function's schema until it is compiled with "
                     "`create_function_model`.",
     )
-    # hook_fields: set = Field(
-    #     set(),
-    #     description="List of fields used to 1, enrich functions without exec method, "
-    #                 "and 2, inherit base attributes into methods. Basically a helper.",
-    # )
     is_public: bool = Field(..., description="Public or private.")
 
 
@@ -75,11 +69,6 @@ class HookBase(BaseModel):
         False,
         description="A flag to skip the output and not set the key. Can also be set"
                     " within a hook call."
-    )
-    no_input: bool | None = Field(
-        False,
-        description="A flag to skip any prompting. Can also be set from command line.",
-        render_by_default=True,
     )
     args: list[str] | None = Field(
         [],
@@ -215,6 +204,48 @@ class BaseHook(HookBase):
         use_enum_values=True,
     )
 
+class HookValidatorModes(str, enum.Enum):
+    before='before'
+    after='after'
+    wrap='wrap'
+
+
+class HookFieldValidatorFieldNames(BaseModel):
+    value: str = Field(
+        'v',
+        description="The name of the value field for validation, the first arg in a "
+                    "pydantic functional validator.",
+    )
+    info: str = Field(
+        'info',
+        description="The name of the info field for validation, the second arg in a "
+                    "pydantic functional validator.",
+    )
+
+
+class HookFieldValidator(BaseModel):
+    field_names: HookFieldValidatorFieldNames = Field(
+        default_factory=HookFieldValidatorFieldNames,
+        description="The names of fields to inject as variables within the body of "
+                    "the validator.",
+    )
+    mode: HookValidatorModes = Field(
+        'before',
+        description="Whether to run the validator 'before' or 'after' the type is "
+                    "validated or 'wrap' the validation (ie run it 'before' and "
+                    "'after'. Follows pydantic's validation logic.",
+    )
+    body: dict = Field(
+        None,
+        description="Some data to parse which normally would have some `return` hook "
+                    "call that would be the validation output."
+    )
+    model_config = ConfigDict(
+        use_enum_values=True,
+        extra='allow',
+    )
+
+
 
 class DclHookInput(BaseModel):
     """Function input model. Used to validate the raw function input."""
@@ -227,7 +258,7 @@ class DclHookInput(BaseModel):
         description="A string or list of hook types to inherit from. See  [docs]()."
     )
     args: list[str] | str | None = Field(
-        None,
+        [],
         description="A string or list of strings references to field names to map"
                     " arguments to.",
     )
@@ -251,13 +282,13 @@ class DclHookInput(BaseModel):
         description="",
         alias="return",
     )
-    type: str | None = Field(
+    type_: str | None = Field(
         None,
-        # TODO: Move to macro?
+        alias='type',
         description="For type hooks, the name of the type."
     )
-    validators: dict[str, Callable] | None = Field(
-        None,
+    validators: dict[str, dict | HookFieldValidator] = Field(
+        {},
         description="A list of validators. Only used for type hooks. See [docs]()."
     )
 
@@ -277,15 +308,9 @@ class DclHookInput(BaseModel):
         alias="model_config",  # Does not interfere with actual `model_config`
     )
 
-    # hook_fields_set_: set = Field(set(), description="Used internally to track fields.")
-    # hook_fields_: dict = Field(
-    #     {},
-    #     description="Raw version of the hook's fields parsed out as any extra fields in"
-    #                 " validator.")
-
     model_config = ConfigDict(
         extra='allow',
-        validate_assignment=True
+        validate_assignment=True,
     )
 
     def exec(self):
@@ -305,8 +330,6 @@ class BaseDclHook(BaseHook):
     hook_input: DclHookInput
 
 
-# HookType = Union[LazyBaseFunction, LazyImportHook, BaseHook]
 AnyHookType = BaseHook | DclHookInput | LazyBaseHook
 HookDictType = dict[str, AnyHookType]
-
 CompiledHookType = BaseHook | DclHookInput

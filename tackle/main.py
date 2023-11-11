@@ -1,12 +1,12 @@
 from typing import TYPE_CHECKING, Union, Optional
 
+from tackle.factory import new_context
 from tackle.parser import parse_context
-from tackle.contexts import new_context
 from tackle.utils.paths import work_in
 
 if TYPE_CHECKING:
-    from tackle.models import Paths, Data, Hooks, Context
-    from tackle.types import DocumentValueType, DocumentType
+    from tackle.context import Paths, Data, Hooks, Context
+    from tackle.types import DocumentValueType
 
 def tackle(
         # Inputs
@@ -18,7 +18,8 @@ def tackle(
         file: Optional[str] = None,
         find_in_parent: bool | None = None,
         # Data
-        input: dict | list | None = None,
+        raw_input: dict | list | None = None,
+        existing_data: str | dict | None = None,
         overrides: str | dict | None = None,
         # Imports
         hooks_dir: str | None = None,
@@ -29,11 +30,11 @@ def tackle(
         return_context: bool | None = None,
         # Models ->
         # Used when calling tackle from tackle
-        _paths: Optional['Paths'] = None,
-        _hooks: Optional['Hooks'] = None,
-        _data: Optional['Data'] = None,
+        _paths: 'Paths' = None,
+        _hooks: 'Hooks' = None,
+        _data: 'Data' = None,
         # Unknown args/kwargs preserved for parsing
-        **kwargs: dict,
+        **kwargs: 'DocumentValueType',
 ) -> Union['Context', 'DocumentValueType']:
     """
     Run tackle programmatically similar to how you would from a command line. Includes
@@ -53,9 +54,12 @@ def tackle(
             Only helpful when calling remote tackle providers.
         find_in_parent (bool, optional): Flag to make tackle search for tackle files
             in the parent directory.
-        input (Union[dict, list])
+        raw_input (Union[dict, list], optional): Input some data to parse that will
+            TODO
         overrides (Union[str, dict], optional): A string path to a file with override
             values or a dict to use as overrides.
+        existing_data (Union[str, dict], optional): A string reference to an
+            unstructured file or some dictionary to use for rendering the input.
         hooks_dir (str, optional): Path to hooks directory to import.
         no_input (bool, optional): A flag to suppress any interactive prompts and use
             their default values.
@@ -72,6 +76,7 @@ def tackle(
     Returns:
         Union[dict, list]: A brief description of the return value.
     """
+    pass
     context = new_context(
         *args,
         checkout=checkout,
@@ -79,8 +84,9 @@ def tackle(
         directory=directory,
         file=file,
         find_in_parent=find_in_parent,
-        input=input,
+        input=raw_input,
         overrides=overrides,
+        existing_data=existing_data,
         hooks_dir=hooks_dir,
         no_input=no_input,
         verbose=verbose,

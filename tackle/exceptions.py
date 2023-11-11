@@ -2,18 +2,18 @@
 import inspect
 import os
 import sys
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Type
 
 from tackle.utils.dicts import get_readable_key_path
 
 if TYPE_CHECKING:
-    from typing import Type, Union
     from pydantic.main import ModelMetaclass
-    # from tackle.models import Context, BaseFunction, BaseHook, BaseContext
+    from tackle.models import BaseHook, CompiledHookType, HookCallInput
+    from tackle import BaseHook, Context
 
-    from tackle.models_new import Context, Source, Data
+DOCS_DOMAIN = "https://sudoblockio.github.io/tackle"
 
-def raise_unknown_hook(context: 'Context', hook_type: str, method: bool = None):
+def raise_unknown_hook(context: 'Context', hook_name: str, method: bool = None):
     """Raise an exception for when there is a missing hook with some context."""
     if method:
         type_ = ["method", "hook"]
@@ -23,7 +23,7 @@ def raise_unknown_hook(context: 'Context', hook_type: str, method: bool = None):
         type_ = ["hook", "providers"]
         if context.verbose:
             available_hooks = "".join(
-                sorted([str(i) for i in context.provider_hooks.keys()])
+                sorted([str(i) for i in context.hooks.keys()])
             )
             extra = f'Available hooks = {available_hooks}'
 
@@ -31,7 +31,7 @@ def raise_unknown_hook(context: 'Context', hook_type: str, method: bool = None):
             extra = "Run the application with `--verbose` to see available hook types."
 
     raise UnknownHookTypeException(
-        f"The {type_[0]}=\"{hook_type}\" is not available in the {type_[1]}. " + extra,
+        f"The {type_[0]}=\"{hook_name}\" is not available in the {type_[1]}. " + extra,
         context=context,
     )
 
@@ -73,6 +73,55 @@ class ContributionNeededException(Exception):
         return os.path.join(*github_path_list)
 
 
+class UnknownFieldInputException(Exception):
+    """
+    Exception for a hook call with unknown input fields. Prints available fields for a
+     hook.
+
+    Raised when chdir is to an unknown directory.
+    """
+    def __init__(self, extra_message: str, context: 'Context', Hook: 'BaseHook' = None):
+        self.message = (
+            f"Error parsing input_file='{context.path.current.file}' at "
+            f"key_path='{get_readable_key_path(key_path=context.key_path)}' \n"
+            f"{extra_message}"
+        )
+        if not context.verbose:
+            sys.tracebacklimit = 0
+        super().__init__(self.message)
+
+        # if Hook.model_fields['kwargs'].default is not None:
+        #     default_kwargs = Hook.model_fields['kwargs'].default
+        #     if default_kwargs not in hook_call:
+        #         hook_call[default_kwargs] = {}
+        #     hook_call[default_kwargs][k] = render_variable(context, v)
+        #     hook_call.pop(k)
+        #     # continue
+        #
+        # # Get a list of possible fields for hook before raising error.
+        # possible_fields = [
+        #     f"{key}: {value.annotation.__name__}"
+        #     for key, value in Hook.model_fields.items()
+        #     if key not in BaseHook.model_fields
+        # ]
+        # # TODO: Include link to docs -> Will need to also include provider name
+        # #  and then differentiate between lazy imported hooks which already have the
+        # #  provider and the ones that don't
+        #
+        # # TODO: Test with many types of Hooks - Lazy Function etc - I don't think
+        # #  they all will resolve
+        # provider_name = Hook.provider_name.title()
+        # base_url = "https://sudoblockio.github.io/tackle/providers"
+        # url = f"{base_url}/{provider_name}/{hook_name}/"
+        # raise exceptions.UnknownInputArgumentException(
+        #     f"Key={k} not in hook={hook_call['hook_name']}. Possible values are "
+        #     f"{', '.join(possible_fields)}. \n\n See {url}"
+        #     ,  # noqa
+        #     context=context,
+        # ) from None
+
+
+
 #
 # Base exceptions - Ones that are subclassed later
 #
@@ -81,13 +130,13 @@ class ContributionNeededException(Exception):
 class TackleHookCallException(Exception):
     """Base hook call exception class. Subclassed within providers."""
 
-    def __init__(self, extra_message: str, hook: 'Type[BaseHook]' = None):
+    def __init__(self, extra_message: str, context: 'Context' = None):
         self.message = (
-            f"Error parsing input_file='{hook.calling_file}' at "
-            f"key_path='{get_readable_key_path(key_path=hook.key_path)}' \n"
+            f"Error parsing input_file='{context.path.calling.file}' at "
+            f"key_path='{get_readable_key_path(key_path=context.key_path)}' \n"
             f"{extra_message}"
         )
-        if not hook.verbose:
+        if not context.verbose:
             sys.tracebacklimit = 0
         super().__init__(self.message)
 
@@ -109,14 +158,14 @@ class TackleFunctionCallException(Exception):
     def __init__(
         self,
         extra_message: str,
-        function: 'Union[BaseFunction, Type[ModelMetaclass]]',
+        hook: Type['BaseHook'] | Type['ModelMetaclass'],
     ):
         self.message = (
-            f"Error parsing input_file='{function.calling_file}' at "
-            f"key_path='{get_readable_key_path(key_path=function.key_path)}' \n"
+            f"Error parsing input_file='{hook.calling_file}' at "
+            f"key_path='{get_readable_key_path(key_path=hook.key_path)}' \n"
             f"{extra_message}"
         )
-        if not function.verbose:
+        if not hook.verbose:
             sys.tracebacklimit = 0
         super().__init__(self.message)
 
@@ -136,6 +185,7 @@ class TackleParserException(Exception):
     """Base parser exception class."""
 
     def __init__(self, extra_message: str, context: 'Context'):
+        print()
         self.message = (
             f"Error parsing input_file='{context.path.current.file}' at "
             f"key_path='{get_readable_key_path(key_path=context.key_path)}' \n"
@@ -161,7 +211,7 @@ class PromptHookCallException(TackleParserException):
     Raised within a python hook.
     """
 
-    def __init__(self, context: 'Union[Context, BaseContext]'):
+    def __init__(self, context: 'Context'):
         super().__init__(
             extra_message="Error calling hook most likely due to hook being called in "
             "automation where no input was given for key. Try setting "
@@ -177,6 +227,30 @@ class HookParseException(TackleParserException):
 
     Raised when field has been provided not declared in the hook type.
     """
+
+
+def raise_hook_parse_exception_with_link(
+        context: 'Context',
+        Hook: 'BaseHook',
+        msg: str,
+):
+    """
+    Raise a HookParseException with an additional link to the docs if the hook is a
+     native hook, otherwise just the validation error.
+    """
+    # TODO: Check third party
+    # Check if the hook is native or declarative
+    # __provider_name only attached to native hooks
+    provider_name = getattr(Hook, '__provider_name', None)
+    if provider_name is not None:
+    # if Hook.__module__.startswith('tackle.hooks.'):
+        hook_name = Hook.model_fields['hook_name'].default
+        msg += (
+            f"\n Check the docs for more information on the hook -> "
+            f"https://sudoblockio.github.io/tackle/providers/"
+            f"{Hook.__provider_name.title()}/{hook_name}/"
+        )
+    raise HookParseException(str(msg), context=context) from None
 
 
 class AppendMergeException(TackleParserException):
@@ -251,6 +325,12 @@ class MalformedTemplateVariableException(TackleParserException):
 
     Raised when rendering variables.
     """
+
+def raise_malformed_for_loop_key(context: 'Context', raw: Any, loop_targets: Any):
+    raise MalformedTemplateVariableException(
+        f"The `for` field must be a list/object or string reference to a list/object. "
+        f"The value {raw} is of type `{type(loop_targets).__name__}`.", context=context,
+    ) from None
 
 
 #
@@ -332,7 +412,15 @@ class UnsupportedBaseFileTypeException(TackleException):
     """
 
 
-class ContextDecodingException(TackleException):
+class TackleFileNotFoundError(TackleException):
+    """
+    Exception for when a none json / yaml file are read
+
+    Raised if the base file that is being called is not json / yaml.
+    """
+
+
+class FileLoadingException(TackleException):
     """
     Exception for failed JSON decoding.
 
@@ -376,22 +464,22 @@ class InvalidZipRepository(TackleException):
 #
 # Function create exceptions
 #
-class TackleFunctionCreateException(Exception):
+class BaseHookCreateException(Exception):
     """Base hook call exception class."""
 
     def __init__(
-        self, extra_message: str, function_name: str, context: 'Context' = None
+        self, extra_message: str, hook_name: str, context: 'Context' = None
     ):
         self.message = (
-            f"Error creating hook='{function_name}' in file="
-            f"'{context.calling_file}', {extra_message}"
+            f"Error creating hook='{hook_name}' in file="
+            f"'{context.path.current.file}', {extra_message}"
         )
         if not context.verbose:
             sys.tracebacklimit = 0
         super().__init__(self.message)
 
 
-class EmptyFunctionException(TackleFunctionCreateException):
+class EmptyHookException(BaseHookCreateException):
     """
     Exception when a function is declared without any input.
 
@@ -399,7 +487,7 @@ class EmptyFunctionException(TackleFunctionCreateException):
     """
 
 
-class MalformedFunctionFieldException(TackleFunctionCreateException):
+class MalformedHookFieldException(BaseHookCreateException):
     """
     Exception when functions with field inputs of type dict are not formatted
     appropriately.
@@ -408,7 +496,7 @@ class MalformedFunctionFieldException(TackleFunctionCreateException):
     """
 
 
-class ShadowedFunctionFieldException(TackleFunctionCreateException):
+class ShadowedHookFieldException(BaseHookCreateException):
     """
     Exception when functions with field inputs of type dict are not formatted
     appropriately.
@@ -474,7 +562,7 @@ class TackleImportException(TackleImportError):
     Raised when first importing hooks.
     """
 
-class TackleImportException(Exception):
+class BaseTackleImportException(Exception):
     """Base input parser exception class."""
 
     def __init__(self, extra_message: str, context: 'Context', file: str = None):
@@ -487,7 +575,7 @@ class TackleImportException(Exception):
             sys.tracebacklimit = 0
         super().__init__(self.message)
 
-class UnknownInputArgumentException(TackleParserInputException):
+class UnknownInputArgumentException(BaseTackleImportException):
     """
     Exception for unknown extra arguments.
 
@@ -496,7 +584,7 @@ class UnknownInputArgumentException(TackleParserInputException):
 
 
 
-# class TackleFileInitialParsingException(TackleParserInputException):
+# class TackleFileInitialParsingException(BaseTackleImportException):
 #     """
 #     Exception when base tackle file is empty.
 #
@@ -504,7 +592,7 @@ class UnknownInputArgumentException(TackleParserInputException):
 #     """
 
 
-class EmptyTackleFileException(TackleImportException):
+class EmptyTackleFileException(BaseTackleImportException):
     """
     Exception when base tackle file is empty.
 
@@ -512,7 +600,7 @@ class EmptyTackleFileException(TackleImportException):
     """
 
 
-class TackleHookImportException(TackleImportException):
+class TackleHookImportException(BaseTackleImportException):
     """
     Exception for a malformed templatable argument.
 
@@ -523,9 +611,9 @@ class TackleHookImportException(TackleImportException):
 class TackleHookCreationException(Exception):
     """Base input parser exception class."""
 
-    def __init__(self, extra_message: str, context: 'Context', hook: 'CompiledHookType'):
+    def __init__(self, extra_message: str, context: 'Context', hook_name: str):
         self.message = (
-            f"Error using hook='{hook.hook_type}' \n" f"{extra_message}"
+            f"Error using hook='{hook_name}' \n" f"{extra_message}"
         )
         if not context.verbose:
             sys.tracebacklimit = 0
@@ -538,4 +626,15 @@ class BadHookKwargsRefException(TackleHookCreationException):
 
     Raised when rendering a hooks vars and unknown fields are mapped via a kwargs
      attribute which references a non-dict field.
+    """
+
+
+class MalformedHookDefinitionException(TackleHookCreationException):
+    """
+    Excepetion when there is an input param to a hook's method that is not one of
+     `Context` or `HookCallInput`.
+
+    Raised when inspecting the input to a hook that requires one of those two params
+     which we inject into the method at call time since we don't want to copy the
+     entirety of the var into the hook.
     """

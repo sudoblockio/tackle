@@ -1,4 +1,7 @@
 from jinja2 import Environment, StrictUndefined
+# from jinja2 import StrictUndefined
+# from jinja2.nativetypes import NativeEnvironment as Environment
+
 from dataclasses import dataclass
 
 from tackle.types import DocumentType, DocumentObjectType

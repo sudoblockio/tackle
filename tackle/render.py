@@ -103,17 +103,9 @@ class JinjaHook:
             context=self.context
         )
 
-        # no_input is any true value from either hook, context, or kwarg
-        no_input = (
-            self.Hook.model_fields['no_input'].default |
-            self.context.no_input |
-            kwargs.pop('no_input') if 'no_input' in kwargs else False
-        )
-
         from tackle.parser import run_hook_exec
-        hook = self.Hook(no_input=no_input, **kwargs)
-        # return hook.exec()
-        # No hook with hook
+        hook = self.Hook(**kwargs)
+
         return run_hook_exec(context=self.context, hook=hook)
 
 def add_jinja_hook_methods(context: 'Context', jinja_hook: JinjaHook):
@@ -177,6 +169,7 @@ def handle_ambiguous_keys(
      globals callable like `namespace` or `range` which could be in context.data.*.
     """
     # TODO: RM?
+    # isinstance(rendered_template, Callable) and
     if rendered_template.startswith('<tackle.render.JinjaHook object at 0x'):
         # Handle unknown variables that are the same as hook_name issues/55
         raise UndefinedError(

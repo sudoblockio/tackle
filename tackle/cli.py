@@ -200,6 +200,7 @@ def main(raw_args=None):
         directory=args.directory,
         # file=args.file,
         find_in_parent=args.find_in_parent,
+        return_context=True
     )
 
     if print_enabled:
