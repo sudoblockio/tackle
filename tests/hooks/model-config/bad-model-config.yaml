@@ -1,0 +1,7 @@
+MyHook<-:
+  foo: bar
+
+  model_config:
+    extra: FOO
+
+call->: MyHook

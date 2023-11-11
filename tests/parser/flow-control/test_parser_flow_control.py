@@ -3,17 +3,13 @@ import pytest
 from tackle import tackle
 
 
-@pytest.fixture()
-def cd_flow_control_fixtures(cd):
-    cd('flow-control-fixtures')
-
 
 @pytest.mark.parametrize("fixture", [
     'for-list-variable.yaml',
     'for-list-in-variable.yaml',
     'for-list-literal.yaml',
 ])
-def test_parser_for_loop_list_parameterized(cd_flow_control_fixtures, fixture):
+def test_parser_for_loop_list_parameterized(fixture):
     """Check for key with list variable."""
     o = tackle(fixture)
     assert o['expanded_value'] == ['bar', 'baz']
@@ -26,7 +22,7 @@ def test_parser_for_loop_list_parameterized(cd_flow_control_fixtures, fixture):
     'for-dict-in-variable.yaml',
     'for-dict-literal.yaml',
 ])
-def test_parser_for_loop_dict_parameterized(cd_flow_control_fixtures, fixture):
+def test_parser_for_loop_dict_parameterized(fixture):
     """Check for key with dict variable."""
     o = tackle(fixture)
     assert o['expanded_key'] == ['foo', 'baz']

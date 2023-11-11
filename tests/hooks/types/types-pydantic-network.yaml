@@ -1,0 +1,9 @@
+MyHook<-:
+  a_field:
+    type: IPvAnyAddress
+
+call:
+  ->: MyHook
+  a_field: 1.2.3.4
+
+error->: MyHook --a_field "@" --try --except 1

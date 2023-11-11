@@ -1,0 +1,9 @@
+MyHook<-:
+  a_field:
+    type: time
+
+call:
+  ->: MyHook
+  a_field: 12:30:15
+
+error->: MyHook --a_field @ --try --except 1

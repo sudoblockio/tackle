@@ -1,0 +1,28 @@
+base1<-:
+  foo1: bar
+
+base2<-:
+  foo2:
+    type: base1
+
+obj<-:
+  stuff: things
+  bar:
+    type: base2
+
+check_ok:
+  ->: obj
+  bar:
+    foo2:
+      foo1: baz
+
+thing:
+  foo2:
+    foo1: baz
+
+check_ok_render->: obj --bar {{thing}}
+check_false:
+  ->: obj --try --except 1
+  bar:
+    foo2:
+      not foo1: baz

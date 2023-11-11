@@ -6,4 +6,4 @@ some: context
 #  foo->: print bar
 
 private:
-  _>: tackle petstore.yaml
+  _>: literal foo

@@ -1,0 +1,18 @@
+
+expanded:
+  ->: literal bar
+
+compact->: literal bar
+
+object:
+  expanded:
+    ->: literal bar
+  compact->: literal bar
+
+list:
+  - expanded:
+      ->: literal bar
+    compact->: literal bar
+  - expanded:
+      ->: literal bar
+    compact->: literal bar

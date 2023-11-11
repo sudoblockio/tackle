@@ -1,0 +1,5 @@
+public_hook<-:
+  bar: str
+
+private_hook<_:
+  bar: str

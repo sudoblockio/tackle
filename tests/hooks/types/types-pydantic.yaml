@@ -1,0 +1,9 @@
+MyHook<-:
+  a_field:
+    type: PositiveInt
+
+call:
+  ->: MyHook
+  a_field: 1
+
+error->: MyHook --a_field -1 --try --except 1

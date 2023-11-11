@@ -1,0 +1,17 @@
+stuff: things
+
+no_arg<-:
+  target: str
+
+arg<-:
+  target: str
+  args: #['target']
+    - target
+
+no_arg_call:
+  ->: no_arg
+  target: world
+
+arg_call:
+  ->: arg
+  target: "{{stuff}}"

@@ -1,4 +1,0 @@
-foo<-:
-  extends: base
-
-call->: foo

@@ -1,0 +1,7 @@
+<-:
+  foo:
+    type: union[str, int]
+
+method:
+  foo:
+    type: union[str, int]

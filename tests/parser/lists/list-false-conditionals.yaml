@@ -1,0 +1,3 @@
+a_list:
+  - ->: literal foo --if false
+  - ->: literal bar --if false

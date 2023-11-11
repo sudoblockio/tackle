@@ -1,0 +1,10 @@
+Hook1<-:
+  foo:
+    type: str
+    validator:
+      mode: SOMETHING_WRONG
+      body:
+        if_bar->: return --if vv=='bar'
+        raise->: Not bar
+
+call->: Hook1 --foo bar

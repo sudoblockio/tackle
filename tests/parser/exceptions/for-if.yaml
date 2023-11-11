@@ -1,0 +1,17 @@
+
+F<-:
+  foo: str
+  baz: list
+  alist: []
+
+foo:
+  - foo: bar
+    baz:
+    alist: []
+
+#block->:
+#  for: foo
+#  bar->: F --kwargs {{item}} --for item.alist --when "{{item is not none}}"
+
+bar->: F --kwargs {{item}} --for foo --when item.baz is not none
+

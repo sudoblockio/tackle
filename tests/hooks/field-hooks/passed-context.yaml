@@ -1,0 +1,6 @@
+# This is no longer possible in v0.6.0
+foo<-:
+  stuff->: literal things
+  foo->: literal {{stuff}}
+
+f->: foo

@@ -1,0 +1,13 @@
+
+bar<-:
+  stuff: things
+
+  exec:
+    call_compact->: a_funky
+    call_compact_kwarg->: a_funky --compact foo
+    call_compact_kwarg_rendered->: a_funky --rendered_by_default stuff
+    call_compact_arg->: a_funky foo
+
+    jinja_extension_default->: var {{a_funky()}}
+    jinja_extension_arg->: var {{a_funky('foo')}}
+    jinja_extension_kwarg->: var {{a_funky(compact='foo')}}

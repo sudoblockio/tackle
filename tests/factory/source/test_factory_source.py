@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 import shutil
 
-from tackle import exceptions
+from tackle import exceptions, main
 from tackle.factory import new_source, new_inputs
 from tackle.context import InputArguments, Context
 from tackle.settings import settings
@@ -12,11 +12,6 @@ from tackle.settings import settings
 TODO: Make paths consistent
  https://github.com/sudoblockio/tackle/issues/175
 """
-
-@pytest.fixture()
-def source_fixtures(chdir):
-    chdir('source-fixtures')
-
 
 INPUT_FIXTURES: list[[list]] = [
     # ([None]),
@@ -39,6 +34,8 @@ def test_factory_source_new_source_parameterized(args):
     source = new_source(context=context)
     # Base tackle is `.tackle.yaml`
     assert source.file.endswith('tackle.yaml')
+    # Check that the full path is in the source.file
+    assert 'factory' in source.file
 
 
 @pytest.fixture()
@@ -87,6 +84,7 @@ def test_factory_source_new_source_zip(cd):
     # Actually unzips in a tmp dir
     shutil.rmtree(source.directory)
     assert source.file.endswith('tackle.yaml')
+    assert 'zipped-provider' in source.file
     assert not source.find_in_parent
 
 
@@ -98,6 +96,7 @@ def test_factory_source_new_source_with_directory():
     assert source.base_dir.endswith('source')
     assert source.directory.endswith('a-dir')
     assert source.file.endswith('tackle.yaml')
+    assert 'tests' in source.file
 
 
 def test_factory_source_new_source_with_file():
@@ -108,6 +107,19 @@ def test_factory_source_new_source_with_file():
     assert source.base_dir.endswith('source')
     assert source.directory == source.base_dir
     assert source.file.endswith('a-file.yaml')
+    assert 'tests' in source.file
+
+
+def test_factory_source_new_source_with_file_arg():
+    """Check we can supply a file argument."""
+    path = os.path.join('a-dir-with-file', 'a-file.yaml')
+    context = Context(input=InputArguments(args=[path]))
+    source = new_source(context=context)
+
+    assert source.base_dir.endswith('a-dir-with-file')
+    assert source.directory == source.base_dir
+    assert source.file.endswith('a-file.yaml')
+    assert 'tests' in source.file
 
 
 def test_factory_source_as_dict():
@@ -144,7 +156,6 @@ def test_factory_source_new_source_exception_no_arg_temp_di(run_in_temp_dir):
         new_source(context=context)
 
 
-
 def test_factory_source_new_source_exception_find_in_parent(run_in_temp_dir):
     """
     When supplying the find_in_parent flag and inside a tmp dir where there is no tackle
@@ -153,3 +164,12 @@ def test_factory_source_new_source_exception_find_in_parent(run_in_temp_dir):
     context = Context(input=InputArguments(args=[]))
     with pytest.raises(exceptions.UnknownSourceException):
         new_source(context=context, find_in_parent=True)
+
+
+def test_factory_source_new_source_exception_find_in_parent_repo_does_not_exist(cd):
+    """Tackle invocation with non-exist repository should raise error."""
+    cd('/')
+    with pytest.raises(exceptions.UnknownSourceException) as info:
+        main.tackle('definitely-not-a-valid-repo-dir')
+
+    assert 'definitely-not-a-valid-repo-dir' in info.value.message

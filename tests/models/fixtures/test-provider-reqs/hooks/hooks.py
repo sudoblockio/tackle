@@ -3,7 +3,7 @@ from art import art
 
 
 class ArtHook(BaseHook):
-    hook_type: str = 'art'
+    hook_name: str = 'art'
 
     def exec(self):
         return art("random")

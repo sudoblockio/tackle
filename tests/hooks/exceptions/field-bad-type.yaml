@@ -1,0 +1,6 @@
+greeter<-:
+  in:
+    # TODO: This error will change with composition
+    type: foobar
+
+foo->: greeter

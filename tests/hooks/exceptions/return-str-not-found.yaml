@@ -1,0 +1,23 @@
+
+some_function<-:
+  full:
+    type: str
+    description: A description
+    default: a-default
+  compact: a-default
+
+  exec:
+    foo: bar
+    do->: var "{{full}}"
+
+  args:
+    - full
+
+  return: not_there
+
+compact->: some_function baz
+expanded:
+  ->: some_function
+  full: baz
+global->: "{{some_function('baz')}}"
+filter->: "{{'baz'|some_function}}"

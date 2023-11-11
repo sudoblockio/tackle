@@ -1,8 +1,0 @@
-
-greeter<-:
-  call<-:
-    in: str
-    args: ['in']
-    return: in
-
-foo->: greeter call bar

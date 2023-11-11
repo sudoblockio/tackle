@@ -1,0 +1,12 @@
+words<-:
+  hi:
+    type: str
+    default: Hello
+    pattern: ^(Bonjour|Hola|Hello)
+  say<-:
+    target: str
+    exec:
+      p->: print {{hi}} {{target}}
+
+# Should raise validation error
+p->: words say --hi Allo --target world!

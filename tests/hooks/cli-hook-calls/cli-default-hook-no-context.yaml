@@ -1,0 +1,44 @@
+<-:
+  help: A CLI thing
+
+  stuff:
+    default: things
+    type: str
+    description: Some things that do stuff
+
+  things:
+    type: bool
+    default: true
+    description: |
+      Some stuff that does things and stuff and things and stuff and things and stuff
+      and things and stuff and things and stuff and things and stuff and...
+      # TODO: https://github.com/robcxyz/tackle/issues/92
+
+  foo:
+    type: str
+    default: bar
+    visible: False
+
+  do<-:
+    help: A doing thing
+    foo:
+      type: str
+      default: boo
+      description: yeah...
+    args: ['bar']
+    bar: baz
+    exec:
+      d->: var {{bar}}
+    dat<-:
+      help: Dat ting
+      foo: bar
+
+  exec:
+    p->: var {{stuff}}
+    b->: var {{things}}
+
+run<-:
+  help: Run da foo
+  foo: bar
+  exec:
+    p->: print {{foo}}

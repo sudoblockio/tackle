@@ -1,5 +1,0 @@
-foo<-:
-  stuff->: literal things
-  foo->: literal {{stuff}}
-
-f->: foo

@@ -1,0 +1,15 @@
+compact<-: literal this --help Thing that does stuff
+compact_render<-: var {{foo}} --help Thing that does stuff --foo str
+
+expanded<-:
+  help: Thing that does stuff
+  exec<-: literal this
+expanded_render<-:
+  help: Thing that does stuff
+  foo: str
+  exec<-: var {{foo}}
+
+compact_call->: compact
+compact_render_call->: compact --foo bar
+expanded_call->: expanded
+expanded_render_call->: expanded --foo bar

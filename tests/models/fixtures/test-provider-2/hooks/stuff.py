@@ -5,7 +5,7 @@ from tackle.models import BaseHook
 class StuffHook(BaseHook):
     """Do stuff and things."""
 
-    hook_type: str = 'stuff'
+    hook_name: str = 'stuff'
     thing: str
 
     def exec(self):

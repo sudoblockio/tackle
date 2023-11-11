@@ -1,0 +1,12 @@
+
+greeter_base<-:
+  call<-:
+    in: str
+    args: ['in']
+    return: in
+
+greeter_exec<-:
+  extends: greeter_base
+  foo: bar
+
+t->: greeter_exec call fooo

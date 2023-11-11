@@ -1,0 +1,23 @@
+dict_hook_default<-:
+  a_str:
+    default: foo
+  a_bool:
+    default: true
+  a_int:
+    default: 1
+  a_float:
+    default: 1.2
+  a_list:
+    default: ['stuff', 'things']
+  a_dict:
+    default: {'stuff': 'things'}
+
+call:
+  ->: dict_hook_default
+  a_str: foo
+  a_bool: true
+  a_int: 1
+  a_float: 1.2
+  a_list: ['stuff', 'things']
+  a_dict: {'stuff': 'things'}
+

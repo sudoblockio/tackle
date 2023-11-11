@@ -1,15 +1,15 @@
 """Example."""
 from tackle.models import BaseHook
-from pydantic import validator
+from pydantic import field_validator
 
 
 class ThingHook(BaseHook):
     """Do stuff and things."""
 
-    hook_type: str = 'thing'
+    hook_name: str = 'thing'
     stuff: str
 
-    @validator('stuff')
+    @field_validator('stuff')
     def validate(cls, value):
         # Check if the input is valid - throw error otherwise
         if value == 'not-things':

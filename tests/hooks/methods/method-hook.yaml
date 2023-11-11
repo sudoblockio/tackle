@@ -1,0 +1,13 @@
+
+greeter<-:
+  bar: baz
+  call<-:
+    foo:
+      type: str
+      default: bing
+
+method_kwarg->: greeter call --foo bang
+base_kwarg->: greeter call --bar bang
+
+jinja_method->: "{{greeter.call(foo='bang')}}"
+jinja_base->: "{{greeter(bar='bang')}}"

@@ -1,0 +1,25 @@
+base<-:
+  foo: bar
+
+call_ok_static<-:
+  stuff: things
+  bar:
+    type: base
+    default:
+      foo: baz
+
+call_ok_hook<-:
+  stuff: things
+  bar:
+    type: base
+    default:
+      ->: literal
+      input:
+        foo: baz
+
+#call_false<-:
+#  stuff: things
+#  bar:
+#    type: base
+#    default:
+#      not foo: bar

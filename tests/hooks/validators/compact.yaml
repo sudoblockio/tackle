@@ -1,0 +1,10 @@
+
+Hook1<-:
+  foo:
+    type: str
+    validator:
+      if_bar->: return {{v}} --if v=='bar'
+      raise->: Not bar
+
+call->: Hook1 --foo bar
+error->: Hook1 --foo baz --try --except 1

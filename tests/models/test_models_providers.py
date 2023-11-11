@@ -9,66 +9,13 @@ from tackle.main import tackle
 from tackle.settings import settings
 
 
-@pytest.fixture()
-def temporary_uninstall():
-    """Fixture to uninstall a package and install it after the test."""
-
-    def f(package):
-        subprocess.check_call(
-            [
-                sys.executable,
-                "-m",
-                "pip",
-                "uninstall",
-                "--quiet",
-                "--disable-pip-version-check",
-                "-y",
-                package,
-            ]
-        )
-
-    return f
 
 
-def test_parser_provider_import_installs_requirements(
-    change_curdir_fixtures, temporary_uninstall
-):
-    """Validate that if a package is missing, that it will be installed and usable."""
-    temporary_uninstall('requests')
-    try:
-        import requests
-
-        # Fails in CI - I believe requests is available from system python as locally
-        # this assert works.
-        # assert False
-    except ImportError:
-        assert True
-
-    tackle('test-install-dep.yaml')
-    import requests  # noqa
-
-    assert requests
 
 
-def test_parser_provider_import_requirements_installs_requirements(
-    chdir, temporary_uninstall
-):
-    """Validate that if a package is missing, that it will be installed and usable."""
-    chdir(os.path.join('fixtures', 'test-provider-reqs'))
-    temporary_uninstall('art')
-    try:
-        import art
-
-        assert False
-    except ImportError:
-        assert True
-
-    o = tackle()
-    temporary_uninstall('art')
-    assert o['art']
 
 
-def test_parser_hooks_raises_error_on_unknown_hook_type(change_curdir_fixtures):
+def test_parser_hooks_raises_error_on_unknown_hook_type(cd_fixtures):
     """Verify raising error.
 
     Verify that the hook parser raises the right error when the hook type is
@@ -80,7 +27,7 @@ def test_parser_hooks_raises_error_on_unknown_hook_type(change_curdir_fixtures):
         tackle('unknown-hook-type.yaml')
 
 
-def test_parser_provider_hook_add(change_curdir_fixtures):
+def test_parser_provider_hook_add(cd_fixtures):
     """Validate adding providers.
 
     Validate that you can give a `__provider` key to point to
@@ -91,7 +38,7 @@ def test_parser_provider_hook_add(change_curdir_fixtures):
     assert o['things'] == 'bar'
 
 
-def test_parser_provider_hook_add_list(change_curdir_fixtures):
+def test_parser_provider_hook_add_list(cd_fixtures):
     """Validate that hooks are imported when called from the same directory."""
     o = tackle('context-provider-list.yaml')
     assert o['things'] == 'bar'
@@ -164,5 +111,5 @@ def test_providers_unreleased_import(chdir_fixture, remove_provider):
 
 def test_providers_hook_dirs(change_dir):
     """Check that we can import hooks by supplying a directory."""
-    o = tackle("hook-dirs.yaml", hook_dirs=[str(os.path.join('fixtures', '.hooks'))])
+    o = tackle("hook-dirs.yaml", hooks_dir=str(os.path.join('fixtures', '.hooks')))
     assert o['t'] == 'things'

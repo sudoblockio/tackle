@@ -54,7 +54,7 @@ SPLIT_INPUT_FIXTURES: list[tuple[dict, tuple[int, int, int]]] = [
 
 
 @pytest.mark.parametrize("raw_input,counts", SPLIT_INPUT_FIXTURES)
-def test_split_input_data(raw_input, counts):
+def test_parser_split_input_data(raw_input, counts):
     context = new_context()
     context.data.raw_input = raw_input
     split_input_data(context=context)

@@ -1,0 +1,35 @@
+a_hook<-:
+  method<-:
+    compact_str->: literal foo
+
+    semi_expanded_str_private:
+      default_>: literal foo
+
+    semi_expanded_str:
+      default->: literal foo
+
+    semi_expanded_str_factory:
+      default_factory->: literal foo
+
+    expanded_str_factory:
+      default_factory:
+        expanded_str->: literal foo
+        return->: "{{expanded_str}}"
+
+    expanded_factory_dict:
+      default_factory:
+        ->: literal
+        input: foo
+
+    compact_map:
+      bar: foo
+      return->: {{ bar }}
+
+    literal_expanded:
+      ->: literal foo
+
+    field_default_compact:
+      type: str
+      default->: literal foo
+
+call->: a_hook method

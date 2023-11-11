@@ -1,0 +1,14 @@
+base<-:
+  foo: bar
+
+obj<-:
+  stuff: things
+  bar:
+    type: base
+
+check_ok:
+  ->: obj
+  bar:
+    foo: baz
+
+x->: check_ok['bar']

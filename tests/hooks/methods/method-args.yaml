@@ -1,0 +1,7 @@
+
+greeter<-:
+  call<-:
+    in: str
+    args: ['in']
+
+foo->: greeter call bar

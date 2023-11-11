@@ -1,0 +1,12 @@
+
+MyHook<-:
+  foo:
+    type: str
+    validator:
+      fields: ['val', 'values']
+      mode: after
+      body:
+        if_bar->: return --if v=='bar'
+        raise->: Not bar
+
+call->: MyHook --foo bar

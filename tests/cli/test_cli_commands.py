@@ -5,8 +5,8 @@ from tackle.cli import main
 
 COMMANDS = [
     'tackle --help',
-    # 'help --foo bar',
-    # 'docs',
+    'help --foo bar',
+    'docs',
 ]
 
 
@@ -17,7 +17,7 @@ def basic_commands(request):
 
 
 @pytest.mark.parametrize("command", COMMANDS)
-def test_cli_commands(change_curdir_fixtures, command, capsys):
+def test_cli_commands(command, capsys):
     """Asser output comes out of cli."""
     main(['tackle-hello.yaml'])
     assert 'Hello world!' in capsys.readouterr().out

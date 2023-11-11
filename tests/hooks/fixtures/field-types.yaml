@@ -1,0 +1,16 @@
+some_hook<-:
+  a_str: str
+  a_bool: bool
+  a_int: int
+  a_float: float
+  a_list: list
+  a_dict: dict
+
+call:
+  ->: some_hook
+  a_str: foo
+  a_bool: true
+  a_int: 1
+  a_float: 1.2
+  a_list: ['stuff', 'things']
+  a_dict: {'stuff': 'things'}

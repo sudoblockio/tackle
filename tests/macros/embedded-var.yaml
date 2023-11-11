@@ -1,0 +1,4 @@
+
+stuff: things
+foo:
+  bar->: "{{stuff}}"

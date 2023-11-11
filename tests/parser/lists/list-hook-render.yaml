@@ -1,0 +1,11 @@
+foo: bar
+stuff: things
+
+a_list->:
+  - "{{foo}}"
+  - "{{stuff}}"
+
+# #TODO: https://github.com/sudoblockio/tackle/issues/185
+#a_list_unquoted->:
+#  - {{foo}}
+#  - {{stuff}}

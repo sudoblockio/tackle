@@ -5,6 +5,25 @@ from tackle import tackle
 from tackle.factory import new_context
 from tackle.utils.files import read_config_file
 
+
+def test_render_types(cd_fixtures):
+    """Check that types are respected."""
+    output = tackle('types.yaml')
+    assert output['hex'] == '0x01'
+    assert output['float'] == 1.0
+    assert isinstance(output['bool'], bool)
+
+    assert isinstance(output['int'], int)
+    assert isinstance(output['float'], float)
+    assert isinstance(output['hex'], str)
+    assert isinstance(output['bool'], bool)
+
+    assert output['bool'] == output['bool_render']
+    assert output['int'] == output['int_render']
+    assert output['float'] == output['float_render']
+    assert output['hex'] == output['hex_render']
+
+
 RENDERABLES = [
     # This test relates to https://github.com/pallets/jinja/issues/1580 where if we have
     # a variable that collides with a jinja globals it is ignored
@@ -70,7 +89,7 @@ METHOD_ADD_FIXTURES = [
 ]
 
 
-@pytest.mark.parametrize("hook_name,render_input,expected_output",METHOD_ADD_FIXTURES)
+@pytest.mark.parametrize("hook_name,render_input,expected_output", METHOD_ADD_FIXTURES)
 def test_render_add_jinja_hook_to_jinja_globals(
         cd_fixtures,
         hook_name,
@@ -96,3 +115,17 @@ def test_render_hook_call_multiple(cd_fixtures):
     o = tackle('multiple-hook-renders.yaml')
     assert o['first'] == "foo,stuff"
     assert o['second'] == "2.txt"
+
+
+def test_render_jinja_filter_builtins(cd_fixtures):
+    """Make sure we can still use jinja's builtin filters."""
+    o = tackle('jinja-builtins.yaml')
+
+    assert o['jinja_filter'] == 2
+
+
+def test_render_int_to_str_preservation(cd_fixtures):
+    """When the input is a int we need to preserve that after rendering."""
+    o = tackle('int-to-str-preservation.yaml')
+
+    assert o
