@@ -14,7 +14,8 @@ from tackle.models import BaseHook
 from tackle.utils.prompts import confirm_prompt
 
 if TYPE_CHECKING:
-    from tackle.models import Context, GenericHookType
+    from tackle.models import GenericHookType
+    from tackle.context import Context
 
 logger = logging.getLogger(__name__)
 
@@ -63,6 +64,8 @@ def import_python_hooks_from_file(
     # Loop through all the module items and add the hooks
     for k, v in mod.__dict__.items():
         if is_base_hook_subclass(key=k, value=v):
+            # TODO: Add when fixing third_party imports
+            # v.__provider_name = provider_name
             if v.model_fields['is_public'].default:
                 context.hooks.public[v.model_fields['hook_name'].default] = v
             else:
@@ -174,7 +177,7 @@ def import_native_hooks_from_directory(
         file_base, file_extension = os.path.splitext(filename)
 
         if file_extension == ".py":
-            module_name = provider_name + '.hooks.' + file_base
+            module_name = 'providers.' + provider_name + '.hooks.' + file_base
             mod = get_module_from_path(
                 context=context,
                 module_name=module_name,
@@ -183,6 +186,7 @@ def import_native_hooks_from_directory(
             # Loop through all the module items and add the hooks
             for k, v in mod.__dict__.items():
                 if is_base_hook_subclass(key=k, value=v):
+                    v.__provider_name = provider_name
                     native_hooks[v.model_fields['hook_name'].default] = v
 
     return native_hooks
@@ -211,6 +215,9 @@ def import_native_providers(context: 'Context') -> dict[str, 'GenericHookType']:
                 )
         return native_hooks
     else:
+        # This is where we want to implement a native hook cache which could speed up
+        # imports by a whopping .2 seconds or so. Replacing context from pydantic to
+        # dataclasses makes this a low priority.
         raise NotImplemented
 
 

@@ -16,7 +16,7 @@ from tackle.utils.paths import (
     find_tackle_base_in_parent_dir_with_exception,
 )
 from tackle.utils.vcs import get_repo_source
-from tackle.utils.zipfile import unzip
+from tackle.utils.zipfiles import unzip
 from tackle.utils.files import read_config_file
 from tackle.imports import import_native_providers, import_hooks_from_hooks_directory
 
@@ -27,24 +27,29 @@ def format_path_to_name(path: str) -> str:
 
 def create_hooks(
         context: 'Context',
-        _hooks: 'Hooks' = None,
         hooks_dir: str = None,
+        _hooks: 'Hooks' = None,
 ):
     if _hooks is None and context.hooks is None:
         context.hooks = Hooks()
     elif context.hooks is None and _hooks is not None:
-        # Otherwise we have hooks passed in
-        context.hooks = _hooks
+        # Otherwise we have hooks passed in and only need to carry over the native hooks
+        context.hooks = Hooks(native=_hooks.native)
     else:
         raise Exception("Should never happen...")
 
+    # We should clear public / private hooks here now that native hooks are separated
     if context.hooks.public is None:
         context.hooks.public = {}
 
     if context.hooks.private is None:
-        # Initialize the native providers / hooks
         context.hooks.private = {}
-        context.hooks.private = import_native_providers(context=context)
+
+    # These should be the only things carried over between contexts
+    if context.hooks.native is None:
+        # Initialize the native providers / hooks
+        context.hooks.native = {}
+        context.hooks.native = import_native_providers(context=context)
 
     if hooks_dir is not None:
         # Provided by command line arg
@@ -378,9 +383,8 @@ def new_source(
                 file_path = os.path.join(directory, first_arg)
             else:
                 file_path = os.path.abspath(first_arg)
-            source.file = os.path.basename(file_path)
+            source.file = file_path
             source.directory = source.base_dir = str(Path(file_path).parent.absolute())
-            # source.name = '_'.join(source.file.split('.')[:-1])
             source.name = format_path_to_name(path=source.base_dir)
             source.hooks_dir = find_hooks_directory_in_dir(dir=str(source.base_dir))
         else:
@@ -469,7 +473,7 @@ def new_context(
         **kwargs: dict,
 ) -> 'Context':
     """Create a new context. See tackle.main.tackle for options which wraps this."""
-    print()
+    pass
     context = Context(
         no_input=no_input if no_input is not None else False,
         verbose=verbose if verbose is not None else False,
@@ -487,6 +491,7 @@ def new_context(
         directory=directory,
         file=file,
         find_in_parent=find_in_parent,
+        # _source=_source,
     )
     context.path = new_path(
         context=context,
@@ -501,8 +506,8 @@ def new_context(
     )
     create_hooks(
         context=context,
-        _hooks=_hooks,
         hooks_dir=hooks_dir,
+        _hooks=_hooks,
     )
 
     return context
