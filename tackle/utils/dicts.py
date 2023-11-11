@@ -109,7 +109,6 @@ def nested_delete(element, keys):
             return nested_delete(element[keys[0]], keys[1:])
 
         elif isinstance(keys[0], str) and isinstance(keys[1], str):
-            #
             if isinstance(element[keys[0]], dict):
                 # Case where we have an embedded
                 return nested_delete(element[keys[0]], keys[1:])
@@ -123,7 +122,7 @@ def nested_delete(element, keys):
     return nested_delete(element[keys[0]], keys[1:])
 
 
-def nested_get(element, keys):
+def nested_get(element: Union[dict, list], keys: list):
     """
     Getter for dictionary / list elements based on a key_path.
 
@@ -204,7 +203,7 @@ def get_target_and_key(
                 context.data.private = (
                     {} if isinstance(output_key_path[0], str) else []
                 )
-            target_context = context.private_context
+            target_context = context.data.private
         elif i != '->':
             output_key_path.append(i)
 
@@ -349,7 +348,7 @@ def merge(a, b, path=None, update=True):
     return a
 
 
-def update_input_context(input_dict: dict, update_dict: dict) -> dict:
+def update_input_dict(input_dict: dict, update_dict: dict) -> dict:
     """
     Update the input dict with update_dict which in this context are treated as
      overriding the keys. Takes into account if the key is a hook and replaces that.
@@ -361,7 +360,7 @@ def update_input_context(input_dict: dict, update_dict: dict) -> dict:
         elif f"{k}->" in input_dict:
             # If value is a dict, recurse into this dict
             if isinstance(v, dict):
-                input_dict[f"{k}->"] = update_input_context(
+                input_dict[f"{k}->"] = update_input_dict(
                     input_dict=input_dict[f"{k}->"],
                     update_dict=update_dict[k],
                 )
@@ -374,7 +373,7 @@ def update_input_context(input_dict: dict, update_dict: dict) -> dict:
         elif f"{k}_>" in input_dict:
             # Same but for private hooks
             if isinstance(v, dict):
-                input_dict[f"{k}->"] = update_input_context(
+                input_dict[f"{k}->"] = update_input_dict(
                     input_dict=input_dict[f"{k}_>"],
                     update_dict=update_dict[k],
                 )

@@ -1,20 +1,19 @@
 """Utilities mainly used in helping `modes` like replay and others."""
 import json
 
-# from ruyaml import YAML
-# from ruamel.yaml.composer import ComposerError
+import os
 
 from ruyaml import YAML
 from ruyaml.composer import ComposerError
+from ruyaml.parser import ParserError
 
-import os
+# from ruamel.yaml import YAML
+# from ruamel.yaml.composer import ComposerError
+# from ruamel.yaml.parser import ParserError
+
 import logging
 
-from tackle.exceptions import (
-    ContextDecodingException,
-    UnsupportedBaseFileTypeException,
-    TackleImportError,
-)
+from tackle import exceptions
 from tackle.utils.paths import make_sure_path_exists
 
 logger = logging.getLogger(__name__)
@@ -50,7 +49,8 @@ def read_config_file(file, file_extension=None):
         file_extension = file.split('.')[-1]
 
     if not os.path.exists(file):
-        raise FileNotFoundError(f"Can't find the file {file}.")
+        raise exceptions.TackleFileNotFoundError(
+            f"Can't find the file {file}.") from None
 
     logger.debug(
         'Using \"{}\" as input file and \"{}\" as file extension'.format(
@@ -75,32 +75,31 @@ def read_config_file(file, file_extension=None):
                     for doc in yaml.load_all(f.read()):
                         output.append(doc)
                 return output
+            except ParserError as e:
+                raise exceptions.FileLoadingException(f"Error loading file={file}\n{e}")
         elif file_extension == 'toml':
             try:
-                import toml
-            except ImportError:
-                raise TackleImportError(
-                    f"Error parsing {file} No toml package installed. Install it with "
-                    "`pip install toml` and try again."
-                ) from None
-            with open(file) as f:
-                data = toml.load(f)
+                from tomli import load as toml_load
+            except ModuleNotFoundError:
+                from tomllib import load as toml_load
+            # TODO: Catch these errors
+            with open(file, 'rb') as f:
+                data = toml_load(f)
             return data
 
         else:
-            raise UnsupportedBaseFileTypeException(
+            raise exceptions.UnsupportedBaseFileTypeException(
                 'Unable to parse file {}. Error: Unsupported extension (json/yaml only)'
                 ''.format(file)
             )  # noqa
 
     except ValueError as e:
-        # JSON decoding error.  Let's throw a new exception that is more
-        # friendly for the developer or user.
+        # decoding error
         message = (
-            f'JSON decoding error while loading "{file}".  Decoding'
-            f' error details: "{str(e)}"'
+            f'Error while loading file=`{file}`. \n'
+            f'Details: "{str(e)}"'
         )
-        raise ContextDecodingException(message) from None
+        raise exceptions.FileLoadingException(message) from None
 
 
 def apply_overwrites_to_inputs(input, overwrite_dict):

@@ -6,8 +6,9 @@ from jinja2 import Template
 from typing import Any, List
 
 from tackle import exceptions
-from tackle.models import Context, LazyBaseHook
-
+# from tackle.models import Context, LazyBaseHook
+from tackle.models import LazyBaseHook, CompiledHookType
+from tackle.context import Context
 
 HELP_TEMPLATE = """usage: tackle {{input_string}} {% for i in general_kwargs %}{{i}} {% endfor %}
 {% if general_help %}
@@ -70,10 +71,10 @@ def unpack_hook(
                 hook_name = hook.identifier.split('.')[-1]
                 if hook_name == '':  # Default hook
                     hook_name = 'default hook'
-                raise exceptions.MalformedFunctionFieldException(
+                raise exceptions.MalformedHookFieldException(
                     f"The field '{i}' is malformed. Getting error=\n{e.__str__()}",
                     context=context,
-                    function_name=hook_name,
+                    hook_name=hook_name,
                 ) from None
         elif isinstance(hook_field, ModelField):
             # TODO: https://github.com/sudoblockio/tackle/issues/91
@@ -105,10 +106,10 @@ def unpack_hook(
             if len(arg_data) == 1:
                 arg_data = arg_data[0]
             else:
-                raise exceptions.MalformedFunctionFieldException(
+                raise exceptions.MalformedHookFieldException(
                     "The args don't match a key word arg or flag.",
                     # TODO: Fix
-                    function_name=hook.model_fields,
+                    hook_name=hook.model_fields,
                     context=context,
                 ) from None
         args.append(arg_data)
@@ -158,7 +159,7 @@ def get_methods_on_default_hook(context: 'Context') -> List[dict]:
     return methods
 
 
-def run_help(context: 'Context', hook: BaseModel = None):
+def run_help(context: 'Context', Hook: CompiledHookType = None):
     """
     Print the help screen then exit. Help can be displayed in three different scenarios.
     1. For the base (no args) -> this shows default / other function's help
@@ -166,16 +167,16 @@ def run_help(context: 'Context', hook: BaseModel = None):
         associated methods. This is recursive so depends on depth of methods.
     3. For a function's methods (len(args) > 1) -> this drills into methods
     """
-    if hook is not None:
+    if Hook is not None:
         # We have a default hook or method
         general_help = (
-            hook.model_fields['function_dict'].default.pop('help')
-            if 'help' in hook.model_fields['function_dict'].default
+            Hook.model_fields['function_dict'].default.pop('help')
+            if 'help' in Hook.model_fields['function_dict'].default
             else None
         )
 
-        args, kwargs, flags, methods = unpack_hook(context, hook)
-        hook_name = hook.identifier.split('.')[-1]
+        args, kwargs, flags, methods = unpack_hook(context, Hook)
+        hook_name = Hook.identifier.split('.')[-1]
     else:
         # Situation where we don't have a default hook or we have not been given an arg
         # to call a specific hook and need to just display all the base's methods

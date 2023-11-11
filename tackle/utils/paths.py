@@ -11,7 +11,7 @@ from typing import Optional, TYPE_CHECKING
 from tackle import exceptions
 
 if TYPE_CHECKING:
-    from tackle.models_new import Context
+    from tackle.context import Context
 
 logger = logging.getLogger(__name__)
 
@@ -177,7 +177,7 @@ def find_tackle_file_in_dir(dir: str) -> str:
     """Return the path to a tackle file if it exists in a dir."""
     for i in os.scandir(dir):
         if i.is_file() and i.name in DEFAULT_TACKLE_FILES:
-            return os.path.abspath(os.path.join(dir, i))
+            return os.path.abspath(os.path.join(dir, i.name))
 
 
 def find_tackle_base_in_parent_dir(

@@ -6,7 +6,6 @@ i.e. key->: hook arg --kwarg thing --flag
 Parsed into args=['arg'], kwargs={'kwarg':'thing'}, flags=['flag']
 
 NOTE: This is dirty code but works. Should be replaced by PEG parser. See proposals
-TODO: Link to proposals
 """
 import ast
 import re
@@ -32,25 +31,28 @@ def strip_dashes(raw_arg: str) -> str:
     return raw_arg
 
 
-def literal_eval(input):
+def literal_eval(input_value):
     """
     Wrapper for ast.literal eval that accounts for hex and bools which it normally
      coerces to int/string respectively.
     """
-    if isinstance(input, str) and input.startswith('0x'):
+    if isinstance(input_value, str) and input_value.startswith('0x'):
         # Prevent hex from being coerced to int type
-        return input
+        return input_value
+    elif isinstance(input_value, str) and input_value.lower() in ('true', 'false'):
+        # Prevent bools from being coerced to strings
+        return input_value.lower() == 'true'
     else:
         try:
-            return ast.literal_eval(input)
+            return ast.literal_eval(input_value)
         except (ValueError, SyntaxError):
             # Fix ast.literal_eval coercing bools to strings
-            if input == 'true':
+            if input_value == 'true':
                 return True
-            elif input == 'false':
+            elif input_value == 'false':
                 return False
             else:
-                return input
+                return input_value
 
 # Inspired from https://stackoverflow.com/a/524796/12642712
 # Split on whitespace or `=`
