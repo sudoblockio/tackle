@@ -38,6 +38,72 @@ def test_factory_source_new_source_parameterized(args):
     assert 'factory' in source.file
 
 
+def test_factory_source_new_source_find_in_parent_arg(cd):
+    """When we are given a find_in_parent_arg, find source in parent."""
+    cd('a-dir-with-tackle')
+    context = Context(
+        input=InputArguments(
+            args=[{'foo': 'bar'}],
+            kwargs={},
+        ),
+    )
+    source = new_source(
+        find_in_parent=True,
+        context=context)
+    assert source.base_dir.endswith('source')
+    assert source.file.endswith('tackle.yaml')
+    assert 'tests' in source.file
+    # Args should be reinserted
+    assert context.input.args[0] == {'foo': 'bar'}
+
+
+def test_factory_source_new_source_dict_arg():
+    """When the first arg is an list or dict arg, insert it as raw."""
+    source = new_source(
+        context=Context(
+            input=InputArguments(
+                args=[{'foo': 'bar'}],
+                kwargs={},
+            ),
+        ))
+    assert source.raw == {'foo': 'bar'}
+
+
+def test_factory_source_new_source_int_arg():
+    """
+    When the first arg is an int / float / bool (not str, dict, list) then we need to
+     find the closest tackle provider and reinsert the arg into the args.
+    """
+    source = new_source(
+        context=Context(
+            input=InputArguments(
+                args=[1],
+                kwargs={},
+            ),
+        ))
+    # Source is the tackle file in the current directory
+    assert source.base_dir.endswith('source')
+
+
+def test_factory_source_new_source_zip(cd):
+    """Check that zip providers work. Will run the unzipped provider in a tmp dir."""
+    cd('zip')
+    source = new_source(
+        context=Context(
+            input=InputArguments(
+                args=['zipped-provider.zip'],
+                kwargs={},
+            ),
+        ))
+    assert os.path.exists(source.directory)
+    # Actually unzips in a tmp dir
+    if source.directory.endswith('zipped-provider'):
+        shutil.rmtree(source.directory)
+    assert source.file.endswith('tackle.yaml')
+    assert 'zipped-provider' in source.file
+    assert not source.find_in_parent
+
+
 @pytest.fixture()
 def repo_path():
     path = Path(os.path.join(settings.provider_dir, 'test', 'bar', 'tackle.yaml'))
@@ -68,24 +134,6 @@ def test_factory_source_new_source_repo(mocker, repo_path):
     assert not source.find_in_parent
     assert source.hooks_dir is None
     assert mock.called
-
-
-def test_factory_source_new_source_zip(cd):
-    """Check that zip providers work. Will run the unzipped provider in a tmp dir."""
-    cd(os.path.join('', 'zip'))
-    source = new_source(
-        context=Context(
-            input=InputArguments(
-                args=['zipped-provider.zip'],
-                kwargs={},
-            ),
-        ))
-    assert os.path.exists(source.directory)
-    # Actually unzips in a tmp dir
-    shutil.rmtree(source.directory)
-    assert source.file.endswith('tackle.yaml')
-    assert 'zipped-provider' in source.file
-    assert not source.find_in_parent
 
 
 def test_factory_source_new_source_with_directory():
@@ -158,7 +206,7 @@ def test_factory_source_new_source_exception_no_arg_temp_di(run_in_temp_dir):
 
 def test_factory_source_new_source_exception_find_in_parent(run_in_temp_dir):
     """
-    When supplying the find_in_parent flag and inside a tmp dir where there is no tackle
+    When supplying the f flag and inside a tmp dir where there is no tackle
      provider in the parent dir should raise.
     """
     context = Context(input=InputArguments(args=[]))

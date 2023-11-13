@@ -1,0 +1,4 @@
+# Example function - not actually tested
+<-:
+  foo: int
+  args: ['foo']
