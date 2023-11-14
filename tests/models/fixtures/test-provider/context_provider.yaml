@@ -1,4 +1,0 @@
-
-things:
-  ->: thing
-  stuff: bar
