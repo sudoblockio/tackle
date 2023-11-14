@@ -88,20 +88,22 @@ def get_complex_field(field: Any) -> Type:
     return field
 
 
-def hook_walk(
-        hook: 'BaseHook',
-        context: 'Context',
+def dcl_hook_exec(
+        hook: 'BaseHook',  # This is basically `self` in a class
         input_element: Union[list, dict],
-        return_: Union[list, dict] = None,
+        return_: Union[list, dict],
+        context: 'Context',  # This is injected
 ) -> Any:
     """
-    Walk an input_element for a function and either return the whole context or one or
-     many returnable string keys. Function is meant to be implanted into a function
-     object and called either as `exec` or some other arbitrary method.
+    Run a declarative hook's `exec` logic which is a partial_method that is dynamically
+     set on a declarative hook when the hook is created. First checks if there is some
+     data to parse (the exec methods data) and if it doesn't exist, just return the
+     fields of the hook. It then parses the data since it exists and then returns the
+     public data or if there is a `return` field defined in the hook, just return that
+     field.
     """
     if input_element is None:
         # No `exec` method so we'll just be returning the included fields from model
-        # return hook.model_dump(include=set(hook.hook_input.model_extra.keys()))
         return hook.model_dump(include=hook.hook_field_set)
 
     # We have exec data so we need to parse that which will be the return of the hook
@@ -130,7 +132,7 @@ def hook_walk(
                 raise exceptions.FunctionCallException(
                     f"Error parsing declarative hook field='{field}'. Must produce an "
                     f"output for the field's default.",
-                    hook=hook,  # noqa
+                    context=context, hook=hook,
                 ) from None
         else:
             # Otherwise just the value itself
@@ -782,7 +784,7 @@ def create_dcl_hook(
     setattr(
         Hook,
         'exec',
-        partialmethod(hook_walk, context, hook_input.exec_, hook_input.return_),
+        partialmethod(dcl_hook_exec, hook_input.exec_, hook_input.return_),
     )
 
     # TODO: Rm when filters fixed
@@ -945,6 +947,7 @@ def get_hook(
         if throw:
             raise exceptions.raise_unknown_hook(context=context, hook_name=hook_name)
         return None
+    # We could have a hook call with methods so need to enrich the hook
     return enrich_hook(
         context=context,
         Hook=Hook,
