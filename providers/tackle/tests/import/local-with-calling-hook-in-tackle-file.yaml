@@ -1,0 +1,5 @@
+arbitrary key:
+  _>: import
+  src: test-provider
+
+should error even though hook exists in tackle file->: unexported_hook

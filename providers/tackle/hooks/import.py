@@ -1,69 +1,150 @@
 import os
-from typing import Any
-from pydantic import BaseModel, Field
+from typing import Any, TYPE_CHECKING
+from pydantic import BaseModel, Field, field_validator, ValidationInfo, ValidationError
+from tackle.utils.command import unpack_args_kwargs_string
 
-from tackle import BaseHook
-from tackle.imports import import_hooks_from_hooks_directory, import_hooks_from_file
+from tackle import BaseHook, Context, exceptions
+from tackle.factory import new_context
+from tackle.imports import (
+    import_hooks_from_hooks_directory, import_hooks_from_file,
+    import_declarative_hooks_from_file,
+)
 from tackle.utils.vcs import get_repo_source
 
 
 class RepoSource(BaseModel):
     """Repo object."""
     src: str
-    version: str = None
+    version: str | None = None
+    latest: bool | None = None
+
+    @field_validator('latest')
+    def check_both_version_and_latest_defined(cls, v: bool, info: ValidationInfo):
+        if info.data['version'] is not None:
+            raise ValueError
+        return v
 
 
 class ImportHook(BaseHook):
     """
     Hook for importing external tackle providers. Does not actually execute the
-     base tackle in the provider but merely makes the hooks and functions available to
-     be used in the context. Takes any type as an argument to build `src` and
+     base tackle in the provider but makes the hooks defined in the hooks directory
+     available to be called. Takes any type as an argument to build `src` and
      `version` import targets.
     """
 
-    hook_name: str = 'import2'
-    src: Any = Field(..., description="A str/list/dict as above.")
-    version: str = Field(None, description="Version of src for remote imports.")
+    hook_name: str = 'import'
+    src: str | list = Field(
+        ...,
+        description="A str reference to a source or a list of dicts with strings that "
+                    "will be expanded with args (ie `foo --version latest`) or objects "
+                    "(ie `[src: foo])."
+    )
+    version: str = Field(
+        None,
+        description="Version of src for remote imports."
+    )
+    latest: bool = Field(
+        None,
+        description="Flag to pull latest version."
+    )
     args: list = ['src']
 
-    def get_dir_or_repo(self, src, version):
-        """Check if there is a path that matches input otherwise try as repo."""
-        if os.path.exists(src):
-            return src
-        else:
-            return get_repo_source(src, version)
+    def _do_import(self, context: 'Context', src: str, version: str, latest: bool):
+        tmp_context = new_context(
+            src,
+            checkout=version,
+            latest=latest,
+            _hooks=context.hooks,
+        )
+        # Put the hooks in the the hooks namespaces
+        context.hooks.public.update(tmp_context.hooks.public)
+        context.hooks.private.update(tmp_context.hooks.private)
 
-    def exec(self) -> None:
-        if isinstance(self.src, str):
-            # Get the provider path either local or remote.
-            provider_path = self.get_dir_or_repo(self.src, self.version)
-            import_hooks_from_hooks_directory(
-                context=self.context,
-                hooks_directory=provider_path,
-                provider_name="",
+    def _create_repo_source(self, context: Context, **kwargs) -> RepoSource:
+        try:
+            return RepoSource(**kwargs)
+        except ValidationError as e:
+            raise exceptions.TackleHookImportException(
+                f"Malformed input for `import` hook. \n{e}",
+                context=context
             )
+        except ValueError:
+            self._raise_when_both_version_and_latest_are_defined(context=context)
 
+    def _raise_when_both_version_and_latest_are_defined(self, context: Context):
+        raise exceptions.TackleHookImportException(
+            f"In the import hook, you can't define both a `version` and `latest` "
+            f"arguments.", context=context
+        )
+
+    def _new_import_src_from_str(self, context: Context, provider_str: str):
+        """Unpack the string into src, version, and latest based on flags."""
+        # Note: This is kinda dirty but works. Could be cleaned up...
+        args, kwargs, flags = unpack_args_kwargs_string(input_string=provider_str)
+
+        output = {}
+        if len(args) != 1:
+            raise exceptions.TackleHookImportException(
+                f"Need to have a src specified in import string=`{provider_str}`",
+                context=self.context
+            )
+        output['src'] = args[0]
+
+        if len(kwargs) == 0:
+            pass
+        elif len(kwargs) > 1:
+            # We can only have at most one kwarg -> version
+            raise exceptions.TackleHookImportException(
+                "",
+                context=context)
+        elif len(kwargs) == 1 and 'version' not in kwargs:
+            # The only viable kwarg is version
+            raise exceptions.TackleHookImportException(
+                "",
+                context=context
+            )
+        else:
+            output['version'] = kwargs['version']
+
+        if len(flags) == 0:
+            pass
+        elif len(flags) > 1:
+            # We can only have at most one flag -> latest
+            raise exceptions.TackleHookImportException(
+                f"Extra flags detected in import string=`{provider_str}`",
+                context=context
+            )
+        elif len(flags) == 1 and 'latest' not in flags:
+            # The only viable flag is `latest`
+            raise exceptions.TackleHookImportException(
+                f"Unknown flag detected in import string=`{provider_str}`",
+                context=context
+            )
+        else:
+            output['latest'] = True
+        return output
+
+    def exec(self, context: 'Context') -> None:
+        if isinstance(self.src, str):
+            if self.version is not None and self.latest is not None:
+                self._raise_when_both_version_and_latest_are_defined(context)
+            self._do_import(
+                context=context,
+                src=self.src,
+                version=self.version,
+                latest=self.latest,
+            )
         elif isinstance(self.src, list):
             for i in self.src:
                 if isinstance(i, str):
-                    # import_hooks_from_file(context=self.context, i)
-                    pass
-                if isinstance(i, dict):
-                    # dict types validated above and transposed through same logic
-                    repo_source = RepoSource(**i)
-
-                    import_from_path(
-                        self,
-                        provider_path=self.get_dir_or_repo(
-                            repo_source.src, repo_source.version
-                        ),
-                    )
-
-        elif isinstance(self.src, dict):
-            # Don't even check if path is directory as one would never use a dict here
-            repo_source = RepoSource(**self.src)
-            provider_dir = get_repo_source(
-                repo=repo_source.src,
-                repo_version=repo_source.version,
-            )
-            self.provider_hooks.import_from_path(provider_path=provider_dir)
+                    kwargs = self._new_import_src_from_str(context, provider_str=i)
+                    repo_source = self._create_repo_source(context=context, **kwargs)
+                else:
+                    repo_source = self._create_repo_source(context=context, **i)
+                self._do_import(
+                    context=context,
+                    src=repo_source.src,
+                    version=repo_source.version,
+                    latest=repo_source.latest,
+                )

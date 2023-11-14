@@ -1,0 +1,3 @@
+import->:
+  - robcxyz/tackle-fixture-released --latest
+  - robcxyz/tackle-fixture-released --version latest

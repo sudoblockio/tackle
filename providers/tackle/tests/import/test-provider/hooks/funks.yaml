@@ -1,6 +1,7 @@
 
 a_func<-:
   input: str
+  args: ['input']
   exec:
     p->: print {{input}}
     this: that
@@ -8,6 +9,7 @@ a_func<-:
 
 b_func<-:
   input: str
+  args: ['input']
   exec:
     p->: print {{input}}
     this: that

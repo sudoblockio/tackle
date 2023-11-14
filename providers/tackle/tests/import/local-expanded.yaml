@@ -1,0 +1,5 @@
+arbitrary key:
+  _>: import
+  src: test-provider
+
+stuff->: thing --stuff thing
