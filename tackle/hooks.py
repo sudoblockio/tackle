@@ -416,7 +416,7 @@ def create_validator_field_type(
     # to match the expected function signiture of the validator
     wrapped_validator_func = partial(
         validator_func,
-        tmp_context,
+        context,
         hook_validator,
     )
 
