@@ -1,0 +1,16 @@
+Hook1<-:
+  foo:
+    type: str
+    validator:
+      mode: after
+      field_names:
+        value: vv
+        info: values
+      body:
+        bar:
+          baz: bar
+        if_bar->: return {{bar.baz}} --if vv=='bar'
+        raise->: Not bar
+
+call->: Hook1 --foo bar
+error->: Hook1 --foo baz --try --except 1

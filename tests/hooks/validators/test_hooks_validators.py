@@ -2,13 +2,21 @@ import pytest
 
 from tackle import tackle, exceptions
 
+
 @pytest.mark.parametrize("file_name", [
     'expanded.yaml',
     'expanded-after.yaml',
     'compact.yaml',
+    'dict-parse.yaml',
 ])
 def test_hooks_validators_expanded(file_name):
     output = tackle(file_name)
+    assert output['call']['foo'] == 'bar'
+    assert output['error'] == 1
+
+
+def test_hooks_validators_dict_return():
+    output = tackle('dict-return.yaml')
     assert output['call']['foo'] == 'bar'
     assert output['error'] == 1
 
