@@ -3,19 +3,17 @@ import sys
 import importlib
 import logging
 import subprocess
+from functools import lru_cache
 from pydantic import ValidationError, PydanticUserError
 from pydantic._internal._model_construction import ModelMetaclass  # noqa
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from tackle import exceptions
-from tackle.utils.files import read_config_file
+from tackle.context import Context
 from tackle.settings import settings
-from tackle.models import BaseHook
+from tackle.models import BaseHook, GenericHookType
 from tackle.utils.prompts import confirm_prompt
-
-if TYPE_CHECKING:
-    from tackle.models import GenericHookType
-    from tackle.context import Context
+from tackle.utils.files import read_config_file
 
 logger = logging.getLogger(__name__)
 
@@ -172,6 +170,10 @@ def import_native_hooks_from_directory(
         hooks_directory: str,
         native_hooks: dict[str, 'GenericHookType'],
 ) -> dict[str, 'GenericHookType']:
+    """
+    Native hooks are all defined in python so this function only imports python hooks
+     from a native provider (ie tackle/providers dir).
+    """
     for file in os.scandir(hooks_directory):
         directory, filename = os.path.split(file.path)
         file_base, file_extension = os.path.splitext(filename)
@@ -192,13 +194,18 @@ def import_native_hooks_from_directory(
     return native_hooks
 
 
-def import_native_providers(context: 'Context') -> dict[str, 'GenericHookType']:
+# Cache the result since this will never change between tackle executions. In tests,
+# is a session scoped patch.
+@lru_cache(maxsize=1)
+def import_native_providers() -> dict[str, 'GenericHookType']:
     """
     Import the native providers. First qualifies if we are running locally (ie the
      `local_install` setting is active in which case we need to manually import all the
       native provides. Otherwise, just use the cached native providers as we would under
       normal runs. Importing providers adds about .7 seconds each time we run tackle.
     """
+    # Making empty context so the function is cachable
+    context = Context()
     native_hooks = {}
 
     native_providers_directory = os.path.join(

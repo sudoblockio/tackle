@@ -91,7 +91,7 @@ def patch_native_provider_import(session_mocker):
     """
     mock = session_mocker.patch(
         'tackle.factory.import_native_providers',
-        return_value=import_native_providers(Context()),
+        return_value=import_native_providers(),
     )
     yield mock
 

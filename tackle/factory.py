@@ -30,11 +30,18 @@ def create_hooks(
         hooks_dir: str = None,
         _hooks: 'Hooks' = None,
 ):
+    """
+    Create the hooks object which has three namespaces, native, public, and private.
+     Native hooks are instantiated once and are passed between tackle calls / contexts.
+     Public and private hooks are local to a tackle context and are not passed between
+     one another.
+    """
+    # Check if tackle hooks (_hooks) are passed
     if _hooks is None and context.hooks is None:
         context.hooks = Hooks()
     elif context.hooks is None and _hooks is not None:
         # Otherwise we have hooks passed in and only need to carry over the native hooks
-        context.hooks = Hooks(native=_hooks.native)
+        context.hooks = _hooks
     else:
         raise Exception("Should never happen...")
 
@@ -49,7 +56,7 @@ def create_hooks(
     if context.hooks.native is None:
         # Initialize the native providers / hooks
         context.hooks.native = {}
-        context.hooks.native = import_native_providers(context=context)
+        context.hooks.native = import_native_providers()
 
     if hooks_dir is not None:
         # Provided by command line arg
