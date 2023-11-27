@@ -304,6 +304,7 @@ def new_source(
         directory: str = None,
         file: str = None,
         find_in_parent: bool = None,
+        _strict_source: bool = False,
 ) -> Source:
     """
     - Parses args to create source object
@@ -395,18 +396,14 @@ def new_source(
             source.name = format_path_to_name(path=source.base_dir)
             source.hooks_dir = find_hooks_directory_in_dir(dir=str(source.base_dir))
         else:
-            # Tackle has been called without an arg that could be recognized as a source
-            # so we need to check if there is a tackle file in the current or parent
-            # directory and if there is, use that as source and don't consume the arg.
-            # Will raise error later if the arg was not used.
-            context.input.args.insert(0, first_arg)
-            source.base_dir = find_tackle_base_in_parent_dir(dir=os.path.abspath('.'))
-            if source.base_dir is None:
-                # We don't have a tackle base
-                source.base_dir = os.path.abspath('.')
-            # source.name = os.path.basename(source.base_dir)
-            source.name = format_path_to_name(path=source.base_dir)
-            update_source(
+            if _strict_source:
+                raise exceptions.UnknownSourceException(
+                    f"The source=`{first_arg}` was not recognized. Exiting...",
+                    context=context,
+                )
+            # We didn't recognize a string arg so we fallback on looking in parent
+            # directory and reinsert the arg into the context.input.args
+            source = new_source_from_unknown_args(
                 context=context,
                 source=source,
                 directory=directory,
@@ -465,6 +462,7 @@ def new_context(
         file: str = None,
         find_in_parent: bool = None,
         hooks_dir: str = None,
+        _strict_source: bool = False,  # Raise if source not found
         # Data
         input: dict | list | None = None,
         overrides: Union[str, dict] = None,
@@ -498,6 +496,7 @@ def new_context(
         directory=directory,
         file=file,
         find_in_parent=find_in_parent,
+        _strict_source=_strict_source,
         # _source=_source,
     )
     context.path = new_path(

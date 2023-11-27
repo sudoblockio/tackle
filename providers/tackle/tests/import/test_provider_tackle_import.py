@@ -72,6 +72,20 @@ def test_provider_hook_import_raise_when_calling_hook_from_tackle_file():
         tackle('local-with-calling-hook-in-tackle-file.yaml')
 
 
+@pytest.mark.parametrize(
+    "input_file,expected_exception", [
+        ('error-not-found-local.yaml', exceptions.UnknownSourceException),
+        ('error-not-found-repo.yaml', exceptions.RepositoryNotFound),
+    ]
+)
+def test_provider_hook_import_raise_unknown_source(input_file, expected_exception):
+    """
+    When given a bad source we raise an error.
+    """
+    with pytest.raises(expected_exception):
+        tackle(input_file)
+
+
 @pytest.mark.parametrize("file", [
     'error-str-both-version-latest.yaml',
     'error-dict-both-version-latest.yaml',

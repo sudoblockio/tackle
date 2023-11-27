@@ -56,6 +56,7 @@ class ImportHook(BaseHook):
             checkout=version,
             latest=latest,
             _hooks=context.hooks,
+            _strict_source=True,
         )
         # Put the hooks in the the hooks namespaces
         context.hooks.public.update(tmp_context.hooks.public)
