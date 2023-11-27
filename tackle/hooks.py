@@ -217,27 +217,30 @@ def hook_extends_merge_hook(
     # Same with the methods
     for i in base_hook.model_fields['hook_method_set'].default:
         base_hook_methods.update({i: base_hook.model_fields[i].default})
-        pass
 
     # Merge them together
-    return {**base_hook_fields, **base_hook_methods, **hook_dict}
+    output_dict = {**base_hook_fields, **base_hook_methods, **hook_input_dict}
+    return output_dict
 
 
 def hook_extends(
         context: 'Context',
         hook_name: str,
-        hook_dict: dict,
-):
+        hook_input_dict: dict,
+) -> dict:
     """
     Implement the `extends` functionality which takes either a string reference or list
      of string references to declarative hooks whose fields will be merged together.
     """
-    extends = hook_dict.pop('extends')
-    if isinstance(extends, str):
+    extends = hook_input_dict.pop('extends', None)
+    if extends is None:
+        return hook_input_dict
+
+    elif isinstance(extends, str):
         return hook_extends_merge_hook(
             context=context,
             hook_name=hook_name,
-            hook_dict=hook_dict,
+            hook_input_dict=hook_input_dict,
             extends=extends,
         )
 
@@ -248,7 +251,7 @@ def hook_extends(
             return hook_extends_merge_hook(
                 context=context,
                 hook_name=hook_name,
-                hook_dict=hook_dict,
+                hook_input_dict=hook_input_dict,
                 extends=i,
             )
     raise exceptions.MalformedHookFieldException(
@@ -665,20 +668,6 @@ def new_dcl_hook_input(
      the hook should be compiled. All the fields are serialized with the extra vars
      being the inputs to the hook.
     """
-    # Apply overrides to hook_input_raw
-    hook_input_dict = update_input_dict(
-        input_dict=hook_input_dict,
-        update_dict=context.data.overrides,
-    )
-
-    # Implement inheritance
-    if 'extends' in hook_input_dict and hook_input_dict['extends'] is not None:
-        hook_input_dict = hook_extends(
-            context=context,
-            hook_name=hook_name,
-            hook_dict=hook_input_dict,
-        )
-
     try:
         hook_input = DclHookInput(**hook_input_dict)
     except ValidationError as e:
@@ -694,17 +683,6 @@ def new_dcl_hook_input(
             update_dict=context.data.overrides,
         )
 
-    # TODO: Support a validators field
-    # # Validators
-    # for k, v in hook_input.validators.items():
-    #     if k not in hook_input.hook_fields_:
-    #         raise exceptions.MalformedHookDefinitionException(
-    #             f"In the hook definition `{hook_name}`, the field `validators` must be "
-    #             f" map keyed on a field name to apply the validator. Available keys:"
-    #             f" {','.join([k for k, _ in hook_input.hook_fields_.items()])}",
-    #             context=context, hook_name=hook_name
-    #         )
-    #     raise NotImplementedError
 
     return hook_input
 
@@ -726,6 +704,28 @@ def get_model_config_from_hook_input(
                 e, context=context, hook_name=hook_name
             )
 
+def update_hook_input_validators(
+        context: 'Context',
+        hook_input: DclHookInput,
+        hook_name: str,
+):
+    """
+    TODO: Support validator field
+    """
+    if hook_input.model_fields['validators'].default is not None:
+        raise NotImplementedError
+    # Validators
+    for k, v in hook_input.validators.items():
+        if k not in hook_input.hook_fields_:
+            raise exceptions.MalformedHookDefinitionException(
+                f"In the hook definition `{hook_name}`, the field `validators` must be "
+                f" map keyed on a field name to apply the validator. Available keys:"
+                f" {','.join([k for k, _ in hook_input.hook_fields_.items()])}",
+                context=context, hook_name=hook_name
+            )
+        # TODO: Create callable with normal rigging
+        raise NotImplementedError
+
 
 def create_dcl_hook(
         context: 'Context',
@@ -745,15 +745,33 @@ def create_dcl_hook(
         hook_input_raw=hook_input_raw,
         hook_name=hook_name,
     )
+
+    # Implement inheritance
+    hook_input_dict = hook_extends(
+        context=context,
+        hook_name=hook_name,
+        hook_input_dict=hook_input_dict,
+    )
+
+    # Apply overrides to hook_input_raw
+    hook_input_dict = update_input_dict(
+        input_dict=hook_input_dict,
+        update_dict=context.data.overrides,
+    )
+
     # Pull out the model_config if it exists
     model_config = get_model_config_from_hook_input(context, hook_name, hook_input_dict)
 
-    # Serialize known inputs. Implements extends
+    # Serialize known inputs
     hook_input = new_dcl_hook_input(
         context=context,
         hook_name=hook_name,
         hook_input_dict=hook_input_dict,
     )
+
+    # # TODO: Apply validators
+    # update_hook_input_validators(context, hook_input=hook_input, hook_name=hook_name)
+
     # First pass through the func_dict to parse out the methods and build a dict of
     # field types along with their special fields such as default_factory and validator
     # which are callables.
@@ -801,8 +819,8 @@ def create_dcl_hook(
     )
 
     # TODO: Rm when filters fixed
-    # context.env_.filters[func_name] = Function(
-    #     existing_context={},
+    # context.env_.filters[func_name] = Hook(
+    #     existing_data={},
     #     no_input=context.no_input,
     # ).wrapped_exec
 
@@ -814,6 +832,9 @@ def create_dcl_method(
         Hook: AnyHookType,
         arg: str,
 ) -> CompiledHookType:
+    """
+
+    """
     # method_raw will still have the arrow as the first key
     method = Hook.model_fields[arg].default
 
@@ -865,6 +886,7 @@ def enrich_hook(
             pass
         # If arg in methods, compile hook
         elif arg in Hook.model_fields and Hook.model_fields[arg].annotation == Callable:
+
             Hook = create_dcl_method(
                 context=context,
                 Hook=Hook,
