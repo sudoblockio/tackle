@@ -607,14 +607,27 @@ def create_dcl_hook_fields(
     hook_field_set: set[str] = set()
     hook_method_set: set[str] = set()
     for k, v in hook_input.model_extra.items():
-        if '<-' in v:
-            # Public method
-            field_dict[k] = (Callable, LazyBaseHook(input_raw=v['<-'], is_public=True))
+        if isinstance(v, LazyBaseHook):
+            # When inheriting a method it is already a LazyBaseHook
+            field_dict[k] = (Callable, v)
+            hook_method_set.add(k)
+            continue
+        elif '<-' in v:
+            # Raw public method
+            field_dict[k] = (Callable, LazyBaseHook(
+                hook_name=k,
+                input_raw=v['<-'],
+                is_public=True,
+            ))
             hook_method_set.add(k)
             continue
         elif '<_' in v:
-            # Private method
-            field_dict[k] = (Callable, LazyBaseHook(input_raw=v['<_'], is_public=False))
+            # Raw private method
+            field_dict[k] = (Callable, LazyBaseHook(
+                hook_name=k,
+                input_raw=v['<_'],
+                is_public=False,
+            ))
             hook_method_set.add(k)
             continue
         elif isinstance(v, dict):

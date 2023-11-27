@@ -26,9 +26,10 @@ def test_hooks_method_embed():
 
 
 def test_hooks_method_inherit():
-    """Check that we can create a method."""
+    """Check that we can call an inherited method."""
     output = tackle('method-inherit.yaml')
-    assert output == {"t": "fooo"}
+
+    assert output['call']['foo'] == 'bar'
 
 
 def test_hooks_method_args():
