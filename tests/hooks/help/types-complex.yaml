@@ -1,0 +1,15 @@
+BaseHook<_:
+  foo: bar
+
+<-:
+  help: A CLI thing
+  union:
+    default: foo
+    type: Union[str, int]
+    description: Some things that do stuff
+  ip:
+    default: foo
+    type: IPv4Address
+    description: Some things that do stuff
+  base_hook:
+    type: BaseHook

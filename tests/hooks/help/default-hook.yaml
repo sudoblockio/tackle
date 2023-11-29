@@ -1,0 +1,13 @@
+<-:
+  help: A CLI thing
+  args: ['a_kwarg']
+  a_kwarg:
+    type: str
+    description: Some things that do stuff
+  a_flag:
+    type: bool
+    default: true
+    description: Some things that do stuff
+  a_method<-:
+    help: Some things that do stuff
+    foo: bar

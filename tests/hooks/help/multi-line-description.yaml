@@ -1,0 +1,19 @@
+<-:
+  help: A CLI thing
+
+  stuff:
+    default: things
+    type: str
+    description: Some things that do stuff
+
+  things:
+    type: bool
+    default: true
+    description: |
+      Some stuff that does things and stuff and things and stuff and things and stuff
+      and things and stuff and things and stuff and things and stuff and...
+      # TODO: https://github.com/robcxyz/tackle/issues/92
+
+  a_method<-:
+    help: foo
+    foo: bar
