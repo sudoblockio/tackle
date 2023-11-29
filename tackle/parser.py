@@ -1056,6 +1056,10 @@ def walk_document(context: 'Context', value: DocumentValueType):
         if len(value) == 0:
             set_key(context=context, value=value)
         else:
+            if context.key_path:
+                # When we are in a list we can pre-empt setting it in-case of false
+                # conditionals and would rather have an empty list than missing key
+                set_key(context, [])
             for i, v in enumerate(value.copy()):
                 context.key_path.append(encode_list_index(i))
                 walk_document(context, v)
