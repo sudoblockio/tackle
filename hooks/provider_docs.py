@@ -4,9 +4,13 @@ import random
 import string
 import importlib.machinery
 import json
+from types import UnionType
+
 from pydantic import BaseModel, Field
 import inspect
 from typing import List, get_type_hints, Any, Union, Optional
+
+from tackle import exceptions
 
 try:
     from typing import _GenericAlias
@@ -21,7 +25,7 @@ class HookDocField(BaseModel):
     """Class for params in a hook."""
 
     name: str
-    required: str
+    required: bool
     type: str
     default: Any = ""
     description: str = ""
@@ -37,7 +41,7 @@ class HookArgField(BaseModel):
 class HookDoc(BaseModel):
     """Class for a hook doc."""
 
-    hook_type: str
+    hook_name: str
     description: str = ""
     properties: List[HookDocField]
     arguments: List[HookArgField]
@@ -59,11 +63,16 @@ class ProviderDocs(BaseModel):
     description: str = None
 
 
-def hook_type_to_string(type_) -> str:
+def hook_field_type_to_string(type_) -> str:
     """Convert hook ModelField type_ to string."""
     if type_ == Any:
         output = 'any'
     elif isinstance(type_, _GenericAlias):
+        if isinstance(type_, List):
+            output = 'list'
+        else:
+            output = 'union'
+    elif isinstance(type_, UnionType):
         if isinstance(type_, List):
             output = 'list'
         else:
@@ -76,7 +85,7 @@ def hook_type_to_string(type_) -> str:
 def get_hook_properties(hook) -> List[HookDocField]:
     """Get the input params for a hook."""
     # Get the base properties like `for` and `if` so they can be ignored
-    basehook_properties = BaseHook(hook_type='tmp').__fields__
+    basehook_properties = BaseHook(hook_name='tmp').model_fields
 
     output = []
     for k, v in hook.__fields__.items():
@@ -85,7 +94,7 @@ def get_hook_properties(hook) -> List[HookDocField]:
             continue
 
         # Type is dealt with elsewhere
-        if k == 'hook_type':
+        if k == 'hook_name':
             continue
 
         # Skip properties ending with "_" as these don't need documentation
@@ -94,42 +103,53 @@ def get_hook_properties(hook) -> List[HookDocField]:
 
         hook_doc = HookDocField(
             name=k,
-            required=v.required,
-            type=hook_type_to_string(v.type_),
+            required=v.default is not None,
+            type=hook_field_type_to_string(v.annotation),
             default=v.default,
-            description=v.field_info.description
-            if v.field_info.description is not None
+            description=v.description
+            if v.description is not None
             else "",
         )
         output.append(hook_doc)
     return output
 
 
-def get_hook_arguments(hook) -> List[HookArgField]:
+def get_hook_arguments(hook: BaseHook) -> List[HookArgField]:
     """Get the arguments for a hook."""
     output = []
 
-    for i in hook.__fields__['args'].default:
+    for i in hook.model_fields['args'].default:
+        try:
+            type_ = hook_field_type_to_string(hook.model_fields[i].annotation)
+        except Exception as e:
+            print(f"{e}")
+            raise e
         output.append(
             HookArgField(
                 argument=i,
-                type=hook_type_to_string(hook.__fields__[i].type_),
+                type=type_,
             )
         )
 
     return output
 
 
+def get_private_model_field(hook: BaseHook, field_name: str, default: Any = None):
+    if field_name in hook.model_fields:
+        return hook.model_fields[field_name].default
+    return default
+
+
 class ProviderDocsHook(BaseHook):
     """Hook for extracting provider metadata for building docs."""
 
-    hook_type: str = "provider_docs"
+    hook_name: str = "provider_docs"
 
     # fmt: off
     path: str = Field(".", description="The path to the provider.")
-    output: str = Field(".", description="The path to output the docs to.")
+    # output: str = Field(".", description="The path to output the docs to.")
     provider: str = Field(None, description="The provider name.")
-    hooks_dir = Field("hooks", description="Directory hooks are in.")
+    hooks_dir: str = Field("hooks", description="Directory hooks are in.")
     output_schemas: bool = Field(False, description="Output the json schema instead.")
     # fmt: on
 
@@ -186,12 +206,15 @@ class ProviderDocsHook(BaseHook):
             # fmt: on
 
             for h in hooks:
-                if h._wip:
+                if '_wip' in h.model_fields and h.model_fields['_wip'].default:
                     continue
 
-                return_type = get_type_hints(h.exec)
+                try:
+                    return_type = get_type_hints(h.exec)
+                except NameError as e:
+                    pass
                 if 'return' in return_type:
-                    return_type = hook_type_to_string(return_type['return'])
+                    return_type = hook_field_type_to_string(return_type['return'])
                 else:
                     return_type = None
 
@@ -205,7 +228,7 @@ class ProviderDocsHook(BaseHook):
                     hook_doc = HookDoc(
                         properties=get_hook_properties(h),
                         arguments=get_hook_arguments(h),
-                        hook_type=inspect.signature(h).parameters['hook_type'].default,
+                        hook_name=inspect.signature(h).parameters['hook_name'].default,
                         # In markdown tables, new lines get messed up so replace with html
                         description=schema['description'].replace("\n\n",
                                                                   "<br />").replace(
@@ -213,18 +236,23 @@ class ProviderDocsHook(BaseHook):
                         if 'description' in schema
                         else "",
                         return_type=return_type,
-                        return_description=h._return_description,
+                        # return_description=h._return_description,
+                        return_description=get_private_model_field(h, '_return_description'),
                         hook_file_name=os.path.basename(f),
-                        doc_tags=h._doc_tags,
-                        issue_numbers=h._issue_numbers,
-                        notes=h._notes,
-                        order=h._docs_order,
+                        # doc_tags=h._doc_tags,
+                        # issue_numbers=h._issue_numbers,
+                        # notes=h._notes,
+                        # order=h._docs_order,
+                        doc_tags=get_private_model_field(h, '_doc_tags', []),
+                        issue_numbers=get_private_model_field(h, '_issue_numbers', []),
+                        notes=get_private_model_field(h, '_notes', []),
+                        order=get_private_model_field(h, '_docs_order', 5),
                     )
                     docs.hooks.append(hook_doc)
 
         # Sort based on order
         # Sort alphabetically
-        docs.hooks = sorted(docs.hooks, key=lambda d: d.hook_type)
+        docs.hooks = sorted(docs.hooks, key=lambda d: d.hook_name)
 
         if self.output_schemas:
             return schema_list

@@ -1,0 +1,32 @@
+Tox<_:
+  python_env_list_>:
+    - py37
+    - py3.8
+    - py39
+    - py310
+    - py311
+
+  python_env:
+    enum: python_env_list
+    default: py310
+
+  pass_env:
+    type: list
+    default: ['LC_ALL', 'LANG', 'HOME']
+
+  check_requires<-: pass
+  all_envs<-: Tox --python-env i --for i in python_env_list
+
+  create_env->: venv
+  commands->:
+    - pip install -e .[all]
+    - pip install -r requirements-dev.txt
+    - pytest --cov=tackle {posargs:tests tackle/providers}
+
+
+  run->: pytest
+
+test<-:
+
+  exec:
+
