@@ -1,18 +1,21 @@
 
 
 first_base<-:
+  first: foo
   words:
     - hello
     - world
 
 second_base<-:
   extends: first_base
+  second: foo
   words:
     - stuff
     - things
 
 embedded_exec<-:
   extends: second_base
+  embedded: foo
   exec:
     p->: var {{item}} --for words
   return: p

@@ -1,0 +1,6 @@
+DerivedPython<-:
+  extends: base_hook
+  in_base:
+    type: str
+    default: bar
+  stuff: things

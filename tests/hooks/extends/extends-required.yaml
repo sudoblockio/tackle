@@ -1,0 +1,18 @@
+TheBase<-:
+  foo:
+    type: str
+    default: baz
+  baz:
+    type: str
+
+Derived<-:
+  extends: TheBase
+  foo:
+    type: str
+  bar:
+    type: str
+
+call->: Derived --foo bar --bar bar --baz bar
+error_no_foo->: Derived --bar bar --baz bar --try --except 1
+error_no_bar->: Derived --foo bar --baz bar --try --except 1
+error_no_baz->: Derived --foo bar --baz bar --try --except 1

@@ -184,21 +184,20 @@ def dcl_hook_exec(
 def hook_extends_merge_hook(
         context: 'Context',
         hook_name: str,
-        hook_dict: dict,
+        hook_input: DclHookInput,
         extends: str,
 ):
     """
     Core of `extends` capability of hooks which takes a reference to a hook and merges
      that hook's fields with the base hook while not overriding any fields or methods
-     from the base.
+     from the base. Methods are passed for declarative hooks but not python hooks.
     """
-    base_hook = get_hook(
+    base_hook = get_hook_from_context(
         context=context,
         hook_name=extends,
         # TODO: this would change if allowing extends to get instantiated with
         #  actual vars. Should be done when allowing dicts for extends.
         args=[],
-        kwargs={},
     )
     if base_hook is None:
         raise exceptions.MalformedHookFieldException(
@@ -208,50 +207,57 @@ def hook_extends_merge_hook(
             context=context,
         ) from None
 
-    # Get all the base's fields which don't include `BaseHook` fields
-    base_hook_fields = base_hook().model_dump(
-        include=base_hook.model_fields['hook_field_set'].default
-    )
+    if 'hook_field_set' in base_hook.model_fields:
+        # We have a declarative base
+        for field_name in base_hook.model_fields['hook_field_set'].default:
+            if field_name not in hook_input.model_extra:
+                hook_input.model_extra[field_name] = base_hook.model_fields[field_name]
+            else:
+                pass
+    else:
+        # We have a python base
+        for k, v in base_hook.model_fields.items():
+            if k in BaseHook.model_fields:
+                # Skip base fields
+                continue
+            if k not in hook_input.model_extra:
+                hook_input.model_extra[k] = v
 
-    base_hook_methods = {}
-    # Same with the methods
-    for i in base_hook.model_fields['hook_method_set'].default:
-        base_hook_methods.update({i: base_hook.model_fields[i].default})
-
-    # Merge them together
-    output_dict = {**base_hook_fields, **base_hook_methods, **hook_input_dict}
-    return output_dict
+    if 'hook_method_set' in base_hook.model_fields:
+        # We are in a dcl hook
+        for field_name in base_hook.model_fields['hook_method_set'].default:
+            if field_name not in hook_input.model_fields:
+                hook_input.model_extra[field_name] = base_hook.model_fields[field_name]
 
 
 def hook_extends(
         context: 'Context',
         hook_name: str,
-        hook_input_dict: dict,
-) -> dict:
+        hook_input: DclHookInput,
+):
     """
     Implement the `extends` functionality which takes either a string reference or list
-     of string references to declarative hooks whose fields will be merged together.
+     of string references to python / declarative hooks whose fields will be merged.
     """
-    extends = hook_input_dict.pop('extends', None)
-    if extends is None:
-        return hook_input_dict
+    if hook_input.extends is None:
+        return hook_input
 
-    elif isinstance(extends, str):
+    elif isinstance(hook_input.extends, str):
         return hook_extends_merge_hook(
             context=context,
             hook_name=hook_name,
-            hook_input_dict=hook_input_dict,
-            extends=extends,
+            hook_input=hook_input,
+            extends=hook_input.extends,
         )
 
-    elif isinstance(extends, list):
-        for i in extends:
+    elif isinstance(hook_input.extends, list):
+        for i in hook_input.extends:
             if not isinstance(i, str):
                 break
             return hook_extends_merge_hook(
                 context=context,
                 hook_name=hook_name,
-                hook_input_dict=hook_input_dict,
+                hook_input=hook_input,
                 extends=i,
             )
     raise exceptions.MalformedHookFieldException(
@@ -615,6 +621,11 @@ def create_dcl_hook_fields(
             field_dict[k] = (Callable, v)
             hook_method_set.add(k)
             continue
+        elif isinstance(v, FieldInfo):
+            field_dict[k] = (v.annotation, v)
+            if v.annotation == LazyBaseHook:
+                hook_method_set.add(k)
+                continue
         elif '<-' in v:
             # Raw public method
             field_dict[k] = (Callable, LazyBaseHook(
@@ -746,19 +757,6 @@ def create_dcl_hook(
         hook_name=hook_name,
     )
 
-    # Implement inheritance
-    hook_input_dict = hook_extends(
-        context=context,
-        hook_name=hook_name,
-        hook_input_dict=hook_input_dict,
-    )
-
-    # Apply overrides to hook_input_raw
-    hook_input_dict = update_input_dict(
-        input_dict=hook_input_dict,
-        update_dict=context.data.overrides,
-    )
-
     # Pull out the model_config if it exists
     model_config = get_model_config_from_hook_input(context, hook_name, hook_input_dict)
 
@@ -767,6 +765,13 @@ def create_dcl_hook(
         context=context,
         hook_name=hook_name,
         hook_input_dict=hook_input_dict,
+    )
+
+    # Implement inheritance
+    hook_extends(
+        context=context,
+        hook_name=hook_name,
+        hook_input=hook_input,
     )
 
     # # TODO: Apply validators
@@ -780,6 +785,13 @@ def create_dcl_hook(
         hook_input=hook_input,
         hook_name=hook_name,
     )
+
+
+    # # Apply overrides to hook_input_raw
+    # hook_input_dict = update_input_dict(
+    #     input_dict=hook_input_dict,
+    #     update_dict=context.data.overrides,
+    # )
 
     # Create a function with the __module__ default to pydantic.main
     try:
