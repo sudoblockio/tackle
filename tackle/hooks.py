@@ -369,6 +369,16 @@ def parse_hook_type(
                 ) from None
         else:
             return base_type[tuple(type_args)]
+    elif '|' in type_str:
+        type_args = [
+            parse_hook_type(
+                context=context,
+                hook_name=hook_name,
+                type_str=arg,
+            )
+            for arg in re.split(r'\|', type_str)
+        ]
+        return Union[tuple(type_args)]
 
     # Return a string type (ie single value / not complex)
     return get_hook_field_type_from_str(context, hook_name=hook_name, type_str=type_str)
