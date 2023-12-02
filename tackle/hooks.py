@@ -293,6 +293,8 @@ def get_hook_field_type_from_str(
     if type_str in LITERAL_TYPES:
         # Treat it as a plain name - Safe to eval as type_str is always a literal type
         return eval(type_str)
+    if type_str in LOOKUP_TYPES:
+        return LOOKUP_TYPES[type_str]
     if hasattr(typing_types, type_str):
         return getattr(typing_types, type_str)
     elif hasattr(ipaddress_types, type_str):

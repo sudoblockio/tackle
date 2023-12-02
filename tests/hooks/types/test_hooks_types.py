@@ -155,15 +155,17 @@ def test_hooks_types_help_basic():
     assert output
 
 
-@pytest.mark.parametrize("file", [
-    'types-pydantic.yaml',
-    'types-pydantic-network.yaml',
-    'types-network.yaml',
-    'types-datetime.yaml',
+@pytest.mark.parametrize("file,expected_value", [
+    ('types-pydantic.yaml', 1),
+    ('types-pydantic-network.yaml', '1.2.3.4'),
+    ('types-network.yaml', '1.2.3.4'),
+    ('types-lookup.yaml', None),
+    ('types-datetime.yaml', "12:30:15"),
+    ('types-datetime-timestamp.yaml', '1970-01-01 00:00:00+00:00'),
 ])
-def test_hooks_types_pydantic_types(file):
+def test_hooks_types_pydantic_types(file, expected_value):
     """Check that we can use pydantic types in a hook field."""
     output = tackle(file)
 
-    assert output['call']['a_field']
+    assert output['call']['a_field'] == expected_value
     assert output['error'] == 1
