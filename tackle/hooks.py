@@ -27,10 +27,8 @@ from typing import (
 import ipaddress as ipaddress_types
 import datetime as datetime_types
 
-from pydantic_core._pydantic_core import SchemaError
-
-from tackle import exceptions
-from tackle.factory import new_context
+from tackle import exceptions, Context
+from tackle.factory import new_context_from_context
 from tackle.macros.hook_macros import hook_macros
 from tackle.pydantic.config import DclHookModelConfig
 from tackle.render import render_variable
@@ -60,10 +58,7 @@ def parse_tmp_context(context: 'Context', element: Any, existing_context: dict):
     """
     from tackle.parser import walk_document
 
-    tmp_context = new_context(
-        _hooks=context.hooks,
-        existing_data=existing_context,
-    )
+    tmp_context = new_context_from_context(context=context)
     tmp_context.key_path = ['->']
     tmp_context.key_path_block = ['->']
 
@@ -138,9 +133,12 @@ def dcl_hook_exec(
             # existing_context.update({k: get_complex_field(v)})
             existing_context.update({field: getattr(hook, field)})
 
-    hook_context = new_context(
+    hook_context = new_context_from_context(
+        context=context,
+        existing_data=existing_data,
+        # Pass the source and hooks because we are still in the same file
         _hooks=context.hooks,
-        existing_data=existing_context,
+        _source=context.source,
     )
 
     tmp_key = None
@@ -392,10 +390,8 @@ def create_validator_field_type(
             v: Any,
             info: ValidationInfo,
     ):
-        from tackle.parser import walk_document
-
         # Inject the field names and values into existing context
-        tmp_context = new_context(_hooks=context.hooks)
+        tmp_context = new_context_from_context(context=context)
         tmp_context.data.existing[hook_validator.field_names.value] = v
         tmp_context.data.existing[hook_validator.field_names.info] = info.data
 
@@ -500,7 +496,7 @@ def create_dict_default_factory_executor(
         walk_document(context=context, value=value)
         return context.data.public
 
-    tmp_context = new_context(_hooks=context.hooks)
+    tmp_context = new_context_from_context(context=context)
     return partial(get_public_data_from_walk, tmp_context, value)
 
 

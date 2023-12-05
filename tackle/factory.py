@@ -517,3 +517,16 @@ def new_context(
     )
 
     return context
+
+
+def new_context_from_context(context: Context, **kwargs):
+    """
+    Create a new context from an existing context that carries over essential
+     information such as
+    """
+    return new_context(
+        no_input=context.no_input,
+        verbose=context.verbose,
+        _path=context.path,
+        **kwargs,
+    )
