@@ -18,7 +18,12 @@ from tackle.utils.paths import (
 from tackle.utils.vcs import get_repo_source
 from tackle.utils.zipfiles import unzip
 from tackle.utils.files import read_config_file
-from tackle.imports import import_native_providers, import_hooks_from_hooks_directory
+from tackle.imports import (
+    import_native_providers,
+    import_hooks_from_hooks_directory,
+    import_with_fallback_install,
+    import_declarative_hooks_from_file,
+)
 
 
 def format_path_to_name(path: str) -> str:
@@ -67,7 +72,7 @@ def create_hooks(
         )
     if context.source.hooks_dir is not None:
         # Detected from source if there is a hooks directory at the base
-        import_hooks_from_hooks_directory(
+        import_with_fallback_install(
             context=context,
             provider_name=context.source.name,
             hooks_directory=context.source.hooks_dir,
@@ -96,6 +101,10 @@ def get_overrides(
         data: Optional['Data'],
         overrides: Union[str, dict],
 ):
+    """
+    Overrides can be string references to files or a dict, both of which are used to
+     override values that would be parsed into the public data.
+    """
     if overrides is None:
         return
     elif isinstance(overrides, str):
@@ -103,14 +112,16 @@ def get_overrides(
             override_dict = read_config_file(overrides)
             if override_dict is not None:
                 data.overrides.update(override_dict)
+                # context.input.kwargs.update(override_dict)
         else:
-            raise exceptions.UnknownInputArgumentException(
+            raise exceptions.UnknownSourceException(
                 f"The `override` input={overrides}, when given as a string must "
                 f"be a path to an file. Exiting.",
                 context=context,
             )
     elif isinstance(overrides, dict):
         data.overrides.update(overrides)
+        # context.input.kwargs.update(overrides)
 
 
 def new_data(
@@ -122,7 +133,12 @@ def new_data(
         _data: Data | None = None,
 ) -> Data:
     """
+    Create a data object which stores data as the source is parsed. When tackle is
+     called between contexts (ie different sources / within a tackle file in blocks),
+     data needs to be transferred from public to existing.
 
+    See memory management docs for more details on the various namespaces for data.
+    https://sudoblockio.github.io/tackle/memory-management/
     """
     # Data can be passed from one tackle call to another
     if _data is None:
@@ -143,7 +159,10 @@ def new_data(
         # We have a reference to a file
         existing_data = read_config_file(existing_data)
     elif not isinstance(existing_data, dict):
-        raise exceptions.UnknownInputArgumentException(f"", context=context)
+        raise exceptions.UnknownHookInputArgumentException(
+            f"A non-string reference to a file or non-dict value for `existing_data` "
+            f"argument was supplied. Exitting...", context=context
+        )
 
     if data.existing is None:
         data.existing = {}
@@ -205,6 +224,18 @@ def new_path(
         context: 'Context',
         _path: Optional[Paths],
 ) -> Paths:
+    """
+    Create `Paths` object which stores the paths that are being parsed. Divided into
+     three sections:
+    - calling: The original path that called tackle. Since tackle calls can be embedded,
+    this path won't change regardless of how many times tackle was called.
+    - current: The path currently being parsed. If this is a remotely imported tackle
+    provider, this will be the path that called the tackle provider, not the path of
+    the remote provider.
+    - tackle: The path to the tackle provider being parsed which if it is a remote
+    tackle provider, will be in the XDG config directory (ie on linux
+    ~./.config/tackle/providers/<provider_name>).
+    """
     if _path is None:
         return Paths(
             current=context.source,
@@ -226,6 +257,12 @@ def update_source(
         directory: str,
         file: str,
 ):
+    """
+    Once we have identified a tackle base, we then need to check if the `directory` or
+     `file` inputs to see if the call actually relates to a dir/file within that tackle
+     base. This is needed especially in the context of remote providers where we could
+     be trying to call a tackle file within a sub directory of that source.
+    """
     # `directory` is a command line argument that is used as the working directory when
     # parsing a provider. It is usually the same as `source.base` unless it is specified
     # as an argument. The two are different as we need a way to tell the difference
@@ -494,11 +531,11 @@ def new_context(
         _path: 'Paths' = None,
         _hooks: 'Hooks' = None,
         _data: 'Data' = None,
+        _source: 'Source' = None,
         # Unknown args/kwargs preserved for parsing
         **kwargs: dict,
 ) -> 'Context':
     """Create a new context. See tackle.main.tackle for options which wraps this."""
-    pass
     context = Context(
         no_input=no_input if no_input is not None else False,
         verbose=verbose if verbose is not None else False,
@@ -517,7 +554,7 @@ def new_context(
         file=file,
         find_in_parent=find_in_parent,
         _strict_source=_strict_source,
-        # _source=_source,
+        _source=_source,
     )
     context.path = new_path(
         context=context,
