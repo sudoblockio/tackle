@@ -91,7 +91,7 @@ def get_complex_field(field: Any) -> Type:
 def dcl_hook_exec(
         hook: 'BaseHook',  # This is basically `self` in a class
         input_element: Union[list, dict],
-        return_: Union[list, dict],
+        return_: Union[str, list, dict],
         context: 'Context',  # This is injected
 ) -> Any:
     """
@@ -164,16 +164,16 @@ def dcl_hook_exec(
             if return_ in hook_context.data.public:
                 return hook_context.data.public[return_]
             else:
-                raise exceptions.FunctionCallException(
+                raise exceptions.DclHookCallException(
                     f"Return value '{return_}' is not found " f"in output.",
-                    hook=hook,  # noqa
+                    context=context, hook_name=hook.hook_name,
                 ) from None
         elif isinstance(return_, list):
             if isinstance(hook_context, list):
                 # TODO: This is not implemented (ie list outputs)
-                raise exceptions.FunctionCallException(
+                raise exceptions.DclHookCallException(
                     f"Can't have list return {return_} for " f"list output.",
-                    hook=hook,  # noqa
+                    context=context, hook_name=hook.hook_name,
                 ) from None
             output = {}
             for i in return_:
@@ -181,7 +181,7 @@ def dcl_hook_exec(
                 if i in hook_context.data.public:
                     output[i] = hook_context.data.public[i]
                 else:
-                    raise exceptions.FunctionCallException(
+                    raise exceptions.DclHookCallException(
                         f"Return value '{i}' in return {return_} not found in output.",
                         context=context, hook_name=hook.hook_name
                     ) from None
