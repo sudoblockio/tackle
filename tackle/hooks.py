@@ -1,4 +1,5 @@
 import enum
+import typing
 from functools import partialmethod, partial
 from pydantic import (
     ValidationError,
@@ -8,14 +9,13 @@ from pydantic import (
     ValidationInfo,
     Field,
     types as pydantic_types,
-    networks as pydantic_network_types, ConfigDict,
+    networks as pydantic_network_types,
+    PlainSerializer,
 )
-
 import pydoc
 import re
 import typing as typing_types
 from typing import (
-    TYPE_CHECKING,
     Union,
     Any,
     Type,
@@ -26,6 +26,7 @@ from typing import (
 )
 import ipaddress as ipaddress_types
 import datetime as datetime_types
+from pydantic.fields import FieldInfo
 
 from tackle import exceptions, Context
 from tackle.factory import new_context_from_context
@@ -34,21 +35,17 @@ from tackle.pydantic.config import DclHookModelConfig
 from tackle.render import render_variable
 from tackle.pydantic.create_model import create_model
 from tackle.pydantic.field_types import FieldInput
-# from tackle.pydantic.fields import Field
 from tackle.utils.render import wrap_jinja_braces
 from tackle.utils.dicts import update_input_dict
 from tackle.types import DocumentValueType, DocumentType
 from tackle.models import (
     BaseHook,
-    HookCallInput,
     DclHookInput,
     LazyBaseHook,
-    # Context,
     AnyHookType,
-    CompiledHookType, HookFieldValidator,
-    # LazyImportHook,
+    CompiledHookType,
+    HookFieldValidator,
 )
-from tackle.context import Context
 
 
 def parse_tmp_context(context: 'Context', element: Any, existing_context: dict):
@@ -67,6 +64,7 @@ def parse_tmp_context(context: 'Context', element: Any, existing_context: dict):
     return tmp_context.data.public
 
 
+# TODO: RM this
 def get_complex_field(field: Any) -> Type:
     """
     Takes an input field such as `list[str]` or `list[SomeOtherHook]` and in the latter
@@ -84,7 +82,7 @@ def get_complex_field(field: Any) -> Type:
 
 
 def dcl_hook_exec(
-        hook: 'BaseHook',  # This is basically `self` in a class
+        hook: 'BaseHook',  # This is basically `self` in the class method
         input_element: Union[list, dict],
         context: 'Context',  # This is injected
 ) -> Any:
@@ -103,13 +101,11 @@ def dcl_hook_exec(
     # We have exec data so we need to parse that which will be the return of the hook
     if context.data.public:
         # Move the public data to an existing context
-        existing_context = context.data.public.copy()
-        # existing_context.update(hook.existing_context)
+        existing_data = context.data.public.copy()
     else:
-        existing_context = {}
+        existing_data = {}
 
     for field in hook.hook_field_set:
-
         value = hook.model_fields[field]
         # Update a function's existing context with the already matched args
         if isinstance(value, dict) and '->' in value:
@@ -117,21 +113,21 @@ def dcl_hook_exec(
             output = parse_tmp_context(
                 context=context,
                 element={field: value},
-                existing_context=existing_context,
+                existing_context=existing_data,
             )
-            existing_context.update(output)
+            existing_data.update(output)
             try:
                 input_element[field] = output[field]
             except KeyError:
-                raise exceptions.FunctionCallException(
+                raise exceptions.DclHookCallException(
                     f"Error parsing declarative hook field='{field}'. Must produce an "
                     f"output for the field's default.",
-                    context=context, hook=hook,
+                    context=context, hook_name=hook.hook_name,
                 ) from None
         else:
             # Otherwise just the value itself
-            # existing_context.update({k: get_complex_field(v)})
-            existing_context.update({field: getattr(hook, field)})
+            # existing_data.update({k: get_complex_field(v)})
+            existing_data.update({field: getattr(hook, field)})
 
     hook_context = new_context_from_context(
         context=context,
@@ -250,6 +246,10 @@ def hook_extends(
 
 
 LITERAL_TYPES: set = {'str', 'int', 'float', 'bool', 'dict', 'list'}  # strings to match
+LOOKUP_TYPES: dict = {
+    'union': typing.Union,
+    'optional': typing.Optional,
+}
 GenericFieldType = TypeVar('GenericFieldType')  # noqa
 
 
@@ -387,6 +387,7 @@ def create_validator_field_type(
      See https://docs.pydantic.dev/latest/api/functional_validators/ for more
      information on functional validators.
     """
+    from tackle.parser import walk_document
 
     def validator_func(
             context: Context,
@@ -402,10 +403,6 @@ def create_validator_field_type(
         # Walk the body and return the public data
         walk_document(context=tmp_context, value=hook_validator.body)
         return tmp_context.data.public
-
-    # Create a new context which will contain the hooks and the injected field names
-    # with their associated values
-    tmp_context = new_context(_hooks=context.hooks)
 
     if hook_validator.mode == 'before':
         ValidatorType = BeforeValidator
@@ -443,7 +440,7 @@ def create_hook_field_validator(
      TODO: Link to docs
     """
     if 'type' in value:
-        field_type = pydoc.locate(value['type'])
+        field_type = get_hook_field_type_from_str(context, hook_name, value['type'])
     else:
         field_type = Any
 
@@ -656,7 +653,6 @@ def create_dcl_hook_fields(
             field_dict[k] = (type(v), Field(v))
         elif isinstance(v, LazyBaseHook):
             # Is encountered when inheritance is imposed and calling function methods
-            # field_dict[k] = (v.type_, v.default)
             field_dict[k] = (Callable, v)
         else:
             raise Exception("This should never happen")
@@ -688,7 +684,6 @@ def new_dcl_hook_input(
             input_dict=hook_input.exec_,
             update_dict=context.data.overrides,
         )
-
 
     return hook_input
 
@@ -741,9 +736,13 @@ def create_dcl_hook(
     """
     Create a model from the hook input dict. Calls numerous functions to upgrade the
      hook input dict including:
-     1. A macro to expand all the keys so that they can be easily parsed
-     2.
-     into a dict of tuples with
+
+    - A macro to expand all the keys so that they can be easily parsed
+    - Pulling out model_config and validator keys
+    - Validating the base field inputs (ie `type` etc)
+    - Implementing inheritance through the `extends` key
+    - Finalizing all fields and methods as a dict of tuples
+    - Creating a new hook through pydantic's create_model function
     """
     # Macro to expand all keys properly so that a field's default can be parsed
     hook_input_dict = hook_macros(
@@ -754,23 +753,13 @@ def create_dcl_hook(
 
     # Pull out the model_config if it exists
     model_config = get_model_config_from_hook_input(context, hook_name, hook_input_dict)
-
-    # Serialize known inputs
-    hook_input = new_dcl_hook_input(
-        context=context,
-        hook_name=hook_name,
-        hook_input_dict=hook_input_dict,
-    )
-
-    # Implement inheritance
-    hook_extends(
-        context=context,
-        hook_name=hook_name,
-        hook_input=hook_input,
-    )
-
     # # TODO: Apply validators
     # update_hook_input_validators(context, hook_input=hook_input, hook_name=hook_name)
+
+    # Serialize known inputs
+    hook_input = new_dcl_hook_input(context, hook_name, hook_input_dict=hook_input_dict)
+    # Implement inheritance
+    hook_extends(context, hook_name, hook_input=hook_input)
 
     # First pass through the func_dict to parse out the methods and build a dict of
     # field types along with their special fields such as default_factory and validator
@@ -780,8 +769,6 @@ def create_dcl_hook(
         hook_input=hook_input,
         hook_name=hook_name,
     )
-
-
     # # Apply overrides to hook_input_raw
     # hook_input_dict = update_input_dict(
     #     input_dict=hook_input_dict,
@@ -849,13 +836,7 @@ def create_dcl_method(
     for i in Hook.model_fields['hook_field_set'].default:
         # Base method should not override child.
         if i not in method.input_raw:
-            # method.input_raw[i] = Hook.model_fields[i]
-            field_info = Hook.model_fields[i]
-            method.input_raw[i] = {
-                'type': field_info.annotation.__name__,
-                'description': field_info.description,
-                'default': field_info.default,
-            }
+            method.input_raw[i] = Hook.model_fields[i]
 
     return create_dcl_hook(
         context=context,
@@ -868,8 +849,6 @@ def enrich_hook(
         context: 'Context',
         Hook: CompiledHookType,
         args: list,
-        kwargs: dict,
-        hook_name: str = None,
 ) -> CompiledHookType:
     """
     Take a hook and enrich it by lining up the args with potential methods / hook args /
@@ -878,20 +857,14 @@ def enrich_hook(
     """
     # Handle args
     for n, arg in enumerate(args):
-        # If help and last arg
-        if arg == 'help' and n == len(args):
-            # This should be handled upstream right?
-            # run_help(context, Hook)
-            raise
         # When arg inputs are not hashable then they are actual arguments which will be
         # consumed later
-        elif isinstance(arg, (list, dict)):
+        if isinstance(arg, (list, dict)):
             # TODO: Check how this logic works with `args` condition below which works
             #  for bypassing the processing of args for later logic
             pass
         # If arg in methods, compile hook
         elif arg in Hook.model_fields and Hook.model_fields[arg].annotation == Callable:
-
             Hook = create_dcl_method(
                 context=context,
                 Hook=Hook,
@@ -903,43 +876,15 @@ def enrich_hook(
                     context=context,
                     Hook=Hook,
                     args=args,
-                    kwargs=kwargs,
-                    hook_name=arg,
                 )
         elif 'args' in Hook.model_fields:
             # The hook takes positional args
             pass
         else:
-            raise exceptions.UnknownInputArgumentException(
+            raise exceptions.UnknownHookInputArgumentException(
                 f"Unknown arg supplied `{arg}`",
-                context=context,
+                context=context, hook_name=Hook.model_fields['hook_name'].default,
             )
-    return Hook
-
-
-def upgrade_lazy_hook(
-        context: Context,
-        hook_name: str,
-        Hook: AnyHookType | None,
-) -> CompiledHookType | None:
-    """
-    Upgrade lazy hooks which are declarative hooks with just their hook definitions that
-     need to compiled into hooks before they can be used.
-    """
-    if isinstance(Hook, LazyBaseHook):
-        Hook = create_dcl_hook(
-            context=context,
-            hook_name=hook_name,
-            hook_input_raw=Hook.input_raw.copy(),
-        )
-    # TODO: See if there is any issue reinserting this into the appropriate hook access
-    #  group. Issue is you don't want to reinsert a modified hook
-    # Reinserting upgraded hook back in appropriate hook access group
-    # if Hook.is_public:
-    #     context.hooks.public[hook_name] = Hook
-    # else:
-    #     context.hooks.private[hook_name] = Hook
-
     return Hook
 
 
@@ -964,29 +909,29 @@ def get_hooks_from_namespace(
             return Hook
 
 
-def get_hook(
+def get_hook_from_context(
         context: 'Context',
         hook_name: str,
         args: list,
-        kwargs: dict,
         throw: bool = False,
 ) -> Optional[CompiledHookType]:
     """
     Gets the hook from the context and calls enrich_hook which compiles the hook with
      its associated fields and methods.
     """
+    # TODO: self
+    # Hook = create_dcl_hook()
+    # hook_context.hooks.private['self'] =
     Hook = get_hooks_from_namespace(context=context, hook_name=hook_name)
     if Hook is None:
         if throw:
             raise exceptions.raise_unknown_hook(context=context, hook_name=hook_name)
         return None
     # We could have a hook call with methods so need to enrich the hook
-    return enrich_hook(
+    Hook = enrich_hook(
         context=context,
         Hook=Hook,
         args=args,
-        kwargs=kwargs,
-        hook_name=hook_name,
     )
 
     # Validate the hook
