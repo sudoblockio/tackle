@@ -30,18 +30,15 @@ def test_provider_system_hook_import_local(target):
     assert 'tackle' not in context.hooks.private
 
 
-REMOTE_FIXTURES = [
+@pytest.mark.slow
+@pytest.mark.parametrize("target", [
     'special-key-remote-str.yaml',
     'special-key-remote-dict.yaml',
     'special-key-remote-list.yaml',
     'special-key-remote-list-str.yaml',
     'remote-list-dict.yaml',
     'remote-list-str-no-args.yaml',
-]
-
-
-@pytest.mark.slow
-@pytest.mark.parametrize("target", REMOTE_FIXTURES)
+])
 def test_provider_system_hook_import_remote(target):
     """Run the source and check that the hooks imported the demo module."""
     context = new_context(target)
@@ -72,6 +69,7 @@ def test_provider_hook_import_raise_when_calling_hook_from_tackle_file():
         tackle('local-with-calling-hook-in-tackle-file.yaml')
 
 
+@pytest.mark.slow
 @pytest.mark.parametrize(
     "input_file,expected_exception", [
         ('error-not-found-local.yaml', exceptions.UnknownSourceException),

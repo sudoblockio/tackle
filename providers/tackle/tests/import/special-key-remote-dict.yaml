@@ -1,6 +1,3 @@
 import->:
   - src: robcxyz/tackle-fixture-released
-    version: v0.1.0
-  - src: robcxyz/tackle-fixture-unreleased
-    version: latest
-  - src: robcxyz/tackle-fixture-unreleased
+    version: v0.1.3
