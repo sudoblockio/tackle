@@ -984,3 +984,16 @@ def get_hook(
         kwargs=kwargs,
         hook_name=hook_name,
     )
+
+    # Validate the hook
+    for k, v in BaseHook.model_fields.items():
+        if k in Hook.model_fields:
+            if Hook.model_fields[k].annotation != BaseHook.model_fields[k].annotation:
+                hook_type = Hook.model_fields[k].annotation
+                base_hook_type = BaseHook.model_fields[k].annotation
+                raise exceptions.MalformedHookDefinitionException(
+                    f"The field name=`{k}` of type={hook_type} is not the "
+                    f"same type as the BaseHook's type=`{base_hook_type}`. Exiting...",
+                    context=context, hook_name=hook_name,
+                )
+    return Hook
