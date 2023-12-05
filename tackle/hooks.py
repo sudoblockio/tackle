@@ -220,6 +220,7 @@ def hook_extends_merge_hook(
             context=context,
         ) from None
 
+    # Merge fields
     if 'hook_field_set' in base_hook.model_fields:
         # We have a declarative base
         for field_name in base_hook.model_fields['hook_field_set'].default:
@@ -236,8 +237,9 @@ def hook_extends_merge_hook(
             if k not in hook_input.model_extra:
                 hook_input.model_extra[k] = v
 
+    # Merge methods
     if 'hook_method_set' in base_hook.model_fields:
-        # We are in a dcl hook
+        # We are in a dcl hook - python hook
         for field_name in base_hook.model_fields['hook_method_set'].default:
             if field_name not in hook_input.model_fields:
                 hook_input.model_extra[field_name] = base_hook.model_fields[field_name]
@@ -869,9 +871,7 @@ def create_dcl_method(
         Hook: AnyHookType,
         arg: str,
 ) -> CompiledHookType:
-    """
-
-    """
+    """Upgrade a declarative hook method."""
     # method_raw will still have the arrow as the first key
     method = Hook.model_fields[arg].default
 
@@ -930,6 +930,7 @@ def enrich_hook(
                 arg=args.pop(0)
             )
             if len(args) != 0:
+                # Recurse if we have more args
                 return enrich_hook(
                     context=context,
                     Hook=Hook,
@@ -979,28 +980,20 @@ def get_hooks_from_namespace(
         hook_name: str,
 ) -> CompiledHookType | None:
     """Get the public, private, or native hook from the context."""
-    Hook = context.hooks.public.get(hook_name, None)
-    if Hook is not None:
-        return upgrade_lazy_hook(
-            context=context,
-            hook_name=hook_name,
-            Hook=Hook,
-        )
-    Hook = context.hooks.private.get(hook_name, None)
-    if Hook is not None:
-        return upgrade_lazy_hook(
-            context=context,
-            hook_name=hook_name,
-            Hook=Hook,
-        )
-    Hook = context.hooks.native.get(hook_name, None)
-    if Hook is not None:
-        return upgrade_lazy_hook(
-            context=context,
-            hook_name=hook_name,
-            Hook=Hook,
-        )
-    return None  # Caught later
+    if hook_name == '_default':
+        return context.hooks.default
+
+    for ns in ['public', 'private', 'native']:
+        hook_space = getattr(context.hooks, ns)
+        Hook = hook_space.get(hook_name, None)
+        if Hook is not None:
+            if isinstance(Hook, LazyBaseHook):
+                Hook = create_dcl_hook(
+                    context=context,
+                    hook_name=hook_name,
+                    hook_input_raw=Hook.input_raw.copy(),
+                )
+            return Hook
 
 
 def get_hook(
