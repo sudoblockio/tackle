@@ -263,37 +263,35 @@ def update_source(
     source.hooks_dir = find_hooks_directory_in_dir(dir=source.base_dir)
 
 
-def new_source_from_non_string_args(
+def new_source_from_unknown_args(
         context: 'Context',
         source: Source,
         first_arg: str,
         directory: str = None,
         file: str = None,
 ) -> Source:
-    # Special case where we feed in some other type of arg
+    """
+    Tackle has been called without an arg that could be recognized as a source so we
+     need to check if there is a tackle file in the current or parent directory and if
+     there is, use that as source and don't consume the arg. Will raise error later if
+     the arg was not used.
+    """
+    source.base_dir = find_tackle_base_in_parent_dir(dir=os.path.abspath('.'))
+    if source.base_dir is None:
+        raise exceptions.UnknownSourceException(
+            f"No tackle source or base directory was found with the "
+            f"argument=`{first_arg}`. Exiting...",
+            context=context
+        ) from None
+    # Reinsert the arg back into the args
+    context.input.args.insert(0, first_arg)
+    source.name = format_path_to_name(path=source.base_dir)
     update_source(
         context=context,
         source=source,
         directory=directory,
         file=file,
     )
-    if source.directory is not None:
-        source.base_dir = os.path.abspath('.')
-    else:
-        source.base_dir = source.directory
-
-    if source.file is not None:
-        base_directory = find_tackle_base_in_parent_dir(dir=os.path.abspath('.'))
-        if isinstance(first_arg, (dict, list)):
-            context.data = Data(raw_input=first_arg)
-        else:
-            raise exceptions.UnknownInputArgumentException(
-                f"The argument={first_arg} was not recognized and no file "
-            )
-    context.input.args.insert(0, first_arg)
-
-    source.name = os.path.basename(source.base_dir)
-
     return source
 
 
@@ -305,11 +303,23 @@ def new_source(
         file: str = None,
         find_in_parent: bool = None,
         _strict_source: bool = False,
+        _source: Source = None,
 ) -> Source:
     """
-    - Parses args to create source object
-    - Persists the providers being called if remote
+    Create a `source` object by extracting the first argument given to tackle and then
+     using that to determine the source. Works with the following logic:
+    - If no arg is given, find the source in the parent directory
+    - If `find_in_parent` is given, search in the parent dir for tackle base
+    - If the arg is a list or dict, then use that as a raw input to be parsed
+    - If the arg is not a string, list, or dict, find a tackle base and reinsert the arg
+    - If the arg is a zip file and exists, use that
+    - If the arg is a json, yaml, toml file, parse that
+    - If the arg is to a dir with a tackle base, use that
+    - If the arg looks like a remote provider (ie str/str or https://github*), use that
     """
+    if _source is not None:
+        # Skip importing a source if it already there (ie we are creating temp context)
+        return _source
     source = Source()
     if len(context.input.args) > 0:
         first_arg = context.input.args.pop(0)
@@ -329,20 +339,24 @@ def new_source(
                 file=file,
             )
             source.hooks_dir = find_hooks_directory_in_dir(dir=source.base_dir)
-        elif not isinstance(first_arg, str):
-
+            context.input.args.insert(0, first_arg)
+        elif isinstance(first_arg, (dict, list)):
             # Will be picked up later in data as the input_raw to be parsed
             source.raw = first_arg
-
-            # raise Exception(
-            #     "We should not be here - first arg should have been put as ref to"
-            #     "something that can be parsed. If it is not string, then it should be "
-            #     "put as the raw_input and call it a day - ie return data? But that does "
-            #     "not work in our factory..."
-            # )
-
+        elif not isinstance(first_arg, str):
+            # We didn't recognize a non-string arg so we fallback on looking in parent
+            # directory and reinsert the arg into the context.input.args. Need this
+            # condition here as all other source detection depends on the first_arg
+            # being a string.
+            source = new_source_from_unknown_args(
+                context=context,
+                source=source,
+                first_arg=first_arg,
+                directory=directory,
+                file=file,
+            )
         # Zipfile
-        elif first_arg.lower().endswith('.zip'):
+        elif first_arg.lower().endswith('.zip') and os.path.isfile(first_arg):
             source.base_dir = unzip(
                 zip_uri=first_arg,
                 clone_to_dir=settings.tackle_dir,
@@ -360,6 +374,11 @@ def new_source(
         # Repo
         elif is_repo_url(first_arg):
             if latest:
+                if checkout is not None:
+                    raise exceptions.UnknownSourceException(
+                        "Can't specify `checkout` and `latest` flags at the same time.",
+                        context=context
+                    )
                 checkout = 'latest'
             source.base_dir = get_repo_source(
                 repo=first_arg,
@@ -377,7 +396,6 @@ def new_source(
         elif is_directory_with_tackle(first_arg):
             # Special case where the input is a path to a directory with a provider
             source.base_dir = os.path.abspath(first_arg)
-            # source.name = os.path.basename(source.base_dir)
             source.name = format_path_to_name(path=source.base_dir)
             update_source(
                 context=context,
@@ -406,15 +424,17 @@ def new_source(
             source = new_source_from_unknown_args(
                 context=context,
                 source=source,
+                first_arg=first_arg,
                 directory=directory,
                 file=file,
             )
     else:
+        # We weren't given an arg, so we need to look for a tackle base in the current
+        # or parent directories.
         source.base_dir = find_tackle_base_in_parent_dir_with_exception(
             context=context,
             dir=os.path.abspath('.'),
         )
-        # source.name = os.path.basename(source.base_dir)
         source.name = format_path_to_name(path=source.base_dir)
         update_source(
             context=context,
