@@ -271,6 +271,10 @@ def get_hook_field_type_from_str(
 
      Raises an error if the type is not found.
     """
+    def annotate_string_serializer(type_: GenericFieldType):
+        """Add a custom serializer to the type."""
+        return Annotated[type_, PlainSerializer(lambda x: str(x), return_type=str)]
+
     if type_str in LITERAL_TYPES:
         # Treat it as a plain name - Safe to eval as type_str is always a literal type
         return eval(type_str)
@@ -279,13 +283,13 @@ def get_hook_field_type_from_str(
     if hasattr(typing_types, type_str):
         return getattr(typing_types, type_str)
     elif hasattr(ipaddress_types, type_str):
-        return getattr(ipaddress_types, type_str)
+        return annotate_string_serializer(getattr(ipaddress_types, type_str))
     elif hasattr(datetime_types, type_str):
-        return getattr(datetime_types, type_str)
+        return annotate_string_serializer(getattr(datetime_types, type_str))
     elif hasattr(pydantic_types, type_str):
         return getattr(pydantic_types, type_str)
     elif hasattr(pydantic_network_types, type_str):
-        return getattr(pydantic_network_types, type_str)
+        return annotate_string_serializer(getattr(pydantic_network_types, type_str))
 
     # Finally check if it's a hook
     Hook = get_hooks_from_namespace(context=context, hook_name=type_str)
