@@ -1,0 +1,4 @@
+<-:
+  foo: str
+  bar: int
+  args: ['foo', 'bar']

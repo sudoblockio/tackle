@@ -2,15 +2,14 @@
 import sys
 import argparse
 
-from tackle import __version__
+from tackle import tackle, __version__
 from tackle.utils.log import configure_logger
-from tackle.main import tackle
 from tackle.utils.command import unpack_args_kwargs_list
 from tackle.context import Context
 
 
 def _validate_print_format(print_format: str):
-    if print_format not in ['json', 'yaml', 'toml']:
+    if print_format not in ['json', 'yaml', 'yml', 'toml']:
         print(
             f"Invalid `--print-format` / `-pf` input \"{print_format}\". "
             f"Must be one of json (default) / yaml / toml."
@@ -24,16 +23,16 @@ def print_public_data(context: 'Context', print_format: str):
         if context.source.file is not None:
             print_format = context.source.file.split('.')[-1]
             _validate_print_format(print_format=print_format)
-    else:
-        # Assume yaml?
-        print_format = 'yaml'
+        else:
+            # Assume yaml?
+            print_format = 'yaml'
 
     if isinstance(output, (dict, list)):
         if print_format == 'json':  # noqa
             import json
 
             print(json.dumps(output))
-        elif print_format == 'yaml':
+        elif print_format in ['yaml', 'yml']:
             from ruyaml import YAML
 
             yaml = YAML()
@@ -205,6 +204,7 @@ def main(raw_args=None):
 
     if print_enabled:
         print_public_data(context=context, print_format=print_format)
+
 
 if __name__ == "__main__":
     main(sys.argv[1:])

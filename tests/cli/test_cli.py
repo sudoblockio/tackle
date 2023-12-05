@@ -1,11 +1,11 @@
 """Test the cli."""
 import pytest
 import os
+import sys
 
 from tackle.context import Context
 from tackle.cli import main
 
-# fmt: off
 INPUT_SOURCES = [
     (
         "thing --foo",
@@ -27,8 +27,11 @@ INPUT_SOURCES = [
         "thing foo bar",
         {'args': ['thing', 'foo', 'bar'], 'kwargs': {}},
     ),
+    (
+        "--helpo --world",
+        {'args': [], 'kwargs': {'helpo': True, 'world': True}},
+    ),
 ]
-# fmt: on
 
 
 @pytest.mark.parametrize("input_string,output", INPUT_SOURCES)
@@ -54,7 +57,6 @@ def test_cli_parse_args_empty(mocker):
 
     context = mock.call_args[0][0]
     assert context.source.file == os.path.abspath('.tackle.yaml')
-
 
 
 @pytest.mark.parametrize("input_string", ["--print", "-p"])
@@ -83,3 +85,43 @@ def test_cli_parse_args_version():
     with pytest.raises(SystemExit) as e:
         main(["--version"])
         assert e.value.code == 0
+
+
+def test_cli_call_mock(mocker):
+    """Check the main function runs properly."""
+    mock = mocker.patch("tackle.main.parse_context")
+    main("stuff")
+    assert mock.called
+
+
+def test_cli_call_empty(mocker):
+    """
+    Check that when no arg is given that we find the closest tackle file which
+     could be in the parent directory.
+    """
+    mock = mocker.patch("tackle.main.parse_context")
+    main([])
+
+    assert mock.called
+    local_tackle = os.path.join(os.path.abspath('.'), '.tackle.yaml')
+
+    if sys.version_info.minor > 7:
+        assert mock.call_args.args[0].path.calling.file == local_tackle
+    # test was failing in 3.7/6
+    else:
+        assert mock.call_args[0][0].path.calling.file == local_tackle
+
+
+COMMANDS = [
+    (['tackle-hello.yaml'], 'Hello world!'),
+    (['input-arg.yaml', 'bar', 'baz', '-pf', 'yaml'], 'foo: bar baz'),
+    (['input-args.yaml', 'baz', '1', '-pf', 'yaml'], 'bar: 1'),
+    (['input-args.yaml', 'baz', '1', '-pf', 'json'], '"bar": 1}'),
+]
+
+@pytest.mark.parametrize("command,expected_output", COMMANDS)
+def test_cli_commands(command, expected_output, capsys):
+    """Asser output comes out of cli."""
+    main(command)
+    output = capsys.readouterr().out
+    assert expected_output in output
