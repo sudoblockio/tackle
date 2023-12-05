@@ -144,6 +144,16 @@ def dcl_hook_exec(
         existing_data=existing_context,
     )
 
+    tmp_key = None
+    if isinstance(input_element, dict):
+        if '->' in input_element:
+            # Will de-index when outputing the public data
+            tmp_key = hook.hook_name
+            input_element = {tmp_key: input_element}
+        if '_>' in input_element:
+            # Doesn't return anything
+            input_element = {tmp_key: input_element}
+
     from tackle.parser import walk_document
 
     walk_document(context=hook_context, value=input_element.copy())
@@ -173,11 +183,14 @@ def dcl_hook_exec(
                 else:
                     raise exceptions.FunctionCallException(
                         f"Return value '{i}' in return {return_} not found in output.",
-                        hook=hook,  # noqa
+                        context=context, hook_name=hook.hook_name
                     ) from None
             return hook_context.data.public[return_]
         else:
             raise NotImplementedError(f"Return must be of list or string {return_}.")
+
+    if tmp_key:
+        return hook_context.data.public[tmp_key]
     return hook_context.data.public
 
 
