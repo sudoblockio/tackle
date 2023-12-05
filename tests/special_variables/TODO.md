@@ -1,5 +1,0 @@
-- Split these up into individual tests
-- Don't run everything through tackle - instead issolate into render 
-- Things that wrap system modules (ie cwd) don't need assertions 
-- Things that wrap platform modules should have some tests since they could throw depending on the platform - Should mock some of these?
-- Tackle related vars should run through a tackle execution 
