@@ -91,7 +91,6 @@ def get_complex_field(field: Any) -> Type:
 def dcl_hook_exec(
         hook: 'BaseHook',  # This is basically `self` in a class
         input_element: Union[list, dict],
-        return_: Union[str, list, dict],
         context: 'Context',  # This is injected
 ) -> Any:
     """
@@ -157,37 +156,6 @@ def dcl_hook_exec(
     from tackle.parser import walk_document
 
     walk_document(context=hook_context, value=input_element.copy())
-
-    if return_:
-        return_ = render_variable(hook_context, return_)
-        if isinstance(return_, str):
-            if return_ in hook_context.data.public:
-                return hook_context.data.public[return_]
-            else:
-                raise exceptions.DclHookCallException(
-                    f"Return value '{return_}' is not found " f"in output.",
-                    context=context, hook_name=hook.hook_name,
-                ) from None
-        elif isinstance(return_, list):
-            if isinstance(hook_context, list):
-                # TODO: This is not implemented (ie list outputs)
-                raise exceptions.DclHookCallException(
-                    f"Can't have list return {return_} for " f"list output.",
-                    context=context, hook_name=hook.hook_name,
-                ) from None
-            output = {}
-            for i in return_:
-                # Can only return top level keys right now
-                if i in hook_context.data.public:
-                    output[i] = hook_context.data.public[i]
-                else:
-                    raise exceptions.DclHookCallException(
-                        f"Return value '{i}' in return {return_} not found in output.",
-                        context=context, hook_name=hook.hook_name
-                    ) from None
-            return hook_context.data.public[return_]
-        else:
-            raise NotImplementedError(f"Return must be of list or string {return_}.")
 
     if tmp_key:
         return hook_context.data.public[tmp_key]
