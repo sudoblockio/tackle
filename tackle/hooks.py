@@ -59,26 +59,7 @@ def parse_tmp_context(context: 'Context', element: Any, existing_context: dict):
     tmp_context.key_path = ['->']
     tmp_context.key_path_block = ['->']
 
-    walk_document(context=tmp_context, value=element)
-
-    return tmp_context.data.public
-
-
-# TODO: RM this
-def get_complex_field(field: Any) -> Type:
-    """
-    Takes an input field such as `list[str]` or `list[SomeOtherHook]` and in the latter
-     case will recursively find nested hooks and compile them if needed.
-    """
-    if isinstance(field, list):
-        for i, v in enumerate(field):
-            field[i] = get_complex_field(v)
-    elif isinstance(field, dict):
-        for k, v in field.items():
-            field[k] = get_complex_field(v)
-    elif isinstance(field, DclHookInput):
-        field = field.exec()
-    return field
+    return get_public_data_from_walk(context=tmp_context, value=element)
 
 
 def dcl_hook_exec(
@@ -126,7 +107,6 @@ def dcl_hook_exec(
                 ) from None
         else:
             # Otherwise just the value itself
-            # existing_data.update({k: get_complex_field(v)})
             existing_data.update({field: getattr(hook, field)})
 
     hook_context = new_context_from_context(
