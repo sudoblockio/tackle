@@ -1,41 +1,33 @@
 import pytest
 
-from tackle.main import tackle
-from tackle.utils.command import unpack_args_kwargs_string
-from tackle import tackle
+from tackle.parser import get_for_loop_variable_names, ForVariableNames
+from tackle import tackle, new_context, HookCallInput
 
 
+@pytest.mark.parametrize("input_string,public_data,index_name,value_name,key_name", [
+    ("foo", {'foo': []}, 'index', 'item', None),
+    ("i, v in foo", {'foo': []}, 'i', 'v', None),
+    ("i in foo", {'foo': []}, 'index', 'i', None),
+    ("foo", {'foo': {}}, 'index', 'value', "key"),
+    ("k in foo", {'foo': {}}, 'index', 'value', "k"),
+    ("k, v in foo", {'foo': {}}, 'index', 'v', "k"),
+    ("k, v, i in foo", {'foo': {}}, 'i', 'v', "k"),
+])
+def test_parser_get_for_loop_variable_names(
+        input_string,
+        public_data,
+        index_name,
+        value_name,
+        key_name,
+):
+    context = new_context()
+    context.data.public = public_data
+    hook_call = HookCallInput(for_=input_string)
+    output = get_for_loop_variable_names(context, hook_call)
 
-FIXTURES = [
-    ("this --if \"expanded == 'that'\"", ["this"], {"if": "expanded == 'that'"}, []),
-    (
-        "this that --if \"expanded == 'that'\"",
-        ["this", 'that'],
-        {"if": "expanded == 'that'"},
-        [],
-    ),
-    (
-        "this that --for i, v in thing",
-        ["this", 'that'],
-        {"for": "i, v in thing"},
-        [],
-    ),
-    (
-        "this that --for i, v in thing --try",
-        ["this", 'that'],
-        {"for": "i, v in thing"},
-        ['try'],
-    ),
-]
-
-
-@pytest.mark.parametrize("input_string,args,kwargs,flags", FIXTURES)
-def test_unpack_input_string(input_string, args, kwargs, flags):
-    """Verify the hook arguments."""
-    args_out, kwargs_out, flags_out = unpack_args_kwargs_string(input_string)
-    assert args_out == args
-    assert kwargs_out == kwargs
-    assert flags_out == flags
+    assert output.index_name == index_name
+    assert output.value_name == value_name
+    assert output.key_name == key_name
 
 
 def test_parser_multiple_args(cd_fixtures):
@@ -77,3 +69,21 @@ def test_parser_hook_args_not_copied(cd_fixtures):
     assert output['upper'].isupper()
     assert output['lower'].islower()
     assert output['lower_default'].islower()
+
+
+def test_parser_bool_value_defaults(cd_fixtures):
+    """Check that when a bool field is default to true that raising flag inverts it."""
+    output = tackle('bool-hooks.yaml', hooks_dir='bool-hooks')
+
+    assert output['call']['is_true']
+    assert not output['call']['is_false']
+    assert not output['call_true']['is_true']
+    assert output['call_true']['is_false']
+
+
+def test_parser_no_exec_python(cd_fixtures):
+    """Check that when a python hook has no exec that it still validates and returns."""
+    output = tackle('MyHook', hooks_dir='no-exec')
+
+    assert output['is_true']
+    assert not output['is_false']

@@ -605,7 +605,7 @@ def get_for_loop_variable_names(
             names_split = [i.strip() for i in for_split[0].split(',')]
             if isinstance(loop_targets, list):
                 if len(names_split) == 1:
-                    value_name = 'value'
+                    value_name = names_split[0]
                 elif len(names_split) == 2:
                     index_name = names_split[0]
                     value_name = names_split[1]
