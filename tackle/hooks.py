@@ -53,8 +53,6 @@ def parse_tmp_context(context: 'Context', element: Any, existing_context: dict):
     Parse an arbitrary element. Only used for declarative hook field defaults and in
      the `run_hook` hook in the tackle provider.
     """
-    from tackle.parser import walk_document
-
     tmp_context = new_context_from_context(context=context)
     tmp_context.key_path = ['->']
     tmp_context.key_path_block = ['->']
@@ -120,20 +118,20 @@ def dcl_hook_exec(
     tmp_key = None
     if isinstance(input_element, dict):
         if '->' in input_element:
-            # Will de-index when outputing the public data
             tmp_key = hook.hook_name
+            # Will de-index when outputing the public data
             input_element = {tmp_key: input_element}
         if '_>' in input_element:
             # Doesn't return anything
             input_element = {tmp_key: input_element}
 
-    from tackle.parser import walk_document
-
-    walk_document(context=hook_context, value=input_element.copy())
-
+    public_data = get_public_data_from_walk(
+            context=hook_context,
+            value=input_element.copy()
+        )
     if tmp_key:
-        return hook_context.data.public[tmp_key]
-    return hook_context.data.public
+        return public_data[tmp_key]
+    return public_data
 
 
 def hook_extends_merge_hook(
@@ -367,8 +365,6 @@ def create_validator_field_type(
      See https://docs.pydantic.dev/latest/api/functional_validators/ for more
      information on functional validators.
     """
-    from tackle.parser import walk_document
-
     def validator_func(
             context: Context,
             hook_validator: HookFieldValidator,
@@ -381,8 +377,7 @@ def create_validator_field_type(
         tmp_context.data.existing[hook_validator.field_names.info] = info.data
 
         # Walk the body and return the public data
-        walk_document(context=tmp_context, value=hook_validator.body)
-        return tmp_context.data.public
+        return get_public_data_from_walk(context=tmp_context, value=hook_validator.body)
 
     if hook_validator.mode == 'before':
         ValidatorType = BeforeValidator
@@ -459,26 +454,15 @@ def create_hook_field_validator(
     )
 
 
-def create_dict_default_factory_executor(
+def get_public_data_from_walk(
         context: 'Context',
-        value: DocumentValueType,
-) -> Callable[[], Any]:
-    """
-    Create a callable from a dict which walks the data and returns the public data from
-     that execution. Is used in default_factory which expects a callable with no args.
-    """
+        value: DocumentType
+) -> DocumentType:
+    """Traverse the value and return the public data."""
+    from tackle.parser import walk_document
 
-    def get_public_data_from_walk(
-            context: 'Context',
-            value: DocumentType
-    ) -> DocumentType:
-        from tackle.parser import walk_document
-
-        walk_document(context=context, value=value)
-        return context.data.public
-
-    tmp_context = new_context_from_context(context=context)
-    return partial(get_public_data_from_walk, tmp_context, value)
+    walk_document(context=context, value=value)
+    return context.data.public
 
 
 def create_default_factory(
@@ -496,18 +480,18 @@ def create_default_factory(
     else:
         default_factory = value.pop('default_factory')
 
-    if isinstance(default_factory, (dict, list)):
-        default_factory_value = default_factory
-    else:
+    if not isinstance(default_factory, (dict, list)):
         raise exceptions.MalformedHookFieldException(
             "The default_factory must be a string (compact hook call), "
             "dict, or list which will be parsed.",
             context=context, hook_name=hook_name,
         )
 
-    value['default_factory'] = create_dict_default_factory_executor(
-        context=context,
-        value=default_factory_value,
+    # Create a callable from a dict which walks the data and returns the public data
+    # from execution. Is used in default_factory which expects a callable with no args.
+    tmp_context = new_context_from_context(context=context)
+    value['default_factory'] = partial(
+        get_public_data_from_walk, tmp_context, default_factory
     )
 
 
@@ -789,7 +773,7 @@ def create_dcl_hook(
     setattr(
         Hook,
         'exec',
-        partialmethod(dcl_hook_exec, hook_input.exec_, hook_input.return_),
+        partialmethod(dcl_hook_exec, hook_input.exec_),
     )
 
     # TODO: Rm when filters fixed
