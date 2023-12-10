@@ -167,6 +167,15 @@ def main(raw_args=None):
         else:
             expanded_unknown_args.append(v)
 
+    # Coerce args to their original types
+    for i, v in enumerate(expanded_unknown_args.copy()):
+        if v in ['true', 'false']:
+            v = v.title()
+        try:
+            expanded_unknown_args[i] = ast.literal_eval(v)
+        except ValueError:
+            pass  # Keep the original string
+
     # Unpack into global_ vars
     input_args, input_kwargs, input_flags = unpack_args_kwargs_list(
         input_list=expanded_unknown_args,

@@ -94,6 +94,15 @@ def test_cli_call_mock(mocker):
     assert mock.called
 
 
+def test_cli_coerce_types(mocker):
+    """When the input is a native type, use that instead of just strings."""
+    mock = mocker.patch("tackle.cli.tackle")
+    main(['1', '1.2', 'true'])
+
+    assert mock.called
+    assert mock.call_args.args == (1, 1.2, True)
+
+
 def test_cli_call_empty(mocker):
     """
     Check that when no arg is given that we find the closest tackle file which
