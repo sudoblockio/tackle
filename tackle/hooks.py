@@ -415,7 +415,7 @@ def create_hook_field_validator(
      TODO: Link to docs
     """
     if 'type' in value:
-        field_type = get_hook_field_type_from_str(context, hook_name, value['type'])
+        field_type = parse_hook_type(context, hook_name, value['type'])
     else:
         field_type = Any
 
