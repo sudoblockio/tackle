@@ -193,7 +193,7 @@ def block_hook_macro(
     items = {}
     hook_fields = {}
     for k, v in value.items():
-        if k in HOOK_CALL_ALIASES:
+        if k in HOOK_CALL_KEYS:
             hook_fields.update({k: v})
         else:
             items.update({k: v})

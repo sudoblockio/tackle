@@ -1,0 +1,4 @@
+foo->:
+  if: true
+  chdir: fake-tackle
+  do->: tackle

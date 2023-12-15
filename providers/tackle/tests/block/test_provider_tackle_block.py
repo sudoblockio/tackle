@@ -97,3 +97,21 @@ def test_provider_system_hook_block_tmp_context():
     """Check that a temp context is built."""
     output = tackle('tmp-context.yaml')
     assert output['public']['that']
+
+
+def test_provider_system_hook_block_key_list():
+    """
+    Check that a temp context is with copies of mutable objects - bug before where the
+     same list was being appended to in public and temporary data causing duplicate
+     values.
+    """
+    output = tackle('key-list.yaml')
+
+    assert output == {'ablock': {'foo': ['bar', 'baz']}}
+
+
+def test_provider_tackle_block_chdir():
+    """Check that we can use base methods like chdir in a block."""
+    output = tackle('chdir.yaml')
+
+    assert output['foo']['do']['stuff'] == 'here'
