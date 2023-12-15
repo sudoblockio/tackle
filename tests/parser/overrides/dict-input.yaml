@@ -1,10 +1,2 @@
-
-this->: input This?
-
-that->: input That?
-
-this_private_>: input This?
-
-that_private_>: input That?
-
-foo: 1
+this->: literal This?
+this_private_>: literal This?

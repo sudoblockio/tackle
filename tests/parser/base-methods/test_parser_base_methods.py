@@ -3,6 +3,20 @@ from tackle import tackle
 from tackle import exceptions
 
 
+def test_parser_methods_chdir():
+    """Go into a dir and read a file and verify its output."""
+    output = tackle('chdir.yaml')
+
+    assert output['stuff']['foo'] == 'bar'
+
+
+def test_parser_methods_chdir_loop():
+    """In a loop, go into a dir and read two files and verify output."""
+    output = tackle('chdir-loop.yaml')
+
+    assert output['stuff']  == [{'foo': 'bar'}, {'foo': 'baz'}]
+
+
 def test_parser_methods_merge_dict():
     """Validate merging a dict into a dict."""
     output = tackle('merge-dict.yaml')

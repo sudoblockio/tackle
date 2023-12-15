@@ -1,0 +1,4 @@
+- ->: literal foo
+- foo->: literal foo
+- foo:
+    bar->: literal foo

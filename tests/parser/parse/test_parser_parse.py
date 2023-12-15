@@ -19,8 +19,8 @@ PARSE_FIXTURES = [
     ('outer-tackle.yaml', 'outer-tackle-output.yaml'),
     ('outer-tackle-list.yaml', 'outer-tackle-list-output.yaml'),
     ('merge-petstore-compact.yaml', 'petstore.yaml'),
-    ('merge-petstore-compact.yaml', 'petstore.yaml'),
     # Non tackle things
+    ('petstore.yaml', 'petstore.yaml'),
     ('k8s-deployment.yaml', 'k8s-deployment.yaml'),
     ('ansible-playbook.yaml', 'ansible-playbook.yaml'),
     ('docker-compose.yml', 'docker-compose.yml'),

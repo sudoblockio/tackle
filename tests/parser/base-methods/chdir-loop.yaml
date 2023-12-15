@@ -1,0 +1,4 @@
+stuff:
+  ->: yaml {{i}}-file.yaml
+  for: i in  ['a', 'b']
+  chdir: a-dir

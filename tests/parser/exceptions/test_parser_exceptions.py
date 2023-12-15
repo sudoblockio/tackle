@@ -1,20 +1,19 @@
+
 import pytest
 
 from tackle import tackle, exceptions
 
 INPUT_SOURCES = [
     # TODO: empty should now be running help screen
-    # ("empty-with-functions.yaml", exceptions.EmptyTackleFileException),
-    ("empty-hook-call.yaml", exceptions.HookCallException),
+    ("empty-hook-call.yaml", exceptions.UnknownArgumentException),
+    ("out-of-range-arg.yaml", exceptions.UnknownTemplateVariableException),
     ("empty.yaml", exceptions.EmptyTackleFileException),
-    ("out-of-range-arg.yaml", exceptions.UnknownArgumentException),
     ("non-existent.yaml", exceptions.UnknownSourceException),
     ("hook-input-validation-error.yaml", exceptions.HookParseException),
     ("function-input-validation-error.yaml", exceptions.HookParseException),
     ("for-none-type.yaml", exceptions.MalformedTemplateVariableException),
-    # ("for-if.yaml", exceptions.MalformedTemplateVariableException),
+    ("top-level-hook-call.yaml", exceptions.TopLevelMergeException),
 ]
-
 
 @pytest.mark.parametrize("input_file,exception", INPUT_SOURCES)
 def test_parser_raises_exceptions(input_file, exception):

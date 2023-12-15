@@ -1,6 +1,14 @@
 from tackle import tackle
 
 
+def test_parser_lists_list_hooks():
+    """"""
+    o = tackle('list-hooks.yaml')
+    assert o[0] == 'foo'
+    assert o[1] == {'foo': 'foo'}
+    assert o[2] == {'foo': {'bar': 'foo'}}
+
+
 def test_parser_lists_list_false_conditionals():
     """
     When there is a list of hooks and the conditions are false we expect that the list

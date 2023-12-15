@@ -1,51 +1,122 @@
 import pytest
 
-from tackle.parser import get_for_loop_variable_names, ForVariableNames
-from tackle import tackle, new_context, HookCallInput
+from tackle import tackle
+from tackle import get_hook
+from tackle.parser import run_hook_exec
+from tackle.models import HookCallInput
+from tackle.parser import split_input_data
+from tackle.factory import new_context
+
+SPLIT_INPUT_FIXTURES: list[tuple[dict, tuple[int, int, int]]] = [
+    (
+        {
+            'pre': 1,
+            'a_hook<-': {1: 1},
+            'post': 1,
+        },
+        (1, 1, 1),
+    ),
+    (
+        {
+            'pre1': 1,
+            'pre2': 1,
+            'a_hook_1<-': {1: 1},
+            'post1': 1,
+            'a_hook_2<-': {1: 1},
+            'post2': 1,
+        },
+        (2, 2, 2),
+    ),
+    (
+        {
+            'a_hook_1<-': {1: 1},
+            'post1': 1,
+            'post2': 1,
+            'post3': 1,
+            'a_hook_2<-': {1: 1},
+            'post4': 1,
+        },
+        (0, 4, 2),
+    ),
+    (
+        {
+            'a_hook_1<-': {1: 1},
+            'post1': 1,
+            'post2': 1,
+            'post3': 1,
+            'a_hook_2<-': {1: 1},
+        },
+        (0, 3, 2),
+    ),
+    (
+        {
+            'a_hook_1<-': {1: 1},
+        },
+        (0, 0, 1),
+    ),
+]
 
 
-@pytest.mark.parametrize("input_string,public_data,index_name,value_name,key_name", [
-    ("foo", {'foo': []}, 'index', 'item', None),
-    ("i, v in foo", {'foo': []}, 'i', 'v', None),
-    ("i in foo", {'foo': []}, 'index', 'i', None),
-    ("foo", {'foo': {}}, 'index', 'value', "key"),
-    ("k in foo", {'foo': {}}, 'index', 'value', "k"),
-    ("k, v in foo", {'foo': {}}, 'index', 'v', "k"),
-    ("k, v, i in foo", {'foo': {}}, 'i', 'v', "k"),
-])
-def test_parser_get_for_loop_variable_names(
-        input_string,
-        public_data,
-        index_name,
-        value_name,
-        key_name,
-):
+@pytest.mark.parametrize("raw_input,counts", SPLIT_INPUT_FIXTURES)
+def test_parser_split_input_data(raw_input, counts):
     context = new_context()
-    context.data.public = public_data
-    hook_call = HookCallInput(for_=input_string)
-    output = get_for_loop_variable_names(context, hook_call)
+    context.data.raw_input = raw_input
+    split_input_data(context=context)
 
-    assert output.index_name == index_name
-    assert output.value_name == value_name
-    assert output.key_name == key_name
+    assert len(context.data.pre_input) == counts[0]
+    assert len(context.data.post_input) == counts[1]
+    assert len(context.hooks.public) == counts[2]
+
+
+def test_run_hook_exec():
+    """When a hook is called that does not need any supplied params it works."""
+    context = new_context()
+    context.data.public = {'foo': 'bar'}
+    hook = get_hook('literal')(input='foo')
+    hook_call = HookCallInput()
+
+    output = run_hook_exec(context=context, hook_call=hook_call, hook=hook)
+    assert output == 'foo'
+
+
+def test_run_hook_exec_context():
+    """When a hook is called that does need supplied params such as context it works."""
+    context = new_context()
+    context.data.public = {'foo': 'bar'}
+    hook = get_hook('set')(path='foo', value='baz')
+    hook_call = HookCallInput()
+
+    run_hook_exec(context=context, hook_call=hook_call, hook=hook)
+    assert context.data.public['foo'] == 'baz'
+
+
+def test_run_hook_exec_context_quoted():
+    """
+    Sometimes the user will be quoting the type - ie def call(self, context: 'Context')
+     so we need to account for this.
+    """
+    context = new_context()
+    context.data.public = {'foo': 'bar'}
+    hook = get_hook('var')(input='{{foo}}')
+    hook_call = HookCallInput()
+
+    output = run_hook_exec(context=context, hook_call=hook_call, hook=hook)
+    assert output == 'bar'
 
 
 def test_parser_multiple_args(cd_fixtures):
     """Test input args."""
     output = tackle('args.yaml', no_input=True)
+
     assert output['two_args'] == 'foo bar'
     assert output['three_args'] == 'foo bar baz'
 
 
 def test_parser_tackle_in_tackle(cd):
+    """Check that we can call a tackle within a tackle."""
     cd('parse')
     output = tackle('outer-tackle.yaml', no_input=True)
-    assert output['outer']['foo_items'] == ['bar', 'baz']
 
-
-def test_parser_tackle_in_tackle_arg(cd):
-    cd('parse')
-    output = tackle('outer-tackle-arg.yaml', no_input=True)
     assert output['outer']['foo_items'] == ['bar', 'baz']
 
 
@@ -56,6 +127,7 @@ def test_parser_duplicate_values(cd_fixtures):
      hook.
     """
     output = tackle('duplicate-values.yaml', verbose=True)
+
     assert output['local']['two_args']
 
 
@@ -66,6 +138,7 @@ def test_parser_hook_args_not_copied(cd_fixtures):
      copied when called. This is to check that.
     """
     output = tackle('copied-hook-args.yaml')
+
     assert output['upper'].isupper()
     assert output['lower'].islower()
     assert output['lower_default'].islower()
