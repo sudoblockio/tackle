@@ -1,252 +1,14 @@
-"""Helper functions for working with version control systems."""
 import logging
 import os
 import subprocess
 from shutil import which
 
-from tackle.exceptions import (
-    RepositoryCloneFailed,
-    RepositoryNotFound,
-    VCSNotInstalled,
-    VersionNotFoundError,
-)
-from tackle.utils.prompts import prompt_and_delete
+from tackle import exceptions
 from tackle.utils.paths import make_sure_path_exists
 from tackle.settings import settings
 from tackle.utils.paths import work_in
 
 logger = logging.getLogger(__name__)
-
-BRANCH_ERRORS = [
-    'error: pathspec',
-    'unknown revision',
-]
-
-
-# def identify_repo(repo_url):
-#     """Determine if `repo_url` should be treated as a URL to a git or hg repo.
-#
-#     Repos can be identified by prepending "hg+" or "git+" to the repo URL.
-#
-#     :param repo_url: Repo URL of unknown type.
-#     :returns: ('git', repo_url), ('hg', repo_url), or None.
-#     """
-#     repo_url_values = repo_url.split('+')
-#     if len(repo_url_values) == 2:
-#         repo_type = repo_url_values[0]
-#         if repo_type in ["git", "hg"]:
-#             return repo_type, repo_url_values[1]
-#         else:
-#             raise UnknownRepoType
-#     else:
-#         if 'git' in repo_url:
-#             return 'git', repo_url
-#         elif 'bitbucket' in repo_url:
-#             return 'hg', repo_url
-#         else:
-#             raise UnknownRepoType
-
-
-# def prompt_and_delete(path, no_input=False):
-#     """
-#     Ask user if it's okay to delete the previously-downloaded file/directory.
-#
-#     If yes, delete it. If no, checks to see if the old version should be
-#     reused. If yes, it's reused; otherwise, Tackle exits.
-#
-#     :param path: Previously downloaded zipfile.
-#     :param no_input: Suppress prompt to delete repo and just delete it.
-#     :return: True if the content was deleted
-#     """
-#     # Suppress prompt if called via API
-#     if no_input:
-#         ok_to_delete = True
-#     else:
-#         question = (
-#             "You've downloaded {} before. Is it okay to delete and re-download it?"
-#         ).format(path)
-#
-#         ok_to_delete = read_user_yes_no(question, 'no')
-#
-#     if ok_to_delete:
-#         if os.path.isdir(path):
-#             rmtree(path)
-#         else:
-#             os.remove(path)
-#         return True
-#     else:
-#         ok_to_reuse = read_user_yes_no(
-#             "Do you want to re-use the existing version?", 'yes'
-#         )
-#
-#         if ok_to_reuse:
-#             return False
-#
-#         sys.exit()
-
-
-def clone(repo_url, checkout=None, clone_to_dir='.', no_input=False):
-    """Clone a repo to the current directory.
-
-    :param repo_url: Repo URL of unknown type.
-    :param checkout: The branch, tag or commit ID to checkout after clone.
-    :param clone_to_dir: The directory to clone to.
-                         Defaults to the current directory.
-    :param no_input: Suppress all user prompts when calling via API.
-    :returns: str with path to the new directory of the repository.
-    """
-    # Ensure that clone_to_dir exists
-    clone_to_dir = os.path.expanduser(clone_to_dir)
-    make_sure_path_exists(clone_to_dir)
-
-    # identify the repo_type
-    # repo_type, repo_url = identify_repo(repo_url)
-
-    # check that the appropriate VCS for the repo_type is installed
-    if not is_vcs_installed('git'):
-        msg = "git is not installed."
-        raise VCSNotInstalled(msg)
-
-    repo_url = repo_url.rstrip('/')
-    repo_name = os.path.split(repo_url)[1]
-    repo_name = repo_name.split(':')[-1].rsplit('.git')[0]
-    repo_dir = os.path.normpath(os.path.join(clone_to_dir, repo_name))
-    logger.debug('repo_dir is {0}'.format(repo_dir))
-
-    if os.path.isdir(repo_dir):
-        clone = prompt_and_delete(repo_dir, no_input=no_input)
-    else:
-        clone = True
-
-    if clone:
-        try:
-            subprocess.check_output(
-                ['git', 'clone', repo_url],
-                cwd=clone_to_dir,
-                stderr=subprocess.STDOUT,
-            )
-            if checkout is not None:
-                subprocess.check_output(
-                    ['git', 'checkout', checkout],
-                    cwd=repo_dir,
-                    stderr=subprocess.STDOUT,
-                )
-        except subprocess.CalledProcessError as clone_error:
-            output = clone_error.output.decode('utf-8')
-            if 'not found' in output.lower():
-                raise RepositoryNotFound(
-                    'The repository {} could not be found, '
-                    'have you made a typo?'.format(repo_url)
-                )
-            if any(error in output for error in BRANCH_ERRORS):
-                raise RepositoryCloneFailed(
-                    'The {} branch of repository {} could not found, '
-                    'have you made a typo?'.format(checkout, repo_url)
-                )
-            raise
-
-    return repo_dir
-
-
-def fetch(repo_path: str):
-    subprocess.check_output(
-        ['git', 'fetch'],
-        cwd=repo_path,
-        stderr=subprocess.STDOUT,
-    )
-
-
-def is_vcs_installed(repo_type):
-    """
-    Check if the version control system for a repo type is installed.
-
-    :param repo_type:
-    """
-    return bool(which(repo_type))
-
-
-def get_default_branch(repo_path):
-    """Get the default branch from a repo / provider."""
-    cmd = "git remote show origin"
-    with work_in(repo_path):
-        p = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            stdin=subprocess.PIPE,
-            shell=True,
-        )
-        stdout, stderr = p.communicate()
-        if p.returncode == 0:
-            for i in stdout.strip().splitlines():
-                if i.startswith(b'  HEAD'):
-                    return i.split()[2].decode("utf-8")
-        else:
-            raise ValueError("No idea why this would not work....")
-
-
-def get_latest_release(repo_path):
-    """Checkout the latest release."""
-    cmd = "git ls-remote --tags --exit-code --refs origin"
-    with work_in(repo_path):
-        p = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            stdin=subprocess.PIPE,
-            shell=True,
-        )
-        stdout, stderr = p.communicate()
-        if p.returncode == 0:
-            # last line is the latest release
-            return stdout.strip().splitlines()[-1].decode('utf-8').split('/')[-1]
-        elif p.returncode == 2:
-            return None
-
-
-def get_repo_version(repo_path):
-    """Get the current repo version / branch."""
-    with work_in(repo_path):
-        with open('.git/HEAD') as f:
-            ref = f.read()
-    ref_list = ref.strip().split('/')
-    if len(ref_list) == 1:
-        return ref_list[0]
-    return ref_list[2]
-
-
-def checkout_version(repo_path, version):
-    """Checkout a version / branch."""
-    cmd = f"git checkout {version}"
-    with work_in(repo_path):
-        p = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            stdin=subprocess.PIPE,
-            shell=True,
-        )
-        stdout, stderr = p.communicate()
-
-        if 'Your branch is behind' in str(stdout):
-            cmd = 'git pull'
-            p = subprocess.Popen(
-                cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                stdin=subprocess.PIPE,
-                shell=True,
-            )
-            p.communicate()
-
-        if p.returncode == 0:
-            return
-            # return stdout.strip()
-        else:
-            rough_repo = '/'.join(repo_path.split('/')[-2:])
-            raise VersionNotFoundError(
-                f"Could not find the version='{version}' for the repo {rough_repo}."
-            ) from None
 
 
 def parse_repo_ref(repo):
@@ -261,6 +23,19 @@ def parse_repo_ref(repo):
         repo_prefix = 'https://' + repo_parts[2]
         organization = repo_parts[3]
         provider_name = repo_parts[4]
+        if provider_name.endswith('.git'):
+            provider_name = provider_name[:-4]
+
+    elif repo.startswith('git@'):
+        # Handle SSH format
+        repo_parts = repo.split(':')
+        host_parts = repo_parts[0].split('@')
+        repo_prefix = 'https://' + host_parts[1]
+        path_parts = repo_parts[1].split('/')
+        organization = path_parts[0]
+        provider_name = path_parts[1]
+        if provider_name.endswith('.git'):
+            provider_name = provider_name[:-4]
 
     elif len(repo.split('/')) == 2:
         # Handle type robcxyz/tackle
@@ -280,47 +55,208 @@ def parse_repo_ref(repo):
     if not organization or not provider_name:
         # This should be found by now otherwise it is an invalid format
         # Should not happen as the regex that qualifies a repo shouldn't have passed
-        raise ValueError
+        raise exceptions.GenericGitException(f'The repo={repo} was not parsed properly')
 
     repo_url = '/'.join([repo_prefix, organization, provider_name])
     return repo_url, organization, provider_name
 
 
-def get_repo_source(repo: str, repo_version: str = None) -> str:
+def run_command(command: str) -> subprocess.Popen:
+    """Wrapper for subprocess."""
+    p = subprocess.Popen(
+        command,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        stdin=subprocess.PIPE,
+        shell=True,
+    )
+    return p
+
+
+def git_clone(repo_url):
+    """Git clone a repo."""
+    logger.debug(f'Cloning url=`{repo_url}`')
+    cmd = f'git clone {repo_url}'
+    p = run_command(cmd)
+    stdout, stderr = p.communicate()
+    if p.returncode == 0:
+        return
+    if 'not found' in str(stderr):
+        raise exceptions.RepositoryNotFound(
+            f'The repository {repo_url} could not be found, have you made a typo?'
+        )
+    raise exceptions.GenericGitException(f'Error running {cmd}\nstr({stderr})')
+
+
+def git_checkout(version: str):
+    """Git checkout a tag."""
+    cmd = f"Checkout version={version}."
+    logger.debug(cmd)
+    p = run_command(f"git checkout {version}")
+    stdout, stderr = p.communicate()
+    if p.returncode == 0:
+        return
+    if f"Already on '{version}'" in str(stderr):
+        return
+    if stderr:
+        # Don't know how this could happen
+        raise exceptions.VersionNotFoundError(f'Error running {cmd}\nstr({stderr})')
+
+
+def git_stash():
+    cmd = 'git stash'
+    p = run_command(cmd)
+    stdout, stderr = p.communicate()
+    if 'HEAD is now at' in str(stdout):
+        return
+    elif 'No local changes to save' in str(stdout):
+        return
+    elif stderr:
+        raise exceptions.GenericGitException(f'Error running {cmd}\nstr({stderr})')
+
+
+def git_pull(branch: str):
+    cmd = f'git pull origin {branch}'
+    p = run_command(cmd)
+    stdout, stderr = p.communicate()
+    if p.returncode == 0:
+        return
+    if stderr:
+        raise exceptions.GenericGitException(f'Error running {cmd}\nstr({stderr})')
+
+
+def get_default_branch():
+    """Get the default branch from the local git repo."""
+    cmd = "git branch -vv"
+    p = run_command(cmd)
+    stdout, stderr = p.communicate()
+    if p.returncode == 0:
+        for i in stdout.strip().splitlines():
+            if b'origin/' in i:
+                return i.decode("utf-8").split('/')[1].split(':')[0].split(']')[0]
+        else:
+            raise ValueError("No idea why this would not work....")
+    else:
+        raise exceptions.GenericGitException(f'Error running {cmd}\nstr({stderr})')
+
+
+def get_git_tags():
+    """Run the git command to get already fetched tags - does not make remote call."""
+    p = run_command("git tag")
+    stdout, stderr = p.communicate()
+    tags = stdout.decode('utf-8').strip().split('\n')
+    if tags[0] == '':
+        # No releases
+        return []
+    return tags
+
+
+def get_latest_release_from_remote():
+    """Get the latest release from the remote."""
+    cmd = "git ls-remote --tags --exit-code --refs origin"
+    p = run_command(cmd)
+    stdout, stderr = p.communicate()
+    if p.returncode == 0:
+        # last line is the latest release
+        return stdout.strip().splitlines()[-1].decode('utf-8').split('/')[-1]
+    elif p.returncode == 2:
+        # This indicates there is no release in the remote
+        return
+
+
+def get_repo(
+        repo_url: str,
+        org_dir: str,
+        provider_dir: str,
+        version: str | None,
+        latest: bool | None,
+):
+    """
+    For new providers, we need to clone the provider and check if there is a release
+     use that release.
+    """
+    make_sure_path_exists(os.path.expanduser(org_dir))
+    with work_in(org_dir):
+        git_clone(repo_url)
+    with work_in(provider_dir):
+        if version:
+            git_checkout(version)
+        elif latest:
+            # Already on latest
+            return
+        else:
+            latest_release = get_latest_release_from_remote()
+            if latest_release is not None:
+                git_checkout(latest_release)
+
+
+def get_version(provider_dir: str, version: str):
+    """
+    Do git checkout and if there is an error, do a git pull and try to checkout again,
+     this time raising an error if the version does not exist.
+    """
+    with (work_in(provider_dir)):
+        logger.debug(f"Checking out version={version}.")
+        git_stash()
+        p = run_command(f"git checkout {version}")
+        stdout, stderr = p.communicate()
+        if p.returncode == 0:
+            return
+        elif 'did not match any file(s) known to git' in str(stderr) or \
+                'Your branch is behind' in str(stdout):
+            default_branch = get_default_branch()
+            git_pull(default_branch)
+            git_checkout(version)
+
+
+def get_latest(provider_dir: str):
+    """Git pull and checkout the default branch."""
+    with work_in(provider_dir):
+        git_stash()
+        default_branch = get_default_branch()
+        git_pull(default_branch)
+        git_checkout(default_branch)
+
+
+def get_last_release(provider_dir: str):
+    """Git pull and then check for the most recent tag to checkout."""
+    with work_in(provider_dir):
+        git_stash()
+        default_branch = get_default_branch()
+        git_pull(default_branch)
+        tags = get_git_tags()
+        if len(tags) != 0:
+            git_checkout(tags[-1])
+        else:
+            git_checkout(default_branch)
+
+
+def get_repo_source(repo: str, version: str | None, latest: bool | None) -> str:
     """Clone a provider into the providers dir with checkout out the right version."""
+    # Check if git is installed
+    if not bool(which('git')):
+        raise exceptions.VCSNotInstalled("git is not installed. Exiting...")
+    # Split up the repo string
     repo_url, organization, provider_name = parse_repo_ref(repo)
-    # provider_dir = os.path.join(settings.provider_dir, organization, provider_name)
-    org_dir = os.path.join(settings.provider_dir, organization)
+    org_dir = os.path.join(settings.providers_dir, organization)
     provider_dir = os.path.join(org_dir, provider_name)
 
-    logger.debug(f"Repo {repo_url} found for org {organization}, name {provider_name}.")
+    logger.debug(f"Getting repo={repo_url} org={organization} name={provider_name}")
 
     if not os.path.exists(provider_dir):
-        # Clone if dir does not exist (new provider)
-        clone(repo_url, clone_to_dir=org_dir)
+        # New provider
+        get_repo(
+            repo_url=repo_url,
+            org_dir=org_dir,
+            provider_dir=provider_dir,
+            version=version,
+            latest=latest,
+        )
+    elif version is not None:
+        get_version(provider_dir=provider_dir, version=version)
+    elif latest:
+        get_latest(provider_dir=provider_dir)
     else:
-        # Fetch latest tags
-        fetch(repo_path=provider_dir)
-
-    # Get the default branch of the repo
-    # If a version is specified, then check that first
-    version = get_repo_version(provider_dir)
-    logger.debug(f"Version for {provider_name} equal to {version}.")
-
-    if repo_version:
-        if repo_version == 'latest':
-            default_branch = get_default_branch(repo_path=provider_dir)
-            checkout_version(repo_path=provider_dir, version=default_branch)
-        else:
-            checkout_version(repo_path=provider_dir, version=repo_version)
-    else:
-        latest_release = get_latest_release(repo_path=provider_dir)
-        if version != latest_release and latest_release is not None:
-            # Condition where we have a newer release from a repo that has a release
-            checkout_version(repo_path=provider_dir, version=latest_release)
-        elif latest_release is None:
-            # Condition where we have a repo that has no release so we just pull latest
-            default_branch = get_default_branch(repo_path=provider_dir)
-            checkout_version(repo_path=provider_dir, version=default_branch)
+        get_last_release(provider_dir=provider_dir)
 
     return provider_dir
