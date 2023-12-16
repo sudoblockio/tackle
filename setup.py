@@ -53,24 +53,6 @@ def parse_requirements_file(reqs_file, provider_requirements, key):
                     provider_requirements[key].add(k)
 
 
-def get_provider_requirements():
-    """Get the provider requirements from each provider to allow extra requirements."""
-    providers_dir = os.path.join(os.path.dirname(__file__), 'providers')
-    providers = os.listdir(providers_dir)
-    provider_requirements = defaultdict(set)
-    for p in providers:
-        if p == '__init__.py':
-            continue
-        reqs_file = os.path.join(providers_dir, p, 'requirements.txt')
-        if os.path.isfile(reqs_file):
-            parse_requirements_file(reqs_file, provider_requirements, p)
-    parse_requirements_file('requirements-dev.txt', provider_requirements, 'dev')
-    provider_requirements['all'] = set(
-        vv for v in provider_requirements.values() for vv in v
-    )
-    return provider_requirements
-
-
 INSTALL_REQUIREMENTS = [
     'Jinja2>3.0.0',
     'requests>=2.23.0',  # This would be needed if we allowed url sources
@@ -104,7 +86,6 @@ setup(
     packages=find_packages(exclude=['tests*', 'logo*', 'docs*', '.github*']),
     package_dir={'tackle': 'tackle'},
     entry_points={'console_scripts': ['tackle = tackle.cli:main']},
-    extras_require=get_provider_requirements(),
     include_package_data=True,
     python_requires='>=3.7',
     install_requires=INSTALL_REQUIREMENTS,
