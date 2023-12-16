@@ -37,14 +37,14 @@ class GitCloneHook(BaseHook):
         "‘–recurse-submodule=repo1_path’, "
         "‘–recurse-submodule=repo2_path’]",
     )
-    kwargs: Optional[dict] = Field(
-        {},
-        description="- odbt = ObjectDatabase Type, allowing to determine the "
-        "object database implementation used by the returned Repo "
-        "instance "
-        "- All remaining keyword arguments are given to the git-clone "
-        "command",
-    )
+    # kwargs: Optional[dict] = Field(
+    #     {},
+    #     description="- odbt = ObjectDatabase Type, allowing to determine the "
+    #     "object database implementation used by the returned Repo "
+    #     "instance "
+    #     "- All remaining keyword arguments are given to the git-clone "
+    #     "command",
+    # )
 
     args: list = ['url', 'to_path']
 

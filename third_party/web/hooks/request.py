@@ -49,16 +49,27 @@ class RequestsGetHook(BaseHook, AuthMixin):
     hook_name: str = 'http_get'
 
     # fmt: off
-    url: str = Field(..., description="URL for the new request object.")
-    kwargs: Union[str, dict] = Field(
+    url: str = Field(
+        ...,
+        description="URL for the new request object.",
+    )
+    extra_kwargs: Union[str, dict] = Field(
         {}, description="Optional arguments that request takes.",
         render_by_default=True
     )
-    params: dict = Field(None,
-                         description="Dictionary, list of tuples or bytes to send in the query string for the Request.")
-    no_exit: bool = Field(False, description="Whether to exit on non-200 response.")
-    encoding: str = Field('utf-8',
-                          description="For text/plain type return values, the encoding of the type.")
+    params: dict = Field(
+        None,
+        description="Dictionary, list of tuples or bytes to send in the query string "
+                    "for the Request."
+    )
+    no_exit: bool = Field(
+        False,
+        description="Whether to exit on non-200 response."
+    )
+    encoding: str = Field(
+        'utf-8',
+        description="For text/plain type return values, the encoding of the type."
+    )
     # fmt: on
 
     args: list = [
@@ -68,7 +79,7 @@ class RequestsGetHook(BaseHook, AuthMixin):
     ]
 
     def exec(self) -> dict:
-        r = requests.get(self.url, params=self.params, auth=self.auth(), **self.kwargs)
+        r = requests.get(self.url, params=self.params, auth=self.auth(), **self.extra_kwargs)
         exit_none_200(r, self.no_exit, self.url)
         return process_content(r, encoding=self.encoding)
 
@@ -83,7 +94,7 @@ class RequestsPostHook(BaseHook, AuthMixin):
 
     # fmt: off
     url: str = Field(..., description="URL for the new request object.")
-    kwargs: Union[str, dict] = Field(
+    extra_kwargs: Union[str, dict] = Field(
         {}, description="Optional arguments that request takes.",
         render_by_default=True
     )
@@ -113,7 +124,7 @@ class RequestsPostHook(BaseHook, AuthMixin):
                 )
 
         r = requests.post(self.url, data=self.data, json=self.input_json,
-                          auth=self.auth(), **self.kwargs)
+                          auth=self.auth(), **self.extra_kwargs)
         exit_none_200(r, self.no_exit, self.url)
 
         return r.json()
@@ -129,7 +140,7 @@ class RequestsPutHook(BaseHook, AuthMixin):
 
     # fmt: on
     url: str = Field(..., description="URL for the new request object.")
-    kwargs: Union[str, dict] = Field(
+    extra_kwargs: Union[str, dict] = Field(
         {}, description="Optional arguments that request takes.",
         render_by_default=True
     )
@@ -154,7 +165,7 @@ class RequestsPutHook(BaseHook, AuthMixin):
             data=self.data,
             json=self.input_json,
             auth=self.auth(),
-            **self.kwargs
+            **self.extra_kwargs
         )
         exit_none_200(r, self.no_exit, self.url)
 
@@ -171,7 +182,7 @@ class RequestsPatchHook(BaseHook, AuthMixin):
 
     # fmt: off
     url: str = Field(..., description="URL for the new request object.")
-    # kwargs: Union[str, dict] = Field(
+    # extra_kwargs: Union[str, dict] = Field(
     #     {}, description="Optional arguments that request takes.",
     #     render_by_default=True
     # )
@@ -198,7 +209,7 @@ class RequestsPatchHook(BaseHook, AuthMixin):
             json=self.input_json,
             auth=self.auth(),
             headers=self.headers,
-            # **self.kwargs
+            # **self.extra_kwargs
         )
         exit_none_200(r, self.no_exit, self.url)
 
@@ -215,7 +226,7 @@ class RequestsDeleteHook(BaseHook, AuthMixin):
 
     # fmt: off
     url: str = Field(..., description="URL for the new request object.")
-    kwargs: Union[str, dict] = Field(
+    extra_kwargs: Union[str, dict] = Field(
         {}, description="Optional arguments that request takes.",
         render_by_default=True
     )
@@ -225,7 +236,7 @@ class RequestsDeleteHook(BaseHook, AuthMixin):
     args: list = ['url', 'kwargs']
 
     def exec(self):
-        r = requests.delete(self.url, auth=self.auth(), **self.kwargs)
+        r = requests.delete(self.url, auth=self.auth(), **self.extra_kwargs)
         exit_none_200(r, self.no_exit, self.url)
 
         return r.status_code

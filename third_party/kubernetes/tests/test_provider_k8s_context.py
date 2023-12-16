@@ -11,7 +11,7 @@ def set_kubeconfig():
     # fmt: on
 
 
-def test_provider_k8s_context(change_dir, set_kubeconfig):
+def test_provider_k8s_context(set_kubeconfig):
     output = tackle('context.yaml', no_input=True)
     assert 'federal-context' in output['context_map']
     assert output['context'] == 'federal-context'

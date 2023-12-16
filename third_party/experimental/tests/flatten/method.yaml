@@ -1,0 +1,15 @@
+ahook<-:
+#  just_type: str
+  expanded:
+    type: str
+    default: ""
+
+  amethod<-:
+    bar: str
+    args: [bar]
+
+    exec:
+      method_args->: flatten ahook
+
+#hook_call->: ahook
+method_call->: ahook.amethod foo

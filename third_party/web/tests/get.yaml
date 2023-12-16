@@ -1,4 +1,1 @@
-compact->: http_get https://reqbin.com
-#expanded:
-#  ->: http_get
-#  url: https://httpbin.org/get
+compact->: http_get https://google.com

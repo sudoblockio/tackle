@@ -1,0 +1,15 @@
+ansible<-:
+  input:
+    type: str
+    description: The input location to run against
+    default: foo
+
+  ask-vault-password:
+    type: bool
+    description: ask for vault password
+    default: false
+
+cmd->: flatten ansible
+
+c->: ansible --ask-vault-password
+

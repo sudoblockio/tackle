@@ -1,0 +1,37 @@
+kubectl<_:
+  help: Wrap kubectl
+
+  delete<_:
+    kustomize:
+      type: str
+      default: ""
+    filename:
+      type: str
+      default: ""
+    namespace:
+      type: str
+      default: "default"
+    exec:
+      args->: flatten kubectl.delete
+      info->: print Running `kubectl delete {{args}}`
+#      cmd->: command kubectl delete {{args}}
+  apply<_:
+    kustomize:
+      type: str
+      default: ""
+      skip: true
+    filename:
+      type: str
+      default: ""
+      skip: true
+    namespace:
+      type: str
+      default: "default"
+    exec:
+      args->: flatten kubectl.apply
+      info->: print Running `kubectl apply {{args}}`
+#      cmd->: command kubectl apply {{args}}
+
+
+apply->: kubectl.apply --filename ubuntu.yaml --namespace foo
+delete->: kubectl.delete --filename ubuntu.yaml --namespace default

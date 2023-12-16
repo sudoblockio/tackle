@@ -179,7 +179,7 @@ class MetaGitHook(BaseHook):
         if len(git_parts) == 2:
             return f"{git_parts[0]}/{git_parts[1]}"
         else:
-            from tackle.utils.dicts import get_key_from_key_path
+            from tackle.utils.data_crud import get_key_from_key_path
 
             key = get_key_from_key_path(self.key_path)
             print(f"Malformed repo name '{v}' in '{key}' key. Skipping.")

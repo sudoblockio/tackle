@@ -1,0 +1,29 @@
+
+
+ls<-:
+  all:
+    type: bool
+    description: do not ignore entries starting with .
+    default: false
+
+  almost-all:
+    type: bool
+    description: do not list implied . and ..
+    default: false
+
+  FILE:
+    type: str
+    description: The path to directory to list
+    default: .
+#    skip: true
+
+  args: ['FILE']
+  exec:
+    args->: flatten ls
+#    args_input->: flatten ls --inputs {{existing_context}}
+#    cmd->: command ls {{args}}
+
+empty->: ls
+all->: ls --all
+almost-all->: ls --almost-all
+arg->: ls .hooks

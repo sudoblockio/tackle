@@ -15,7 +15,7 @@ def clean_outputs():
             rmtree(p)
 
 
-def test_provider_git_hooks_repos(change_dir, clean_outputs):
+def test_provider_git_hooks_repos(clean_outputs):
     """Verify hook."""
     tackle('repo.yaml')
     assert os.path.isdir('tackle-pypackage')
