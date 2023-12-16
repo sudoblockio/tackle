@@ -1,5 +1,5 @@
 from pydantic import SecretStr
-from typing import Union
+from typing import Union, Any
 import copy
 
 import tackle as tkl
@@ -20,6 +20,10 @@ class TackleHook(BaseHook):
         None,
         description="The branch or version to checkout for repo type inputs_strings."
     )
+    no_input: bool = Field(
+        None,
+        description="A boolean for if you want to suppress prompt inputs."
+    )
     latest: bool = Field(
         False,
         description="For remote providers, use the latest commit."
@@ -30,7 +34,9 @@ class TackleHook(BaseHook):
     )
     extra_context: dict = Field(
         None,
-        description="Any additional context to use when calling the hook. Like existing context.")
+        description="Any additional context to use when calling the hook. Like "
+                    "existing context."
+    )
     password: SecretStr = Field(
         None,
         description="A password to use for repo inputs.",
@@ -48,7 +54,7 @@ class TackleHook(BaseHook):
         {},
         description="A dictionary of keys to override.",
     )
-    additional_args: Union[list, str] = Field(
+    additional_args: Union[list, Any] = Field(
         [],
         description="Arguments to pass on either directly as a string or as a list of "
                     "strings."
@@ -97,8 +103,8 @@ class TackleHook(BaseHook):
             checkout=self.checkout,
             latest=self.latest,
             directory=self.directory,
-            no_input=self.no_input,
             find_in_parent=self.find_in_parent,
+            no_input=self.no_input if not self.no_input else context.no_input,
             verbose=context.verbose,
             overrides=self.override,
             existing_data=existing_context,
@@ -107,7 +113,7 @@ class TackleHook(BaseHook):
             # TODO: Handle this in factory? Don't want to copy every time?
             _data=copy.deepcopy(context.data),
             # Implicit
-            _hooks=context.hooks,
+            # _hooks=context.hooks,
             **self.override
         )
 

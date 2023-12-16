@@ -8,7 +8,9 @@ sym:
 chmod_:
   ->: chmod
   path: dst.yaml
-  mode: 0o644
+#  https://github.com/commx/ruamel-yaml/blob/master/constructor.py#L1186
+#  Coercion to int via octalint... Awesome...
+  mode: "0o644"
 
 read:
   ->: yaml

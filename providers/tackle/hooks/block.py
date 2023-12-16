@@ -21,17 +21,16 @@ class BlockHook(BaseHook):
     skip_output: bool = True
     render_exclude: list = ['items']
 
-    def exec(self) -> Union[dict, list]:
-
+    def exec(self, context: 'Context') -> Union[dict, list]:
         tmp_context = Context(
-            # overrides=self.context.data.overrides,
-            verbose=self.context.verbose,
-            no_input=self.context.no_input,
-            key_path=self.context.key_path.copy(),
-            key_path_block=self.context.key_path.copy(),
-            path=self.context.path,
-            data=self.context.data,
-            hooks=self.context.hooks,
+            verbose=context.verbose,
+            no_input=context.no_input,
+            key_path=context.key_path.copy(),
+            key_path_block=context.key_path.copy(),
+            path=context.path,
+            data=context.data,
+            hooks=context.hooks,
+            source=context.source,
         )
 
         walk_document(context=tmp_context, value=self.items.copy())

@@ -23,7 +23,7 @@ class JoinHook(BaseHook):
 
     hook_name: str = 'join'
 
-    input: List[str] = Field(
+    input: List[str | int] = Field(
         ..., description="A list of strings to join.", render_by_default=True
     )
     separator: str = Field('', description="String separator.")

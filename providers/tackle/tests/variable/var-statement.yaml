@@ -1,0 +1,3 @@
+input: 6
+#divisible_3->: var "{% input % 3 == 0 %}"
+fizz->: literal fizz --if "input % 3 == 0"

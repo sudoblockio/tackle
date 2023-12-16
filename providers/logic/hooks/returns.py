@@ -1,6 +1,6 @@
 from typing import Any
 
-from tackle import BaseHook, Field
+from tackle import BaseHook, Field, Context
 
 
 class ReturnHook(BaseHook):
@@ -18,8 +18,13 @@ class ReturnHook(BaseHook):
 
     _docs_order = 3
 
-    def exec(self) -> Any:
-        self.context.break_ = True
-        self.context.data.public = self.value
+    def exec(self, context: Context) -> Any:
+        context.break_ = True
+        # if isinstance(self.value, (dict, list)):
+        #
+        # else:
+        #     context.data.public = self.value
+
+        context.data.public = self.value
 
         return self.value

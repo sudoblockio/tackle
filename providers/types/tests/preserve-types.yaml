@@ -1,0 +1,2 @@
+is_str_hook->: str 1
+is_str_render->: var str(1)

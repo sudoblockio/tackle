@@ -12,3 +12,9 @@ def test_hook_return_basic(fixture):
 
     # Output should always just be a true bool
     assert type(output) == bool
+
+
+def test_hook_return_hook_call():
+    output = tackle('hook-call.yaml')
+
+    assert output

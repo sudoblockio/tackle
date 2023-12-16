@@ -1,0 +1,5 @@
+ablock->:
+  if: true
+  foo:
+    - bar
+    - baz

@@ -8,7 +8,7 @@ import os
 from typing import Union, Dict, List, Any
 
 from tackle import BaseHook, Field
-from tackle.utils.dicts import merge
+from tackle.utils.data_crud import merge
 
 
 class YamlHook(BaseHook):

@@ -28,8 +28,25 @@ def test_provider_types_parameterized(cd, fixture_name, expected_output):
 
 
 
-def test_hook_casting():
+def test_provider_types_hook_casting():
     """Check casting works."""
     output = tackle('castings.yaml')
     # Assertions in file
     assert output
+
+
+def test_provider_types_hook_casting_preserve_types():
+    """Check casting works."""
+    output = tackle('preserve-types.yaml')
+    # Assertions in file
+    assert isinstance(output['is_str_hook'], str)
+    # Render coerces strings now
+    # assert isinstance(output['is_str_render'], str)
+
+
+def test_provider_types_hook_casting_hex():
+    """Check casting works."""
+    output = tackle('hex.yaml')
+
+    assert output['a_hex_int'] == '0x1'
+    assert output['a_hex_hex'] == '0x1'

@@ -3,7 +3,9 @@ from InquirerPy import prompt
 from pprint import pprint
 from rich import print
 
-from tackle import BaseHook, Field
+from tackle import BaseHook, Field, Context, exceptions
+
+DATA_NAMESPACES = ['public', 'private', 'temporary', 'existing']
 
 
 class DebugHook(BaseHook):
@@ -14,11 +16,10 @@ class DebugHook(BaseHook):
     data: str = Field(
         None,
         description="Which data to examine. One of `public`, `private`, "
-        "`temporary`, or `existing`. Omit for all.",
+                    "`temporary`, or `existing`. Omit for all.",
     )
 
-    _datas: list = ['public', 'private', 'temporary', 'existing']
-
+    skip_output: bool = True
     args: list = ['key']
 
     def print_key(self, print_data):
@@ -32,7 +33,7 @@ class DebugHook(BaseHook):
             pprint(print_data[self.key])
 
     def print_data(self, print_data, data_name: str):
-        print(f"[bold magenta]{data_name.title()} Context[/bold magenta]")
+        print(f"[bold magenta]{data_name.title()} Data[/bold magenta]")
 
         # TODO: Improve this -> The builtin pprint is better now since it does the
         #  first level as the top level keys.
@@ -41,10 +42,10 @@ class DebugHook(BaseHook):
         # print(panel)
         pprint(print_data)
 
-    def exec(self) -> None:
-        print(f"Debug at key_path={self.context.key_path}")
+    def exec(self, context: 'Context') -> None:
+        print(f"Debug at key_path={context.key_path}")
         if self.data is not None:
-            if self.data in self._datas:
+            if self.data in DATA_NAMESPACES:
                 output = getattr(self, f'{self.data}_data')
                 if output is not None:
                     self.print_data(output, self.data)
@@ -57,8 +58,8 @@ class DebugHook(BaseHook):
                 )
         else:
             printed = None
-            for i in self._datas:
-                output = getattr(self.context.data, f'{i}')
+            for i in DATA_NAMESPACES:
+                output = getattr(context.data, f'{i}')
                 if output is not None and output != {}:
                     if self.key is not None:
                         if self.key in output:
@@ -72,7 +73,7 @@ class DebugHook(BaseHook):
             if self.key is not None and printed is None:
                 print(f"Key={self.key} not found in ")
 
-        if not self.no_input:
+        if not context.no_input:
             question = {
                 'type': 'confirm',
                 'name': 'tmp',
@@ -83,6 +84,9 @@ class DebugHook(BaseHook):
             except KeyboardInterrupt:
                 print("Exiting...")
                 sys.exit(0)
+            except EOFError:
+                raise exceptions.HookCallException(
+                    "Prompt run in automation...", context=context)
 
             # Catch keyboard exits with return an empty dict
             if response == {}:

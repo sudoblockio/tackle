@@ -15,10 +15,11 @@ class MatchHook(BaseHook):
     """
 
     hook_name: str = 'match'
-    value: str = Field(
-        ...,
+    value: str | int | float | bool = Field(
+        True,
         render_by_default=True,
-        description="The value to match against."
+        description="The value to match against. Defaults to boolean true so that "
+                    "cases can be conditionals."
     )
     case: dict = Field(
         ...,
@@ -140,6 +141,8 @@ class MatchHook(BaseHook):
                 "Error calling match hook. Can't use within jinja rendering.",
                 context=context,
             )
+        if self.value is None:
+            self.value = True
 
         default_value = None
         default_key = None
@@ -150,8 +153,14 @@ class MatchHook(BaseHook):
                 default_key = k
                 # Save this value for later in case nothing is matched
                 continue
+            if isinstance(k, str) and '{{' in k:
+                k = render_string(context, k)
+            # if not isinstance(k, str):
+            #     if k == self.value:
+            #         return v
+            #     continue
             try:
-                _match = re.fullmatch(k, self.value)
+                _match = re.fullmatch(str(k), str(self.value))
             except re.error as e:
                 raise exceptions.HookCallException(
                     f"Error in match hook case '{k}'\n{e}\nMalformed regex. Must "
@@ -164,7 +173,7 @@ class MatchHook(BaseHook):
             # TODO: This regex needs to be modified to not match empty hooks
             #  ie - `->`: x - should not match everything
             # Case where we have an arrow in a key - ie `key->: ...`
-            elif re.fullmatch(k[:-2], self.value) and k[-2:] in ('->', '_>'):
+            elif re.fullmatch(k[:-2], str(self.value)) and k[-2:] in ('->', '_>'):
                 return self.match_case_block(
                     context=context,
                     hook_call=hook_call,

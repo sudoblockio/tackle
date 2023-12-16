@@ -125,6 +125,21 @@ class RemoveHook(BaseHook):
         return None
 
 
+class WhichHook(BaseHook):
+    """Wrapper of shutil.which -> posix which."""
+
+    hook_name: str = 'which'
+    path: str = Field(
+        ...,
+        description="String path run `which` against."
+    )
+
+    args: list = ['path']
+
+    def exec(self) -> str:
+        return shutil.which(self.path)
+
+
 # Source: https://codereview.stackexchange.com/questions/186130/file-shredding-secure-deletion-algorithm # noqa
 def wipe(f, passes=30):
     """Overwrite a file with bytes."""
@@ -188,6 +203,33 @@ class ChmodHook(BaseHook):
             os.chmod(path=expand_path(i), mode=mode)
 
         return None
+
+
+class ChownHook(BaseHook):
+    """Hook for changing the ownership of a file with shutil."""
+
+    hook_name: str = 'chown'
+    path: Union[str, list] = Field(
+        ...,
+        description="String or list of paths, either directories or files."
+    )
+    user: str = Field(
+        ...,
+        description="The user to assign ownership.",
+    )
+    group: str = Field(
+        ...,
+        description="The group to assign ownership.",
+    )
+
+    args: list = ['path', 'user', 'group']
+
+    def exec(self) -> None:
+        if isinstance(self.path, str):
+            shutil.chown(expand_path(self.path), user=self.user, group=self.group)
+        else:
+            for i in self.path:
+                shutil.chown(expand_path(i), user=self.user, group=self.group)
 
 
 class CreateFileHook(BaseHook):

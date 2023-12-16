@@ -1,7 +1,7 @@
 from typing import Union, Any
 
 from tackle import BaseHook, Field, Context
-from tackle.utils.dicts import encode_key_path, nested_get
+from tackle.utils.data_crud import encode_key_path, nested_get
 from tackle.exceptions import HookCallException
 
 # Hack because fallback value should be able to be None so None can't be default

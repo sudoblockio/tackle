@@ -14,11 +14,11 @@ class TomlHook(BaseHook):
 
     hook_name: str = 'toml'
     path: str = Field(..., description="The file path to put read or write to.")
-    # data: Union[dict, list, str] = Field(
-    #     None,
-    #     description="Map/list or renderable string to a map/list key to write.",
-    #     render_by_default=True,
-    # )
+    data: Union[dict, list, str] = Field(
+        None,
+        description="Map/list or renderable string to a map/list key to write.",
+        render_by_default=True,
+    )
     args: list = ['path', 'data']
 
     def exec(self) -> Union[MutableMapping, str]:

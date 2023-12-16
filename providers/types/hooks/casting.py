@@ -46,3 +46,14 @@ class StrHook(BaseHook):
 
     def exec(self) -> str:
         return str(self.input)
+
+
+class HexHook(BaseHook):
+    """Hook for changing an int to a hexidecimal."""
+
+    hook_name: str = 'hex'
+    input: int = Field(..., description="Any variable input.", render_by_default=True)
+    args: list = ['input']
+
+    def exec(self) -> hex:
+        return hex(self.input)

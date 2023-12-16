@@ -1,0 +1,4 @@
+foo:
+  ->: return
+  value:
+    ->: literal bar

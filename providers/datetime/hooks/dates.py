@@ -35,3 +35,38 @@ class DateTimeNowHook(BaseHook):
             else:
                 now = datetime.datetime.now().strftime(f'{self.format}')
         return now
+
+
+
+class DateTimeHook(BaseHook):
+    """Hook for updating dict objects with items."""
+
+    hook_name: str = 'datetimme'
+
+    year: int
+    month: int = None
+    day: int = None
+    hour: int = 0
+    minute: int = 0
+    second: int = 0
+    microsecond: int = 0
+    tzinfo: str = None
+    fold: int = 0
+
+    args: list = []
+
+    def exec(self) -> str:
+        # TODO: Update this
+        #  https://stackoverflow.com/a/15692958/12642712
+        # txinfo = datetime.tzinfo(self.tzinfo)
+        return datetime.datetime(
+            year=self.year,
+            month=self.month,
+            day=self.day,
+            hour=self.hour,
+            minute=self.minute,
+            second=self.second,
+            microsecond=self.microsecond,
+            # tzinfo=self.tzinfo,
+            fold=self.fold,
+        ).__repr__()

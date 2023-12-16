@@ -2,7 +2,7 @@ import sys
 from InquirerPy import prompt
 
 from tackle import BaseHook, Field, Context
-from tackle.utils.dicts import get_readable_key_path
+from tackle.utils.data_crud import get_readable_key_path
 from tackle import exceptions
 
 
@@ -24,7 +24,7 @@ class InquirerConfirmHook(BaseHook):
         if self.message is None:
             self.message = get_readable_key_path(context.key_path) + ' >>>'
 
-        if not self.no_input:
+        if not context.no_input:
             question = {
                 'type': 'confirm',
                 'name': 'tmp',

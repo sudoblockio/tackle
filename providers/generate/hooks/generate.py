@@ -7,14 +7,14 @@ from jinja2.exceptions import UndefinedError
 import shutil
 from typing import List
 
-from tackle import BaseHook, Field
-from .exceptions import (
+from tackle import BaseHook, Field, Context
+from providers.generate.hooks.exceptions import (
     UndefinedVariableInTemplate,
     GenerateHookTemplateNotFound,
 )
+from providers.generate.hooks.common import init_context
 
-# TODO:
-# smart_union=True
+
 class GenerateHook(BaseHook):
     """
     Hook for generating project outputs. Recursively renders all files and folders in a
@@ -57,7 +57,8 @@ class GenerateHook(BaseHook):
     file_system_loader: Union[str, list] = Field(
         '.',
         description="List of paths or string path to directory with templates to load "
-                    "from. [Docs](https://jinja.palletsprojects.com/en/3.0.x/api/#jinja2.FileSystemLoader)."  # noqa
+                    "from. [Docs](https://jinja.palletsprojects.com/en/3.0.x/api/#jinja2.FileSystemLoader)."
+        # noqa
     )
 
     base_dir_: Path = None
@@ -66,7 +67,7 @@ class GenerateHook(BaseHook):
 
     args: list = ['templates', 'output']
 
-    def _init_paths(self):
+    def _init_paths(self, context: Context):
         if isinstance(self.copy_without_render, str):
             self.copy_without_render = [self.copy_without_render]
         self.output = os.path.expanduser(os.path.expandvars(self.output))
@@ -78,64 +79,63 @@ class GenerateHook(BaseHook):
             self.file_path_separator_ = '\\'
             if not self.output.startswith('\\'):
                 self.output = os.path.join(
-                    self.context.path.calling.directory, self.output)
+                    context.path.calling.directory, self.output)
         else:
             self.file_path_separator_ = '/'
             if not self.output.startswith('/'):
                 self.output = os.path.join(
-                    self.context.path.calling.directory, self.output)
+                    context.path.calling.directory, self.output)
 
-    def _init_context(self):
-        # Update the render_context that will be used
-        if self.render_context is not None:
-            return
+    # def _init_context(self, context: Context):
+    #     # Update the render_context that will be used
+    #     if self.render_context is not None:
+    #         return
+    #
+    #     # fmt: off
+    #     existing_context = context.data.existing if context.data.temporary is not None else {}
+    #     temporary_context = context.data.temporary if context.data.temporary is not None else {}
+    #     private_context = context.data.private if context.data.private is not None else {}
+    #     public_context = context.data.public if context.data.public is not None else {}
+    #     # fmt: on
+    #
+    #     self.render_context = {
+    #         **existing_context,
+    #         **temporary_context,
+    #         **private_context,
+    #         **public_context,
+    #     }
+    #
+    #     if self.extra_context is not None:
+    #         if isinstance(self.extra_context, list):
+    #             for i in self.extra_context:
+    #                 self.render_context.update(i)
+    #         else:
+    #             self.render_context.update(self.extra_context)
 
-        # fmt: off
-        existing_context = self.context.data.existing if self.context.data.temporary is not None else {}
-        temporary_context = self.context.data.temporary if self.context.data.temporary is not None else {}
-        private_context = self.context.data.private if self.context.data.private is not None else {}
-        public_context = self.context.data.public if self.context.data.public is not None else {}
-        # fmt: on
-
-        self.render_context = {
-            **existing_context,
-            **temporary_context,
-            **private_context,
-            **public_context,
-        }
-
-        if self.extra_context is not None:
-            if isinstance(self.extra_context, list):
-                for i in self.extra_context:
-                    self.render_context.update(i)
-            else:
-                self.render_context.update(self.extra_context)
-
-    def exec(self):
+    def exec(self, context: Context):
         """Generate files / directories."""
-        self._init_paths()
-        self._init_context()
+        self._init_paths(context=context)
+        # self._init_context(context=context)
+        init_context(self=self, context=context)
 
         # https://stackoverflow.com/questions/42368678/jinja-environment-is-not-supporting-absolute-paths
         # Need to add root to support absolute paths
         if isinstance(self.file_system_loader, str):
-            self.context.env_.loader = FileSystemLoader([self.file_system_loader, '/'])
+            context.env_.loader = FileSystemLoader([self.file_system_loader, '/'])
         else:
-            self.context.env_.loader = FileSystemLoader(self.file_system_loader + ['/'])
+            context.env_.loader = FileSystemLoader(self.file_system_loader + ['/'])
 
         if isinstance(self.templates, str):
-            self.generate_target(self.templates)
+            self.generate_target(context=context, target=self.templates)
         elif isinstance(self.templates, list):
             for target in self.templates:
-                self.generate_target(target)
+                self.generate_target(context=context, target=target)
 
-    def generate_target(self, target: str):
+    def generate_target(self, context: Context, target: str):
         """
         Generate from an unknown target. If there is a `templates` directory in the
-        provider, check if the target matches and use that otherwise search for target.
-        Generates files or directories from there.
-
-        :param target: A generic target to generate from, file or directory.
+         provider, check if the target matches and use that otherwise search for target.
+         Generates files or directories from there.
         """
         # Update the input to default to searching in `templates` directory
         if os.path.exists(target):
@@ -153,16 +153,25 @@ class GenerateHook(BaseHook):
             self.output = os.path.basename(target)
 
         if os.path.isfile(target_path):
-            self.generate_file(target_path, self.output)
+            self.generate_file(
+                context=context,
+                input_file=target_path,
+                output_path=self.output,
+            )
 
         elif os.path.isdir(target_path):
-            self.generate_dir(target_path, self.output)
+            pass
+            self.generate_dir(
+                context=context,
+                input_directory=target_path,
+                output_path=self.output,
+            )
         else:
             raise GenerateHookTemplateNotFound(
-                f"Could not find {target_path}.", hook=self
+                f"Could not find {target_path}.", context=context
             ) from None
 
-    def generate_file(self, input_file: str, output_path: str):
+    def generate_file(self, context: Context, input_file: str, output_path: str):
         """
         Take a target input_file and render its contents / file name to an output path.
 
@@ -185,12 +194,12 @@ class GenerateHook(BaseHook):
 
         # Render the path right away as templating mangles things later - also logical
         # to render file names.  Who wants to generate files with templates in the name?
-        file_name_template = self.context.env_.from_string(str(output_path))
+        file_name_template = context.env_.from_string(str(output_path))
         try:
             output_path = file_name_template.render(self.render_context)
         except UndefinedError as e:
             msg = f"The `generate` hook failed to render -> {e}"
-            raise UndefinedVariableInTemplate(msg, hook=self) from None
+            raise UndefinedVariableInTemplate(msg, context=context) from None
 
         # Make the parent directories by default
         parent_dir = Path(output_path).parent.absolute()
@@ -202,7 +211,9 @@ class GenerateHook(BaseHook):
             return
 
         try:
-            file_contents_template = self.context.env_.get_template(os.path.abspath(input_file))
+            file_contents_template = context.env_.get_template(
+                os.path.abspath(input_file)
+            )
         except UnicodeDecodeError:
             # Catch binary files with this hack and copy them over
             # TODO: Perhaps improve? In cookiecutter they used a package binary-or-not
@@ -215,23 +226,33 @@ class GenerateHook(BaseHook):
             rendered_contents = file_contents_template.render(self.render_context)
         except UndefinedError as e:
             msg = f"The `generate` hook failed to render -> {e}"
-            raise UndefinedVariableInTemplate(msg, hook=self) from None
+            raise UndefinedVariableInTemplate(msg, context=context) from None
 
         # Write contents
         with open(output_path, 'w') as f:
-            f.write(rendered_contents)
+            # Will write an empty file if the contents are None otherwise write contents
+            if rendered_contents is not None:
+                f.write(rendered_contents)
 
-    def generate_dir(self, input_directory: str, output_path: str):
+    def generate_dir(self, context: Context, input_directory: str, output_path: str):
 
         for i in os.listdir(input_directory):
-            input = os.path.join(input_directory, i)
+            input_path = os.path.join(input_directory, i)
             output = os.path.join(output_path, i)
-            if os.path.isdir(input):
+            if os.path.isdir(input_path):
                 # Path(output).mkdir(parents=True, exist_ok=True)
-                self.generate_dir(input, output)
+                self.generate_dir(
+                    context=context,
+                    input_directory=input_path,
+                    output_path=output,
+                )
 
-            if os.path.isfile(input):
-                self.generate_file(input, output)
+            elif os.path.isfile(input_path):
+                self.generate_file(
+                    context=context,
+                    input_file=input_path,
+                    output_path=output,
+                )
 
     def is_copy_only_path(self, path):
         """Check whether the given `path` should only be copied and not rendered.

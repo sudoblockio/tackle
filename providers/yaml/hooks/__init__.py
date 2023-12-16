@@ -1,3 +1,0 @@
-hook_types = [
-    "yaml",
-]

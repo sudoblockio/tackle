@@ -1,0 +1,5 @@
+a_hex: "0x1"
+a_one: 1
+a_hex_int->: hex 1
+a_hex_hex->: hex {{a_one}}
+a_hex_in_jinja->: var {{hex("1")}}

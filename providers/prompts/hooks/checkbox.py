@@ -1,11 +1,10 @@
 import sys
 from InquirerPy import prompt
 from InquirerPy.base.control import Choice
-
 from typing import Union
 
 from tackle import BaseHook, Field, Context
-from tackle.utils.dicts import get_readable_key_path
+from tackle.utils.data_crud import get_readable_key_path
 from tackle import exceptions
 
 
@@ -52,7 +51,7 @@ class InquirerCheckboxHook(BaseHook):
             choices_type = type(v)
 
         if choices_type == str:
-            if self.no_input:
+            if context.no_input:
                 if self.checked:
                     return self.choices
                 return []
@@ -84,7 +83,7 @@ class InquirerCheckboxHook(BaseHook):
                     break
 
             if normal:
-                if self.no_input:
+                if context.no_input:
                     if self.checked:
                         return [i['name'] for i in self.choices]
                     return []
@@ -97,7 +96,7 @@ class InquirerCheckboxHook(BaseHook):
             # Otherwise we expect to reindex the key as the output per this:
             # choices = ['How much stuff?': 'stuff', 'How many things?': 'things']
             choices = []
-            if self.no_input:
+            if context.no_input:
                 if self.checked:
                     for i in self.choices:
                         choices.append(list(i.values())[0])

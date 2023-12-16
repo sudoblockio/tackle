@@ -1,10 +1,7 @@
 import os
 from typing import Any, TYPE_CHECKING
 
-from tackle import BaseHook, Field, exceptions
-
-if TYPE_CHECKING:
-    from tackle import Context
+from tackle import BaseHook, Field, exceptions, Context
 
 
 def find_in_parent(
@@ -51,9 +48,9 @@ class FindInParentHook(BaseHook):
 
     args: list = ['target']
 
-    def exec(self) -> str:
+    def exec(self, context: 'Context') -> str:
         return find_in_parent(
-            context=self.context,
+            context=context,
             dir=self.starting_dir,
             targets=[self.target],
             fallback=self.fallback,

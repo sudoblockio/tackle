@@ -1,6 +1,6 @@
 stuff: things
 
-foo: barr
+foo_>: literal barr
 
 t:
   ->: debug

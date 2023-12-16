@@ -1,13 +1,9 @@
 import sys
 import glob
 
-from tackle import BaseHook, Field
+from tackle import BaseHook, Field, Context
 from tackle import exceptions
 
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from tackle import Context
 
 
 def raise_version_error_msg(field_name, version: int, context: 'Context'):

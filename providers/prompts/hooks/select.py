@@ -4,7 +4,7 @@ from InquirerPy import prompt
 from typing import Any, List, Union
 
 from tackle import BaseHook, Field, Context
-from tackle.utils.dicts import get_readable_key_path
+from tackle.utils.data_crud import get_readable_key_path
 from tackle import exceptions
 
 
@@ -68,7 +68,7 @@ class InquirerListHook(BaseHook):
             )
 
     def _run_prompt(self, context: Context):
-        if not self.no_input:
+        if not context.no_input:
             question = {
                 'type': 'list',
                 'name': 'tmp',

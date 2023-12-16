@@ -1,0 +1,12 @@
+input: 3
+expected: 3
+
+value:
+  ->: match input
+  case:
+    "{{expected}}": foo
+
+hook_call:
+  ->: match input
+  case:
+    "{{expected}}->": literal foo

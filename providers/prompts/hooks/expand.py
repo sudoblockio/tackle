@@ -3,7 +3,7 @@ from InquirerPy import prompt
 
 from typing import Any
 from tackle import BaseHook, Field, Context
-from tackle.utils.dicts import get_readable_key_path
+from tackle.utils.data_crud import get_readable_key_path
 from tackle import exceptions
 
 
@@ -24,7 +24,7 @@ class InquirerExpandHook(BaseHook):
         if self.message is None:
             self.message = get_readable_key_path(context.key_path) + ' >>>'
 
-        if not self.no_input:
+        if not context.no_input:
             question = {
                 'type': self.hook_name,
                 'name': 'tmp',

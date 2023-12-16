@@ -1,7 +1,6 @@
 from typing import Any
 
-from tackle import BaseHook, Field
-from tackle import exceptions
+from tackle import BaseHook, Field, Context, exceptions
 
 
 class AssertHook(BaseHook):
@@ -24,7 +23,7 @@ class AssertHook(BaseHook):
     args: list = ['input', 'value']
     _docs_order = 5
 
-    def exec(self) -> bool:
+    def exec(self, context: Context) -> bool:
         """Runs for both if the value is present or full assertion."""
         if self.value is None:
             if not self.exit_on_failure:
@@ -40,7 +39,7 @@ class AssertHook(BaseHook):
                 except AssertionError:
                     raise exceptions.HookCallException(
                         f"Error asserting {self.input}=={self.value}",
-                        context=self.context
+                        context=context
                     ) from None
         else:
             if not self.exit_on_failure:
@@ -56,5 +55,5 @@ class AssertHook(BaseHook):
                 except AssertionError:
                     raise exceptions.HookCallException(
                         f"Error asserting {self.input}=={self.value}",
-                        context=self.context
+                        context=context
                     ) from None

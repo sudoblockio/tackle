@@ -1,7 +1,7 @@
 from typing import Union, Any, Optional
 
 from tackle import BaseHook, Field, Context
-from tackle.utils.dicts import nested_get, encode_key_path, get_target_and_key
+from tackle.utils.data_crud import nested_get, encode_key_path, get_target_and_key
 
 
 class AppendHook(BaseHook):

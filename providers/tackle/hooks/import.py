@@ -1,15 +1,8 @@
-import os
-from typing import Any, TYPE_CHECKING
-from pydantic import BaseModel, Field, field_validator, ValidationInfo, ValidationError
-from tackle.utils.command import unpack_args_kwargs_string
+from pydantic import BaseModel, Field, field_validator, ValidationInfo, ValidationError  # noqa
 
+from tackle.utils.command import unpack_args_kwargs_string
 from tackle import BaseHook, Context, exceptions
 from tackle.factory import new_context
-from tackle.imports import (
-    import_hooks_from_hooks_directory, import_hooks_from_file,
-    import_declarative_hooks_from_file,
-)
-from tackle.utils.vcs import get_repo_source
 
 
 class RepoSource(BaseModel):

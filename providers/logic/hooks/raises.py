@@ -1,5 +1,4 @@
-from tackle import BaseHook, Field
-from tackle import exceptions
+from tackle import BaseHook, Field, Context, exceptions
 
 
 class RaiseHook(BaseHook):
@@ -8,11 +7,10 @@ class RaiseHook(BaseHook):
     hook_name: str = 'raise'
     message: str = Field(None, description="A message to show when raising an error.")
 
-    args: list = ['input', 'value']
+    args: list = ['message']
     _docs_order = 7
 
-    def exec(self):
+    def exec(self, context: Context):
         if self.message is None:
-            self.message = ''
-
-        raise exceptions.HookCallException(self.message, context=self)
+            self.message = "Error calling hook."
+        raise exceptions.HookCallException(self.message, context=context)

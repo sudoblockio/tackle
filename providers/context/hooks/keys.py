@@ -1,7 +1,7 @@
 from typing import Union, Optional
 
 from tackle import BaseHook, Field, Context
-from tackle.utils.dicts import encode_key_path, nested_get, get_target_and_key
+from tackle.utils.data_crud import encode_key_path, nested_get, get_target_and_key
 
 
 class DictKeysHook(BaseHook):

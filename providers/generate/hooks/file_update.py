@@ -3,12 +3,12 @@ from jinja2 import FileSystemLoader
 
 from typing import Union
 
-from tackle import BaseHook, Field
-from .exceptions import UndefinedVariableInTemplate
-from tackle.utils.dicts import get_readable_key_path
+from tackle import BaseHook, Field, Context
+from tackle.utils.data_crud import get_readable_key_path
+from providers.generate.hooks.exceptions import UndefinedVariableInTemplate
+from providers.generate.hooks.common import init_context
 
-
-class JinjaHook(BaseHook):
+class FileUpdateHook(BaseHook):
     """
     Hook for jinja templates. If given an `output`, the rendered contents are output to
      a file, otherwise the rendered contents are output as a string.
@@ -37,35 +37,9 @@ class JinjaHook(BaseHook):
                     "from. [Docs](https://jinja.palletsprojects.com/en/3.0.x/api/#jinja2.FileSystemLoader).")
     # fmt: on
 
-    # args: list = ['template', 'output']
+    args: list = ['template']
 
     _wip = True
-
-    def _init_context(self):
-        # Update the render_context that will be used
-        if self.render_context is not None:
-            return
-
-        # fmt: off
-        existing_context = self.existing_context if self.existing_context is not None else {}
-        temporary_context = self.temporary_context if self.temporary_context is not None else {}
-        private_context = self.private_context if self.private_context is not None else {}
-        public_context = self.public_context if self.public_context is not None else {}
-        # fmt: on
-
-        self.render_context = {
-            **existing_context,
-            **temporary_context,
-            **private_context,
-            **public_context,
-        }
-
-        if self.extra_context is not None:
-            if isinstance(self.extra_context, list):
-                for i in self.extra_context:
-                    self.render_context.update(i)
-            else:
-                self.render_context.update(self.extra_context)
 
     def find_line_in_template(self, file):
         start_line = None
@@ -86,8 +60,9 @@ class JinjaHook(BaseHook):
 
         return start_line, end_line
 
-    def exec(self):
-        self._init_context()
+    def exec(self, context: 'Context'):
+        init_context(self=self, context=context)
+
         with open(self.template) as f:
             file = f.readlines()
 

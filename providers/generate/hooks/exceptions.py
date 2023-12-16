@@ -1,7 +1,7 @@
-from tackle.exceptions import TackleHookCallException
+from tackle.exceptions import TackleHookParseException
 
 
-class UndefinedVariableInTemplate(TackleHookCallException):
+class UndefinedVariableInTemplate(TackleHookParseException):
     """
     Exception for out-of-scope variables.
 
@@ -10,7 +10,7 @@ class UndefinedVariableInTemplate(TackleHookCallException):
     """
 
 
-class GenerateHookTemplateNotFound(TackleHookCallException):
+class GenerateHookTemplateNotFound(TackleHookParseException):
     """
     Exception when template is not found.
 
