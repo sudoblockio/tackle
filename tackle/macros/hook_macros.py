@@ -9,6 +9,7 @@ from pydantic.fields import FieldInfo
 
 from tackle import exceptions, Context
 from tackle.models import DclHookInput, DCL_HOOK_FIELDS, HookFieldValidator
+from tackle.pydantic.field_types import FieldInput
 
 LITERAL_TYPES = {'list', 'dict', 'str', 'int', 'float', 'bytes', 'bool'}
 
@@ -38,8 +39,6 @@ def update_value_with_default_factory(context: Context, hook_name: str, value: d
     }
 
 
-
-
 DEFAULT_FACTORY_KEYS = [
     'default->',
     'default_>',
@@ -67,19 +66,28 @@ def update_default_factory_hook_fields(
      public / included `->` or private / excluded `_>`.
      default_>: {...} => default_factory: {excluded: True, ...}
     """
-    for i in DEFAULT_FACTORY_KEYS:
-        if i in value:
-            raw_field = value.pop(i)
+    for key in DEFAULT_FACTORY_KEYS:
+        if key in value:
             if 'default_factory' in value:
                 raise exceptions.MalformedHookFieldException(
-                    f"Cannot have both '{i}' and 'default_factory' in hook field.",
+                    f"Cannot have both '{key}' and 'default_factory' in hook field.",
                     context=context, hook_name=hook_name,
                 )
-            value['default_factory'] = raw_field
-            if i[-2:] == '_>':
+            if len(key) == 2:
+                value = {'default_factory': value}
+            else:
+                value['default_factory'] = {key[-2:]: value.pop(key)}
+            if key[-2:] == '_>':
                 value['exclude'] = True
-            break
+            return value
+    # # TODO:
+    # if isinstance(value, dict):
+    #     if 'default' in value:
+    #         if isinstance(value['default'], (list, dict)):
+    #             value['default_factory'] = value.pop('default')
+    #             return value
 
+    return value
 
 def expand_default_factory(
         value: dict,
@@ -91,7 +99,12 @@ def expand_default_factory(
      `default_factory` field which this acts on.
     """
     if 'default_factory' not in value:
-        pass
+        return
+    elif value['default_factory'] is None:
+        value['default_factory'] = {
+            f'{key}->': value['default_factory'],
+            'return->': "{{" + key + "}}",
+        }
     elif isinstance(value['default_factory'], str):
         # Convert to dict which then returns the key
         value['default_factory'] = {
@@ -114,16 +127,21 @@ def infer_type_from_default(value: dict):
     if 'default' in value and 'type' not in value:
         # Has default field but not a type so assuming the type is the default.
         default = value['default']
-        if isinstance(default, ScalarFloat):
+        # ruyaml uses its own types so need special logic for them
+        if isinstance(default, (CommentedMap, dict)):
+            if '->' in default or '_>' in default:
+                value['type'] = 'Any'
+            else:
+                value['type'] = 'dict'
+        elif isinstance(default, ScalarFloat):
             value['type'] = 'float'
         elif isinstance(default, CommentedSeq):
             value['type'] = 'list'
-        elif isinstance(default, CommentedMap):
-            value['type'] = 'dict'
         else:
             value['type'] = type(value['default']).__name__
         return value
     elif 'default_factory' in value and 'type' not in value:
+        # Don't know type so just assume Any as output of default factory
         value['type'] = 'Any'
 
 
@@ -172,7 +190,7 @@ def dict_field_hook_macro(
         return->: {{field}}
     """
     # Transform fields ending in a hook call to a field with a default factory
-    update_default_factory_hook_fields(context, hook_name=hook_name, value=value)
+    value = update_default_factory_hook_fields(context, hook_name, value=value)
 
     # Expand any default_factory fields - value = str or dict with arrow
     expand_default_factory(value=value, key=key)
@@ -189,9 +207,12 @@ def dict_field_hook_macro(
         #     value=value,
         #     value_is_factory=True,
         # )
-        value['default_factory'] = value
-        value['type'] = 'Any'
-        return value
+        # value['default_factory'] = value
+        # value['default_factory'] = {'->': value}
+        # value['default_factory'] = value
+        # value['type'] = 'Any'
+        # return value
+        return {'default_factory': value, 'type': 'Any'}
 
     # Make the default_factory callable
     # if 'default_factory' in value:
@@ -208,17 +229,27 @@ def dict_field_hook_macro(
     return value
 
 
+def list_field_hook_macro(
+        context: Context,
+        hook_name: str,
+        key: str,
+        value: dict,
+) -> dict:
+    return {'default_factory': value, 'type': 'Any'}
+
+
 def str_field_hook_macro(
         context: Context,
         hook_name: str,
         key: str,
         value: dict,
 ) -> dict:
-    if not isinstance(value, str):
-        raise exceptions.MalformedHookFieldException(
-            f"The field hook at key={key[-2:]} must have a string value.",
-            context=context, hook_name=hook_name,
-        )
+    # if not isinstance(value, str):
+    #     raise exceptions.MalformedHookFieldException(
+    #         f"The field hook at key=`{key}` must have a string value. "
+    #         f"Got `{value}` of type `{type(value).__name__}`.",
+    #         context=context, hook_name=hook_name,
+    #     )
     return dict_field_hook_macro(
         context=context,
         hook_name=hook_name,
@@ -273,11 +304,13 @@ def hook_dict_macro(
                 key=k,
                 value=v,
             )
+        elif isinstance(v, list):
+            output[k] = {'type': 'list', 'default_factory': v}
         elif isinstance(v, CommentedSeq):
+            # TODO: rm
             output[k] = {'type': 'list', 'default': v}
         elif isinstance(v, FieldInfo):
-            # output[k] = v
-            raise
+            output[k] = v
         else:
             # Otherwise just put as default value with same type
             output[k] = {'type': type(v).__name__, 'default': v}

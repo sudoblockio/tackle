@@ -1,25 +1,23 @@
 import re
 from ruyaml.constructor import CommentedKeyMap, CommentedMap
+from typing import TYPE_CHECKING
 
 from tackle.render import render_variable
-from tackle.utils.dicts import get_readable_key_path
-
-from tackle.utils.dicts import get_readable_key_path, nested_get, nested_delete, \
-    nested_set
-from tackle import Context, DocumentKeyType, DocumentValueType, exceptions
-from tackle import BaseHook
+from tackle import exceptions
 from tackle.models import HookCallInput
 
+if TYPE_CHECKING:
+    from tackle import Context, DocumentKeyType, DocumentValueType
 
 def raise_key_macro_type_error(
-        context: Context,
+        context: 'Context',
         func_name: str,
         type_: str, msg: str = None
 ):
     if msg is None:
         msg = f"{func_name} {type_}"
 
-    raise exceptions.UnknownInputArgumentException(msg, context=context)
+    raise exceptions.UnknownHookInputArgumentException(msg, context=context)
 
 
 def expand_compact_hook_macro():
@@ -34,18 +32,23 @@ def import_key_macro(
         value: 'DocumentValueType',
         arrow: str,
 ) -> 'DocumentValueType':
-    if isinstance(value, str):
+    if isinstance(value, dict):
         return {
             arrow: 'import',
-            'providers': [value]
+            **value
         }
     elif isinstance(value, list):
         return {
             arrow: 'import',
-            'providers': value
+            'src': value
         }
-    else:
-        raise_key_macro_type_error()
+    return {arrow: f'import {value}'}
+
+    # else:
+    #     raise exceptions.MalformedHookFieldException(
+    #         f"The import hook special key needs to have a str, list, or dict input.",
+    #         context=context, hook_name='import'
+    #     )
 
 
 def return_key_macro(
@@ -96,16 +99,12 @@ def raise_key_macro(
 
 
 def assert_key_macro(
-        *,
         context: 'Context',
         key: 'DocumentKeyType',
         value: 'DocumentValueType',
         arrow: str,
 ) -> 'DocumentValueType':
-    return {
-        arrow: f'assert {value}',
-        'skip_output': True,
-    }
+    return {arrow: f'assert {value}'}
 
 
 def command_key_macro(
@@ -167,9 +166,9 @@ def key_to_dict_macro(
     return {arrow: value}
 
 
-HOOK_CALL_ALIASES = {
-    k if v.alias is None else v.alias for k, v in HookCallInput.model_fields.items()
-}
+# Both the keys and the aliases
+HOOK_CALL_KEYS = {k for k, v in HookCallInput.model_fields.items()} | {
+    v.alias for k, v in HookCallInput.model_fields.items() if v.alias is not None}
 
 
 def block_hook_macro(
@@ -186,10 +185,13 @@ def block_hook_macro(
         # hook here to preserve the access modifier of the hook call
         # TODO: https://github.com/sudoblockio/tackle/issues/185
         #  Apply unquoted_yaml_template_macro
+        # TODO: https://github.com/sudoblockio/tackle/issues/189
+        #  Figure out what lists really mean in blocks
         return {
             arrow: 'literal',
             'input': render_variable(context=context, raw=value)
         }
+    # Separate the base hook fields from extra `items`
     items = {}
     hook_fields = {}
     for k, v in value.items():
@@ -210,7 +212,7 @@ def unquoted_yaml_template_macro(value: CommentedMap):
     """
     This is for a common parsing error in yaml with unquoted values.
 
-    For instance `stuff->: {{things}}` (no quotes), ruamel interprets as
+    For instance `stuff->: {{things}}` (no quotes), ruamel/ruamel interprets as
      'stuff': ordereddict([(ordereddict([('things', None)]), None)]) which technically
      is accurate but generally users would never actually do. Since it is common to
      forget to quote, this is a helper to try to catch that error and fix it.
@@ -253,22 +255,24 @@ def key_macro(
     if not is_hook:
         return value
 
-        # Fix unquoted template error in yaml inputs
-    value = unquoted_yaml_template_macro(value=value)
+    # Fix unquoted template error in yaml inputs
+    # value = unquoted_yaml_template_macro(value=value)
 
     key = last_key[:-2]
-    if key != '' and isinstance(value, (str, int, float, bool)):
-        # Fix the key if not already -> ie key->: value to key: {'->': value}
-        value = key_to_dict_macro(context=context, key=key, value=value, arrow=arrow)
+    fixed_key = False  # Hacky var to know if we are indented TODO: Fix me
+    # if key != '' and isinstance(value, (str, int, float, bool)):
+    #     # Fix the key if not already -> ie key->: value to key: {'->': value}
+    value = key_to_dict_macro(context=context, key=key, value=value, arrow=arrow)
+        # fixed_key = True
 
-    elif key != '' and isinstance(value, (dict, list)):
-        # We have some kind block hook
-        return block_hook_macro(
-            context=context,
-            key=key,
-            value=value.copy(),
-            arrow=arrow
-        )
+    # elif key != '' and isinstance(value, (dict, list)):
+    #     # We have some kind block hook
+    #     return block_hook_macro(
+    #         context=context,
+    #         key=key,
+    #         value=value.copy(),
+    #         arrow=arrow
+    #     )
 
     # if not isinstance(key, str):
     #     return value
@@ -276,6 +280,15 @@ def key_macro(
     split_key = KEY_PATTERN.split(key)
     split_key_len = len(split_key)
     if split_key_len == 1:
+        # We don't have a special key
+        if key != '' and isinstance(value[arrow], (dict, list)):
+            # We have some kind block hook
+            return block_hook_macro(
+                context=context,
+                key=key,
+                value=value.copy()[arrow],
+                arrow=arrow
+            )
         # We don't have a special key but could have a var hook which is handled later
         return value
     elif split_key_len == 3:
@@ -314,6 +327,8 @@ def var_hook_macro(args: list) -> list:
 
     Ex. `foo->: foo-{{ bar }}-baz` would be rewritten as `foo->: var foo-{{bar}}-baz`
     """
+    if not isinstance(args[0], str):
+        return args
     if '{{' in args[0]:
         # We split up the string before based on whitespace so eval individually
         if '}}' in args[0]:
