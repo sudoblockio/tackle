@@ -10,4 +10,5 @@ def test_model_data_get(base_hooks_dir):
 def test_model_data_hook():
     Hook = get_hook('model_data')
     output = Hook().exec()
+
     assert output

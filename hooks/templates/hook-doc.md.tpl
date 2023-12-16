@@ -1,4 +1,4 @@
-# {{ hook_type }}
+# {{ hook_name }}
 [Source]({{ source_code_link_stub }}/{{ hook_file_name }})
 {#Description#}
 {% if description %}
@@ -34,10 +34,10 @@
 {#Output#}
 ## Returns
 `{{ return_type }}`{% if return_description %} - {{ return_description }}{% endif %}
-{% if hook_examples is defined %}{% if hook_examples is mapping %}{% if hook_type in hook_examples %}
+{% if hook_examples is defined %}{% if hook_examples is mapping %}{% if hook_name in hook_examples %}
 {#Examples#}
 ## Examples
-{% for i in hook_examples[hook_type] %}{% if i.name is defined %}
+{% for i in hook_examples[hook_name] %}{% if i.name is defined %}
 ### {{ i.name }}{% endif %}{% if i.description is defined %}
 {{ i.description }}{% endif %}
 ```yaml

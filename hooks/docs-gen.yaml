@@ -44,7 +44,8 @@ gen_docs<-:
       provider_meta:
         ->: tackle .tackle.meta.yaml
         if: isfile('.tackle.meta.yaml')
-        else: {}
+        else:
+          examples: []
 
       # Build the provider navigation for mkdocs
       provider_mkdocs_nav_list:
@@ -54,7 +55,7 @@ gen_docs<-:
         for: render_context.hooks
         if: render_context.hooks|length != 1
         item:
-          "{{item.hook_type}}": providers/{{ provider | title }}/{{ item.hook_type }}.md
+          "{{item.hook_name}}": providers/{{ provider | title }}/{{ item.hook_name }}.md
       append to mkdocs_nav_list:
         ->: append mkdocs_nav_list
         item:
@@ -74,9 +75,9 @@ gen_docs<-:
     #  Generate multiple->:
     #    if: render_context['hooks'] | length != 1
     #    Render hook templates from the tackle provider:
-    #      ->: generate {{templates_dir}}/hook-doc.md.tpl {{provider_docs_dir}}/{{provider|title }}/{{ item.hook_type }}.md
+    #      ->: generate {{templates_dir}}/hook-doc.md.tpl {{provider_docs_dir}}/{{provider|title }}/{{ item.hook_name }}.md
     #      for: render_context['hooks']
-    #      if: item.hook_type not in problem_hooks
+    #      if: item.hook_name not in problem_hooks
     #      extra_context:
     #        - "{{ provider_meta }}"
     #        - "{{ item }}"
@@ -84,9 +85,9 @@ gen_docs<-:
 
       Generate multiple:
         when: render_context['hooks'] | length != 1
-        _>: generate {{templates_dir}}/hook-doc.md.tpl {{provider_docs_dir}}/{{provider|title }}/{{ item.hook_type }}.md
+        _>: generate {{templates_dir}}/hook-doc.md.tpl {{provider_docs_dir}}/{{provider|title }}/{{ item.hook_name }}.md
         for: render_context['hooks']
-        if: item.hook_type not in problem_hooks
+        if: item.hook_name not in problem_hooks
         extra_context:
           - "{{ provider_meta }}"
           - "{{ item }}"
@@ -101,4 +102,4 @@ gen_docs<-:
       _>: copy {{templates_dir}}/problem-hooks/{{item}}.md {{provider_docs_dir}}/{{problem_hooks[item]}}/{{item}}.md
       for: keys(problem_hooks)
 
-    Regenerate mkdocs->: tackle ../mkdocs.tackle.yml
+    Regenerate mkdocs->: tackle mkdocs.tackle.yml  # Already at base

@@ -10,7 +10,8 @@ from pydantic import BaseModel, Field
 import inspect
 from typing import List, get_type_hints, Any, Union, Optional
 
-from tackle import exceptions
+from tackle import exceptions, Context
+from tackle.utils.type_strings import type_to_string
 
 try:
     from typing import _GenericAlias
@@ -63,23 +64,23 @@ class ProviderDocs(BaseModel):
     description: str = None
 
 
-def hook_field_type_to_string(type_) -> str:
-    """Convert hook ModelField type_ to string."""
-    if type_ == Any:
-        output = 'any'
-    elif isinstance(type_, _GenericAlias):
-        if isinstance(type_, List):
-            output = 'list'
-        else:
-            output = 'union'
-    elif isinstance(type_, UnionType):
-        if isinstance(type_, List):
-            output = 'list'
-        else:
-            output = 'union'
-    else:
-        output = type_.__name__
-    return output
+# def type_to_string(type_) -> str:
+#     """Convert hook ModelField type_ to string."""
+#     if type_ == Any:
+#         output = 'any'
+#     elif isinstance(type_, _GenericAlias):
+#         if isinstance(type_, List):
+#             output = 'list'
+#         else:
+#             output = 'union'
+#     elif isinstance(type_, UnionType):
+#         if isinstance(type_, List):
+#             output = 'list'
+#         else:
+#             output = 'union'
+#     else:
+#         output = type_.__name__
+#     return output
 
 
 def get_hook_properties(hook) -> List[HookDocField]:
@@ -104,7 +105,7 @@ def get_hook_properties(hook) -> List[HookDocField]:
         hook_doc = HookDocField(
             name=k,
             required=v.default is not None,
-            type=hook_field_type_to_string(v.annotation),
+            type=type_to_string(v.annotation),
             default=v.default,
             description=v.description
             if v.description is not None
@@ -120,7 +121,9 @@ def get_hook_arguments(hook: BaseHook) -> List[HookArgField]:
 
     for i in hook.model_fields['args'].default:
         try:
-            type_ = hook_field_type_to_string(hook.model_fields[i].annotation)
+            type_ = type_to_string(hook.model_fields[i].annotation)
+        except KeyError as e:
+            raise e
         except Exception as e:
             print(f"{e}")
             raise e
@@ -167,7 +170,7 @@ class ProviderDocsHook(BaseHook):
         if sys.version_info.minor <= 6:
             raise Exception("Can't run provider_docs hook in a py version < 3.7.")
 
-    def exec(self) -> Union[dict, list]:
+    def exec(self, context: Context) -> Union[dict, list]:
         """Build the docs."""
         if not self.provider:
             self.provider = os.path.basename(os.path.abspath(self.path))
@@ -208,13 +211,12 @@ class ProviderDocsHook(BaseHook):
             for h in hooks:
                 if '_wip' in h.model_fields and h.model_fields['_wip'].default:
                     continue
-
                 try:
                     return_type = get_type_hints(h.exec)
                 except NameError as e:
-                    pass
+                    raise e
                 if 'return' in return_type:
-                    return_type = hook_field_type_to_string(return_type['return'])
+                    return_type = type_to_string(return_type['return'])
                 else:
                     return_type = None
 

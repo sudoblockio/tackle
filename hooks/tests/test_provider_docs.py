@@ -1,29 +1,10 @@
-import os.path
-import sys
 import pytest
+import os.path
 
-from tackle import tackle, get_hook
-from hooks.provider_docs import hook_field_type_to_string
-
-from typing import Dict, List, Union, Any
-
-TYPE_FIXTURES = [
-    (dict, "dict"),
-    # (Dict, "dict"),
-    (list, "list"),
-    # (List, "list"),
-    (Union[dict, list], "union"),
-    (Any, "any"),
-]
-
-
-@pytest.mark.parametrize("type_,expected_output", TYPE_FIXTURES)
-def test_hook_type_to_string(type_, expected_output):
-    output = hook_field_type_to_string(type_)
-    assert output == expected_output
-
+from tackle import tackle, get_hook, Context
 
 PROVIDERS_PATH = os.path.join('..', '..', 'providers')
+
 
 def get_provider_paths(provider_name: str = None):
     if provider_name is not None:
@@ -40,24 +21,22 @@ def get_provider_paths(provider_name: str = None):
 def test_provider_docs_hook(provider_path):
     """Check that we can run the collections provider."""
     Hook = get_hook('provider_docs')
-    output = Hook(path=provider_path).exec()
+    output = Hook(path=provider_path).exec(context=Context())
 
     assert len(output['hooks']) > 0
 
 
-def test_provider_tackle_provider_docs():
-    """Run the provider docs."""
-    if sys.version_info.minor <= 6:
-        return
+def test_local_hooks_generate_provider_docs():
+    """Generate the provider docs."""
+    output = tackle('gen_docs')
+    paths = [
+        'provider_dir',
+        'provider_docs_dir',
+        'schemas_dir',
+        'templates_dir',
+    ]
 
-    output = tackle('docs.yaml')
-    assert (
-        len(
-            [
-                i
-                for i in output['render_context']['hooks']
-                if i['hook_type'] == 'provider_docs'
-            ]
-        )
-        == 1
-    )
+    for p in paths:
+        assert os.path.exists(output[p])
+
+    assert len(output['gen']) > 10

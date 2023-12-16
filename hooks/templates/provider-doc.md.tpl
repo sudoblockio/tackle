@@ -10,7 +10,7 @@
 
 | Type | Description | Return |
 | :--- | :--- | :--- |{% for i in hooks %}
-| [{{ i.hook_type }}]({{ i.hook_type }}.md) | {{ i.description }} | {{ i.return_type }} | {% endfor %}
+| [{{ i.hook_name }}]({{ i.hook_name }}.md) | {{ i.description }} | {{ i.return_type }} | {% endfor %}
 
 {% if requirements != [] %}
 ### Requirements

@@ -22,11 +22,7 @@ Tox<_:
     - pip install -e .[all]
     - pip install -r requirements-dev.txt
     - pytest --cov=tackle {posargs:tests tackle/providers}
-
-
   run->: pytest
 
-test<-:
-
+test<_:
   exec:
-
