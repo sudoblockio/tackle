@@ -1,6 +1,6 @@
 from typing import Union, Any
 
-from tackle import BaseHook, Field
+from tackle import BaseHook, Field, Context
 from tackle.utils.dicts import encode_key_path, nested_get
 from tackle.exceptions import HookCallException
 
@@ -30,13 +30,13 @@ class GetKeyHook(BaseHook):
     args: list = ['path', 'fallback']
     # fmt: on
 
-    def exec(self):
+    def exec(self, context: Context):
         """Run the hook."""
         value = None
         for i in ['public', 'private', 'temporary', 'existing']:
             try:
                 value = nested_get(
-                    element=getattr(self.context.data, i),
+                    element=getattr(context.data, i),
                     keys=encode_key_path(self.path, self.sep),
                 )
             except KeyError:
@@ -50,7 +50,8 @@ class GetKeyHook(BaseHook):
                 print(f"Could not find a key in {self.path} in any context.")
             if self.fallback == FALLBACK_VALUE:
                 raise HookCallException(
-                    f"Could not find a key in {self.path} in any context.", context=self
+                    f"Could not find a key in {self.path} in any context.",
+                    context=context
                 )
             if self.verbose:
                 print(f"Using fallback={self.fallback}.")

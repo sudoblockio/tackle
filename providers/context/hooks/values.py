@@ -1,6 +1,6 @@
 from typing import Union, Optional
 
-from tackle import BaseHook, Field
+from tackle import BaseHook, Field, Context
 from tackle.utils.dicts import encode_key_path, nested_get, get_target_and_key
 
 
@@ -17,7 +17,7 @@ class DictValuesHook(BaseHook):
 
     args: list = ['src']
 
-    def exec(self) -> Optional[list]:
+    def exec(self, context: Context) -> Optional[list]:
         """Convert to list then look up before lifting values off a dict."""
         key_path = None
         if isinstance(self.src, str):
@@ -27,7 +27,7 @@ class DictValuesHook(BaseHook):
 
         if key_path is not None:
             target_context, trim_key_path = get_target_and_key(
-                context=self.context,
+                context=context,
                 key_path=key_path,
             )
 

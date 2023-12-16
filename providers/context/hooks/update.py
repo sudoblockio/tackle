@@ -1,6 +1,6 @@
 from typing import Union, Optional, Any
 
-from tackle import BaseHook, Field
+from tackle import BaseHook, Field, Context
 from tackle.utils.dicts import (
     encode_key_path,
     nested_set,
@@ -27,11 +27,11 @@ class DictUpdateHook(BaseHook):
 
     args: list = ['src', 'input']
 
-    def exec(self) -> Optional[dict]:
+    def exec(self, context: Context) -> Optional[dict]:
         if isinstance(self.src, (str, list)):
             self.src = encode_key_path(self.src, self.sep)
         if isinstance(self.src, list):
-            target_context, set_key_path = get_target_and_key(self.context, key_path=self.src)
+            target_context, set_key_path = get_target_and_key(context, key_path=self.src)
 
             src = nested_get(
                 element=target_context,

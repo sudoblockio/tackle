@@ -1,6 +1,6 @@
 from typing import Any
 
-from tackle import BaseHook, Field
+from tackle import BaseHook, Field, Context
 from tackle.utils.dicts import encode_key_path, nested_set, get_target_and_key
 
 
@@ -18,10 +18,12 @@ class SetKeyHook(BaseHook):
     args: list = ['path', 'value']
     # fmt: on
 
-    def exec(self):
+    skip_output: bool = True
+
+    def exec(self, context: Context):
         """Run the hook."""
         target_context, set_key_path = get_target_and_key(
-            context=self.context,
+            context=context,
             key_path=encode_key_path(self.path, self.sep),
         )
 

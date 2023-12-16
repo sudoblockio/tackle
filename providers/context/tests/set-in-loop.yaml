@@ -1,0 +1,5 @@
+fib1: 1
+loop->:
+  for: i in range(0,3)
+  fib1->: set fib1 {{i}}
+#  debug->:

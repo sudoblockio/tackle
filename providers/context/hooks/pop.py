@@ -1,6 +1,6 @@
 from typing import Union
 
-from tackle import BaseHook, Field
+from tackle import BaseHook, Field, Context, exceptions
 from tackle.utils.dicts import encode_key_path, nested_get, get_target_and_key
 
 
@@ -38,19 +38,24 @@ class DictPopHook(BaseHook):
         else:
             target.pop(self.item)
 
-    def exec(self) -> Union[dict, list, None]:
+    def exec(self, context: Context) -> Union[dict, list, None]:
         """
         Check if the src is a ref to a key in the context or a literal value that will
          be popped.
         """
         if isinstance(self.src, str) or self.src_is_key_path:
             target_context, set_key_path = get_target_and_key(
-                self.context, key_path=encode_key_path(self.src, self.sep)
+                context, key_path=encode_key_path(self.src, self.sep)
             )
-            target = nested_get(
-                element=target_context,
-                keys=set_key_path,
-            )
+            try:
+                target = nested_get(
+                    element=target_context,
+                    keys=set_key_path,
+                )
+            except KeyError as e:
+                raise exceptions.HookCallException(
+                    f"Unknown key {e} not found", context=context,
+                ) from None
             self.pop_item(target)
         else:
             self.pop_item(self.src)

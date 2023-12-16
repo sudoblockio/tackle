@@ -1,0 +1,15 @@
+input_map:
+  stuff: blah
+  sturf: blu
+
+dict_map:
+  foo: bing
+  bar: blu
+
+update_map:
+  ->: update
+  src: "{{ input_map }}"
+  input:
+    stuff: "{{ dict_map }}"
+
+update in place_>: update dict_map/foo bar

@@ -1,6 +1,6 @@
 from typing import Union
 
-from tackle import BaseHook, Field
+from tackle import BaseHook, Field, Context
 from tackle.utils.dicts import nested_delete, encode_key_path, get_target_and_key
 
 
@@ -20,10 +20,10 @@ class DeleteKeyHook(BaseHook):
     args: list = ['path']
     # fmt: on
 
-    def exec(self) -> None:
+    def exec(self, context: Context) -> None:
         """Run the hook."""
         target_context, set_key_path = get_target_and_key(
-            context=self.context,
+            context=context,
             key_path=encode_key_path(self.path, self.sep)
         )
 
