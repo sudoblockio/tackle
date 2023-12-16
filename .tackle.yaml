@@ -1,0 +1,80 @@
+
+docs<-:
+  help:
+  exec: tackle docs/docs-gen.yaml
+
+install<-:
+  help: Install all the requirements
+  exec<-:
+    do->: command "pip install -e .\[all\] -r requirements-dev.txt -r docs/requirements.txt"
+
+install2<-:
+  help: Install all the requirements
+  exec<-:
+    do->: command "pip install -e .\[all\] -r requirements-dev.txt -r docs/requirements.txt"
+
+clean_tox<-:
+  help: Remove tox testing artifacts
+  dir:
+    type: str
+    default: .
+#  exec<-: rm -rf .tox/
+
+clean_build<-:
+  help: Remove build artifacts
+#  exec:
+#    f:
+#      ->: command
+#      command: |
+#        rm -fr build/
+#        rm -fr dist/
+#        rm -fr *.egg-info
+  exec-^: |
+    rm -fr build/
+    rm -fr dist/
+    rm -fr *.egg-info
+
+
+#  exec:
+#    f->: |
+#      command
+#      echo "+ $@"
+#      rm -fr build/
+#      rm -fr dist/
+#      rm -fr *.egg-info
+
+
+#  exec: |
+#    command
+#    echo "+ $@"
+#    rm -fr build/
+#    rm -fr dist/
+#    rm -fr *.egg-info
+
+
+
+tests<-:
+  help: Run all tests
+
+  unit<-:
+    help: Run unit tests
+
+  int<-:
+    help: Run integration tests
+
+  fuzz<-:
+    help: Run integration tests
+
+  exec:
+    print->: Running all tests
+
+gen<-:
+  help: Generate
+
+  docs<-:
+    help: Generate the docs
+    run->: gen_docs
+
+  cache<-:
+    hooks->: gen_cache_data --merge
+    generate->: native_providers.py.tpl providers/native_providers.py

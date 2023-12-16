@@ -1,3 +1,7 @@
+# TMP
+docs/articles/*
+proposals/*
+
 scratch*.py
 scratch/
 .bak/
@@ -7,6 +11,8 @@ docs/.hooks/*
 hold
 wip
 .old
+tests-old
+
 
 # mkdocs.yml is generated
 mkdocs.yml

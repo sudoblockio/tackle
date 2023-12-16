@@ -55,7 +55,7 @@ def parse_requirements_file(reqs_file, provider_requirements, key):
 
 def get_provider_requirements():
     """Get the provider requirements from each provider to allow extra requirements."""
-    providers_dir = os.path.join(os.path.dirname(__file__), 'tackle', 'providers')
+    providers_dir = os.path.join(os.path.dirname(__file__), 'providers')
     providers = os.listdir(providers_dir)
     provider_requirements = defaultdict(set)
     for p in providers:
@@ -73,10 +73,12 @@ def get_provider_requirements():
 
 INSTALL_REQUIREMENTS = [
     'Jinja2>3.0.0',
-    # 'requests>=2.23.0',  # This would be needed if we allowed url sources
-    'pydantic>=1.8.0,<2.0.0',
+    'requests>=2.23.0',  # This would be needed if we allowed url sources
+    'pydantic>=2.4.2',
+    'pydantic-settings>2.0.0',
     'InquirerPy>=0.3.3',
-    'ruamel.yaml>=0.17.0',
+    # 'ruamel.yaml>=0.17.0',
+    'ruyaml==0.91.0',
     'rich>=12.6.0',
     'xdg==5.1.1',
 ]
@@ -98,7 +100,7 @@ setup(
     long_description_content_type='text/markdown',
     author='Rob Cannon',
     author_email='robc.io.opensource@gmail.com',
-    url='https://github.com/robcxyz/tackle',
+    url='https://github.com/sudoblockio/tackle',
     packages=find_packages(exclude=['tests*', 'logo*', 'docs*', '.github*']),
     package_dir={'tackle': 'tackle'},
     entry_points={'console_scripts': ['tackle = tackle.cli:main']},

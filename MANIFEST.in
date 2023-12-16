@@ -6,6 +6,7 @@ include README.md
 
 recursive-include providers *
 recursive-include tackle/utils *
+recursive-include tackle/pydantic *
 
 recursive-include tests *
 recursive-exclude * __pycache__

@@ -16,23 +16,29 @@
 
 [//]: # (* [Slack]&#40;https://join.slack.com/t/slack-y748219/shared_invite/zt-1cqreswyd-5qDBE53QlY97mQOI6DhcKw&#41;)
 
-Tackle is an experimental general purpose configuration language for building modular code generators and declarative CLIs. Built as a fork of [cookiecutter](https://github.com/cookiecutter/cookiecutter), it can make any config file into a CLI with both strong and weakly typed programmable flow control common to a general purpose programming language. Basically you can write a fully functional Turing-complete program out of a config file. It's wild.
+Tackle is a multi-paradigm configuration language for building modular code generators, schema validators, and declarative CLIs. Built as a fork of [cookiecutter](https://github.com/cookiecutter/cookiecutter) and on top of [pydantic](), it can make any config file into a CLI with both strong and weakly typed programmable flow control common to a general purpose programming language. Comparable with [CUE](), [Jsonnet](), and [Dhall](),  with more features and cleaner syntax, you can write a fully functional Turing-complete program out of a json/yaml/toml file. It's wild.
 
 **With tackle, you can build:**
 - Modular code generators / repo scaffolding tools that can be updated over time
 - Interactive glue code for infrastructure-as-code deployment strategies
+- Validate complex schemas composing them with strongly typed objects
 - Generic utilities like SSH helpers and dotfile managers
 - Combinations of all of the above and anything else you can think of
 
 [//]: # (- Declarative makefile alternatives for advanced toolchain management)
 
-> If this project gets enough adoption / stars, it will be re-written in a compiled language, either Go or Rust. Give it a star if you'd like to see that.
+> WARNING: Tackle is still in alpha so expect some changes in the future. 
 
 ### Features
 
+- Multi-paradigm 
+  - Create strong and weakly typed objects with custom validation logic 
+  - Objects can have methods and be extended through inheritance 
+  - Compose objects to create nested validation structures 
+
 - Makes arbitrary yaml / json / toml [dynamic](https://sudoblockio.github.io/tackle/hook-methods/)
-  - Embed loops, conditionals, and other custom logic
-  - Self documenting CLI to call logic
+  - Embed loops, conditionals, and other custom flow control logic
+  - Self documenting CLI to call tackle from command line 
 - Ships with a collection of over [100 hooks](https://sudoblockio.github.io/tackle) that act like plugins within your config file
   - [Prompt user for inputs](https://sudoblockio.github.io/tackle)
   - [Generate code from templates](https://sudoblockio.github.io/tackle/providers/Generate/)
@@ -43,7 +49,8 @@ Tackle is an experimental general purpose configuration language for building mo
   - [Run other tackle files](https://sudoblockio.github.io/tackle/providers/Tackle/tackle/)
 - Modular design allows creating / importing new hooks easy
   - Supports both [python](https://sudoblockio.github.io/tackle/python-hooks/) and [declarative](https://sudoblockio.github.io/tackle/declarative-hooks/) hooks which can be imported / called / defined in-line or within jinja templates
-  - Hooks can be composed of other hooks allowing complex objects to be validated and operated against
+  - Hooks can be composed / inherited with / from other hooks allowing complex objects to be validated and operated against
+- Expressive macro system creating intuitive interfaces 
 
 ### Install
 
@@ -63,12 +70,14 @@ Check out the [docs](https://sudoblockio.github.io/tackle/hello-worlds/) for >10
 **hello.yaml**
 ```yaml
 # Any time a key ends with `->`, we are calling a hook
-hw->: print Hello world!
+any key->: print Hello world!
+# `print` is a hook which can also be used as a special key 
+print->: Hello world!
 ```
 
 To run, call `tackle hello.yaml`. Can also be [version controlled](https://sudoblockio.github.io/tackle/creating-providers/) -> [`tackle sudoblockio/tackle-hello-world`](https://github.com/sudoblockio/tackle-hello-world).
 
-Can also use [loops, conditionals, and other base methods](https://sudoblockio.github.io/tackle/hook-methods/).
+Can also use [loops, conditionals, and other base methods like try / except](https://sudoblockio.github.io/tackle/hook-methods/).
 
 **hello.yaml**
 ```yaml
@@ -77,31 +86,44 @@ the:
     - Hello
     - cruel
     - world!
-one liner->: print {{item}} --for the.words --if "item != 'cruel'"
+# Compact one liners 
+one liner->: print {{i}} --for i in the.words --if i != 'cruel'
+# Which can also be expressed in multiple lines 
 multiple lines:
   ->: print
   objects: {{item}}
   for:
     - Hello
+    - cruel
     - world!
   if: item != 'cruel'
-# Or combinations of the above with other methods like try/except
+# Or combinations of the above
+combination:
+  ->: print {{i}}
+  for: i in ['Hello','world!']
+# As a special key 
+print->: Hello {{i}} --for i in the.words 
+# Or through jinja rendering 
+with rendering->: "{{print('Hello','world!'}}"
 ```
 
 New hooks can be [made in python](https://sudoblockio.github.io/tackle/python-hooks/) which under the hood is a [pydantic](https://github.com/pydantic/pydantic) model.
 
 **.hooks/hello.py**
+
 ```python
 from tackle import BaseHook
 
+
 class Greeter(BaseHook):
-    hook_type: str = "greeter"
-    target: str
-    args: list = ['target']
-    def exec(self):
-      expression = f"Hello {self.target}"
-      print(expression)
-      return expression
+  hook_name: str = "greeter"
+  target: str
+  args: list = ['target']
+
+  def exec(self):
+    expression = f"Hello {self.target}"
+    print(expression)
+    return expression
 ```
 
 Or can be [defined inline within your tackle file, imported remotely, or in a `hooks` directory.](https://sudoblockio.github.io/tackle/declarative-hooks/).
@@ -132,7 +154,7 @@ Jinja template->: {{ greeter(hello) }}
 # Or combinations jinja and compact / expanded hooks allowing chaining of hook calls.
 ```
 
-With the declarative hooks being [callable from the command line](https://sudoblockio.github.io/tackle/declarative-cli/):
+Hooks are also [callable from the command line](https://sudoblockio.github.io/tackle/declarative-cli/):
 
 ```shell
 tackle hello.yaml greeter --target world!
@@ -147,7 +169,7 @@ Documentation can be embedded into the hooks.
 <-:
   help: This is the default hook
   target:
-    type: union[str, int]
+    type: str
     default->: input
     description: The thing to say hello to
   exec<-:
@@ -209,17 +231,38 @@ Hooks can be imported [within a tackle provider](https://sudoblockio.github.io/t
 - **Windows Support**
   - tackle is lacking some windows support as shown in the [failed tests](https://github.com/sudoblockio/tackle/actions/workflows/main-windows.yml). If you are a windows user, it is highly recommended to use WSL. **Please get in touch** if you are motivated to fix these tests to make tackle fully cross-platform. It probably isn't that hard to fix them as they mostly are due to differences in how windows handles paths.
 - **Whitespaces**
-  - tackle relies heavily on parsing based on whitespaces which if you are not careful can easily bite you. Whenever you need to have some whitespaces preserved, make sure to quote the entire expression. Future work will be put in to overhaul the [regex based parser](https://github.com/sudoblockio/tackle/blob/main/tackle/utils/command.py#L52) with a PEG parser like [parsimonious](https://github.com/erikrose/parsimonious).
+  - tackle relies heavily on parsing based on whitespaces which if you are not careful can easily bite you. Whenever you need to have some whitespaces preserved, make sure to quote the entire expression. Future work will be put in to overhaul the [regex based parser](https://github.com/sudoblockio/tackle/blob/main/tackle/utils/command.py#L52) with a PEG parser or AST.
 
 ### Contributing
 
+```shell
+git clone 
+cd tackle 
+make  # Creates and sources virtualenv 
+tackle --version  # Stable version installed from pypi for managing tackle 
+tackle test  # Run tests with tackle
+make test  # Alternatively run with make 
+```
 Contributions are welcome but please be advised of the following notes.
 
 - This project uses [conventional commits](https://www.conventionalcommits.org/) which generates the [changelog](./CHANGELOG.md) with [release-please-action](https://github.com/google-github-actions/release-please-action) in the [release](https://github.com/sudoblockio/tackle/blob/main/.github/workflows/release.yml) CI workflow. If commits have been made outside of this convention they will be squashed accordingly.
-- For making changes to providers, please include test coverage using the existing fixtures and patterns from prior tests or communicate any suggestions that deviate from this style. It definitely can be improved but consistency is more important than making directed improvements. Tests should be runnable from the test's directory and via `make test`.
+- For making changes to providers, please include test coverage using the existing fixtures and patterns from prior tests or communicate any suggestions that deviate from this style. It definitely can be improved but consistency is more important than making directed improvements. Tests should be runnable from the test's directory and via `tackle test`.
 - For making changes to the core parser, please create a proposal first outlining your suggestions with examples before spending time working on code.
 
-It is very easy to create new providers / hooks with tackle. Over time, it will adopt the same import pattern of what Ansible does where all provider / hooks (modules) are stored in version controlled locations. In the meantime, please feel free to contribute to this repository for hooks that have general applicability or create your own hooks in other repositories that are more bespoke / opinionated in nature.
+It is very easy to create new providers / hooks with tackle. Over time, it will adopt the same import pattern of what Ansible does where all provider / hooks (modules) are stored in version controlled locations. In the meantime, please feel free to contribute to this repository for hooks that have general applicability with no dependencies in the [providers](providers) directory or  or create your own hooks in other repositories that are more bespoke / opinionated in nature.
+
+### Future Directions
+
+It was always the intention for tackle to be re-written in some kind of compiled language and if the language gets some decent traction, that will be done. Goals will be:
+
+- Improved parsing performance - tackle should be [blazing fast](https://www.youtube.com/watch?v=Z0GX2mTUtfo)
+- Overhaul of string parsers - should be token based exposing more language features
+- Improved linking cabablities - 
+- Ship as a single binary - Not only the tackle interpreter, but an entire tackle provider with linked dependencies  
+- Compiled to WASM - Make tackle usable from any language
+- A registry - This is a no brainer when you have a language with modular charectoristics 
+
+Instead, the intention will be to integrate Mojo's language features to allow binaries to be compiled from tackle scripts and providers. This will be a major challenge but the benefits will be worth it. Theoretically, tackle could be very fast when it make this switch and useful in a variety of other interesting applications. 
 
 ### Code of Conduct
 
