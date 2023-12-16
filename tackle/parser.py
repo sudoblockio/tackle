@@ -34,9 +34,7 @@ from typing import Any, Callable
 from tackle import exceptions
 from tackle.macros.key_macros import (
     var_hook_macro,
-    key_macro,
-    unquoted_yaml_template_macro,
-)
+    key_macro,)
 from tackle.models import (
     LazyBaseHook,
     HookCallInput,

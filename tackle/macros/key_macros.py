@@ -183,8 +183,6 @@ def block_hook_macro(
     if isinstance(value, list):
         # When we have a hook with a list - we just render each item. Use the literal
         # hook here to preserve the access modifier of the hook call
-        # TODO: https://github.com/sudoblockio/tackle/issues/185
-        #  Apply unquoted_yaml_template_macro
         # TODO: https://github.com/sudoblockio/tackle/issues/189
         #  Figure out what lists really mean in blocks
         return {

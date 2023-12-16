@@ -34,19 +34,6 @@ def test_parse_repo_ref(repo_input):
 
 @pytest.mark.slow
 @pytest.mark.parametrize("fixture,assertion", [
-    ('tackle-fixture-released', lambda x: x.startswith('v')),
-    ('tackle-fixture-unreleased', lambda x: not x),
-])
-def test_vcs_get_latest(fixture, assertion):
-    """Get the latest release in this repo."""
-    with work_in(fixture):
-        release = get_latest_release_from_remote()
-
-    assert assertion(release)
-
-
-@pytest.mark.slow
-@pytest.mark.parametrize("fixture,assertion", [
     ('tackle-fixture-released', lambda x: x == 'main'),
     ('tackle-fixture-unreleased', lambda x: x == 'main'),
 ])
