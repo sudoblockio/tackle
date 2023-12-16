@@ -3,9 +3,6 @@ Utils for modifying complex dictionaries generally based on an encoded key_path 
 a list of strings for key value lookups and byte encoded integers for items in a list.
 """
 from typing import Union, Any, TYPE_CHECKING
-from enum import Enum
-
-# from ruamel.yaml.comments import CommentedKeyMap
 from ruyaml.comments import CommentedKeyMap
 
 if TYPE_CHECKING:
@@ -191,21 +188,31 @@ def get_target_and_key(
         key_path: list = None,
 ) -> (Any, list):
     """Get the target context and key to `set_key` from."""
-    target_context = context.data.public
+    is_public = True
 
     if key_path is None:
         key_path = context.key_path
 
     output_key_path = []
     for i in key_path:
+        # We want the last arrow for which data namespace to write to (ie public vs private)
         if i == '_>':
-            if context.data.private is None:
-                context.data.private = (
-                    {} if isinstance(output_key_path[0], str) else []
-                )
-            target_context = context.data.private
-        elif i != '->':
+            is_public = False
+        elif i == '->':
+            is_public = True
+        else:
             output_key_path.append(i)
+
+    if is_public:
+        # We check if we are writing to a list or a dict first as dicts are default
+        # but need to change the type here if we are writing to a list
+        if not context.data.public:
+            context.data.public = [] if isinstance(output_key_path[0], bytes) else {}
+        target_context = context.data.public
+    else:
+        if not context.data.private:
+            context.data.private = [] if isinstance(output_key_path[0], bytes) else {}
+        target_context = context.data.private
 
     return target_context, output_key_path
 
@@ -226,7 +233,18 @@ def set_temporary_context(
         value: Any,
         key_path: list,
 ) -> None:
-    tmp_key_path = key_path[(len(context.key_path_block) - len(key_path)):]
+    """
+
+    """
+    # tmp_key_path = key_path[(len(context.key_path_block) - len(key_path)):]
+    # Remove the as many items off the key_path as we are indexed into a block
+    # For instance - key_path = ['foo', 'bar'] + key_path_block = ['foo'] then
+    # tmp_key_path = ['bar']
+    tmp_key_path = key_path[len(context.key_path_block):]
+
+    if len(tmp_key_path) == 0:
+        # Nothing to set in tmp context
+        return
 
     # Check if temp data is None and create an empty dict otherwise
     if context.data.temporary is None or len(context.data.temporary) == 0:
@@ -234,6 +252,7 @@ def set_temporary_context(
             # We don't need to worry about tmp data when we are inside of a list
             return
         context.data.temporary = {}
+    # Clean the key path of arrows
     tmp_key_path = [i for i in tmp_key_path if i not in ('->', '_>')]
 
     if len(tmp_key_path) == 0:
@@ -255,7 +274,10 @@ def get_set_temporary_context(
         context=context,
         key_path=context.key_path
     )
-    value = nested_get(element=target_context, keys=set_key_path)
+    try:
+        value = nested_get(element=target_context, keys=set_key_path)
+    except KeyError as e:
+        raise e
     set_temporary_context(
         context=context,
         value=value,
@@ -284,6 +306,11 @@ def set_key(
     nested_set(target_context, set_key_path, value)
 
     if len(context.key_path_block) != 0:
+        # When inside a block
+        if isinstance(value, (list, dict)):
+            # Whenever we are writing to temporary data we want to copy that
+            value = value.copy()
+        # Write to temporary data
         set_temporary_context(context=context, value=value, key_path=key_path)
 
 
@@ -348,6 +375,20 @@ def merge(a, b, path=None, update=True):
     return a
 
 
+def _update_input_dict(input_dict: dict, update_dict: dict, arrow: str, k: str, v: Any):
+    if isinstance(v, dict):
+        input_dict[f"{k}{arrow}"] = update_input_dict(
+            input_dict=input_dict[f"{k}{arrow}"],
+            update_dict=update_dict[k],
+        )
+    else:
+        input_dict = {
+            key if key != f"{k}{arrow}" else k: value if key != f"{k}{arrow}" else v
+            for key, value in input_dict.items()
+        }
+    return input_dict
+
+
 def update_input_dict(input_dict: dict, update_dict: dict) -> dict:
     """
     Update the input dict with update_dict which in this context are treated as
@@ -359,27 +400,8 @@ def update_input_dict(input_dict: dict, update_dict: dict) -> dict:
         # TODO: Make this dry -> split into another function
         elif f"{k}->" in input_dict:
             # If value is a dict, recurse into this dict
-            if isinstance(v, dict):
-                input_dict[f"{k}->"] = update_input_dict(
-                    input_dict=input_dict[f"{k}->"],
-                    update_dict=update_dict[k],
-                )
-            else:
-                # Replace the keys and value in the same position it was in
-                input_dict = {
-                    key if key != f"{k}->" else k: value if key != f"{k}->" else v
-                    for key, value in input_dict.items()
-                }
+            input_dict = _update_input_dict(input_dict, update_dict, '->', k, v)
         elif f"{k}_>" in input_dict:
             # Same but for private hooks
-            if isinstance(v, dict):
-                input_dict[f"{k}->"] = update_input_dict(
-                    input_dict=input_dict[f"{k}_>"],
-                    update_dict=update_dict[k],
-                )
-            else:
-                input_dict = {
-                    key if key != f"{k}_>" else k: value if key != f"{k}_>" else v
-                    for key, value in input_dict.items()
-                }
+            input_dict = _update_input_dict(input_dict, update_dict, '_>', k, v)
     return input_dict

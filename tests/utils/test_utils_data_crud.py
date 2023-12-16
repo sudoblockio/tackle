@@ -8,7 +8,7 @@ from tackle.utils.dicts import (
     nested_set,
     nested_get,
     nested_delete,
-    # set_key,
+    set_key,
     cleanup_unquoted_strings,
 )
 
@@ -114,6 +114,11 @@ NESTED_SET_FIXTURES = [
         [],
         [encode_list_index(0), 'stuff', encode_list_index(0)],
         [{'stuff': [True]}],
+    ),
+    (
+        [],
+        [encode_list_index(0), 'stuff'],
+        [{'stuff': True}],
     ),
     # # This test is breaking
     # (

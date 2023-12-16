@@ -263,7 +263,7 @@ def update_hook_vars(
     for k, v in hook_call.model_extra.copy().items():
         # Need to check for the unquoted yaml string error here as we miss it in the
         # initial run of the macro since the key is embedded so we run it again here.
-        # Handles case `key: {{value}}` which ruamel will expand into embedded dict
+        # Handles case `key: {{value}}` which ruamel/ruamel will expand into embedded dict
         # which is never the user's intention.
         v = unquoted_yaml_template_macro(value=v)
 
