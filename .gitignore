@@ -12,6 +12,8 @@ hold
 wip
 .old
 tests-old
+# Tests run from tox
+#tests/utils/vcs/tackle-fixture-released
 
 
 # mkdocs.yml is generated
