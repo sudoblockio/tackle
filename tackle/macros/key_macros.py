@@ -208,25 +208,6 @@ def block_hook_macro(
     return output
 
 
-def unquoted_yaml_template_macro(value: CommentedMap):
-    """
-    This is for a common parsing error in yaml with unquoted values.
-
-    For instance `stuff->: {{things}}` (no quotes), ruamel/ruamel interprets as
-     'stuff': ordereddict([(ordereddict([('things', None)]), None)]) which technically
-     is accurate but generally users would never actually do. Since it is common to
-     forget to quote, this is a helper to try to catch that error and fix it.
-    Warning -> super hacky....
-    """
-    if isinstance(value, CommentedMap):
-        if len(value) == 1:
-            value_ = next(iter(value.values()))
-            key_ = next(iter(value.keys()))
-            if value_ is None and isinstance(key_, CommentedKeyMap):
-                return "{{" + next(iter(next(iter(value.keys())))) + "}}"
-    return value
-
-
 KEY_MACRO_IDS = {
     i.split('_key_macro')[0]
     for i in globals().keys()

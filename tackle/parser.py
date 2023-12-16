@@ -261,12 +261,6 @@ def update_hook_vars(
 
     # Iterate through all the extra hook call items
     for k, v in hook_call.model_extra.copy().items():
-        # Need to check for the unquoted yaml string error here as we miss it in the
-        # initial run of the macro since the key is embedded so we run it again here.
-        # Handles case `key: {{value}}` which ruamel/ruamel will expand into embedded dict
-        # which is never the user's intention.
-        v = unquoted_yaml_template_macro(value=v)
-
         # Handle `kwargs` field which maps unknown keys to a field
         if k not in Hook.model_fields:
             # TODO: Fix this for model_config in hook
