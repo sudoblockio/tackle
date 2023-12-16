@@ -73,7 +73,7 @@ def split_input_string(input_string: str) -> list:
         i
         for i in re.split(
             SPLIT_PATTERN,
-            input_string,
+            str(input_string),
         )
         if i.strip()
     ]
@@ -105,7 +105,7 @@ def assert_if_flag(arg: str):
         r"""^[\-|\-\-]+[a-zA-Z0-9]""",
         re.VERBOSE,
     )
-    return bool(FLAG_REGEX.match(arg))
+    return bool(FLAG_REGEX.match(str(arg)))
 
 
 def get_kwargs_till_flag(
@@ -131,7 +131,7 @@ def get_kwargs_till_flag(
             if assert_if_flag(next_raw_arg):
                 return ' '.join(kwargs), i
         else:
-            kwargs.append(raw_arg)
+            kwargs.append(str(raw_arg))
             i += 1
     return ' '.join(kwargs), i
 

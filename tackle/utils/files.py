@@ -1,16 +1,10 @@
 """Utilities mainly used in helping `modes` like replay and others."""
 import json
-
 import os
-
 from ruyaml import YAML
 from ruyaml.composer import ComposerError
+from ruyaml.constructor import ConstructorError
 from ruyaml.parser import ParserError
-
-# from ruamel.yaml import YAML
-# from ruamel.yaml.composer import ComposerError
-# from ruamel.yaml.parser import ParserError
-
 import logging
 
 from tackle import exceptions
@@ -38,6 +32,7 @@ def dump(output_dir, output_name, output_dict, dump_output='yaml'):
             json.dump(output_dict, f, indent=2)
     if dump_output in ['yaml', 'yml']:
         yaml = YAML()
+        yaml.default_flow_style = False
         yaml.indent(mapping=2, sequence=4, offset=2)
         with open(replay_file, 'w') as f:
             yaml.dump(output_dict, f)
@@ -64,7 +59,7 @@ def read_config_file(file, file_extension=None):
             return config
         elif file_extension in ('yaml', 'yml'):
             # Try normal and then for documents that will output as list
-            yaml = YAML()
+            yaml = YAML(typ="safe")
             try:
                 with open(file, encoding='utf-8') as f:
                     config = yaml.load(f)
@@ -75,8 +70,15 @@ def read_config_file(file, file_extension=None):
                     for doc in yaml.load_all(f.read()):
                         output.append(doc)
                 return output
+            except ConstructorError as e:
+                raise exceptions.FileLoadingException(
+                    f"Error loading file={file}\n{e}\nLikely due to unquoted template "
+                    "variable.\nie var: {{foo}}} | not var: '{{foo}}'"
+                ) from None
             except ParserError as e:
-                raise exceptions.FileLoadingException(f"Error loading file={file}\n{e}")
+                raise exceptions.FileLoadingException(
+                    f"Error loading file={file}\n{e}",
+                ) from None
         elif file_extension == 'toml':
             try:
                 from tomli import load as toml_load
