@@ -127,7 +127,7 @@ def get_overrides(
 def new_data(
         *,
         context: 'Context',
-        input: dict | list | None = None,
+        raw_input: dict | list | None = None,
         overrides: str | dict | None = None,
         existing_data: str | dict | None = None,
         _data: Data | None = None,
@@ -184,10 +184,10 @@ def new_data(
 
     get_overrides(context=context, data=data, overrides=overrides)
 
-    if input is None:
+    if raw_input is None:
         data.raw_input = extract_base_file(context=context)
     else:
-        data.raw_input = input
+        data.raw_input = raw_input
 
     if isinstance(data.raw_input, list):
         # Change output to empty list
@@ -416,10 +416,10 @@ def new_source(
                         "Can't specify `checkout` and `latest` flags at the same time.",
                         context=context
                     )
-                checkout = 'latest'
             source.base_dir = get_repo_source(
                 repo=first_arg,
-                repo_version=checkout,
+                version=checkout,
+                latest=latest,
             )
             source.name = first_arg.replace('/', '_')
             update_source(
@@ -521,7 +521,7 @@ def new_context(
         hooks_dir: str = None,
         _strict_source: bool = False,  # Raise if source not found
         # Data
-        input: dict | list | None = None,
+        raw_input: dict | list | None = None,
         overrides: Union[str, dict] = None,
         existing_data: str | dict | None = None,
         # Context
@@ -562,7 +562,7 @@ def new_context(
     )
     context.data = new_data(
         context=context,
-        input=input,
+        raw_input=raw_input,
         overrides=overrides,
         existing_data=existing_data,
         _data=_data,

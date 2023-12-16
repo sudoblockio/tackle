@@ -10,7 +10,7 @@ from pydantic import (
     Field,
     types as pydantic_types,
     networks as pydantic_network_types,
-    PlainSerializer,
+    PlainSerializer, ConfigDict,
 )
 import pydoc
 import re
@@ -125,6 +125,7 @@ def dcl_hook_exec(
             # Doesn't return anything
             input_element = {tmp_key: input_element}
 
+    hook_context.data.input = input_element
     public_data = get_public_data_from_walk(
             context=hook_context,
             value=input_element.copy()
@@ -435,7 +436,9 @@ def create_hook_field_validator(
     if hook_validator.model_extra != {} and hook_validator.body is not None:
         raise exceptions.MalformedHookFieldException(
             f"The validator field at key=`{key}` must either have a `body` field or "
-            f"or just have the body as the value itself, not both.",
+            f"or just have the body as the value itself, not both. Got:\n"
+            f"{list(hook_validator.model_extra.keys())}\nShould only have\n"
+            f"{list(hook_validator.__dict__.keys())}",
             context=context, hook_name=hook_name
         )
 
@@ -656,10 +659,8 @@ def get_model_config_from_hook_input(
         context: Context,
         hook_name: str,
         hook_input_dict: dict,
-) -> DclHookModelConfig:
-    """
-
-    """
+) -> DclHookModelConfig | None:
+    """If the `model_config` field is declared, pop it off and return an object."""
     if 'model_config' in hook_input_dict:
         model_config = hook_input_dict.pop('model_config')
         try:
@@ -669,27 +670,28 @@ def get_model_config_from_hook_input(
                 e, context=context, hook_name=hook_name
             )
 
-def update_hook_input_validators(
-        context: 'Context',
-        hook_input: DclHookInput,
-        hook_name: str,
-):
-    """
-    TODO: Support validator field
-    """
-    if hook_input.model_fields['validators'].default is not None:
-        raise NotImplementedError
-    # Validators
-    for k, v in hook_input.validators.items():
-        if k not in hook_input.hook_fields_:
-            raise exceptions.MalformedHookDefinitionException(
-                f"In the hook definition `{hook_name}`, the field `validators` must be "
-                f" map keyed on a field name to apply the validator. Available keys:"
-                f" {','.join([k for k, _ in hook_input.hook_fields_.items()])}",
-                context=context, hook_name=hook_name
-            )
-        # TODO: Create callable with normal rigging
-        raise NotImplementedError
+# def update_hook_input_validators(
+#         context: 'Context',
+#         hook_input: DclHookInput,
+#         hook_name: str,
+# ):
+#     """
+#     TODO: Support validator field
+#      https://github.com/sudoblockio/tackle/issues/221
+#     """
+#     if hook_input.model_fields['validators'].default is not None:
+#         raise NotImplementedError
+#     # Validators
+#     for k, v in hook_input.validators.items():
+#         if k not in hook_input.hook_fields_:
+#             raise exceptions.MalformedHookDefinitionException(
+#                 f"In the hook definition `{hook_name}`, the field `validators` must be "
+#                 f" map keyed on a field name to apply the validator. Available keys:"
+#                 f" {','.join([k for k, _ in hook_input.hook_fields_.items()])}",
+#                 context=context, hook_name=hook_name
+#             )
+#         # TODO: Create callable with normal rigging
+#         raise NotImplementedError
 
 
 def create_dcl_hook(
@@ -884,7 +886,6 @@ def get_hook_from_context(
      its associated fields and methods.
     """
     # TODO: self
-    # Hook = create_dcl_hook()
     # hook_context.hooks.private['self'] =
     Hook = get_hooks_from_namespace(context=context, hook_name=hook_name)
     if Hook is None:

@@ -4,33 +4,14 @@ from pydantic import (
     field_validator,
     ConfigDict,
 )
-from pydantic._internal._model_construction import ModelMetaclass
 from typing import (
     Any,
     Union,
     Optional,
 )
-
 from pydantic import Field
+
 from tackle.pydantic.config import DclHookModelConfig
-
-
-# TODO: RM
-class LazyImportHook(BaseModel):
-    """Object to hold hook metadata so that it can be imported only when called."""
-
-    hooks_path: str
-    mod_name: str
-    provider_name: str
-    hook_name: str
-    is_public: bool = False
-
-    def wrapped_exec(self, **kwargs):
-        kwargs['provider_hooks'].import_with_fallback_install(
-            mod_name=self.mod_name,
-            hooks_directory=self.hooks_path,
-        )
-        return kwargs['provider_hooks'][self.hook_name].wrapped_exec()
 
 
 class LazyBaseHook(BaseModel):
@@ -39,6 +20,7 @@ class LazyBaseHook(BaseModel):
      tackle file is read (by searching in adjacent hooks directory) or on init in local
      providers. Used by jinja extensions and filters.
     """
+    hook_name: str
     input_raw: dict = Field(
         ...,
         description="A dict for the lazy function to be parsed at runtime. Serves as a "
@@ -46,42 +28,6 @@ class LazyBaseHook(BaseModel):
                     "`create_function_model`.",
     )
     is_public: bool = Field(..., description="Public or private.")
-
-
-class HookBase(BaseModel):
-    help: str | None = Field(
-        None,
-        description="A string to display when calling with the `help` argument."
-    )
-    render_by_default: list | None = Field(
-        None,
-        description="A list of fields to wrap with jinja braces and render by default."
-    )
-    render_exclude: list | None = Field(
-        None,
-        description="A list of field names to not render."
-    )
-    is_public: list | None = Field(
-        None,
-        description="A boolean if hook is public / callable from outside the provider)."
-    )
-    skip_output: bool | None = Field(
-        False,
-        description="A flag to skip the output and not set the key. Can also be set"
-                    " within a hook call."
-    )
-    args: list[str] | None = Field(
-        [],
-        description="A list of fields map arguments. See [docs]() for details."
-    )
-    kwargs: str | None = Field(
-        None,
-        description="A field name of type dict to map additional arguments to."
-    )
-    literal_fields: list[str] | None = Field(
-        None,
-        description="A list of fields to use without."
-    )
 
 
 class HookCallInput(BaseModel):
@@ -171,13 +117,8 @@ class HookCallInput(BaseModel):
     model_config = ConfigDict(
         extra='allow',
         populate_by_name=True,
+
     )
-
-
-# Note we have a circular dependency between BaseHook having Context and Context having
-# Hooks which is a collection of BaseHooks. We prefer carrying Context into BaseHook
-# since this is user facing so breaking circular dependency here with ModelMetaclass
-GenericHookType = Union[ModelMetaclass, LazyBaseHook]
 
 
 class HookMethods:
@@ -187,13 +128,47 @@ class HookMethods:
         self.default = default
 
 
-# Note we have a circular dependency between Context having Hooks and BaseHook having
-# Context where we prefer carrying into BaseHook since this is user facing. 
-class BaseHook(HookBase):
+class BaseHook(BaseModel):
     """
     Base class that all python hooks extend. 
     """
-    hook_name: str = Field(..., description="Name of the hook.")
+    hook_name: str = Field(
+        ...,
+        description="Name of the hook.",
+    )
+    help: str = Field(
+        None,
+        description="A string to display when calling with the `help` argument."
+    )
+    render_by_default: list = Field(
+        None,
+        description="A list of fields to wrap with jinja braces and render by default."
+    )
+    render_exclude: list = Field(
+        None,
+        description="A list of field names to not render."
+    )
+    is_public: bool = Field(
+        None,
+        description="A boolean if hook is public / callable from outside the provider)."
+    )
+    skip_output: bool = Field(
+        False,
+        description="A flag to skip the output and not set the key. Can also be set"
+                    " within a hook call."
+    )
+    args: list = Field(
+        [],
+        description="A list of fields map arguments. See [docs]() for details."
+    )
+    kwargs: str = Field(
+        None,
+        description="A field name of type dict to map additional arguments to."
+    )
+    literal_fields: list = Field(
+        None,
+        description="A list of fields to use without."
+    )
 
     model_config = ConfigDict(
         extra='forbid',
@@ -204,10 +179,20 @@ class BaseHook(HookBase):
         use_enum_values=True,
     )
 
+    # @model_validator(mode='before')
+    # @classmethod
+    # def keep_parent_types(cls, data: Any) -> Any:
+    #     for i in BaseHook.model_fields:
+    #         if cls.model_fields[i].annotation != BaseHook.model_fields[i].annotation:
+    #             from tackle import exceptions
+    #             raise exceptions.TackleHookImportException("Alias not _id.")
+    #     return data
+
+
 class HookValidatorModes(str, enum.Enum):
-    before='before'
-    after='after'
-    wrap='wrap'
+    before = 'before'
+    after = 'after'
+    wrap = 'wrap'
 
 
 class HookFieldValidatorFieldNames(BaseModel):
@@ -244,7 +229,6 @@ class HookFieldValidator(BaseModel):
         use_enum_values=True,
         extra='allow',
     )
-
 
 
 class DclHookInput(BaseModel):
@@ -324,12 +308,7 @@ DCL_HOOK_FIELDS = {
     i for i in DclHookInput.model_fields.keys()
 }
 
-
-class BaseDclHook(BaseHook):
-    """Base model when creating new functions."""
-    hook_input: DclHookInput
-
-
 AnyHookType = BaseHook | DclHookInput | LazyBaseHook
+GenericHookType = Union[BaseHook, LazyBaseHook]
 HookDictType = dict[str, AnyHookType]
 CompiledHookType = BaseHook | DclHookInput

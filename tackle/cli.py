@@ -1,4 +1,5 @@
 """Main `tackle` CLI."""
+import ast
 import sys
 import argparse
 
@@ -51,7 +52,7 @@ def print_public_data(context: 'Context', print_format: str):
 
 
 def main(raw_args=None):
-    """Run a tackle."""
+    """Main cli entrypoint."""
     if raw_args is None:
         raw_args = sys.argv[1:]
 
@@ -63,6 +64,10 @@ def main(raw_args=None):
 
     parser.add_argument(
         dest='inputs',
+        # We use "?" because we don't know if the arg exists or not. Can't use "*"
+        # because of https://stackoverflow.com/questions/20165843/argparse-how-to-handle-variable-number-of-arguments-nargs
+        # which prevents use from interleaving optional variables. So we take a mixed
+        # approach to the above SO responses.
         nargs="?",
         type=str,
         default=None,
@@ -109,9 +114,9 @@ def main(raw_args=None):
     parser.add_argument(
         '--file',
         '-f',
+        default=None,
         type=str,
         metavar="",
-        dest="context_file",
         help="The file to run. Only relevent for remote sources as otherwise you can "
              "just give full path to file as input.",
     )
@@ -120,6 +125,12 @@ def main(raw_args=None):
         '-fp',
         action='store_true',
         help="Search for target in parent directory. Only relevant for local targets.",
+    )
+    parser.add_argument(
+        '--raw-input',
+        '-r',
+        action="store_false",
+        help="",
     )
     parser.add_argument(
         '--hooks-dir',
@@ -153,10 +164,10 @@ def main(raw_args=None):
     )
     parser.add_argument('--version', action='version', version=f'tackle {__version__}')
 
-    # Decompose args. Unknown args are later passed in as `global_[args|kwargs|flags]`
-    # to be consumed by the tackle script.
+    # Decompose args. Unknown args are passed in to be consumed by the tackle script.
     args, unknown_args = parser.parse_known_args(raw_args)
-    expanded_unknown_args = []
+    # Put the first argument back in its place
+    expanded_unknown_args = [args.inputs]
     for v in unknown_args:
         # Unknown args are not split up based on `=` so we need to do that manually
         if '=' in v:
@@ -168,7 +179,7 @@ def main(raw_args=None):
             expanded_unknown_args.append(v)
 
     # Coerce args to their original types
-    for i, v in enumerate(expanded_unknown_args.copy()):
+    for i, v in enumerate(expanded_unknown_args):
         if v in ['true', 'false']:
             v = v.title()
         try:
@@ -182,7 +193,6 @@ def main(raw_args=None):
     )
 
     # Hack to take the first arg and make a list of args with every unknown arg
-    input_args = [args.inputs] + input_args
     input_kwargs.update({i: True for i in input_flags})  # Same for kwargs
 
     # Handle printing variable which isn't needed in core logic
@@ -205,8 +215,8 @@ def main(raw_args=None):
         # input_string=args.input_string,
         checkout=args.checkout,
         latest=args.latest,
+        file=args.file,
         directory=args.directory,
-        # file=args.file,
         find_in_parent=args.find_in_parent,
         return_context=True
     )

@@ -15,6 +15,8 @@ from tackle.types import (
     DocumentType,
     DocumentValueType,
 )
+from tackle.utils.hooks import get_hook
+from tackle.factory import new_context
 
 
 __all__ = [
@@ -24,6 +26,8 @@ __all__ = [
     'HookCallInput',
     'Context',
     'settings',
+    'get_hook',
+    'new_context',
     'DocumentKeyType',
     'DocumentType',
     'DocumentValueType',

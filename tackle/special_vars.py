@@ -76,8 +76,8 @@ def _tackle_dir():
     return settings.tackle_dir
 
 
-def _provider_dir():
-    return settings.provider_dir
+def _providers_dir():
+    return settings.providers_dir
 
 
 def _calling_directory(context: 'Context'):
@@ -100,19 +100,19 @@ def _this(context: 'Context'):
     return context.data.public
 
 
-def _public_context(context: 'Context'):
+def _public_data(context: 'Context'):
     return context.data.public
 
 
-def _private_context(context: 'Context'):
+def _private_data(context: 'Context'):
     return context.data.private
 
 
-def _temporary_context(context: 'Context'):
+def _temporary_data(context: 'Context'):
     return context.data.temporary
 
 
-def _existing_context(context: 'Context'):
+def _existing_data(context: 'Context'):
     return context.data.existing
 
 
@@ -162,16 +162,16 @@ special_variables = {
     'architecture': _architecture,
     'lsb_release': get_linux_distribution,
     'tackle_dir': _tackle_dir,
-    'provider_dir': _provider_dir,
+    'provider_dir': _providers_dir,
     'calling_directory': _calling_directory,
     'calling_file': _calling_file,
     'current_file': _current_file,
     'current_directory': _current_directory,
     'this': _this,
-    'public_context': _public_context,
-    'private_context': _private_context,
-    'existing_context': _existing_context,
-    'temporary_context': _temporary_context,
+    'public_data': _public_data,
+    'private_data': _private_data,
+    'existing_data': _existing_data,
+    'temporary_data': _temporary_data,
     'key_path': _key_path,
     'key_path_block': _key_path_block,
     'xdg_cache_home': _xdg_cache_home,

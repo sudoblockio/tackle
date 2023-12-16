@@ -8,6 +8,7 @@ if TYPE_CHECKING:
     from tackle.context import Paths, Data, Hooks, Context
     from tackle.types import DocumentValueType
 
+
 def tackle(
         # Inputs
         *args: 'DocumentValueType',
@@ -37,46 +38,33 @@ def tackle(
         **kwargs: 'DocumentValueType',
 ) -> Union['Context', 'DocumentValueType']:
     """
-    Run tackle programmatically similar to how you would from a command line. Includes
-     some internal params such as _paths, _hooks, and _data for calling tackle from
-     tackle.
+    Run tackle programmatically, similar to its usage from the command line. This function
+    supports internal parameters like _paths, _hooks, and _data for nested tackle calls.
 
     Args:
-        args (tuple): A variadic number of args used as the source or additional
-            arguments when parsing a provider.
-        checkout (str, optional): The branch, tag or commit ID to checkout when using
-            remote providers.
-        latest (bool, optional): Use the latest changes of a remote tackle provider
-            instead of just the latest released tag.
-        directory (str, optional): A directory to use as the working director relative
-            to the base directory determined by the `args` input.
-        file (str, optional): A file to parse different from a default tackle file.
-            Only helpful when calling remote tackle providers.
-        find_in_parent (bool, optional): Flag to make tackle search for tackle files
-            in the parent directory.
-        raw_input (Union[dict, list], optional): Input some data to parse that will
-            TODO
-        overrides (Union[str, dict], optional): A string path to a file with override
-            values or a dict to use as overrides.
-        existing_data (Union[str, dict], optional): A string reference to an
-            unstructured file or some dictionary to use for rendering the input.
-        hooks_dir (str, optional): Path to hooks directory to import.
-        no_input (bool, optional): A flag to suppress any interactive prompts and use
-            their default values.
-        verbose (bool, optional): Verbose operation which includes debug info.
-        return_context (bool, optional): Flag to indicate to return the whole context.
-            By default, only return the public data as convenience.
-        _paths (Paths, optional): A `Paths` object to use instead of
-            creating one. Used when calling tackle from tackle.
-        _hooks (Type[BaseModel], optional): Internal usage - a `Paths` object to use
-            instead of creating one. Used when calling tackle from tackle.
-        _data (Data, optional): A brief description of `_data`.
-        kwargs (dict): A brief description of `kwargs`.
+        args (tuple): Variadic arguments used as the source or additional arguments for
+            parsing a provider.
+        checkout (str, optional): Branch, tag, or commit ID for checkout with remote providers.
+        latest (bool, optional): If true, uses the latest changes from a remote tackle provider.
+        directory (str, optional): Working directory relative to the base directory from `args`.
+        file (str, optional): Specific file to parse, useful with remote tackle providers.
+        find_in_parent (bool, optional): If true, searches for tackle files in parent directories.
+        raw_input (Union[dict, list], optional): Data to parse, can be a dict or list.
+        overrides (Union[str, dict], optional): Path to a file or a dict for override values.
+        existing_data (Union[str, dict], optional): Reference to an unstructured file or a dict for input rendering.
+        hooks_dir (str, optional): Path to the hooks directory for import.
+        no_input (bool, optional): Suppresses interactive prompts, using default values.
+        verbose (bool, optional): Enables verbose operation, including debug information.
+        return_context (bool, optional): If true, returns the entire context; otherwise, returns public data.
+        _paths (Paths, optional): Custom `Paths` object for internal use.
+        _hooks (Type[BaseModel], optional): Custom hooks object for internal use.
+        _data (Data, optional): Custom data object for internal use.
+        kwargs (dict): Additional keyword arguments for extended functionality.
 
     Returns:
-        Union[dict, list]: A brief description of the return value.
+        Union[Context, DocumentValueType]: The context object if `return_context` is true; otherwise, returns
+        the public data extracted or processed by the function.
     """
-    pass
     context = new_context(
         *args,
         checkout=checkout,
@@ -84,7 +72,7 @@ def tackle(
         directory=directory,
         file=file,
         find_in_parent=find_in_parent,
-        input=raw_input,
+        raw_input=raw_input,
         overrides=overrides,
         existing_data=existing_data,
         hooks_dir=hooks_dir,

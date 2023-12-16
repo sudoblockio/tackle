@@ -11,6 +11,10 @@ if TYPE_CHECKING:
     from tackle.models import BaseHook, CompiledHookType, HookCallInput
     from tackle import BaseHook, Context
 
+
+
+
+
 DOCS_DOMAIN = "https://sudoblockio.github.io/tackle"
 
 def raise_unknown_hook(context: 'Context', hook_name: str, method: bool = None):
@@ -127,10 +131,10 @@ class UnknownFieldInputException(Exception):
 #
 
 
-class TackleHookCallException(Exception):
+class TackleHookParseException(Exception):
     """Base hook call exception class. Subclassed within providers."""
 
-    def __init__(self, extra_message: str, context: 'Context' = None):
+    def __init__(self, extra_message: str, context: 'Context'):
         self.message = (
             f"Error parsing input_file='{context.path.calling.file}' at "
             f"key_path='{get_readable_key_path(key_path=context.key_path)}' \n"
@@ -141,7 +145,7 @@ class TackleHookCallException(Exception):
         super().__init__(self.message)
 
 
-class HookUnknownChdirException(TackleHookCallException):
+class HookUnknownChdirException(TackleHookParseException):
     """
     Exception for a hook call with a chdir method.
 
@@ -152,31 +156,40 @@ class HookUnknownChdirException(TackleHookCallException):
 #
 # Function call exceptions
 #
-class TackleFunctionCallException(Exception):
+class TackleHookCallException(Exception):
     """Base hook call exception class."""
 
     def __init__(
         self,
         extra_message: str,
-        hook: Type['BaseHook'] | Type['ModelMetaclass'],
+        context: 'Context',
+        hook_name: str,
     ):
         self.message = (
-            f"Error parsing input_file='{hook.calling_file}' at "
-            f"key_path='{get_readable_key_path(key_path=hook.key_path)}' \n"
+            f"Error parsing input_file='{context.path.calling.file}' at "
+            f"hook='{hook_name}' at ",
+            f"key_path='{get_readable_key_path(key_path=context.key_path)}' \n"
             f"{extra_message}"
         )
-        if not hook.verbose:
+        if not context.verbose:
             sys.tracebacklimit = 0
         super().__init__(self.message)
 
 
-class FunctionCallException(TackleFunctionCallException):
+class DclHookCallException(TackleHookCallException):
     """
     Exception for when walking a function input context.
 
     Raised in function calls.
     """
 
+
+class UnknownHookInputArgumentException(TackleHookCallException):
+    """
+    Exception for unknown extra arguments.
+
+    Raised when tackle cannot determine what the extra argument means.
+    """
 
 #
 # Parser exceptions
@@ -185,7 +198,6 @@ class TackleParserException(Exception):
     """Base parser exception class."""
 
     def __init__(self, extra_message: str, context: 'Context'):
-        print()
         self.message = (
             f"Error parsing input_file='{context.path.current.file}' at "
             f"key_path='{get_readable_key_path(key_path=context.key_path)}' \n"
@@ -392,7 +404,15 @@ class VCSNotInstalled(TackleException):
     """
     Exception when version control is unavailable.
 
-    Raised if the version control system (git or hg) is not installed.
+    Raised if git is not installed.
+    """
+
+
+class InternetConnectivityError(TackleException):
+    """
+    Exception when version control is unable to access the internet (ie github).
+
+    Raised if git is unable to access a repo.
     """
 
 
@@ -425,6 +445,14 @@ class FileLoadingException(TackleException):
     Exception for failed JSON decoding.
 
     Raised when a project's JSON context file can not be decoded.
+    """
+
+
+class GenericGitException(TackleException):
+    """
+    Generic exception.
+
+    Raised when an unknown tackle.utils.vcs error occurs.
     """
 
 
@@ -574,14 +602,6 @@ class BaseTackleImportException(Exception):
         if not context.verbose:
             sys.tracebacklimit = 0
         super().__init__(self.message)
-
-class UnknownInputArgumentException(BaseTackleImportException):
-    """
-    Exception for unknown extra arguments.
-
-    Raised when tackle cannot determine what the extra argument means.
-    """
-
 
 
 # class TackleFileInitialParsingException(BaseTackleImportException):

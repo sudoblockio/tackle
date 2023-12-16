@@ -23,6 +23,7 @@ def get_module_from_path(
         module_name: str,
         file_path: str,
 ):
+    """Given a path to a python file, import all the modules."""
     loader = importlib.machinery.SourceFileLoader(module_name, path=file_path)
     if sys.version_info.minor < 10:
         mod = loader.load_module()
@@ -37,23 +38,26 @@ def get_module_from_path(
                 e.__str__(), context=context, file=file_path
             )
         except Exception as e:
-            print(e)
-            raise
+            raise e
     return mod
 
 
 def is_base_hook_subclass(key: str, value: Any) -> bool:
+    """
+    When importing python hooks from a file, return true if the object is a subclass of
+     BaseHook, meaning it is a hook.
+    """
     return not key.startswith('_') \
             and isinstance(value, ModelMetaclass) \
             and issubclass(value, BaseHook) \
             and key != 'BaseHook'
-
 
 def import_python_hooks_from_file(
         context: 'Context',
         module_name: str,
         file_path: str,
 ):
+    """Import python public and private hooks from a file."""
     mod = get_module_from_path(
         context=context,
         module_name=module_name,
@@ -61,13 +65,45 @@ def import_python_hooks_from_file(
     )
     # Loop through all the module items and add the hooks
     for k, v in mod.__dict__.items():
-        if is_base_hook_subclass(key=k, value=v):
-            # TODO: Add when fixing third_party imports
-            # v.__provider_name = provider_name
-            if v.model_fields['is_public'].default:
-                context.hooks.public[v.model_fields['hook_name'].default] = v
-            else:
-                context.hooks.private[v.model_fields['hook_name'].default] = v
+        if not is_base_hook_subclass(key=k, value=v):
+            continue  # Skip all non-hooks
+        hook_name = v.model_fields['hook_name'].default
+        if not isinstance(hook_name, str):
+            raise exceptions.MalformedHookDefinitionException(
+                f"The python hook defined in class=`{k}` does not "
+                f"have a hook_name field defined. Please add one looking like "
+                f"`hook_name: str = 'your_hook_name'`", context=context, hook_name=k
+            )
+
+        # TODO: Add when fixing third_party imports
+        # v.__provider_name = provider_name
+        if v.model_fields['is_public'].default:
+            context.hooks.public[hook_name] = v
+        else:
+            context.hooks.private[hook_name] = v
+
+
+def import_declarative_hooks_from_file(
+        context: 'Context',
+        file_path: str,
+        file_extension: str = None,
+) -> object:
+    """Import all the declarative hooks from a directory."""
+    from tackle.parser import parse_context
+
+    file_contents = read_config_file(
+        file=file_path,
+        file_extension=file_extension
+    )
+    if file_contents is None:
+        logger.debug(f"Skipping importing {file_path} as the context is empty.")
+        return
+    # Temporarily hold the raw input in another var to parse the file contents
+    old_raw_input = context.data.raw_input
+    context.data.raw_input = file_contents
+    parse_context(context=context, call_hooks=False)
+    # Bring the raw input back
+    context.data.raw_input = old_raw_input
 
 
 def import_hooks_from_file(
@@ -75,35 +111,26 @@ def import_hooks_from_file(
         provider_name: str,
         file_path: str,
 ):
+    """
+    Import either public or private hooks from a python file or declarative hook from a
+     document (ie json / yaml).
+    """
     directory, filename = os.path.split(file_path)
     file_base, file_extension = os.path.splitext(filename)
     file_extension = file_extension[1:]
 
-    if file_extension == '':
+    if file_extension in ('', 'pyc'):
         return
     if file_base in ('pre_gen_project', 'post_gen_project', '__pycache__'):
         # Maintaining cookiecutter support here as it might have a `hooks` dir.
         return
-    elif file_extension == 'pyc':
-        return
     elif file_extension in ('yaml', 'yml', 'json', 'toml'):
         # We are trying to import dcl hooks
-        from tackle.parser import parse_context
-
-        file_contents = read_config_file(
-            file=file_path,
-            file_extension=file_extension
+        import_declarative_hooks_from_file(
+            context=context,
+            file_path=file_path,
+            file_extension=file_extension,
         )
-        if file_contents is None:
-            logger.debug(f"Skipping importing {file_path} as the context is empty.")
-            return
-        # Temporarily hold the raw input in another var to parse the file contents
-        old_raw_input = context.data.raw_input
-        context.data.raw_input = file_contents
-        parse_context(context=context, call_hooks=False)
-        # Bring the raw input back
-        context.data.raw_input = old_raw_input
-
     elif file_extension == "py":
         module_name = provider_name + '.hooks.' + file_base
         import_python_hooks_from_file(
@@ -111,31 +138,8 @@ def import_hooks_from_file(
             module_name=module_name,
             file_path=file_path,
         )
-
-
-# def get_hooks_from_hooks_init(
-#         provider_name: str,
-#         hooks_directory: str,
-# ) -> Optional[dict[str, LazyImportHook]]:
-#     hooks_init_path = os.path.join(hooks_directory, '__init__.py')
-#     hooks_dict = None
-#     if os.path.isfile(hooks_init_path):
-#         hooks_dict = {}
-#         loader = importlib.machinery.SourceFileLoader(
-#             provider_name,
-#             path=hooks_init_path,
-#         )
-#         mod = loader.load_module()
-#         hook_names = getattr(mod, 'hook_names', [])
-#         for h in hook_names:
-#             new_hook = LazyImportHook(
-#                 hooks_path=hooks_directory,
-#                 mod_name=provider_name,
-#                 provider_name=provider_name,
-#                 hook_name=h,
-#             )
-#             hooks_dict[h] = new_hook
-#     return hooks_dict
+    else:
+        pass
 
 
 def import_hooks_from_hooks_directory(
@@ -143,19 +147,7 @@ def import_hooks_from_hooks_directory(
         provider_name: str,
         hooks_directory: str,
 ):
-    # Import hooks from __init__.py per convention. See docs.
-    # init_hooks = get_hooks_from_hooks_init(
-    #     provider_name=provider_name,
-    #     hooks_directory=hooks_directory
-    # )
-    # if init_hooks is not None:
-    #     # TODO: Once implementing a cache / freeze option change this so it can set
-    #     #  either public or private hooks
-    #     hooks.private.update(init_hooks)
-    #     # If there is an __init__.py with hooks defined in it we stop importing right
-    #     # away and assume that we don't need to proceed.
-    #     return
-
+    """Import all the hooks in all the files from a directory (`hooks`/`.hooks` dir)."""
     for file in os.scandir(hooks_directory):
         import_hooks_from_file(
             context=context,
@@ -196,7 +188,7 @@ def import_native_hooks_from_directory(
 
 # Cache the result since this will never change between tackle executions. In tests,
 # is a session scoped patch.
-@lru_cache(maxsize=1)
+@lru_cache
 def import_native_providers() -> dict[str, 'GenericHookType']:
     """
     Import the native providers. First qualifies if we are running locally (ie the
@@ -229,7 +221,7 @@ def import_native_providers() -> dict[str, 'GenericHookType']:
 
 
 def install_requirements_file(requirements_path: str):
-    """Does title..."""
+    """Shell process to call pip and install a requirements file."""
     subprocess.check_call(
         [
             sys.executable,
@@ -280,6 +272,10 @@ def fallback_install_then_import(
         provider_name: str,
         hooks_directory: str,
 ):
+    """
+    If there is a module not found error, we try to install the requirements before
+     attempting to import again.
+    """
     # We want to make this relative to the hooks directory as it is detected earlier
     # ie (hooks vs .hooks or specified)
     requirements_path = os.path.join(hooks_directory, '..', 'requirements.txt')
@@ -302,14 +298,13 @@ def import_with_fallback_install(
         context: 'Context',
         provider_name: str,
         hooks_directory: str,
-        # hooks: 'Hooks' = None,
-        # skip_on_error: bool = False,
 ):
     """
     Import a module and on import error, fallback on requirements file and try to
      import again.
     """
     try:
+        # TODO: Implement looping outside of the try
         import_hooks_from_hooks_directory(
             context=context,
             provider_name=provider_name,

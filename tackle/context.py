@@ -1,6 +1,7 @@
 from jinja2 import Environment, StrictUndefined
 # from jinja2 import StrictUndefined
-# from jinja2.nativetypes import NativeEnvironment as Environment
+from jinja2.nativetypes import NativeEnvironment as Environment
+from jinja2.nativetypes import NativeEnvironment
 
 from dataclasses import dataclass
 
@@ -57,7 +58,6 @@ class StrictEnvironment(Environment):
 
     def __init__(self, **kwargs):
         super(StrictEnvironment, self).__init__(undefined=StrictUndefined, **kwargs)
-        # TODO: Add imports for jinja hook filters
 
 
 @dataclass
@@ -102,4 +102,5 @@ class Context:
     # Flag to denote to exit parsing
     break_: bool = False
     # Hold the environment in the context
-    env_: Environment = StrictEnvironment()
+    # env_: Environment = StrictEnvironment()
+    env_: Environment = NativeEnvironment(undefined=StrictUndefined)
