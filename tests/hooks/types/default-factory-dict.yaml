@@ -1,0 +1,4 @@
+MyHook<-:
+  a_field:
+    default_factory:
+      bar->: literal baz

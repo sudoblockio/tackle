@@ -1,0 +1,5 @@
+MyHook<-:
+  a_field:
+    default:
+      # Should return it unparsed
+      - bar->: literal baz

@@ -1,0 +1,9 @@
+run<-:
+  things:
+    type: bool
+
+  do<-:
+    bar: baz
+<-:
+  things:
+    type: bool

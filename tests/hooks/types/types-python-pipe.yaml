@@ -1,0 +1,9 @@
+MyHook<-:
+  a_field:
+    type: int | str
+
+call:
+  ->: MyHook
+  a_field: foo
+
+error->: MyHook --a_field [] --try --except 1

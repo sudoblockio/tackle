@@ -1,0 +1,27 @@
+MyHook<-:
+  literal_expanded:
+    ->: literal
+    input: bar
+
+  field_default_compact:
+    type: str
+    default->: literal --input bar
+
+  field_default_factory_compact:
+    type: str
+    default_factory->: literal --input bar
+
+#  field_default_expanded:
+#    type: str
+#    default:
+#      ->: literal
+#      input: bar
+
+  field_default_factory_expanded:
+    type: str
+    default_factory:
+      ->: literal
+      input: bar
+
+
+call->: MyHook

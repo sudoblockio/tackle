@@ -1,4 +1,4 @@
-Hook1<-:
+MyHook<-:
   foo:
     type: str
     validator:
@@ -9,4 +9,4 @@ Hook1<-:
       foo:
         bar: baz
 
-call->: Hook1 --foo bar
+call->: MyHook --foo bar

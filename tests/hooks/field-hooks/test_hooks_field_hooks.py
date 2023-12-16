@@ -1,9 +1,10 @@
+from typing import Type
+
 import pytest
 
-from tackle import tackle
+from tackle import tackle, exceptions
 
-
-NON_EXEC_FIXTURES = [
+FIXTURES = [
     ('fields.yaml', 'foo'),
     ('method.yaml', 'foo'),
     ('args.yaml', 'bar'),
@@ -12,16 +13,30 @@ NON_EXEC_FIXTURES = [
     ('method-exec.yaml', 'foo'),
     ('field-hooks-exec-args.yaml', 'bar'),
     ('field-hooks-exec-args-method.yaml', 'bar'),
+    ('multi-line.yaml', 'bar'),
 ]
 
 
-@pytest.mark.parametrize("fixture,expected_output", NON_EXEC_FIXTURES)
-def test_hooks_field_default_with_hooks(fixture, expected_output):
+@pytest.mark.parametrize("fixture,expected_output", FIXTURES)
+def test_hooks_field_hooks_parameterized(fixture, expected_output):
     """Check that when a declarative hook's default is a hook that it is parsed."""
     output = tackle(fixture)
 
     for k, v in output['call'].items():
         assert v == expected_output
+
+
+ERROR_FIXTURES: list[tuple[str, Type[Exception]]] = [
+    ('error-special-keys.yaml', exceptions.HookParseException),
+    ('error-raise.yaml', exceptions.HookCallException),
+]
+
+
+@pytest.mark.parametrize("fixture,expected_error", ERROR_FIXTURES)
+def test_hooks_field_hooks_parameterized_errors(fixture, expected_error):
+    """Check errors from field hooks."""
+    with pytest.raises(expected_error):
+        tackle(fixture)
 
 
 # def test_hooks_field_default_passed_context():

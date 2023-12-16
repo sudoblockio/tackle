@@ -1,24 +1,25 @@
 import os
 import pytest
 
-from tackle import tackle
+from tackle import tackle, get_hook
 from tackle.cli import main
 from tackle import exceptions
 
 EXCEPTION_FIXTURES = [
-    # Check that return string not found caught
-    ('return-str-not-found.yaml', exceptions.UnknownArgumentException),
-    # # Check that type checking works with no exec method.
-    # ('no-exec-type-error.yaml', exceptions.UnknownFieldInputException),
-    # # Check args are required when they are not supplied.
-    # ('field-require.yaml', exceptions.HookParseException),
-    # # Check that type is one of literals.
-    # # TODO: This error will change with composition
-    # ('field-bad-type.yaml', exceptions.MalformedFunctionFieldException),
-    # # Check when extends is used with a missing base.
-    # ('extends-missing.yaml', exceptions.MalformedFunctionFieldException),
-    # # Check when extends is a dict an error is thrown
-    # ('extends-dict.yaml', exceptions.MalformedFunctionFieldException),
+    # Check that type checking works with no exec method.
+    ('no-exec-type-error.yaml', exceptions.HookParseException),
+    # Check args are required when they are not supplied.
+    ('field-require.yaml', exceptions.HookParseException),
+    # Check that type is one of literals.
+    ('field-bad-type.yaml', exceptions.MalformedHookFieldException),
+    # Check when extends is used with a missing base.
+    ('extends-missing.yaml', exceptions.MalformedHookFieldException),
+    # Check when extends is a dict an error is thrown
+    ('extends-dict.yaml', exceptions.HookParseException),
+    # Check that when a hook is unknown we raise a error
+    ('unknown-hook.yaml', exceptions.UnknownHookTypeException),
+    # # Check that when a method is unknown we raise a error
+    ('unknown-method.yaml', exceptions.UnknownHookTypeException),
 ]
 
 
@@ -30,11 +31,9 @@ def test_hooks_raises_exceptions(fixture, exception):
 
 def test_hooks_method_base_validate():
     """Check that when a method uses a base attribute, that validation still happens."""
-    # TODO: Fix me with methods
-    # with pytest.raises(exceptions.UnknownInputArgumentException) as e:
-    tackle('method-base-validate.yaml')
-    # TODO: pyd 2 update - pattern  to regex
-    # assert 'string does not match regex' in e.value.message
+    with pytest.raises(exceptions.HookParseException) as e:
+        tackle('method-base-validate.yaml')
+    assert 'String should match pattern' in e.value.message
 
 
 def test_hooks_exceptions_try_in_default():
@@ -42,66 +41,79 @@ def test_hooks_exceptions_try_in_default():
     When we have an error in a field's default like hook failure with `try`, we should
      catch that.
     """
-    # TODO: Issue with this is that if we have a string flag we don't know how to
-    #  perform a macro on it and the output is extremely confusing
-    # with pytest.raises(exceptions.FunctionCallException):
-    #     tackle('try-in-default.yaml')
-    output = tackle('try-in-default.yaml')
-    pass
+    # TODO: This is the wrong error and appears since the macro expands the field hook
+    #  call and tries to render the output. This can be improved since the try / if
+    #  should be caught sooner.
+    with pytest.raises(exceptions.UnknownTemplateVariableException):
+        tackle('try-in-default.yaml')
 
 
-def test_parser_functions_raises_unknown_arg():
+def test_hooks_exceptions_raises_unknown_arg():
     """When we have a default hook we should raise an error if the arg is not there."""
-    with pytest.raises(exceptions.UnknownInputArgumentException) as e:
+    with pytest.raises(exceptions.UnknownHookInputArgumentException) as e:
         tackle("hook-default-arg-missing.yaml", 'NOT_HERE')
 
-    assert "default hook" in e.value.message
+    assert "The input_arg=" in e.value.message.__str__()
 
 
-def test_parser_functions_raises_unknown_kwarg(chdir):
+def test_hooks_exceptions_raises_unknown_kwarg():
     """Same as above but with kwarg"""
-    with pytest.raises(exceptions.MalformedHookFieldException) as e:
+    with pytest.raises(exceptions.UnknownHookInputArgumentException) as e:
         tackle("hook-default-arg-missing.yaml", NOT_HERE='foo')
 
-    assert "default hook" in e.value.message
+    assert "NOT_HERE" in e.value.message.__str__()
 
 
-def test_parser_functions_raises_unknown_flags(chdir):
-    with pytest.raises(exceptions.UnknownInputArgumentException):
-        tackle("cli-default-hook-no-context.yaml", global_flags=['NOT_HERE'])
+def test_hooks_exceptions_raises_unknown_flags():
+    with pytest.raises(exceptions.UnknownHookInputArgumentException):
+        tackle("no-args.yaml", NOT_HERE=True)
 
 
-def test_parser_functions_raises_unknown_arg_hook(chdir):
-    with pytest.raises(exceptions.UnknownInputArgumentException):
-        tackle("cli-hook-no-context.yaml", 'run', 'NOT_HERE')
+def test_hooks_exceptions_raises_unknown_arg_hook():
+    with pytest.raises(exceptions.UnknownHookInputArgumentException):
+        tackle("no-args.yaml", 'run', 'NOT_HERE')
 
 
-def test_parser_functions_raises_unknown_kwarg_hook(chdir):
-    with pytest.raises(exceptions.UnknownInputArgumentException):
-        tackle("cli-hook-no-context.yaml", "run", NOT_HERE='foo')
+def test_hooks_exceptions_raises_unknown_kwarg_hook():
+    with pytest.raises(exceptions.UnknownHookInputArgumentException):
+        tackle("no-args.yaml", "run", NOT_HERE='foo')
 
 
-def test_parser_functions_raises_unknown_flags_hook(chdir):
-    with pytest.raises(exceptions.UnknownInputArgumentException):
-        # tackle("cli-hook-no-context.yaml", "run", not_here=True)
-        tackle("cli-hook-no-context.yaml", "run", **{'NOT_HERE': True})
+def test_hooks_exceptions_raises_unknown_flags_hook():
+    with pytest.raises(exceptions.UnknownHookInputArgumentException):
+        tackle("no-args.yaml", "run", **{'NOT_HERE': True})
 
 
-def test_parser_functions_raises_hook_kwarg_missing(chdir):
-    with pytest.raises(exceptions.UnknownInputArgumentException):
+def test_hooks_exceptions_raises_hook_kwarg_missing():
+    with pytest.raises(exceptions.UnknownHookInputArgumentException):
         tackle("hook-kwarg-missing.yaml", 'foo', baz='bang')
 
 
-def test_parser_functions_raises_hook_kwarg_missing_default(chdir):
-    with pytest.raises(exceptions.UnknownInputArgumentException):
+def test_hooks_exceptions_raises_hook_kwarg_missing_default():
+    with pytest.raises(exceptions.UnknownHookInputArgumentException):
         tackle("hook-kwarg-missing-default.yaml", baz='bang')
 
 
-def test_parser_functions_raises_validation_missing_field(chdir):
+def test_hooks_exceptions_raises_validation_missing_field():
     with pytest.raises(exceptions.MalformedHookFieldException):
         main(["missing-field.yaml", "stuff"])
 
 
-def test_parser_functions_raises_(chdir):
-    with pytest.raises(exceptions.MalformedHookFieldException):
+def test_hooks_exceptions_raises_on_str_hook_value():
+    """When a hook's value is a string type."""
+    with pytest.raises(exceptions.MalformedHookDefinitionException):
         main(["str-value.yaml", "stuff"])
+
+
+def test_hooks_exceptions_raises_on_list_hook_value():
+    """When a hook's value is a list type."""
+    with pytest.raises(exceptions.MalformedHookDefinitionException):
+        main(["list-value.yaml", "stuff"])
+
+
+def test_hooks_exceptions_raises_wrong_base_hook_field_type(cd):
+    cd('bad-hooks')
+    # with pytest.raises(exceptions.MalformedHookDefinitionException):
+    Hook = get_hook('no_exec')
+
+    pass

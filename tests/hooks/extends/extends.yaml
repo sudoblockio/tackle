@@ -7,7 +7,6 @@ greeter_base<-:
 greeter_exec<-:
   extends: greeter_base
   exec:
-    p->: var {{item}} --for words
-  return: p
+    ->: var {{item}} --for words
 
 t->: greeter_exec

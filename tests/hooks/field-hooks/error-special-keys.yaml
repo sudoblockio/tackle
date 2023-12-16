@@ -1,0 +1,5 @@
+MyHook<-:
+  foo: bar
+  empty->:
+
+call->: MyHook

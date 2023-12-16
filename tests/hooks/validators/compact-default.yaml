@@ -1,0 +1,13 @@
+# Check that we can use data from other keys
+MyHook<-:
+  foo: baz
+  baz:
+    type: str
+    default: foo
+    validator:
+      if_bar->: return {{v}} --if info.foo=='bar'
+      raise->: Not bar
+
+call->: MyHook --foo bar
+# Default is not validated by default
+error->: MyHook --foo baz --baz foo --try --except 1

@@ -1,0 +1,4 @@
+MyHook<-:
+  a_field:
+    default:
+      - bar

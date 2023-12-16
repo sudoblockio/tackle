@@ -1,4 +1,4 @@
-a_hook<-:
+MyHook<-:
   literal_compact->: literal foo
 
   literal_expanded:
@@ -8,4 +8,4 @@ a_hook<-:
     type: str
     default->: literal foo
 
-call->: a_hook --literal_compact bar --literal_expanded bar --field_default_compact bar
+call->: MyHook --literal_compact bar --literal_expanded bar --field_default_compact bar

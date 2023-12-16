@@ -1,4 +1,4 @@
-a_hook<-:
+MyHook<-:
   method<-:
     literal_compact->: literal foo
 
@@ -14,4 +14,4 @@ a_hook<-:
       literal_expanded_exec->: var {{literal_expanded}}
       field_default_compact_exec->: var {{field_default_compact}}
 
-call->: a_hook method
+call->: MyHook method

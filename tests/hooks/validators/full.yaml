@@ -3,10 +3,13 @@ MyHook<-:
   foo:
     type: str
     validator:
-      fields: ['val', 'values']
+      field_names:
+        value: val
+        info: values
       mode: after
       body:
-        if_bar->: return --if v=='bar'
+        if_bar->: return {{val}} --if val=='bar'
         raise->: Not bar
 
 call->: MyHook --foo bar
+error->: MyHook --foo baz --try --except 1

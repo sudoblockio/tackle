@@ -1,0 +1,12 @@
+<-:
+  a_str:
+    type: str
+    default: foo
+  a_union:
+    type: Union[int, str]
+    default: foo
+  a_pipe:
+    type: str | int
+    default: foo
+
+  args: [a_union]

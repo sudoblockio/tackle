@@ -64,12 +64,12 @@ def test_hooks_help_python_provider(capsys):
 #     assert "usage: tackle" in out
 
 
-def test_hooks_cli_tackle_help_with_arg(chdir):
+def test_hooks_cli_tackle_help_with_arg(cd):
     """
     Check that when we are in a dir with a default tackle file, we can get help when
      calling a declarative hook.
     """
-    chdir(os.path.join('../fixtures', 'a-tackle'))
+    cd(os.path.join('../fixtures', 'a-tackle'))
     with pytest.raises(SystemExit):
         tackle('stuff', 'help')
 

@@ -14,7 +14,6 @@ greeter_exec<-:
     - greeter_base1
     - greeter_base2
   exec:
-    p->: var {{item}} --for words
-  return: p
+    ->: var {{item}} --for words
 
 t->: greeter_exec

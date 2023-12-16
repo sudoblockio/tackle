@@ -1,4 +1,4 @@
-a_hook<-:
+MyHook<-:
   compact_str->: literal foo
 
   semi_expanded_str_private:
@@ -22,7 +22,7 @@ a_hook<-:
 
   compact_map:
     bar: foo
-    return->: {{ bar }}
+    return->: "{{bar}}"
 
   literal_expanded:
     ->: literal foo
@@ -31,4 +31,4 @@ a_hook<-:
     type: str
     default->: literal foo
 
-call->: a_hook
+call->: MyHook

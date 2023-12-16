@@ -1,5 +1,5 @@
 
-Hook1<-:
+MyHook<-:
   foo:
     type: str
     validator:
@@ -11,5 +11,5 @@ Hook1<-:
         if_bar->: return {{vv}} --if vv=='bar'
         raise->: Not bar
 
-call->: Hook1 --foo bar
-error->: Hook1 --foo baz --try --except 1
+call->: MyHook --foo bar
+error->: MyHook --foo baz --try --except 1

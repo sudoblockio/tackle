@@ -1,0 +1,9 @@
+MyHook<-:
+  foo: bar
+  MyMethod<-:
+    foo: baz
+    stuff: things
+  exec:
+    call_self->: self MyMethod
+
+call->: MyHook

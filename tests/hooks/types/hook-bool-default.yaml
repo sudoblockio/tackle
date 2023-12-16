@@ -1,0 +1,10 @@
+MyHook<-:
+  is_true:
+    type: bool
+    default: true
+  is_false:
+    type: bool
+    default: false
+
+call->: MyHook
+call_true->: MyHook --is_true --is_false

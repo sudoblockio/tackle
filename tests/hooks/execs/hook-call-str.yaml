@@ -1,0 +1,15 @@
+<-:
+  foo:
+    bar: baz
+  exec:
+    ->: var foo
+
+public<-:
+  foo:
+    bar: baz
+  exec->: var foo
+
+private<-:
+  foo:
+    bar: baz
+  exec_>: var foo

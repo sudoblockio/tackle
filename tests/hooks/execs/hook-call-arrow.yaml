@@ -1,0 +1,4 @@
+public<-:
+  foo:
+    bar: baz
+  exec->: literal {'foo':'bar'}

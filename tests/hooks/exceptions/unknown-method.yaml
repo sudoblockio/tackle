@@ -1,0 +1,4 @@
+MyHook<-:
+  foo: bar
+
+do->: foobar baz

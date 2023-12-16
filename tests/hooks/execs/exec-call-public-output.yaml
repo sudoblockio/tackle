@@ -1,0 +1,9 @@
+compact:
+  foo: baz
+  full: baz
+expanded:
+  foo: baz
+  full: baz
+global:
+  foo: baz
+  full: baz

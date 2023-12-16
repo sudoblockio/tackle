@@ -6,9 +6,10 @@ from tackle.cli import main
 from tackle.hooks import parse_hook_type
 from tackle.factory import new_context
 
-
 BASE_ID = "tackle.pydantic.create_model.Base"
-TYPE_FIXTURES = [
+
+
+@pytest.mark.parametrize("type_str,expected_repr", [
     ('Base', f"<class '{BASE_ID}'>"),
     ('list[str]', 'list[str]'),
     ('list[str, int]', 'list[str, int]'),
@@ -16,24 +17,24 @@ TYPE_FIXTURES = [
     ('List[Base]', f'typing.List[{BASE_ID}]'),
     ('dict[str,Base]', f'dict[str, {BASE_ID}]'),
     ('Dict[str, Base]', f'typing.Dict[str, {BASE_ID}]'),
-    # TODO: Support lower case `optional`? Would require special logic...
-    # ('optional[Base]', f'typing.Optional[{BASE_ID}]'),
-    # ('union[Base, str]', f'typing.Union[{BASE_ID}, str]'),
+    ('optional[Base]', f'typing.Optional[{BASE_ID}]'),
+    ('union[Base, str]', f'typing.Union[{BASE_ID}, str]'),
     ('Optional[Base]', f'typing.Optional[{BASE_ID}]'),
     ('Union[Base, str]', f'typing.Union[{BASE_ID}, str]'),
     ('Optional[Union[Base, str]]', f'typing.Union[{BASE_ID}, str, NoneType]'),
     ('list[Base, dict[str, list]]', f'list[{BASE_ID}, dict[str, list]]'),
     ('list[dict[str, Base], Base]', f'list[dict[str, {BASE_ID}], {BASE_ID}]'),
     ('list[Base, dict[str, Base]]', f'list[{BASE_ID}, dict[str, {BASE_ID}]]'),
-]
-
-
-@pytest.mark.parametrize("type_str,expected_repr", TYPE_FIXTURES)
+    ('str | int', f'typing.Union[str, int]'),
+    ('str|int', f'typing.Union[str, int]'),
+    ('dict[str | int, str]', f'dict[typing.Union[str, int], str]'),
+])
 def test_hooks_types_parse_function_type(type_str, expected_repr):
     """
     Check complex type parsing where a `Base` hook is imported from the current
      directory's '.hooks' dir with various typing around it.
     """
+    # Look in the `.hooks` dir for a hook
     context = new_context()
     output = parse_hook_type(
         context=context,
@@ -93,6 +94,7 @@ def test_hooks_types_base_default():
 def test_hooks_types_list_base():
     """Validate a list with hooks."""
     output = tackle('list-base.yaml')
+
     assert output['check_ok']['bar'][0]['foo'] == 'baz'
     assert output['check_ok']['bar'][1]['foo'] == 'baz2'
     assert output['check_false'] == 1
@@ -101,6 +103,7 @@ def test_hooks_types_list_base():
 def test_hooks_types_dict_base():
     """Validate a dict with hooks."""
     output = tackle('dict-base.yaml')
+
     assert output['check_ok']['bar']['bar']['foo'] == 'baz'
     assert output['check_false'] == 1
 
@@ -121,17 +124,18 @@ def test_hooks_types_enum_basic():
     assert output['success_default']['color_default'] == 'green'
 
 
-# def test_hooks_types_enum_types():
-#     """Check enums with types."""
-#     output = tackle('enum-render.yaml')
-#
-#     assert output['failure']
-#     assert output['failure_default']
-#
-#     assert output['success']['color'] == 'blue'
-#     assert output['success']['color_default'] == 'red'
-#     assert output['success_default']['color'] == 'blue'
-#     assert output['success_default']['color_default'] == 'green'
+def test_hooks_types_enum_types():
+    """Check enums with types."""
+    output = tackle('enum-render.yaml')
+
+    assert output['failure']
+    assert output['failure_default']
+
+    assert output['success']['color'] == 'blue'
+    assert output['success']['color_default'] == 'red'
+    assert output['success_default']['color'] == 'blue'
+    assert output['success_default']['color_default'] == 'green'
+
 
 def test_hooks_types_enum_render():
     """Check that in a dcl hook we can render an enum type from a previous field."""
@@ -148,11 +152,14 @@ def test_hooks_types_enum_render():
     assert output['success_default']['color_default'] == 'green'
 
 
-def test_hooks_types_help_basic():
-    """Check that special field types are rendered properly in the help screen."""
-    output = main(['help-basic.yaml', 'help'])
+def test_hooks_types_bool_defaults():
+    """Check that when a bool field is default to true that raising flag inverts it."""
+    output = tackle('hook-bool-default.yaml')
 
-    assert output
+    assert output['call']['is_true']
+    assert not output['call']['is_false']
+    assert not output['call_true']['is_true']
+    assert output['call_true']['is_false']
 
 
 @pytest.mark.parametrize("file,expected_value", [
@@ -162,10 +169,33 @@ def test_hooks_types_help_basic():
     ('types-lookup.yaml', None),
     ('types-datetime.yaml', "12:30:15"),
     ('types-datetime-timestamp.yaml', '1970-01-01 00:00:00+00:00'),
+    ('types-python-pipe.yaml', 'foo'),
+    ('types-python-union.yaml', 'foo'),
 ])
-def test_hooks_types_pydantic_types(file, expected_value):
+def test_hooks_types_list(file, expected_value):
     """Check that we can use pydantic types in a hook field."""
     output = tackle(file)
 
     assert output['call']['a_field'] == expected_value
     assert output['error'] == 1
+
+
+@pytest.mark.parametrize("input_file,expected_output", [
+    ('default-dict.yaml', {'a_field': {'bar->': 'literal baz'}}),
+    ('default-list.yaml', {'a_field': [{'bar->': 'literal baz'}]}),
+    ('default-factory-dict.yaml', {'a_field': {'bar': 'baz'}}),
+    ('default-factory-list.yaml', {'a_field': [{'bar': 'baz'}]}),
+    ('value-dict.yaml', {'a_field': {'bar': 'baz'}}),
+    ('value-list.yaml', {'a_field': ['bar']}),
+])
+def test_hooks_types_default_dict(input_file, expected_output):
+    """Check that a default dict value works properly."""
+    output = tackle(input_file, 'MyHook')
+
+    assert output == expected_output
+
+
+def test_hooks_default_hook_types():
+    output = tackle('default-hook-types.yaml', a_pipe='bar')
+
+    assert output

@@ -6,15 +6,15 @@ from tackle import tackle
 
 FIXTURES = [
     (
-        'cli-call-func.yaml',
-        'cli-call-func-output.yaml',
+        'cli-call-hook.yaml',
+        'cli-call-hook-output.yaml',
         'func_a',
     ),
 ]
 
 
 @pytest.mark.parametrize("fixture,expected_output,argument", FIXTURES)
-def test_hooks_model_extraction(chdir, fixture, expected_output, argument, capsys):
+def test_hooks_model_extraction(fixture, expected_output, argument, capsys):
     main([fixture, argument, "-p"])
     output = capsys.readouterr().out
 
@@ -64,16 +64,6 @@ def test_hooks_default_hook_no_context_kwargs():
     output = tackle('cli-default-hook-no-context.yaml', stuff='bar')
     assert output['p'] == 'bar'
     assert output['b']
-
-
-def test_hooks_default_hook_no_context_flags():
-    """
-    Validate that flags are interpreted properly. In this case the default is true so
-    when setting the flag, it should be false.
-    """
-    output = tackle('cli-default-hook-no-context.yaml', global_flags=['things'])
-    assert isinstance(output['b'], bool)
-    assert not output['b']
 
 
 def test_hooks_default_hook_context():
@@ -142,7 +132,7 @@ def test_hooks_cli_hook_arg_kwargs():
 
 def test_hooks_cli_hook_arg_flags():
     """Validate that we can run a default hook with an arg."""
-    output = tackle('cli-hook-no-context.yaml', 'run', global_flags=['things'])
+    output = tackle('cli-hook-no-context.yaml', 'run', **{'things': True})
     assert not output['s']
 
 

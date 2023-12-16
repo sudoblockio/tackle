@@ -1,0 +1,10 @@
+
+MyHook<-:
+  foo:
+    type: Union[str, int]
+    validator:
+      if_bar->: return {{v}} --if v=='bar'
+      raise->: Not bar
+
+call->: MyHook --foo bar
+error->: MyHook --foo baz --try --except 1

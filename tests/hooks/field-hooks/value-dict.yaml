@@ -1,0 +1,5 @@
+MyHook<-:
+  a_field->:
+    bar: baz
+
+call->: MyHook

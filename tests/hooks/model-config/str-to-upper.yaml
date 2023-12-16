@@ -1,0 +1,8 @@
+# This should not interfere with the parser
+MyHook<-:
+  foo: bar
+
+  model_config:
+    str_to_upper: true
+
+call->: MyHook --foo baz
