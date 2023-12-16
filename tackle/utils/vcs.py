@@ -104,25 +104,28 @@ def git_checkout(version: str):
 
 
 def git_stash():
-    cmd = 'git stash'
+    cmd = 'git stash --include-untracked'
     p = run_command(cmd)
     stdout, stderr = p.communicate()
-    if 'HEAD is now at' in str(stdout):
+    if p.returncode != 0:
+        raise exceptions.GenericGitException(f'Error running {cmd}\nstr({stderr})')
+    cmd = 'git stash pop'
+    p = run_command(cmd)
+    stdout, stderr = p.communicate()
+    if b'No stash entries found.\n' == stderr:
         return
-    elif 'No local changes to save' in str(stdout):
-        return
-    elif stderr:
+    if p.returncode != 0:
         raise exceptions.GenericGitException(f'Error running {cmd}\nstr({stderr})')
 
 
-def git_pull(branch: str):
+def git_pull(branch: str, provider_dir: str = None):
     cmd = f'git pull origin {branch}'
     p = run_command(cmd)
     stdout, stderr = p.communicate()
     if p.returncode == 0:
         return
     if stderr:
-        raise exceptions.GenericGitException(f'Error running {cmd}\nstr({stderr})')
+        raise exceptions.GenericGitException(f'Error running {cmd}\nstr({stderr}) in {provider_dir}')
 
 
 def get_default_branch():
@@ -131,9 +134,9 @@ def get_default_branch():
     p = run_command(cmd)
     stdout, stderr = p.communicate()
     if p.returncode == 0:
-        for i in stdout.strip().splitlines():
-            if b'origin/' in i:
-                return i.decode("utf-8").split('/')[1].split(':')[0].split(']')[0]
+        for i in stdout.decode("utf-8").strip().splitlines():
+            if 'origin/' in i:
+                return i.split('/')[1].split(':')[0].split(']')[0]
         else:
             raise ValueError("No idea why this would not work....")
     else:
@@ -214,7 +217,7 @@ def get_latest(provider_dir: str):
     with work_in(provider_dir):
         git_stash()
         default_branch = get_default_branch()
-        git_pull(default_branch)
+        git_pull(default_branch, provider_dir)
         git_checkout(default_branch)
 
 
