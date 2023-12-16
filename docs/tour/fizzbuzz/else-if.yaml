@@ -1,0 +1,13 @@
+<-:
+  input: int
+  args: ['input']
+  exec:
+    ->: print fizzbuzz
+    if: input%15==0
+    # TODO: Not supported currently
+    elif:
+      - if: input%3==0
+        print->: fizz
+      - if: input%5==0
+        print->: buzz
+    else: print {{input}}

@@ -8,18 +8,17 @@ A number of special variables exist for using within tackle files to gain access
 - `home_dir` - Home directory
 - `calling_directory` - The directory tackle was called from
 - `calling_file` - The path to the tackle file that was first called
-- `current_file` - The current tackle file's name
-- `current_directory` - The directory of the input tackle file.
-- `tackle_dir` - Directory where tackle config is, ie `~/.config/tackle`
-- `provider_dir` - Directory where tackle config is, ie `~/.config/tackle/providers`
+- `current_directory` - The directory of the file being parsed 
+- `current_file` - The path to the current file being parsed
+- `tackle_dir` - Directory where tackle config is, defaults to `~/.config/tackle`
+- `providers_dir` - Directory where tackle providers are, defaults to `~/.config/tackle/providers`
+- `xdg_config_dirs` - XDG [config dirs](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html)- ie ~/.config on linux - the base of the tackle dir 
 - `xdg_cache_home` - XDG [cache dir](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html)
-- `xdg_config_dirs` - XDG [config dirs](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html)
 - `xdg_config_home` - XDG [config home](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html)
 - `xdg_data_dirs` - XDG [data dirs](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html)
 - `xdg_data_home` - XDG [data dir](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html)
 - `xdg_runtime_dir` - XDG [runtime dir](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html)
 - `xdg_state_home` - XDG [state home](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html)
-
 
 ### System Properties
 

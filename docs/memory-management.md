@@ -1,8 +1,20 @@
 # Memory Management
 
-Tackle has a memory management model that defines both the ability for tackle files to pass context between one another and the order of precedence when rendering variables and assigning values to them.  
+Tackle has a memory management model that defines the order of precedence when rendering variables and the ability for tackle files to pass context between one another. These areas of memory allow users to more easily access and control the context that is used to call and pass variables.  
 
-## Public vs Private Context
+There are four areas of memory, public, private, temporary, and existing. Public and private memory are focused on what is passed between tackle calls while temporary and existing is mainly focused on how to indent the context when building control flow in [nested blocks]().
+
+> NOTE: Public and private memory is not to be confused with public and private hooks which relate to what hooks are externally callable.
+
+| Type      | Mutable | Passed Between Calls | Passed Between Contexts |
+|-----------|---------|----------------------|-------------------------|
+| Public    | X       | X                    | X                       |
+| Private   | X       |                      |                         |
+| Temporary |         |                      |                         |
+| Existing  |         |                      | X                       |
+
+
+## Public vs Private Memory
 
 For passing variables between files, tackle has the notion of `public` and `private` memory spaces that are differentiated based on any kind of hook call that ends in `->` or `_>` respectively.  Public contexts are exported when calling a declarative hook / tackle file / provider whereas private contexts stay local to the declarative hook / tackle file / provider. By default, non-hook calls are inserted into the public context. For instance given the following tackle file and running `tackle file.yaml -p`, with the `-p` short for `--print`, an option that prints out the output / public context:
 
@@ -19,7 +31,13 @@ stuff: things
 public_hook: You entered value <the value you entered>...
 ```
 
-Public and private contexts are really only important when operating in schema constrained environments or from a security perspective if calling untrusted external hooks. For instance to enforce a schema with a declarative hook, one could write the following.
+Public and private contexts are really only important when:
+
+1. Operating in schema constrained environments 
+- For instance you want to instantiate some schema but need to do some control flow with intermediary variables. Private memory is a good place to put those variables and not have them brought into the schema.
+
+2. Using untrusted hooks and don't want things like passwords leaked
+3. 
 
 ```yaml
 goto<-:
@@ -40,11 +58,6 @@ trip:
 
 Where we can see that `destination` was not included in the output because it is a private hook. This shows how if you need to control the schema, private hooks are an good way manage what is return it while still having the ability to use internal variables and call internal actions.
 
-> Note, tackle has no notion of private declarative hooks yet but will when declarative methods are more flushed out.  
-
-## Additional Contexts
-
-In the prior section the difference between the public and private context is discussed but in fact there are two other contexts that tackle uses called the existing context and the temporary context.
 
 ### Existing Context
 

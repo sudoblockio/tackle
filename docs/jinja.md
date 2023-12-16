@@ -24,6 +24,13 @@ printer:
     - things
 ```
 
+Alternatively that could be written as:
+
+```yaml
+printer->: print {{item}} {{index}} --for ['stuff','things']
+```
+
+
 ## Rendering By Default
 
 Not all fields need to be wrapped with jinja though including several base methods and hook fields. For instance the `if` and `for` methods are automatically interpreted as jinja expressions and do not need to be wrapped with braces. This is because writing an `if` statement makes little sense unless it is dynamic which jinja is needed for. Along the same thread, inputs of type string for `for` loops implicitly mean they need to be rendered. For instance the following would print out `stuff` and `things`.

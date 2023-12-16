@@ -148,13 +148,16 @@ output:
 ### Python hooks
 
 Hooks can be [written in python](https://sudoblockio.github.io/tackle/python-hooks/). Simply add your code to a `hooks` directory and the hook will be available to be called from a tackle file.
+
 ```python
 from tackle import BaseHook
 
+
 class Greeter(BaseHook):
-    hook_type: str = "greeter"
+    hook_name: str = "greeter"
     target: str
     args: list = ['target']
+
     def exec(self):
         print(f"Hello {self.target}")
 ```

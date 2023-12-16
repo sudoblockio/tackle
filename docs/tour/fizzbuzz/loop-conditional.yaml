@@ -1,0 +1,11 @@
+<-:
+  input: int
+  args: ['input']
+  exec:
+    values:
+      - modulo: 3
+        output: fizz
+      - modulo: 5
+        output: buzz
+    fizzbuzz->: print {{i.output}} --for i in values --if input%i.modulo==0 --else False
+    input_print->: print {{input}} --if not fizzbuzz

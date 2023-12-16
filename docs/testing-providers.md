@@ -46,7 +46,7 @@ import pytest
 import os
 
 @pytest.fixture(scope='function')
-def change_base_dir(monkeypatch):
+def cd_base_dir(monkeypatch):
     """Change to the base directory for importing hooks."""
     monkeypatch.chdir(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..'))
 ```
@@ -67,7 +67,7 @@ a_hook<-:
 ```python
 from tackle import tackle
 
-def test_main_build(change_base_dir):
+def test_main_build(cd_base_dir):
     output = tackle('a_hook', option1='foo', option2='bar')
 
     assert output['option1'] == 'foo'
@@ -86,7 +86,7 @@ a_hook<-:
 ```python
 from tackle import tackle
 
-def test_main_build(change_base_dir):
+def test_main_build(cd_base_dir):
     output = tackle('a_hook', a_flag=True, global_flags=['a_flag'])
 
     assert output['a_flag']
@@ -108,7 +108,7 @@ a_input->: input
 ```python
 from tackle import tackle
 
-def test_main_build(change_base_dir):
+def test_main_build(cd_base_dir):
     output = tackle(override={'a_input': 'foo'})
 
     assert output['a_input'] == 'foo'
@@ -116,7 +116,7 @@ def test_main_build(change_base_dir):
 
 Or as kwargs:
 ```python
-def test_main_build(change_base_dir):
+def test_main_build(cd_base_dir):
     output = tackle(a_input='foo')
     # assert...
 ```
@@ -130,7 +130,7 @@ a_input: foo
 ```
 
 ```python
-def test_main_build(change_base_dir):
+def test_main_build(cd_base_dir):
     output = tackle(override='a-fixture.yaml')
     # assert...
 ```

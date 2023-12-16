@@ -1,0 +1,17 @@
+fibonacci<-:
+  n: int
+  args: [n]
+  exec:
+    zero->: return 0 --if n==0
+    one->: return 1 --if n==1
+
+    fib1: 0
+    fib2: 1
+    loop->:
+      for: i in range(0,n+1)
+      fib1->: set fib1 {{fib1+fib2}}
+#      v->:
+#        V->: var {{fib1+fib2}}
+      debug->:
+      fib2->: set fib2 {{fib1+fib2}}
+    output->: print {{fib2}}

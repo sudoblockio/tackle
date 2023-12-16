@@ -1,0 +1,11 @@
+<-:
+  input:
+    type: Union[int, str]
+    validator:
+      fizzbuzz->: return fizzbuzz --if "v % 15 == 0"
+      fizz->: return fizz --if "v % 3 == 0"
+      buzz->: return buzz --if v%5==0
+      non-fizz->: return {{v}}
+  args: ['input']
+  exec:
+    ->: print {{input}}

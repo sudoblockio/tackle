@@ -1,0 +1,8 @@
+<-:
+  input: int
+  args: ['input']
+  exec:
+    output: []
+    fizz->: append output fizz --if "input % 3 == 0"
+    buzz->: append output buzz --if "input % 5 == 0"
+    out->: print "{{join(output)}}" --if output|length!=0 --else {{print(input)}}

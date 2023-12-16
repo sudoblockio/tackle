@@ -1,0 +1,6 @@
+fibonacci<-:
+  n: int
+  args: [n]
+  exec:
+    init->: return {{n}} --if n <= 1
+    run->: return "{{fibonacci(n-1) + fibonacci(n-2)}}"

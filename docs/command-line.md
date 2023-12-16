@@ -14,12 +14,20 @@ Targets are the first argument in any tackle call. For instance:
 tackle TARGET arg1 arg2 --key value --flag
 ```
 
-### File
+The below describes the logic around how to qualify a target.
+
+### File Targets 
 
 Tackle can be called against any yaml file or json. Tackle runs the file as if it is in the current directory.
 
 ```shell
 tackle some/file/location.yaml
+```
+
+You can also use the file flag.
+
+```shell
+tackle --file some/file/location.yaml
 ```
 
 ### Directory
@@ -28,6 +36,12 @@ Tackle can be called against any directory and looks for a "tackle file", a file
 
 ```shell
 tackle some/directory/location
+```
+
+You can use the key word argument `directory` or `d` for short.
+
+```shell
+tackle --directory some/directory/location
 ```
 
 ### Repository
@@ -44,6 +58,12 @@ Repository sources can be abbreviated such that the following items are equivale
 tackle robcxyz/tackle-provider
 ```
 
+You can also specify files / directories 
+
+```shell
+tackle robcxyz/tackle-provider --d some/directory/location -f some-file.yaml
+```
+
 ### Zipfile
 
 Tackle can also run against a zip file.
@@ -52,9 +72,19 @@ Tackle can also run against a zip file.
 tackle path/to/some/zipfile.zip
 ```
 
-### No target argument supplied
+### Unknown Target / No Target 
 
-When no input argument is supplied, tackle by default looks in the current then parent directories for the nearest tackle file and runs that. This is useful if you want to store a collection of calls at some location that you want to use from your present directory.
+When a target is not recognized as a file, directory, repo, or zipfile, tackle attempts to use the target as an argument to the nearest tackle provider which is any directory with a tackle file or hooks directory. Nearest in this context means in the current directory, the parent directory, and so forth until no tackle provider is found. 
+
+Call the nearest tackle provider (in this case in the parent directory) with target as argument.
+
+```shell
+# └── .tackle.yaml/json file or .hooks directory
+#    └── calling directory
+tackle unknown-target
+```
+
+Or simply call `tackle` without a target which will do same as above. 
 
 ```shell
 tackle

@@ -50,36 +50,48 @@ gen->:
     for: render_context.hooks
     if: render_context.hooks|length != 1
     item:
-      "{{item.hook_type}}": providers/{{ provider | title }}/{{ item.hook_type }}.md
+      "{{item.hook_name}}": providers/{{ provider | title }}/{{ item.hook_name }}.md
   append to mkdocs_nav_list:
     ->: append mkdocs_nav_list
     item:
       "{{provider|title}}": "{{provider_mkdocs_nav_list}}"
 
+#  d->: debug render_context
   source_code_link_stub->: https://github.com/robcxyz/tackle/blob/main/tackle/providers/{{provider}}/hooks
-  Generate single hook provider as a single page->:
+  Generate single hook provider as a single page:
     if: render_context['hooks'] | length == 1
-    Render hook templates from the tackle provider:
-      ->: generate {{templates_dir}}/hook-doc.md.tpl {{provider_docs_dir}}/{{provider|title }}/index.md
-      extra_context:
-        - "{{ provider_meta }}"
-        - "{{ render_context.hooks[0] }}"
+    ->: generate {{templates_dir}}/hook-doc.md.tpl {{provider_docs_dir}}/{{provider|title }}/index.md
+    extra_context:
+      - "{{ provider_meta }}"
+      - "{{ render_context.hooks[0] }}"
 
-  Generate multiple->:
-    if: render_context['hooks'] | length != 1
-    Render hook templates from the tackle provider:
-      ->: generate {{templates_dir}}/hook-doc.md.tpl {{provider_docs_dir}}/{{provider|title }}/{{ item.hook_type }}.md
-      for: render_context['hooks']
-      if: item.hook_type not in problem_hooks
-      extra_context:
-        - "{{ provider_meta }}"
-        - "{{ item }}"
+#  d->: debug render_context
 
-    Render provider template:
-      ->: generate {{templates_dir}}/provider-doc.md.tpl {{provider_docs_dir}}/{{provider|title }}/index.md
-      extra_context:
-        - "{{ render_context }}"
-        - "{{ provider_meta }}"
+#  Generate multiple->:
+#    if: render_context['hooks'] | length != 1
+#    Render hook templates from the tackle provider:
+#      ->: generate {{templates_dir}}/hook-doc.md.tpl {{provider_docs_dir}}/{{provider|title }}/{{ item.hook_name }}.md
+#      for: render_context['hooks']
+#      if: item.hook_name not in problem_hooks
+#      extra_context:
+#        - "{{ provider_meta }}"
+#        - "{{ item }}"
+#  d->: debug render_context
+
+  Generate multiple:
+    when: render_context['hooks'] | length != 1
+    _>: generate {{templates_dir}}/hook-doc.md.tpl {{provider_docs_dir}}/{{provider|title }}/{{ item.hook_name }}.md
+    for: render_context['hooks']
+    if: item.hook_name not in problem_hooks
+    extra_context:
+      - "{{ provider_meta }}"
+      - "{{ item }}"
+
+  Render provider template:
+    ->: generate {{templates_dir}}/provider-doc.md.tpl {{provider_docs_dir}}/{{provider|title }}/index.md
+    extra_context:
+      - "{{ render_context }}"
+      - "{{ provider_meta }}"
 
 copy problem hooks:
   _>: copy {{templates_dir}}/problem-hooks/{{item}}.md {{provider_docs_dir}}/{{problem_hooks[item]}}/{{item}}.md

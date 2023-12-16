@@ -2,6 +2,9 @@
 
 Tackle is still a work in progress with the following new features planned.
 
+- [Composition]()
+- [Complex types]()
+- []
 - [IDE Autocomplete](#ide-autocomplete)
 - [Providers allowing import of jinja extensions](#providers-allowing-import-of-jinja-extensions)
 - [Provider registry](#provider-registry)
@@ -13,7 +16,11 @@ Need to extract the json schema from each hook and upload that to [schemastore.o
 
 ## Providers allowing import of jinja extensions
 
-Providers give a good import abstraction so it would be cool to be able to allow dynamically importing of various jinja extensions as well.
+Providers give a good import abstraction so it would be cool to be able to allow dynamically importing of various jinja extensions as well. For instance if we defined an extension: 
+
+```yaml
+
+```
 
 ## Provider registry
 
