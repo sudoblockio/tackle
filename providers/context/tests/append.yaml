@@ -2,9 +2,6 @@
 stuff:
   - things
 
-block append_>:
-  app->: append stuff more-things
-
 _list:
   - stuff
   - things

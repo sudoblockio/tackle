@@ -1,10 +1,10 @@
 from typing import Union, Any, Optional
 
-from tackle import BaseHook, Field
+from tackle import BaseHook, Field, Context
 from tackle.utils.dicts import nested_get, encode_key_path, get_target_and_key
 
 
-class ListAppendHook(BaseHook):
+class AppendHook(BaseHook):
     """Hook for updating dict objects with items."""
 
     hook_name: str = 'append'
@@ -26,21 +26,24 @@ class ListAppendHook(BaseHook):
 
     args: list = ['src', 'item']
 
-    def exec(self) -> Optional[list]:
+    def exec(self, context: Context) -> Optional[list]:
         if isinstance(self.src, str) or self.src_is_key_path:
             key_path = encode_key_path(self.src, self.sep)
             # When appending within a block, we try to append to output dict then
             # fallback on trying to append to the existing context
-            target_context, set_key_path = get_target_and_key(self.context, key_path=key_path)
+            target_context, set_key_path = get_target_and_key(context, key_path=key_path)
 
+            # TODO: https://github.com/sudoblockio/tackle/issues/192
             try:
                 target = nested_get(
                     element=target_context,
                     keys=set_key_path,
                 )
             except KeyError:
+                # TODO: This is not ideal - need to nest this and catch errors
+                #  Better if we ?
                 target = nested_get(
-                    element=self.temporary_context,
+                    element=context.data.temporary,
                     keys=set_key_path,
                 )
 

@@ -1,0 +1,6 @@
+my_hook<-:
+  exec:
+    output: []
+    fizz->: append output fizz
+
+call->: my_hook

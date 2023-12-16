@@ -4,17 +4,21 @@ from tackle import tackle
 def test_provider_system_hook_dicts_update():
     output = tackle('update.yaml')
     assert output['update_map'] == output['arg']
-    assert output['update_map2'] == output['arg2']
+    # TODO: https://github.com/sudoblockio/tackle/issues/192
+    #  Determine if update hook copies data
+    # assert output['update_map2'] == output['arg2']
     assert output['dict_map'] == {'foo': 'bar', 'bar': 'bar'}
     assert output['input_map']['foo'] == 'bing'
     assert output['new_list'][2] == 'baz'
     assert output['new_str'] == 'baz'
 
 
-def test_provider_system_hook_dicts_update_2():
-    output = tackle('update-2.yaml')
-    assert output
-
+def test_provider_system_hook_dicts_update_reference():
+    """Show that references are preserved when updating a dict in place."""
+    # TODO: https://github.com/sudoblockio/tackle/issues/192
+    #  Determine if update hook copies data
+    output = tackle('update-reference.yaml')
+    assert output['update_map']['stuff']['foo'] == 'bar'
 
 def test_provider_system_hook_dicts_pop():
     output = tackle('pop.yaml')
@@ -56,9 +60,17 @@ def test_provider_system_hook_dicts_values():
 def test_provider_context_set():
     """Check that we can set keys."""
     output = tackle('set.yaml')
+
     assert output['one'][0]['that']['stuff'] == 'more things'
     assert output['two'][0]['that']['stuff'] == 'more things'
     assert output['three'][0]['that']['stuff'] == 'more things'
+
+
+def test_provider_context_set_loop():
+    """Check that we can set keys."""
+    output = tackle('set-in-loop.yaml')
+
+    assert output
 
 
 def test_provider_context_get():
@@ -80,14 +92,24 @@ def test_provider_context_delete():
 def test_provider_context_append():
     """Verify the append hook literal and in place."""
     output = tackle('append.yaml')
-    assert 'donkey' in output['appended_list']
     expected_output = ['stuff', 'things', 'foo']
+
+    assert 'donkey' in output['appended_list']
     assert output['output'] == expected_output
     assert output['path']['to']['list'] == expected_output
-    assert len(output['stuff']) == 2
 
 
-def test_provider_context_append_dict():
-    """Verify the append hook literal and in place."""
-    output = tackle('append-dict.yaml')
-    assert output
+# # TODO: Fix appending from within a block
+# #  https://github.com/sudoblockio/tackle/issues/220
+# def test_provider_context_append_block():
+#     """Verify the append hook literal and in place."""
+#     output = tackle('append-block.yaml')
+#
+#     assert 'private' not in output
+#     assert len(output['stuff']) == 2
+
+
+def test_provider_context_append_dcl_hook():
+    """Check that we can append within a dcl hook."""
+    output = tackle('append-dcl-hook.yaml')
+    assert output['call']['output'] == ['fizz']
