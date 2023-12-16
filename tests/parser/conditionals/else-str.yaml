@@ -1,0 +1,20 @@
+
+stuff: things
+
+compact->: print this --if false --else foo
+
+str->:
+  if: false
+  do: this
+  else: foo
+
+str_render:
+  ->: print this
+  if: false
+  do: this
+  else: "{{stuff}}"
+
+str_render_block->:
+  if: false
+  do: this
+  else: "{{stuff}}"

@@ -1,0 +1,20 @@
+<-:
+  exec:
+    str->:
+      if: false
+      do: this
+      else: foo
+
+    dict_empty_block_list->:
+      for: i in [1,2]
+      do:
+        if: false
+        ->: raise
+        else: {}
+
+    stuff: things
+    hook_call->:
+      if: false
+      do: this
+      else:
+        stuff->: "{{stuff}}"

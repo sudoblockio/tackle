@@ -1,0 +1,8 @@
+
+expanded->:
+  for:
+    - foo
+    - bar
+  when: true
+  if: item=='foo'
+  do->: var item

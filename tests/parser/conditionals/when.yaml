@@ -6,4 +6,4 @@ stuff:
 expanded->:
   for: stuff
   when: false
-  do->: print "{{item}}"
+  do->: var item

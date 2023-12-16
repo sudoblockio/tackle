@@ -1,0 +1,14 @@
+stuff: things
+
+dict_render:
+  if: false
+  ->: raise
+  do: this
+  else:
+    stuff: "{{stuff}}"
+
+dict_render_block->:
+  if: false
+  do: this
+  else:
+    stuff: "{{stuff}}"

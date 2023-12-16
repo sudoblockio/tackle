@@ -12,4 +12,4 @@ greeter<-:
   target: str
   return: hi
   exec<-:
-    hi->: var Hello {{target}}
+    ->: var Hello {{target}}

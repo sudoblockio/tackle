@@ -1,0 +1,18 @@
+
+dict_empty:
+  if: false
+  ->: raise
+  do: this
+  else: {}
+
+dict_empty_block->:
+  if: false
+  do->: raise
+  else: {}
+
+dict_empty_block_list->:
+  for: i in [1,2]
+  do:
+    if: false
+    ->: raise
+    else: {}
