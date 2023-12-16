@@ -17,23 +17,28 @@ jobs:
       fail-fast: false
       matrix:
         name:
-          - "windows-py37"
           - "windows-py38"
           - "windows-py39"
+          - "windows-py310"
+          - "windows-py312"
 
         include:
-          - name: "windows-py37"
-            python: "3.7"
-            os: windows-latest
-            tox_env: "py37"
           - name: "windows-py38"
             python: "3.8"
             os: windows-latest
             tox_env: "py38"
           - name: "windows-py39"
-            python: "3.8"
+            python: "3.9"
             os: windows-latest
-            tox_env: "py38"
+            tox_env: "py39"
+          - name: "windows-py310"
+            python: "3.10"
+            os: windows-latest
+            tox_env: "py310"
+          - name: "windows-py312"
+            python: "3.12"
+            os: windows-latest
+            tox_env: "py312"
 
     steps:
       - uses: actions/checkout@v2
