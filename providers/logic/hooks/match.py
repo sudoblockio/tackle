@@ -15,7 +15,7 @@ class MatchHook(BaseHook):
     """
 
     hook_name: str = 'match'
-    value: str | int | float | bool = Field(
+    value: Union[str, int, float, bool] = Field(
         True,
         render_by_default=True,
         description="The value to match against. Defaults to boolean true so that "

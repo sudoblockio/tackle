@@ -236,7 +236,7 @@ def get_hook_field_type_from_str(
         context: Context,
         hook_name: str,
         type_str: str,
-) -> GenericFieldType | None:
+) -> Optional[GenericFieldType]:
     """
     Get the type from a field's type string and raise an error if the type is unknown.
      Supports the following types:
@@ -406,7 +406,7 @@ def create_hook_field_validator(
         hook_name: str,
         key: str,
         value: dict,
-        validator_field: str | dict,
+        validator_field: Union[str, dict],
 ) -> GenericFieldType:
     """
     Creates a validator by parsing a hook fields `validator` key and does some light
@@ -630,7 +630,7 @@ def create_dcl_hook_fields(
 def new_dcl_hook_input(
         context: 'Context',
         hook_name: str,
-        hook_input_dict: dict | str,
+        hook_input_dict: Union[dict, str],
 ) -> DclHookInput:
     """
     Create the hook_input which are keys supplied in the hook definition that inform how
@@ -659,7 +659,7 @@ def get_model_config_from_hook_input(
         context: Context,
         hook_name: str,
         hook_input_dict: dict,
-) -> DclHookModelConfig | None:
+) -> Optional[DclHookModelConfig]:
     """If the `model_config` field is declared, pop it off and return an object."""
     if 'model_config' in hook_input_dict:
         model_config = hook_input_dict.pop('model_config')
@@ -697,7 +697,7 @@ def get_model_config_from_hook_input(
 def create_dcl_hook(
         context: 'Context',
         hook_name: str,
-        hook_input_raw: dict | str,
+        hook_input_raw: Union[dict, str],
 ) -> 'Type[BaseHook]':
     """
     Create a model from the hook input dict. Calls numerous functions to upgrade the
@@ -857,7 +857,7 @@ def enrich_hook(
 def get_hooks_from_namespace(
         context: 'Context',
         hook_name: str,
-) -> CompiledHookType | None:
+) -> Optional[CompiledHookType]:
     """Get the public, private, or native hook from the context."""
     if hook_name == '_default':
         return context.hooks.default

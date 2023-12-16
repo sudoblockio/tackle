@@ -79,7 +79,7 @@ def create_hooks(
         )
 
 
-def extract_base_file(context: 'Context') -> list | dict:
+def extract_base_file(context: 'Context') -> Union[list, dict]:
     """Read the tackle file and initialize input_context."""
     if context.source.file:
         try:
@@ -127,10 +127,10 @@ def get_overrides(
 def new_data(
         *,
         context: 'Context',
-        raw_input: dict | list | None = None,
-        overrides: str | dict | None = None,
-        existing_data: str | dict | None = None,
-        _data: Data | None = None,
+        raw_input: Union[dict,  list, None] = None,
+        overrides: Union[str, dict, None] = None,
+        existing_data: Union[str, dict, None] = None,
+        _data: Optional[Data] = None,
 ) -> Data:
     """
     Create a data object which stores data as the source is parsed. When tackle is
@@ -521,9 +521,9 @@ def new_context(
         hooks_dir: str = None,
         _strict_source: bool = False,  # Raise if source not found
         # Data
-        raw_input: dict | list | None = None,
+        raw_input: Union[dict, list, None] = None,
         overrides: Union[str, dict] = None,
-        existing_data: str | dict | None = None,
+        existing_data: Union[str, dict, None] = None,
         # Context
         no_input: bool = None,
         verbose: bool = None,

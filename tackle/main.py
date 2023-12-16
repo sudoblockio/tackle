@@ -17,18 +17,18 @@ def tackle(
         latest: Optional[bool] = None,
         directory: Optional[str] = None,
         file: Optional[str] = None,
-        find_in_parent: bool | None = None,
+        find_in_parent: Optional[bool] = None,
         # Data
-        raw_input: dict | list | None = None,
-        existing_data: str | dict | None = None,
-        overrides: str | dict | None = None,
+        raw_input: Union[dict, list, None] = None,
+        existing_data: Union[str, dict, None] = None,
+        overrides: Union[str, dict, None] = None,
         # Imports
-        hooks_dir: str | None = None,
+        hooks_dir: Optional[str] = None,
         # Context
-        no_input: bool | None = None,
-        verbose: bool | None = None,
+        no_input: Optional[bool] = None,
+        verbose: Optional[bool] = None,
         # Call
-        return_context: bool | None = None,
+        return_context: Optional[bool] = None,
         # Models ->
         # Used when calling tackle from tackle
         _paths: 'Paths' = None,

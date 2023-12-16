@@ -1,3 +1,5 @@
+from typing import Optional, Union
+
 from jinja2 import Environment, StrictUndefined
 # from jinja2 import StrictUndefined
 from jinja2.nativetypes import NativeEnvironment as Environment
@@ -11,30 +13,30 @@ from tackle.models import GenericHookType
 
 @dataclass
 class Source:
-    input_string: str | None = None
-    checkout: str | None = None
-    latest: bool | None = None
-    find_in_parent: bool | None = None
-    directory: str | None = None
-    file: str | None = None
-    base_dir: str | None = None
-    hooks_dir: str | None = None
-    name: str | None = None
-    raw: dict | list = None
+    input_string: Optional[str] = None
+    checkout: Optional[str] = None
+    latest: Optional[bool] = None
+    find_in_parent: Optional[bool] = None
+    directory: Optional[str] = None
+    file: Optional[str] = None
+    base_dir: Optional[str] = None
+    hooks_dir: Optional[str] = None
+    name: Optional[str] = None
+    raw: Union[dict, list] = None
 
 
 @dataclass
 class Data:
-    input: DocumentType | None = None
-    raw_input: DocumentType | None = None
-    pre_input: DocumentType | None = None
-    post_input: DocumentType | None = None
-    hooks_input: DocumentObjectType | None = None
-    public: DocumentType | None = None
-    private: DocumentType | None = None
-    temporary: DocumentType | None = None
-    existing: DocumentObjectType | None = None
-    overrides: DocumentObjectType | None = None
+    input: Optional[DocumentType] = None
+    raw_input: Optional[DocumentType] = None
+    pre_input: Optional[DocumentType] = None
+    post_input: Optional[DocumentType] = None
+    hooks_input: Optional[DocumentObjectType] = None
+    public: Optional[DocumentType] = None
+    private: Optional[DocumentType] = None
+    temporary: Optional[DocumentType] = None
+    existing: Optional[DocumentObjectType] = None
+    overrides: Optional[DocumentObjectType] = None
 
 
 @dataclass
@@ -93,11 +95,11 @@ class Context:
     key_path_block: list = None
 
     # Internal data objects
-    input: InputArguments | None = None
-    source: Source | None = None
-    hooks: Hooks | None = None
-    data: Data | None = None
-    path: Paths | None = None
+    input: Optional[InputArguments] = None
+    source: Optional[Source] = None
+    hooks: Optional[Hooks] = None
+    data: Optional[Data] = None
+    path: Optional[Paths] = None
 
     # Flag to denote to exit parsing
     break_: bool = False

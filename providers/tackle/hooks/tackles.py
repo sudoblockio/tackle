@@ -65,7 +65,7 @@ class TackleHook(BaseHook):
     kwargs: str = 'override'
     _docs_order = 0
 
-    def exec(self, context: Context) -> dict | list:
+    def exec(self, context: Context) -> Union[dict, list]:
         if self.input_arg is None:
             # If not given, assume we're looking for default tackle file in current dir
             self.input_arg = '.'

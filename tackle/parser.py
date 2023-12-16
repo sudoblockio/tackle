@@ -23,22 +23,24 @@ command line are asserted
 This is a really rough overview of what is going on here. Post issues if you are trying
 to fix something and want to know more. Docs should be improved always...
 """
-import inspect
 from collections import OrderedDict
+import inspect
+import logging
 import os
 import re
-import logging
 from pydantic import ValidationError, BaseModel
-from typing import Any, Callable
+from typing import Any, Callable, Optional, Union
 
 from tackle import exceptions
 from tackle.macros.key_macros import (
     var_hook_macro,
-    key_macro,)
+    key_macro,
+)
 from tackle.models import (
     LazyBaseHook,
     HookCallInput,
-    CompiledHookType, BaseHook,
+    CompiledHookType,
+    BaseHook,
 )
 from tackle.context import Context
 from tackle.hooks import create_dcl_hook, get_hook_from_context
@@ -160,7 +162,7 @@ def run_hook_exec(
         hook: CompiledHookType,
         # Jinja + Externally called dcl hooks will not have hook_call since there is
         # never any control flow in either of these situations
-        hook_call: HookCallInput | None = None,
+        hook_call: Optional[HookCallInput] = None,
 ) -> Any:
     """
     Run the hook's exec method by injecting any needed params such as context and
@@ -193,7 +195,7 @@ def run_hook_exec(
                 context=context, hook_name=hook,
             )
 
-    return hook.exec(**injected_params)
+    return hook.exec
 
 
 def run_hook_in_dir(
@@ -551,10 +553,10 @@ def parse_hook_execute(
 
 
 class ForVariableNames(BaseModel):
-    loop_targets: list | dict = None
+    loop_targets: Union[list, dict] = None
     index_name: str = None
     value_name: str = None
-    key_name: str | None = None
+    key_name: Optional[str] = None
 
 
 def get_for_loop_variable_names(

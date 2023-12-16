@@ -2,14 +2,12 @@
 Declarative hook macros. Handles all the inputs to hooks (ie `hook_name<-`). Removes
 any arrows from keys based on if they are hook calls or methods.
 """
-import pydoc
-from typing import TYPE_CHECKING, Any, Annotated
+from typing import Union
 from ruyaml.constructor import CommentedSeq, ScalarFloat, CommentedMap
 from pydantic.fields import FieldInfo
 
 from tackle import exceptions, Context
-from tackle.models import DclHookInput, DCL_HOOK_FIELDS, HookFieldValidator
-from tackle.pydantic.field_types import FieldInput
+from tackle.models import DCL_HOOK_FIELDS
 
 LITERAL_TYPES = {'list', 'dict', 'str', 'int', 'float', 'bytes', 'bool'}
 
@@ -331,7 +329,7 @@ def str_hook_macro(hook_input_raw: str) -> dict:
 
 def hook_macros(
         context: 'Context',
-        hook_input_raw: dict | str,
+        hook_input_raw: Union[dict, str],
         hook_name: str,
 ) -> dict:
     """

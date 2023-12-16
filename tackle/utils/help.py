@@ -2,7 +2,7 @@ import sys
 from jinja2 import Template
 from pydantic import BaseModel, ValidationError
 from pydantic.fields import FieldInfo
-from typing import Any, List, Type
+from typing import Any, List, Type, Optional
 
 from tackle import exceptions
 from tackle.models import LazyBaseHook, BaseHook
@@ -30,7 +30,7 @@ class HelpInput(BaseModel):
     name: str
     type: str
     default: Any = None
-    description: str | None = None
+    description: Optional[str] = None
 
 
 def unpack_hook(

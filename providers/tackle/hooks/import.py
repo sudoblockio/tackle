@@ -1,3 +1,5 @@
+from typing import Optional, Union
+
 from pydantic import BaseModel, Field, field_validator, ValidationInfo, ValidationError  # noqa
 
 from tackle.utils.command import unpack_args_kwargs_string
@@ -8,8 +10,8 @@ from tackle.factory import new_context
 class RepoSource(BaseModel):
     """Repo object."""
     src: str
-    version: str | None = None
-    latest: bool | None = None
+    version: Optional[str] = None
+    latest: Optional[bool] = None
 
     @field_validator('latest')
     def check_both_version_and_latest_defined(cls, v: bool, info: ValidationInfo):
@@ -27,7 +29,7 @@ class ImportHook(BaseHook):
     """
 
     hook_name: str = 'import'
-    src: str | list = Field(
+    src: Union[str, list] = Field(
         ...,
         description="A str reference to a source or a list of dicts with strings that "
                     "will be expanded with args (ie `foo --version latest`) or objects "

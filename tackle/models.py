@@ -96,18 +96,18 @@ class HookCallInput(BaseModel):
                     " default but must be references to dicts.",
         render_by_default=True,
     )
-    skip_output: bool | None = Field(
+    skip_output: Optional[bool] = Field(
         False,
         description="A flag to not set the key. Can also be set in hook definition.",
         render_by_default=True,
     )
-    return_: bool | None = Field(
+    return_: Optional[bool] = Field(
         False,
         description="Flag to indicate whether to stop parsing and return the current"
                     " public data.",
         alias="return",
     )
-    no_input: bool | None = Field(
+    no_input: Optional[bool] = Field(
         False,
         description="A flag to skip any prompting. Can also be set from command line.",
         render_by_default=True,
@@ -233,15 +233,15 @@ class HookFieldValidator(BaseModel):
 
 class DclHookInput(BaseModel):
     """Function input model. Used to validate the raw function input."""
-    help: str | None = Field(
+    help: Optional[str] = Field(
         None,
         description="A string to display when calling with the `help` argument."
     )
-    extends: Union[str, list[str]] | None = Field(
+    extends: Optional[Union[str, list[str]]] = Field(
         None,
         description="A string or list of hook types to inherit from. See  [docs]()."
     )
-    args: list[str] | str | None = Field(
+    args: Optional[Union[list[str], str]] = Field(
         [],
         description="A string or list of strings references to field names to map"
                     " arguments to.",
@@ -266,26 +266,26 @@ class DclHookInput(BaseModel):
         description="",
         alias="return",
     )
-    type_: str | None = Field(
+    type_: Optional[str] = Field(
         None,
         alias='type',
         description="For type hooks, the name of the type."
     )
-    validators: dict[str, dict | HookFieldValidator] = Field(
+    validators: dict[str, Union[dict, HookFieldValidator]] = Field(
         {},
         description="A list of validators. Only used for type hooks. See [docs]()."
     )
 
-    include: list | None = Field(
+    include: Optional[list] = Field(
         None,
         description="A list of fields to include when exporting a model."
     )
-    exclude: list | None = Field(
+    exclude: Optional[list] = Field(
         None,
         description="A list of fields to exclude when exporting a model."
     )
 
-    hook_model_config_: DclHookModelConfig | None = Field(
+    hook_model_config_: Optional[DclHookModelConfig] = Field(
         None,
         description="Variables to set wrapping pydantic's existing ConfigDict. See"
                     " [docs]().",
@@ -308,7 +308,7 @@ DCL_HOOK_FIELDS = {
     i for i in DclHookInput.model_fields.keys()
 }
 
-AnyHookType = BaseHook | DclHookInput | LazyBaseHook
+AnyHookType = Union[BaseHook, DclHookInput, LazyBaseHook]
 GenericHookType = Union[BaseHook, LazyBaseHook]
 HookDictType = dict[str, AnyHookType]
-CompiledHookType = BaseHook | DclHookInput
+CompiledHookType = Union[BaseHook, DclHookInput]

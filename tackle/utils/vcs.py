@@ -2,6 +2,7 @@ import logging
 import os
 import subprocess
 from shutil import which
+from typing import Optional
 
 from tackle import exceptions
 from tackle.utils.paths import make_sure_path_exists
@@ -171,8 +172,8 @@ def get_repo(
         repo_url: str,
         org_dir: str,
         provider_dir: str,
-        version: str | None,
-        latest: bool | None,
+        version: Optional[str],
+        latest: Optional[bool],
 ):
     """
     For new providers, we need to clone the provider and check if there is a release
@@ -234,7 +235,7 @@ def get_last_release(provider_dir: str):
             git_checkout(default_branch)
 
 
-def get_repo_source(repo: str, version: str | None, latest: bool | None) -> str:
+def get_repo_source(repo: str, version: Optional[str], latest: Optional[bool]) -> str:
     """Clone a provider into the providers dir with checkout out the right version."""
     # Check if git is installed
     if not bool(which('git')):
