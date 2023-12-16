@@ -1,0 +1,3 @@
+import->: ../../third_party/web
+
+test->: http_get https://google.com

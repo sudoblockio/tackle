@@ -45,8 +45,24 @@ HOOK_INPUT_FIXTURES = [
             'things': 'foo',
         }},
         {'stuff': {
-            'type': 'dict',
-            'default': {'things': 'foo'},
+            'type': 'Any',
+            'default_factory': {'things': 'foo'},
+        }},
+    ),
+    (
+        {'stuff': [{
+            'things': 'foo',
+        }]},
+        {'stuff': {
+            'type': 'list',
+            'default_factory': [{'things': 'foo'}],
+        }},
+    ),
+    (
+        {'stuff': {'->': 'foo', 'bar': 'bar'}},
+        {'stuff': {
+            'type': 'Any',
+            'default_factory': {'stuff': {'->': 'foo', 'bar': 'bar'}, 'return->': '{{stuff}}'},
         }},
     ),
     (
@@ -55,6 +71,28 @@ HOOK_INPUT_FIXTURES = [
         }},
         {'stuff': {
             '<-': {'things': 'foo'},
+        }},
+    ),
+    (
+        {'stuff': {'->': 'foo', 'type': 'bar'}},
+        {'stuff': {
+            'type': 'Any',
+            'default_factory': {'stuff': {'->': 'foo', 'type': 'bar'}, 'return->': '{{stuff}}'},
+        }},
+    ),
+    (
+        {'stuff': {'default_factory->': 'foo', 'bar': 'bar', 'type': 'str'}},
+        {'stuff': {
+            'type': 'str',
+            'bar': 'bar',
+            'default_factory': {'stuff': {'->': 'foo'}, 'return->': '{{stuff}}'},
+        }},
+    ),
+    (
+        {'stuff': {'default_factory': {'->': 'foo', 'bar': 'bar'}, 'type': 'str'}},
+        {'stuff': {
+            'type': 'str',
+            'default_factory': {'stuff': {'->': 'foo', 'bar': 'bar'}, 'return->': '{{stuff}}'},
         }},
     ),
 ]
@@ -80,8 +118,8 @@ FIELD_HOOK_INPUT_FIXTURES: list[dict] = [
     {"field": {"default->": "literal foo"}},
     {"field": {"default_factory->": "literal foo"}},
     {"field": {"default_factory": {"->": "literal foo"}}},
-    # TODO: Support moving default arrow to default_factory
-    {"field": {"default": {"->": "literal foo"}}},
+    # # TODO: Support moving default arrow to default_factory
+    # {"field": {"default": {"->": "literal foo"}}},
 ]
 
 

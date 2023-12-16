@@ -27,6 +27,7 @@ def test_utils_files_read_config_file_documents():
 
 
 FILES_EXCEPTIONS: list[tuple[str, Type[Exception]]] = [
+    ('double-braces.yaml', exceptions.FileLoadingException),
     ('bad.json', exceptions.FileLoadingException),
     ('bad.yaml', exceptions.FileLoadingException),
     ('bad.toml', exceptions.FileLoadingException),

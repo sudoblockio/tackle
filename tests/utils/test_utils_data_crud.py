@@ -2,7 +2,7 @@
 import pytest
 from ruyaml import YAML
 
-from tackle.utils.dicts import (
+from tackle.utils.data_crud import (
     encode_list_index,
     decode_list_index,
     nested_set,

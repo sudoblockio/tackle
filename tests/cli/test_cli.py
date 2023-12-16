@@ -1,4 +1,6 @@
 """Test the cli."""
+from copy import copy
+
 import pytest
 import os
 import sys
@@ -48,6 +50,21 @@ def test_cli_parse_args(mocker, change_base_dir, input_string, output):
         assert getattr(context.input, k) == v
 
 
+@pytest.mark.parametrize("input_string,output_keys,output", [
+    ("--latest", "latest", True),
+    ("--file foo", "file", "foo"),
+    ("--directory foo", "directory", "foo"),
+    ("--find-in-parent", "find_in_parent", True),
+])
+def test_cli_parse_args_vars(mocker, change_base_dir, input_string, output_keys, output):
+    """Mock the main call and verify the args get passed in right through the CLI."""
+    mock = mocker.patch("tackle.cli.tackle", autospec=True)
+    main(input_string.split(' '))
+
+    assert mock.called
+    assert mock.call_args.kwargs[output_keys] == output
+
+
 def test_cli_parse_args_empty(mocker):
     """When no arg is given we should find the closest tackle file."""
     mock = mocker.patch("tackle.main.parse_context", autospec=True)
@@ -91,6 +108,7 @@ def test_cli_call_mock(mocker):
     """Check the main function runs properly."""
     mock = mocker.patch("tackle.main.parse_context")
     main("stuff")
+
     assert mock.called
 
 

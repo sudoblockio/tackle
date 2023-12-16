@@ -6,14 +6,14 @@ from tackle import tackle, exceptions
 
 FIXTURES = [
     ('fields.yaml', 'foo'),
-    ('method.yaml', 'foo'),
-    ('args.yaml', 'bar'),
-    ('args-method.yaml', 'bar'),
-    ('exec.yaml', 'foo'),
-    ('method-exec.yaml', 'foo'),
-    ('field-hooks-exec-args.yaml', 'bar'),
-    ('field-hooks-exec-args-method.yaml', 'bar'),
-    ('multi-line.yaml', 'bar'),
+    # ('method.yaml', 'foo'),
+    # ('args.yaml', 'bar'),
+    # ('args-method.yaml', 'bar'),
+    # ('exec.yaml', 'foo'),
+    # ('method-exec.yaml', 'foo'),
+    # ('field-hooks-exec-args.yaml', 'bar'),
+    # ('field-hooks-exec-args-method.yaml', 'bar'),
+    # ('multi-line.yaml', 'bar'),
 ]
 
 

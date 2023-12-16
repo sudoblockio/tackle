@@ -1,0 +1,13 @@
+Foo<-:
+  foo: bar
+
+
+MyHook<-:
+  a_str:
+    type: str
+  a_union:
+    type: Union[str, int]
+  a_new_union:
+    type: str | int
+  embedded:
+    type: Foo

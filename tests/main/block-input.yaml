@@ -1,8 +1,0 @@
-
-foo->:
-  this->: input This?
-  that->: input That?
-  this_private_>: input This?
-  that_private_>: input That?
-
-bar->: input

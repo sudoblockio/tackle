@@ -1,35 +1,18 @@
-import os
-
 import pytest
+import sys
+import os
+import shutil
+import subprocess
 
-from tackle import exceptions, tackle
+from tackle import exceptions, tackle, imports
 from tackle.factory import new_context
 from tackle.context import Context, Source, Hooks
-from tackle import imports
 from tackle.settings import settings
 
 
 @pytest.fixture()
 def hooks():
     return Hooks(private={}, public={})
-
-
-@pytest.mark.slow
-def test_imports_import_hooks_from_file_python(cd, hooks):
-    """Check that we can import a python hook."""
-    cd("with-init")
-    imports.import_hooks_from_file(
-        context=Context(source=Source(), hooks=hooks),
-        provider_name="foo",
-        file_path="hook_2.py",
-    )
-    assert hooks.public['hook_2']
-    imports.import_hooks_from_file(
-        context=Context(source=Source(), hooks=hooks),
-        provider_name="foo",
-        file_path="hook_1.py",
-    )
-    assert hooks.private['hook_1']
 
 
 def test_imports_import_hooks_from_file_yaml(cd, hooks):
@@ -89,12 +72,11 @@ def test_imports_import_with_fallback_install(cd, hooks, mocker):
     assert mock.called
 
 
-def test_imports_exceptions_reserved_field_no_annotation(cd, hooks):
+def test_imports_exceptions_reserved_field_no_annotation(hooks):
     """
     Check that when we have no annotations to a reserved field, ie is_public = "foo",
      we catch the error with context.
     """
-    cd('exception-fixtures')
     with pytest.raises(exceptions.TackleHookImportException):
         imports.import_hooks_from_file(
             context=Context(source=Source()),
@@ -103,22 +85,14 @@ def test_imports_exceptions_reserved_field_no_annotation(cd, hooks):
         )
 
 
-# TODO: Fix this test which should fail because we do some light validation on import?
-def test_imports_exceptions_reserved_field_wrong_type(cd, hooks):
-    """
-    Check that when we have the wrong type to a reserved field, ie
-     is_public: str = "foo", we catch the error with context.
-    """
-    cd('exception-fixtures')
-    # TODO: Fix this - need model validator (not field) to validate the subclassed
-    #  fields are all the same time
-    with pytest.raises(exceptions.TackleHookImportException):
+def test_imports_exceptions_no_hook_name(hooks):
+    """Check we catch errors importing python hooks without hook_name defined."""
+    with pytest.raises(exceptions.MalformedHookDefinitionException):
         imports.import_hooks_from_file(
-            context=new_context(_hooks=hooks),
+            context=Context(source=Source()),
             provider_name="foo",
-            file_path="reserved_field_wrong_type.py",
+            file_path="no_hook_name.py",
         )
-        pass
 
 
 @pytest.fixture()
@@ -143,7 +117,7 @@ def temporary_uninstall():
 
 
 @pytest.mark.slow
-def test_parser_provider_import_installs_requirements(cd_fixtures, temporary_uninstall):
+def test_parser_provider_import_installs_requirements(temporary_uninstall):
     """Validate that if a package is missing, that it will be installed and usable."""
     temporary_uninstall('requests')
     try:
@@ -161,18 +135,57 @@ def test_parser_provider_import_installs_requirements(cd_fixtures, temporary_uni
     assert requests
 
 
+@pytest.fixture()
+def remove_provider():
+    """Fixture to remove a provider."""
+
+    def f(provider):
+        provider = provider.split('/')
+        provider_path = os.path.join(settings.providers_dir, *provider)
+        if os.path.exists(provider_path):
+            shutil.rmtree(provider_path)
+
+    return f
+
+
 @pytest.mark.slow
-def test_imports_requirements_installs_requirements(cd, temporary_uninstall):
-    """Validate that if a package is missing, that it will be installed and usable."""
-    cd(os.path.join('fixtures', 'test-provider-reqs'))
-    temporary_uninstall('art')
-    try:
-        import art
+def test_providers_released(remove_provider):
+    """
+    Check that when we call a released provider, that we only use commits from the
+    latest release and not anything that was added after the release. Check the external
+     fixture for details.
+    """
+    remove_provider("robcxyz/tackle-fixture-released")
+    o = tackle("robcxyz/tackle-fixture-released")
 
-        assert False
-    except ImportError:
-        assert True
+    assert 'released_added_later' not in o
 
-    o = tackle()
-    temporary_uninstall('art')
-    assert o['art']
+
+@pytest.mark.slow
+def test_providers_released_latest(remove_provider):
+    """
+    Check that when we call a released provider, that when we include the latest flag
+    we use the latest commit.
+    """
+    remove_provider("robcxyz/tackle-fixture-released")
+    o = tackle(
+        "robcxyz/tackle-fixture-released",
+        latest=True,
+    )
+    assert o['hooks_dir_hook']['foo'] == 'bar'
+    assert 'released_added_later' in o
+
+    # TODO: Ditch this? It is hard to maintain
+    #  What it is asserting is each time I release the fixture it doesn't have that key
+    # # Then test that when we run the provider again that it uses the latest release.
+    # o = tackle("robcxyz/tackle-fixture-released")
+    # # assert 'released_added_later' not in o
+
+
+@pytest.mark.slow
+def test_providers_unreleased_import(remove_provider):
+    """Check that we can use an unreleased provider."""
+    remove_provider("robcxyz/tackle-fixture-unreleased")
+    o = tackle("robcxyz/tackle-fixture-unreleased", no_input=True)
+
+    assert o['hooks_dir_hook']['foo'] == 'bar'

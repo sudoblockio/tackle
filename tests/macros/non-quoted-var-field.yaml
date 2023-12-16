@@ -1,4 +1,4 @@
 stuff: things
 foo:
   ->: var
-  input: {{stuff}}
+  input: "{{stuff}}"

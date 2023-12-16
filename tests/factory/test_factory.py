@@ -15,5 +15,5 @@ def test_factory_new_context():
     [1, 2]
 ])
 def test_factory_new_context_raw_inputs(input):
-    context = new_context(input=input)
+    context = new_context(raw_input=input)
     assert context.data.raw_input == input

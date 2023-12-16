@@ -6,17 +6,17 @@ EXCEPTIONS = [
     (
         exceptions.UnknownTemplateVariableException,
         'unknown-variable.yaml',
-        'is undefined',
+        'Could not find one of',
     ),
     (
-        exceptions.UnknownTemplateVariableException,
-        'unknown-dcl-hook.yaml',
-        'is the same as a hook and either',
+        exceptions.MalformedTemplateVariableException,
+        'uncalled-dcl-hook.yaml',
+        'try calling',
     ),
     (
-        exceptions.UnknownTemplateVariableException,
-        'unknown-python-hook.yaml',
-        'is the same as a hook and either',
+        exceptions.MalformedTemplateVariableException,
+        'uncalled-python-hook.yaml',
+        'try calling',
     ),
     (
         exceptions.MissingTemplateArgsException,

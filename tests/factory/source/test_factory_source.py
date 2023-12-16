@@ -106,7 +106,7 @@ def test_factory_source_new_source_zip(cd):
 
 @pytest.fixture()
 def repo_path():
-    path = Path(os.path.join(settings.provider_dir, 'test', 'bar', 'tackle.yaml'))
+    path = Path(os.path.join(settings.providers_dir, 'test', 'bar', 'tackle.yaml'))
     shutil.rmtree(path, ignore_errors=True)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.touch(exist_ok=True)
@@ -216,8 +216,13 @@ def test_factory_source_new_source_exception_find_in_parent(run_in_temp_dir):
 
 def test_factory_source_new_source_exception_find_in_parent_repo_does_not_exist(cd):
     """Tackle invocation with non-exist repository should raise error."""
-    cd('/')
+    if os.name != 'nt':
+        cd('/')
+    else:
+        cd('\\')
     with pytest.raises(exceptions.UnknownSourceException) as info:
         main.tackle('definitely-not-a-valid-repo-dir')
 
     assert 'definitely-not-a-valid-repo-dir' in info.value.message
+
+

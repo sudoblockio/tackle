@@ -5,6 +5,6 @@ list_str_input: ['1']
 
 
 int_render->: var int_input
-#str_render->: var str_input
-#list_int_render->: var list_int_input
-#list_str_render->: var list_str_input
+str_render->: var str_input
+list_int_render->: var list_int_input
+list_str_render->: var list_str_input

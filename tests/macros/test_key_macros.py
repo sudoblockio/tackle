@@ -35,36 +35,46 @@ def test_unpack_args_kwargs_handle_leading_brackets(
 
 SPECIAL_KEY_MACRO_FIXTURES: list[tuple[str, Any, dict]] = [
     # key,value,expected_value
-    # (
-    #     'print->',
-    #     'foo',
-    #     {'->': 'print', 'objects': 'foo', 'skip_output': True},
-    # ),
-    # (
-    #     'import->',
-    #     'foo',
-    #     {'->': 'import', 'providers': ['foo']},
-    # ),
-    # (
-    #     'block_list->',
-    #     ['foo', '{{bar}}'],
-    #     {'->': 'block', 'items': ['foo', '{{bar}}']},
-    # ),
-    # (
-    #     'block_dict->',
-    #     {'for': 'things', 'foo': 'bar'},
-    #     {'->': 'block', 'for': 'things', 'items': {'foo': 'bar'}},
-    # ),
-    # (
-    #     'return->',
-    #     True,
-    #     {'->': 'return', 'value': True},
-    # ),
-    # (
-    #     'return->',
-    #     "true --if {{foo}}",
-    #     {'->': 'return', 'value': True, 'if': "{{foo}}"},
-    # ),
+    (
+        'print->',
+        'foo',
+        {'->': 'print', 'objects': 'foo', 'skip_output': True},
+    ),
+    (
+        'import->',
+        'foo',
+        {'->': 'import foo'},
+    ),
+    (
+        'import->',
+        [{'src': 'foo'}],
+        {'->': 'import', 'src': [{'src': 'foo'}]},
+    ),
+    (
+        'import->',
+        {'src': 'foo'},
+        {'->': 'import', 'src': 'foo'},
+    ),
+    (
+        'rendered_list->',
+        ['foo', 'bar'],
+        {'->': 'literal', 'input': ['foo', 'bar']},
+    ),
+    (
+        'block_dict->',
+        {'for': 'things', 'foo': 'bar'},
+        {'->': 'block', 'for': 'things', 'items': {'foo': 'bar'}},
+    ),
+    (
+        'return->',
+        True,
+        {'->': 'return', 'value': True},
+    ),
+    (
+        'return->',
+        "true --if {{foo}}",
+        {'->': 'return', 'value': True, 'if': "{{foo}}"},
+    ),
     (
         'debug->',
         None,

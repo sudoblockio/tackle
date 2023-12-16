@@ -1,2 +1,2 @@
 stuff: things
-foo->: {{stuff}}
+foo->: "{{stuff}}"

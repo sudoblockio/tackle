@@ -9,5 +9,5 @@ int_render->: "{{int}}"
 float_render->: "{{float}}"
 
 # Needed special logic to not be converted to int
-hex->: literal 0x01
-hex_render->: "{{hex}}"
+hex_value->: hex 1
+hex_render->: "{{hex(1)}}"
