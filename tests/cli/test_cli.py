@@ -37,7 +37,7 @@ INPUT_SOURCES = [
 
 
 @pytest.mark.parametrize("input_string,output", INPUT_SOURCES)
-def test_cli_parse_args(mocker, change_base_dir, input_string, output):
+def test_cli_parse_args(mocker, cd_base_dir, input_string, output):
     """Mock the main call and verify the args get passed in right through the CLI."""
     mock = mocker.patch("tackle.main.parse_context", autospec=True)
     main(input_string.split(' '))
@@ -56,7 +56,7 @@ def test_cli_parse_args(mocker, change_base_dir, input_string, output):
     ("--directory foo", "directory", "foo"),
     ("--find-in-parent", "find_in_parent", True),
 ])
-def test_cli_parse_args_vars(mocker, change_base_dir, input_string, output_keys, output):
+def test_cli_parse_args_vars(mocker, cd_base_dir, input_string, output_keys, output):
     """Mock the main call and verify the args get passed in right through the CLI."""
     mock = mocker.patch("tackle.cli.tackle", autospec=True)
     main(input_string.split(' '))

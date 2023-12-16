@@ -1,4 +1,5 @@
 import os
+import tempfile
 from pathlib import Path
 import pytest
 import shutil
@@ -194,6 +195,12 @@ def test_factory_source_new_source_exceptions_parameterized(args, kwargs):
         new_source(context=context, **kwargs)
 
 
+@pytest.fixture(scope='function')
+def run_in_temp_dir(cd):
+    temp_dir = tempfile.mkdtemp()
+    cd(temp_dir)
+
+
 def test_factory_source_new_source_exception_no_arg_temp_di(run_in_temp_dir):
     """
     When no arg is supplied it tries to find in parent. This test is run in temp dir
@@ -224,5 +231,3 @@ def test_factory_source_new_source_exception_find_in_parent_repo_does_not_exist(
         main.tackle('definitely-not-a-valid-repo-dir')
 
     assert 'definitely-not-a-valid-repo-dir' in info.value.message
-
-

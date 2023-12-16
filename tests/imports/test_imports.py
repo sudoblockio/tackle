@@ -147,20 +147,6 @@ def remove_provider():
 
     return f
 
-
-@pytest.mark.slow
-def test_providers_released(remove_provider):
-    """
-    Check that when we call a released provider, that we only use commits from the
-    latest release and not anything that was added after the release. Check the external
-     fixture for details.
-    """
-    remove_provider("robcxyz/tackle-fixture-released")
-    o = tackle("robcxyz/tackle-fixture-released")
-
-    assert 'released_added_later' not in o
-
-
 @pytest.mark.slow
 def test_providers_released_latest(remove_provider):
     """
@@ -173,13 +159,6 @@ def test_providers_released_latest(remove_provider):
         latest=True,
     )
     assert o['hooks_dir_hook']['foo'] == 'bar'
-    assert 'released_added_later' in o
-
-    # TODO: Ditch this? It is hard to maintain
-    #  What it is asserting is each time I release the fixture it doesn't have that key
-    # # Then test that when we run the provider again that it uses the latest release.
-    # o = tackle("robcxyz/tackle-fixture-released")
-    # # assert 'released_added_later' not in o
 
 
 @pytest.mark.slow

@@ -32,6 +32,6 @@ REPO_FIXTURES = [
 
 
 @pytest.mark.parametrize("repo,is_repo_result", REPO_FIXTURES)
-def test_is_repo_url(repo, is_repo_result, change_base_dir):
+def test_is_repo_url(repo, is_repo_result, cd_base_dir):
     """Validate is_repo_url regex."""
     assert is_repo_url(repo) == is_repo_result

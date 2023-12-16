@@ -3,7 +3,7 @@ import os.path
 
 from tackle import tackle, get_hook, Context
 
-PROVIDERS_PATH = os.path.join('..', '..', 'providers')
+PROVIDERS_PATH = os.path.join(os.path.dirname(__file__), '..', '..', 'providers')
 
 
 def get_provider_paths(provider_name: str = None):

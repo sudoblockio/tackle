@@ -1,4 +1,3 @@
-"""Tests for tackle.utils.dicts"""
 import pytest
 from ruyaml import YAML
 
@@ -8,7 +7,6 @@ from tackle.utils.data_crud import (
     nested_set,
     nested_get,
     nested_delete,
-    set_key,
     cleanup_unquoted_strings,
 )
 
