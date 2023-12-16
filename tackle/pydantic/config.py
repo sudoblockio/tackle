@@ -1,17 +1,12 @@
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel, Field
 from pydantic.config import (
     ExtraValues,  # noqa
     JsonEncoder,  # noqa
     JsonSchemaExtraCallable,  # noqa
 )
 from pydantic._internal._generate_schema import GenerateSchema  # noqa
-from typing import Callable, Literal, TYPE_CHECKING
+from typing import Literal
 
-from tackle.pydantic.fields import Field
-from tackle import exceptions
-
-if TYPE_CHECKING:
-    from tackle.models import Context
 
 
 class DclHookModelConfig(BaseModel):

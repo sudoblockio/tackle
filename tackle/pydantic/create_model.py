@@ -21,17 +21,19 @@ if typing.TYPE_CHECKING:
     TupleGenerator = typing.Generator[Tuple[str, Any], None, None]
     Model = typing.TypeVar('Model', bound='BaseModel')
 
-from pydantic.config import ConfigDict
-
-from pydantic._internal import _config
+from pydantic._internal import _config  # noqa
 from pydantic.errors import PydanticUserError
+
+# from pydantic.config import ConfigDict
+from tackle.pydantic.config import DclHookModelConfig
 
 
 # When updating, only copy over the function
 def create_model(
         __model_name: str,
         *,
-        __config__: ConfigDict | None = None,
+        # __config__: ConfigDict | None = None,
+        __config__: DclHookModelConfig | None = None,
         __base__: type[Model] | tuple[type[Model], ...] | None = None,
         __module__: str = __name__,
         __validators__: dict[str, AnyClassMethod] | None = None,
