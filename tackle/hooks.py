@@ -36,7 +36,7 @@ from tackle.render import render_variable
 from tackle.pydantic.create_model import create_model
 from tackle.pydantic.field_types import FieldInput
 from tackle.utils.render import wrap_jinja_braces
-from tackle.utils.dicts import update_input_dict
+from tackle.utils.data_crud import update_input_dict
 from tackle.types import DocumentValueType, DocumentType
 from tackle.models import (
     BaseHook,

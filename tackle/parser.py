@@ -47,7 +47,7 @@ from tackle.hooks import create_dcl_hook, get_hook_from_context
 from tackle.render import render_variable
 from tackle.types import DocumentValueType
 from tackle.utils.paths import work_in
-from tackle.utils.dicts import (
+from tackle.utils.data_crud import (
     get_set_temporary_context,
     get_target_and_key,
     nested_get,

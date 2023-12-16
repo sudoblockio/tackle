@@ -2,20 +2,15 @@
 import inspect
 import os
 import sys
-from typing import TYPE_CHECKING, Any, Type
+from typing import TYPE_CHECKING, Any
 
-from tackle.utils.dicts import get_readable_key_path
+from tackle.utils.data_crud import get_readable_key_path
 
 if TYPE_CHECKING:
-    from pydantic.main import ModelMetaclass
-    from tackle.models import BaseHook, CompiledHookType, HookCallInput
     from tackle import BaseHook, Context
 
-
-
-
-
 DOCS_DOMAIN = "https://sudoblockio.github.io/tackle"
+
 
 def raise_unknown_hook(context: 'Context', hook_name: str, method: bool = None):
     """Raise an exception for when there is a missing hook with some context."""
@@ -84,6 +79,7 @@ class UnknownFieldInputException(Exception):
 
     Raised when chdir is to an unknown directory.
     """
+
     def __init__(self, extra_message: str, context: 'Context', Hook: 'BaseHook' = None):
         self.message = (
             f"Error parsing input_file='{context.path.current.file}' at "
@@ -125,7 +121,6 @@ class UnknownFieldInputException(Exception):
         # ) from None
 
 
-
 #
 # Base exceptions - Ones that are subclassed later
 #
@@ -160,10 +155,10 @@ class TackleHookCallException(Exception):
     """Base hook call exception class."""
 
     def __init__(
-        self,
-        extra_message: str,
-        context: 'Context',
-        hook_name: str,
+            self,
+            extra_message: str,
+            context: 'Context',
+            hook_name: str,
     ):
         self.message = (
             f"Error parsing input_file='{context.path.calling.file}' at "
@@ -190,6 +185,7 @@ class UnknownHookInputArgumentException(TackleHookCallException):
 
     Raised when tackle cannot determine what the extra argument means.
     """
+
 
 #
 # Parser exceptions
@@ -226,9 +222,10 @@ class PromptHookCallException(TackleParserException):
     def __init__(self, context: 'Context'):
         super().__init__(
             extra_message="Error calling hook most likely due to hook being called in "
-            "automation where no input was given for key. Try setting "
-            "the key with an `override` if that is the case. Check: "
-            "https://sudoblockio.github.io/tackle/testing-providers/#testing-tackle-scripts",  # noqa
+                          "automation where no input was given for key. Try setting "
+                          "the key with an `override` if that is the case. Check: "
+                          "https://sudoblockio.github.io/tackle/testing-providers/#testing-tackle-scripts",
+            # noqa
             context=context,
         )
 
@@ -255,7 +252,7 @@ def raise_hook_parse_exception_with_link(
     # __provider_name only attached to native hooks
     provider_name = getattr(Hook, '__provider_name', None)
     if provider_name is not None:
-    # if Hook.__module__.startswith('tackle.hooks.'):
+        # if Hook.__module__.startswith('tackle.hooks.'):
         hook_name = Hook.model_fields['hook_name'].default
         msg += (
             f"\n Check the docs for more information on the hook -> "
@@ -337,6 +334,7 @@ class MalformedTemplateVariableException(TackleParserException):
 
     Raised when rendering variables.
     """
+
 
 def raise_malformed_for_loop_key(context: 'Context', raw: Any, loop_targets: Any):
     raise MalformedTemplateVariableException(
@@ -496,7 +494,7 @@ class BaseHookCreateException(Exception):
     """Base hook call exception class."""
 
     def __init__(
-        self, extra_message: str, hook_name: str, context: 'Context' = None
+            self, extra_message: str, hook_name: str, context: 'Context' = None
     ):
         self.message = (
             f"Error creating hook='{hook_name}' in file="
@@ -574,7 +572,6 @@ class TackleParserInputException(Exception):
     """Base input parser exception class."""
 
     def __init__(self, extra_message: str, context: 'Context' = None):
-
         self.message = (
             f"Error parsing  \n" f"{extra_message}"
         )
@@ -589,6 +586,7 @@ class TackleImportException(TackleImportError):
 
     Raised when first importing hooks.
     """
+
 
 class BaseTackleImportException(Exception):
     """Base input parser exception class."""
