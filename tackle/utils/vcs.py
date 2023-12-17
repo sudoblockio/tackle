@@ -110,13 +110,6 @@ def git_stash():
     if p.returncode != 0:
         raise exceptions.GenericGitException(
             f'Error running {cmd}\n{str(stderr)}\n{os.listdir()}\n{os.path.abspath(".")}')
-    cmd = 'git stash pop'
-    p = run_command(cmd)
-    stdout, stderr = p.communicate()
-    if b'No stash entries found.\n' == stderr:
-        return
-    if p.returncode != 0:
-        raise exceptions.GenericGitException(f'Error running {cmd}\n{str(stderr)}')
 
 
 def git_pull(branch: str, provider_dir: str = None):
