@@ -1,13 +1,7 @@
 #!/usr/bin/env python
-"""Tackle distutils configuration."""
-import sys
 import os
-import re
-from collections import defaultdict
 import codecs
-
 from setuptools import setup, find_packages
-
 
 with open('README.md', encoding='utf-8') as readme_file:
     readme = readme_file.read()
@@ -29,30 +23,6 @@ def get_version(rel_path):
         raise RuntimeError("Unable to find version string.")
 
 
-def parse_requirements_file(reqs_file, provider_requirements, key):
-    """
-    Parse a requirements file and update the provider_requirements dict.
-
-    :param reqs_file: Path to requirements file
-    :param provider_requirements: A default dict with keys for `extras_require` and value
-        as set of requirements.
-    :param key: Key for installing `extras_require`.
-    :return: Response of request in a dict
-
-    """
-    with open(reqs_file) as fp:
-        for k in fp:
-            if k.strip() and not k.startswith('#'):
-                tags = set()
-                if ':' in k:
-                    k, v = k.split(':')
-                    tags.update(vv.strip() for vv in v.split(','))
-                tags.add(re.split('[<=>]', k)[0])
-
-                for _ in tags:
-                    provider_requirements[key].add(k)
-
-
 INSTALL_REQUIREMENTS = [
     'Jinja2>3.0.0',
     'requests>=2.23.0',  # This would be needed if we allowed url sources
@@ -64,10 +34,6 @@ INSTALL_REQUIREMENTS = [
     'rich>=12.6.0',
     'xdg==5.1.1',
 ]
-
-if sys.argv[-1] == 'readme':
-    print(readme)
-    sys.exit()
 
 setup(
     name='tackle',
@@ -87,7 +53,7 @@ setup(
     package_dir={'tackle': 'tackle'},
     entry_points={'console_scripts': ['tackle = tackle.cli:main']},
     include_package_data=True,
-    python_requires='>=3.8',
+    python_requires='>=3.10',
     install_requires=INSTALL_REQUIREMENTS,
     license='BSD',
     zip_safe=False,
@@ -99,8 +65,6 @@ setup(
         "License :: OSI Approved :: BSD License",
         "Programming Language :: Python :: 3 :: Only",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
@@ -110,20 +74,23 @@ setup(
         "Topic :: Software Development",
     ],
     keywords=[
-        "cookiecutter",
         "tackle",
         "tackle-box",
         "tacklebox",
         "tackle box",
         "Python",
         "projects",
-        "project templates",
         "Jinja2",
+        "project templates",
+        "cookiecutter",
         "skeleton",
         "scaffolding",
         "project directory",
         "package",
         "packaging",
         "kubernetes",
+        "config file management",
+        "configuration language",
+        "declarative cli",
     ],
 )
