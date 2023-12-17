@@ -12,9 +12,10 @@ hold
 wip
 .old
 tests-old
-# Tests run from tox
-tests/utils/vcs/tackle-fixture-released/*
 
+# These repos are cloned locally for testing
+tests/utils/vcs/tackle-fixture-released
+tests/utils/vcs/tackle-fixture-unreleased
 
 # mkdocs.yml is generated
 mkdocs.yml

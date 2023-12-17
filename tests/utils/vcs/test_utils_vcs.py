@@ -67,10 +67,10 @@ def setup_tmp(tmp_path):
                 # When pulling / in ci - the fixtures will be submodules. So we need to
                 # update them to have them available for copying
                 if not os.path.isdir(os.path.join(fixture, '.git')):
-                    p = run_command('git submodule update')
+                    p = run_command(f'git clone https://github.com/robcxyz/{fixture}')
                     stdout, stderr = p.communicate()
                     if p.returncode != 0:
-                        raise Exception(f"Error in git submodule \n{stdout}\n{stderr}")
+                        raise Exception(f"Error test setup clone \n{stdout}\n{stderr}")
                 shutil.copytree(fixture, os.path.join(tmp_path, 'robcxyz', fixture))
             yield str(tmp_path)
         finally:
