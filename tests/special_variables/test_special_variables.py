@@ -1,3 +1,5 @@
+import sys
+
 import pytest
 import platform
 
@@ -39,4 +41,19 @@ def test_special_variables(special_variables_context, raw, assertion):
     """Verify Jinja2 time extension work correctly."""
     output = render_variable(special_variables_context, raw)
 
+    assert assertion(output)
+
+
+# @skip_if_not_linux
+@pytest.mark.parametrize("raw,assertion", [
+    ('{{lsb_release}}', lambda x: get_linux_distribution()),
+])
+def test_special_variables_linux(
+        skip_if_not_linux,
+        special_variables_context,
+        raw,
+        assertion,
+):
+    """Verify Jinja2 time extension work correctly."""
+    output = render_variable(special_variables_context, raw)
     assert assertion(output)

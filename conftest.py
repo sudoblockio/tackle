@@ -1,6 +1,7 @@
 """Global pytest fixtures."""
 import pytest
 import os
+import sys
 
 from tackle.factory import new_context
 from tackle.imports import import_native_providers
@@ -89,3 +90,9 @@ def pytest_collection_modifyitems(config, items):
         for item in items:
             if "slow" in item.keywords:
                 item.add_marker(skip_slow)
+
+
+@pytest.fixture
+def skip_if_not_linux():
+    if not sys.platform.startswith("linux"):
+        return pytest.mark.skip(reason="This test runs only on Linux")
