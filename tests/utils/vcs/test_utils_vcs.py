@@ -70,9 +70,7 @@ def setup_tmp(tmp_path):
                     p = run_command('git submodule update')
                     stdout, stderr = p.communicate()
                     if p.returncode != 0:
-                        raise Exception(
-                            f"Error in git submodule \n{stdout}\n{stderr}"
-                        )
+                        raise Exception(f"Error in git submodule \n{stdout}\n{stderr}")
                 shutil.copytree(fixture, os.path.join(tmp_path, 'robcxyz', fixture))
             yield str(tmp_path)
         finally:
