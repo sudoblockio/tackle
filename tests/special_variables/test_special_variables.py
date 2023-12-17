@@ -48,12 +48,9 @@ def test_special_variables(special_variables_context, raw, assertion):
 @pytest.mark.parametrize("raw,assertion", [
     ('{{lsb_release}}', lambda x: get_linux_distribution()),
 ])
-def test_special_variables_linux(
-        skip_if_not_linux,
-        special_variables_context,
-        raw,
-        assertion,
-):
+def test_special_variables_linux(special_variables_context, raw, assertion):
     """Verify Jinja2 time extension work correctly."""
+    if sys.platform != 'linux':
+        pytest.skip("skipping linux-only test")
     output = render_variable(special_variables_context, raw)
     assert assertion(output)
