@@ -20,17 +20,19 @@ class PostgresQuery(BaseHook):
     # fmt: on
 
     def exec(self) -> list:
-        connection = psycopg2.connect(
+        with psycopg2.connect(
             user=self.user,
             password=self.password,
             host=self.host,
             port=self.port,
             database=self.dbname,
-        )
-        cursor = connection.cursor()
-        cursor.execute(self.query)
-        response = [
-            dict((cursor.description[i][0], value) for i, value in enumerate(row))
-            for row in cursor.fetchall()
-        ]
+        ) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(self.query)
+                response = [
+                    dict(
+                        (cursor.description[i][0], value) for i, value in enumerate(row)
+                    )
+                    for row in cursor.fetchall()
+                ]
         return response
