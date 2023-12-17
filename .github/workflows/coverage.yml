@@ -1,4 +1,4 @@
-name: coverage-ci
+name: coverage
 
 on:
   push:

@@ -2,6 +2,7 @@ import pytest
 
 from tackle import Context
 from providers.prompts.hooks.select import InquirerListHook
+from tackle.context import Paths, Source
 
 
 @pytest.fixture()
@@ -13,7 +14,7 @@ def run_mocked_hook(mocker):
             'providers.prompts.hooks.select.prompt',
             return_value=return_value
         )
-        context = Context(key_path=[])
+        context = Context(key_path=[], path=Paths(current=Source(file='')))
         hook = InquirerListHook(**kwargs)
         output = hook.exec(context=context)
 
