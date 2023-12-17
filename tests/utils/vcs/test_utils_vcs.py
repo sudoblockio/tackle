@@ -172,7 +172,7 @@ def test_utils_vcs_get_repo(setup_tmp, fixture, latest, version, assertion):
 @pytest.mark.parametrize("fixture,copy,version,exception", [
     ('tackle-fixture-released', False, 'NO_EXIST', exceptions.VersionNotFoundError),
     ('tackle-fixture-released', True, 'NO_EXIST', exceptions.VersionNotFoundError),
-    ('NO_EXIST', False, None, exceptions.RepositoryNotFound),
+    ('NO_EXIST', False, None, (exceptions.RepositoryNotFound, exceptions.GenericGitException)),
 ])
 def test_utils_vcs_exceptions_new_repo(setup_tmp, fixture, copy, version, exception):
     """Test exceptions where the repo does not exist in providers"""

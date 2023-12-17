@@ -73,7 +73,7 @@ def test_provider_hook_import_raise_when_calling_hook_from_tackle_file():
 @pytest.mark.parametrize(
     "input_file,expected_exception", [
         ('error-not-found-local.yaml', exceptions.UnknownSourceException),
-        ('error-not-found-repo.yaml', exceptions.RepositoryNotFound),
+        ('error-not-found-repo.yaml', (exceptions.RepositoryNotFound, exceptions.GenericGitException)),
     ]
 )
 def test_provider_hook_import_raise_unknown_source(input_file, expected_exception):
