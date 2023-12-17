@@ -85,7 +85,7 @@ def git_clone(repo_url):
         raise exceptions.RepositoryNotFound(
             f'The repository {repo_url} could not be found, have you made a typo?'
         )
-    raise exceptions.GenericGitException(f'Error running {cmd}\nstr({stderr})')
+    raise exceptions.GenericGitException(f'Error running {cmd}\n{str(stderr)}')
 
 
 def git_checkout(version: str):
@@ -100,7 +100,7 @@ def git_checkout(version: str):
         return
     if stderr:
         # Don't know how this could happen
-        raise exceptions.VersionNotFoundError(f'Error running {cmd}\nstr({stderr})')
+        raise exceptions.VersionNotFoundError(f'Error running {cmd}\n{str(stderr)}')
 
 
 def git_stash():
@@ -108,14 +108,15 @@ def git_stash():
     p = run_command(cmd)
     stdout, stderr = p.communicate()
     if p.returncode != 0:
-        raise exceptions.GenericGitException(f'Error running {cmd}\nstr({stderr})')
+        raise exceptions.GenericGitException(
+            f'Error running {cmd}\n{str(stderr)}\n{os.listdir()}\n{os.path.abspath(".")}')
     cmd = 'git stash pop'
     p = run_command(cmd)
     stdout, stderr = p.communicate()
     if b'No stash entries found.\n' == stderr:
         return
     if p.returncode != 0:
-        raise exceptions.GenericGitException(f'Error running {cmd}\nstr({stderr})')
+        raise exceptions.GenericGitException(f'Error running {cmd}\n{str(stderr)}')
 
 
 def git_pull(branch: str, provider_dir: str = None):
@@ -125,7 +126,7 @@ def git_pull(branch: str, provider_dir: str = None):
     if p.returncode == 0:
         return
     if stderr:
-        raise exceptions.GenericGitException(f'Error running {cmd}\nstr({stderr}) in {provider_dir}')
+        raise exceptions.GenericGitException(f'Error running {cmd}\n{str(stderr)} in {provider_dir}')
 
 
 def get_default_branch():
@@ -140,7 +141,7 @@ def get_default_branch():
         else:
             raise ValueError("No idea why this would not work....")
     else:
-        raise exceptions.GenericGitException(f'Error running {cmd}\nstr({stderr})')
+        raise exceptions.GenericGitException(f'Error running {cmd}\n{str(stderr)}')
 
 
 def get_git_tags():
