@@ -2,7 +2,7 @@ import os
 import re
 from typing import Union
 
-from tackle import BaseHook, Field, exceptions, Context
+from tackle import BaseHook, Field
 
 
 class ListdirHook(BaseHook):
@@ -30,12 +30,8 @@ class ListdirHook(BaseHook):
     args: list = ['path']
     _docs_order = 2
 
-    @property
-    def exec(self, context: Context) -> list:
-        try:
-            files = os.listdir(os.path.expanduser(os.path.expandvars(self.path)))
-        except FileNotFoundError as e:
-            raise exceptions.HookCallException(f"FileNotFoundError - {e}", context)
+    def exec(self) -> list:
+        files = os.listdir(os.path.expanduser(os.path.expandvars(self.path)))
         if self.sort:
             files.sort()
         if self.ignore_hidden:

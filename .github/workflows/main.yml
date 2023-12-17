@@ -21,11 +21,9 @@ jobs:
           - "ubuntu-py38"
           - "ubuntu-py39"
           - "ubuntu-py310"
-          - "ubuntu-py312"
+          - "macos-py37"
           - "macos-py38"
           - "macos-py39"
-          - "macos-py310"
-          - "macos-py312"
 
         include:
           - name: "linting"
@@ -44,10 +42,6 @@ jobs:
             python: "3.10"
             os: ubuntu-latest
             tox_env: "py310"
-          - name: "ubuntu-py312"
-            python: "3.12"
-            os: ubuntu-latest
-            tox_env: "py312"
           - name: "macos-py38"
             python: "3.8"
             os: macos-latest
@@ -60,6 +54,10 @@ jobs:
             python: "3.10"
             os: macos-latest
             tox_env: "py310"
+          - name: "macos-py311"
+            python: "3.11"
+            os: macos-latest
+            tox_env: "py311"
           - name: "macos-py312"
             python: "3.12"
             os: macos-latest

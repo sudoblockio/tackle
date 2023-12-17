@@ -1,4 +1,7 @@
-from typing import Type, Optional
+import sys
+import os
+import importlib
+from typing import Type
 from pydantic import BaseModel, field_validator
 
 from tackle import BaseHook, Context
@@ -11,7 +14,7 @@ MODELS = [
 
 class ModelOutput(BaseModel):
     name: str
-    description: Optional[str]
+    description: str | None
     type: str
 
 

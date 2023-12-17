@@ -5,20 +5,21 @@ from pydantic.config import (
     JsonSchemaExtraCallable,  # noqa
 )
 from pydantic._internal._generate_schema import GenerateSchema  # noqa
-from typing import Literal, Optional
+from typing import Literal
+
 
 
 class DclHookModelConfig(BaseModel):
     """
     Declarative hook model_config inputs.
     """
-    title: Optional[str] = Field(None, description="")
+    title: str | None = Field(None, description="")
     str_to_lower: bool = Field(False, description="")
     str_to_upper: bool = Field(False, description="")
     str_strip_whitespace: bool = Field(False, description="")
     str_min_length: int = Field(0, description="")
-    str_max_length: Optional[int] = Field(None, description="")
-    extra: Optional[ExtraValues] = Field(None, description="")
+    str_max_length: int | None = Field(None, description="")
+    extra: ExtraValues | None = Field(None, description="")
     frozen: bool = Field(False, description="")
     populate_by_name: bool = Field(False, description="")
     use_enum_values: bool = Field(False, description="")
@@ -34,7 +35,7 @@ class DclHookModelConfig(BaseModel):
     ignored_types: tuple[type, ...] = Field((), description="")
     allow_inf_nan: bool = Field(True, description="")
     # json_schema_extra: dict[str, object] | JsonSchemaExtraCallable | None
-    json_encoders: Optional[dict[type[object], JsonEncoder]] = Field(None, description="")
+    json_encoders: dict[type[object], JsonEncoder] | None = Field(None, description="")
 
     # new in V2
     strict: bool = Field(False, description="")
@@ -49,4 +50,4 @@ class DclHookModelConfig(BaseModel):
     protected_namespaces: tuple[str, ...] = Field(('model_',), description="")
     hide_input_in_errors: bool = Field(False, description="")
     defer_build: bool = Field(False, description="")
-    schema_generator: Optional[type[GenerateSchema]] = Field(None, description="")
+    schema_generator: type[GenerateSchema] | None = Field(None, description="")

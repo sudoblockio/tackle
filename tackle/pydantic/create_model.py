@@ -33,12 +33,12 @@ def create_model(
         __model_name: str,
         *,
         # __config__: ConfigDict | None = None,
-        __config__: typing.Optional[DclHookModelConfig] = None,
-        __base__: typing.Optional[type[Model], tuple[type[Model], ...]] = None,
+        __config__: DclHookModelConfig | None = None,
+        __base__: type[Model] | tuple[type[Model], ...] | None = None,
         __module__: str = __name__,
-        __validators__: typing.Optional[dict[str, AnyClassMethod]] = None,
-        __cls_kwargs__: typing.Optional[dict[str, Any]] = None,
-        __slots__: typing.Optional[tuple[str, ...]] = None,
+        __validators__: dict[str, AnyClassMethod] | None = None,
+        __cls_kwargs__: dict[str, Any] | None = None,
+        __slots__: tuple[str, ...] | None = None,
         **field_definitions: Any,
 ) -> type[Model]:
     """

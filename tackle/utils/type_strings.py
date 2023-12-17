@@ -1,10 +1,5 @@
-import sys
 from typing import Any, _GenericAlias, List, _UnionGenericAlias
-
-if sys.version_info.minor < 10:
-    from typing import Union as UnionType
-else:
-    from types import UnionType
+from types import UnionType
 
 from pydantic.fields import FieldInfo
 

@@ -4,6 +4,7 @@ import random
 import string
 import importlib.machinery
 import json
+from types import UnionType
 
 from pydantic import BaseModel, Field
 import inspect

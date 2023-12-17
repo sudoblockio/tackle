@@ -1,5 +1,3 @@
-from typing import Optional, Union
-
 from tackle import BaseHook, Field
 
 
@@ -20,7 +18,7 @@ class ModuloHook(BaseHook):
         ...,
         description="The divisor to take the modulo with.",
     )
-    equal_to: Optional[int] = Field(
+    equal_to: int | None = Field(
         None,
         description="Optional parameter to assert if the modulo is equal to. Returns a "
                     "bool then.",
@@ -28,7 +26,7 @@ class ModuloHook(BaseHook):
 
     args: list = ['input', 'divisor', 'equal_to']
 
-    def exec(self) -> Union[int, bool]:
+    def exec(self) -> int | bool:
         if self.equal_to is not None:
             return self.input % self.divisor == self.equal_to
         return self.input % self.divisor

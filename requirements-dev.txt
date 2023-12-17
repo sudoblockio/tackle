@@ -6,3 +6,4 @@ freezegun
 flake8
 ptyprocess
 requests
+pytest-asyncio

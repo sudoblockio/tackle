@@ -1,4 +1,4 @@
-from typing import Union
+from typing import List
 
 from tackle import BaseHook, Field
 
@@ -23,7 +23,7 @@ class JoinHook(BaseHook):
 
     hook_name: str = 'join'
 
-    input: list[Union[str, int]] = Field(
+    input: List[str | int] = Field(
         ..., description="A list of strings to join.", render_by_default=True
     )
     separator: str = Field('', description="String separator.")
