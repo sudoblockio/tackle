@@ -42,10 +42,11 @@ from pydantic import BaseModel, ValidationError
 from tackle import exceptions
 from tackle.context import Context
 from tackle.hooks import create_dcl_hook, get_hook_from_context
+from tackle.macros.function_macros import function_macro
 from tackle.macros.key_macros import key_macro, var_hook_macro
 from tackle.models import BaseHook, CompiledHookType, HookCallInput, LazyBaseHook
 from tackle.render import render_variable
-from tackle.types import DocumentValueType
+from tackle.types import DEFAULT_HOOK_NAME, DocumentValueType
 from tackle.utils.command import unpack_args_kwargs_string
 from tackle.utils.data_crud import (
     decode_list_index,
@@ -63,8 +64,6 @@ from tackle.utils.paths import work_in
 from tackle.utils.render import wrap_jinja_braces
 
 logger = logging.getLogger(__name__)
-
-DEFAULT_HOOK_NAME = '_default'
 
 
 def merge_block_output(
@@ -1362,6 +1361,10 @@ def parse_input_args_for_hooks(context: 'Context'):
     pass
 
 
+def is_dcl_hook(key: str):
+    return bool(re.match(r'^[a-zA-Z0-9_]*(\(([^()]*)\))*\[([^[\]]*)\]*(<\-|<\_)$', key))
+
+
 def split_input_data(context: 'Context'):
     """
     Split the raw_input from a tackle file into pre/post_input objects along with
@@ -1383,38 +1386,40 @@ def split_input_data(context: 'Context'):
 
     pre_data_flag = True
     for k, v in context.data.raw_input.items():
-        # hook_flag = re.match(r'^[a-zA-Z0-9\_\(\)\|\[\]]*(<\-|<\_)$', k)  # noqa
-        hook_flag = re.match(r'^[a-zA-Z0-9\_]*(<\-|<\_)$', k)  # noqa
-        if pre_data_flag and not hook_flag:
+        hook_key = k[:-2]
+        if pre_data_flag and k[-2:] not in ['<-', '<_']:
             context.data.pre_input.update({k: v})
-        elif hook_flag:
+        elif k[-2:] in ['<-', '<_']:
             pre_data_flag = False
-            hook_key = k[:-2]
             if hook_key == '':
                 hook_key = DEFAULT_HOOK_NAME
             arrow = k[-2:]
-            try:
-                dcl_hook = LazyBaseHook(
-                    hook_name=hook_key,
-                    input_raw=v,
-                    is_public=True if arrow == '<-' else False,
-                )
-            except ValidationError:
-                raise exceptions.MalformedHookDefinitionException(
-                    f"Declarative hooks definitions need to be a map, not a "
-                    f"'{type(v)}'.",
-                    context=context,
-                    hook_name=hook_key,
-                )
-            if hook_key == DEFAULT_HOOK_NAME:
-                # dcl_hook is the default hook
-                context.hooks.default = dcl_hook
-            elif arrow == '<-':  # public hook
-                context.hooks.public[hook_key] = dcl_hook
-            elif arrow == '<_':  # private hook
-                context.hooks.private[hook_key] = dcl_hook
+            hook_name, value, methods = function_macro(context, key_raw=k[:-2], value=v)
+            if methods:
+                raise NotImplementedError
             else:
-                raise Exception("This should never happen")
+                try:
+                    dcl_hook = LazyBaseHook(
+                        hook_name=hook_name,
+                        input_raw=value,
+                        is_public=True if arrow == '<-' else False,
+                    )
+                except ValidationError:
+                    raise exceptions.MalformedHookDefinitionException(
+                        f"Declarative hooks definitions need to be a map, not a "
+                        f"'{type(v)}'.",
+                        context=context,
+                        hook_name=hook_key,
+                    )
+                if hook_name == DEFAULT_HOOK_NAME:
+                    # dcl_hook is the default hook
+                    context.hooks.default = dcl_hook
+                elif arrow == '<-':  # public hook
+                    context.hooks.public[hook_name] = dcl_hook
+                elif arrow == '<_':  # private hook
+                    context.hooks.private[hook_name] = dcl_hook
+                else:
+                    raise Exception("This should never happen")
         else:
             context.data.post_input.update({k: v})
 

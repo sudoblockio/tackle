@@ -1,5 +1,7 @@
 from typing import Annotated, Dict, Hashable, List, Optional, Union
 
+DEFAULT_HOOK_NAME = '_default'
+
 DocumentKeyType = Hashable
 DocumentValueType = Optional[
     Union[
