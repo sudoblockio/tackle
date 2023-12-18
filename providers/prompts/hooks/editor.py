@@ -1,11 +1,10 @@
 import sys
-from InquirerPy import prompt
-
 from typing import Any
 
-from tackle import BaseHook, Field, Context
+from InquirerPy import prompt
+
+from tackle import BaseHook, Context, Field, exceptions
 from tackle.utils.data_crud import get_readable_key_path
-from tackle import exceptions
 
 
 class InquirerEditorHook(BaseHook):

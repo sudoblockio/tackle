@@ -38,7 +38,7 @@ examples:
       out->: concat {{list_1}} {{list_2}}
 
     output: |
-      # Only `out` key now 
+      # Only `out` key now
       out:
         - foo
         - bar

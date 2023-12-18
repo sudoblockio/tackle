@@ -1,6 +1,6 @@
 import pytest
-from tackle import tackle
-from tackle import exceptions
+
+from tackle import exceptions, tackle
 
 
 def test_hook_match_loop():

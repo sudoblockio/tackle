@@ -1,5 +1,6 @@
-from tackle import BaseHook, Field
 import paramiko
+
+from tackle import BaseHook, Field
 
 
 class SshInteractiveQuery(BaseHook):
@@ -23,7 +24,7 @@ class SshInteractiveQuery(BaseHook):
         try:
             import interactive
         except ImportError:
-            from . import interactive
+            from . import interactive  # noqa
 
         client = paramiko.SSHClient()
 

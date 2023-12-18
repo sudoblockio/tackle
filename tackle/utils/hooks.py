@@ -6,9 +6,9 @@ from tackle.hooks import get_hook_from_context
 
 
 def get_hook(
-        hook_name: str,
-        source: str = '.',
-        args: list = None,
+    hook_name: str,
+    source: str = '.',
+    args: list = None,
 ) -> Type[BaseHook]:
     """
     Retrieves and returns a hook object for testing purposes.

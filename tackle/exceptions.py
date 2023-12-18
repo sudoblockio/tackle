@@ -21,9 +21,7 @@ def raise_unknown_hook(context: 'Context', hook_name: str, method: bool = None):
     else:
         type_ = ["hook", "providers"]
         if context.verbose:
-            available_hooks = "".join(
-                sorted([str(i) for i in context.hooks.keys()])
-            )
+            available_hooks = "".join(sorted([str(i) for i in context.hooks.keys()]))
             extra = f'Available hooks = {available_hooks}'
 
         else:
@@ -155,16 +153,16 @@ class TackleHookCallException(Exception):
     """Base hook call exception class."""
 
     def __init__(
-            self,
-            extra_message: str,
-            context: 'Context',
-            hook_name: str,
+        self,
+        extra_message: str,
+        context: 'Context',
+        hook_name: str,
     ):
         self.message = (
             f"Error parsing input_file='{context.path.calling.file}' at "
             f"hook='{hook_name}' at ",
             f"key_path='{get_readable_key_path(key_path=context.key_path)}' \n"
-            f"{extra_message}"
+            f"{extra_message}",
         )
         if not context.verbose:
             sys.tracebacklimit = 0
@@ -222,9 +220,9 @@ class PromptHookCallException(TackleParserException):
     def __init__(self, context: 'Context'):
         super().__init__(
             extra_message="Error calling hook most likely due to hook being called in "
-                          "automation where no input was given for key. Try setting "
-                          "the key with an `override` if that is the case. Check: "
-                          "https://sudoblockio.github.io/tackle/testing-providers/#testing-tackle-scripts",
+            "automation where no input was given for key. Try setting "
+            "the key with an `override` if that is the case. Check: "
+            "https://sudoblockio.github.io/tackle/testing-providers/#testing-tackle-scripts",
             # noqa
             context=context,
         )
@@ -239,9 +237,9 @@ class HookParseException(TackleParserException):
 
 
 def raise_hook_parse_exception_with_link(
-        context: 'Context',
-        Hook: 'BaseHook',
-        msg: str,
+    context: 'Context',
+    Hook: 'BaseHook',
+    msg: str,
 ):
     """
     Raise a HookParseException with an additional link to the docs if the hook is a
@@ -339,7 +337,8 @@ class MalformedTemplateVariableException(TackleParserException):
 def raise_malformed_for_loop_key(context: 'Context', raw: Any, loop_targets: Any):
     raise MalformedTemplateVariableException(
         f"The `for` field must be a list/object or string reference to a list/object. "
-        f"The value {raw} is of type `{type(loop_targets).__name__}`.", context=context,
+        f"The value {raw} is of type `{type(loop_targets).__name__}`.",
+        context=context,
     ) from None
 
 
@@ -493,9 +492,7 @@ class InvalidZipRepository(TackleException):
 class BaseHookCreateException(Exception):
     """Base hook call exception class."""
 
-    def __init__(
-            self, extra_message: str, hook_name: str, context: 'Context' = None
-    ):
+    def __init__(self, extra_message: str, hook_name: str, context: 'Context' = None):
         self.message = (
             f"Error creating hook='{hook_name}' in file="
             f"'{context.path.current.file}', {extra_message}"
@@ -572,9 +569,7 @@ class TackleParserInputException(Exception):
     """Base input parser exception class."""
 
     def __init__(self, extra_message: str, context: 'Context' = None):
-        self.message = (
-            f"Error parsing  \n" f"{extra_message}"
-        )
+        self.message = f"Error parsing  \n" f"{extra_message}"
         if not context.verbose:
             sys.tracebacklimit = 0
         super().__init__(self.message)
@@ -594,9 +589,7 @@ class BaseTackleImportException(Exception):
     def __init__(self, extra_message: str, context: 'Context', file: str = None):
         if file is None:
             file = context.source.file
-        self.message = (
-            f"Error parsing input_file='{file}' \n" f"{extra_message}"
-        )
+        self.message = f"Error parsing input_file='{file}' \n" f"{extra_message}"
         if not context.verbose:
             sys.tracebacklimit = 0
         super().__init__(self.message)
@@ -630,9 +623,7 @@ class TackleHookCreationException(Exception):
     """Base input parser exception class."""
 
     def __init__(self, extra_message: str, context: 'Context', hook_name: str):
-        self.message = (
-            f"Error using hook='{hook_name}' \n" f"{extra_message}"
-        )
+        self.message = f"Error using hook='{hook_name}' \n" f"{extra_message}"
         if not context.verbose:
             sys.tracebacklimit = 0
         super().__init__(self.message)

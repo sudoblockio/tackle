@@ -1,6 +1,6 @@
 """Environment variable hooks."""
-import os
 import logging
+import os
 import platform
 
 from tackle import BaseHook, Field

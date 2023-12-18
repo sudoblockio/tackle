@@ -1,5 +1,3 @@
-import pytest
-import os
 from tackle.main import tackle
 
 

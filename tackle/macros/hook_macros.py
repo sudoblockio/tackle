@@ -2,42 +2,13 @@
 Declarative hook macros. Handles all the inputs to hooks (ie `hook_name<-`). Removes
 any arrows from keys based on if they are hook calls or methods.
 """
-import pydoc
-from typing import TYPE_CHECKING, Any, Annotated
-from ruyaml.constructor import CommentedSeq, ScalarFloat, CommentedMap
 from pydantic.fields import FieldInfo
+from ruyaml.constructor import CommentedMap, CommentedSeq, ScalarFloat
 
-from tackle import exceptions, Context
-from tackle.models import DclHookInput, DCL_HOOK_FIELDS, HookFieldValidator
-from tackle.pydantic.field_types import FieldInput
+from tackle import Context, exceptions
+from tackle.models import DCL_HOOK_FIELDS
 
 LITERAL_TYPES = {'list', 'dict', 'str', 'int', 'float', 'bytes', 'bool'}
-
-
-
-def dict_hook_method_macros():
-    pass
-
-
-from tackle.methods import new_default_methods
-
-DEFAULT_METHODS = new_default_methods()
-
-
-def update_value_with_default_factory(context: Context, hook_name: str, value: dict):
-    """
-    Create a default factory walker and update the value with the new key.
-    """
-    from tackle.parser import create_dict_default_factory_executor
-
-    default_factory = value.pop(key)
-    value['default_factory'] = {
-        'return->': create_dict_default_factory_executor(
-            context=context,
-            value=default_factory,
-        )
-    }
-
 
 DEFAULT_FACTORY_KEYS = [
     'default->',
@@ -50,9 +21,9 @@ DEFAULT_FACTORY_KEYS = [
 
 
 def update_default_factory_hook_fields(
-        context: Context,
-        hook_name: str,
-        value: dict,
+    context: Context,
+    hook_name: str,
+    value: dict,
 ):
     """
     Any `default` or `default_factory` key ending in an arrow will be transformed into
@@ -71,7 +42,8 @@ def update_default_factory_hook_fields(
             if 'default_factory' in value:
                 raise exceptions.MalformedHookFieldException(
                     f"Cannot have both '{key}' and 'default_factory' in hook field.",
-                    context=context, hook_name=hook_name,
+                    context=context,
+                    hook_name=hook_name,
                 )
             if len(key) == 2:
                 value = {'default_factory': value}
@@ -89,9 +61,10 @@ def update_default_factory_hook_fields(
 
     return value
 
+
 def expand_default_factory(
-        value: dict,
-        key: str,
+    value: dict,
+    key: str,
 ):
     """
     Expand keys for special cases where we have string values or bare arrows as a key
@@ -153,6 +126,7 @@ MINIMAL_FIELD_KEYS = [
     'enum',
 ]
 
+
 def is_field(value: dict) -> bool:
     """
     Determines if a value is a pydantic field or if it is just a dict. Some minimal
@@ -165,10 +139,10 @@ def is_field(value: dict) -> bool:
 
 
 def dict_field_hook_macro(
-        context: Context,
-        hook_name: str,
-        key: str,
-        value: dict,
+    context: Context,
+    hook_name: str,
+    key: str,
+    value: dict,
 ) -> dict:
     """
     Transform dict values so that they are parseable by creating a callable as a
@@ -230,19 +204,19 @@ def dict_field_hook_macro(
 
 
 def list_field_hook_macro(
-        context: Context,
-        hook_name: str,
-        key: str,
-        value: dict,
+    context: Context,
+    hook_name: str,
+    key: str,
+    value: dict,
 ) -> dict:
     return {'default_factory': value, 'type': 'Any'}
 
 
 def str_field_hook_macro(
-        context: Context,
-        hook_name: str,
-        key: str,
-        value: dict,
+    context: Context,
+    hook_name: str,
+    key: str,
+    value: dict,
 ) -> dict:
     # if not isinstance(value, str):
     #     raise exceptions.MalformedHookFieldException(
@@ -262,10 +236,11 @@ def str_field_hook_macro(
 #     k if v.alias is None else v.alias for k, v in DclHookInput.model_fields.items()
 # ]
 
+
 def hook_dict_macro(
-        context: 'Context',
-        hook_input_raw: dict,
-        hook_name: str,
+    context: 'Context',
+    hook_input_raw: dict,
+    hook_name: str,
 ) -> dict:
     """Remove any arrows from keys."""
     output = {}
@@ -276,7 +251,9 @@ def hook_dict_macro(
     if 'exec<_' in hook_input_raw:
         raise exceptions.MalformedHookFieldException(
             "Right now we don't support private exec methods. See 'Private `exec`"
-            " Method proposal", context=context, hook_name=hook_name,
+            " Method proposal",
+            context=context,
+            hook_name=hook_name,
         )
 
     for k, v in hook_input_raw.items():
@@ -330,13 +307,11 @@ def str_hook_macro(hook_input_raw: str) -> dict:
 
 
 def hook_macros(
-        context: 'Context',
-        hook_input_raw: dict | str,
-        hook_name: str,
+    context: 'Context',
+    hook_input_raw: dict | str,
+    hook_name: str,
 ) -> dict:
-    """
-    Macro to update the keys of a declarative hook definition and parse out any methods.
-    """
+    """Declarative hook macros."""
     if isinstance(hook_input_raw, str):
         value = str_hook_macro(hook_input_raw=hook_input_raw)
         return hook_dict_macro(

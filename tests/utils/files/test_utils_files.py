@@ -1,8 +1,9 @@
-import pytest
 from typing import Type
 
-from tackle.utils.files import read_config_file
+import pytest
+
 from tackle import exceptions
+from tackle.utils.files import read_config_file
 
 READ_CONFIG_FILE_FIXTURES: list[tuple[str, dict | str]] = [
     # file,expected_output

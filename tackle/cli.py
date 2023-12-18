@@ -1,12 +1,12 @@
 """Main `tackle` CLI."""
+import argparse
 import ast
 import sys
-import argparse
 
-from tackle import tackle, __version__
-from tackle.utils.log import configure_logger
-from tackle.utils.command import unpack_args_kwargs_list
+from tackle import __version__, tackle
 from tackle.context import Context
+from tackle.utils.command import unpack_args_kwargs_list
+from tackle.utils.log import configure_logger
 
 
 def _validate_print_format(print_format: str):
@@ -58,8 +58,8 @@ def main(raw_args=None):
 
     parser = argparse.ArgumentParser(
         description="tackle is a DSL for creating declarative CLIs. Call tackle "
-                    "against files, directories, or repos with yaml/toml/json tackle "
-                    "files."
+        "against files, directories, or repos with yaml/toml/json tackle "
+        "files."
     )
 
     parser.add_argument(
@@ -72,12 +72,12 @@ def main(raw_args=None):
         type=str,
         default=None,
         help="Inputs to tackle in the form of args, key value arguments or flags. The "
-             "first argument is typically pointing to a tackle provider which can be "
-             "local files/directories or remote (ie github_org/repo). If no source is "
-             "matched then the tool defaults to searching in parent directories for a "
-             "tackle file (ie ./[.]tackle.[yaml|json|toml]). The remaining arguments "
-             "and flags are passed in to the tackle call for calling hooks within the "
-             "target tackle provider.",
+        "first argument is typically pointing to a tackle provider which can be "
+        "local files/directories or remote (ie github_org/repo). If no source is "
+        "matched then the tool defaults to searching in parent directories for a "
+        "tackle file (ie ./[.]tackle.[yaml|json|toml]). The remaining arguments "
+        "and flags are passed in to the tackle call for calling hooks within the "
+        "target tackle provider.",
     )
     parser.add_argument(
         '--no-input',
@@ -101,7 +101,7 @@ def main(raw_args=None):
         '-l',
         action='store_true',
         help="When using version controlled providers (ie in github), use the latest "
-             "commit in the default branch.",
+        "commit in the default branch.",
     )
     parser.add_argument(
         '--directory',
@@ -118,7 +118,7 @@ def main(raw_args=None):
         type=str,
         metavar="",
         help="The file to run. Only relevent for remote sources as otherwise you can "
-             "just give full path to file as input.",
+        "just give full path to file as input.",
     )
     parser.add_argument(
         '--find-in-parent',
@@ -147,7 +147,7 @@ def main(raw_args=None):
         default=None,
         metavar="",
         help="A string to a file to use as overrides when parsing a tackle file or "
-             "some dict to use with keys to additionally use when parsing a file.",
+        "some dict to use with keys to additionally use when parsing a file.",
     )
     # Args that are not passed into main
     parser.add_argument(
@@ -218,7 +218,7 @@ def main(raw_args=None):
         file=args.file,
         directory=args.directory,
         find_in_parent=args.find_in_parent,
-        return_context=True
+        return_context=True,
     )
 
     if print_enabled:

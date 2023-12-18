@@ -21,7 +21,6 @@ class DateTimeNowHook(BaseHook):
     args: list = ['format']
 
     def exec(self) -> str:
-
         if self.timestamp:
             if self.utc:
                 dt = datetime.datetime.now(timezone.utc)
@@ -35,7 +34,6 @@ class DateTimeNowHook(BaseHook):
             else:
                 now = datetime.datetime.now().strftime(f'{self.format}')
         return now
-
 
 
 class DateTimeHook(BaseHook):

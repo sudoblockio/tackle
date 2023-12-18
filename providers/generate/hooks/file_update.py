@@ -1,12 +1,8 @@
-from jinja2.exceptions import UndefinedError
-from jinja2 import FileSystemLoader
-
 from typing import Union
 
-from tackle import BaseHook, Field, Context
-from tackle.utils.data_crud import get_readable_key_path
-from providers.generate.hooks.exceptions import UndefinedVariableInTemplate
 from providers.generate.hooks.common import init_context
+from tackle import BaseHook, Context, Field
+
 
 class FileUpdateHook(BaseHook):
     """

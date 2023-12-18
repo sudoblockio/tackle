@@ -1,8 +1,10 @@
 """Tests dict input objects for `tackle.providers.system.hooks.variable` module."""
-from tackle.main import tackle
-import pytest
 import os
 import shutil
+
+import pytest
+
+from tackle.main import tackle
 
 
 @pytest.fixture()

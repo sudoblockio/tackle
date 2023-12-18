@@ -2,7 +2,7 @@ from typing import Type
 
 import pytest
 
-from tackle import tackle, exceptions
+from tackle import exceptions, tackle
 
 FIXTURES = [
     ('fields.yaml', 'foo'),

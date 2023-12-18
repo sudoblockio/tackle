@@ -1,7 +1,7 @@
-from typing import Union, Any, Optional
+from typing import Any, Optional, Union
 
-from tackle import BaseHook, Field, Context
-from tackle.utils.data_crud import nested_get, encode_key_path, get_target_and_key
+from tackle import BaseHook, Context, Field
+from tackle.utils.data_crud import encode_key_path, get_target_and_key, nested_get
 
 
 class AppendHook(BaseHook):
@@ -31,7 +31,9 @@ class AppendHook(BaseHook):
             key_path = encode_key_path(self.src, self.sep)
             # When appending within a block, we try to append to output dict then
             # fallback on trying to append to the existing context
-            target_context, set_key_path = get_target_and_key(context, key_path=key_path)
+            target_context, set_key_path = get_target_and_key(
+                context, key_path=key_path
+            )
 
             # TODO: https://github.com/sudoblockio/tackle/issues/192
             try:

@@ -1,8 +1,10 @@
 """Tests dict input objects for `tackle.providers.system.hooks.copy` module."""
 import os
 import shutil
-from tackle.main import tackle
+
 import pytest
+
+from tackle.main import tackle
 
 
 @pytest.fixture()

@@ -4,96 +4,113 @@ from tackle.macros.hook_macros import hook_macros
 
 HOOK_INPUT_FIXTURES = [
     # hook_input,expected_output
-    (
-        {'stuff': 'things'},
-        {'stuff': {
-            'default': 'things',
-            'type': 'str'
-        }}
-    ),
+    ({'stuff': 'things'}, {'stuff': {'default': 'things', 'type': 'str'}}),
     (
         {'stuff': 'str'},
-        {'stuff': {
-            'type': 'str'
-        }},
+        {'stuff': {'type': 'str'}},
     ),
     (
         {'stuff': 'list'},
-        {'stuff': {
-            'type': 'list'
-        }},
+        {'stuff': {'type': 'list'}},
     ),
     (
-        {'stuff': {
-            'type': 'list'
-        }},
-        {'stuff': {
-            'type': 'list'
-        }},
+        {'stuff': {'type': 'list'}},
+        {'stuff': {'type': 'list'}},
     ),
     (
-        {'stuff': {
-            'default': 'foo'
-        }},
-        {'stuff': {
-            'type': 'str',
-            'default': 'foo',
-        }},
+        {'stuff': {'default': 'foo'}},
+        {
+            'stuff': {
+                'type': 'str',
+                'default': 'foo',
+            }
+        },
     ),
     (
-        {'stuff': {
-            'things': 'foo',
-        }},
-        {'stuff': {
-            'type': 'Any',
-            'default_factory': {'things': 'foo'},
-        }},
+        {
+            'stuff': {
+                'things': 'foo',
+            }
+        },
+        {
+            'stuff': {
+                'type': 'Any',
+                'default_factory': {'things': 'foo'},
+            }
+        },
     ),
     (
-        {'stuff': [{
-            'things': 'foo',
-        }]},
-        {'stuff': {
-            'type': 'list',
-            'default_factory': [{'things': 'foo'}],
-        }},
+        {
+            'stuff': [
+                {
+                    'things': 'foo',
+                }
+            ]
+        },
+        {
+            'stuff': {
+                'type': 'list',
+                'default_factory': [{'things': 'foo'}],
+            }
+        },
     ),
     (
         {'stuff': {'->': 'foo', 'bar': 'bar'}},
-        {'stuff': {
-            'type': 'Any',
-            'default_factory': {'stuff': {'->': 'foo', 'bar': 'bar'}, 'return->': '{{stuff}}'},
-        }},
+        {
+            'stuff': {
+                'type': 'Any',
+                'default_factory': {
+                    'stuff': {'->': 'foo', 'bar': 'bar'},
+                    'return->': '{{stuff}}',
+                },
+            }
+        },
     ),
     (
-        {'stuff<-': {
-            'things': 'foo',
-        }},
-        {'stuff': {
-            '<-': {'things': 'foo'},
-        }},
+        {
+            'stuff<-': {
+                'things': 'foo',
+            }
+        },
+        {
+            'stuff': {
+                '<-': {'things': 'foo'},
+            }
+        },
     ),
     (
         {'stuff': {'->': 'foo', 'type': 'bar'}},
-        {'stuff': {
-            'type': 'Any',
-            'default_factory': {'stuff': {'->': 'foo', 'type': 'bar'}, 'return->': '{{stuff}}'},
-        }},
+        {
+            'stuff': {
+                'type': 'Any',
+                'default_factory': {
+                    'stuff': {'->': 'foo', 'type': 'bar'},
+                    'return->': '{{stuff}}',
+                },
+            }
+        },
     ),
     (
         {'stuff': {'default_factory->': 'foo', 'bar': 'bar', 'type': 'str'}},
-        {'stuff': {
-            'type': 'str',
-            'bar': 'bar',
-            'default_factory': {'stuff': {'->': 'foo'}, 'return->': '{{stuff}}'},
-        }},
+        {
+            'stuff': {
+                'type': 'str',
+                'bar': 'bar',
+                'default_factory': {'stuff': {'->': 'foo'}, 'return->': '{{stuff}}'},
+            }
+        },
     ),
     (
         {'stuff': {'default_factory': {'->': 'foo', 'bar': 'bar'}, 'type': 'str'}},
-        {'stuff': {
-            'type': 'str',
-            'default_factory': {'stuff': {'->': 'foo', 'bar': 'bar'}, 'return->': '{{stuff}}'},
-        }},
+        {
+            'stuff': {
+                'type': 'str',
+                'default_factory': {
+                    'stuff': {'->': 'foo', 'bar': 'bar'},
+                    'return->': '{{stuff}}',
+                },
+            }
+        },
     ),
 ]
 
@@ -107,12 +124,7 @@ def test_macros_hook_macros(context, hook_input, expected_output):
 
 
 FIELD_HOOK_INPUT_FIXTURES: list[dict] = [
-    {"field": {
-        "default_factory": {
-            "tmp->": "literal foo",
-            "return->": "{{tmp}}"
-        }
-    }},
+    {"field": {"default_factory": {"tmp->": "literal foo", "return->": "{{tmp}}"}}},
     {"field->": "literal foo"},
     {"field": {"->": "literal foo"}},
     {"field": {"default->": "literal foo"}},

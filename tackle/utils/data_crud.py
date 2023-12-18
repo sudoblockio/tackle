@@ -2,7 +2,8 @@
 Utils for modifying complex dictionaries generally based on an encoded key_path which is
 a list of strings for key value lookups and byte encoded integers for items in a list.
 """
-from typing import Union, Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Union
+
 from ruyaml.comments import CommentedKeyMap
 
 if TYPE_CHECKING:
@@ -184,8 +185,8 @@ def nested_set(element: Union[dict, list], keys: list, value: Any, index: int = 
 
 
 def get_target_and_key(
-        context: 'Context',
-        key_path: list = None,
+    context: 'Context',
+    key_path: list = None,
 ) -> (Any, list):
     """Get the target context and key to `set_key` from."""
     is_public = True
@@ -217,9 +218,7 @@ def get_target_and_key(
     return target_context, output_key_path
 
 
-def remove_arrows_from_key_path(
-        key_path: list
-) -> list:
+def remove_arrows_from_key_path(key_path: list) -> list:
     """Remove the arrows from a key path."""
     output = []
     for i in key_path:
@@ -229,18 +228,16 @@ def remove_arrows_from_key_path(
 
 
 def set_temporary_context(
-        context: 'Context',
-        value: Any,
-        key_path: list,
+    context: 'Context',
+    value: Any,
+    key_path: list,
 ) -> None:
-    """
-
-    """
+    """ """
     # tmp_key_path = key_path[(len(context.key_path_block) - len(key_path)):]
     # Remove the as many items off the key_path as we are indexed into a block
     # For instance - key_path = ['foo', 'bar'] + key_path_block = ['foo'] then
     # tmp_key_path = ['bar']
-    tmp_key_path = key_path[len(context.key_path_block):]
+    tmp_key_path = key_path[len(context.key_path_block) :]
 
     if len(tmp_key_path) == 0:
         # Nothing to set in tmp context
@@ -263,7 +260,7 @@ def set_temporary_context(
 
 
 def get_set_temporary_context(
-        context: 'Context',
+    context: 'Context',
 ) -> None:
     """
     Used in hooks with indented contexts (ie block/match), it gets the output of the
@@ -271,8 +268,7 @@ def get_set_temporary_context(
      so that it can be used for rendering.
     """
     target_context, set_key_path = get_target_and_key(
-        context=context,
-        key_path=context.key_path
+        context=context, key_path=context.key_path
     )
     try:
         value = nested_get(element=target_context, keys=set_key_path)
@@ -286,9 +282,9 @@ def get_set_temporary_context(
 
 
 def set_key(
-        context: 'Context',
-        value: Any,
-        key_path: list = None,
+    context: 'Context',
+    value: Any,
+    key_path: list = None,
 ):
     """
     Wrap nested_set to set keys for both public and private hook calls.

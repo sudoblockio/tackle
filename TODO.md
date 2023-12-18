@@ -1,8 +1,8 @@
 
-- [ ] Proposals 
-- [ ] Docs 
+- [ ] Proposals
+- [ ] Docs
 - [ ] Articles
 
-- [ ] Functions 
+- [ ] Functions
 - [ ] Overrides
 - [ ] self

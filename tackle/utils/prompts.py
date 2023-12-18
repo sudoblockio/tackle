@@ -1,6 +1,7 @@
 """Prompts used in cloning."""
 import os
 import sys
+
 from InquirerPy import prompt
 
 from tackle.utils.paths import rmtree

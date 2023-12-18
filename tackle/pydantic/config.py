@@ -1,18 +1,15 @@
-from pydantic import BaseModel, Field
-from pydantic.config import (
-    ExtraValues,  # noqa
-    JsonEncoder,  # noqa
-    JsonSchemaExtraCallable,  # noqa
-)
-from pydantic._internal._generate_schema import GenerateSchema  # noqa
 from typing import Literal
 
+from pydantic import BaseModel, Field
+from pydantic._internal._generate_schema import GenerateSchema  # noqa
+from pydantic.config import ExtraValues  # noqa
+from pydantic.config import JsonEncoder  # noqa
+from pydantic.config import JsonSchemaExtraCallable  # noqa
 
 
 class DclHookModelConfig(BaseModel):
-    """
-    Declarative hook model_config inputs.
-    """
+    """Declarative hook model_config inputs."""
+
     title: str | None = Field(None, description="")
     str_to_lower: bool = Field(False, description="")
     str_to_upper: bool = Field(False, description="")
@@ -41,7 +38,8 @@ class DclHookModelConfig(BaseModel):
     strict: bool = Field(False, description="")
     # whether instances of models and dataclasses (including subclass instances) should re-validate, default 'never'
     revalidate_instances: Literal['always', 'never', 'subclass-instances'] = Field(
-        'never', description="")
+        'never', description=""
+    )
     ser_json_timedelta: Literal['iso8601', 'float'] = Field('iso8601', description="")
     ser_json_bytes: Literal['utf8', 'base64'] = Field('utf8', description="")
     # whether to validate default values during validation, default False

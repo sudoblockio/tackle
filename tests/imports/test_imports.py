@@ -1,12 +1,13 @@
-import pytest
-import sys
 import os
 import shutil
 import subprocess
+import sys
 
-from tackle import exceptions, tackle, imports
+import pytest
+
+from tackle import exceptions, imports, tackle
+from tackle.context import Context, Hooks, Source
 from tackle.factory import new_context
-from tackle.context import Context, Source, Hooks
 from tackle.settings import settings
 
 
@@ -146,6 +147,7 @@ def remove_provider():
             shutil.rmtree(provider_path)
 
     return f
+
 
 @pytest.mark.slow
 def test_providers_released_latest(remove_provider):

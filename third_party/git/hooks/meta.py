@@ -1,17 +1,16 @@
-import pathlib
 import os
+import pathlib
 import re
 import subprocess
 from collections.abc import MutableMapping
+from typing import Optional
 
 from InquirerPy import prompt
 from InquirerPy.base.control import Choice
-
 from pydantic import BaseModel, ValidationError, validator
-from typing import Optional
 
-from tackle.utils.paths import work_in
 from tackle.models import BaseHook, Field
+from tackle.utils.paths import work_in
 
 
 class Repo(BaseModel):

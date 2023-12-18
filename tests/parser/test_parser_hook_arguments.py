@@ -1,12 +1,11 @@
 from typing import Type
 
+from tackle import BaseHook
 from tackle.factory import new_context
 from tackle.parser import evaluate_args
-from tackle import BaseHook
 
 
 def run_evaluate_args(args: list, Hook: Type[BaseHook]):
-
     context = new_context()
     context.hooks.public['my_hook'] = Hook
 
@@ -79,4 +78,3 @@ def test_parser_evaluate_args_overflow_bool_error():
     output = run_evaluate_args(args=args, Hook=MyHook)
 
     assert output == {'foo': True}
-

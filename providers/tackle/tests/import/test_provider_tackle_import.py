@@ -1,6 +1,6 @@
 import pytest
 
-from tackle import tackle, exceptions
+from tackle import exceptions, tackle
 from tackle.factory import new_context
 from tackle.parser import parse_context
 
@@ -31,14 +31,17 @@ def test_provider_system_hook_import_local(target):
 
 
 @pytest.mark.slow
-@pytest.mark.parametrize("target", [
-    'special-key-remote-str.yaml',
-    'special-key-remote-dict.yaml',
-    'special-key-remote-list.yaml',
-    'special-key-remote-list-str.yaml',
-    'remote-list-dict.yaml',
-    'remote-list-str-no-args.yaml',
-])
+@pytest.mark.parametrize(
+    "target",
+    [
+        'special-key-remote-str.yaml',
+        'special-key-remote-dict.yaml',
+        'special-key-remote-list.yaml',
+        'special-key-remote-list-str.yaml',
+        'remote-list-dict.yaml',
+        'remote-list-str-no-args.yaml',
+    ],
+)
 def test_provider_system_hook_import_remote(target):
     """Run the source and check that the hooks imported the demo module."""
     context = new_context(target)
@@ -71,28 +74,33 @@ def test_provider_hook_import_raise_when_calling_hook_from_tackle_file():
 
 @pytest.mark.slow
 @pytest.mark.parametrize(
-    "input_file,expected_exception", [
+    "input_file,expected_exception",
+    [
         ('error-not-found-local.yaml', exceptions.UnknownSourceException),
-        ('error-not-found-repo.yaml', (exceptions.RepositoryNotFound, exceptions.GenericGitException)),
-    ]
+        (
+            'error-not-found-repo.yaml',
+            (exceptions.RepositoryNotFound, exceptions.GenericGitException),
+        ),
+    ],
 )
 def test_provider_hook_import_raise_unknown_source(input_file, expected_exception):
-    """
-    When given a bad source we raise an error.
-    """
+    """When given a bad source we raise an error."""
     with pytest.raises(expected_exception):
         tackle(input_file)
 
 
-@pytest.mark.parametrize("file", [
-    'error-str-both-version-latest.yaml',
-    'error-dict-both-version-latest.yaml',
-    'error-list-both-version-latest.yaml',
-    'error-list-str-both-version-latest.yaml',
-    'error-list-str-extra-flag.yaml',
-    'error-list-str-extra-kwarg.yaml',
-    'error-list-str-unknown-flag.yaml',
-])
+@pytest.mark.parametrize(
+    "file",
+    [
+        'error-str-both-version-latest.yaml',
+        'error-dict-both-version-latest.yaml',
+        'error-list-both-version-latest.yaml',
+        'error-list-str-both-version-latest.yaml',
+        'error-list-str-extra-flag.yaml',
+        'error-list-str-extra-kwarg.yaml',
+        'error-list-str-unknown-flag.yaml',
+    ],
+)
 def test_provider_hook_import_raise_when_both_version_and_latest(file):
     """
     Even though a hook called `unexported_hook` exists in tackle file, it should not be

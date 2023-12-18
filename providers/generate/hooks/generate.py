@@ -1,18 +1,18 @@
-import os.path
 import fnmatch
-from typing import Union
+import os.path
+import shutil
 from pathlib import Path
+from typing import List, Union
+
 from jinja2 import FileSystemLoader
 from jinja2.exceptions import UndefinedError
-import shutil
-from typing import List
 
-from tackle import BaseHook, Field, Context
-from providers.generate.hooks.exceptions import (
-    UndefinedVariableInTemplate,
-    GenerateHookTemplateNotFound,
-)
 from providers.generate.hooks.common import init_context
+from providers.generate.hooks.exceptions import (
+    GenerateHookTemplateNotFound,
+    UndefinedVariableInTemplate,
+)
+from tackle import BaseHook, Context, Field
 
 
 class GenerateHook(BaseHook):
@@ -78,13 +78,11 @@ class GenerateHook(BaseHook):
         if 'nt' in os.name:
             self.file_path_separator_ = '\\'
             if not self.output.startswith('\\'):
-                self.output = os.path.join(
-                    context.path.calling.directory, self.output)
+                self.output = os.path.join(context.path.calling.directory, self.output)
         else:
             self.file_path_separator_ = '/'
             if not self.output.startswith('/'):
-                self.output = os.path.join(
-                    context.path.calling.directory, self.output)
+                self.output = os.path.join(context.path.calling.directory, self.output)
 
     # def _init_context(self, context: Context):
     #     # Update the render_context that will be used
@@ -235,7 +233,6 @@ class GenerateHook(BaseHook):
                 f.write(rendered_contents)
 
     def generate_dir(self, context: Context, input_directory: str, output_path: str):
-
         for i in os.listdir(input_directory):
             input_path = os.path.join(input_directory, i)
             output = os.path.join(output_path, i)

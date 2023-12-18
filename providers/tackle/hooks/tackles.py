@@ -1,13 +1,15 @@
-from pydantic import SecretStr
-from typing import Union, Any
 import copy
+from typing import Any, Union
+
+from pydantic import SecretStr
 
 import tackle as tkl
-from tackle import BaseHook, Field, Context
+from tackle import BaseHook, Context, Field
 
 
 class TackleHook(BaseHook):
     """Hook for calling external tackle providers."""
+
     hook_name: str = 'tackle'
 
     # fmt: off
@@ -114,7 +116,7 @@ class TackleHook(BaseHook):
             _data=copy.deepcopy(context.data),
             # Implicit
             # _hooks=context.hooks,
-            **self.override
+            **self.override,
         )
 
         return output_context

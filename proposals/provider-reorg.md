@@ -1,6 +1,6 @@
 # Provider Re-organization
 
-> Status: Implemented 
+> Status: Implemented
 
 ## Issues
 
@@ -192,4 +192,3 @@
   - import
   - block
   - provider_docs
-  

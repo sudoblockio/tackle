@@ -4,9 +4,10 @@ from tackle import BaseHook
 class Hook1(BaseHook):
     hook_name: str = 'hook_1'
 
-    # is_public: str = 'wrong'
+    is_public: bool = True
+
     # args should be list or str - not dict
-    args: dict = {}
+    args: dict = {'foo': 'bar'}
 
     def exec(self):
         return True

@@ -16,7 +16,7 @@ tackle TARGET arg1 arg2 --key value --flag
 
 The below describes the logic around how to qualify a target.
 
-### File Targets 
+### File Targets
 
 Tackle can be called against any yaml file or json. Tackle runs the file as if it is in the current directory.
 
@@ -58,7 +58,7 @@ Repository sources can be abbreviated such that the following items are equivale
 tackle robcxyz/tackle-provider
 ```
 
-You can also specify files / directories 
+You can also specify files / directories
 
 ```shell
 tackle robcxyz/tackle-provider --d some/directory/location -f some-file.yaml
@@ -72,9 +72,9 @@ Tackle can also run against a zip file.
 tackle path/to/some/zipfile.zip
 ```
 
-### Unknown Target / No Target 
+### Unknown Target / No Target
 
-When a target is not recognized as a file, directory, repo, or zipfile, tackle attempts to use the target as an argument to the nearest tackle provider which is any directory with a tackle file or hooks directory. Nearest in this context means in the current directory, the parent directory, and so forth until no tackle provider is found. 
+When a target is not recognized as a file, directory, repo, or zipfile, tackle attempts to use the target as an argument to the nearest tackle provider which is any directory with a tackle file or hooks directory. Nearest in this context means in the current directory, the parent directory, and so forth until no tackle provider is found.
 
 Call the nearest tackle provider (in this case in the parent directory) with target as argument.
 
@@ -84,7 +84,7 @@ Call the nearest tackle provider (in this case in the parent directory) with tar
 tackle unknown-target
 ```
 
-Or simply call `tackle` without a target which will do same as above. 
+Or simply call `tackle` without a target which will do same as above.
 
 ```shell
 tackle

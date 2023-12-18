@@ -1,9 +1,10 @@
 import os
+
 from pydantic import BaseModel
 
-from tackle.imports import import_python_hooks_from_file
 from tackle import BaseHook, Field
-from tackle.context import Hooks, Context
+from tackle.context import Context, Hooks
+from tackle.imports import import_python_hooks_from_file
 
 
 class CachedHook(BaseModel):
@@ -18,6 +19,7 @@ class GenerateNativeHookCache(BaseHook):
     Hook to generate tackle.lock.json files for all the native providers and thereby make
      startup times much faster.
     """
+
     hook_name: str = 'provider_cache_data'
     providers_dir: str = Field(
         None,
@@ -27,12 +29,11 @@ class GenerateNativeHookCache(BaseHook):
     cached_hooks_: list = []
 
     def get_provider_data(
-            self,
-            context: Context,
-            provider_name: str,
-            provider_directory: str,
+        self,
+        context: Context,
+        provider_name: str,
+        provider_directory: str,
     ):
-
         for file in os.scandir(os.path.join(provider_directory, 'hooks')):
             file_base, file_extension = os.path.splitext(file.name)
             if file_extension != '.py':

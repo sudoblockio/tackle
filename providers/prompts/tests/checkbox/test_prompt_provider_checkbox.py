@@ -1,7 +1,7 @@
 import pytest
 
-from tackle import tackle, Context
 from providers.prompts.hooks.checkbox import InquirerCheckboxHook
+from tackle import Context, tackle
 
 
 def test_provider_prompt_checkbox_map_normal_no_input():
@@ -25,8 +25,7 @@ def run_mocked_hook(mocker):
         # Patch the `prompt` method which is called by the hook and will since it
         # requires user input from terminal
         mocker.patch(
-            'providers.prompts.hooks.checkbox.prompt',
-            return_value=return_value
+            'providers.prompts.hooks.checkbox.prompt', return_value=return_value
         )
         context = Context(key_path=[])
         hook = InquirerCheckboxHook(**kwargs)
@@ -35,6 +34,7 @@ def run_mocked_hook(mocker):
         return output
 
     return f
+
 
 def test_provider_prompt_checkbox_list(run_mocked_hook):
     output = run_mocked_hook(
@@ -83,4 +83,3 @@ def test_provider_prompt_checkbox_map_indexed(run_mocked_hook):
     )
 
     assert output == [0]
-

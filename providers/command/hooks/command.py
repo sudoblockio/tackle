@@ -1,10 +1,10 @@
-import sys
-import logging
-import subprocess
 import errno
-import struct
-import shutil
+import logging
 import os
+import shutil
+import struct
+import subprocess
+import sys
 from itertools import chain
 from select import select
 from typing import Any
@@ -14,8 +14,8 @@ from tackle.exceptions import HookCallException
 
 if os.name != 'nt':
     # Don't import on windows as pty is not available there
-    import pty
     import fcntl
+    import pty
     import termios
 
 logger = logging.getLogger(__name__)

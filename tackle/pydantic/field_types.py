@@ -1,5 +1,6 @@
-from pydantic import BaseModel, Field
 from typing import Any, Callable
+
+from pydantic import BaseModel, Field
 
 
 class FieldInput(BaseModel):
@@ -7,6 +8,7 @@ class FieldInput(BaseModel):
     Model to validate inputs into declarative hook fields. It is the model version of
      the inputs into tackle.pydantic.fields.Field for serialization purposes.
     """
+
     type: str | None = Field(None, description="")
     enum: list | None = Field(None, description="")
     validator: dict | None = Field(None, description="")
@@ -29,7 +31,8 @@ class FieldInput(BaseModel):
     exclude: bool | None = Field(None, description="")
     discriminator: str | None = Field(None, description="")
     json_schema_extra: dict[str, Any] | Callable[[dict[str, Any]], None] | None = Field(
-        None, description="")
+        None, description=""
+    )
     frozen: bool | None = Field(None, description="")
     validate_default: bool | None = Field(None, description="")
     repr: bool = Field(None, description="")

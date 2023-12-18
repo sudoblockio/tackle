@@ -1,11 +1,12 @@
 """Utilities mainly used in helping `modes` like replay and others."""
 import json
+import logging
 import os
+
 from ruyaml import YAML
 from ruyaml.composer import ComposerError
 from ruyaml.constructor import ConstructorError
 from ruyaml.parser import ParserError
-import logging
 
 from tackle import exceptions
 from tackle.utils.paths import make_sure_path_exists
@@ -45,7 +46,8 @@ def read_config_file(file, file_extension=None):
 
     if not os.path.exists(file):
         raise exceptions.TackleFileNotFoundError(
-            f"Can't find the file {file}.") from None
+            f"Can't find the file {file}."
+        ) from None
 
     logger.debug(
         'Using \"{}\" as input file and \"{}\" as file extension'.format(
@@ -97,10 +99,7 @@ def read_config_file(file, file_extension=None):
 
     except ValueError as e:
         # decoding error
-        message = (
-            f'Error while loading file=`{file}`. \n'
-            f'Details: "{str(e)}"'
-        )
+        message = f'Error while loading file=`{file}`. \n' f'Details: "{str(e)}"'
         raise exceptions.FileLoadingException(message) from None
 
 

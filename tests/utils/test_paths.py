@@ -1,5 +1,6 @@
 """Test tackle.utils.paths."""
 import pytest
+
 from tackle.utils.paths import is_file, is_repo_url
 
 FILE_FIXTURES = [

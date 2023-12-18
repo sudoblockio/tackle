@@ -1,5 +1,5 @@
-import os
 import configparser
+import os
 from typing import Union
 
 from tackle import BaseHook, Field

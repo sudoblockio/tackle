@@ -1,5 +1,6 @@
-from tackle import BaseHook, Field
 import psycopg2
+
+from tackle import BaseHook, Field
 
 
 class PostgresQuery(BaseHook):

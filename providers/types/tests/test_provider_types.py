@@ -14,10 +14,12 @@ def test_provider_logic_type():
     assert output['with_args']['type'] == 'list'
     assert output['default']['type'] == 'list'
 
+
 TYPE_FIXTURES = [
     ("str", "str"),
     ("list", "list"),
 ]
+
 
 @pytest.mark.parametrize("fixture_name,expected_output", TYPE_FIXTURES)
 def test_provider_types_parameterized(cd, fixture_name, expected_output):
@@ -25,7 +27,6 @@ def test_provider_types_parameterized(cd, fixture_name, expected_output):
     cd('type-fixtures')
     output = tackle(f'{fixture_name}.yaml')
     assert output[f'{fixture_name}_type'] == expected_output
-
 
 
 def test_provider_types_hook_casting():

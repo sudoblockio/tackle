@@ -1,10 +1,10 @@
-import os
 import json
 import logging
-from typing import Union, Any
-from pydantic import BaseModel
+import os
+from typing import Any, Union
 
 import requests
+from pydantic import BaseModel
 from requests.auth import HTTPBasicAuth
 
 from tackle import BaseHook, Field
@@ -79,7 +79,12 @@ class RequestsGetHook(BaseHook, AuthMixin):
     ]
 
     def exec(self) -> dict:
-        r = requests.get(self.url, params=self.params, auth=self.auth(), **self.extra_kwargs)
+        r = requests.get(
+            self.url,
+            params=self.params,
+            auth=self.auth(),
+            **self.extra_kwargs,
+        )
         exit_none_200(r, self.no_exit, self.url)
         return process_content(r, encoding=self.encoding)
 
@@ -123,8 +128,13 @@ class RequestsPostHook(BaseHook, AuthMixin):
                     f"reference to a file path, not {self.data}."
                 )
 
-        r = requests.post(self.url, data=self.data, json=self.input_json,
-                          auth=self.auth(), **self.extra_kwargs)
+        r = requests.post(
+            self.url,
+            data=self.data,
+            json=self.input_json,
+            auth=self.auth(),
+            **self.extra_kwargs,
+        )
         exit_none_200(r, self.no_exit, self.url)
 
         return r.json()
@@ -141,8 +151,9 @@ class RequestsPutHook(BaseHook, AuthMixin):
     # fmt: on
     url: str = Field(..., description="URL for the new request object.")
     extra_kwargs: Union[str, dict] = Field(
-        {}, description="Optional arguments that request takes.",
-        render_by_default=True
+        {},
+        description="Optional arguments that request takes.",
+        render_by_default=True,
     )
     data: Any = Field(
         None,
@@ -152,9 +163,12 @@ class RequestsPutHook(BaseHook, AuthMixin):
         None,
         description="A json payload to put.",
         render_by_default=True,
-        alias='json'
+        alias='json',
     )
-    no_exit: bool = Field(False, description="Whether to exit on non-200 response.")
+    no_exit: bool = Field(
+        False,
+        description="Whether to exit on non-200 response.",
+    )
     # fmt: off
 
     args: list = ['url', 'data', 'kwargs']
@@ -236,7 +250,11 @@ class RequestsDeleteHook(BaseHook, AuthMixin):
     args: list = ['url', 'kwargs']
 
     def exec(self):
-        r = requests.delete(self.url, auth=self.auth(), **self.extra_kwargs)
+        r = requests.delete(
+            self.url,
+            auth=self.auth(),
+            **self.extra_kwargs,
+        )
         exit_none_200(r, self.no_exit, self.url)
 
         return r.status_code

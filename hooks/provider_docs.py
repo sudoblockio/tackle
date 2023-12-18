@@ -1,25 +1,18 @@
+import importlib.machinery
+import inspect
+import json
 import os
-import sys
 import random
 import string
-import importlib.machinery
-import json
-from types import UnionType
+import sys
+from typing import Any, List, Optional, Union, get_type_hints
 
 from pydantic import BaseModel, Field
-import inspect
-from typing import List, get_type_hints, Any, Union, Optional
 
-from tackle import exceptions, Context
-from tackle.utils.type_strings import type_to_string
-
-try:
-    from typing import _GenericAlias
-except ImportError:
-    pass
-
-from tackle.utils.paths import listdir_absolute
+from tackle import Context
 from tackle.models import BaseHook
+from tackle.utils.paths import listdir_absolute
+from tackle.utils.type_strings import type_to_string
 
 
 class HookDocField(BaseModel):
@@ -64,25 +57,6 @@ class ProviderDocs(BaseModel):
     description: str = None
 
 
-# def type_to_string(type_) -> str:
-#     """Convert hook ModelField type_ to string."""
-#     if type_ == Any:
-#         output = 'any'
-#     elif isinstance(type_, _GenericAlias):
-#         if isinstance(type_, List):
-#             output = 'list'
-#         else:
-#             output = 'union'
-#     elif isinstance(type_, UnionType):
-#         if isinstance(type_, List):
-#             output = 'list'
-#         else:
-#             output = 'union'
-#     else:
-#         output = type_.__name__
-#     return output
-
-
 def get_hook_properties(hook) -> List[HookDocField]:
     """Get the input params for a hook."""
     # Get the base properties like `for` and `if` so they can be ignored
@@ -107,9 +81,7 @@ def get_hook_properties(hook) -> List[HookDocField]:
             required=v.default is not None,
             type=type_to_string(v.annotation),
             default=v.default,
-            description=v.description
-            if v.description is not None
-            else "",
+            description=v.description if v.description is not None else "",
         )
         output.append(hook_doc)
     return output
@@ -239,7 +211,8 @@ class ProviderDocsHook(BaseHook):
                         else "",
                         return_type=return_type,
                         # return_description=h._return_description,
-                        return_description=get_private_model_field(h, '_return_description'),
+                        return_description=get_private_model_field(h,
+                                                                   '_return_description'),
                         hook_file_name=os.path.basename(f),
                         # doc_tags=h._doc_tags,
                         # issue_numbers=h._issue_numbers,

@@ -1,41 +1,41 @@
-from typing import TYPE_CHECKING, Union, Optional
+from typing import TYPE_CHECKING, Optional, Union
 
 from tackle.factory import new_context
 from tackle.parser import parse_context
 from tackle.utils.paths import work_in
 
 if TYPE_CHECKING:
-    from tackle.context import Paths, Data, Hooks, Context
+    from tackle.context import Context, Data, Hooks, Paths
     from tackle.types import DocumentValueType
 
 
 def tackle(
-        # Inputs
-        *args: 'DocumentValueType',
-        # Source
-        checkout: Optional[str] = None,
-        latest: Optional[bool] = None,
-        directory: Optional[str] = None,
-        file: Optional[str] = None,
-        find_in_parent: bool | None = None,
-        # Data
-        raw_input: dict | list | None = None,
-        existing_data: str | dict | None = None,
-        overrides: str | dict | None = None,
-        # Imports
-        hooks_dir: str | None = None,
-        # Context
-        no_input: bool | None = None,
-        verbose: bool | None = None,
-        # Call
-        return_context: bool | None = None,
-        # Models ->
-        # Used when calling tackle from tackle
-        _paths: 'Paths' = None,
-        _hooks: 'Hooks' = None,
-        _data: 'Data' = None,
-        # Unknown args/kwargs preserved for parsing
-        **kwargs: 'DocumentValueType',
+    # Inputs
+    *args: 'DocumentValueType',
+    # Source
+    checkout: Optional[str] = None,
+    latest: Optional[bool] = None,
+    directory: Optional[str] = None,
+    file: Optional[str] = None,
+    find_in_parent: bool | None = None,
+    # Data
+    raw_input: dict | list | None = None,
+    existing_data: str | dict | None = None,
+    overrides: str | dict | None = None,
+    # Imports
+    hooks_dir: str | None = None,
+    # Context
+    no_input: bool | None = None,
+    verbose: bool | None = None,
+    # Call
+    return_context: bool | None = None,
+    # Models ->
+    # Used when calling tackle from tackle
+    _paths: 'Paths' = None,
+    _hooks: 'Hooks' = None,
+    _data: 'Data' = None,
+    # Unknown args/kwargs preserved for parsing
+    **kwargs: 'DocumentValueType',
 ) -> Union['Context', 'DocumentValueType']:
     """
     Run tackle programmatically, similar to its usage from the command line. This function
@@ -81,7 +81,7 @@ def tackle(
         _path=_paths,
         _hooks=_hooks,
         _data=_data,
-        **kwargs
+        **kwargs,
     )
 
     # We always change directory into the source that is being called. Needs to be this

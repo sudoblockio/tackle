@@ -1,5 +1,6 @@
 import sys
 from typing import Any
+
 from tackle import BaseHook, Field
 
 try:
@@ -18,7 +19,9 @@ class PrintHook(BaseHook):
     hook_name: str = 'print'
 
     objects: Any = Field(None, description="The objects to print.")
-    sep: str = Field(' ', description="Separator between printed objects.", render_by_default=True)
+    sep: str = Field(
+        ' ', description="Separator between printed objects.", render_by_default=True
+    )
     end: str = Field('\n', description="What to print at the end")
     flush: bool = Field(False, description="No clue.")
 

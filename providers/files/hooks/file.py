@@ -1,9 +1,9 @@
 import os
 import random
-from pathlib import Path
 import shutil
 from distutils.dir_util import copy_tree
-from typing import List, Union, Any, Optional
+from pathlib import Path
+from typing import Any, List, Optional, Union
 
 from tackle import BaseHook, Field
 from tackle.exceptions import HookCallException
@@ -129,10 +129,7 @@ class WhichHook(BaseHook):
     """Wrapper of shutil.which -> posix which."""
 
     hook_name: str = 'which'
-    path: str = Field(
-        ...,
-        description="String path run `which` against."
-    )
+    path: str = Field(..., description="String path run `which` against.")
 
     args: list = ['path']
 
@@ -210,8 +207,7 @@ class ChownHook(BaseHook):
 
     hook_name: str = 'chown'
     path: Union[str, list] = Field(
-        ...,
-        description="String or list of paths, either directories or files."
+        ..., description="String or list of paths, either directories or files."
     )
     user: str = Field(
         ...,

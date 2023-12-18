@@ -2,12 +2,12 @@ import pytest
 from ruyaml import YAML
 
 from tackle.utils.data_crud import (
-    encode_list_index,
-    decode_list_index,
-    nested_set,
-    nested_get,
-    nested_delete,
     cleanup_unquoted_strings,
+    decode_list_index,
+    encode_list_index,
+    nested_delete,
+    nested_get,
+    nested_set,
 )
 
 ZERO_INDEX = encode_list_index(0)

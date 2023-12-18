@@ -1,6 +1,6 @@
 from typing import Union
 
-from tackle import BaseHook, Field, Context
+from tackle import BaseHook, Context, Field
 from tackle.parser import walk_document
 
 

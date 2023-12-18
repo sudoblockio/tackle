@@ -1,51 +1,44 @@
+import datetime as datetime_types
 import enum
-import typing
-from functools import partialmethod, partial
-from pydantic import (
-    ValidationError,
-    BeforeValidator,
-    AfterValidator,
-    WrapValidator,
-    ValidationInfo,
-    Field,
-    types as pydantic_types,
-    networks as pydantic_network_types,
-    PlainSerializer, ConfigDict,
-)
+import ipaddress as ipaddress_types
 import pydoc
 import re
+import typing
 import typing as typing_types
-from typing import (
-    Union,
-    Any,
-    Type,
-    Callable,
-    Optional,
-    Annotated,
-    TypeVar,
+from functools import partial, partialmethod
+from typing import Annotated, Any, Callable, Optional, Type, TypeVar, Union
+
+from pydantic import (
+    AfterValidator,
+    BeforeValidator,
+    Field,
+    PlainSerializer,
+    ValidationError,
+    ValidationInfo,
+    WrapValidator,
 )
-import ipaddress as ipaddress_types
-import datetime as datetime_types
+from pydantic import networks as pydantic_network_types
+from pydantic import types as pydantic_types
 from pydantic.fields import FieldInfo
 
-from tackle import exceptions, Context
+from tackle import Context, exceptions
 from tackle.factory import new_context_from_context
 from tackle.macros.hook_macros import hook_macros
+from tackle.models import (
+    AnyHookType,
+    BaseHook,
+    CompiledHookType,
+    DclHookInput,
+    HookFieldValidator,
+    LazyBaseHook,
+)
 from tackle.pydantic.config import DclHookModelConfig
-from tackle.render import render_variable
 from tackle.pydantic.create_model import create_model
 from tackle.pydantic.field_types import FieldInput
-from tackle.utils.render import wrap_jinja_braces
+from tackle.render import render_variable
+from tackle.types import DocumentType, DocumentValueType
 from tackle.utils.data_crud import update_input_dict
-from tackle.types import DocumentValueType, DocumentType
-from tackle.models import (
-    BaseHook,
-    DclHookInput,
-    LazyBaseHook,
-    AnyHookType,
-    CompiledHookType,
-    HookFieldValidator,
-)
+from tackle.utils.render import wrap_jinja_braces
 
 
 def parse_tmp_context(context: 'Context', element: Any, existing_context: dict):
@@ -61,9 +54,9 @@ def parse_tmp_context(context: 'Context', element: Any, existing_context: dict):
 
 
 def dcl_hook_exec(
-        hook: 'BaseHook',  # This is basically `self` in the class method
-        input_element: Union[list, dict],
-        context: 'Context',  # This is injected
+    hook: 'BaseHook',  # This is basically `self` in the class method
+    input_element: Union[list, dict],
+    context: 'Context',  # This is injected
 ) -> Any:
     """
     Run a declarative hook's `exec` logic which is a partial_method that is dynamically
@@ -101,7 +94,8 @@ def dcl_hook_exec(
                 raise exceptions.DclHookCallException(
                     f"Error parsing declarative hook field='{field}'. Must produce an "
                     f"output for the field's default.",
-                    context=context, hook_name=hook.hook_name,
+                    context=context,
+                    hook_name=hook.hook_name,
                 ) from None
         else:
             # Otherwise just the value itself
@@ -127,19 +121,18 @@ def dcl_hook_exec(
 
     hook_context.data.input = input_element
     public_data = get_public_data_from_walk(
-            context=hook_context,
-            value=input_element.copy()
-        )
+        context=hook_context, value=input_element.copy()
+    )
     if tmp_key:
         return public_data[tmp_key]
     return public_data
 
 
 def hook_extends_merge_hook(
-        context: 'Context',
-        hook_name: str,
-        hook_input: DclHookInput,
-        extends: str,
+    context: 'Context',
+    hook_name: str,
+    hook_input: DclHookInput,
+    extends: str,
 ):
     """
     Core of `extends` capability of hooks which takes a reference to a hook and merges
@@ -187,9 +180,9 @@ def hook_extends_merge_hook(
 
 
 def hook_extends(
-        context: 'Context',
-        hook_name: str,
-        hook_input: DclHookInput,
+    context: 'Context',
+    hook_name: str,
+    hook_input: DclHookInput,
 ):
     """
     Implement the `extends` functionality which takes either a string reference or list
@@ -233,9 +226,9 @@ GenericFieldType = TypeVar('GenericFieldType')  # noqa
 
 
 def get_hook_field_type_from_str(
-        context: Context,
-        hook_name: str,
-        type_str: str,
+    context: Context,
+    hook_name: str,
+    type_str: str,
 ) -> GenericFieldType | None:
     """
     Get the type from a field's type string and raise an error if the type is unknown.
@@ -250,6 +243,7 @@ def get_hook_field_type_from_str(
 
      Raises an error if the type is not found.
     """
+
     def annotate_string_serializer(type_: GenericFieldType):
         """Add a custom serializer to the type."""
         return Annotated[type_, PlainSerializer(lambda x: str(x), return_type=str)]
@@ -288,9 +282,9 @@ def get_hook_field_type_from_str(
 
 
 def parse_hook_type(
-        context: Context,
-        hook_name: str,
-        type_str: str,
+    context: Context,
+    hook_name: str,
+    type_str: str,
 ) -> GenericFieldType:
     """
     Parse a declarative hook's field's `type` string and return a python type. Supports
@@ -351,9 +345,9 @@ def parse_hook_type(
 
 
 def create_validator_field_type(
-        context: 'Context',
-        hook_validator: HookFieldValidator,
-        field_type: GenericFieldType,
+    context: 'Context',
+    hook_validator: HookFieldValidator,
+    field_type: GenericFieldType,
 ) -> GenericFieldType:
     """
     Create a validator field type by composing a functional validator with the required
@@ -366,11 +360,12 @@ def create_validator_field_type(
      See https://docs.pydantic.dev/latest/api/functional_validators/ for more
      information on functional validators.
     """
+
     def validator_func(
-            context: Context,
-            hook_validator: HookFieldValidator,
-            v: Any,
-            info: ValidationInfo,
+        context: Context,
+        hook_validator: HookFieldValidator,
+        v: Any,
+        info: ValidationInfo,
     ):
         # Inject the field names and values into existing context
         tmp_context = new_context_from_context(context=context)
@@ -402,11 +397,11 @@ def create_validator_field_type(
 
 
 def create_hook_field_validator(
-        context: Context,
-        hook_name: str,
-        key: str,
-        value: dict,
-        validator_field: str | dict,
+    context: Context,
+    hook_name: str,
+    key: str,
+    value: dict,
+    validator_field: str | dict,
 ) -> GenericFieldType:
     """
     Creates a validator by parsing a hook fields `validator` key and does some light
@@ -423,7 +418,8 @@ def create_hook_field_validator(
     if not isinstance(validator_field, dict):
         raise exceptions.MalformedHookFieldException(
             f"The validator in key={key} must be a dict.",
-            context=context, hook_name=hook_name
+            context=context,
+            hook_name=hook_name,
         )
 
     try:
@@ -431,7 +427,9 @@ def create_hook_field_validator(
     except ValidationError as e:
         raise exceptions.MalformedHookFieldException(
             f"The key=`{key}` in the hook=`{hook_name}` has a malformed validator "
-            f"field. \n{e}", context=context, hook_name=hook_name
+            f"field. \n{e}",
+            context=context,
+            hook_name=hook_name,
         )
     if hook_validator.model_extra != {} and hook_validator.body is not None:
         raise exceptions.MalformedHookFieldException(
@@ -439,7 +437,8 @@ def create_hook_field_validator(
             f"or just have the body as the value itself, not both. Got:\n"
             f"{list(hook_validator.model_extra.keys())}\nShould only have\n"
             f"{list(hook_validator.__dict__.keys())}",
-            context=context, hook_name=hook_name
+            context=context,
+            hook_name=hook_name,
         )
 
     if hook_validator.body is None:
@@ -448,19 +447,15 @@ def create_hook_field_validator(
     if not isinstance(hook_validator.body, dict):
         raise exceptions.MalformedHookFieldException(
             f"The validator body in the field={key} must be a map.",
-            context=context, hook_name=hook_name,
+            context=context,
+            hook_name=hook_name,
         )
     return create_validator_field_type(
-        context=context,
-        hook_validator=hook_validator,
-        field_type=field_type
+        context=context, hook_validator=hook_validator, field_type=field_type
     )
 
 
-def get_public_data_from_walk(
-        context: 'Context',
-        value: DocumentType
-) -> DocumentType:
+def get_public_data_from_walk(context: 'Context', value: DocumentType) -> DocumentType:
     """Traverse the value and return the public data."""
     from tackle.parser import walk_document
 
@@ -469,10 +464,10 @@ def get_public_data_from_walk(
 
 
 def create_default_factory(
-        context: Context,
-        hook_name: str,
-        value: dict,
-        value_is_factory: bool = False,
+    context: Context,
+    hook_name: str,
+    value: dict,
+    value_is_factory: bool = False,
 ):
     """
     Create a default_factory field out of the value which is a callable that parses the
@@ -487,7 +482,8 @@ def create_default_factory(
         raise exceptions.MalformedHookFieldException(
             "The default_factory must be a string (compact hook call), "
             "dict, or list which will be parsed.",
-            context=context, hook_name=hook_name,
+            context=context,
+            hook_name=hook_name,
         )
 
     # Create a callable from a dict which walks the data and returns the public data
@@ -499,11 +495,11 @@ def create_default_factory(
 
 
 def update_field_dict_with_type(
-        context: 'Context',
-        hook_name: str,
-        key: str,
-        value: DocumentValueType,
-        field_dict: dict,
+    context: 'Context',
+    hook_name: str,
+    key: str,
+    value: DocumentValueType,
+    field_dict: dict,
 ):
     """
     Update a hook's field dict with a tuple[Type, Field] which is used when creating
@@ -521,7 +517,9 @@ def update_field_dict_with_type(
         field_input = FieldInput(**value)
     except ValidationError as e:
         raise exceptions.MalformedHookFieldException(
-            e, context=context, hook_name=hook_name,
+            e,
+            context=context,
+            hook_name=hook_name,
         )
 
     if field_input.enum is not None:
@@ -562,9 +560,9 @@ def update_field_dict_with_type(
 
 
 def create_dcl_hook_fields(
-        context: Context,
-        hook_input: DclHookInput,
-        hook_name: str,
+    context: Context,
+    hook_input: DclHookInput,
+    hook_name: str,
 ) -> (dict[str, tuple], set[str], set[str]):
     """
     Parses the field inputs for a declarative hook by checking if they are methods or
@@ -587,20 +585,26 @@ def create_dcl_hook_fields(
                 continue
         elif '<-' in v:
             # Raw public method
-            field_dict[k] = (Callable, LazyBaseHook(
-                hook_name=k,
-                input_raw=v['<-'],
-                is_public=True,
-            ))
+            field_dict[k] = (
+                Callable,
+                LazyBaseHook(
+                    hook_name=k,
+                    input_raw=v['<-'],
+                    is_public=True,
+                ),
+            )
             hook_method_set.add(k)
             continue
         elif '<_' in v:
             # Raw private method
-            field_dict[k] = (Callable, LazyBaseHook(
-                hook_name=k,
-                input_raw=v['<_'],
-                is_public=False,
-            ))
+            field_dict[k] = (
+                Callable,
+                LazyBaseHook(
+                    hook_name=k,
+                    input_raw=v['<_'],
+                    is_public=False,
+                ),
+            )
             hook_method_set.add(k)
             continue
         elif isinstance(v, dict):
@@ -628,9 +632,9 @@ def create_dcl_hook_fields(
 
 
 def new_dcl_hook_input(
-        context: 'Context',
-        hook_name: str,
-        hook_input_dict: dict | str,
+    context: 'Context',
+    hook_name: str,
+    hook_input_dict: dict | str,
 ) -> DclHookInput:
     """
     Create the hook_input which are keys supplied in the hook definition that inform how
@@ -641,8 +645,7 @@ def new_dcl_hook_input(
         hook_input = DclHookInput(**hook_input_dict)
     except ValidationError as e:
         raise exceptions.HookParseException(
-            f"Invalid input for creating hook=`{hook_name}`. \n {e}",
-            context=context
+            f"Invalid input for creating hook=`{hook_name}`. \n {e}", context=context
         )
 
     if hook_input.exec_ is not None and isinstance(hook_input.exec_, dict):
@@ -656,9 +659,9 @@ def new_dcl_hook_input(
 
 
 def get_model_config_from_hook_input(
-        context: Context,
-        hook_name: str,
-        hook_input_dict: dict,
+    context: Context,
+    hook_name: str,
+    hook_input_dict: dict,
 ) -> DclHookModelConfig | None:
     """If the `model_config` field is declared, pop it off and return an object."""
     if 'model_config' in hook_input_dict:
@@ -669,6 +672,7 @@ def get_model_config_from_hook_input(
             raise exceptions.MalformedHookFieldException(
                 e, context=context, hook_name=hook_name
             )
+
 
 # def update_hook_input_validators(
 #         context: 'Context',
@@ -695,9 +699,9 @@ def get_model_config_from_hook_input(
 
 
 def create_dcl_hook(
-        context: 'Context',
-        hook_name: str,
-        hook_input_raw: dict | str,
+    context: 'Context',
+    hook_name: str,
+    hook_input_raw: dict | str,
 ) -> 'Type[BaseHook]':
     """
     Create a model from the hook input dict. Calls numerous functions to upgrade the
@@ -788,9 +792,9 @@ def create_dcl_hook(
 
 
 def create_dcl_method(
-        context: 'Context',
-        Hook: AnyHookType,
-        arg: str,
+    context: 'Context',
+    Hook: AnyHookType,
+    arg: str,
 ) -> CompiledHookType:
     """Upgrade a declarative hook method."""
     # method_raw will still have the arrow as the first key
@@ -812,9 +816,9 @@ def create_dcl_method(
 
 
 def enrich_hook(
-        context: 'Context',
-        Hook: CompiledHookType,
-        args: list,
+    context: 'Context',
+    Hook: CompiledHookType,
+    args: list,
 ) -> CompiledHookType:
     """
     Take a hook and enrich it by lining up the args with potential methods / hook args /
@@ -831,11 +835,7 @@ def enrich_hook(
             pass
         # If arg in methods, compile hook
         elif arg in Hook.model_fields and Hook.model_fields[arg].annotation == Callable:
-            Hook = create_dcl_method(
-                context=context,
-                Hook=Hook,
-                arg=args.pop(0)
-            )
+            Hook = create_dcl_method(context=context, Hook=Hook, arg=args.pop(0))
             if len(args) != 0:
                 # Recurse if we have more args
                 return enrich_hook(
@@ -849,14 +849,15 @@ def enrich_hook(
         else:
             raise exceptions.UnknownHookInputArgumentException(
                 f"Unknown arg supplied `{arg}`",
-                context=context, hook_name=Hook.model_fields['hook_name'].default,
+                context=context,
+                hook_name=Hook.model_fields['hook_name'].default,
             )
     return Hook
 
 
 def get_hooks_from_namespace(
-        context: 'Context',
-        hook_name: str,
+    context: 'Context',
+    hook_name: str,
 ) -> CompiledHookType | None:
     """Get the public, private, or native hook from the context."""
     if hook_name == '_default':
@@ -876,10 +877,10 @@ def get_hooks_from_namespace(
 
 
 def get_hook_from_context(
-        context: 'Context',
-        hook_name: str,
-        args: list,
-        throw: bool = False,
+    context: 'Context',
+    hook_name: str,
+    args: list,
+    throw: bool = False,
 ) -> Optional[CompiledHookType]:
     """
     Gets the hook from the context and calls enrich_hook which compiles the hook with
@@ -908,6 +909,7 @@ def get_hook_from_context(
                 raise exceptions.MalformedHookDefinitionException(
                     f"The field name=`{k}` of type={hook_type} is not the "
                     f"same type as the BaseHook's type=`{base_hook_type}`. Exiting...",
-                    context=context, hook_name=hook_name,
+                    context=context,
+                    hook_name=hook_name,
                 )
     return Hook

@@ -1,6 +1,6 @@
 """Collection of tests around loading extensions."""
-from tackle.main import tackle
 from tackle.context import Context
+from tackle.main import tackle
 
 
 def test_env_should_come_with_default_extensions():

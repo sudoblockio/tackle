@@ -1,7 +1,7 @@
 from typing import Any
 
-from tackle import BaseHook, Field, Context
-from tackle.utils.data_crud import encode_key_path, nested_set, get_target_and_key
+from tackle import BaseHook, Context, Field
+from tackle.utils.data_crud import encode_key_path, get_target_and_key, nested_set
 
 
 class SetKeyHook(BaseHook):

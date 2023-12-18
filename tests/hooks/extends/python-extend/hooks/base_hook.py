@@ -1,5 +1,6 @@
 from tackle import BaseHook
 
+
 class MyBaseHook(BaseHook):
     hook_name: str = 'base_hook'
     foo: str = 'bar'

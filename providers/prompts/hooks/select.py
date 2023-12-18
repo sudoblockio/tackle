@@ -1,11 +1,10 @@
 import sys
-
-from InquirerPy import prompt
 from typing import Any, List, Union
 
-from tackle import BaseHook, Field, Context
+from InquirerPy import prompt
+
+from tackle import BaseHook, Context, Field, exceptions
 from tackle.utils.data_crud import get_readable_key_path
-from tackle import exceptions
 
 
 class InquirerListHook(BaseHook):
@@ -38,7 +37,7 @@ class InquirerListHook(BaseHook):
         # Figure out what type of dictionary it is
         choices_type = None
         for i, v in enumerate(self.choices):
-            if i != 0 and type(v) != choices_type:
+            if i != 0 and type(v) != choices_type:  # noqa: E721
                 raise ValueError("All items need to be of the same type in ")
             choices_type = type(v)
 

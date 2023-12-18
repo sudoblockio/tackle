@@ -3,21 +3,13 @@ __version__ = "0.5.1"  # x-release-please-version
 
 from pydantic import Field
 
-from tackle.settings import settings
-from tackle.models import (
-    BaseHook,
-    HookCallInput,
-)
 from tackle.context import Context
-from tackle.main import tackle
-from tackle.types import (
-    DocumentKeyType,
-    DocumentType,
-    DocumentValueType,
-)
-from tackle.utils.hooks import get_hook
 from tackle.factory import new_context
-
+from tackle.main import tackle
+from tackle.models import BaseHook, HookCallInput
+from tackle.settings import settings
+from tackle.types import DocumentKeyType, DocumentType, DocumentValueType
+from tackle.utils.hooks import get_hook
 
 __all__ = [
     'tackle',

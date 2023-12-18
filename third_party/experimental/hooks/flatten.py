@@ -1,4 +1,4 @@
-from tackle import BaseHook, Field, Context
+from tackle import BaseHook, Context, Field
 from tackle.hooks import get_hook_from_context
 
 

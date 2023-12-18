@@ -1,4 +1,4 @@
-from tackle import tackle, get_hook
+from tackle import get_hook, tackle
 
 
 def test_model_data_get(base_hooks_dir):

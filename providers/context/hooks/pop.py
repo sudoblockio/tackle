@@ -1,7 +1,7 @@
 from typing import Union
 
-from tackle import BaseHook, Field, Context, exceptions
-from tackle.utils.data_crud import encode_key_path, nested_get, get_target_and_key
+from tackle import BaseHook, Context, Field, exceptions
+from tackle.utils.data_crud import encode_key_path, get_target_and_key, nested_get
 
 
 class DictPopHook(BaseHook):
@@ -54,7 +54,8 @@ class DictPopHook(BaseHook):
                 )
             except KeyError as e:
                 raise exceptions.HookCallException(
-                    f"Unknown key {e} not found", context=context,
+                    f"Unknown key {e} not found",
+                    context=context,
                 ) from None
             self.pop_item(target)
         else:

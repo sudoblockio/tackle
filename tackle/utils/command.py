@@ -54,6 +54,7 @@ def literal_eval(input_value):
             else:
                 return input_value
 
+
 # Inspired from https://stackoverflow.com/a/524796/12642712
 # Split on whitespace or `=`
 # When quotes are preceded by `,:{[(=`, ignore
@@ -61,8 +62,9 @@ def literal_eval(input_value):
 # Otherwise split on quotes
 # Repeated for single quotes
 SPLIT_PATTERN = re.compile(
-    "( |(?<!,|\:|\(|\{|\[|=)\\\"(?!\,|\:|\)|\}|\]).*?\\\"(?!\}|\])|(?<!\,|\:|\(|\{|\[|=)'(?!,|\:|\)|\}|\]).*?'(?!\}|\]))"
+    "( |(?<!,|\:|\(|\{|\[|=)\\\"(?!\,|\:|\)|\}|\]).*?\\\"(?!\}|\])|(?<!\,|\:|\(|\{|\[|=)'(?!,|\:|\)|\}|\]).*?'(?!\}|\]))"  # noqa
 )
+
 
 def split_input_string(input_string: str) -> list:
     """
@@ -109,9 +111,7 @@ def assert_if_flag(arg: str):
 
 
 def get_kwargs_till_flag(
-        input_list: list,
-        i: int,
-        input_list_length: int
+    input_list: list, i: int, input_list_length: int
 ) -> (list, int):
     """
     Get the remaining kwargs till we hit another flag (ie kwarg or flag - something

@@ -1,10 +1,11 @@
-import pytest
 import os
+
+import pytest
 from pydantic._internal._model_construction import ModelMetaclass
 
+from tackle.context import Context, Data, Source
 from tackle.factory import create_hooks
 from tackle.models import LazyBaseHook
-from tackle.context import Context, Source, Data
 
 
 def test_factory_import_native_providers():
@@ -39,8 +40,8 @@ def patch_import_hooks_from_hooks_directory(mocker):
 
 
 def test_factory_hooks_create_hooks_with_hooks(
-        patch_import_hooks_from_hooks_directory,
-        base_dir,
+    patch_import_hooks_from_hooks_directory,
+    base_dir,
 ):
     """Test basic usage."""
     context = Context(source=Source())

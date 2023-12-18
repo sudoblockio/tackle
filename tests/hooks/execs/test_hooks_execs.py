@@ -1,8 +1,7 @@
 import pytest
-
-from tackle import tackle
 from ruyaml import YAML
 
+from tackle import tackle
 
 FIXTURES = [
     ('exec-call.yaml', 'exec-call-output.yaml'),

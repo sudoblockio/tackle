@@ -1,15 +1,15 @@
 """Utility functions for handling and fetching repo archives in zip format."""
+import logging
 import os
 import sys
 import tempfile
 from zipfile import BadZipFile, ZipFile
-import logging
+
 from InquirerPy import prompt
 
 from tackle.exceptions import InvalidZipRepository
+from tackle.utils.paths import is_repo_url, make_sure_path_exists
 from tackle.utils.prompts import prompt_and_delete
-from tackle.utils.paths import make_sure_path_exists
-from tackle.utils.paths import is_repo_url
 
 logger = logging.getLogger(__name__)
 

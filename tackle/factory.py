@@ -1,29 +1,29 @@
 import os
 from pathlib import Path
-from typing import Union, Optional
+from typing import Optional, Union
+
 from ruyaml.parser import ParserError
 
 from tackle import exceptions
-from tackle.context import Context, Data, InputArguments, Source, Hooks, Paths
+from tackle.context import Context, Data, Hooks, InputArguments, Paths, Source
+from tackle.imports import (
+    import_hooks_from_hooks_directory,
+    import_native_providers,
+    import_with_fallback_install,
+)
 from tackle.settings import settings
+from tackle.utils.files import read_config_file
 from tackle.utils.paths import (
-    is_repo_url,
-    is_directory_with_tackle,
-    is_file,
-    find_tackle_file_in_dir,
     find_hooks_directory_in_dir,
     find_tackle_base_in_parent_dir,
     find_tackle_base_in_parent_dir_with_exception,
+    find_tackle_file_in_dir,
+    is_directory_with_tackle,
+    is_file,
+    is_repo_url,
 )
 from tackle.utils.vcs import get_repo_source
 from tackle.utils.zipfiles import unzip
-from tackle.utils.files import read_config_file
-from tackle.imports import (
-    import_native_providers,
-    import_hooks_from_hooks_directory,
-    import_with_fallback_install,
-    import_declarative_hooks_from_file,
-)
 
 
 def format_path_to_name(path: str) -> str:
@@ -31,9 +31,9 @@ def format_path_to_name(path: str) -> str:
 
 
 def create_hooks(
-        context: 'Context',
-        hooks_dir: str = None,
-        _hooks: 'Hooks' = None,
+    context: 'Context',
+    hooks_dir: str = None,
+    _hooks: 'Hooks' = None,
 ):
     """
     Create the hooks object which has three namespaces, native, public, and private.
@@ -89,7 +89,7 @@ def extract_base_file(context: 'Context') -> list | dict:
         if raw_input is None:
             raise exceptions.EmptyTackleFileException(
                 f"Tackle file found at {os.path.join(context.source.directory)} is empty.",
-                context=context
+                context=context,
             ) from None
     else:
         raw_input = {}
@@ -97,9 +97,9 @@ def extract_base_file(context: 'Context') -> list | dict:
 
 
 def get_overrides(
-        context: 'Context',
-        data: Optional['Data'],
-        overrides: Union[str, dict],
+    context: 'Context',
+    data: Optional['Data'],
+    overrides: Union[str, dict],
 ):
     """
     Overrides can be string references to files or a dict, both of which are used to
@@ -125,12 +125,12 @@ def get_overrides(
 
 
 def new_data(
-        *,
-        context: 'Context',
-        raw_input: dict | list | None = None,
-        overrides: str | dict | None = None,
-        existing_data: str | dict | None = None,
-        _data: Data | None = None,
+    *,
+    context: 'Context',
+    raw_input: dict | list | None = None,
+    overrides: str | dict | None = None,
+    existing_data: str | dict | None = None,
+    _data: Data | None = None,
 ) -> Data:
     """
     Create a data object which stores data as the source is parsed. When tackle is
@@ -160,8 +160,9 @@ def new_data(
         existing_data = read_config_file(existing_data)
     elif not isinstance(existing_data, dict):
         raise exceptions.UnknownHookInputArgumentException(
-            f"A non-string reference to a file or non-dict value for `existing_data` "
-            f"argument was supplied. Exitting...", context=context
+            "A non-string reference to a file or non-dict value for `existing_data` "
+            "argument was supplied. Exiting...",
+            context=context,
         )
 
     if data.existing is None:
@@ -220,9 +221,9 @@ def new_data(
 
 
 def new_path(
-        *,
-        context: 'Context',
-        _path: Optional[Paths],
+    *,
+    context: 'Context',
+    _path: Optional[Paths],
 ) -> Paths:
     """
     Create `Paths` object which stores the paths that are being parsed. Divided into
@@ -252,10 +253,10 @@ def new_path(
 
 
 def update_source(
-        context: 'Context',
-        source: Source,
-        directory: str,
-        file: str,
+    context: 'Context',
+    source: Source,
+    directory: str,
+    file: str,
 ):
     """
     Once we have identified a tackle base, we then need to check if the `directory` or
@@ -274,7 +275,7 @@ def update_source(
             raise exceptions.UnknownSourceException(
                 f"Unknown directory={directory_path} within the tackle provider"
                 f" {source.base_dir}. Exiting...",
-                context=context
+                context=context,
             ) from None
         source.directory = directory_path
     else:
@@ -288,7 +289,7 @@ def update_source(
             raise exceptions.UnknownSourceException(
                 f"Unknown file={file_path} within the tackle provider"
                 f" {source.base_dir}. Exiting...",
-                context=context
+                context=context,
             ) from None
         source.file = file_path
     elif source.file is None:
@@ -301,11 +302,11 @@ def update_source(
 
 
 def new_source_from_unknown_args(
-        context: 'Context',
-        source: Source,
-        first_arg: str,
-        directory: str = None,
-        file: str = None,
+    context: 'Context',
+    source: Source,
+    first_arg: str,
+    directory: str = None,
+    file: str = None,
 ) -> Source:
     """
     Tackle has been called without an arg that could be recognized as a source so we
@@ -318,7 +319,7 @@ def new_source_from_unknown_args(
         raise exceptions.UnknownSourceException(
             f"No tackle source or base directory was found with the "
             f"argument=`{first_arg}`. Exiting...",
-            context=context
+            context=context,
         ) from None
     # Reinsert the arg back into the args
     context.input.args.insert(0, first_arg)
@@ -333,14 +334,14 @@ def new_source_from_unknown_args(
 
 
 def new_source(
-        context: 'Context',
-        checkout: str = None,
-        latest: bool = None,
-        directory: str = None,
-        file: str = None,
-        find_in_parent: bool = None,
-        _strict_source: bool = False,
-        _source: Source = None,
+    context: 'Context',
+    checkout: str = None,
+    latest: bool = None,
+    directory: str = None,
+    file: str = None,
+    find_in_parent: bool = None,
+    _strict_source: bool = False,
+    _source: Source = None,
 ) -> Source:
     """
     Create a `source` object by extracting the first argument given to tackle and then
@@ -414,7 +415,7 @@ def new_source(
                 if checkout is not None:
                     raise exceptions.UnknownSourceException(
                         "Can't specify `checkout` and `latest` flags at the same time.",
-                        context=context
+                        context=context,
                     )
             source.base_dir = get_repo_source(
                 repo=first_arg,
@@ -484,8 +485,8 @@ def new_source(
 
 
 def new_inputs(
-        args: tuple = None,
-        kwargs: dict = None,
+    args: tuple = None,
+    kwargs: dict = None,
 ) -> InputArguments:
     """
     Create a `input` object which holds the args/kwargs to create a source and then
@@ -510,30 +511,30 @@ def new_inputs(
 
 
 def new_context(
-        # Inputs
-        *args: Union[str, dict, list],
-        # Source
-        checkout: str = None,
-        latest: bool = None,
-        directory: str = None,
-        file: str = None,
-        find_in_parent: bool = None,
-        hooks_dir: str = None,
-        _strict_source: bool = False,  # Raise if source not found
-        # Data
-        raw_input: dict | list | None = None,
-        overrides: Union[str, dict] = None,
-        existing_data: str | dict | None = None,
-        # Context
-        no_input: bool = None,
-        verbose: bool = None,
-        # Models -> Used when calling tackle from tackle
-        _path: 'Paths' = None,
-        _hooks: 'Hooks' = None,
-        _data: 'Data' = None,
-        _source: 'Source' = None,
-        # Unknown args/kwargs preserved for parsing
-        **kwargs: dict,
+    # Inputs
+    *args: Union[str, dict, list],
+    # Source
+    checkout: str = None,
+    latest: bool = None,
+    directory: str = None,
+    file: str = None,
+    find_in_parent: bool = None,
+    hooks_dir: str = None,
+    _strict_source: bool = False,  # Raise if source not found
+    # Data
+    raw_input: dict | list | None = None,
+    overrides: Union[str, dict] = None,
+    existing_data: str | dict | None = None,
+    # Context
+    no_input: bool = None,
+    verbose: bool = None,
+    # Models -> Used when calling tackle from tackle
+    _path: 'Paths' = None,
+    _hooks: 'Hooks' = None,
+    _data: 'Data' = None,
+    _source: 'Source' = None,
+    # Unknown args/kwargs preserved for parsing
+    **kwargs: dict,
 ) -> 'Context':
     """Create a new context. See tackle.main.tackle for options which wraps this."""
     context = Context(

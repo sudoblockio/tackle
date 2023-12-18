@@ -1,4 +1,4 @@
-from tackle import Context, BaseHook
+from tackle import BaseHook, Context
 
 
 def init_context(self: BaseHook, context: 'Context'):

@@ -1,9 +1,7 @@
-import os
 import pytest
 
-from tackle import tackle, get_hook
+from tackle import exceptions, tackle
 from tackle.cli import main
-from tackle import exceptions
 
 EXCEPTION_FIXTURES = [
     # Check that type checking works with no exec method.
@@ -111,9 +109,11 @@ def test_hooks_exceptions_raises_on_list_hook_value():
         main(["list-value.yaml", "stuff"])
 
 
-def test_hooks_exceptions_raises_wrong_base_hook_field_type(cd):
+# TODO: Appears that python hooks are not validating properly
+#  https://github.com/sudoblockio/tackle/issues/223
+def test_hooks_exceptions_raises_on_dict_hook_value(cd):
+    """When a hook's base field is not the right type - args: dict in this case."""
     cd('bad-hooks')
     # with pytest.raises(exceptions.MalformedHookDefinitionException):
-    Hook = get_hook('no_exec')
-
-    pass
+    o = tackle('hook_1')
+    assert o

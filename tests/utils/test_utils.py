@@ -5,11 +5,10 @@ from pathlib import Path
 
 import pytest
 
-import tackle.utils.files
-import tackle.utils.paths
-
 # import tackle.utils.reader
 import tackle
+import tackle.utils.files
+import tackle.utils.paths
 
 
 def make_readonly(path):

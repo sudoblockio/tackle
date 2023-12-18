@@ -1,5 +1,6 @@
 import random
 import string
+
 from pydantic import validator
 
 from tackle import BaseHook, Field
@@ -52,5 +53,5 @@ class RandomHexHook(BaseHook):
 
     def exec(self) -> str:
         return ''.join(['%0', str(self.length), 'x']) % random.randrange(
-            16 ** self.length
+            16**self.length
         )

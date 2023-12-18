@@ -1,6 +1,7 @@
-import pytest
 from ipaddress import IPv4Address
-from typing import Dict, List, Union, Any
+from typing import Any, Dict, List, Union
+
+import pytest
 from pydantic import BaseModel
 
 from tackle import BaseHook, tackle

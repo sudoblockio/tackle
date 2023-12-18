@@ -1,9 +1,8 @@
 import pytest
 
-from tackle import tackle, exceptions
-from tackle.render import render_string, add_jinja_hook_to_jinja_globals
-from tackle.exceptions import UnknownTemplateVariableException
+from tackle import tackle
 from tackle.factory import new_context
+from tackle.render import add_jinja_hook_to_jinja_globals, render_string
 from tackle.utils.files import read_config_file
 
 
@@ -76,27 +75,27 @@ METHOD_ADD_FIXTURES = [
     (
         "with_method",
         "{{with_method.a_method(foo='fin')}}",
-        {'bin': 'fin', 'din': 'ban'}
+        {'bin': 'fin', 'din': 'ban'},
     ),
     (
         "with_method_multiple_args",
         "{{with_method_multiple_args.a_method('fin')}}",
-        {'bin': 'bar', 'din': 'fin'}
+        {'bin': 'bar', 'din': 'fin'},
     ),
     (
         "embedded_methods",
         "{{embedded_methods.a_method.b_method('fin')}}",
-        {'bin': 'bar', 'din': 'ban', 'lin': 'fin'}
+        {'bin': 'bar', 'din': 'ban', 'lin': 'fin'},
     ),
 ]
 
 
 @pytest.mark.parametrize("hook_name,render_input,expected_output", METHOD_ADD_FIXTURES)
 def test_render_add_jinja_hook_to_jinja_globals(
-        cd_fixtures,
-        hook_name,
-        render_input,
-        expected_output,
+    cd_fixtures,
+    hook_name,
+    render_input,
+    expected_output,
 ):
     context = tackle('jinja-hook-insert.yaml', return_context=True)
     add_jinja_hook_to_jinja_globals(context=context, hook_name=hook_name, used_hooks=[])
@@ -127,29 +126,32 @@ def test_render_jinja_filter_builtins(cd_fixtures):
     assert o['jinja_filter'] == 2
 
 
-@pytest.mark.parametrize("render_var",[1, 1.1, '1', '1.2'])
+@pytest.mark.parametrize("render_var", [1, 1.1, '1', '1.2'])
 def test_render_preserve_types(context, render_var):
-    """
-
-    """
+    """ """
     context.data.public = {'var1': render_var}
     output = render_string(context, raw='{{ var1 }}')
 
     assert output == render_var
 
 
-@pytest.mark.parametrize("raw,render_context,expected_output",[
-    ('{{var1 + var2}}', {'var1': 1, 'var2': 1}, 2),
-    ('{{var1 + var2}}', {'var1': 1, 'var2': 1.2}, 2.2),
-    ('{{var1 + var2}}', {'var1': 1.2, 'var2': 1}, 2.2),
-    ('{{var1 and var2}}', {'var1': True, 'var2': '1'}, True),
-    ('{{var1 and var2}}', {'var1': 1, 'var2': True}, True),
-    ('{{var1 == var2}}', {'var1': 1, 'var2': 1}, True),
-    # Broken
-    # ('{{var1 + var2}}', {'var1': '1', 'var2': '1'}, '11'),
-    # ('{{var1 + str(var2)}}', {'var1': '1', 'var2': 1}, '11'),
-])
-def test_render_preserve_types_jinja_logic(context, raw, render_context, expected_output):
+@pytest.mark.parametrize(
+    "raw,render_context,expected_output",
+    [
+        ('{{var1 + var2}}', {'var1': 1, 'var2': 1}, 2),
+        ('{{var1 + var2}}', {'var1': 1, 'var2': 1.2}, 2.2),
+        ('{{var1 + var2}}', {'var1': 1.2, 'var2': 1}, 2.2),
+        ('{{var1 and var2}}', {'var1': True, 'var2': '1'}, True),
+        ('{{var1 and var2}}', {'var1': 1, 'var2': True}, True),
+        ('{{var1 == var2}}', {'var1': 1, 'var2': 1}, True),
+        # Broken
+        # ('{{var1 + var2}}', {'var1': '1', 'var2': '1'}, '11'),
+        # ('{{var1 + str(var2)}}', {'var1': '1', 'var2': 1}, '11'),
+    ],
+)
+def test_render_preserve_types_jinja_logic(
+    context, raw, render_context, expected_output
+):
     """
     Check that when we have multiple variables that we can do arithmatic and get the
      right type out.

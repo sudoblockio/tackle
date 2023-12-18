@@ -1,6 +1,6 @@
-from typing import Union, Optional
+from typing import Union
 
-from gql import gql, Client
+from gql import Client, gql
 from gql.transport.aiohttp import AIOHTTPTransport
 
 from tackle.models import BaseHook, Field
@@ -8,6 +8,7 @@ from tackle.models import BaseHook, Field
 
 class GraphQlHook(BaseHook):
     """Hook to call graphql queries."""
+
     hook_name: str = 'graphql'
     url: str = Field(
         None,

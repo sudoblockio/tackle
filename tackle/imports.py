@@ -1,27 +1,28 @@
-import os
-import sys
 import importlib
 import logging
+import os
 import subprocess
+import sys
 from functools import lru_cache
-from pydantic import ValidationError, PydanticUserError
-from pydantic._internal._model_construction import ModelMetaclass  # noqa
 from typing import Any
+
+from pydantic import PydanticUserError, ValidationError
+from pydantic._internal._model_construction import ModelMetaclass  # noqa
 
 from tackle import exceptions
 from tackle.context import Context
-from tackle.settings import settings
 from tackle.models import BaseHook, GenericHookType
-from tackle.utils.prompts import confirm_prompt
+from tackle.settings import settings
 from tackle.utils.files import read_config_file
+from tackle.utils.prompts import confirm_prompt
 
 logger = logging.getLogger(__name__)
 
 
 def get_module_from_path(
-        context: 'Context',
-        module_name: str,
-        file_path: str,
+    context: 'Context',
+    module_name: str,
+    file_path: str,
 ):
     """Given a path to a python file, import all the modules."""
     loader = importlib.machinery.SourceFileLoader(module_name, path=file_path)
@@ -47,15 +48,18 @@ def is_base_hook_subclass(key: str, value: Any) -> bool:
     When importing python hooks from a file, return true if the object is a subclass of
      BaseHook, meaning it is a hook.
     """
-    return not key.startswith('_') \
-            and isinstance(value, ModelMetaclass) \
-            and issubclass(value, BaseHook) \
-            and key != 'BaseHook'
+    return (
+        not key.startswith('_')
+        and isinstance(value, ModelMetaclass)
+        and issubclass(value, BaseHook)
+        and key != 'BaseHook'
+    )
+
 
 def import_python_hooks_from_file(
-        context: 'Context',
-        module_name: str,
-        file_path: str,
+    context: 'Context',
+    module_name: str,
+    file_path: str,
 ):
     """Import python public and private hooks from a file."""
     mod = get_module_from_path(
@@ -72,7 +76,9 @@ def import_python_hooks_from_file(
             raise exceptions.MalformedHookDefinitionException(
                 f"The python hook defined in class=`{k}` does not "
                 f"have a hook_name field defined. Please add one looking like "
-                f"`hook_name: str = 'your_hook_name'`", context=context, hook_name=k
+                f"`hook_name: str = 'your_hook_name'`",
+                context=context,
+                hook_name=k,
             )
 
         # TODO: Add when fixing third_party imports
@@ -84,17 +90,14 @@ def import_python_hooks_from_file(
 
 
 def import_declarative_hooks_from_file(
-        context: 'Context',
-        file_path: str,
-        file_extension: str = None,
+    context: 'Context',
+    file_path: str,
+    file_extension: str = None,
 ) -> object:
     """Import all the declarative hooks from a directory."""
     from tackle.parser import parse_context
 
-    file_contents = read_config_file(
-        file=file_path,
-        file_extension=file_extension
-    )
+    file_contents = read_config_file(file=file_path, file_extension=file_extension)
     if file_contents is None:
         logger.debug(f"Skipping importing {file_path} as the context is empty.")
         return
@@ -107,9 +110,9 @@ def import_declarative_hooks_from_file(
 
 
 def import_hooks_from_file(
-        context: 'Context',
-        provider_name: str,
-        file_path: str,
+    context: 'Context',
+    provider_name: str,
+    file_path: str,
 ):
     """
     Import either public or private hooks from a python file or declarative hook from a
@@ -143,9 +146,9 @@ def import_hooks_from_file(
 
 
 def import_hooks_from_hooks_directory(
-        context: 'Context',
-        provider_name: str,
-        hooks_directory: str,
+    context: 'Context',
+    provider_name: str,
+    hooks_directory: str,
 ):
     """Import all the hooks in all the files from a directory (`hooks`/`.hooks` dir)."""
     for file in os.scandir(hooks_directory):
@@ -157,10 +160,10 @@ def import_hooks_from_hooks_directory(
 
 
 def import_native_hooks_from_directory(
-        context: 'Context',
-        provider_name: str,
-        hooks_directory: str,
-        native_hooks: dict[str, 'GenericHookType'],
+    context: 'Context',
+    provider_name: str,
+    hooks_directory: str,
+    native_hooks: dict[str, 'GenericHookType'],
 ) -> dict[str, 'GenericHookType']:
     """
     Native hooks are all defined in python so this function only imports python hooks
@@ -217,7 +220,7 @@ def import_native_providers() -> dict[str, 'GenericHookType']:
         # This is where we want to implement a native hook cache which could speed up
         # imports by a whopping .2 seconds or so. Replacing context from pydantic to
         # dataclasses makes this a low priority.
-        raise NotImplemented
+        raise NotImplementedError
 
 
 def install_requirements_file(requirements_path: str):
@@ -237,9 +240,9 @@ def install_requirements_file(requirements_path: str):
 
 
 def install_reqs_with_prompt(
-        context: 'Context',
-        provider_name: str,
-        requirements_path: str,
+    context: 'Context',
+    provider_name: str,
+    requirements_path: str,
 ):
     """Checks settings and then potentially prompts user for installing requirements."""
     if context.no_input or not settings.prompt_for_installs:
@@ -262,15 +265,17 @@ def install_reqs_with_prompt(
         if install_ok:
             install_requirements_file(requirements_path=requirements_path)
         else:
-            logger.info(f"Did not install requirement for provider {provider_name}."
-                        f" Exiting...")
+            logger.info(
+                f"Did not install requirement for provider {provider_name}."
+                f" Exiting..."
+            )
             sys.exit(0)
 
 
 def fallback_install_then_import(
-        context: 'Context',
-        provider_name: str,
-        hooks_directory: str,
+    context: 'Context',
+    provider_name: str,
+    hooks_directory: str,
 ):
     """
     If there is a module not found error, we try to install the requirements before
@@ -295,9 +300,9 @@ def fallback_install_then_import(
 
 
 def import_with_fallback_install(
-        context: 'Context',
-        provider_name: str,
-        hooks_directory: str,
+    context: 'Context',
+    provider_name: str,
+    hooks_directory: str,
 ):
     """
     Import a module and on import error, fallback on requirements file and try to

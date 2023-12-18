@@ -1,12 +1,19 @@
-from pydantic import BaseModel, Field, field_validator, ValidationInfo, ValidationError  # noqa
+from pydantic import (  # noqa
+    BaseModel,
+    Field,
+    ValidationError,
+    ValidationInfo,
+    field_validator,
+)
 
-from tackle.utils.command import unpack_args_kwargs_string
 from tackle import BaseHook, Context, exceptions
 from tackle.factory import new_context
+from tackle.utils.command import unpack_args_kwargs_string
 
 
 class RepoSource(BaseModel):
     """Repo object."""
+
     src: str
     version: str | None = None
     latest: bool | None = None
@@ -30,17 +37,11 @@ class ImportHook(BaseHook):
     src: str | list = Field(
         ...,
         description="A str reference to a source or a list of dicts with strings that "
-                    "will be expanded with args (ie `foo --version latest`) or objects "
-                    "(ie `[src: foo])."
+        "will be expanded with args (ie `foo --version latest`) or objects "
+        "(ie `[src: foo]).",
     )
-    version: str = Field(
-        None,
-        description="Version of src for remote imports."
-    )
-    latest: bool = Field(
-        None,
-        description="Flag to pull latest version."
-    )
+    version: str = Field(None, description="Version of src for remote imports.")
+    latest: bool = Field(None, description="Flag to pull latest version.")
     args: list = ['src']
 
     def _do_import(self, context: 'Context', src: str, version: str, latest: bool):
@@ -60,16 +61,16 @@ class ImportHook(BaseHook):
             return RepoSource(**kwargs)
         except ValidationError as e:
             raise exceptions.TackleHookImportException(
-                f"Malformed input for `import` hook. \n{e}",
-                context=context
+                f"Malformed input for `import` hook. \n{e}", context=context
             )
         except ValueError:
             self._raise_when_both_version_and_latest_are_defined(context=context)
 
     def _raise_when_both_version_and_latest_are_defined(self, context: Context):
         raise exceptions.TackleHookImportException(
-            f"In the import hook, you can't define both a `version` and `latest` "
-            f"arguments.", context=context
+            "In the import hook, you can't define both a `version` and `latest` "
+            "arguments.",
+            context=context,
         )
 
     def _new_import_src_from_str(self, context: Context, provider_str: str):
@@ -81,7 +82,7 @@ class ImportHook(BaseHook):
         if len(args) != 1:
             raise exceptions.TackleHookImportException(
                 f"Need to have a src specified in import string=`{provider_str}`",
-                context=self.context
+                context=self.context,
             )
         output['src'] = args[0]
 
@@ -89,15 +90,10 @@ class ImportHook(BaseHook):
             pass
         elif len(kwargs) > 1:
             # We can only have at most one kwarg -> version
-            raise exceptions.TackleHookImportException(
-                "",
-                context=context)
+            raise exceptions.TackleHookImportException("", context=context)
         elif len(kwargs) == 1 and 'version' not in kwargs:
             # The only viable kwarg is version
-            raise exceptions.TackleHookImportException(
-                "",
-                context=context
-            )
+            raise exceptions.TackleHookImportException("", context=context)
         else:
             output['version'] = kwargs['version']
 
@@ -107,13 +103,13 @@ class ImportHook(BaseHook):
             # We can only have at most one flag -> latest
             raise exceptions.TackleHookImportException(
                 f"Extra flags detected in import string=`{provider_str}`",
-                context=context
+                context=context,
             )
         elif len(flags) == 1 and 'latest' not in flags:
             # The only viable flag is `latest`
             raise exceptions.TackleHookImportException(
                 f"Unknown flag detected in import string=`{provider_str}`",
-                context=context
+                context=context,
             )
         else:
             output['latest'] = True

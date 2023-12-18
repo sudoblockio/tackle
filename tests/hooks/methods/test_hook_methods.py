@@ -1,5 +1,3 @@
-import pytest
-
 from tackle import tackle
 
 

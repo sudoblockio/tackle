@@ -2,10 +2,11 @@
 TODO: https://github.com/sudoblockio/tackle/issues/100
  Should change
 """
-from ruyaml import YAML
-import re
 import os
-from typing import Union, Dict, List, Any
+import re
+from typing import Any, Dict, List, Union
+
+from ruyaml import YAML
 
 from tackle import BaseHook, Field
 from tackle.utils.data_crud import merge

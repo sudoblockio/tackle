@@ -10,10 +10,7 @@ def test_factory_new_context():
     assert context.path.current.file is None
 
 
-@pytest.mark.parametrize("input", [
-    {'a': 1},
-    [1, 2]
-])
+@pytest.mark.parametrize("input", [{'a': 1}, [1, 2]])
 def test_factory_new_context_raw_inputs(input):
     context = new_context(raw_input=input)
     assert context.data.raw_input == input

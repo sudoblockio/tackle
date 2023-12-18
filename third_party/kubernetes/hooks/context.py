@@ -1,6 +1,7 @@
 import os
-from ruyaml import YAML
 import subprocess
+
+from ruyaml import YAML
 
 from tackle.models import BaseHook, Field
 
@@ -40,7 +41,6 @@ class K8sContextListHook(BaseHook):
                 context = yaml.load(f)
 
             for i in context['contexts']:
-
                 if i['name'] not in output_contexts:
                     output_contexts.append(i['name'])
         return output_contexts

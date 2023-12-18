@@ -1,7 +1,8 @@
-import pytest
 import os.path
 
-from tackle import tackle, get_hook, Context
+import pytest
+
+from tackle import Context, get_hook, tackle
 
 PROVIDERS_PATH = os.path.join(os.path.dirname(__file__), '..', '..', 'providers')
 

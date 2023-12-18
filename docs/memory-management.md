@@ -33,11 +33,11 @@ public_hook: You entered value <the value you entered>...
 
 Public and private contexts are really only important when:
 
-1. Operating in schema constrained environments 
+1. Operating in schema constrained environments
 - For instance you want to instantiate some schema but need to do some control flow with intermediary variables. Private memory is a good place to put those variables and not have them brought into the schema.
 
 2. Using untrusted hooks and don't want things like passwords leaked
-3. 
+3.
 
 ```yaml
 goto<-:

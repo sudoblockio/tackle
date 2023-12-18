@@ -1,4 +1,4 @@
-from tackle import BaseHook, Field, Context, exceptions
+from tackle import BaseHook, Context, Field, exceptions
 
 
 class RaiseHook(BaseHook):

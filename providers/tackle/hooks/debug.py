@@ -1,9 +1,10 @@
 import sys
-from InquirerPy import prompt
 from pprint import pprint
+
+from InquirerPy import prompt
 from rich import print
 
-from tackle import BaseHook, Field, Context, exceptions
+from tackle import BaseHook, Context, Field, exceptions
 
 DATA_NAMESPACES = ['public', 'private', 'temporary', 'existing']
 
@@ -16,7 +17,7 @@ class DebugHook(BaseHook):
     data: str = Field(
         None,
         description="Which data to examine. One of `public`, `private`, "
-                    "`temporary`, or `existing`. Omit for all.",
+        "`temporary`, or `existing`. Omit for all.",
     )
 
     skip_output: bool = True
@@ -86,7 +87,8 @@ class DebugHook(BaseHook):
                 sys.exit(0)
             except EOFError:
                 raise exceptions.HookCallException(
-                    "Prompt run in automation...", context=context)
+                    "Prompt run in automation...", context=context
+                )
 
             # Catch keyboard exits with return an empty dict
             if response == {}:

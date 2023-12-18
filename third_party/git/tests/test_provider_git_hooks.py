@@ -1,7 +1,9 @@
 """Tests dict input objects for `tackle.providers.github.hooks` modules."""
 import os
-from tackle.main import tackle
+
 import pytest
+
+from tackle.main import tackle
 from tackle.utils.paths import rmtree
 
 

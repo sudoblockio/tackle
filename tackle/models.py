@@ -1,15 +1,7 @@
 import enum
-from pydantic import (
-    BaseModel,
-    field_validator,
-    ConfigDict,
-)
-from typing import (
-    Any,
-    Union,
-    Optional,
-)
-from pydantic import Field
+from typing import Any, Optional, Union
+
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from tackle.pydantic.config import DclHookModelConfig
 
@@ -20,12 +12,13 @@ class LazyBaseHook(BaseModel):
      tackle file is read (by searching in adjacent hooks directory) or on init in local
      providers. Used by jinja extensions and filters.
     """
+
     hook_name: str
     input_raw: dict = Field(
         ...,
         description="A dict for the lazy function to be parsed at runtime. Serves as a "
-                    "carrier for the function's schema until it is compiled with "
-                    "`create_function_model`.",
+        "carrier for the function's schema until it is compiled with "
+        "`create_function_model`.",
     )
     is_public: bool = Field(..., description="Public or private.")
 
@@ -35,6 +28,7 @@ class HookCallInput(BaseModel):
     Deserializer for hook base methods. Takes all the extra key value pairs and puts
      them into the hook_dict.
     """
+
     if_: Union[str, bool, type(None)] = Field(
         None,
         description="Conditional evaluated within a loop. Strings rendered by default.",
@@ -78,7 +72,7 @@ class HookCallInput(BaseModel):
     chdir: Optional[str] = Field(
         None,
         description="Change directory while executing the hook returning after.",
-        alias="cd"
+        alias="cd",
     )
     merge: Union[bool, str, type(None)] = Field(
         None,
@@ -93,7 +87,7 @@ class HookCallInput(BaseModel):
     kwargs: Union[str, dict, type(None)] = Field(
         None,
         description="A dict to map to inputs for a hook. String inputs rendered by"
-                    " default but must be references to dicts.",
+        " default but must be references to dicts.",
         render_by_default=True,
     )
     skip_output: bool | None = Field(
@@ -104,7 +98,7 @@ class HookCallInput(BaseModel):
     return_: bool | None = Field(
         False,
         description="Flag to indicate whether to stop parsing and return the current"
-                    " public data.",
+        " public data.",
         alias="return",
     )
     no_input: bool | None = Field(
@@ -117,7 +111,6 @@ class HookCallInput(BaseModel):
     model_config = ConfigDict(
         extra='allow',
         populate_by_name=True,
-
     )
 
 
@@ -129,46 +122,38 @@ class HookMethods:
 
 
 class BaseHook(BaseModel):
-    """
-    Base class that all python hooks extend. 
-    """
+    """Base class that all python hooks extend."""
+
     hook_name: str = Field(
         ...,
         description="Name of the hook.",
     )
     help: str = Field(
-        None,
-        description="A string to display when calling with the `help` argument."
+        None, description="A string to display when calling with the `help` argument."
     )
     render_by_default: list = Field(
         None,
-        description="A list of fields to wrap with jinja braces and render by default."
+        description="A list of fields to wrap with jinja braces and render by default.",
     )
     render_exclude: list = Field(
-        None,
-        description="A list of field names to not render."
+        None, description="A list of field names to not render."
     )
     is_public: bool = Field(
         None,
-        description="A boolean if hook is public / callable from outside the provider)."
+        description="A boolean if hook is public / callable from outside the provider).",
     )
     skip_output: bool = Field(
         False,
         description="A flag to skip the output and not set the key. Can also be set"
-                    " within a hook call."
+        " within a hook call.",
     )
     args: list = Field(
-        [],
-        description="A list of fields map arguments. See [docs]() for details."
+        [], description="A list of fields map arguments. See [docs]() for details."
     )
     kwargs: str = Field(
-        None,
-        description="A field name of type dict to map additional arguments to."
+        None, description="A field name of type dict to map additional arguments to."
     )
-    literal_fields: list = Field(
-        None,
-        description="A list of fields to use without."
-    )
+    literal_fields: list = Field(None, description="A list of fields to use without.")
 
     model_config = ConfigDict(
         extra='forbid',
@@ -199,12 +184,12 @@ class HookFieldValidatorFieldNames(BaseModel):
     value: str = Field(
         'v',
         description="The name of the value field for validation, the first arg in a "
-                    "pydantic functional validator.",
+        "pydantic functional validator.",
     )
     info: str = Field(
         'info',
         description="The name of the info field for validation, the second arg in a "
-                    "pydantic functional validator.",
+        "pydantic functional validator.",
     )
 
 
@@ -212,18 +197,18 @@ class HookFieldValidator(BaseModel):
     field_names: HookFieldValidatorFieldNames = Field(
         default_factory=HookFieldValidatorFieldNames,
         description="The names of fields to inject as variables within the body of "
-                    "the validator.",
+        "the validator.",
     )
     mode: HookValidatorModes = Field(
         'before',
         description="Whether to run the validator 'before' or 'after' the type is "
-                    "validated or 'wrap' the validation (ie run it 'before' and "
-                    "'after'. Follows pydantic's validation logic.",
+        "validated or 'wrap' the validation (ie run it 'before' and "
+        "'after'. Follows pydantic's validation logic.",
     )
     body: dict = Field(
         None,
         description="Some data to parse which normally would have some `return` hook "
-                    "call that would be the validation output."
+        "call that would be the validation output.",
     )
     model_config = ConfigDict(
         use_enum_values=True,
@@ -233,18 +218,18 @@ class HookFieldValidator(BaseModel):
 
 class DclHookInput(BaseModel):
     """Function input model. Used to validate the raw function input."""
+
     help: str | None = Field(
-        None,
-        description="A string to display when calling with the `help` argument."
+        None, description="A string to display when calling with the `help` argument."
     )
     extends: Union[str, list[str]] | None = Field(
         None,
-        description="A string or list of hook types to inherit from. See  [docs]()."
+        description="A string or list of hook types to inherit from. See  [docs]().",
     )
     args: list[str] | str | None = Field(
         [],
         description="A string or list of strings references to field names to map"
-                    " arguments to.",
+        " arguments to.",
     )
 
     @field_validator('args')
@@ -257,7 +242,7 @@ class DclHookInput(BaseModel):
     exec_: Any = Field(
         None,
         description="An exec method to run after validating input variables. See"
-                    " [docs]().",
+        " [docs]().",
         alias="exec",
     )
     return_: Any = Field(
@@ -267,28 +252,23 @@ class DclHookInput(BaseModel):
         alias="return",
     )
     type_: str | None = Field(
-        None,
-        alias='type',
-        description="For type hooks, the name of the type."
+        None, alias='type', description="For type hooks, the name of the type."
     )
     validators: dict[str, dict | HookFieldValidator] = Field(
-        {},
-        description="A list of validators. Only used for type hooks. See [docs]()."
+        {}, description="A list of validators. Only used for type hooks. See [docs]()."
     )
 
     include: list | None = Field(
-        None,
-        description="A list of fields to include when exporting a model."
+        None, description="A list of fields to include when exporting a model."
     )
     exclude: list | None = Field(
-        None,
-        description="A list of fields to exclude when exporting a model."
+        None, description="A list of fields to exclude when exporting a model."
     )
 
     hook_model_config_: DclHookModelConfig | None = Field(
         None,
         description="Variables to set wrapping pydantic's existing ConfigDict. See"
-                    " [docs]().",
+        " [docs]().",
         alias="model_config",  # Does not interfere with actual `model_config`
     )
 
@@ -304,8 +284,9 @@ class DclHookInput(BaseModel):
 # Set of DclHookInput fields that account for anything with aliases
 DCL_HOOK_FIELDS = {
     DclHookInput.model_fields[i].alias
-    if DclHookInput.model_fields[i].alias is not None else
-    i for i in DclHookInput.model_fields.keys()
+    if DclHookInput.model_fields[i].alias is not None
+    else i
+    for i in DclHookInput.model_fields.keys()
 }
 
 AnyHookType = BaseHook | DclHookInput | LazyBaseHook

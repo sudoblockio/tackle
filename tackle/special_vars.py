@@ -1,7 +1,8 @@
+import csv
 import os
 import platform
-import csv
 from typing import TYPE_CHECKING
+
 from xdg import (
     xdg_cache_home,
     xdg_config_dirs,

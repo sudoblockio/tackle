@@ -1,10 +1,12 @@
-import sys
 import os
+import sys
+
 import pytest
+
+from tackle.main import tackle
 
 # from tackle.exceptions import HookCallException
 
-from tackle.main import tackle
 
 if os.name == 'nt':
     pytest.skip("Skipping when run from windows.", allow_module_level=True)

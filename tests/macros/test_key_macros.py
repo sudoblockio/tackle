@@ -1,10 +1,11 @@
-import pytest
 from typing import Any
 
+import pytest
+
 import tackle.macros.key_macros as km
+from tackle import tackle
 from tackle.macros.key_macros import var_hook_macro
 from tackle.utils.command import unpack_args_kwargs_string
-from tackle import tackle
 
 TEMPLATES = [
     # These should all have `var` prepended to the args as it is indicative of a render
@@ -21,7 +22,7 @@ TEMPLATES = [
 
 @pytest.mark.parametrize("template,len_args,len_kwargs,len_flags", TEMPLATES)
 def test_unpack_args_kwargs_handle_leading_brackets(
-        template, len_args, len_kwargs, len_flags
+    template, len_args, len_kwargs, len_flags
 ):
     """Validate the count of each input arg/kwarg/flag."""
     args, kwargs, flags = unpack_args_kwargs_string(template)
@@ -92,18 +93,20 @@ def test_key_macros_parameterized(context, key, value, expected_value):
     assert output_value == expected_value
 
 
-
 def test_key_macros_embedded_var():
     """Check when we have an embedded variable rendering that it works."""
     output = tackle('embedded-var.yaml')
     assert output['foo']['bar'] == 'things'
 
 
-@pytest.mark.parametrize("input", [
-    'non-quoted-var-string.yaml',  # Processed in walk_document
-    'non-quoted-var-field.yaml',  # Processed in render_hook_vars
-])
+@pytest.mark.parametrize(
+    "input",
+    [
+        'non-quoted-var-string.yaml',  # Processed in walk_document
+        'non-quoted-var-field.yaml',  # Processed in render_hook_vars
+    ],
+)
 def test_key_macros_templated_var(input):
-    """Check that we don't need to run a macro """
+    """Check that we don't need to run a macro"""
     output = tackle(input)
     assert output['foo'] == 'things'

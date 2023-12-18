@@ -1,7 +1,6 @@
 import pytest
 
-from tackle import tackle, exceptions
-
+from tackle import exceptions, tackle
 
 # # TODO: Support config params which interfere with parser.
 # #  https://github.com/sudoblockio/tackle/issues/219

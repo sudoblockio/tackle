@@ -1,7 +1,8 @@
 import os
-from ruyaml import YAML
 
 import pytest
+from ruyaml import YAML
+
 from tackle.main import tackle
 
 

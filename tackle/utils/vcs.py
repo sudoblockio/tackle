@@ -4,9 +4,8 @@ import subprocess
 from shutil import which
 
 from tackle import exceptions
-from tackle.utils.paths import make_sure_path_exists
 from tackle.settings import settings
-from tackle.utils.paths import work_in
+from tackle.utils.paths import make_sure_path_exists, work_in
 
 logger = logging.getLogger(__name__)
 
@@ -109,7 +108,8 @@ def git_stash():
     stdout, stderr = p.communicate()
     if p.returncode != 0:
         raise exceptions.GenericGitException(
-            f'Error running {cmd}\n{str(stderr)}\n{os.listdir()}\n{os.path.abspath(".")}')
+            f'Error running {cmd}\n{str(stderr)}\n{os.listdir()}\n{os.path.abspath(".")}'
+        )
 
 
 def git_pull(branch: str, provider_dir: str = None):
@@ -119,7 +119,9 @@ def git_pull(branch: str, provider_dir: str = None):
     if p.returncode == 0:
         return
     if stderr:
-        raise exceptions.GenericGitException(f'Error running {cmd}\n{str(stderr)} in {provider_dir}')
+        raise exceptions.GenericGitException(
+            f'Error running {cmd}\n{str(stderr)} in {provider_dir}'
+        )
 
 
 def get_default_branch():
@@ -162,11 +164,11 @@ def get_latest_release_from_remote():
 
 
 def get_repo(
-        repo_url: str,
-        org_dir: str,
-        provider_dir: str,
-        version: str | None,
-        latest: bool | None,
+    repo_url: str,
+    org_dir: str,
+    provider_dir: str,
+    version: str | None,
+    latest: bool | None,
 ):
     """
     For new providers, we need to clone the provider and check if there is a release
@@ -192,15 +194,16 @@ def get_version(provider_dir: str, version: str):
     Do git checkout and if there is an error, do a git pull and try to checkout again,
      this time raising an error if the version does not exist.
     """
-    with (work_in(provider_dir)):
+    with work_in(provider_dir):
         logger.debug(f"Checking out version={version}.")
         git_stash()
         p = run_command(f"git checkout {version}")
         stdout, stderr = p.communicate()
         if p.returncode == 0:
             return
-        elif 'did not match any file(s) known to git' in str(stderr) or \
-                'Your branch is behind' in str(stdout):
+        elif 'did not match any file(s) known to git' in str(
+            stderr
+        ) or 'Your branch is behind' in str(stdout):
             default_branch = get_default_branch()
             git_pull(default_branch)
             git_checkout(version)

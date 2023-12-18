@@ -1,4 +1,5 @@
 import os
+
 import pytest
 
 from tackle.main import tackle
@@ -12,6 +13,7 @@ def set_kubeconfig():
 
 
 def test_provider_k8s_context(set_kubeconfig):
+    """Validate that we can get the current context."""
     output = tackle('context.yaml', no_input=True)
     assert 'federal-context' in output['context_map']
     assert output['context'] == 'federal-context'

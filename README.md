@@ -27,18 +27,18 @@ Tackle is a multi-paradigm configuration language for building modular code gene
 
 [//]: # (- Declarative makefile alternatives for advanced toolchain management)
 
-> WARNING: Tackle is still in alpha so expect some changes in the future. 
+> WARNING: Tackle is still in alpha so expect some changes in the future.
 
 ### Features
 
-- Multi-paradigm 
-  - Create strong and weakly typed objects with custom validation logic 
-  - Objects can have methods and be extended through inheritance 
-  - Compose objects to create nested validation structures 
+- Multi-paradigm
+  - Create strong and weakly typed objects with custom validation logic
+  - Objects can have methods and be extended through inheritance
+  - Compose objects to create nested validation structures
 
 - Makes arbitrary yaml / json / toml [dynamic](https://sudoblockio.github.io/tackle/hook-methods/)
   - Embed loops, conditionals, and other custom flow control logic
-  - Self documenting CLI to call tackle from command line 
+  - Self documenting CLI to call tackle from command line
 - Ships with a collection of over [100 hooks](https://sudoblockio.github.io/tackle) that act like plugins within your config file
   - [Prompt user for inputs](https://sudoblockio.github.io/tackle)
   - [Generate code from templates](https://sudoblockio.github.io/tackle/providers/Generate/)
@@ -50,7 +50,7 @@ Tackle is a multi-paradigm configuration language for building modular code gene
 - Modular design allows creating / importing new hooks easy
   - Supports both [python](https://sudoblockio.github.io/tackle/python-hooks/) and [declarative](https://sudoblockio.github.io/tackle/declarative-hooks/) hooks which can be imported / called / defined in-line or within jinja templates
   - Hooks can be composed / inherited with / from other hooks allowing complex objects to be validated and operated against
-- Expressive macro system creating intuitive interfaces 
+- Expressive macro system creating intuitive interfaces
 
 ### Install
 
@@ -71,7 +71,7 @@ Check out the [docs](https://sudoblockio.github.io/tackle/hello-worlds/) for >10
 ```yaml
 # Any time a key ends with `->`, we are calling a hook
 any key->: print Hello world!
-# `print` is a hook which can also be used as a special key 
+# `print` is a hook which can also be used as a special key
 print->: Hello world!
 ```
 
@@ -86,9 +86,9 @@ the:
     - Hello
     - cruel
     - world!
-# Compact one liners 
+# Compact one liners
 one liner->: print {{i}} --for i in the.words --if i != 'cruel'
-# Which can also be expressed in multiple lines 
+# Which can also be expressed in multiple lines
 multiple lines:
   ->: print
   objects: {{item}}
@@ -101,9 +101,9 @@ multiple lines:
 combination:
   ->: print {{i}}
   for: i in ['Hello','world!']
-# As a special key 
-print->: Hello {{i}} --for i in the.words 
-# Or through jinja rendering 
+# As a special key
+print->: Hello {{i}} --for i in the.words
+# Or through jinja rendering
 with rendering->: "{{print('Hello','world!'}}"
 ```
 
@@ -236,12 +236,12 @@ Hooks can be imported [within a tackle provider](https://sudoblockio.github.io/t
 ### Contributing
 
 ```shell
-git clone 
-cd tackle 
-make  # Creates and sources virtualenv 
-tackle --version  # Stable version installed from pypi for managing tackle 
+git clone
+cd tackle
+make  # Creates and sources virtualenv
+tackle --version  # Stable version installed from pypi for managing tackle
 tackle test  # Run tests with tackle
-make test  # Alternatively run with make 
+make test  # Alternatively run with make
 ```
 Contributions are welcome but please be advised of the following notes.
 
@@ -257,12 +257,12 @@ It was always the intention for tackle to be re-written in some kind of compiled
 
 - Improved parsing performance - tackle should be [blazing fast](https://www.youtube.com/watch?v=Z0GX2mTUtfo)
 - Overhaul of string parsers - should be token based exposing more language features
-- Improved linking cabablities - 
+- Improved linking cabablities -
 - Ship as a single binary - Not only the tackle interpreter, but an entire tackle provider with linked dependencies  
 - Compiled to WASM - Make tackle usable from any language
-- A registry - This is a no brainer when you have a language with modular charectoristics 
+- A registry - This is a no brainer when you have a language with modular charectoristics
 
-Instead, the intention will be to integrate Mojo's language features to allow binaries to be compiled from tackle scripts and providers. This will be a major challenge but the benefits will be worth it. Theoretically, tackle could be very fast when it make this switch and useful in a variety of other interesting applications. 
+Instead, the intention will be to integrate Mojo's language features to allow binaries to be compiled from tackle scripts and providers. This will be a major challenge but the benefits will be worth it. Theoretically, tackle could be very fast when it make this switch and useful in a variety of other interesting applications.
 
 ### Code of Conduct
 

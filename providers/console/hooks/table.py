@@ -1,6 +1,7 @@
+from typing import Any, List
+
 from rich.console import Console
 from rich.table import Table
-from typing import List, Any
 
 from tackle import BaseHook, Field
 

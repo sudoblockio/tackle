@@ -1,17 +1,20 @@
 ---
 repos:
-  - repo: https://github.com/compilerla/conventional-pre-commit
-    rev: v3.0.0
-    hooks:
-      - id: conventional-pre-commit
-        stages: [commit-msg]
-        args: [] # optional: list of Conventional Commits types to allow
+#  - repo: https://github.com/compilerla/conventional-pre-commit
+#    rev: v3.0.0
+#    hooks:
+#      - id: conventional-pre-commit
+#        stages: [pre-commit]
+#        args: [chore] # optional: list of Conventional Commits types to allow
 
   - repo: https://github.com/python/black.git
-    rev: 22.6.0
+    rev: 23.12.0
     hooks:
       - id: black
+        stages: [pre-commit]
         language_version: python3
+        args:
+          - '--target-version=py310'
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
@@ -28,9 +31,15 @@ repos:
     hooks:
       - id: flake8
         args:
-          - '--ignore=D106,D102,D107,E501,W503,D400,D205,E203,BLK999,D100,D103,D104,D401'
+          - '--ignore=BLK999,BLK901,D100,D101,D102,D103,D104,D105,D106,D107,D205,D400,D401,D419,E203,E501,W503'
           - '--exclude=.git,__pycache__,docs,build,dist,tests/main/fixtures/hooks-abort-render/hooks'
         additional_dependencies:
           - flake8-absolute-import
           - flake8-black
           - flake8-docstrings
+
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: ['--profile', 'black']

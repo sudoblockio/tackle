@@ -1,12 +1,10 @@
-"""Test the cli."""
-from copy import copy
-
-import pytest
 import os
 import sys
 
-from tackle.context import Context
+import pytest
+
 from tackle.cli import main
+from tackle.context import Context
 
 INPUT_SOURCES = [
     (
@@ -17,13 +15,10 @@ INPUT_SOURCES = [
         "thing --foo bar",
         {'args': ['thing'], 'kwargs': {'foo': 'bar'}},
     ),
-    (
-        "thing --foo=bar",
-        {'args': ['thing'], 'kwargs': {'foo': 'bar'}}
-    ),
+    ("thing --foo=bar", {'args': ['thing'], 'kwargs': {'foo': 'bar'}}),
     (
         "thing --foo1=bar --foo2=bar",
-        {'args': ['thing'], 'kwargs': {'foo1': 'bar', 'foo2': 'bar'}}
+        {'args': ['thing'], 'kwargs': {'foo1': 'bar', 'foo2': 'bar'}},
     ),
     (
         "thing foo bar",
@@ -50,12 +45,15 @@ def test_cli_parse_args(mocker, cd_base_dir, input_string, output):
         assert getattr(context.input, k) == v
 
 
-@pytest.mark.parametrize("input_string,output_keys,output", [
-    ("--latest", "latest", True),
-    ("--file foo", "file", "foo"),
-    ("--directory foo", "directory", "foo"),
-    ("--find-in-parent", "find_in_parent", True),
-])
+@pytest.mark.parametrize(
+    "input_string,output_keys,output",
+    [
+        ("--latest", "latest", True),
+        ("--file foo", "file", "foo"),
+        ("--directory foo", "directory", "foo"),
+        ("--find-in-parent", "find_in_parent", True),
+    ],
+)
 def test_cli_parse_args_vars(mocker, cd_base_dir, input_string, output_keys, output):
     """Mock the main call and verify the args get passed in right through the CLI."""
     mock = mocker.patch("tackle.cli.tackle", autospec=True)
@@ -145,6 +143,7 @@ COMMANDS = [
     (['input-args.yaml', 'baz', '1', '-pf', 'yaml'], 'bar: 1'),
     (['input-args.yaml', 'baz', '1', '-pf', 'json'], '"bar": 1}'),
 ]
+
 
 @pytest.mark.parametrize("command,expected_output", COMMANDS)
 def test_cli_commands(command, expected_output, capsys):

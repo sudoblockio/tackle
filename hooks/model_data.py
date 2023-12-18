@@ -1,8 +1,6 @@
-import sys
-import os
-import importlib
 from typing import Type
-from pydantic import BaseModel, field_validator
+
+from pydantic import BaseModel
 
 from tackle import BaseHook, Context
 
@@ -20,6 +18,7 @@ class ModelOutput(BaseModel):
 
 class GetModelData(BaseHook):
     """Get all the data out of models so that we can render documentation."""
+
     hook_name: str = 'model_data'
 
     def extract_model_data(self, model: Type[BaseModel]) -> dict[str, ModelOutput]:
@@ -39,12 +38,8 @@ class GetModelData(BaseHook):
                 )
         return model_output
 
-
-
     def exec(self) -> dict:
         output = {}
         output[BaseHook.__name__] = self.extract_model_data(BaseHook)
-
-
 
         return output

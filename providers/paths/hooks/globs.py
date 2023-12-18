@@ -1,9 +1,7 @@
-import sys
 import glob
+import sys
 
-from tackle import BaseHook, Field, Context
-from tackle import exceptions
-
+from tackle import BaseHook, Context, Field, exceptions
 
 
 def raise_version_error_msg(field_name, version: int, context: 'Context'):

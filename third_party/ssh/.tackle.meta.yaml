@@ -23,7 +23,7 @@ hook_examples:
         ssh-session:
           ->: ssh_interactive
           host: 1.2.3.4
-          username: postgres  
+          username: postgres
           password: nunyabiznis
           host: 1.2.3.4
           port: 5432  # default

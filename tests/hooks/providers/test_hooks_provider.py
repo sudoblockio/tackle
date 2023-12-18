@@ -4,11 +4,11 @@ Note: This tests a lot of logic from parser.py but is generally focused on how p
  are called.
 """
 import os
+
 import pytest
 
 from tackle import tackle
 from tackle.cli import main
-
 
 FIXTURES: list[tuple[str, list]] = [
     # exec_dir,args

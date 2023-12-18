@@ -1,7 +1,8 @@
-from ruyaml import YAML
-from ruyaml.composer import ComposerError
 import os
 from typing import Union
+
+from ruyaml import YAML
+from ruyaml.composer import ComposerError
 
 from tackle import BaseHook, Field
 
@@ -11,6 +12,7 @@ class YamlHook(BaseHook):
     Hook for reading and writing yaml. Hook reads from `path` if no `data` field is
      provided, otherwise it writes the `data` to `path`.
     """
+
     hook_name: str = 'yaml'
     path: str = Field(..., description="The file path to put read or write to.")
     data: Union[dict, list, str] = Field(

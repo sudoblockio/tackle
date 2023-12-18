@@ -1,8 +1,9 @@
 import re
 from inspect import signature
-from jinja2 import meta, StrictUndefined, Undefined
-from jinja2.exceptions import UndefinedError, TemplateSyntaxError
 from typing import TYPE_CHECKING, Any, Type
+
+from jinja2 import StrictUndefined, Undefined, meta
+from jinja2.exceptions import TemplateSyntaxError, UndefinedError
 from pydantic import ValidationError
 
 from tackle import exceptions
@@ -11,7 +12,7 @@ from tackle.special_vars import special_variables
 # from tackle.utils.command import literal_eval
 
 if TYPE_CHECKING:
-    from tackle.models import Context, BaseHook
+    from tackle.models import BaseHook, Context
 
 
 def render_variable(context: 'Context', raw: Any):
@@ -38,8 +39,8 @@ def render_variable(context: 'Context', raw: Any):
 
 
 def create_render_context(
-        context: 'Context',
-        variables: set[str],
+    context: 'Context',
+    variables: set[str],
 ) -> (dict, list[str]):
     """
     Take the unknown variables and build a dict used for rendering these variables by
@@ -94,17 +95,14 @@ class JinjaHook:
         for i in args_list:
             if isinstance(i, StrictUndefined):
                 raise exceptions.TooManyTemplateArgsException(
-                    "Too many arguments supplied to hook call",
-                    context=self.context
+                    "Too many arguments supplied to hook call", context=self.context
                 )
         evaluate_args(
-            args=args_list,
-            hook_dict=kwargs,
-            Hook=self.Hook,
-            context=self.context
+            args=args_list, hook_dict=kwargs, Hook=self.Hook, context=self.context
         )
 
         from tackle.parser import run_hook_exec
+
         hook = self.Hook(**kwargs)
 
         return run_hook_exec(context=self.context, hook=hook)
@@ -133,9 +131,9 @@ def add_jinja_hook_methods(context: 'Context', jinja_hook: JinjaHook):
 
 
 def add_jinja_hook_to_jinja_globals(
-        context: 'Context',
-        hook_name: str,
-        used_hooks: list[str],
+    context: 'Context',
+    hook_name: str,
+    used_hooks: list[str],
 ):
     """Add any unknown variables that are the same as hooks to the jinja globals."""
     from tackle.hooks import get_hooks_from_namespace
@@ -162,9 +160,9 @@ def add_jinja_hook_to_jinja_globals(
 
 
 def handle_ambiguous_keys(
-        context: 'Context',
-        rendered_template: str,
-        # used_hooks: list[str],
+    context: 'Context',
+    rendered_template: str,
+    # used_hooks: list[str],
 ) -> str:
     """
     After rendering a string, we need to check if the user mistakenly rendered a jinja
@@ -200,7 +198,8 @@ def handle_ambiguous_keys(
         hook_name = rendered_template.Hook.model_fields['hook_name'].default
         raise exceptions.MalformedTemplateVariableException(
             f"Uncalled hook=`{hook_name}` within rendering, try calling "
-            f"`{hook_name}()` with args or kwargs.", context=context,
+            f"`{hook_name}()` with args or kwargs.",
+            context=context,
         )
     elif isinstance(rendered_template, str):
         if 'jinja2.utils' not in rendered_template:
@@ -294,9 +293,7 @@ def render_string(context: 'Context', raw: str) -> Any:
         # ie {{base.method()}} -> only `base` is in unknown_variables
         for i in unknown_variables:
             add_jinja_hook_to_jinja_globals(
-                context=context,
-                hook_name=i,
-                used_hooks=used_hooks
+                context=context, hook_name=i, used_hooks=used_hooks
             )
     try:
         rendered_template = template.render(render_context)
@@ -309,8 +306,7 @@ def render_string(context: 'Context', raw: str) -> Any:
         ) from None
     except UndefinedError as e:
         raise exceptions.UnknownTemplateVariableException(
-            str(e),
-            context=context
+            str(e), context=context
         ) from None
     except ValidationError as e:
         # Raised when the wrong type is provided to a hook
@@ -337,7 +333,7 @@ def render_string(context: 'Context', raw: str) -> Any:
         raise exceptions.UnknownTemplateVariableException(
             f"Could not find one of `{', '.join(unknown_variables)}` in the context, "
             f"Exiting...",
-            context=context
+            context=context,
         ) from None
 
     return rendered_template

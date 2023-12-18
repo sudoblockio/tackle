@@ -4,10 +4,10 @@ This document covers all aspects of creating providers including the semantics o
 
 As a recap, `providers` are collections of hooks and / or tackle files that import / call additional hooks. They can be stored remotely in a git repository and then imported / ran from tackle files or called directly from the [command line](command-line.md).  For more information about tackle structure, check out the [project structure](project-structure.md) docs.
 
-## Basic File Structure 
+## Basic File Structure
 
 A provider either needs to have:
-- A tackle file 
+- A tackle file
 
 ```
 ├── hooks

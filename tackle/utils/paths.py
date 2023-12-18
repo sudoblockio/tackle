@@ -1,12 +1,12 @@
 """Path related utils."""
 import contextlib
 import errno
+import logging
 import os
+import re
 import shutil
 import stat
-import logging
-import re
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from tackle import exceptions
 
@@ -167,6 +167,7 @@ DEFAULT_HOOKS_DIRECTORIES = {
     '.hooks',
 }
 
+
 def find_hooks_directory_in_dir(dir: str) -> str:
     for i in os.scandir(dir):
         if i.is_dir() and i.name in DEFAULT_HOOKS_DIRECTORIES:
@@ -181,8 +182,8 @@ def find_tackle_file_in_dir(dir: str) -> str:
 
 
 def find_tackle_base_in_parent_dir(
-        dir: str,
-        fallback=None,
+    dir: str,
+    fallback=None,
 ) -> Optional[str]:
     """
     Recursively search in parent directories for a tackle base which is defined as
@@ -207,9 +208,9 @@ def find_tackle_base_in_parent_dir(
 
 
 def find_tackle_base_in_parent_dir_with_exception(
-        context: 'Context',
-        dir: str,
-        fallback=None,
+    context: 'Context',
+    dir: str,
+    fallback=None,
 ) -> str:
     """Call find_tackle_base_in_parent_dir and raise if no base is in parent."""
     base = find_tackle_base_in_parent_dir(dir=dir, fallback=fallback)
@@ -218,7 +219,8 @@ def find_tackle_base_in_parent_dir_with_exception(
         raise exceptions.UnknownSourceException(
             f'The `find_in_parent` argument was specified and no valid tackle base'
             f' was detected, ie a directory with a valid tackle file or hooks'
-            f' directory which is one of {" ,".join(targets)}', context=context
+            f' directory which is one of {" ,".join(targets)}',
+            context=context,
         )
     return base
 

@@ -1,18 +1,16 @@
 import re
-from ruyaml.constructor import CommentedKeyMap, CommentedMap
 from typing import TYPE_CHECKING
 
-from tackle.render import render_variable
 from tackle import exceptions
 from tackle.models import HookCallInput
+from tackle.render import render_variable
 
 if TYPE_CHECKING:
     from tackle import Context, DocumentKeyType, DocumentValueType
 
+
 def raise_key_macro_type_error(
-        context: 'Context',
-        func_name: str,
-        type_: str, msg: str = None
+    context: 'Context', func_name: str, type_: str, msg: str = None
 ):
     if msg is None:
         msg = f"{func_name} {type_}"
@@ -26,22 +24,16 @@ def expand_compact_hook_macro():
 
 
 def import_key_macro(
-        *,
-        context: 'Context',
-        key: 'DocumentKeyType',
-        value: 'DocumentValueType',
-        arrow: str,
+    *,
+    context: 'Context',
+    key: 'DocumentKeyType',
+    value: 'DocumentValueType',
+    arrow: str,
 ) -> 'DocumentValueType':
     if isinstance(value, dict):
-        return {
-            arrow: 'import',
-            **value
-        }
+        return {arrow: 'import', **value}
     elif isinstance(value, list):
-        return {
-            arrow: 'import',
-            'src': value
-        }
+        return {arrow: 'import', 'src': value}
     return {arrow: f'import {value}'}
 
     # else:
@@ -52,11 +44,11 @@ def import_key_macro(
 
 
 def return_key_macro(
-        *,
-        context: 'Context',
-        key: 'DocumentKeyType',
-        value: 'DocumentValueType',
-        arrow: str,
+    *,
+    context: 'Context',
+    key: 'DocumentKeyType',
+    value: 'DocumentValueType',
+    arrow: str,
 ) -> 'DocumentValueType':
     from tackle.utils.command import unpack_args_kwargs_string
 
@@ -68,14 +60,19 @@ def return_key_macro(
     if len(args) == 1:
         return {arrow: 'return', 'value': args[0]} | kwargs | {k: True for k in flags}
     else:
-        return {arrow: 'return', 'value': ' '.join(args)} | kwargs | {k: True for k in flags}
+        return (
+            {arrow: 'return', 'value': ' '.join(args)}
+            | kwargs
+            | {k: True for k in flags}
+        )
+
 
 def exit_key_macro(
-        *,
-        context: 'Context',
-        key: 'DocumentKeyType',
-        value: 'DocumentValueType',
-        arrow: str,
+    *,
+    context: 'Context',
+    key: 'DocumentKeyType',
+    value: 'DocumentValueType',
+    arrow: str,
 ) -> 'DocumentValueType':
     return {
         arrow: 'exit',
@@ -85,11 +82,11 @@ def exit_key_macro(
 
 
 def raise_key_macro(
-        *,
-        context: 'Context',
-        key: 'DocumentKeyType',
-        value: 'DocumentValueType',
-        arrow: str,
+    *,
+    context: 'Context',
+    key: 'DocumentKeyType',
+    value: 'DocumentValueType',
+    arrow: str,
 ) -> 'DocumentValueType':
     return {
         arrow: 'raise',
@@ -99,20 +96,20 @@ def raise_key_macro(
 
 
 def assert_key_macro(
-        context: 'Context',
-        key: 'DocumentKeyType',
-        value: 'DocumentValueType',
-        arrow: str,
+    context: 'Context',
+    key: 'DocumentKeyType',
+    value: 'DocumentValueType',
+    arrow: str,
 ) -> 'DocumentValueType':
     return {arrow: f'assert {value}'}
 
 
 def command_key_macro(
-        *,
-        context: 'Context',
-        key: 'DocumentKeyType',
-        value: 'DocumentValueType',
-        arrow: str,
+    *,
+    context: 'Context',
+    key: 'DocumentKeyType',
+    value: 'DocumentValueType',
+    arrow: str,
 ) -> 'DocumentValueType':
     return {
         arrow: 'command',
@@ -122,11 +119,11 @@ def command_key_macro(
 
 
 def print_key_macro(
-        *,
-        context: 'Context',
-        key: 'DocumentKeyType',
-        value: 'DocumentValueType',
-        arrow: str,
+    *,
+    context: 'Context',
+    key: 'DocumentKeyType',
+    value: 'DocumentValueType',
+    arrow: str,
 ) -> 'DocumentValueType':
     return {
         arrow: 'print',
@@ -136,11 +133,11 @@ def print_key_macro(
 
 
 def debug_key_macro(
-        *,
-        context: 'Context',
-        key: 'DocumentKeyType',
-        value: 'DocumentValueType',
-        arrow: str,
+    *,
+    context: 'Context',
+    key: 'DocumentKeyType',
+    value: 'DocumentValueType',
+    arrow: str,
 ) -> 'DocumentValueType':
     return {
         arrow: 'debug',
@@ -148,11 +145,11 @@ def debug_key_macro(
 
 
 def key_to_dict_macro(
-        *,
-        context: 'Context',
-        key: 'DocumentKeyType',
-        value: 'DocumentValueType',
-        arrow: str,
+    *,
+    context: 'Context',
+    key: 'DocumentKeyType',
+    value: 'DocumentValueType',
+    arrow: str,
 ) -> 'DocumentValueType':
     """
     Takes in generic key with arrow, overwrites key path by replacing the last key_path
@@ -168,15 +165,16 @@ def key_to_dict_macro(
 
 # Both the keys and the aliases
 HOOK_CALL_KEYS = {k for k, v in HookCallInput.model_fields.items()} | {
-    v.alias for k, v in HookCallInput.model_fields.items() if v.alias is not None}
+    v.alias for k, v in HookCallInput.model_fields.items() if v.alias is not None
+}
 
 
 def block_hook_macro(
-        *,
-        context: 'Context',
-        key: 'DocumentKeyType',
-        value: 'DocumentValueType',
-        arrow: str,
+    *,
+    context: 'Context',
+    key: 'DocumentKeyType',
+    value: 'DocumentValueType',
+    arrow: str,
 ) -> 'DocumentValueType':
     context.key_path = context.key_path[:-1] + [key]  # noqa
 
@@ -185,10 +183,7 @@ def block_hook_macro(
         # hook here to preserve the access modifier of the hook call
         # TODO: https://github.com/sudoblockio/tackle/issues/189
         #  Figure out what lists really mean in blocks
-        return {
-            arrow: 'literal',
-            'input': render_variable(context=context, raw=value)
-        }
+        return {arrow: 'literal', 'input': render_variable(context=context, raw=value)}
     # Separate the base hook fields from extra `items`
     items = {}
     hook_fields = {}
@@ -197,10 +192,7 @@ def block_hook_macro(
             hook_fields.update({k: v})
         else:
             items.update({k: v})
-    output = {
-        arrow: 'block',
-        'items': items
-    }
+    output = {arrow: 'block', 'items': items}
     output.update(hook_fields)
 
     return output
@@ -210,18 +202,17 @@ KEY_MACRO_IDS = {
     i.split('_key_macro')[0]
     for i in globals().keys()
     if i.__str__().endswith('_key_macro')
-
 }
 KEY_REGEX = f"^({'|'.join(KEY_MACRO_IDS)})"
 KEY_PATTERN = re.compile(KEY_REGEX)
 
 
 def key_macro(
-        *,
-        context: 'Context',
-        # key: 'DocumentKeyType',
-        value: 'DocumentValueType',
-        # arrow: str,
+    *,
+    context: 'Context',
+    # key: 'DocumentKeyType',
+    value: 'DocumentValueType',
+    # arrow: str,
 ) -> 'DocumentValueType':
     """
     Key macros are run when parse a key.
@@ -238,11 +229,11 @@ def key_macro(
     # value = unquoted_yaml_template_macro(value=value)
 
     key = last_key[:-2]
-    fixed_key = False  # Hacky var to know if we are indented TODO: Fix me
+    # fixed_key = False  # Hacky var to know if we are indented TODO: Fix me
     # if key != '' and isinstance(value, (str, int, float, bool)):
     #     # Fix the key if not already -> ie key->: value to key: {'->': value}
     value = key_to_dict_macro(context=context, key=key, value=value, arrow=arrow)
-        # fixed_key = True
+    # fixed_key = True
 
     # elif key != '' and isinstance(value, (dict, list)):
     #     # We have some kind block hook
@@ -263,10 +254,7 @@ def key_macro(
         if key != '' and isinstance(value[arrow], (dict, list)):
             # We have some kind block hook
             return block_hook_macro(
-                context=context,
-                key=key,
-                value=value.copy()[arrow],
-                arrow=arrow
+                context=context, key=key, value=value.copy()[arrow], arrow=arrow
             )
         # We don't have a special key but could have a var hook which is handled later
         return value
@@ -280,17 +268,11 @@ def key_macro(
         # Should always exist
         if value is not None:
             return key_macro_function(
-                context=context,
-                key=key,
-                value=value[arrow],
-                arrow=arrow
+                context=context, key=key, value=value[arrow], arrow=arrow
             )
         else:
             return key_macro_function(
-                context=context,
-                key=key,
-                value=value,
-                arrow=arrow
+                context=context, key=key, value=value, arrow=arrow
             )
 
     else:
@@ -318,7 +300,7 @@ def var_hook_macro(args: list) -> list:
             for i in range(1, len(args)):
                 if '}}' in args[i]:
                     joined_template = ' '.join(args[: (i + 1)])
-                    other_args = args[(i + 1):]
+                    other_args = args[(i + 1) :]
                     args = ['var'] + [joined_template] + other_args
                     break
 

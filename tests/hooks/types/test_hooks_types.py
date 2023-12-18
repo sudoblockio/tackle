@@ -1,34 +1,35 @@
 import pytest
 
-from tackle import tackle
-from tackle import exceptions
-from tackle.cli import main
-from tackle.hooks import parse_hook_type
+from tackle import exceptions, tackle
 from tackle.factory import new_context
+from tackle.hooks import parse_hook_type
 
 BASE_ID = "tackle.pydantic.create_model.Base"
 
 
-@pytest.mark.parametrize("type_str,expected_repr", [
-    ('Base', f"<class '{BASE_ID}'>"),
-    ('list[str]', 'list[str]'),
-    ('list[str, int]', 'list[str, int]'),
-    ('list[Base]', f'list[{BASE_ID}]'),
-    ('List[Base]', f'typing.List[{BASE_ID}]'),
-    ('dict[str,Base]', f'dict[str, {BASE_ID}]'),
-    ('Dict[str, Base]', f'typing.Dict[str, {BASE_ID}]'),
-    ('optional[Base]', f'typing.Optional[{BASE_ID}]'),
-    ('union[Base, str]', f'typing.Union[{BASE_ID}, str]'),
-    ('Optional[Base]', f'typing.Optional[{BASE_ID}]'),
-    ('Union[Base, str]', f'typing.Union[{BASE_ID}, str]'),
-    ('Optional[Union[Base, str]]', f'typing.Union[{BASE_ID}, str, NoneType]'),
-    ('list[Base, dict[str, list]]', f'list[{BASE_ID}, dict[str, list]]'),
-    ('list[dict[str, Base], Base]', f'list[dict[str, {BASE_ID}], {BASE_ID}]'),
-    ('list[Base, dict[str, Base]]', f'list[{BASE_ID}, dict[str, {BASE_ID}]]'),
-    ('str | int', f'typing.Union[str, int]'),
-    ('str|int', f'typing.Union[str, int]'),
-    ('dict[str | int, str]', f'dict[typing.Union[str, int], str]'),
-])
+@pytest.mark.parametrize(
+    "type_str,expected_repr",
+    [
+        ('Base', f"<class '{BASE_ID}'>"),
+        ('list[str]', 'list[str]'),
+        ('list[str, int]', 'list[str, int]'),
+        ('list[Base]', f'list[{BASE_ID}]'),
+        ('List[Base]', f'typing.List[{BASE_ID}]'),
+        ('dict[str,Base]', f'dict[str, {BASE_ID}]'),
+        ('Dict[str, Base]', f'typing.Dict[str, {BASE_ID}]'),
+        ('optional[Base]', f'typing.Optional[{BASE_ID}]'),
+        ('union[Base, str]', f'typing.Union[{BASE_ID}, str]'),
+        ('Optional[Base]', f'typing.Optional[{BASE_ID}]'),
+        ('Union[Base, str]', f'typing.Union[{BASE_ID}, str]'),
+        ('Optional[Union[Base, str]]', f'typing.Union[{BASE_ID}, str, NoneType]'),
+        ('list[Base, dict[str, list]]', f'list[{BASE_ID}, dict[str, list]]'),
+        ('list[dict[str, Base], Base]', f'list[dict[str, {BASE_ID}], {BASE_ID}]'),
+        ('list[Base, dict[str, Base]]', f'list[{BASE_ID}, dict[str, {BASE_ID}]]'),
+        ('str | int', 'typing.Union[str, int]'),
+        ('str|int', 'typing.Union[str, int]'),
+        ('dict[str | int, str]', 'dict[typing.Union[str, int], str]'),
+    ],
+)
 def test_hooks_types_parse_function_type(type_str, expected_repr):
     """
     Check complex type parsing where a `Base` hook is imported from the current
@@ -162,16 +163,19 @@ def test_hooks_types_bool_defaults():
     assert output['call_true']['is_false']
 
 
-@pytest.mark.parametrize("file,expected_value", [
-    ('types-pydantic.yaml', 1),
-    ('types-pydantic-network.yaml', '1.2.3.4'),
-    ('types-network.yaml', '1.2.3.4'),
-    ('types-lookup.yaml', None),
-    ('types-datetime.yaml', "12:30:15"),
-    ('types-datetime-timestamp.yaml', '1970-01-01 00:00:00+00:00'),
-    ('types-python-pipe.yaml', 'foo'),
-    ('types-python-union.yaml', 'foo'),
-])
+@pytest.mark.parametrize(
+    "file,expected_value",
+    [
+        ('types-pydantic.yaml', 1),
+        ('types-pydantic-network.yaml', '1.2.3.4'),
+        ('types-network.yaml', '1.2.3.4'),
+        ('types-lookup.yaml', None),
+        ('types-datetime.yaml', "12:30:15"),
+        ('types-datetime-timestamp.yaml', '1970-01-01 00:00:00+00:00'),
+        ('types-python-pipe.yaml', 'foo'),
+        ('types-python-union.yaml', 'foo'),
+    ],
+)
 def test_hooks_types_list(file, expected_value):
     """Check that we can use pydantic types in a hook field."""
     output = tackle(file)
@@ -180,14 +184,17 @@ def test_hooks_types_list(file, expected_value):
     assert output['error'] == 1
 
 
-@pytest.mark.parametrize("input_file,expected_output", [
-    ('default-dict.yaml', {'a_field': {'bar->': 'literal baz'}}),
-    ('default-list.yaml', {'a_field': [{'bar->': 'literal baz'}]}),
-    ('default-factory-dict.yaml', {'a_field': {'bar': 'baz'}}),
-    ('default-factory-list.yaml', {'a_field': [{'bar': 'baz'}]}),
-    ('value-dict.yaml', {'a_field': {'bar': 'baz'}}),
-    ('value-list.yaml', {'a_field': ['bar']}),
-])
+@pytest.mark.parametrize(
+    "input_file,expected_output",
+    [
+        ('default-dict.yaml', {'a_field': {'bar->': 'literal baz'}}),
+        ('default-list.yaml', {'a_field': [{'bar->': 'literal baz'}]}),
+        ('default-factory-dict.yaml', {'a_field': {'bar': 'baz'}}),
+        ('default-factory-list.yaml', {'a_field': [{'bar': 'baz'}]}),
+        ('value-dict.yaml', {'a_field': {'bar': 'baz'}}),
+        ('value-list.yaml', {'a_field': ['bar']}),
+    ],
+)
 def test_hooks_types_default_dict(input_file, expected_output):
     """Check that a default dict value works properly."""
     output = tackle(input_file, 'MyHook')

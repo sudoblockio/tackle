@@ -1,12 +1,11 @@
-from jinja2 import Environment, StrictUndefined
-# from jinja2 import StrictUndefined
-from jinja2.nativetypes import NativeEnvironment as Environment
-from jinja2.nativetypes import NativeEnvironment
-
 from dataclasses import dataclass
 
-from tackle.types import DocumentType, DocumentObjectType
+from jinja2 import StrictUndefined
+from jinja2.nativetypes import NativeEnvironment
+from jinja2.nativetypes import NativeEnvironment as Environment
+
 from tackle.models import GenericHookType
+from tackle.types import DocumentObjectType, DocumentType
 
 
 @dataclass
@@ -80,6 +79,7 @@ class Hooks:
 @dataclass
 class Context:
     """Main container for all data passed through tackle."""
+
     # Flag to indicate the user doesn't want to be prompted thereby choosing
     # defaults for any available prompt
     no_input: bool = False

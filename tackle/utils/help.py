@@ -1,14 +1,14 @@
 import sys
+from typing import Any, List, Type
+
 from jinja2 import Template
 from pydantic import BaseModel, ValidationError
 from pydantic.fields import FieldInfo
-from typing import Any, List, Type
 
 from tackle import exceptions
-from tackle.models import LazyBaseHook, BaseHook
 from tackle.context import Context
+from tackle.models import BaseHook, LazyBaseHook
 from tackle.utils.type_strings import field_to_string
-
 
 HELP_TEMPLATE = """usage: tackle {{input_string}} {% for i in general_kwargs %}{{i}} {% endfor %}
 {% if general_help %}
@@ -27,6 +27,7 @@ methods:{% for i in methods %}
 
 class HelpInput(BaseModel):
     """Validate help input."""
+
     name: str
     type: str
     default: Any = None
@@ -34,8 +35,8 @@ class HelpInput(BaseModel):
 
 
 def unpack_hook(
-        context: 'Context',
-        Hook: Type[BaseModel],
+    context: 'Context',
+    Hook: Type[BaseModel],
 ) -> (List[dict], List[dict], List[dict], List[dict]):
     """Unpack arguments (args/kwargs/flags/methods) from hook."""
     args = []
@@ -184,8 +185,12 @@ def run_help(context: 'Context', Hook: Type[BaseHook] = None):
     max_method_name_length = max([len(method['name']) for method in methods], default=0)
 
     # Calculate overall max width for alignment
-    max_name_length = max(max_arg_name_length, max_kwarg_name_length,
-                          max_flag_name_length, max_method_name_length)
+    max_name_length = max(
+        max_arg_name_length,
+        max_kwarg_name_length,
+        max_flag_name_length,
+        max_method_name_length,
+    )
 
     template = Template(HELP_TEMPLATE)
     help_rendered = template.render(

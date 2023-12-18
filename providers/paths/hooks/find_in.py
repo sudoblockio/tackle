@@ -1,14 +1,14 @@
 import os
-from typing import Any, TYPE_CHECKING
+from typing import Any
 
-from tackle import BaseHook, Field, exceptions, Context
+from tackle import BaseHook, Context, Field, exceptions
 
 
 def find_in_parent(
-        context: 'Context',
-        dir: str,
-        targets: list,
-        fallback=None,
+    context: 'Context',
+    dir: str,
+    targets: list,
+    fallback=None,
 ) -> str:
     """Recursively search in parent directories for a path to a target file."""
     for i in os.listdir(dir):
@@ -76,9 +76,11 @@ class FindInChildHook(BaseHook):
 
     def exec(self) -> list:
         files = []
-        for (dirpath, dirnames, filenames) in os.walk(self.starting_dir):
+        for dir_path, dir_names, file_names in os.walk(self.starting_dir):  # noqa
             files += [
-                os.path.join(dirpath, file) for file in filenames if file == self.target
+                os.path.join(dir_path, file)
+                for file in file_names
+                if file == self.target
             ]
 
         if len(files) == 0:

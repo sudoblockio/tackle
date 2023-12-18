@@ -1,5 +1,5 @@
 import re
-from typing import Union, Optional, Any
+from typing import Any, Optional, Union
 
 from tackle import BaseHook, Context, Field, exceptions
 from tackle.models import HookCallInput
@@ -19,12 +19,12 @@ class MatchHook(BaseHook):
         True,
         render_by_default=True,
         description="The value to match against. Defaults to boolean true so that "
-                    "cases can be conditionals."
+        "cases can be conditionals.",
     )
     case: dict = Field(
         ...,
         description="A dictionary where the keys are cases to be matched. Runs hooks "
-                    "if present.",
+        "if present.",
     )
 
     args: list = ['value']
@@ -49,11 +49,11 @@ class MatchHook(BaseHook):
         return tmp_context.data.public
 
     def block_macro(
-            self,
-            context: Context,
-            hook_call: HookCallInput,
-            key: str,
-            val: dict,
+        self,
+        context: Context,
+        hook_call: HookCallInput,
+        key: str,
+        val: dict,
     ) -> dict:
         """Take matched input dict and create a `block` hook to parse."""
         # Remove the merge which will be inserted into the parsed block hook.
@@ -100,11 +100,11 @@ class MatchHook(BaseHook):
         return v
 
     def match_case_block(
-            self,
-            context: Context,
-            hook_call: HookCallInput,
-            k: str,
-            v: Any,
+        self,
+        context: Context,
+        hook_call: HookCallInput,
+        k: str,
+        v: Any,
     ):
         # Return the value indexed without arrow
         if isinstance(v, str):
@@ -117,10 +117,7 @@ class MatchHook(BaseHook):
             return self.run_key(
                 context=context,
                 value=self.block_macro(
-                    context=context,
-                    hook_call=hook_call,
-                    key=k,
-                    val=v
+                    context=context, hook_call=hook_call, key=k, val=v
                 ),
             )
         else:
@@ -130,9 +127,9 @@ class MatchHook(BaseHook):
             ) from None
 
     def exec(
-            self,
-            context: Context,
-            hook_call: HookCallInput,
+        self,
+        context: Context,
+        hook_call: HookCallInput,
     ) -> Optional[Union[dict, list]]:
         if hook_call is None:
             # This only happens when match is called within jinja rendering which

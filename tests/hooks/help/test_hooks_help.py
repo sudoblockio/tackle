@@ -1,17 +1,20 @@
 import os
+
 import pytest
 
 from tackle import tackle
-from tackle import exceptions
 
 
-@pytest.mark.parametrize("file,args", [
-    ('all-types.yaml', ['help']),
-    ('all-types.yaml', ['MyHook', 'help']),
-    ('default-hook.yaml', ['help']),
-    ('base-hook.yaml', ['MyHook', 'help']),
-    ('method.yaml', ['MyHook', 'MyMethod', 'help']),
-])
+@pytest.mark.parametrize(
+    "file,args",
+    [
+        ('all-types.yaml', ['help']),
+        ('all-types.yaml', ['MyHook', 'help']),
+        ('default-hook.yaml', ['help']),
+        ('base-hook.yaml', ['MyHook', 'help']),
+        ('method.yaml', ['MyHook', 'MyMethod', 'help']),
+    ],
+)
 def test_hooks_help_parameterized(capsys, file, args):
     with pytest.raises(SystemExit):
         tackle(file, *args)
@@ -21,6 +24,7 @@ def test_hooks_help_parameterized(capsys, file, args):
     assert "flags:" in out
     assert "options:" in out
     assert "methods:" in out
+
 
 def test_hooks_help_no_hook_arg(capsys):
     with pytest.raises(SystemExit):
@@ -94,6 +98,7 @@ def test_hooks_help_default_hook_embedded_default(capsys):
     assert "stuff" in out
     assert "bar" in out
     assert "default_hook" in out
+
 
 def test_hooks_import_func_from_hooks_dir_method_no_help(capsys):
     """

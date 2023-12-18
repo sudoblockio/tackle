@@ -6,6 +6,7 @@ class ModuloHook(BaseHook):
     Hook for taking the modulo of an integer with optionally checking if it is equal
      to another number, 0 by default.
     """
+
     hook_name: str = 'modulo'
     # Relates to https://github.com/sudoblockio/tackle/issues/183 where we might want to
     # `render_by_default` src
@@ -21,7 +22,7 @@ class ModuloHook(BaseHook):
     equal_to: int | None = Field(
         None,
         description="Optional parameter to assert if the modulo is equal to. Returns a "
-                    "bool then.",
+        "bool then.",
     )
 
     args: list = ['input', 'divisor', 'equal_to']

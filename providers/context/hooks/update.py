@@ -1,11 +1,11 @@
-from typing import Union, Optional, Any
+from typing import Any, Optional, Union
 
-from tackle import BaseHook, Field, Context
+from tackle import BaseHook, Context, Field
 from tackle.utils.data_crud import (
     encode_key_path,
-    nested_set,
     get_target_and_key,
     nested_get,
+    nested_set,
 )
 
 
@@ -31,7 +31,9 @@ class DictUpdateHook(BaseHook):
         if isinstance(self.src, (str, list)):
             self.src = encode_key_path(self.src, self.sep)
         if isinstance(self.src, list):
-            target_context, set_key_path = get_target_and_key(context, key_path=self.src)
+            target_context, set_key_path = get_target_and_key(
+                context, key_path=self.src
+            )
 
             src = nested_get(
                 element=target_context,

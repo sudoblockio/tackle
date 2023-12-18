@@ -1,6 +1,6 @@
 from typing import Any
 
-from tackle import BaseHook, Field, Context
+from tackle import BaseHook, Context, Field
 
 
 class ReturnHook(BaseHook):
@@ -10,6 +10,7 @@ class ReturnHook(BaseHook):
      stops parsing the context. Also overwrites the public data which no longer is
      valid since we are only going to be returning a value.
     """
+
     hook_name: str = 'return'
     value: Any = Field(None, description="The value to return.")
 

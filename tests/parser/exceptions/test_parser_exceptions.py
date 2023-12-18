@@ -1,7 +1,6 @@
-
 import pytest
 
-from tackle import tackle, exceptions
+from tackle import exceptions, tackle
 
 INPUT_SOURCES = [
     # TODO: empty should now be running help screen
@@ -15,6 +14,7 @@ INPUT_SOURCES = [
     ("top-level-hook-call.yaml", exceptions.TopLevelMergeException),
 ]
 
+
 @pytest.mark.parametrize("input_file,exception", INPUT_SOURCES)
 def test_parser_raises_exceptions(input_file, exception):
     """Test raising exceptions."""
@@ -22,10 +22,13 @@ def test_parser_raises_exceptions(input_file, exception):
         tackle(input_file)
 
 
-@pytest.mark.parametrize("fixture", [
-    'hook-native-bad-vars.yaml',
-    'hook-native-missing.yaml',
-])
+@pytest.mark.parametrize(
+    "fixture",
+    [
+        'hook-native-bad-vars.yaml',
+        'hook-native-missing.yaml',
+    ],
+)
 def test_parser_exceptions_raise_native_hook_with_link_to_docs(fixture):
     """Make sure a link to the docs comes up for native hooks."""
     with pytest.raises(exceptions.HookParseException) as e:

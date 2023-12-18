@@ -1,5 +1,6 @@
-from git import Repo
 from typing import Optional
+
+from git import Repo
 
 from tackle.models import BaseHook, Field
 

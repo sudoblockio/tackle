@@ -1,9 +1,9 @@
 
-Foo bar 
+Foo bar
 
 [//]: # (--start-here--)
-foo: 
+foo:
   bar: 1
 [//]: # (--end-here--)
 
-Baz 
+Baz

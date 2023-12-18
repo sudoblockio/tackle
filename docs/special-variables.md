@@ -8,11 +8,11 @@ A number of special variables exist for using within tackle files to gain access
 - `home_dir` - Home directory
 - `calling_directory` - The directory tackle was called from
 - `calling_file` - The path to the tackle file that was first called
-- `current_directory` - The directory of the file being parsed 
+- `current_directory` - The directory of the file being parsed
 - `current_file` - The path to the current file being parsed
 - `tackle_dir` - Directory where tackle config is, defaults to `~/.config/tackle`
 - `providers_dir` - Directory where tackle providers are, defaults to `~/.config/tackle/providers`
-- `xdg_config_dirs` - XDG [config dirs](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html)- ie ~/.config on linux - the base of the tackle dir 
+- `xdg_config_dirs` - XDG [config dirs](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html)- ie ~/.config on linux - the base of the tackle dir
 - `xdg_cache_home` - XDG [cache dir](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html)
 - `xdg_config_home` - XDG [config home](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html)
 - `xdg_data_dirs` - XDG [data dirs](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html)

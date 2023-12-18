@@ -3,8 +3,8 @@ import tempfile
 
 import pytest
 
-from tackle.utils import zipfiles
 from tackle.exceptions import InvalidZipRepository
+from tackle.utils import zipfiles
 
 
 def mock_download():
@@ -35,9 +35,7 @@ def test_unzip_local_file(mocker, tmpdir, cd_fixtures):
     assert not mock_prompt_and_delete.called
 
 
-def test_unzip_protected_local_file_environment_password(
-    mocker, tmpdir, cd_fixtures
-):
+def test_unzip_protected_local_file_environment_password(mocker, tmpdir, cd_fixtures):
     """In `unzip()`, the environment can be used to provide a repo password."""
     mock_prompt_and_delete = mocker.patch(
         'tackle.utils.zipfiles.prompt_and_delete',
@@ -97,9 +95,7 @@ def test_unzip_protected_local_file_user_password_with_noinput(
         )
 
 
-def test_unzip_protected_local_file_user_password(
-    mocker, tmpdir, cd_fixtures
-):
+def test_unzip_protected_local_file_user_password(mocker, tmpdir, cd_fixtures):
     """A password-protected local file reference can be unzipped."""
     mock_prompt_and_delete = mocker.patch(
         'tackle.utils.zipfiles.prompt_and_delete',
@@ -119,9 +115,7 @@ def test_unzip_protected_local_file_user_password(
     assert not mock_prompt_and_delete.called
 
 
-def test_unzip_protected_local_file_user_bad_password(
-    mocker, tmpdir, cd_fixtures
-):
+def test_unzip_protected_local_file_user_bad_password(mocker, tmpdir, cd_fixtures):
     """Error in `unzip()`, if user can't provide a valid password."""
     mocker.patch(
         'tackle.utils.zipfiles.prompt_and_delete',

@@ -1,7 +1,7 @@
-from typing import Union, Optional
+from typing import Optional, Union
 
-from tackle import BaseHook, Field, Context
-from tackle.utils.data_crud import nested_get, encode_key_path
+from tackle import BaseHook, Context, Field
+from tackle.utils.data_crud import encode_key_path, nested_get
 
 
 class DistinctHook(BaseHook):

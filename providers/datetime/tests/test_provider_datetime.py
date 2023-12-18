@@ -1,5 +1,6 @@
-from tackle import tackle
 import datetime
+
+from tackle import tackle
 
 
 def test_provider_date_date_now():

@@ -1,8 +1,9 @@
+import logging
+import os
+import pathlib
+
 from pydantic import Field, ValidationError
 from pydantic_settings import BaseSettings, SettingsConfigDict
-import os
-import logging
-import pathlib
 from ruyaml import YAML
 from xdg import xdg_config_home  # When adding replay functionality -> xdg_state_home
 
@@ -37,7 +38,7 @@ class Settings(BaseSettings):
     local_install: bool = Field(
         True,
         description="Boolean to create entrypoint as `tkl` and recompile all the"
-                    " providers one each run."
+        " providers one each run.",
     )
     # # TODO: RM or use
     # extra_providers: Optional[list] = Field(

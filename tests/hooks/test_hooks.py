@@ -1,21 +1,19 @@
 import pytest
 
-
 from tackle import tackle
 from tackle.factory import new_context
-from tackle.hooks import create_default_factory, create_dcl_hook
+from tackle.hooks import create_dcl_hook, create_default_factory
 
 
-@pytest.mark.parametrize("file", [
-    'field-types.yaml',
-    'field-types-default.yaml',
-    'field-types-type.yaml'
-])
+@pytest.mark.parametrize(
+    "file", ['field-types.yaml', 'field-types-default.yaml', 'field-types-type.yaml']
+)
 def test_hooks_field_types(cd_fixtures, file):
     """Check that field types are respected."""
     output = tackle(file)
+
     assert output['call']['a_str'] == 'foo'
-    assert output['call']['a_bool'] == True
+    assert output['call']['a_bool']
     assert output['call']['a_int'] == 1
     assert output['call']['a_float'] == 1.2
     assert output['call']['a_list'] == ['stuff', 'things']
@@ -44,7 +42,7 @@ def test_hooks_supplied_kwargs_param_str(cd_fixtures):
 def test_hooks_supplied_kwargs_param_str_loop(cd_fixtures):
     """Check that we can use kwargs within a loop"""
     output = tackle('supplied-kwargs-param-str-loop.yaml')
-    assert output['call'][0]    ['bar'] == 'bing'
+    assert output['call'][0]['bar'] == 'bing'
     assert len(output['call']) == 2
 
 
@@ -61,14 +59,12 @@ def test_hooks_supplied_args_param_list(cd_fixtures):
 
 
 def test_create_default_factory_walker():
-    value = {'default_factory': {
-        'in': {
-            '->': 'literal bar'
-        },
-        'out': {
-            '->': 'return {{in}}'
-        },
-    }}
+    value = {
+        'default_factory': {
+            'in': {'->': 'literal bar'},
+            'out': {'->': 'return {{in}}'},
+        }
+    }
     create_default_factory(context=new_context(), hook_name='', value=value)
     output = value['default_factory']()  # noqa
 
@@ -76,9 +72,7 @@ def test_create_default_factory_walker():
 
 
 DCL_HOOK_FIXTURES: list[dict] = [
-    {
-        'stuff': 'things'
-    },
+    {'stuff': 'things'},
     {
         'stuff': {
             'default': 'things',
@@ -116,13 +110,12 @@ DCL_HOOK_FIXTURES: list[dict] = [
 @pytest.mark.parametrize("hook_input_raw", DCL_HOOK_FIXTURES)
 def test_hooks_create_dcl_hook_simple_params(context, hook_input_raw):
     Hook = create_dcl_hook(
-        context=context,
-        hook_name="foo",
-        hook_input_raw=hook_input_raw
+        context=context, hook_name="foo", hook_input_raw=hook_input_raw
     )
     hook = Hook()
     assert hook.hook_name == 'foo'
     assert hook.stuff == 'things'
+
 
 # Determine what lists do
 # def test_hooks_list_call(cd_fixtures):

@@ -1,5 +1,5 @@
-from typing import Any, _GenericAlias, List, _UnionGenericAlias
 from types import UnionType
+from typing import Any, List, _GenericAlias, _UnionGenericAlias
 
 from pydantic.fields import FieldInfo
 

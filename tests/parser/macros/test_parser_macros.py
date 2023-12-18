@@ -3,8 +3,6 @@ import pytest
 from tackle import tackle
 from tackle.utils.files import read_config_file
 
-
-
 FIXTURES = [
     # TODO: Fix for ordereddict output
     ('single-level.yaml', 'single-level-output.yaml'),

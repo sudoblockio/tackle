@@ -1,8 +1,8 @@
 import pytest
 from ruyaml import YAML
 
-from tackle.cli import main
 from tackle import tackle
+from tackle.cli import main
 
 FIXTURES = [
     (

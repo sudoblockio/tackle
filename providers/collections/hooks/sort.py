@@ -1,9 +1,9 @@
 from operator import itemgetter
-from typing import Union, Optional
+from typing import Optional, Union
 
-from tackle import BaseHook, Field, Context
-from tackle.utils.data_crud import encode_key_path, nested_get
+from tackle import BaseHook, Context, Field
 from tackle.exceptions import HookCallException
+from tackle.utils.data_crud import encode_key_path, nested_get
 
 
 class SortHook(BaseHook):

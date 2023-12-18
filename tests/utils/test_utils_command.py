@@ -1,9 +1,6 @@
 import pytest
 
-from tackle.utils.command import (
-    unpack_args_kwargs_string,
-    split_input_string,
-)
+from tackle.utils.command import split_input_string, unpack_args_kwargs_string
 
 INPUT_STRINGS = [
     ('this --if "expanded == \'that\'"', ['this', '--if', "expanded == 'that'"]),

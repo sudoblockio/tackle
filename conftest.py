@@ -1,11 +1,11 @@
 """Global pytest fixtures."""
-import pytest
 import os
-import sys
 
+import pytest
+
+from tackle.context import Source
 from tackle.factory import new_context
 from tackle.imports import import_native_providers
-from tackle.context import Source
 
 
 @pytest.fixture(scope='function', autouse=True)

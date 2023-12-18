@@ -1,8 +1,9 @@
 import os
+
+import pytest
 from ruyaml import YAML
 
 from tackle.main import tackle
-import pytest
 
 
 @pytest.fixture()

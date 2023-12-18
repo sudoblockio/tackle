@@ -1,11 +1,9 @@
 import pytest
 
-from tackle import tackle
-from tackle import get_hook
-from tackle.parser import run_hook_exec
-from tackle.models import HookCallInput
-from tackle.parser import split_input_data
+from tackle import get_hook, tackle
 from tackle.factory import new_context
+from tackle.models import HookCallInput
+from tackle.parser import run_hook_exec, split_input_data
 
 SPLIT_INPUT_FIXTURES: list[tuple[dict, tuple[int, int, int]]] = [
     (

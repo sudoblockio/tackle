@@ -1,7 +1,8 @@
-from tackle.main import tackle
+import shutil
 
 import pytest
-import shutil
+
+from tackle.main import tackle
 
 
 @pytest.fixture()
@@ -22,6 +23,7 @@ def test_provider_tackle_local():
     assert output['shell']['stuff'] == 'bing'
     assert output['shell']['read_stuff']['stuff'] == 'things'
     assert output['additional_context']['read_stuff']['stuff'] == 'things'
+
 
 def test_provider_tackle_local_no_context():
     output = tackle('local-no-context.yaml')

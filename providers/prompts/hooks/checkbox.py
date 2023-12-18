@@ -1,11 +1,11 @@
 import sys
-from InquirerPy import prompt
-from InquirerPy.base.control import Choice
 from typing import Union
 
-from tackle import BaseHook, Field, Context
+from InquirerPy import prompt
+from InquirerPy.base.control import Choice
+
+from tackle import BaseHook, Context, Field, exceptions
 from tackle.utils.data_crud import get_readable_key_path
-from tackle import exceptions
 
 
 class InquirerCheckboxHook(BaseHook):
@@ -46,8 +46,11 @@ class InquirerCheckboxHook(BaseHook):
 
         choices_type = None
         for i, v in enumerate(self.choices):
-            if i != 0 and type(v) != choices_type:
-                raise ValueError("All items need to be of the same type")
+            if i != 0 and type(v) != choices_type:  # noqa: E721
+                raise exceptions.HookCallException(
+                    "All items need to be of the same type",
+                    context=context,
+                )
             choices_type = type(v)
 
         if choices_type == str:

@@ -2,7 +2,7 @@
 
 > Status: Not implemented
 
-This proposal is about creating a number of default methods that can be called on any hook. It is being proposed in response to a deficiency in 
+This proposal is about creating a number of default methods that can be called on any hook. It is being proposed in response to a deficiency in
 
 - flatten
 - splat

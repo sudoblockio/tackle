@@ -1,10 +1,11 @@
-from jinja2.exceptions import UndefinedError
-from jinja2 import FileSystemLoader
 from typing import Union
 
-from tackle import BaseHook, Field, Context
-from providers.generate.hooks.exceptions import UndefinedVariableInTemplate
+from jinja2 import FileSystemLoader
+from jinja2.exceptions import UndefinedError
+
 from providers.generate.hooks.common import init_context
+from providers.generate.hooks.exceptions import UndefinedVariableInTemplate
+from tackle import BaseHook, Context, Field
 
 
 class JinjaHook(BaseHook):

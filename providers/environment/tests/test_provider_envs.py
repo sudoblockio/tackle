@@ -1,7 +1,9 @@
 import os
-from tackle.main import tackle
-import pytest
 import platform
+
+import pytest
+
+from tackle.main import tackle
 
 
 @pytest.fixture()

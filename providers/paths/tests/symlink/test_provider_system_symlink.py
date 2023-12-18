@@ -1,7 +1,9 @@
 """Tests dict input objects for `tackle.providers.system.hooks.symlink` module."""
-from tackle.main import tackle
-import pytest
 import os
+
+import pytest
+
+from tackle.main import tackle
 
 
 @pytest.fixture()

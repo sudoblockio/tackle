@@ -1,8 +1,8 @@
-from typing import Union, Any
+from typing import Any, Union
 
-from tackle import BaseHook, Field, Context
-from tackle.utils.data_crud import encode_key_path, nested_get
+from tackle import BaseHook, Context, Field
 from tackle.exceptions import HookCallException
+from tackle.utils.data_crud import encode_key_path, nested_get
 
 # Hack because fallback value should be able to be None so None can't be default
 # -> string instead
@@ -51,7 +51,7 @@ class GetKeyHook(BaseHook):
             if self.fallback == FALLBACK_VALUE:
                 raise HookCallException(
                     f"Could not find a key in {self.path} in any context.",
-                    context=context
+                    context=context,
                 )
             if self.verbose:
                 print(f"Using fallback={self.fallback}.")

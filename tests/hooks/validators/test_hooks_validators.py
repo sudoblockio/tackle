@@ -1,18 +1,21 @@
 import pytest
 
-from tackle import tackle, exceptions
+from tackle import exceptions, tackle
 
 
-@pytest.mark.parametrize("file_name", [
-    'expanded.yaml',
-    'expanded-after.yaml',
-    'dict-parse.yaml',
-    'compact.yaml',
-    'compact-context.yaml',
-    'compact-default.yaml',
-    'type-union.yaml',
-    'full.yaml',
-])
+@pytest.mark.parametrize(
+    "file_name",
+    [
+        'expanded.yaml',
+        'expanded-after.yaml',
+        'dict-parse.yaml',
+        'compact.yaml',
+        'compact-context.yaml',
+        'compact-default.yaml',
+        'type-union.yaml',
+        'full.yaml',
+    ],
+)
 def test_hooks_validators_expanded(file_name):
     output = tackle(file_name)
 

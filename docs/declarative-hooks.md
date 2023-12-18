@@ -25,7 +25,7 @@ hook_call:
 
 #### Input fields
 
-Declarative hooks can have input fields with types, defaults, validators, and other parameters that mirrors functionality of pydantic's `Field`. There are many forms that 
+Declarative hooks can have input fields with types, defaults, validators, and other parameters that mirrors functionality of pydantic's `Field`. There are many forms that
 
 
 

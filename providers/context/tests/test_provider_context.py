@@ -20,6 +20,7 @@ def test_provider_system_hook_dicts_update_reference():
     output = tackle('update-reference.yaml')
     assert output['update_map']['stuff']['foo'] == 'bar'
 
+
 def test_provider_system_hook_dicts_pop():
     output = tackle('pop.yaml')
     assert 'stuff' not in output['pop_map']

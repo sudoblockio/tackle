@@ -4,7 +4,7 @@ except ModuleNotFoundError:
     import tomllib as toml
 
 import os
-from typing import Union, MutableMapping
+from typing import MutableMapping, Union
 
 from tackle import BaseHook, Field
 

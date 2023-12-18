@@ -1,8 +1,8 @@
 import pytest
 
-from tackle.factory import new_data
-from tackle.context import Context, Source, Data
 from tackle import exceptions
+from tackle.context import Context, Data, Source
+from tackle.factory import new_data
 
 
 @pytest.fixture()
@@ -17,9 +17,7 @@ def patch_extract_base_file(mocker):
 
 
 def test_factory_data_new_data():
-    data = new_data(context=Context(
-        source=Source(file='tackle.yaml')
-    ))
+    data = new_data(context=Context(source=Source(file='tackle.yaml')))
     assert data.raw_input['stuff'] == 'things'
 
 

@@ -11,8 +11,8 @@ from __future__ import annotations
 
 import typing
 import warnings
-from types import resolve_bases, prepare_class
-from typing import Any, cast, Tuple
+from types import prepare_class, resolve_bases
+from typing import Any, Tuple, cast
 
 from pydantic import BaseModel
 
@@ -30,16 +30,16 @@ from tackle.pydantic.config import DclHookModelConfig
 
 # When updating, only copy over the function
 def create_model(
-        __model_name: str,
-        *,
-        # __config__: ConfigDict | None = None,
-        __config__: DclHookModelConfig | None = None,
-        __base__: type[Model] | tuple[type[Model], ...] | None = None,
-        __module__: str = __name__,
-        __validators__: dict[str, AnyClassMethod] | None = None,
-        __cls_kwargs__: dict[str, Any] | None = None,
-        __slots__: tuple[str, ...] | None = None,
-        **field_definitions: Any,
+    __model_name: str,
+    *,
+    # __config__: ConfigDict | None = None,
+    __config__: DclHookModelConfig | None = None,
+    __base__: type[Model] | tuple[type[Model], ...] | None = None,
+    __module__: str = __name__,
+    __validators__: dict[str, AnyClassMethod] | None = None,
+    __cls_kwargs__: dict[str, Any] | None = None,
+    __slots__: tuple[str, ...] | None = None,
+    **field_definitions: Any,
 ) -> type[Model]:
     """
     Dynamically create a model.
@@ -81,7 +81,8 @@ def create_model(
         if f_name.startswith('_'):
             warnings.warn(
                 f'fields may not start with an underscore, ignoring "{f_name}"',
-                RuntimeWarning)
+                RuntimeWarning,
+            )
         if isinstance(f_def, tuple):
             f_def = cast('tuple[str, Any]', f_def)
             try:
@@ -98,8 +99,10 @@ def create_model(
             annotations[f_name] = f_annotation
         fields[f_name] = f_value
 
-    namespace: dict[str, Any] = {'__annotations__': annotations,
-                                 '__module__': __module__}
+    namespace: dict[str, Any] = {
+        '__annotations__': annotations,
+        '__module__': __module__,
+    }
     if __validators__:
         namespace.update(__validators__)
     namespace.update(fields)
@@ -110,5 +113,10 @@ def create_model(
     if resolved_bases is not __base__:
         ns['__orig_bases__'] = __base__
     namespace.update(ns)
-    return meta(__model_name, resolved_bases, namespace,
-                __pydantic_reset_parent_namespace__=False, **kwds)
+    return meta(
+        __model_name,
+        resolved_bases,
+        namespace,
+        __pydantic_reset_parent_namespace__=False,
+        **kwds,
+    )

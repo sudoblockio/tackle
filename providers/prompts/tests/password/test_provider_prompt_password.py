@@ -1,7 +1,7 @@
 import pytest
 
-from tackle import Context
 from providers.prompts.hooks.password import InquirerPasswordHook
+from tackle import Context
 
 
 @pytest.fixture()
@@ -10,8 +10,7 @@ def run_mocked_hook(mocker):
         # Patch the `prompt` method which is called by the hook and will since it
         # requires user input from terminal
         mocker.patch(
-            'providers.prompts.hooks.password.prompt',
-            return_value=return_value
+            'providers.prompts.hooks.password.prompt', return_value=return_value
         )
         context = Context(key_path=[])
         hook = InquirerPasswordHook(**kwargs)

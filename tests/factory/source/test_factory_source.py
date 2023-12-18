@@ -1,12 +1,13 @@
 import os
+import shutil
 import tempfile
 from pathlib import Path
+
 import pytest
-import shutil
 
 from tackle import exceptions, main
-from tackle.factory import new_source, new_inputs
-from tackle.context import InputArguments, Context
+from tackle.context import Context, InputArguments
+from tackle.factory import new_inputs, new_source
 from tackle.settings import settings
 
 """
@@ -48,9 +49,7 @@ def test_factory_source_new_source_find_in_parent_arg(cd):
             kwargs={},
         ),
     )
-    source = new_source(
-        find_in_parent=True,
-        context=context)
+    source = new_source(find_in_parent=True, context=context)
     assert source.base_dir.endswith('source')
     assert source.file.endswith('tackle.yaml')
     assert 'tests' in source.file
@@ -66,7 +65,8 @@ def test_factory_source_new_source_dict_arg():
                 args=[{'foo': 'bar'}],
                 kwargs={},
             ),
-        ))
+        )
+    )
     assert source.raw == {'foo': 'bar'}
 
 
@@ -81,7 +81,8 @@ def test_factory_source_new_source_int_arg():
                 args=[1],
                 kwargs={},
             ),
-        ))
+        )
+    )
     # Source is the tackle file in the current directory
     assert source.base_dir.endswith('source')
 
@@ -95,7 +96,8 @@ def test_factory_source_new_source_zip(cd):
                 args=['zipped-provider.zip'],
                 kwargs={},
             ),
-        ))
+        )
+    )
     assert os.path.exists(source.directory)
     # Actually unzips in a tmp dir
     if source.directory.endswith('zipped-provider'):
@@ -129,7 +131,8 @@ def test_factory_source_new_source_repo(mocker, repo_path):
                 args=['test/bar'],
                 kwargs={},
             ),
-        ))
+        ),
+    )
     assert source.directory == repo_path == source.base_dir
     assert source.file.endswith('tackle.yaml')
     assert not source.find_in_parent

@@ -1,6 +1,6 @@
 from typing import Any
 
-from tackle import BaseHook, Field, Context
+from tackle import BaseHook, Context, Field
 from tackle.render import render_variable
 
 
@@ -10,6 +10,7 @@ class VarHook(BaseHook):
      otherwise you wouldn't need this hook at all. Does recursion when the value being
      rendered is still renderable - ie a template within a template.
     """
+
     hook_name: str = 'var'
     input: Any = Field(
         ...,
@@ -17,8 +18,7 @@ class VarHook(BaseHook):
         render_by_default=True,
     )
     no_recursion: bool = Field(
-        False,
-        description="Don't recursively render embedded templates."
+        False, description="Don't recursively render embedded templates."
     )
 
     args: list = ['input']
