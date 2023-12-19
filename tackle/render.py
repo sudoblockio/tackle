@@ -9,19 +9,15 @@ from pydantic import ValidationError
 from tackle import exceptions
 from tackle.special_vars import special_variables
 
-# from tackle.utils.command import literal_eval
-
 if TYPE_CHECKING:
-    from tackle.models import BaseHook, Context
+    from tackle import Context
+    from tackle.models import BaseHook
 
 
 def render_variable(context: 'Context', raw: Any):
     """
     Render the raw input. Does recursion with dict and list inputs, otherwise renders
     string.
-
-    :param raw: The value to be rendered.
-    :return: The rendered value as literal type.
     """
     if raw is None:
         return None
@@ -80,7 +76,7 @@ def create_render_context(
 class JinjaHook:
     """
     Object to temporarily place inside jinja.globals that can be called when rendering.
-     I
+     Used via __call__ method to execute a hook.
     """
 
     def __init__(self, Hook: Type['BaseHook'], context: 'Context'):
@@ -89,7 +85,7 @@ class JinjaHook:
 
     def __call__(self, *args, **kwargs):
         """Associate any args with kwargs and call the hook."""
-        from tackle.parser import evaluate_args
+        from tackle.parser import evaluate_args, run_hook_exec
 
         args_list = list(args)
         for i in args_list:
@@ -100,11 +96,7 @@ class JinjaHook:
         evaluate_args(
             args=args_list, hook_dict=kwargs, Hook=self.Hook, context=self.context
         )
-
-        from tackle.parser import run_hook_exec
-
         hook = self.Hook(**kwargs)
-
         return run_hook_exec(context=self.context, hook=hook)
 
 

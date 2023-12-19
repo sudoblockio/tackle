@@ -1082,9 +1082,9 @@ def walk_document(context: 'Context', value: DocumentValueType):
             return set_key(context=context, value={})
         # Iterate through all the keys now of a dict since we know it is not a hook
         for k, v in value.copy().items():
-            k, v = key_macro(context, key=k, value=v)
-            context.key_path.append(k)
-            walk_document(context=context, value=v)  # recurse
+            key, value = key_macro(context, key=k, value=v)
+            context.key_path.append(key)
+            walk_document(context=context, value=value)  # recurse
             context.key_path.pop()
             if context.break_:
                 return
@@ -1109,9 +1109,13 @@ def walk_document(context: 'Context', value: DocumentValueType):
 
 
 def get_declarative_hook_kwargs(context: 'Context', Hook: CompiledHookType) -> dict:
+    """
+    Consume input kwargs and set them as defaults + validate with hook's field type. If
+     the kwarg is a bool (ie a flag), we need to check the default as the inverse is
+     actually set.
+    """
     kwargs = {}
     for k, v in context.input.kwargs.copy().items():
-        # Consume input kwargs and set them as defaults + validate with hook's field type
         if k in Hook.model_fields:
             # Check if the field is a bool type
             if Hook.model_fields[k].annotation == bool:
