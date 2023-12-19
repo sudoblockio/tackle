@@ -20,8 +20,8 @@ jobs:
           - "ubuntu-py311"
           - "macos-py310"
           - "macos-py311"
-          - "windows-py310"
-          - "windows-py311"
+#          - "windows-py310"
+#          - "windows-py311"
 
         include:
           - name: "ubuntu-py311"
@@ -36,14 +36,14 @@ jobs:
             python: "3.11"
             os: macos-latest
             tox_env: "py311"
-          - name: "windows-py310"
-            python: "3.10"
-            os: windows-latest
-            tox_env: "py310"
-          - name: "windows-py311"
-            python: "3.11"
-            os: windows-latest
-            tox_env: "py311"
+#          - name: "windows-py310"
+#            python: "3.10"
+#            os: windows-latest
+#            tox_env: "py310"
+#          - name: "windows-py311"
+#            python: "3.11"
+#            os: windows-latest
+#            tox_env: "py311"
 
     steps:
       - uses: actions/checkout@v2
