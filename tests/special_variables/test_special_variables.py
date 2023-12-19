@@ -34,7 +34,6 @@ def special_variables_context() -> Context:
         ('{{version}}', lambda x: x == platform.version()),
         ('{{processor}}', lambda x: x == platform.processor()),
         ('{{architecture}}', lambda x: x == platform.architecture()),
-        ('{{lsb_release}}', lambda x: get_linux_distribution()),
         ('{{current_file}}', lambda x: x.endswith('.tackle.yaml')),
         ('{{calling_directory}}', lambda x: x.endswith('special_variables')),
         ('{{current_directory}}', lambda x: x.endswith('special_variables')),
