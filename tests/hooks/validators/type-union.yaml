@@ -3,7 +3,7 @@ MyHook<-:
   foo:
     type: Union[str, int]
     validator:
-      if_bar->: return {{v}} --if v=='bar'
+      return->: v --if v=='bar'
       raise->: Not bar
 
 call->: MyHook --foo bar

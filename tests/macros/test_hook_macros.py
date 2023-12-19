@@ -61,7 +61,7 @@ HOOK_INPUT_FIXTURES = [
                 'type': 'Any',
                 'default_factory': {
                     'stuff': {'->': 'foo', 'bar': 'bar'},
-                    'return->': '{{stuff}}',
+                    'return->': 'stuff',
                 },
             }
         },
@@ -85,7 +85,7 @@ HOOK_INPUT_FIXTURES = [
                 'type': 'Any',
                 'default_factory': {
                     'stuff': {'->': 'foo', 'type': 'bar'},
-                    'return->': '{{stuff}}',
+                    'return->': 'stuff',
                 },
             }
         },
@@ -96,7 +96,7 @@ HOOK_INPUT_FIXTURES = [
             'stuff': {
                 'type': 'str',
                 'bar': 'bar',
-                'default_factory': {'stuff': {'->': 'foo'}, 'return->': '{{stuff}}'},
+                'default_factory': {'stuff': {'->': 'foo'}, 'return->': 'stuff'},
             }
         },
     ),
@@ -107,7 +107,7 @@ HOOK_INPUT_FIXTURES = [
                 'type': 'str',
                 'default_factory': {
                     'stuff': {'->': 'foo', 'bar': 'bar'},
-                    'return->': '{{stuff}}',
+                    'return->': 'stuff',
                 },
             }
         },

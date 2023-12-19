@@ -4,20 +4,21 @@ import pytest
 
 from tackle import exceptions, tackle
 
-FIXTURES = [
-    ('fields.yaml', 'foo'),
-    # ('method.yaml', 'foo'),
-    # ('args.yaml', 'bar'),
-    # ('args-method.yaml', 'bar'),
-    # ('exec.yaml', 'foo'),
-    # ('method-exec.yaml', 'foo'),
-    # ('field-hooks-exec-args.yaml', 'bar'),
-    # ('field-hooks-exec-args-method.yaml', 'bar'),
-    # ('multi-line.yaml', 'bar'),
-]
 
-
-@pytest.mark.parametrize("fixture,expected_output", FIXTURES)
+@pytest.mark.parametrize(
+    "fixture,expected_output",
+    [
+        ('fields.yaml', 'foo'),
+        ('method.yaml', 'foo'),
+        ('args.yaml', 'bar'),
+        ('args-method.yaml', 'bar'),
+        ('exec.yaml', 'foo'),
+        ('method-exec.yaml', 'foo'),
+        ('field-hooks-exec-args.yaml', 'bar'),
+        ('field-hooks-exec-args-method.yaml', 'bar'),
+        ('multi-line.yaml', 'bar'),
+    ],
+)
 def test_hooks_field_hooks_parameterized(fixture, expected_output):
     """Check that when a declarative hook's default is a hook that it is parsed."""
     output = tackle(fixture)

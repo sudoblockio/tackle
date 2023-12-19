@@ -57,11 +57,6 @@ SPECIAL_KEY_MACRO_FIXTURES: list[tuple[str, Any, dict]] = [
         {'->': 'import', 'src': 'foo'},
     ),
     (
-        'rendered_list->',
-        ['foo', 'bar'],
-        {'->': 'literal', 'input': ['foo', 'bar']},
-    ),
-    (
         'block_dict->',
         {'for': 'things', 'foo': 'bar'},
         {'->': 'block', 'for': 'things', 'items': {'foo': 'bar'}},
@@ -79,7 +74,12 @@ SPECIAL_KEY_MACRO_FIXTURES: list[tuple[str, Any, dict]] = [
     (
         'debug->',
         None,
-        {'->': 'debug'},
+        {'->': 'debug', 'key': None},
+    ),
+    (
+        'rendered_list->',
+        ['foo', 'bar'],
+        {'->': 'literal', 'input': ['foo', 'bar']},
     ),
 ]
 
@@ -87,8 +87,7 @@ SPECIAL_KEY_MACRO_FIXTURES: list[tuple[str, Any, dict]] = [
 @pytest.mark.parametrize("key,value,expected_value", SPECIAL_KEY_MACRO_FIXTURES)
 def test_key_macros_parameterized(context, key, value, expected_value):
     """Check that the key_macro expands special keys right."""
-    context.key_path = [key]
-    output_value = km.key_macro(context=context, value=value)
+    _, output_value = km.key_macro(context, key=key, value=value)
 
     assert output_value == expected_value
 

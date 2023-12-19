@@ -30,6 +30,13 @@ def test_hooks_validators_complex_types():
     assert output['error'] == 1
 
 
+def test_hooks_validators_composed_type():
+    output = tackle('composed-type.yaml')
+
+    assert output['call']['foo'] == '1.1.1.1'
+    assert output['error'] == 1
+
+
 def test_hooks_validators_error_mode():
     """Mode should be `before`, `after`, or `wrap`."""
     with pytest.raises(exceptions.MalformedHookFieldException):

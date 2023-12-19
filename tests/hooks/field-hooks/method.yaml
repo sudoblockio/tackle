@@ -14,7 +14,7 @@ MyHook<-:
     expanded_str_factory:
       default_factory:
         expanded_str->: literal foo
-        return->: "{{expanded_str}}"
+        return->: expanded_str
 
     expanded_factory_dict:
       default_factory:
@@ -23,7 +23,7 @@ MyHook<-:
 
     compact_map:
       bar: foo
-      return->: "{{bar}}"
+      return->: bar
 
     literal_expanded:
       ->: literal foo

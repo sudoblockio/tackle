@@ -5,7 +5,7 @@ MyHook<-:
     type: str
     default: foo
     validator:
-      if_bar->: return {{v}} --if info.foo=='bar'
+      return->: v --if info.foo=='bar'
       raise->: Not bar
 
 call->: MyHook --foo bar

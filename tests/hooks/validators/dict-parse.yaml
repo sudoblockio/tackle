@@ -9,7 +9,7 @@ MyHook<-:
       body:
         bar:
           baz: bar
-        if_bar->: return {{bar.baz}} --if vv=='bar'
+        return->: bar.baz --if vv=='bar'
         raise->: Not bar
 
 call->: MyHook --foo bar

@@ -1,0 +1,4 @@
+do(i = 'foo')<-:
+  return->: i
+
+call->: do

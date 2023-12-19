@@ -1082,8 +1082,8 @@ def walk_document(context: 'Context', value: DocumentValueType):
             return set_key(context=context, value={})
         # Iterate through all the keys now of a dict since we know it is not a hook
         for k, v in value.copy().items():
+            k, v = key_macro(context, key=k, value=v)
             context.key_path.append(k)
-            v = key_macro(context=context, value=v)
             walk_document(context=context, value=v)  # recurse
             context.key_path.pop()
             if context.break_:

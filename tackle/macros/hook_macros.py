@@ -76,19 +76,19 @@ def expand_default_factory(
     elif value['default_factory'] is None:
         value['default_factory'] = {
             f'{key}->': value['default_factory'],
-            'return->': "{{" + key + "}}",
+            'return->': key,
         }
     elif isinstance(value['default_factory'], str):
         # Convert to dict which then returns the key
         value['default_factory'] = {
             f'{key}->': value['default_factory'],
-            'return->': "{{" + key + "}}",
+            'return->': key,
         }
     elif '->' in value['default_factory'] or '_>' in value['default_factory']:
         # Already have whole arrow so nest value in a key and return that
         value['default_factory'] = {
             key: value['default_factory'],
-            'return->': "{{" + key + "}}",
+            'return->': key,
         }
 
 
@@ -303,7 +303,7 @@ def str_hook_macro(hook_input_raw: str) -> dict:
           tmp_in->: literal bar
           tmp_out->: return {{tmp_in}}
     """
-    return {'tmp_in->': hook_input_raw, 'tmp_out->': 'return {{tmp_in}}'}
+    return {'tmp_in->': hook_input_raw, 'tmp_out->': 'return tmp_in'}
 
 
 def hook_macros(

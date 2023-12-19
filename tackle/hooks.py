@@ -385,7 +385,7 @@ def create_validator_field_type(
         raise "This should never happen..."
 
     # Create a partial callable with the only parameters missing required by pydantic
-    # to match the expected function signiture of the validator
+    # to match the expected function signature of the validator
     wrapped_validator_func = partial(
         validator_func,
         context,

@@ -13,7 +13,7 @@ class DebugHook(BaseHook):
     """Hook for debugging that prints the output data and pauses runtime."""
 
     hook_name: str = 'debug'
-    key: str = Field(None, description="A path to a key to debug")
+    key: str | None = Field(None, description="A path to a key to debug")
     data: str = Field(
         None,
         description="Which data to examine. One of `public`, `private`, "

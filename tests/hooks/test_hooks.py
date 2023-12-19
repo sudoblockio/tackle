@@ -62,7 +62,7 @@ def test_create_default_factory_walker():
     value = {
         'default_factory': {
             'in': {'->': 'literal bar'},
-            'out': {'->': 'return {{in}}'},
+            'out': {'->': 'return in'},
         }
     }
     create_default_factory(context=new_context(), hook_name='', value=value)

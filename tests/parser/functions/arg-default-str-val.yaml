@@ -1,0 +1,3 @@
+do()<-: literal('foo')
+
+call->: do

@@ -66,7 +66,23 @@ def test_parser_split_input_data(raw_input, counts):
     assert len(context.hooks.public) == counts[2]
 
 
-def test_run_hook_exec():
+# @pytest.mark.parametrize("hook_input,expected_output", [
+#     ('do<-', True),
+#     ('()do<-', True),
+#     ('(foo)do<-', True),
+#     ('(b bar)do<-', True),
+#     ('(a)do(b)<-', True),
+#     ('(a)do(b list[str])<-', True),
+#     ('do(foo)<-', True),
+#     ('do(b bar)<-', True),
+#     ('do(b int = 1)<-', True),
+#     ('do(b list[str])<-', True),
+# ])
+# def test_parser_is_hook(hook_input, expected_output):
+#     assert is_dcl_hook(hook_input) == expected_output
+
+
+def test_parser_run_hook_exec():
     """When a hook is called that does not need any supplied params it works."""
     context = new_context()
     context.data.public = {'foo': 'bar'}
@@ -77,7 +93,7 @@ def test_run_hook_exec():
     assert output == 'foo'
 
 
-def test_run_hook_exec_context():
+def test_parser_run_hook_exec_context():
     """When a hook is called that does need supplied params such as context it works."""
     context = new_context()
     context.data.public = {'foo': 'bar'}
@@ -88,7 +104,7 @@ def test_run_hook_exec_context():
     assert context.data.public['foo'] == 'baz'
 
 
-def test_run_hook_exec_context_quoted():
+def test_parser_run_hook_exec_context_quoted():
     """
     Sometimes the user will be quoting the type - ie def call(self, context: 'Context')
      so we need to account for this.

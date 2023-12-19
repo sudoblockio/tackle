@@ -3,10 +3,8 @@ MyHook<-:
   foo:
     type: IPv4Address
     validator:
-      if_bar->: return 1.1.1.1 --if v=='bar'
+      returns->: 1.1.1.1 --if v=='bar'
       raise->: Not bar
 
 call->: MyHook --foo bar
 error->: MyHook --foo baz --try --except 1
-
-out->: yaml output.yaml {{call}}

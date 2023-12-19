@@ -4,7 +4,7 @@ MyHook<-:
     validator:
       mode: SOMETHING_WRONG
       body:
-        if_bar->: return --if vv=='bar'
+        return->: --if vv=='bar'
         raise->: Not bar
       foo:
         bar: baz
