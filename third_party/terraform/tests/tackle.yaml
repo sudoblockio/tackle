@@ -1,0 +1,40 @@
+stuff: things
+
+vars:
+  type: terraform_variables
+  variables_file: variables.tf
+
+output:
+  type: json
+  path: terraform.tfvars.json
+  contents: "{{ vars }}"
+
+vars_with_skip:
+  type: terraform_variables
+  merge: true
+  variables_file: variables.tf
+  var_skip_list:
+    - owner
+
+vars_with_list:
+  type: terraform_variables
+  variables_file: variables.tf
+  var_list:
+    - owner
+
+output_with_list:
+  type: json
+  path: terraform_list.tfvars.json
+  contents: "{{ vars_with_list }}"
+
+going to merge this:
+  type: terraform_variables
+  variables_file: variables.tf
+  merge: true
+  var_skip_list:
+    - owner
+
+output_merged:
+  type: json
+  path: terraform_merged.tfvars.json
+  contents: "{{ this }}"
