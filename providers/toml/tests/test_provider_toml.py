@@ -1,4 +1,5 @@
 from tackle.main import tackle
+from tackle.utils.hooks import get_hook
 
 
 def test_provider_toml_hook_read():
@@ -6,14 +7,7 @@ def test_provider_toml_hook_read():
     assert 'owner' in o['read'].keys()
 
 
-# @pytest.fixture()
-# def clean_toml():
-#     """Remove outputs."""
-#     yield
-#     if os.path.exists('writing.toml'):
-#         os.remove('writing.toml')
-#
-#
-# def test_provider_toml_hook_write(clean_toml):
-#     tackle('write.yaml', no_input=True)
-#     assert os.path.exists('writing.toml')
+def test_provider_toml_decode():
+    Hook = get_hook('toml_decode')
+    output = Hook(data='[Section1]\nkeyA = "valueA"\nkeyB = "valueB"\n').exec()
+    assert output == {"Section1": {"keyA": "valueA", "keyB": "valueB"}}

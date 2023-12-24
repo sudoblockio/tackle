@@ -1,7 +1,8 @@
 
 name: TOML Provider
 
-description: Reading and writing toml files.
+description: |
+  Reading toml files. For writing toml you will need a third party provider since this wraps python's native toml library which only supports reads.
 
 examples: []
 
@@ -14,13 +15,3 @@ hook_examples:
           ->: toml
           path: path/to/toml/file.toml
         compact->: toml path/to/toml/file.toml
-    - name: Write toml
-      description: Write a toml file from a key
-      content: |
-        stuff:
-          and: things
-        expanded:
-          ->: toml
-          path: path/to/toml/file.toml
-          contents:  "{{ stuff }}"
-        compact->: toml path/to/toml/file.toml "{{ this }}"

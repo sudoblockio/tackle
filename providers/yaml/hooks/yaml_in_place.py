@@ -1,7 +1,3 @@
-"""
-TODO: https://github.com/sudoblockio/tackle/issues/100
- Should change
-"""
 import os
 import re
 from typing import Any, Dict, List, Union
@@ -15,7 +11,7 @@ from tackle.utils.data_crud import merge
 class YamlHook(BaseHook):
     """
     Hook for modifying a yaml in place (ie read, transform, and write back to the file
-     in one operation). WIP -> Contributions welcome.
+     in one operation). WIP -> https://github.com/sudoblockio/tackle/issues/100.
     """
 
     hook_name: str = 'yaml_in_place'

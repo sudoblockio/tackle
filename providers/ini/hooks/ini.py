@@ -1,5 +1,6 @@
 import configparser
 import os
+from io import StringIO
 from typing import Union
 
 from tackle import BaseHook, Field
@@ -53,3 +54,52 @@ class IniHook(BaseHook):
                     output[section][option] = config.get(section, option)
 
             return output
+
+
+class IniEncodeHook(BaseHook):
+    """Hook for converting a dict to an ini encoded string."""
+
+    hook_name: str = 'ini_encode'
+    data: dict | str = Field(
+        ...,
+        description="Map or renderable string to data to convert to ini string.",
+        render_by_default=True,
+    )
+    args: list = ['data']
+
+    def exec(self) -> str:
+        if not isinstance(self.data, dict):
+            raise ValueError("INI serialization requires a dictionary input")
+
+        config = configparser.ConfigParser()
+        # https://stackoverflow.com/a/19359720/12642712
+        config.optionxform = str
+
+        for section, values in self.data.items():
+            config[section] = values
+
+        with StringIO() as string_stream:
+            config.write(string_stream)
+            return string_stream.getvalue()
+
+
+class IniDecodeHook(BaseHook):
+    """Hook for decoding an ini string to a dict."""
+
+    hook_name: str = 'ini_decode'
+    data: str = Field(
+        ...,
+        description="Yaml string to convert to dict.",
+    )
+    args: list = ['data']
+
+    def exec(self) -> dict:
+        config = configparser.ConfigParser()
+        # https://stackoverflow.com/a/19359720/12642712
+        config.optionxform = str
+        string_stream = StringIO(self.data)
+        config.read_file(string_stream)
+
+        # Convert to a regular dictionary
+        output = {section: dict(config.items(section)) for section in config.sections()}
+        return output

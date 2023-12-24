@@ -101,12 +101,12 @@ def test_provider_system_hook_yaml_append(clean_outputs):
 
 
 def test_yaml_yamlify(clean_outputs):
-    output = tackle('yamlencode.yaml', no_input=True)
+    output = tackle('yaml_encode.yaml', no_input=True)
     assert isinstance(output['out'], str)
     assert 'stuff: things' in output['out']
 
 
 def test_yaml_yamldecode(clean_outputs):
-    output = tackle('yamldecode.yaml', no_input=True)
+    output = tackle('yaml_decode.yaml', no_input=True)
     assert isinstance(output['out'], dict)
     assert output['out']['stuff'] == 'things'

@@ -1,0 +1,6 @@
+in->: file read.yaml
+
+#out_filter->: "{{in|yamldecode}}"
+out_function->: "{{yaml_decode(in)['stuff']}}"
+
+out->: yaml_decode {{in}}

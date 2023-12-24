@@ -1,4 +1,5 @@
 import os
+from io import StringIO
 from typing import Union
 
 from ruyaml import YAML
@@ -55,7 +56,7 @@ class YamlHook(BaseHook):
 class YamlEncodeHook(BaseHook):
     """Hook for converting a dict to a yaml encoded string."""
 
-    hook_name: str = 'yamlencode'
+    hook_name: str = 'yaml_encode'
     data: Union[dict, list, str] = Field(
         ...,
         description="Map/list or renderable string to data to convert to yaml string.",
@@ -63,22 +64,17 @@ class YamlEncodeHook(BaseHook):
     )
     args: list = ['data']
 
-    def exec(self) -> Union[dict, str]:
-        from io import StringIO
-
+    def exec(self) -> str:
         yaml = YAML()
-        options = {}
-        string_stream = StringIO()
-        yaml.dump(self.data, string_stream, **options)
-        output_str = string_stream.getvalue()
-        string_stream.close()
-        return output_str
+        with StringIO() as string_stream:
+            yaml.dump(self.data, string_stream)
+            return string_stream.getvalue()
 
 
 class YamlDecodeHook(BaseHook):
     """Hook for decoding a yaml string to a dict."""
 
-    hook_name: str = 'yamldecode'
+    hook_name: str = 'yaml_decode'
     data: str = Field(..., description="Yaml string to convert to dict.")
     args: list = ['data']
 
