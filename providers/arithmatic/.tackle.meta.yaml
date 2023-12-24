@@ -1,0 +1,24 @@
+name: Arithmatic Provider
+
+description: |
+  Hooks that do arithmatic.
+
+examples:
+  - name: "[modulo](modulo.md)"
+    description: Take the modulo of a number
+    content: |
+      odd->: modulo 5 2
+      even->: modulo 6 2
+    output: |
+      output: 1
+      even: 0
+
+hook_examples:
+  modulo:
+    - description: Take the modulo of a number
+      content: |
+        odd->: modulo 5 2
+        even->: modulo 6 2
+      output: |
+        output: 1
+        even: 0
