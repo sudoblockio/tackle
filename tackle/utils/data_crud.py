@@ -73,7 +73,7 @@ def get_readable_key_path(key_path: list) -> str:
     return '.'.join(readable_key_path)
 
 
-def nested_delete(element, keys):
+def nested_delete(element: Union[dict, list], keys: list):
     """
     Delete items in a generic element (list / dict) based on a key path in the form of
      a list with strings for keys and byte encoded integers for indexes in a list.
@@ -94,7 +94,6 @@ def nested_delete(element, keys):
             # Case for when we have an embedded item in a list but don't know if it is
             # a map with multiple keys that needs to have a single key removed or the
             # whole item itself
-            # TODO
             if isinstance(element[decode_list_index(keys[0])], dict):
                 # Further inspection to see if there are any other keys in the dict.
                 # If not, then remove the whole item otherwise recurse
@@ -125,7 +124,7 @@ def nested_get(element: Union[dict, list], keys: list):
     Getter for dictionary / list elements based on a key_path.
 
     :param element: A generic dictionary or list
-    :param keys: List of string and byte encoded integers.
+    :param keys: A list of string and byte encoded integers.
     :return: The value from the key_path
     """
     num_elements = len(keys)
@@ -151,7 +150,7 @@ def nested_set(element: Union[dict, list], keys: list, value: Any, index: int = 
      sets it.
 
     :param element: A generic dictionary or list
-    :param keys: List of string and byte encoded integers.
+    :param keys: A list of string and byte encoded integers.
     :param value: The value to set
     :param index: Index is only used when called recursively, not initially
     """
@@ -232,9 +231,11 @@ def set_temporary_context(
     value: Any,
     key_path: list,
 ) -> None:
-    """ """
-    # tmp_key_path = key_path[(len(context.key_path_block) - len(key_path)):]
-    # Remove the as many items off the key_path as we are indexed into a block
+    """
+    When setting data within a block, we need to not only set the public/private data
+     but also temporary data which is indexed based on the nearest keys to the block.
+    """
+    # Remove as many items off the key_path as we are indexed into a block
     # For instance - key_path = ['foo', 'bar'] + key_path_block = ['foo'] then
     # tmp_key_path = ['bar']
     tmp_key_path = key_path[len(context.key_path_block) :]
@@ -246,7 +247,7 @@ def set_temporary_context(
     # Check if temp data is None and create an empty dict otherwise
     if context.data.temporary is None or len(context.data.temporary) == 0:
         if isinstance(tmp_key_path[0], bytes):
-            # We don't need to worry about tmp data when we are inside of a list
+            # We don't need to worry about tmp data when we are inside a list
             return
         context.data.temporary = {}
     # Clean the key path of arrows
@@ -270,10 +271,7 @@ def get_set_temporary_context(
     target_context, set_key_path = get_target_and_key(
         context=context, key_path=context.key_path
     )
-    try:
-        value = nested_get(element=target_context, keys=set_key_path)
-    except KeyError as e:
-        raise e
+    value = nested_get(element=target_context, keys=set_key_path)
     set_temporary_context(
         context=context,
         value=value,

@@ -185,11 +185,14 @@ def run_help(context: 'Context', Hook: Type[BaseHook] = None):
     max_method_name_length = max([len(method['name']) for method in methods], default=0)
 
     # Calculate overall max width for alignment
-    max_name_length = max(
-        max_arg_name_length,
-        max_kwarg_name_length,
-        max_flag_name_length,
-        max_method_name_length,
+    max_name_length = (
+        max(
+            max_arg_name_length,
+            max_kwarg_name_length,
+            max_flag_name_length,
+            max_method_name_length,
+        )
+        + 2
     )
 
     template = Template(HELP_TEMPLATE)
@@ -199,7 +202,7 @@ def run_help(context: 'Context', Hook: Type[BaseHook] = None):
         flags=flags,
         general_help=general_help,
         general_kwargs=general_kwargs,
-        input_string=' '.join(context.input.args),
+        input_string=' '.join([i for i in context.input.args if i != 'help']),
         methods=methods,
         hook_name=hook_name,
         max_name_length=max_name_length,

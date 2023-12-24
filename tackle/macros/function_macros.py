@@ -1,3 +1,40 @@
+"""
+Examples:
+
+foo(bar str, baz str | int, bin union[base, str] = 'stuff') ->: old_value
+
+Should expand to:
+
+hook_name: foo
+value:
+  bar:
+    type: str
+  baz:
+    type: str | int
+  bin:
+    type: union[base, str]
+    default: stuff
+  exec: old_value
+
+Similarly, for methods:
+
+(f foo) bar (baz str) ->: old_value
+
+Should expand to:
+
+hook_name: foo
+self_name: f
+method_name: bar
+method_fields:
+  bar:
+    type: str
+  baz:
+    type: str | int
+  bin:
+    type: union[base, str]
+    default: stuff
+  exec: old_value
+"""
 import ast
 import re
 from typing import Any, Dict
@@ -7,11 +44,15 @@ from tackle.types import DEFAULT_HOOK_NAME, DocumentValueType
 
 
 def split_on_outer_parentheses(text):
-    """Split up a string based on balanced outermost parentheses."""
+    """
+    Splits a string based on balanced, outermost parentheses.
+
+    This function identifies segments enclosed by top-level parentheses and segments
+    outside any parentheses. It handles nested parentheses as well.
+    """
     # Pattern to match balanced outermost parentheses (including nested) or
     # non-parenthesis text
-    pattern = r'\([^()]*\)|\((?:[^()]|\([^()]*\))*\)'
-    matches = re.findall(pattern, text)
+    matches = re.findall(r'\([^()]*\)|\((?:[^()]|\([^()]*\))*\)', text)
 
     # Split the text by these matches and include the matches
     split_segments = []
@@ -32,7 +73,14 @@ def split_on_outer_parentheses(text):
     return split_segments
 
 
-def eval_quoted_string(s):
+def eval_quoted_string(s: str):
+    """
+    Evaluates a quoted string as a Python literal if possible.
+
+    If the string is enclosed in single or double quotes, it removes the quotes
+    and attempts to evaluate the string as a Python literal using `ast.literal_eval`.
+    If the evaluation fails, it returns the original string without quotes.
+    """
     if (s.startswith('"') and s.endswith('"')) or (
         s.startswith("'") and s.endswith("'")
     ):
@@ -47,6 +95,7 @@ def eval_quoted_string(s):
 
 
 def raise_if_found_arg(context: Context, found_kwarg: bool, key_raw: str):
+    """Raise an exception if a positional argument is found after a keyword argument."""
     if found_kwarg:
         raise exceptions.MalformedHookDefinitionException(
             "Can't put positional arguments before key word arguments in the "
@@ -63,12 +112,10 @@ def parse_function_args(
     key_raw: str,
 ) -> dict:
     """
-    - Split on commas that are not encapsulated by brackets
-    - Iterate over split items - these are the args
-    - Split on equal sign
-    - If len is 1 - First item is the type
-        - Cleanup types based on if the item is quoted or not and eval as literal
-    - If len is 2 - Second item is the default
+    Parses function arguments from a string representation.
+
+    This function processes a string containing function arguments, splitting them
+     into individual arguments and extracting their types and default values.
     """
     # Once we have found a kwarg we don't accept positional non-default args and throw
     found_kwarg = False
@@ -113,6 +160,7 @@ def parse_method_receiver(
     value: Any,
     key_raw: str,
 ) -> Dict[str, Any]:
+    """Parses a method receiver from a split hook string."""
     output = {
         'method_name': hook_split[1],
         'method_fields': parse_function_args(
@@ -146,32 +194,10 @@ def function_macro(
 ) -> (str, DocumentValueType, dict[str, dict[str, Any]]):  # hook_name, value, methods
     """
     Macro to expand declarative hook keys into functions if they contain a string with a
-     parenthesis wrapped function signature expression. For instance:
+     parenthesis wrapped function signature expression.
 
-    foo(bar str, baz str | int, bin union[base, str] = 'stuff') ->: old_value
-
-    Should expand to:
-
-    hook_name: foo
-    value:
-      bar:
-        type: str
-      baz:
-        type: str | int
-      bin:
-        type: union[base, str]
-        default: stuff
-      exec: old_value
-
-    Similarly
-
-    Process:
-    - Split the string on outer parenthesis
-        - Extract the function name
-    - Split on commas that are not encapsulated by brackets
-    - Iterate over chars until getting to whitespace - this is the variable name
-    - Iterate over chars until getting to equal sign - this is the variable type
-    - If hit equal sign, the remaining items are the default
+    Routes the parsing for functions and methods based on splitting the input string key
+     on closing parenthesis.
     """
     hook_split = split_on_outer_parentheses(key_raw)
     match len(hook_split):

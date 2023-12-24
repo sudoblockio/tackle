@@ -573,16 +573,8 @@ def create_dcl_hook_fields(
     hook_field_set: set[str] = set()
     hook_method_set: set[str] = set()
     for k, v in hook_input.model_extra.items():
-        if isinstance(v, LazyBaseHook):
-            # When inheriting a method it is already a LazyBaseHook
-            field_dict[k] = (Callable, v)
-            hook_method_set.add(k)
-            continue
-        elif isinstance(v, FieldInfo):
+        if isinstance(v, FieldInfo):
             field_dict[k] = (v.annotation, v)
-            if v.annotation == LazyBaseHook:
-                hook_method_set.add(k)
-                continue
         elif '<-' in v:
             # Raw public method
             field_dict[k] = (

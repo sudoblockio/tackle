@@ -133,7 +133,8 @@ class BaseHook(BaseModel):
     )
     render_by_default: list = Field(
         None,
-        description="A list of fields to wrap with jinja braces and render by default.",
+        description="A list of string fields to wrap with jinja braces and render by "
+        "default.",
     )
     render_exclude: list = Field(
         None, description="A list of field names to not render."
@@ -153,7 +154,10 @@ class BaseHook(BaseModel):
     kwargs: str = Field(
         None, description="A field name of type dict to map additional arguments to."
     )
-    literal_fields: list = Field(None, description="A list of fields to use without.")
+    literal_fields: list = Field(
+        None,
+        description="A list of fields to use without.",
+    )
 
     model_config = ConfigDict(
         extra='forbid',

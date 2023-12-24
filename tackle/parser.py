@@ -358,9 +358,9 @@ def update_hook_vars(
                     # Relates to https://github.com/sudoblockio/tackle/issues/183
                     # Where we might want to have variadic arguments.
                     else:
-                        logger.warning(
+                        logger.debug(
                             f"Encountered a `render_by_default` field={k} "
-                            f"of type {type(v)}. Skipping rendering..."
+                            f"of type {type(v).__name__}. Skipping rendering..."
                         )
 
         # Finally render any field that is left over with jinja braces
@@ -1362,7 +1362,6 @@ def parse_input_args_for_hooks(context: 'Context'):
             update_dict=context.input.kwargs,
         )
         # TODO: We should raise here - we're not dealing with kwargs, only args
-    pass
 
 
 def is_dcl_hook(key: str):

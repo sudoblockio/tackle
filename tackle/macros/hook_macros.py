@@ -175,66 +175,10 @@ def dict_field_hook_macro(
     # Check minimal fields to see if we can just return the value as a default factory
     if not is_field(value):
         # Just make dict values parseable
-        # create_default_factory(
-        #     context=context,
-        #     hook_name=hook_name,
-        #     value=value,
-        #     value_is_factory=True,
-        # )
-        # value['default_factory'] = value
-        # value['default_factory'] = {'->': value}
-        # value['default_factory'] = value
-        # value['type'] = 'Any'
-        # return value
         return {'default_factory': value, 'type': 'Any'}
 
     # Make the default_factory callable
-    # if 'default_factory' in value:
-    #     create_default_factory(context, hook_name=hook_name, value=value)
-
-    # if 'validator' in value:
-    #     create_field_validator(
-    #         context=context,
-    #         hook_name=hook_name,
-    #         key=key,
-    #         value=value,
-    #         validator_field=value.pop('validator'),
-    #     )
     return value
-
-
-def list_field_hook_macro(
-    context: Context,
-    hook_name: str,
-    key: str,
-    value: dict,
-) -> dict:
-    return {'default_factory': value, 'type': 'Any'}
-
-
-def str_field_hook_macro(
-    context: Context,
-    hook_name: str,
-    key: str,
-    value: dict,
-) -> dict:
-    # if not isinstance(value, str):
-    #     raise exceptions.MalformedHookFieldException(
-    #         f"The field hook at key=`{key}` must have a string value. "
-    #         f"Got `{value}` of type `{type(value).__name__}`.",
-    #         context=context, hook_name=hook_name,
-    #     )
-    return dict_field_hook_macro(
-        context=context,
-        hook_name=hook_name,
-        key=key[:-2],
-        value={f'default_factory{key[-2:]}': value},
-    )
-
-
-# DCL_HOOK_FIELDS = [
-#     k if v.alias is None else v.alias for k, v in DclHookInput.model_fields.items()
-# ]
 
 
 def hook_dict_macro(
@@ -245,6 +189,7 @@ def hook_dict_macro(
     """Remove any arrows from keys."""
     output = {}
     # Special case where we don't need an arrow which can often be forgotten
+    # TODO: `exec` method arrow meaning will change
     if 'exec<-' in hook_input_raw:
         output['exec'] = hook_input_raw.pop('exec<-')
 
@@ -264,11 +209,11 @@ def hook_dict_macro(
             # We have a method. Value handled elsewhere
             output[k[:-2]] = {k[-2:]: v}
         elif k.endswith(('->', '_>')):
-            output[k[:-2]] = str_field_hook_macro(
+            output[k[:-2]] = dict_field_hook_macro(
                 context=context,
                 hook_name=hook_name,
-                key=k,
-                value=v,
+                key=k[:-2],
+                value={f'default_factory{k[-2:]}': v},
             )
         elif v is None:
             output[k] = {'type': 'Any', 'default': None}
@@ -283,15 +228,11 @@ def hook_dict_macro(
             )
         elif isinstance(v, list):
             output[k] = {'type': 'list', 'default_factory': v}
-        elif isinstance(v, CommentedSeq):
-            # TODO: rm
-            output[k] = {'type': 'list', 'default': v}
         elif isinstance(v, FieldInfo):
             output[k] = v
         else:
             # Otherwise just put as default value with same type
             output[k] = {'type': type(v).__name__, 'default': v}
-
     return output
 
 
@@ -311,7 +252,10 @@ def hook_macros(
     hook_input_raw: dict | str,
     hook_name: str,
 ) -> dict:
-    """Declarative hook macros."""
+    """
+    Macros used when creating declarative hooks mostly focused on transforming fields
+     so that they can be properly serialized.
+    """
     if isinstance(hook_input_raw, str):
         value = str_hook_macro(hook_input_raw=hook_input_raw)
         return hook_dict_macro(
