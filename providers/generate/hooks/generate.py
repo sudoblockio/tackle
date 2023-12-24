@@ -33,19 +33,24 @@ class GenerateHook(BaseHook):
     )
     output: str = Field('.', description="Path to put the output file(s).")
     copy_without_render: Union[str, list] = Field(
-        [], description="List of path to files to only copy and not render."
+        [],
+        description="List of path to files to only copy and not render."
     )
     overwrite_if_exists: bool = Field(
-        False, description="Overwrite the output if exists."
+        False,
+        description="Overwrite the output if exists."
     )
     skip_if_file_exists: bool = Field(
-        False, description="Skip creating if path exists."
+        False,
+        description="Skip creating if path exists."
     )
     skip_overwrite_files: list = Field(
-        [], description="List of files to skip generating over if they exist."
+        None,
+        description="List of files to skip generating over if they exist."
     )
     render_context: dict = Field(
-        None, description="A render context that invalidates the default context."
+        None,
+        description="A render context that invalidates the default context."
     )
     extra_context: Union[str, dict, List[dict]] = Field(
         None,

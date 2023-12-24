@@ -2,7 +2,6 @@ name: Logic Provider
 
 description: Hooks for various logical operations such as match/case, assert, and while loops.
 
-#
 match_content: |
   # Stand in for some kind of thing to match against
   selection:
@@ -48,18 +47,53 @@ examples:
       map_type: dict
 
 hook_examples:
+  return:
+    - description: The `return` hook stops parsing and returns whatever value by rendering
+      content: |
+        foo:
+          bar: baz
+        ignored key->: return foo
+      output: |
+        bar: baz
+    - description: The `return` hook can also be a special key
+      content: |
+        foo:
+          bar: baz
+        return->: foo --if true
+      output: |
+        bar: baz
+
+  returns:
+    - description: The `returns` hook stops parsing and returns whatever string value
+      content: |
+        foo:
+          bar: baz
+        returns->: foo
+      output: |
+        bar: baz
+
+    - description: The `returns` hook stops parsing
+      content: |
+        foo: bar
+        returns->: foo  # Does not render by default vs `return` hook which does
+      output: |
+        foo
+
   match:
     - description: The `match` hook mimics common match/case statements
       content->: var "{{match_content}}" --no_recursion
+
   assert:
     - description: Assert if two items are equal. Can also easily be done with jinja but with this hook you can exit based on the assertion.
       content: |
         stuff: things
         assertion->: assert {{stuff}} things  # Would exit otherwise
         with-jinja->: {{stuff!='things'}}  # Equivalent and would not exit
+        # `assert` is a special key as well and skips output
+        assert->: things {{stuff}}
+        # Note - this does not work because of yaml parsing error
+        #assert->: "{{stuff}}" things
       output: |
         stuff: things
         assertion: true
         with-jinja: false
-
-#{% endraw %}

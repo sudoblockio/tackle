@@ -1,24 +1,52 @@
-name: Arithmatic Provider
+name: Arithmetic Provider
 
 description: |
-  Hooks that do arithmatic.
+  Hooks that perform arithmetic operations.
 
 examples:
+  - name: "[sum](sum.md)"
+    description: Sum a list of numbers
+    content: |
+      total->: sum [1, 2, 3, 4, 5]
+    output: |
+      total: 15
+
+  - name: "[average](average.md)"
+    description: Calculate the average of a list of numbers
+    content: |
+      avg->: average [1, 2, 3, 4, 5]
+    output: |
+      avg: 3.0
+
   - name: "[modulo](modulo.md)"
     description: Take the modulo of a number
     content: |
       odd->: modulo 5 2
       even->: modulo 6 2
     output: |
-      output: 1
+      odd: 1
       even: 0
 
 hook_examples:
+  sum:
+    - description: Sum a list of numbers
+      content: |
+        total->: sum [1, 2, 3, 4, 5]
+      output: |
+        total: 15
+
+  average:
+    - description: Calculate the average of a list of numbers
+      content: |
+        avg->: average [1, 2, 3, 4, 5]
+      output: |
+        avg: 3.0
+
   modulo:
     - description: Take the modulo of a number
       content: |
         odd->: modulo 5 2
         even->: modulo 6 2
       output: |
-        output: 1
+        odd: 1
         even: 0

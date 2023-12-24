@@ -4,7 +4,15 @@ name: TOML Provider
 description: |
   Reading toml files. For writing toml you will need a third party provider since this wraps python's native toml library which only supports reads.
 
-examples: []
+examples:
+  - name: "[toml](toml.md)"
+    description: Read a toml file into a key
+    content: |
+      expanded:
+        ->: toml
+        path: path/to/toml/file.toml
+      compact->: toml path/to/toml/file.toml
+
 
 hook_examples:
   toml:
