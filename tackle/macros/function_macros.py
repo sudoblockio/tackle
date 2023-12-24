@@ -36,19 +36,24 @@ method_fields:
   exec: old_value
 """
 import ast
+import logging
 import re
 from typing import Any, Dict
 
 from tackle import Context, exceptions
+from tackle.models import BaseHook
 from tackle.types import DEFAULT_HOOK_NAME, DocumentValueType
 
+logger = logging.getLogger(__name__)
 
-def split_on_outer_parentheses(text):
+
+def split_on_outer_parentheses(text: str) -> (bool, list):
     """
     Splits a string based on balanced, outermost parentheses.
 
     This function identifies segments enclosed by top-level parentheses and segments
-    outside any parentheses. It handles nested parentheses as well.
+     outside any parentheses. It handles nested parentheses as well. Returns tuple with
+     a boolean to know if we did split or a non-enclosed parenthesis.
     """
     # Pattern to match balanced outermost parentheses (including nested) or
     # non-parenthesis text
@@ -70,7 +75,13 @@ def split_on_outer_parentheses(text):
     if last_end < len(text):
         split_segments.append(text[last_end:])
 
-    return split_segments
+    # Since the default hook has no func name, we need to disambiguate that in return
+    if len(matches) == 0:
+        did_split = False
+    else:
+        did_split = True
+
+    return did_split, split_segments
 
 
 def eval_quoted_string(s: str):
@@ -123,31 +134,40 @@ def parse_function_args(
     arg_name_list = []
     split_func_args = re.split(r',\s*(?![^\[\]{}()]*[\]\}])', func_str)
     for arg in split_func_args:
-        arg_split = re.split(r' ', arg, maxsplit=1)
-        arg_name = arg_split.pop(0)
+        default_split = re.split(r'=', arg, maxsplit=1)
+        if len(default_split) == 2:
+            default = eval_quoted_string(default_split.pop(1))
+        else:
+            default = None
+
+        type_split = re.split(r' ', default_split[0], maxsplit=1)
+        if len(type_split) == 2:
+            type_ = type_split.pop(1).strip()
+        else:
+            type_ = 'Any'
+
+        arg_name = type_split[0]
         if arg_name == '':
             # Empty function signature
             break
-        output[arg_name] = {}
-        if len(arg_split) == 0:
-            output[arg_name]['type'] = 'Any'
-            raise_if_found_arg(context, found_kwarg, key_raw)
+
+        if arg_name in BaseHook.model_fields:
+            if type_ != 'Any':
+                logger.debug(
+                    f"In the function def=`{key_raw}`, the field=`{arg_name}` is "
+                    f"reserved and should not specify a type=`{type_}`"
+                )
+            output[arg_name] = default
             continue
-        arg_default_split = arg_split[0].split('=')
-        output[arg_name]['type'] = arg_default_split.pop(0).strip()
-        if not arg_default_split:
+
+        output[arg_name] = {'type': type_}
+        if not default:
             # No default means it is a positional arg
             raise_if_found_arg(context, found_kwarg, key_raw)
             arg_name_list.append(arg_name)
-        elif len(arg_default_split) == 1:
-            output[arg_name]['default'] = eval_quoted_string(arg_default_split[0])
-            found_kwarg = True
         else:
-            raise exceptions.MalformedHookDefinitionException(
-                "",
-                context=context,
-                hook_name=key_raw,
-            )
+            output[arg_name]['default'] = default
+            found_kwarg = True
 
     output['args'] = arg_name_list
     output['exec'] = value
@@ -199,12 +219,18 @@ def function_macro(
     Routes the parsing for functions and methods based on splitting the input string key
      on closing parenthesis.
     """
-    hook_split = split_on_outer_parentheses(key_raw)
+    did_split, hook_split = split_on_outer_parentheses(key_raw)
     match len(hook_split):
         case 0:
             return DEFAULT_HOOK_NAME, value, None
         case 1:
-            # Hook
+            # Hook - either default or normal hook
+            if did_split:
+                return (
+                    DEFAULT_HOOK_NAME,
+                    parse_function_args(context, hook_split[0], value, key_raw),
+                    None,
+                )
             return hook_split[0], value, None
         case 2:
             # Function

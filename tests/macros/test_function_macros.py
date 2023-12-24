@@ -2,15 +2,17 @@ import pytest
 
 from tackle import exceptions
 from tackle.macros.function_macros import function_macro, split_on_outer_parentheses
+from tackle.types import DEFAULT_HOOK_NAME
 
 
 @pytest.mark.parametrize(
     "hook_input,expected_output",
     [
-        ("a", ["a"]),
-        ("a(b)", ["a", "b"]),
-        ("(a)b(c)", ["a", "b", "c"]),
-        ("(a)b(c=e())", ["a", "b", "c=e()"]),
+        ("a", (False, ["a"])),
+        ("(a)", (True, ["a"])),
+        ("a(b)", (True, ["a", "b"])),
+        ("(a)b(c)", (True, ["a", "b", "c"])),
+        ("(a)b(c=e())", (True, ["a", "b", "c=e()"])),
     ],
 )
 def test_function_macros_split_on_outer_parentheses(hook_input, expected_output):
@@ -41,6 +43,13 @@ def test_function_macros_split_on_outer_parentheses(hook_input, expected_output)
         (
             'do(foo str | int, bar str | int)',
             {'foo': {'type': 'str | int'}, 'bar': {'type': 'str | int'}},
+        ),
+        ('do(foo="bar")', {'foo': {'type': 'Any', 'default': 'bar'}}),
+        ('do(help="foo")', {'help': 'foo'}),
+        ('do(foo int, help="foo")', {'foo': {'type': 'int'}, 'help': 'foo'}),
+        (
+            'do(foo int = "bar", help="foo")',
+            {'foo': {'type': 'int', 'default': 'bar'}, 'help': 'foo'},
         ),
     ],
 )
@@ -82,6 +91,7 @@ def test_function_macros_methods(context, hook_input, self_name, hook_name):
         ('do(a b = c())', 'do'),
         ('(foo)do()', None),
         ('(foo)do(a b = c())', None),
+        ('(foo)', DEFAULT_HOOK_NAME),
     ],
 )
 def test_function_macros_hook_name(context, hook_input, expected_output):

@@ -1394,8 +1394,8 @@ def split_input_data(context: 'Context'):
             context.data.pre_input.update({k: v})
         elif k[-2:] in ['<-', '<_']:
             pre_data_flag = False
-            if hook_key == '':
-                hook_key = DEFAULT_HOOK_NAME
+            # if hook_key == '':
+            #     hook_key = DEFAULT_HOOK_NAME
             arrow = k[-2:]
             hook_name, value, methods = function_macro(context, key_raw=k[:-2], value=v)
             if methods:
