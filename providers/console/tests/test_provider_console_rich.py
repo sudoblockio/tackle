@@ -1,5 +1,5 @@
-"""Tests dict input objects for `tackle.providers.rich.hooks.table` module."""
 from tackle.main import tackle
+from tackle.utils.hooks import get_hook
 
 
 def test_provider_system_hook_rich_table():
@@ -15,3 +15,11 @@ def test_provider_system_hook_rich_table_split():
 def test_provider_console_markdown():
     output = tackle('markdown.yaml')
     assert output['md']
+
+
+def test_provider_console_markdown_frontmatter():
+    Hook = get_hook('markdown_frontmatter')
+    output = Hook(path='frontmatter.md').exec()
+
+    assert output['foo'] == 'bar'
+    assert len(output['stuff']) == 1
