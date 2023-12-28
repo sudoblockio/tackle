@@ -12,42 +12,35 @@ weather:
 ### Else
 
 ```yaml
-name->: input What is your name?
-hello:
-  ->: print Hello {{ name }}!
-  if: name != 'Rob'
-  else: Hello me
+name->: input What is your name? --default Arthur
+check name:
+  ->: print You may pass {{ name }}
+  if: name == 'Arthur'
+  else:
+    raise->: Wrong name...
 ```
 
 Which can also be rendered.
 
 ```yaml
-intro: Hello
-...
-  else: {{intro}} me
+check name:
+  # ...
+  else: "Hello {{name}}"
 ```
 
 And could have hooks embedded in it.
-```yaml
-hello:
-...
-  else: {{print('Hello me')}}
-```
 
-Or simply could be a dictionary output with further hooks.
 ```yaml
-hello:
-...
-  else:
-    stuff:
-      things->: print foo
+check name:
+  # ...
+  else: "{{print('Hello', name)}}"
 ```
 
 And of course it can be expressed in a single line.
 
 ```yaml
 name->: input What is your name?
-hello->: print "Hello {{ name }}!" --if "name != 'Rob'" --else "Hello me"
+hello->: print You may pass {{ name }} --if name == 'Arthur' ---else "{{print('Hello', name)}}"
 ```
 
 ### When
@@ -63,11 +56,77 @@ expanded:
   if: item != 'cruel'
 ```
 
-### For Loops
+### For Loops with Variable
+
+The cleanest way to run a for loop is by declaring a variable within the loop
 
 ```yaml
-printer:
-  ->: var "We are at item {{ item }} and index {{ index }}"
+loop:
+  ->: var "i={{i}}"
+  for: i in [1,3,5]
+```
+
+```yaml
+loop:
+- i=1
+- i=3
+- i=5
+```
+
+If multiple variables are declared for a list iterand, the first positional variable becomes the index.
+
+```yaml
+loop:
+  ->: var "i={{i}} v={{v}}"
+  for: i, v in [1,3,5]
+```
+
+```yaml
+loop:
+- i=0 v=1
+- i=1 v=3
+- i=2 v=5
+```
+
+This can also be done against objects
+
+```yaml
+an_object:
+  foo: bar
+  stuff: things
+loop_one:
+  ->: "k={{k}}"
+  for: k in an_object
+loop_two:
+  ->: "k={{k}} v={{v}}"
+  for: k, v in an_object
+loop_three:
+  ->: "i={{i}} k={{k}} v={{v}}"
+  for: k, v, i in an_object
+```
+
+```yaml
+an_object:
+  foo: bar
+  stuff: things
+loop_one:
+- k=foo
+- k=stuff
+loop_two:
+- k=foo v=bar
+- k=stuff v=things
+loop_three:
+- i=0 k=foo v=bar
+- i=1 k=stuff v=things
+```
+
+### For Loops without Variable
+
+If you don't give a variable (ie `i in an_iterand`) then the variable names are assumed depending on if you are iterating over a list or an object.
+
+```yaml
+loop:
+  ->: "item={{ item }} index={{ index }}"
   for:
     - stuff
     - things
@@ -76,12 +135,30 @@ printer:
 Would result in:
 
 ```yaml
-printer:
-  - We are at item stuff and index 0
-  - We are at item things and index 1
+loop:
+- item=stuff index=0
+- item=things index=1
+```
+
+Or for an object:
+
+```yaml
+loop:
+  ->: "key={{ key }} value={{value}} index={{index}}"
+  for:
+    foo: bar
+    stuff: things
+```
+
+```yaml
+loop:
+- key=foo value=bar index=0
+- key=stuff value=things index=1
 ```
 
 ### For Loop Rendered
+
+If the for loop value is a string, we attempt to render that by default (ie no braces).
 
 ```yaml
 a_list:
@@ -94,18 +171,6 @@ printer:
 printer_compact->: print "{{ item }}/{{ index }}" --for a_list
 ```
 
-Loop iterands can be of any type as in this example:
-
-```yaml
-printer:
-  ->: print "The type is {{ item.type }}
-  for:
-    - name: foo
-      type: stuff
-    - name: bar
-      type: things
-```
-
 ### For Loop Using [keys](../providers/context/keys.md) Hook
 
 ```yaml
@@ -116,8 +181,19 @@ inputs:
     type: things
 
 printer:
-  ->: print "The type is {{ inputs[item].type }}
+  ->: var "The type is {{ inputs[item].type }}"
   for: "{{keys(inputs)}}"
+```
+
+```yaml
+inputs:
+  foo:
+    type: stuff
+  bar:
+    type: things
+printer:
+- The type is stuff
+- The type is things
 ```
 
 ### List Comprehension
@@ -134,94 +210,5 @@ expanded:
 compact->: print {{item}} --for words --if "item != 'cruel'"
 ```
 
-### Try / Except
-
-```yaml
-a failed command->: command "foo bar" --try  # Would exit without try
-p->: print Hello world!  # This would print
-```
-
-```yaml
-a failed command:
-  ->: command "foo bar"
-  try: true
-  except:
-    p->: print Hello world!
-```
-
-### `merge`
-
-```yaml
-stuff: things
-
-to merge->:
-  merge: true
-  stuff: more things
-```
-
-Results in:
-
-```yaml
-stuff: more things
-```
-
-### Blocks
-
-```yaml
-action:
-  ->: select What are we doing today?
-  choices:
-    - code: Code tackle stuff
-    - do: Do things
-
-code->:
-  if: action == 'code'
-  # Run a number of hooks conditional on the `action`
-  arbitrary:
-    contex: ...
-  gen->: tackle robcxyz/tackle-provider
-  open->: command touch code.py
-  # ...
-
-do->:
-  if: action == 'do'
-  check_schedule->: webbrowser https://calendar.google.com/
-  # ...
-```
 
 
-### Block Render Context
-
-```yaml
-stuff: things
-foo: bar
-
-code->:
-  # ...
-  foo: baz
-  inner-context->: "{{ foo }}"
-  outer-context->: "{{ stuff }}"
-```
-
-### Match / Case
-
-```yaml
-action:
-  ->: select What are we doing today?
-  choices:
-    - code: Code tackle stuff
-    - do: Do things
-
-run_action:
-  ->: match
-  value: "{{ action }}"
-  case:  
-    code:
-      gen->: tackle robcxyz/tackle-provider
-      # ...
-
-    do:
-      if: action == 'do'
-      check_schedule->: webbrowser https://calendar.google.com/
-      # ...
-```

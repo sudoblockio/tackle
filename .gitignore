@@ -2,8 +2,9 @@
 docs/articles/*
 proposals/*
 
-scratch*.py
+scratch/scratch.py
 scratch/
+test_scratch.py
 .bak/
 pyvenv.cfg
 docs/scratch*

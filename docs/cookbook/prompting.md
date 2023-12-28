@@ -7,15 +7,11 @@ Tackle allows for a rich set of prompting options using the following hooks:
 - [`select`](../providers/Prompts/select.md) - A selector of choices
 - [`checkbox`](../providers/Prompts/checkbox.md) - A multi-selector of choices
 
-There are other types of prompts such as [`editor`](../providers/Prompts/editor.md)
-and[`password`](../providers/Prompts/password.md) which are specialized versions of
-the [`input`](../providers/Prompts/input.md) hook that will not be covered in this
-document.
+There are other types of prompts such as [`editor`](../providers/Prompts/editor.md) and[`password`](../providers/Prompts/password.md) which are specialized versions of the [`input`](../providers/Prompts/input.md) hook that will not be covered in this document.
 
 ### Multi-line Prompting
 
-Prompt hooks can be expressed
-in [expanded form](../writing-tackle-files.md#hook-call-forms).
+Prompt hooks can be expressed in [expanded form](../writing-tackle-files.md#hook-call-forms).
 
 ```yaml
 confirm hook:
@@ -119,9 +115,7 @@ input-expanded: things
 
 ### Checkbox / Select Choice Inputs
 
-The [`select`](../providers/Prompts/select.md)
-and [`checkbox`](../providers/Prompts/checkbox.md) are very similar with the following
-examples applying to both.
+The [`select`](../providers/Prompts/select.md) and [`checkbox`](../providers/Prompts/checkbox.md) are very similar with the following examples applying to both.
 
 #### List Choice
 
@@ -156,8 +150,7 @@ selection rendered:
 
 #### Prompt Display with Different Output
 
-Choices can also be in the form of a list of maps with the keys being the displayed
-prompts and the values as the output of the selection.
+Choices can also be in the form of a list of maps with the keys being the displayed prompts and the values as the output of the selection.
 
 ```yaml
 a_map:
@@ -183,14 +176,11 @@ selection:
   ○ a list
 ```
 
-The output of the hook in this case would be `foo`, `{'bar':'baz'}`,
-or `['stuff','things']` depending on the selection.
+The output of the hook in this case would be `foo`, `{'bar':'baz'}`, or `['stuff','things']` depending on the selection.
 
 #### List Keys Map Choice
 
-Sometimes it is convenient to extract the keys from a map as choices which can then be
-used elsewhere to index the map. In this case we use
-the [`keys`](../providers/Context/keys.md) hooks to extract a list of keys from a map.
+Sometimes it is convenient to extract the keys from a map as choices which can then be used elsewhere to index the map. In this case we use the [`keys`](../providers/Context/keys.md) hooks to extract a list of keys from a map.
 
 ```yaml
 a_map:
@@ -206,8 +196,7 @@ print value single line->: print {{a_map[select(choices=keys(a_map))]}}
 
 #### Checkbox Default
 
-The default of the [`checkbox`](../providers/Prompts/checkbox.md) hook is that nothing
-is selected but it is possible for all the values to selected as the default.
+The default of the [`checkbox`](../providers/Prompts/checkbox.md) hook is that nothing is selected but it is possible for all the values to selected as the default.
 
 ```yaml
 checker->: checkbox --choices ['stuff','and','things'] --checked

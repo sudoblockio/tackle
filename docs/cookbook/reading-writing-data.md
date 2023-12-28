@@ -2,7 +2,7 @@
 
 ### The `yaml` / `json` / `toml` hooks
 
-Each of these hooks allow reading and writing to files in essentially same way.
+The [yaml](../providers/Yaml/yaml.md), [json](../providers/Json/json.md) hooks allow reading and writing to files in essentially same way. Also see [toml](../providers/Toml/toml.md), [ini](../providers/Ini/ini.md), and [file](../providers/Files/file.md) hooks which are similar.
 
 To read from a file:
 
@@ -34,6 +34,5 @@ Yaml / json / toml can be updated in place, ie without having to both read and w
 
 - [`yaml_in_place`](../providers/Yaml/yaml_in_place.md)
 - [`json_in_place`](../providers/Json/json_in_place.md) - WIP
-- [`toml_in_place`](../providers/Toml/toml_in_place.md) - WIP
 
 > NOTE: These are still a WIP. Focus is on yaml_in_place and then will be shared by json and toml.

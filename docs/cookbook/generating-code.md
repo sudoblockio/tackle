@@ -1,6 +1,6 @@
 # Code Generating Examples
 
-Please checkout the [](../tutorials/code-generation/index.md) docs for more thorough examples.
+Please checkout the [tutorials](../tutorials/code-generation/index.md) for more thorough examples.
 
 ### Simple generation example
 
