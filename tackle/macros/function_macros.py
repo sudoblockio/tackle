@@ -160,11 +160,11 @@ def parse_function_args(
             output[arg_name] = default
             continue
 
+        arg_name_list.append(arg_name)
         output[arg_name] = {'type': type_}
         if not default:
             # No default means it is a positional arg
             raise_if_found_arg(context, found_kwarg, key_raw)
-            arg_name_list.append(arg_name)
         else:
             output[arg_name]['default'] = default
             found_kwarg = True

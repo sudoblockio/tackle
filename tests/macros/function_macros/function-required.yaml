@@ -1,0 +1,6 @@
+greeter(target str)<-:
+  returns->: Hello {{target}}!
+
+call->: greeter universe
+render->: "{{greeter('universe')}}"
+error->: greeter --try --except 2

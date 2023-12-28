@@ -1,0 +1,2 @@
+(target str='world')<-:
+  returns->: Hello {{target}}!

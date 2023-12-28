@@ -1,0 +1,9 @@
+ahook<-:
+  foo: bar
+
+  amethod(target str)<-:
+    returns->: Hello {{target}}!
+
+call->: ahook amethod universe
+render->: "{{ahook.amethod('universe')}}"
+error->:  ahook amethod 1 --try --except 2

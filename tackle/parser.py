@@ -542,6 +542,8 @@ def parse_hook_execute(
         elif context.data.temporary:
             # Write the indexed output to the `data.temporary` as it was only written
             # to the `data.public` and not maintained between items in a list
+            if context.key_path_block and isinstance(context.key_path_block[-1], bytes):
+                return
             if not isinstance(context.key_path[-1], bytes):
                 get_set_temporary_context(context=context)
 
@@ -1399,7 +1401,7 @@ def split_input_data(context: 'Context'):
             arrow = k[-2:]
             hook_name, value, methods = function_macro(context, key_raw=k[:-2], value=v)
             if methods:
-                raise NotImplementedError
+                raise NotImplementedError("Haven't implemented functional methods yet.")
             else:
                 try:
                     dcl_hook = LazyBaseHook(
@@ -1430,7 +1432,7 @@ def split_input_data(context: 'Context'):
 def parse_context(context: 'Context', call_hooks: bool = True):
     """
     Main entrypoint to parsing a context. When importing tackle providers, we don't want
-     to call_hooks so it is set to false. Otherwise, we might call hooks (ie true).
+     to call_hooks, so it is set to false. Otherwise, we might call hooks (ie true).
     """
     # Split the input data so that the pre/post inputs are separated from the hooks
     split_input_data(context=context)

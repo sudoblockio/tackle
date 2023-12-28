@@ -37,7 +37,6 @@ from tackle.pydantic.create_model import create_model
 from tackle.pydantic.field_types import FieldInput
 from tackle.render import render_variable
 from tackle.types import DocumentType, DocumentValueType
-from tackle.utils.data_crud import update_input_dict
 from tackle.utils.render import wrap_jinja_braces
 
 
@@ -69,9 +68,11 @@ def dcl_hook_exec(
     if input_element is None:
         # No `exec` method so we'll just be returning the included fields from model
         return hook.model_dump(include=hook.hook_field_set)
+    elif not isinstance(input_element, (list, dict)):
+        input_element = {'returns->': input_element}
 
     # We have exec data so we need to parse that which will be the return of the hook
-    if context.data.public:
+    if context.data.public and isinstance(context.data.public, dict):
         # Move the public data to an existing context
         existing_data = context.data.public.copy()
     else:
@@ -634,20 +635,11 @@ def new_dcl_hook_input(
      being the inputs to the hook.
     """
     try:
-        hook_input = DclHookInput(**hook_input_dict)
+        return DclHookInput(**hook_input_dict)
     except ValidationError as e:
         raise exceptions.HookParseException(
             f"Invalid input for creating hook=`{hook_name}`. \n {e}", context=context
         )
-
-    if hook_input.exec_ is not None and isinstance(hook_input.exec_, dict):
-        # Update exec with overrides
-        hook_input.exec_ = update_input_dict(
-            input_dict=hook_input.exec_,
-            update_dict=context.data.overrides,
-        )
-
-    return hook_input
 
 
 def get_model_config_from_hook_input(

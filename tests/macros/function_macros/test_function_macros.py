@@ -1,6 +1,6 @@
 import pytest
 
-from tackle import exceptions
+from tackle import exceptions, tackle
 from tackle.macros.function_macros import function_macro, split_on_outer_parentheses
 from tackle.types import DEFAULT_HOOK_NAME
 
@@ -99,6 +99,53 @@ def test_function_macros_hook_name(context, hook_input, expected_output):
     name, _, _ = function_macro(context, key_raw=hook_input, value={})
 
     assert name == expected_output
+
+
+@pytest.mark.parametrize(
+    "input_file,args",
+    [
+        ('default-default.yaml', ()),
+        ('default-required.yaml', ('world',)),
+        ('default-no-type.yaml', ('world',)),
+        ('default-string.yaml', ('world',)),
+        ('default-string-hook.yaml', ('world',)),
+    ],
+)
+def test_function_macro_defaults(input_file, args):
+    output = tackle(input_file, *args)
+
+    assert output == 'Hello world!'
+
+
+@pytest.mark.parametrize(
+    "input_file",
+    [
+        'function-default.yaml',
+        'function-required.yaml',
+    ],
+)
+def test_function_macro_function_calls(input_file):
+    output = tackle(input_file)
+
+    assert output['call'] == 'Hello universe!'
+    assert output['render'] == 'Hello universe!'
+    assert output['error'] == 2
+
+
+@pytest.mark.parametrize(
+    "input_file",
+    [
+        'method-func-inside.yaml',
+        # TODO: Functional methods
+        # 'method-outside.yaml',
+    ],
+)
+def test_function_macro_method_calls(input_file):
+    output = tackle(input_file)
+
+    assert output['call'] == 'Hello universe!'
+    assert output['render'] == 'Hello universe!'
+    assert output['error'] == 2
 
 
 @pytest.mark.parametrize(
