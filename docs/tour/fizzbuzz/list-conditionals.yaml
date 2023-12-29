@@ -1,8 +1,5 @@
-<-:
-  input: int
-  args: ['input']
-  exec:
-    output:
-      - ->: print fizz --if "input % 3 == 0"
-      - ->: print buzz --if "input % 5 == 0"
-      - ->: print {{input}} --if output|length==0
+(input int)<-:
+  output:
+    - ->: print fizz --if "input % 3 == 0"
+    - ->: print buzz --if "input % 5 == 0"
+    - ->: print {{input}} --if output|length==0

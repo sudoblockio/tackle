@@ -55,16 +55,30 @@ examples:
 
 update_readme<-:
   exec:
-    readme_table: ""
     toc->:
-      readme_table:
+      table:
         ->: var
         input: |
-          | Name | Description|
-          | --- | --- |
-          {% for p in examples %}| [{{p.name}}]() | {{status_map[p.status]}} | {{p.description}} | {%for i in p.blockers%}[{{i}}]({{}})<br />{%endfor%} | {{p.related_to}} |
+          {% for e in examples %}- [{{e.name}}]({{e.file}})
+          {% endfor %}
+      generate table:
+        ->: update_section README.md {{table}}
+        start_render: "--start-table--"
+        end_render: "--end-table--"
+
+      sections:
+        ->: var --no_recursion
+        input: |
+          {% for e in examples %}
+          ### {{e.name}}
+
+          {{e.description}}
+          ```yaml
+          {{file(path=e.file)}}
+          ```
           {% endfor %}
 
-
-      update readme->: update_section README.md {{readme_table}}
-    p->: print {{examples}}
+      generate sections:
+        ->: update_section README.md {{sections}}
+        start_render: "--start-sections--"
+        end_render: "--end-sections--"

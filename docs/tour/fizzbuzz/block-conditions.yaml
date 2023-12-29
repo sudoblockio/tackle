@@ -1,8 +1,5 @@
-<-:
-  input: int
-  args: ['input']
-  exec:
-    fizzbuzz->:
-      if: input%15==0
-      out->: print {{input}}
-      exit->: 0
+(input int)<-:
+  fizzbuzz->:
+    if: input%15==0
+    out->: print {{input}}
+    exit->: 0

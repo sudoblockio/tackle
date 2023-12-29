@@ -30,3 +30,7 @@ def test_fizzbuzz_all(file_name, capsys, number, output):
     captured_output = capsys.readouterr().out
     for o in output:
         assert o in captured_output
+
+
+def test_f():
+    tackle('update_readme')
