@@ -5,6 +5,7 @@ import pydoc
 import re
 import typing
 import typing as typing_types
+from copy import deepcopy
 from functools import partial, partialmethod
 from typing import Annotated, Any, Callable, Optional, Type, TypeVar, Union
 
@@ -121,9 +122,7 @@ def dcl_hook_exec(
             input_element = {tmp_key: input_element}
 
     hook_context.data.input = input_element
-    public_data = get_public_data_from_walk(
-        context=hook_context, value=input_element.copy()
-    )
+    public_data = get_public_data_from_walk(context=hook_context, value=input_element)
     if tmp_key:
         return public_data[tmp_key]
     return public_data
@@ -804,7 +803,7 @@ def create_dcl_method(
     return create_dcl_hook(
         context=context,
         hook_name=arg,
-        hook_input_raw=method.input_raw.copy(),
+        hook_input_raw=method.input_raw,
     )
 
 
@@ -864,7 +863,7 @@ def get_hooks_from_namespace(
                 Hook = create_dcl_hook(
                     context=context,
                     hook_name=hook_name,
-                    hook_input_raw=Hook.input_raw.copy(),
+                    hook_input_raw=deepcopy(Hook.input_raw),
                 )
             return Hook
 
