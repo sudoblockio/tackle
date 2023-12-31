@@ -349,6 +349,7 @@ def create_validator_field_type(
     context: 'Context',
     hook_validator: HookFieldValidator,
     field_type: GenericFieldType,
+    key: str,
 ) -> GenericFieldType:
     """
     Create a validator field type by composing a functional validator with the required
@@ -365,12 +366,16 @@ def create_validator_field_type(
     def validator_func(
         context: Context,
         hook_validator: HookFieldValidator,
+        key: str,
         v: Any,
         info: ValidationInfo,
     ):
         # Inject the field names and values into existing context
         tmp_context = new_context_from_context(context=context)
         tmp_context.data.existing[hook_validator.field_names.value] = v
+        if hook_validator.field_names.value == 'v':
+            # The default is `v` but it is easier to just think of it as the field name
+            tmp_context.data.existing[key] = v
         tmp_context.data.existing[hook_validator.field_names.info] = info.data
 
         # Walk the body and return the public data
@@ -391,6 +396,7 @@ def create_validator_field_type(
         validator_func,
         context,
         hook_validator,
+        key,
     )
 
     # Return the functional validator
@@ -452,7 +458,10 @@ def create_hook_field_validator(
             hook_name=hook_name,
         )
     return create_validator_field_type(
-        context=context, hook_validator=hook_validator, field_type=field_type
+        context=context,
+        hook_validator=hook_validator,
+        field_type=field_type,
+        key=key,
     )
 
 

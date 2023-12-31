@@ -14,6 +14,7 @@ from tackle import exceptions, tackle
         'compact-default.yaml',
         'type-union.yaml',
         'full.yaml',
+        'key-field-name.yaml',
     ],
 )
 def test_hooks_validators_expanded(file_name):

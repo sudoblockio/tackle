@@ -1,0 +1,9 @@
+MyHook<-:
+  foo:
+    type: str
+    validator:
+      return->: foo --if foo=='bar'
+      raise->: Not bar
+
+call->: MyHook --foo bar
+error->: MyHook --foo baz --try --except 1
