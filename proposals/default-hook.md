@@ -1,3 +1,22 @@
+---
+id: default-hook
+title: Default Hook
+status: implemented
+description: Allow files to have a default hook to be called when no arguments are supplied
+issue_num: 232
+blockers: []
+---
+[//]: # (--start-header--DO NOT MODIFY)
+
+# Default Hook
+
+Allow files to have a default hook to be called
+
+- Proposal Status: [implemented](README.md#status)
+- Issue Number: [232](https://github.com/sudoblockio/tackle/issue/232)
+---
+[//]: # (--end-header--start-body--MODIFY)
+
 # Default Hook
 
 > Status: Implemented

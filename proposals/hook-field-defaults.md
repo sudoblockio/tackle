@@ -1,3 +1,15 @@
+---
+id: hook-field-defaults
+title: Hook Field Defaults
+status: implemented
+description: Allow flexible ways to declare hook field defaults
+issue_num: 237
+blockers: []
+---
+[//]: # (--start-header--DO NOT MODIFY)
+
+[//]: # (--end-header--start-body--MODIFY)
+
 # Hook Defaults
 
 > Status: Implemented

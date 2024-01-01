@@ -1,0 +1,58 @@
+---
+id: base-methods-as-hook
+title: Base Methods as Hooks
+status: wip
+description: Allow base methods to be called directly as hooks
+issue_num: 233
+blockers: []
+---
+[//]: # (--start-header--DO NOT MODIFY)
+
+[//]: # (--end-header--start-body--MODIFY)
+
+# Proposal: Default Methods as Hooks
+
+> Status: Not Implemented
+
+This proposal would allow setting literal values if the first arg is a default method - either `if`, `else`, `when`, or `for`. All other kwargs fail.
+
+
+### Lists
+
+```yaml
+this: that
+foo:
+  - bar
+  - ->: --if this=='that' baz
+
+check: assert {{foo[1]}} baz
+```
+
+```yaml
+foo:
+  - bar
+  - ->: --for [1,2,5] {{item}}
+
+check: assert {{foo[1][1]}} 2
+```
+
+```yaml
+foo:
+  - bar
+  - ->: --for [1,2,5] {{item}} --merge
+
+check: assert {{foo[1]}} 1
+```
+
+See [#141](https://github.com/sudoblockio/tackle/issues/141)
+
+### Maps
+
+```yaml
+this: that
+foo:
+  bar: baz  
+  bing->: --if this=='that' bang  
+
+check: assert {{foo[bing]}} bang
+```

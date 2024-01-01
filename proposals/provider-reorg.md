@@ -1,3 +1,22 @@
+---
+id:
+title: Provider Reorg
+status: implemented
+description: Reorganize the providers into logical groups
+issue_num: 252
+blockers: []
+---
+[//]: # (--start-header--DO NOT MODIFY)
+
+# Provider Reorg
+
+Reorganize the providers into logical groups
+
+- Proposal Status: [implemented](README.md#status)
+- Issue Number: [252](https://github.com/sudoblockio/tackle/issue/252)
+---
+[//]: # (--end-header--start-body--MODIFY)
+
 # Provider Re-organization
 
 > Status: Implemented

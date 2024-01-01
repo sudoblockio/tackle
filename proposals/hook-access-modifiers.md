@@ -1,3 +1,15 @@
+---
+id: hook-access-modifiers
+title: Hook Access Modifiers
+status: implemented
+description: Make hooks either public or private allowing distinction for what is in `tackle <target> help`.
+issue_num: 235
+blockers: []
+---
+[//]: # (--start-header--DO NOT MODIFY)
+
+[//]: # (--end-header--start-body--MODIFY)
+
 # Access Modifiers
 
 > Status: Implemented

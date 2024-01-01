@@ -1,0 +1,98 @@
+Proposal<_:
+  file: str
+  id:
+    type: optional[str]
+    default: ""
+  title: str
+  description:
+    type: optional[str]
+    default: '-'
+  status:
+    enum:
+      - implemented
+      - accepted
+      - deferred
+      - considering
+      - wip
+      - rejected
+      - abandoned
+  issue_num:
+    type: optional[int]
+    default: '-'
+  blockers:
+    type: optional[list[str]]
+    default: []
+  related_to:
+    type: optional[list[str]]
+    description: A list of proposal IDs to link to
+    default: []
+
+get_all_proposals()<_:
+  files->: listdir --exclude ^tackle|scratch|templates|__pycache__|wip|.old
+  output: []
+  proposals->:
+    for: f in files
+    frontmatter->: markdown_frontmatter {{f}}
+    append proposal->: append output "{{Proposal(file=f, **frontmatter)}}" --if frontmatter!={}
+  return->: output
+
+get_github_token()<_:
+  return->: file('.token') --if path_exists('.token') --else "{{get_env('GITHUB_TOKEN')}}"
+
+github_issue<-:
+  org: sudoblockio
+  repo: tackle
+
+  get_by_num(issue_num int)<-:
+    data_>: http_get https://api.github.com/repos/{{org}}/{{repo}}/issues/{{issue_num}}
+    title->: var data.title
+    body->: var data.body
+
+  update<-:
+    issue_number: int
+    title: str
+    body: str
+    status: str
+    github_token:
+      type: str
+      default->: get_github_token
+    exec:
+      ->: http_patch https://api.github.com/repos/{{org}}/{{repo}}/issues/{{issue_number}}
+      headers:
+        Authorization: "token {{github_token}}"
+        Accept: "application/vnd.github.v3+json"
+      json:
+        title: "{{title}}"
+        body: "{{body}}"
+        labels:
+          - "proposal"
+          - "{{status}}"
+
+update_header(p Proposal)<-:
+  header_tpl: |
+    # {{p.title}}
+
+    {{p.description}}
+
+    - Proposal Status: [{{p.status}}](README.md#status)
+    - Issue Number: [{{p.issue_num}}](https://github.com/sudoblockio/tackle/issue/{{p.issue_num}})
+    ---
+  body->: update_section {{p.file}} {{var(header_tpl)}} start-header end-header
+
+<-:
+  help: Update all issues
+  exec:
+    do->:
+      for: p in get_all_proposals()
+      remote->: github_issue get_by_num p.number
+      body->: read_section {{p.file}} start-body end-body
+
+      Update Github_>:
+        ->: github_issue update
+        if: remote.title!=p.title or remote.body!=body
+        issue_number: "{{p.issue_num}}"
+        title: "{{p.title}}"
+        body: "{{body}}"
+        status: "{{p.status}}"
+
+      Update title_>: update_header {{p}}
