@@ -8,6 +8,13 @@ blockers: []
 ---
 [//]: # (--start-header--DO NOT MODIFY)
 
+# Tackle Test Rigging
+
+None
+
+- Proposal Status: [wip](README.md#status)
+- Issue Number: [262](https://github.com/sudoblockio/tackle/issue/262)
+---
 [//]: # (--end-header--start-body--MODIFY)
 
 

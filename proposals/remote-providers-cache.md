@@ -2,16 +2,20 @@
 id:
 title: Remote Provider Cache
 status: wip
-description:
+description: Create a cache for remote providers to minimize network calls to git on ever provider import
 issue_num: 255
 blockers: []
 ---
 [//]: # (--start-header--DO NOT MODIFY)
 
-[//]: # (--end-header--start-body--MODIFY)
-
-
 # Remote Provider Cache
+
+Create a cache for remote providers to minimize network calls to git on ever provider import
+
+- Proposal Status: [wip](README.md#status)
+- Issue Number: [255](https://github.com/sudoblockio/tackle/issue/255)
+---
+[//]: # (--end-header--start-body--MODIFY)
 
 ### Cache Path
 

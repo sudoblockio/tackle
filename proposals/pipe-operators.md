@@ -8,6 +8,13 @@ blockers: []
 ---
 [//]: # (--start-header--DO NOT MODIFY)
 
+# Filters / Pipe Operators
+
+Allow for jinja / bash style filters / pipes
+
+- Proposal Status: [wip](README.md#status)
+- Issue Number: [249](https://github.com/sudoblockio/tackle/issue/249)
+---
 [//]: # (--end-header--start-body--MODIFY)
 
 ```yaml

@@ -8,10 +8,14 @@ blockers: []
 ---
 [//]: # (--start-header--DO NOT MODIFY)
 
+# Overrides Improvements
+
+Improve how overrides are tracked and applied when parsing files / hooks
+
+- Proposal Status: [wip](README.md#status)
+- Issue Number: [247](https://github.com/sudoblockio/tackle/issue/247)
+---
 [//]: # (--end-header--start-body--MODIFY)
-
-
-> Status: WIP
 
 Overrides are needed for testing as input fields need values inserted for testing.
 

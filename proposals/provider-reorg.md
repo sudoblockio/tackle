@@ -17,15 +17,6 @@ Reorganize the providers into logical groups
 ---
 [//]: # (--end-header--start-body--MODIFY)
 
-# Provider Re-organization
-
-> Status: Implemented
-
-## Issues
-
-- Overlapping dependencies
-  - Can be dealt with by skipping importing hooks
-
 ## New Provider List
 
 - json

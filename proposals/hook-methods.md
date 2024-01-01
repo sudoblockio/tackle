@@ -10,16 +10,12 @@ blockers: []
 
 # Hook Methods
 
-Hooks should have methods that can be called against the hook
+Allow creating hooks within hooks that act like methods with parameter inheritance.
 
 - Proposal Status: [wip](README.md#status)
 - Issue Number: [239](https://github.com/sudoblockio/tackle/issue/239)
 ---
 [//]: # (--end-header--start-body--MODIFY)
-
-# Hook Methods
-
-> Status: Implemented
 
 Right now the order of operations for how to run and access a hook method is all messed up and needs to be rebuilt. Current there are two places where methods can be called, 1, within a tackle file and 2, from command line. Ideally they should be converged.
 

@@ -13,13 +13,9 @@ blockers:
 
 Upgrade string parsers to use an AST
 
-- Proposal Status: [WIP](README.md)
-- Issue Number: [1](https://github.com/sudoblockio/tackle/issue/1)
-- Blockers:
-  - [Context Composition](https://github.com/sudoblockio/tackle/issue/1)
-
+- Proposal Status: [wip](README.md#status)
+- Issue Number: [172](https://github.com/sudoblockio/tackle/issue/172)
 ---
-
 [//]: # (--end-header--start-body--MODIFY)
 
 Current parsing is based on regex which works in most use cases but has become:

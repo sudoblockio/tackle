@@ -8,11 +8,14 @@ blockers: []
 ---
 [//]: # (--start-header--DO NOT MODIFY)
 
+# Hook Field Defaults
+
+Allow flexible ways to declare hook field defaults
+
+- Proposal Status: [implemented](README.md#status)
+- Issue Number: [237](https://github.com/sudoblockio/tackle/issue/237)
+---
 [//]: # (--end-header--start-body--MODIFY)
-
-# Hook Defaults
-
-> Status: Implemented
 
 Declarative hook default values should be parsed for hook calls.
 

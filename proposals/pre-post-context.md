@@ -2,14 +2,20 @@
 id:
 title: Pre / Post Context
 status: implemented
-description:
+description: Break up the context into pre and post hook parsing groups of data to allow importing hooks
 issue_num: 251
 blockers: []
 ---
 [//]: # (--start-header--DO NOT MODIFY)
 
-[//]: # (--end-header--start-body--MODIFY)
+# Pre / Post Context
 
+Break up the context into pre and post hook parsing groups of data to allow importing hooks
+
+- Proposal Status: [implemented](README.md#status)
+- Issue Number: [251](https://github.com/sudoblockio/tackle/issue/251)
+---
+[//]: # (--end-header--start-body--MODIFY)
 
 Right now all context outside of a declarative hook call is called after the declarative hook is executed. This sort of goes against how a typical program would be structured where definitions outside of a function are called by means of importing the module. In tackle, it would be nice if the parsing of that context was optional to have called before a function is imported. Since order of the function and the context makes the most sense to inform what context is parsed before the function is called vs after, this proposal suggests breaking up the parsing into these two sections.
 

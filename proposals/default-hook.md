@@ -10,16 +10,12 @@ blockers: []
 
 # Default Hook
 
-Allow files to have a default hook to be called
+Allow files to have a default hook to be called when no arguments are supplied
 
 - Proposal Status: [implemented](README.md#status)
 - Issue Number: [232](https://github.com/sudoblockio/tackle/issue/232)
 ---
 [//]: # (--end-header--start-body--MODIFY)
-
-# Default Hook
-
-> Status: Implemented
 
 Currently, there is no way to call a tackle file without an argument and have any kind of exposed schema which would lend itself to building a defined schema that could be rendered into a help screen. This proposal aims at defining that default interface so that
 

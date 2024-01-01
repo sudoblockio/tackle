@@ -8,10 +8,14 @@ blockers: []
 ---
 [//]: # (--start-header--DO NOT MODIFY)
 
-[//]: # (--end-header--start-body--MODIFY)
-
-
 # Complex Types
+
+Declaring hooks as types
+
+- Proposal Status: [implemented](README.md#status)
+- Issue Number: [229](https://github.com/sudoblockio/tackle/issue/229)
+---
+[//]: # (--end-header--start-body--MODIFY)
 
 Would be good if a declarative hook field was able to be typed like another hook would be. This would allow nesting of typed structures as is common in many schema oriented operations.
 

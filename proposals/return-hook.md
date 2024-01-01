@@ -8,6 +8,13 @@ blockers: []
 ---
 [//]: # (--start-header--DO NOT MODIFY)
 
+# Return Hook
+
+None
+
+- Proposal Status: [implemented](README.md#status)
+- Issue Number: [256](https://github.com/sudoblockio/tackle/issue/256)
+---
 [//]: # (--end-header--start-body--MODIFY)
 
 > NOTE: See [return-key](return-key.md) for an additional macro for ergonomics.

@@ -2,16 +2,20 @@
 id:
 title: Self Hook
 status: wip
-description:
+description: Create a special `self` hook to reference the hook's methods during parsing
 issue_num: 258
 blockers: []
 ---
 [//]: # (--start-header--DO NOT MODIFY)
 
-[//]: # (--end-header--start-body--MODIFY)
+# Self Hook
 
+Create a special `self` hook to reference the hook's methods during parsing
 
+- Proposal Status: [wip](README.md#status)
+- Issue Number: [258](https://github.com/sudoblockio/tackle/issue/258)
 ---
+[//]: # (--end-header--start-body--MODIFY)
 
 ```yaml
 MyHook<-:

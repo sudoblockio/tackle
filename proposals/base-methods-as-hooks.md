@@ -8,11 +8,14 @@ blockers: []
 ---
 [//]: # (--start-header--DO NOT MODIFY)
 
+# Base Methods as Hooks
+
+Allow base methods to be called directly as hooks
+
+- Proposal Status: [wip](README.md#status)
+- Issue Number: [233](https://github.com/sudoblockio/tackle/issue/233)
+---
 [//]: # (--end-header--start-body--MODIFY)
-
-# Proposal: Default Methods as Hooks
-
-> Status: Not Implemented
 
 This proposal would allow setting literal values if the first arg is a default method - either `if`, `else`, `when`, or `for`. All other kwargs fail.
 

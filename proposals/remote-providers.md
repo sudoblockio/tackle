@@ -8,6 +8,13 @@ blockers: []
 ---
 [//]: # (--start-header--DO NOT MODIFY)
 
+# Native Providers in Individual Repos
+
+Move the majority of the providers to remote locations
+
+- Proposal Status: [wip](README.md#status)
+- Issue Number: [254](https://github.com/sudoblockio/tackle/issue/254)
+---
 [//]: # (--end-header--start-body--MODIFY)
 
 Over time the intention will likely be to move most of the native providers to a version controlled repo that is imported. Before doing this, we need to implement a better caching strategy for how providers are pulled in at startup.

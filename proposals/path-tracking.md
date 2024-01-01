@@ -8,13 +8,14 @@ blockers: []
 ---
 [//]: # (--start-header--DO NOT MODIFY)
 
-[//]: # (--end-header--start-body--MODIFY)
-
 # Path Tracking
 
-> Status: Not implemented
+Modify how paths are tracked and made available through special variables.
 
-> Blocked by [Context Composition](context-composition.md) proposal
+- Proposal Status: [wip](README.md#status)
+- Issue Number: [244](https://github.com/sudoblockio/tackle/issue/244)
+---
+[//]: # (--end-header--start-body--MODIFY)
 
 There is some ambiguity about what the current directory is. Current logic is
 

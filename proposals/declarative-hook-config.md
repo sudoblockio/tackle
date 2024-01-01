@@ -17,11 +17,6 @@ Allow hooks to have a model_config parameter exposing pydantic config params
 ---
 [//]: # (--end-header--start-body--MODIFY)
 
-
-# Declarative Hook Config
-
-> Status: WIP
-
 We should be able to customize the config on a declarative hook since it is possible with a python hook. For this though, we need to worry about order of operations as:  
 
 1. The config is normally set on the base hook so we'll need to override that

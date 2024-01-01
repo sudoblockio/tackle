@@ -1,4 +1,21 @@
+---
+id:
+title: Typed Macros
+status: wip
+description: Allow creation of macros from within tackle files
+issue_num: 250
+blockers: []
+---
+[//]: # (--start-header--DO NOT MODIFY)
 
+# Typed Macros
+
+Allow creation of macros from within tackle files
+
+- Proposal Status: [wip](README.md#status)
+- Issue Number: [250](https://github.com/sudoblockio/tackle/issue/250)
+---
+[//]: # (--end-header--start-body--MODIFY)
 
 
 ```python

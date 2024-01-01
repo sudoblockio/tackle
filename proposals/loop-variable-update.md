@@ -2,18 +2,20 @@
 id: loop-variable-update
 title: Loop Variable Update
 status: implemented
-description: |
-    Improve the loop parsing logic to allow declaring variables, ie `for: i in a_list`.
+description: Improve the loop parsing logic to allow declaring variables, ie `i in a_list`.
 issue_num: 234
 blockers: []
 ---
 [//]: # (--start-header--DO NOT MODIFY)
 
+# Loop Variable Update
+
+Improve the loop parsing logic to allow declaring variables, ie `i in a_list`.
+
+- Proposal Status: [implemented](README.md#status)
+- Issue Number: [234](https://github.com/sudoblockio/tackle/issue/234)
+---
 [//]: # (--end-header--start-body--MODIFY)
-
-# Loop Update
-
-> Status: WIP
 
 Currently the loop logic inserts temporary variables `item` and `index` into the context so that they are available for rendering but this results in overlapping variables in embedded loops. What would be better is if we supported inserting the variable as part of the `for` key with `var_name in a_list` and similar semantics. Would require overhauling the parser some custom tokenizer.
 

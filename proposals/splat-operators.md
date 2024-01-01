@@ -10,12 +10,14 @@ blockers:
 ---
 [//]: # (--start-header--DO NOT MODIFY)
 
+# Splat Operators
+
+Allow splat operators to instantiate hooks - ie `a_hook **a_dict` or `a_hook *a_list`
+
+- Proposal Status: [implemented](README.md#status)
+- Issue Number: [257](https://github.com/sudoblockio/tackle/issue/257)
+---
 [//]: # (--end-header--start-body--MODIFY)
-
-
-# Splat syntax support
-
-> Status: Not implemented
 
 > Could be done with the [peg parser proposal](./peg-parser.md)
 

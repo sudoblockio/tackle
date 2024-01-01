@@ -2,12 +2,19 @@
 id: hook-field-validators
 title: Hook Field Validators
 status: implemented
-description: Allow  
+description: Validate fields with custom logic similar to pydantic's validation
 issue_num: 241
 blockers: []
 ---
 [//]: # (--start-header--DO NOT MODIFY)
 
+# Hook Field Validators
+
+Validate fields with custom logic similar to pydantic's validation
+
+- Proposal Status: [implemented](README.md#status)
+- Issue Number: [241](https://github.com/sudoblockio/tackle/issue/241)
+---
 [//]: # (--end-header--start-body--MODIFY)
 
 ## Examples

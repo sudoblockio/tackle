@@ -8,12 +8,14 @@ blockers: []
 ---
 [//]: # (--start-header--DO NOT MODIFY)
 
-[//]: # (--end-header--start-body--MODIFY)
-
-
 # URL Inputs
 
-> Status: Not Implemented
+Accept generic URLs for inputs
+
+- Proposal Status: [wip](README.md#status)
+- Issue Number: [263](https://github.com/sudoblockio/tackle/issue/263)
+---
+[//]: # (--end-header--start-body--MODIFY)
 
 At one point `requests` was removed from tackle as a requirement which didn't allow the use of http inputs. This proposal would revert that and allow calling http for both cli / hook inputs.
 

@@ -17,10 +17,6 @@ Change the parser from regex to PEG
 ---
 [//]: # (--end-header--start-body--MODIFY)
 
-# Peg Parser
-
-> Status: Not implemented
-
 The parser isn't very good now and should be overhauled. This was always the plan but the current regex based approach was sufficient to continue at the time.  
 
 This will enable:

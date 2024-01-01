@@ -27,7 +27,7 @@ Proposal<_:
     description: A list of proposal IDs to link to
     default: []
 
-get_all_proposals()<_:
+get_proposals()<_:
   files->: listdir --exclude ^tackle|scratch|templates|__pycache__|wip|.old
   output: []
   proposals->:
@@ -44,22 +44,22 @@ github_issue<-:
   repo: tackle
 
   get_by_num(issue_num int)<-:
-    data_>: http_get https://api.github.com/repos/{{org}}/{{repo}}/issues/{{issue_num}}
-    title->: var data.title
-    body->: var data.body
+    data:
+      _>: http_get https://api.github.com/repos/{{org}}/{{repo}}/issues/{{issue_num}}
+      headers:
+        Authorization: "token {{get_github_token()}}"
+        Accept: "application/vnd.github.v3+json"
+    return->: data
 
   update<-:
     issue_number: int
     title: str
     body: str
     status: str
-    github_token:
-      type: str
-      default->: get_github_token
     exec:
       ->: http_patch https://api.github.com/repos/{{org}}/{{repo}}/issues/{{issue_number}}
       headers:
-        Authorization: "token {{github_token}}"
+        Authorization: "token {{get_github_token()}}"
         Accept: "application/vnd.github.v3+json"
       json:
         title: "{{title}}"
@@ -79,14 +79,34 @@ update_header(p Proposal)<-:
     ---
   body->: update_section {{p.file}} {{var(header_tpl)}} start-header end-header
 
+update_readme()<-:
+  proposals->: get_proposals
+  status_map:
+    implemented: Implemented
+    accepted: Accepted
+    deferred: Deferred
+    considering: Considering
+    wip: WIP
+    rejected: Rejected
+    abandoned: Abandoned
+
+  readme_table:
+    ->: var
+    input: |
+      | Title | Status | Description | Blockers |
+      | --- | --- | --- | --- |
+      {% for p in proposals %}| [{{p.title}}]() | {{status_map[p.status]}} | {{p.description}} | {%for i in p.blockers%}[{{i}}]()<br />{%endfor%} |
+      {% endfor %}
+  update readme table->: update_section README.md {{readme_table}}
+
 <-:
   help: Update all issues
   exec:
-    do->:
-      for: p in get_all_proposals()
-      remote->: github_issue get_by_num p.number
-      body->: read_section {{p.file}} start-body end-body
-
+    Update Proposals->:
+      for: p in get_proposals()
+      remote->: github_issue get_by_num {{p.issue_num}}
+      Update title_>: update_header {{p}}
+      body->: read_section {{p.file}} start-header end-body
       Update Github_>:
         ->: github_issue update
         if: remote.title!=p.title or remote.body!=body
@@ -95,4 +115,4 @@ update_header(p Proposal)<-:
         body: "{{body}}"
         status: "{{p.status}}"
 
-      Update title_>: update_header {{p}}
+    Update Readmes->: update_readme

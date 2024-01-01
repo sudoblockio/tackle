@@ -8,11 +8,14 @@ blockers: []
 ---
 [//]: # (--start-header--DO NOT MODIFY)
 
+# Pydantic 2.0 Upgrade
+
+Upgrade to pydantic version 2.0
+
+- Proposal Status: [implemented](README.md#status)
+- Issue Number: [253](https://github.com/sudoblockio/tackle/issue/253)
+---
 [//]: # (--end-header--start-body--MODIFY)
-
-# Pydantic 2.0 Upgrade Checklist
-
-> Status: Not implemented
 
 - Custom Field
   - Need to create new Field object poc

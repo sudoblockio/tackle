@@ -8,8 +8,14 @@ blockers: []
 ---
 [//]: # (--start-header--DO NOT MODIFY)
 
-[//]: # (--end-header--start-body--MODIFY)
+# Hook Instantiation
 
+Open the concept of using methods on instantiated hooks
+
+- Proposal Status: [wip](README.md#status)
+- Issue Number: [238](https://github.com/sudoblockio/tackle/issue/238)
+---
+[//]: # (--end-header--start-body--MODIFY)
 
 When calling methods, in the past we have opted for converging the fields of method into the base like this.
 
