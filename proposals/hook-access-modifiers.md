@@ -1,6 +1,21 @@
-# Access Modifiers
+---
+id: hook-access-modifiers
+title: Hook Access Modifiers
+status: implemented
+description: Make hooks either public or private allowing distinction for what is in `tackle <target> help`.
+issue_num: 235
+blockers: []
+---
+[//]: # (--start-header--DO NOT MODIFY)
 
-> Status: Implemented
+# Hook Access Modifiers
+
+Make hooks either public or private allowing distinction for what is in `tackle <target> help`.
+
+- Proposal Status: [implemented](README.md#status)
+- Issue Number: [235](https://github.com/sudoblockio/tackle/issue/235)
+---
+[//]: # (--end-header--start-body--MODIFY)
 
 Hooks right now are all in the same namespace but if they are to be used as interfaces / rendered into help, they need to be namespaced in a way that allows collections of hooks to be exposed and others to remain hidden. The natural way to do this would be in allowing hooks with different signs to play a role in different
 
