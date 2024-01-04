@@ -8,9 +8,14 @@ def test_providers_collections_sort_in_place():
     assert output['sort_in_list'] == ['bar_b', 'baz_b', 'foo_b']
 
 
-def test_providers_collections_sort_map_key():
+def test_providers_collections_sort_map_func():
     output = tackle('sort-map-func.yaml')
     assert output['sort_a_map'][0]['foo'] == 'bar'
+
+
+def test_providers_collections_sort_map_keys():
+    output = tackle('sort-map-keys.yaml')
+    assert output['sort_a_map'][1]['foo'] == 'bar'
 
 
 def test_providers_collections_hook_list_key():

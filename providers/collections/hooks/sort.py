@@ -16,12 +16,17 @@ class SortHook(BaseHook):
     # fmt: off
     src: Union[list, dict, str] = Field(
         ...,
-        description="Either a list of strings or a dict with keys to sort and return "
+        description="Either a list of strings or a list of dicts to sort and return "
                     "the output or a string key_path to sort both in place or as "
-                    "output (see `in_place`).")
+                    "output (see `in_place`).",
+    )
     key: str = Field(
         None,
         description="If the `src` is a list of maps, the key to sort the contents by."
+    )
+    keys: list[str] = Field(
+        [],
+        description="A list of fields to sort on for dict inputs based on priority."
     )
     in_place: bool = Field(
         True, description="If the `src` is a string (ie a key path), then sort the "
@@ -40,13 +45,13 @@ class SortHook(BaseHook):
         description="If the input `src` is a list, use the index as the sort key. "
         "Takes both an int for single index or list for multiple criteria.",
     )
-    args: list = ['src']
+    args: list = ['src', 'keys']
 
     def sort(self, src):
         if isinstance(src, list):
             if all(isinstance(n, dict) for n in src):
                 # Iterrand is a dict
-                return sorted(src, key=lambda d: d[self.key])
+                return sorted(src, key=itemgetter(*self.keys), reverse=self.reverse)
 
             if self.index is None:
                 return src.sort(reverse=self.reverse)
@@ -62,7 +67,6 @@ class SortHook(BaseHook):
                     return sorted_list
                 else:
                     # TODO: Untested
-                    # TODO: wtf?
                     sorted_list = sorted(
                         src,
                         key=itemgetter(*self.index),
@@ -106,6 +110,8 @@ class SortHook(BaseHook):
         return value
 
     def exec(self, context: Context) -> Optional[Union[list, dict]]:
+        if self.key:
+            self.keys = [self.key]
         if (
             isinstance(self.src, str)
             or self.src_is_key_path

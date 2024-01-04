@@ -1,0 +1,17 @@
+()<-:
+  a_list:
+    - foo: bing
+      name: 2
+      bar: 2
+    - foo: bar
+      name: 1
+      bar: 2
+    - foo: baz
+      bar: 1
+      name: 3
+
+  sort_a_map:
+    ->: sort a_list
+    keys:
+      - bar
+      - name
