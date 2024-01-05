@@ -1,0 +1,16 @@
+#<-:
+#  stuff: things
+#  args: ['stuff']
+#  exec<-:
+#    o->: var {{stuff}}
+
+(foo='bar')<-:
+  o->: "{{foo}}"
+
+#<-:
+#  foo:
+#    type: str
+#    default: bar
+#  args: ['foo']
+#  exec:
+#    o->: "{{foo}}"

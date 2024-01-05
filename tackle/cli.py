@@ -167,7 +167,14 @@ def main(raw_args=None):
     # Decompose args. Unknown args are passed in to be consumed by the tackle script.
     args, unknown_args = parser.parse_known_args(raw_args)
     # Put the first argument back in its place
-    expanded_unknown_args = [args.inputs]
+    expanded_unknown_args = []
+    if len(raw_args) > 0 and isinstance(raw_args[0], str) and raw_args[0][0] == '-':
+        # For some reason the first kwarg value is consumed as an arg so need to fix
+        if args.inputs is not None:
+            unknown_args.insert(1, args.inputs)
+    elif args.inputs is not None:
+        expanded_unknown_args += [args.inputs]
+
     for v in unknown_args:
         # Unknown args are not split up based on `=` so we need to do that manually
         if '=' in v:
@@ -184,7 +191,7 @@ def main(raw_args=None):
             v = v.title()
         try:
             expanded_unknown_args[i] = ast.literal_eval(v)
-        except ValueError:
+        except (ValueError, SyntaxError):
             pass  # Keep the original string
 
     # Unpack into global_ vars

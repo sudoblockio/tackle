@@ -28,6 +28,43 @@ INPUT_SOURCES = [
         "--helpo --world",
         {'args': [], 'kwargs': {'helpo': True, 'world': True}},
     ),
+    (
+        "--thing=foo",
+        {'args': [], 'kwargs': {'thing': 'foo'}},
+    ),
+    (
+        "--thing=foo --stuff",
+        {'args': [], 'kwargs': {'thing': 'foo', 'stuff': True}},
+    ),
+    (
+        "--thing foo",
+        {'args': [], 'kwargs': {'thing': 'foo'}},
+    ),
+    (
+        "--thing foo --stuff foo",
+        {'args': [], 'kwargs': {'thing': 'foo', 'stuff': 'foo'}},
+    ),
+    (
+        "--thing foo --stuff",
+        {'args': [], 'kwargs': {'thing': 'foo', 'stuff': True}},
+    ),
+    (
+        "--thing foo bar",
+        {'args': [], 'kwargs': {'thing': 'foo bar'}},
+    ),
+    (
+        "--thing 1",
+        {'args': [], 'kwargs': {'thing': 1}},
+    ),
+    (
+        "--thing true",
+        {'args': [], 'kwargs': {'thing': True}},
+    ),
+    # Does not work because quotes are eaten by argparse and bar becomes an arg
+    # (
+    #     "--thing='foo bar'",
+    #     {'args': [], 'kwargs': {'thing': 'foo bar'}},
+    # ),
 ]
 
 

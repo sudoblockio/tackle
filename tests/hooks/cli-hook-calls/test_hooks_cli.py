@@ -55,54 +55,66 @@ def test_hooks_cli_multiple_args(capsys):
 
 def test_hooks_default_hook_no_context():
     """Validate that we can run a default hook."""
-    output = tackle('cli-default-hook-no-context.yaml')
+    output = tackle('default-hook-no-context.yaml')
     assert output['p'] == 'things'
 
 
 def test_hooks_default_hook_no_context_kwargs():
     """Validate that we can run a default hook with a kwarg."""
-    output = tackle('cli-default-hook-no-context.yaml', stuff='bar')
+    output = tackle('default-hook-no-context.yaml', stuff='bar')
     assert output['p'] == 'bar'
     assert output['b']
 
 
 def test_hooks_default_hook_context():
     """Test that outer context is additionally parsed with the default hook."""
-    output = tackle('cli-default-hook-context.yaml')
+    output = tackle('default-hook-context.yaml')
     assert output['p'] == 'things'
     assert output['foo'] == 'bar'
 
 
 def test_hooks_default_hook_no_context_method_call():
     """Validate that we can run a default hook."""
-    output = tackle('cli-default-hook-no-context.yaml', 'do')
+    output = tackle('default-hook-no-context.yaml', 'do')
     assert output['d'] == 'baz'
 
 
 def test_hooks_default_hook_no_context_method_call_args():
     """Validate that we can run a default hook."""
-    output = tackle('cli-default-hook-no-context.yaml', 'do', 'bizz')
+    output = tackle('default-hook-no-context.yaml', 'do', 'bizz')
     assert output['d'] == 'bizz'
 
 
 def test_hooks_default_hook_embedded():
     """Validate that we can run a default hook embedded methods."""
-    output = tackle('cli-default-hook-embedded.yaml', 'do', 'stuff', 'things')
+    output = tackle('default-hook-embedded.yaml', 'do', 'stuff', 'things')
     assert output['t'] == 'bar'
 
 
 def test_hooks_default_hook_embedded_kwargs():
     """Validate that we can run a default hook embedded methods with kwargs."""
-    output = tackle(
-        'cli-default-hook-embedded.yaml', 'do', 'stuff', 'things', foo='bing'
-    )
+    output = tackle('default-hook-embedded.yaml', 'do', 'stuff', 'things', foo='bing')
     assert output['t'] == 'bing'
 
 
 def test_hooks_default_hook_embedded_kwargs_full():
     """Validate that we can run a default hook embedded methods with kwargs schema."""
-    output = tackle('cli-default-hook-embedded.yaml', 'do', 'stuff', foo_full='bing')
+    output = tackle('default-hook-embedded.yaml', 'do', 'stuff', foo_full='bing')
     assert output['t'] == 'bing'
+
+
+@pytest.mark.parametrize(
+    "args,kwargs,expected_output",
+    [
+        ((), {}, "bar"),
+        (("baz",), {}, "baz"),
+        ((), {"foo": "baz"}, "baz"),
+    ],
+)
+def test_hooks_default_hook_args(args, kwargs, expected_output):
+    """Validate that we can run a default hook embedded methods with kwargs schema."""
+    output = tackle('default-hook-args.yaml', *args, **kwargs)
+    assert output['o'] == expected_output
 
 
 #############
@@ -139,6 +151,6 @@ def test_hooks_cli_hook_arg_flags():
 def test_hooks_hook_embedded_kwargs():
     """Validate that we can run a default hook embedded methods with kwargs."""
     output = tackle(
-        'cli-default-hook-embedded.yaml', 'run', 'do', 'stuff', 'things', foo='bing'
+        'default-hook-embedded.yaml', 'run', 'do', 'stuff', 'things', foo='bing'
     )
     assert output['t'] == 'bing'
