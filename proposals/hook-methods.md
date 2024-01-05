@@ -14,7 +14,9 @@ Allow creating hooks within hooks that act like methods with parameter inheritan
 
 - Proposal Status: [wip](README.md#status)
 - Issue Number: [239](https://github.com/sudoblockio/tackle/issue/239)
----
+- Proposal Doc: [hook-methods.md](https://github.com/sudoblockio/tackle/blob/main/proposals/hook-methods.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 Right now the order of operations for how to run and access a hook method is all messed up and needs to be rebuilt. Current there are two places where methods can be called, 1, within a tackle file and 2, from command line. Ideally they should be converged.

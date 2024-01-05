@@ -14,7 +14,9 @@ Update all the structured file hooks (ie yaml, json, toml, and ini) to have shar
 
 - Proposal Status: [considering](README.md#status)
 - Issue Number: [260](https://github.com/sudoblockio/tackle/issue/260)
----
+- Proposal Doc: [structured-file-hooks.md](https://github.com/sudoblockio/tackle/blob/main/proposals/structured-file-hooks.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 The yaml, json, toml, and ini share a lot of the same operations and so should have some shared libraries. Right now we have a bloated `*_in_place` hook. In the future it would be good to have a shared library of operations that each tool wraps.

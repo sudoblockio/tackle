@@ -14,7 +14,9 @@ Allow for jinja / bash style filters / pipes
 
 - Proposal Status: [wip](README.md#status)
 - Issue Number: [249](https://github.com/sudoblockio/tackle/issue/249)
----
+- Proposal Doc: [pipe-operators.md](https://github.com/sudoblockio/tackle/blob/main/proposals/pipe-operators.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 ```yaml

@@ -14,7 +14,9 @@ None
 
 - Proposal Status: [implemented](README.md#status)
 - Issue Number: [256](https://github.com/sudoblockio/tackle/issue/256)
----
+- Proposal Doc: [return-hook.md](https://github.com/sudoblockio/tackle/blob/main/proposals/return-hook.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 > NOTE: See [return-key](return-key.md) for an additional macro for ergonomics.

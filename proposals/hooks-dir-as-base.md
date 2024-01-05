@@ -14,7 +14,9 @@ Allow the base of a provider be either a hooks dir or tackle file
 
 - Proposal Status: [implemented](README.md#status)
 - Issue Number: [240](https://github.com/sudoblockio/tackle/issue/240)
----
+- Proposal Doc: [hooks-dir-as-base.md](https://github.com/sudoblockio/tackle/blob/main/proposals/hooks-dir-as-base.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 When there is no tackle file in a directory, it would be appropriate to instead check if there is a hooks dir as well since if there was a tackle file, then those hooks in the hooks dir would also be parsed.

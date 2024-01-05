@@ -14,7 +14,9 @@ Methods could have properties which inform their behaviour
 
 - Proposal Status: [wip](README.md#status)
 - Issue Number: [242](https://github.com/sudoblockio/tackle/issue/242)
----
+- Proposal Doc: [method-properties.md](https://github.com/sudoblockio/tackle/blob/main/proposals/method-properties.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 It would be helpful if we could expose the control of how methods operated with parameters such as:

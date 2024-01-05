@@ -14,7 +14,9 @@ Allow flexible ways to declare hook field defaults
 
 - Proposal Status: [implemented](README.md#status)
 - Issue Number: [237](https://github.com/sudoblockio/tackle/issue/237)
----
+- Proposal Doc: [hook-field-defaults.md](https://github.com/sudoblockio/tackle/blob/main/proposals/hook-field-defaults.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 Declarative hook default values should be parsed for hook calls.

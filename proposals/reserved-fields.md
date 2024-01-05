@@ -14,7 +14,9 @@ Change the syntax of reserved fields to reduce potential conflicts
 
 - Proposal Status: [wip](README.md#status)
 - Issue Number: [243](https://github.com/sudoblockio/tackle/issue/243)
----
+- Proposal Doc: [reserved-fields.md](https://github.com/sudoblockio/tackle/blob/main/proposals/reserved-fields.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 

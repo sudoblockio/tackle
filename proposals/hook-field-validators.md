@@ -14,7 +14,9 @@ Validate fields with custom logic similar to pydantic's validation
 
 - Proposal Status: [implemented](README.md#status)
 - Issue Number: [241](https://github.com/sudoblockio/tackle/issue/241)
----
+- Proposal Doc: [hook-field-validators.md](https://github.com/sudoblockio/tackle/blob/main/proposals/hook-field-validators.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 ## Examples

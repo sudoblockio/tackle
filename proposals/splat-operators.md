@@ -16,7 +16,9 @@ Allow splat operators to instantiate hooks - ie `a_hook **a_dict` or `a_hook *a_
 
 - Proposal Status: [implemented](README.md#status)
 - Issue Number: [257](https://github.com/sudoblockio/tackle/issue/257)
----
+- Proposal Doc: [splat-operators.md](https://github.com/sudoblockio/tackle/blob/main/proposals/splat-operators.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 > Could be done with the [peg parser proposal](./peg-parser.md)

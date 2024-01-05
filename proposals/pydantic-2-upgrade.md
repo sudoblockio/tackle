@@ -14,7 +14,9 @@ Upgrade to pydantic version 2.0
 
 - Proposal Status: [implemented](README.md#status)
 - Issue Number: [253](https://github.com/sudoblockio/tackle/issue/253)
----
+- Proposal Doc: [pydantic-2-upgrade.md](https://github.com/sudoblockio/tackle/blob/main/proposals/pydantic-2-upgrade.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 - Custom Field

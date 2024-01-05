@@ -14,7 +14,9 @@ Add async functionality to the parser
 
 - Proposal Status: [wip](README.md#status)
 - Issue Number: [226](https://github.com/sudoblockio/tackle/issue/226)
----
+- Proposal Doc: [async.md](https://github.com/sudoblockio/tackle/blob/main/proposals/async.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 Would be cool to implement async functionality but would need another arrow to define the hook as being awaitable.

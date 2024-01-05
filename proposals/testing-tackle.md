@@ -14,7 +14,9 @@ None
 
 - Proposal Status: [wip](README.md#status)
 - Issue Number: [262](https://github.com/sudoblockio/tackle/issue/262)
----
+- Proposal Doc: [testing-tackle.md](https://github.com/sudoblockio/tackle/blob/main/proposals/testing-tackle.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 

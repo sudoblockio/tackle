@@ -14,7 +14,9 @@ Declaring hooks as types
 
 - Proposal Status: [implemented](README.md#status)
 - Issue Number: [229](https://github.com/sudoblockio/tackle/issue/229)
----
+- Proposal Doc: [complex-types.md](https://github.com/sudoblockio/tackle/blob/main/proposals/complex-types.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 Would be good if a declarative hook field was able to be typed like another hook would be. This would allow nesting of typed structures as is common in many schema oriented operations.

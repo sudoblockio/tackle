@@ -14,7 +14,9 @@ Allow creation of macros from within tackle files
 
 - Proposal Status: [wip](README.md#status)
 - Issue Number: [250](https://github.com/sudoblockio/tackle/issue/250)
----
+- Proposal Doc: [typed-macros.md](https://github.com/sudoblockio/tackle/blob/main/proposals/typed-macros.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 

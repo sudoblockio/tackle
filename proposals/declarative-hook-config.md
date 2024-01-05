@@ -14,7 +14,9 @@ Allow hooks to have a model_config parameter exposing pydantic config params
 
 - Proposal Status: [implemented](README.md#status)
 - Issue Number: [231](https://github.com/sudoblockio/tackle/issue/231)
----
+- Proposal Doc: [declarative-hook-config.md](https://github.com/sudoblockio/tackle/blob/main/proposals/declarative-hook-config.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 We should be able to customize the config on a declarative hook since it is possible with a python hook. For this though, we need to worry about order of operations as:  

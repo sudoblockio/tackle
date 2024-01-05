@@ -14,7 +14,9 @@ Open the concept of using methods on instantiated hooks
 
 - Proposal Status: [wip](README.md#status)
 - Issue Number: [238](https://github.com/sudoblockio/tackle/issue/238)
----
+- Proposal Doc: [hook-instantiation.md](https://github.com/sudoblockio/tackle/blob/main/proposals/hook-instantiation.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 When calling methods, in the past we have opted for converging the fields of method into the base like this.

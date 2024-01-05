@@ -14,7 +14,9 @@ Add macro to easily call commands on different platforms
 
 - Proposal Status: [wip](README.md#status)
 - Issue Number: [227](https://github.com/sudoblockio/tackle/issue/227)
----
+- Proposal Doc: [command-arrow.md](https://github.com/sudoblockio/tackle/blob/main/proposals/command-arrow.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 It is very common to want to run a system command which tackle should make simple. Issue is the parser and general mechanics are not very elegant right now. Solution should be clean to make it on par with being able to create a Makefile.

@@ -14,7 +14,9 @@ Create a cache for remote providers to minimize network calls to git on ever pro
 
 - Proposal Status: [wip](README.md#status)
 - Issue Number: [255](https://github.com/sudoblockio/tackle/issue/255)
----
+- Proposal Doc: [remote-providers-cache.md](https://github.com/sudoblockio/tackle/blob/main/proposals/remote-providers-cache.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 ### Cache Path

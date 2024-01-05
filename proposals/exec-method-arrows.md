@@ -14,7 +14,9 @@ None
 
 - Proposal Status: [wip](README.md#status)
 - Issue Number: [248](https://github.com/sudoblockio/tackle/issue/248)
----
+- Proposal Doc: [exec-method-arrows.md](https://github.com/sudoblockio/tackle/blob/main/proposals/exec-method-arrows.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 The `exec` method on a declarative hook is special in that when it exists, the return of the hook is public data from parsing it. This is how we can make dcl hooks into functions with typed inputs. For example:

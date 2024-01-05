@@ -14,7 +14,9 @@ Change the parser from regex to PEG
 
 - Proposal Status: [wip](README.md#status)
 - Issue Number: [246](https://github.com/sudoblockio/tackle/issue/246)
----
+- Proposal Doc: [peg-parser.md](https://github.com/sudoblockio/tackle/blob/main/proposals/peg-parser.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 The parser isn't very good now and should be overhauled. This was always the plan but the current regex based approach was sufficient to continue at the time.  

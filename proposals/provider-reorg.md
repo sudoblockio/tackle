@@ -14,7 +14,9 @@ Reorganize the providers into logical groups
 
 - Proposal Status: [implemented](README.md#status)
 - Issue Number: [252](https://github.com/sudoblockio/tackle/issue/252)
----
+- Proposal Doc: [provider-reorg.md](https://github.com/sudoblockio/tackle/blob/main/proposals/provider-reorg.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 ## New Provider List

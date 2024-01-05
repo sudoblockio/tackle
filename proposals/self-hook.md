@@ -14,7 +14,9 @@ Create a special `self` hook to reference the hook's methods during parsing
 
 - Proposal Status: [wip](README.md#status)
 - Issue Number: [258](https://github.com/sudoblockio/tackle/issue/258)
----
+- Proposal Doc: [self-hook.md](https://github.com/sudoblockio/tackle/blob/main/proposals/self-hook.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 ```yaml

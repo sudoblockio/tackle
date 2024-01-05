@@ -15,7 +15,9 @@ Using complex types has issues
 
 - Proposal Status: [wip](README.md#status)
 - Issue Number: [228](https://github.com/sudoblockio/tackle/issue/228)
----
+- Proposal Doc: [complex-type-use.md](https://github.com/sudoblockio/tackle/blob/main/proposals/complex-type-use.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 Currently we allow declaring types for fields within a declarative hook and can have those fields validated when the hook is called but can't create fields which are validated on assignment. This prevents creation of typed data types like `list[str]` or `list[Foo]` within a hook.  

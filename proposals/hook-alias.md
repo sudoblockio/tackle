@@ -14,7 +14,9 @@ Alias hooks so they can be called easier
 
 - Proposal Status: [wip](README.md#status)
 - Issue Number: [236](https://github.com/sudoblockio/tackle/issue/236)
----
+- Proposal Doc: [hook-alias.md](https://github.com/sudoblockio/tackle/blob/main/proposals/hook-alias.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 Would be nice to be able to define aliases for a hook to make them easier to call. For instance the `listdir` hook could additionally be called with `list_dir` or `dir_list`:

@@ -14,7 +14,9 @@ Create a special key for returning the value when parsing
 
 - Proposal Status: [wip](README.md#status)
 - Issue Number: [245](https://github.com/sudoblockio/tackle/issue/245)
----
+- Proposal Doc: [return-key.md](https://github.com/sudoblockio/tackle/blob/main/proposals/return-key.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 > Blocked by [return-hook](return-hook.md)

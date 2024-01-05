@@ -1,3 +1,21 @@
+(help='Update all issues')<-:
+  Update proposals->: update_proposals
+  Update Readme->: update_readme
+
+update_proposals()<-:
+  loop over proposals->:
+    for: p in get_proposals()
+    remote->: github_issue get_by_num {{p.issue_num}}
+    Update title_>: update_header {{p}}
+    body->: read_section {{p.file}} start-header end-body
+    Update Github_>:
+      ->: github_issue update
+      if: remote.title!=p.title or remote.body!=body
+      issue_number: "{{p.issue_num}}"
+      title: "{{p.title}}"
+      body: "{{body}}"
+      status: "{{p.status}}"
+
 Proposal<_:
   file: str
   id:
@@ -34,6 +52,9 @@ get_proposals()<_:
     for: f in files
     frontmatter->: markdown_frontmatter {{f}}
     append proposal->: append output "{{Proposal(file=f, **frontmatter)}}" --if frontmatter!={}
+  sort output:
+    ->: sort output
+    keys: ['status']
   return->: output
 
 get_github_token()<_:
@@ -76,7 +97,10 @@ update_header(p Proposal)<-:
 
     - Proposal Status: [{{p.status}}](README.md#status)
     - Issue Number: [{{p.issue_num}}](https://github.com/sudoblockio/tackle/issue/{{p.issue_num}})
-    ---
+    - Proposal Doc: [{{p.file}}](https://github.com/sudoblockio/tackle/blob/main/proposals/{{p.file}})
+
+    ### Overview
+
   body->: update_section {{p.file}} {{var(header_tpl)}} start-header end-header
 
 update_readme()<-:
@@ -95,24 +119,6 @@ update_readme()<-:
     input: |
       | Title | Status | Description | Blockers |
       | --- | --- | --- | --- |
-      {% for p in proposals %}| [{{p.title}}]() | {{status_map[p.status]}} | {{p.description}} | {%for i in p.blockers%}[{{i}}]()<br />{%endfor%} |
+      {% for p in proposals|selectattr("WIP") %}| [{{p.title}}]() | {{status_map[p.status]}} | {{p.description}} | {%for i in p.blockers%}[{{i}}]()<br />{%endfor%} |
       {% endfor %}
   update readme table->: update_section README.md {{readme_table}}
-
-<-:
-  help: Update all issues
-  exec:
-    Update Proposals->:
-      for: p in get_proposals()
-      remote->: github_issue get_by_num {{p.issue_num}}
-      Update title_>: update_header {{p}}
-      body->: read_section {{p.file}} start-header end-body
-      Update Github_>:
-        ->: github_issue update
-        if: remote.title!=p.title or remote.body!=body
-        issue_number: "{{p.issue_num}}"
-        title: "{{p.title}}"
-        body: "{{body}}"
-        status: "{{p.status}}"
-
-    Update Readmes->: update_readme

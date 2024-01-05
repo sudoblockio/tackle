@@ -14,7 +14,9 @@ Changing core context from inheritance based object to composition
 
 - Proposal Status: [implemented](README.md#status)
 - Issue Number: [230](https://github.com/sudoblockio/tackle/issue/230)
----
+- Proposal Doc: [context-composition.md](https://github.com/sudoblockio/tackle/blob/main/proposals/context-composition.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 This proposal would be for refactoring the core context object from an inheritance to a composition based approach. Would have broad implications across the entire stack. This is some long standing technical debt that needs to be paid at some point.  

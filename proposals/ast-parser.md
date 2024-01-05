@@ -15,7 +15,9 @@ Upgrade string parsers to use an AST
 
 - Proposal Status: [wip](README.md#status)
 - Issue Number: [172](https://github.com/sudoblockio/tackle/issue/172)
----
+- Proposal Doc: [ast-parser.md](https://github.com/sudoblockio/tackle/blob/main/proposals/ast-parser.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 Current parsing is based on regex which works in most use cases but has become:

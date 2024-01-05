@@ -14,7 +14,9 @@ Allow base methods to be called directly as hooks
 
 - Proposal Status: [wip](README.md#status)
 - Issue Number: [233](https://github.com/sudoblockio/tackle/issue/233)
----
+- Proposal Doc: [base-methods-as-hooks.md](https://github.com/sudoblockio/tackle/blob/main/proposals/base-methods-as-hooks.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 This proposal would allow setting literal values if the first arg is a default method - either `if`, `else`, `when`, or `for`. All other kwargs fail.

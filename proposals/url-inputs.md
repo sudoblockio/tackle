@@ -14,7 +14,9 @@ Accept generic URLs for inputs
 
 - Proposal Status: [wip](README.md#status)
 - Issue Number: [263](https://github.com/sudoblockio/tackle/issue/263)
----
+- Proposal Doc: [url-inputs.md](https://github.com/sudoblockio/tackle/blob/main/proposals/url-inputs.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 At one point `requests` was removed from tackle as a requirement which didn't allow the use of http inputs. This proposal would revert that and allow calling http for both cli / hook inputs.

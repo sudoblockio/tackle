@@ -14,7 +14,9 @@ Improve the loop parsing logic to allow declaring variables, ie `i in a_list`.
 
 - Proposal Status: [implemented](README.md#status)
 - Issue Number: [234](https://github.com/sudoblockio/tackle/issue/234)
----
+- Proposal Doc: [loop-variable-update.md](https://github.com/sudoblockio/tackle/blob/main/proposals/loop-variable-update.md)
+
+### Overview
 [//]: # (--end-header--start-body--MODIFY)
 
 Currently the loop logic inserts temporary variables `item` and `index` into the context so that they are available for rendering but this results in overlapping variables in embedded loops. What would be better is if we supported inserting the variable as part of the `for` key with `var_name in a_list` and similar semantics. Would require overhauling the parser some custom tokenizer.
