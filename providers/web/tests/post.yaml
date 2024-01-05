@@ -1,10 +1,10 @@
 input_json:
   stuff: things
 
-compact->: http_post https://httpbin.org/post --input_json input_json
+compact->: http_post https://httpbin.org/post --json input_json
 
 expanded:
   ->: http_post
   url: https://httpbin.org/post
-  input_json:
+  json:
     stuff: things

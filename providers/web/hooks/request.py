@@ -1,10 +1,10 @@
 import json
 import logging
 import os
+from dataclasses import dataclass
 from typing import Any, Union
 
 import requests
-from pydantic import BaseModel
 from requests.auth import HTTPBasicAuth
 
 from tackle import BaseHook, Field
@@ -16,19 +16,20 @@ def exit_none_200(r: requests.Response, no_exit: bool, url: str):
     """Exit if the status code is not 2xx."""
     if not (r.status_code - 200) < 100 and not no_exit:
         raise requests.exceptions.HTTPError(
-            f"Error sending request to {url}, got '{r.status_code}' status code."
+            f"Error sending request to {url}, got '{r.status_code}' status code.\n"
+            f"{r.content.decode('utf-8')}"
         )
 
 
-def process_content(r: requests.Response, encoding):
+def process_content(r: requests.Response, encoding) -> Any:
     """Output the content based on the header."""
     if 'application/json' in r.headers['Content-Type']:
         return json.loads(r.content)
-    elif 'text/plain' in r.headers['Content-Type']:
-        return r.content.decode(encoding=encoding)
+    return r.content.decode(encoding=encoding)
 
 
-class AuthMixin(BaseModel):
+@dataclass
+class AuthMixin:
     """Authorization for web requesst."""
 
     username: str = None
@@ -52,6 +53,10 @@ class RequestsGetHook(BaseHook, AuthMixin):
     url: str = Field(
         ...,
         description="URL for the new request object.",
+    )
+    headers: dict = Field(
+        None,
+        description="Headers to include in request.",
     )
     extra_kwargs: Union[str, dict] = Field(
         {}, description="Optional arguments that request takes.",
@@ -81,6 +86,7 @@ class RequestsGetHook(BaseHook, AuthMixin):
     def exec(self) -> dict:
         r = requests.get(
             self.url,
+            headers=self.headers,
             params=self.params,
             auth=self.auth(),
             **self.extra_kwargs,
@@ -98,9 +104,17 @@ class RequestsPostHook(BaseHook, AuthMixin):
     hook_name: str = 'http_post'
 
     # fmt: off
-    url: str = Field(..., description="URL for the new request object.")
+    url: str = Field(
+        ...,
+        description="URL for the new request object.",
+    )
+    headers: dict = Field(
+        None,
+        description="Headers to include in request.",
+    )
     extra_kwargs: Union[str, dict] = Field(
-        {}, description="Optional arguments that request takes.",
+        {},
+        description="Optional arguments that request takes.",
         render_by_default=True
     )
     # Requests API docs call for additional functionality not for yaml
@@ -109,7 +123,7 @@ class RequestsPostHook(BaseHook, AuthMixin):
         description="Dictionary, list of tuples, bytes, or file-like object to send in the body of the Request.",
         render_by_default=True
     )
-    input_json: dict = Field(
+    json_: dict = Field(
         False,
         description="A json payload to post.",
         render_by_default=True,
@@ -131,8 +145,9 @@ class RequestsPostHook(BaseHook, AuthMixin):
         r = requests.post(
             self.url,
             data=self.data,
-            json=self.input_json,
+            json=self.json_,
             auth=self.auth(),
+            headers=self.headers,
             **self.extra_kwargs,
         )
         exit_none_200(r, self.no_exit, self.url)
@@ -149,7 +164,10 @@ class RequestsPutHook(BaseHook, AuthMixin):
     hook_name: str = 'http_put'
 
     # fmt: on
-    url: str = Field(..., description="URL for the new request object.")
+    url: str = Field(
+        ...,
+        description="URL for the new request object.",
+    )
     extra_kwargs: Union[str, dict] = Field(
         {},
         description="Optional arguments that request takes.",
@@ -159,7 +177,7 @@ class RequestsPutHook(BaseHook, AuthMixin):
         None,
         description="Dictionary, list of tuples, bytes, or file-like object to send in the body of the Request.",
     )
-    input_json: dict = Field(
+    json_: dict = Field(
         None,
         description="A json payload to put.",
         render_by_default=True,
@@ -177,7 +195,7 @@ class RequestsPutHook(BaseHook, AuthMixin):
         r = requests.put(
             self.url,
             data=self.data,
-            json=self.input_json,
+            json=self.json_,
             auth=self.auth(),
             **self.extra_kwargs
         )
@@ -196,16 +214,16 @@ class RequestsPatchHook(BaseHook, AuthMixin):
 
     # fmt: off
     url: str = Field(..., description="URL for the new request object.")
-    # extra_kwargs: Union[str, dict] = Field(
-    #     {}, description="Optional arguments that request takes.",
-    #     render_by_default=True
-    # )
-    headers: dict = Field(None, description="")
+    extra_kwargs: Union[str, dict] = Field(
+        {}, description="Optional arguments that request takes.",
+        render_by_default=True
+    )
+    headers: dict = Field(None, description="Headers to include in request.")
     data: Any = Field(
         None,
         description="Dictionary, list of tuples, bytes, or file-like object to send in the body of the Request.",
     )
-    input_json: dict = Field(
+    json_: dict = Field(
         None,
         description="A json payload to patch.",
         render_by_default=True,
@@ -220,10 +238,10 @@ class RequestsPatchHook(BaseHook, AuthMixin):
         r = requests.patch(
             self.url,
             data=self.data,
-            json=self.input_json,
+            json=self.json_,
             auth=self.auth(),
             headers=self.headers,
-            # **self.extra_kwargs
+            **self.extra_kwargs
         )
         exit_none_200(r, self.no_exit, self.url)
 

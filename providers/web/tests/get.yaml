@@ -1,0 +1,1 @@
+compact->: http_get https://httpbin.org/get
