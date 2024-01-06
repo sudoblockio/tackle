@@ -1,3 +1,5 @@
+import os
+
 from pydantic import (  # noqa
     BaseModel,
     Field,
@@ -8,6 +10,7 @@ from pydantic import (  # noqa
 
 from tackle import BaseHook, Context, exceptions
 from tackle.factory import new_context
+from tackle.imports import import_hooks_from_file
 from tackle.utils.command import unpack_args_kwargs_string
 
 
@@ -42,19 +45,28 @@ class ImportHook(BaseHook):
     )
     version: str = Field(None, description="Version of src for remote imports.")
     latest: bool = Field(None, description="Flag to pull latest version.")
+
+    skip_output: bool = True
     args: list = ['src']
 
     def _do_import(self, context: 'Context', src: str, version: str, latest: bool):
-        tmp_context = new_context(
-            src,
-            checkout=version,
-            latest=latest,
-            _hooks=context.hooks,
-            _strict_source=True,
-        )
-        # Put the hooks in the the hooks namespaces
-        context.hooks.public.update(tmp_context.hooks.public)
-        context.hooks.private.update(tmp_context.hooks.private)
+        if os.path.isfile(src):
+            import_hooks_from_file(
+                context=context,
+                provider_name=os.path.basename(src).replace('-', '_').replace(' ', '_'),
+                file_path=src,
+            )
+        else:
+            tmp_context = new_context(
+                src,
+                checkout=version,
+                latest=latest,
+                _hooks=context.hooks,
+                _strict_source=True,
+            )
+            # Put the hooks in right namespace
+            context.hooks.public.update(tmp_context.hooks.public)
+            context.hooks.private.update(tmp_context.hooks.private)
 
     def _create_repo_source(self, context: Context, **kwargs) -> RepoSource:
         try:

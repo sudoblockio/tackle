@@ -25,7 +25,7 @@ def test_provider_system_hook_import_local(target):
     assert num_private_providers < len(context.hooks.private.keys())
     assert num_public_providers < len(context.hooks.public.keys())
     # Check that we aren't just importing hooks from base of repo
-    assert 'gen_docs' not in context.hooks.public
+    assert 'test' not in context.hooks.public
     assert 'thing' in context.hooks.private
     assert 'tackle' not in context.hooks.private
 
@@ -55,6 +55,12 @@ def test_provider_system_hook_import_remote(target):
     # Check that we aren't just importing hooks from base of repo
     assert 'gen_docs' not in context.hooks.public
     assert 'tackle' not in context.hooks.private
+
+
+def test_provider_system_hook_import_local_file():
+    output = tackle('local-file.yaml')
+
+    assert output['call']['foo'] == 'bar'
 
 
 def test_provider_system_hook_import_local_assert():

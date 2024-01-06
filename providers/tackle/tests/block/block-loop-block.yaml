@@ -5,7 +5,7 @@ block1->:
   block2->:
     foo: bar
     render->: "{{foo}}"
-    iter->: "{{item}}"
+#    iter->: "{{item}}"
   this->: "{{block2}}"
 
 block1_nested->:

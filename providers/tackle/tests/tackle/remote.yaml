@@ -1,5 +1,5 @@
 
 project_slug: output
 
-tackle-fixture-unreleased->: tackle robcxyz/tackle-fixture-unreleased --foo baz
+tackle-fixture-unreleased->: tackle robcxyz/tackle-fixture-unreleased --target baz
 tackle-fixture-released->: tackle robcxyz/tackle-fixture-released --foo baz
