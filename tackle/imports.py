@@ -10,7 +10,7 @@ from pydantic import PydanticUserError, ValidationError
 from pydantic._internal._model_construction import ModelMetaclass  # noqa
 
 from tackle import exceptions
-from tackle.context import Context
+from tackle.context import Context, Data
 from tackle.models import BaseHook, GenericHookType
 from tackle.settings import settings
 from tackle.utils.files import read_config_file
@@ -101,12 +101,12 @@ def import_declarative_hooks_from_file(
     if file_contents is None:
         logger.debug(f"Skipping importing {file_path} as the context is empty.")
         return
-    # Temporarily hold the raw input in another var to parse the file contents
-    old_raw_input = context.data.raw_input
-    context.data.raw_input = file_contents
+    # Temporarily hold the data in another var to parse the file contents
+    old_data = context.data
+    context.data = Data(raw_input=file_contents)
     parse_context(context=context, call_hooks=False)
-    # Bring the raw input back
-    context.data.raw_input = old_raw_input
+    # Bring the data back
+    context.data = old_data
 
 
 def import_hooks_from_file(
@@ -141,8 +141,6 @@ def import_hooks_from_file(
             module_name=module_name,
             file_path=file_path,
         )
-    else:
-        pass
 
 
 def import_hooks_from_hooks_directory(

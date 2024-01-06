@@ -47,6 +47,7 @@ class Paths:
 class InputArguments:
     args: list = None
     kwargs: dict = None
+    help_string: str = ""
 
 
 class StrictEnvironment(Environment):

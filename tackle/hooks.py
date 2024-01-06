@@ -68,7 +68,7 @@ def dcl_hook_exec(
     """
     if input_element is None:
         # No `exec` method so we'll just be returning the included fields from model
-        return hook.model_dump(include=hook.hook_field_set)
+        return hook.model_dump(include=hook.hook_field_set, warnings=False)
     elif not isinstance(input_element, (list, dict)):
         input_element = {'returns->': input_element}
 
@@ -497,7 +497,11 @@ def create_default_factory(
 
     # Create a callable from a dict which walks the data and returns the public data
     # from execution. Is used in default_factory which expects a callable with no args.
-    tmp_context = new_context_from_context(context=context)
+    tmp_context = new_context_from_context(
+        context=context,
+        _hooks=context.hooks,
+        _source=context.source,
+    )
     value['default_factory'] = partial(
         get_public_data_from_walk, tmp_context, default_factory
     )

@@ -129,7 +129,8 @@ class BaseHook(BaseModel):
         description="Name of the hook.",
     )
     help: str = Field(
-        None, description="A string to display when calling with the `help` argument."
+        None,
+        description="A string to display when calling with the `help` argument.",
     )
     render_by_default: list = Field(
         None,
@@ -149,14 +150,12 @@ class BaseHook(BaseModel):
         " within a hook call.",
     )
     args: list = Field(
-        [], description="A list of fields map arguments. See [docs]() for details."
+        [],
+        description="A list of fields map arguments. See [docs]() for details.",
     )
     kwargs: str = Field(
-        None, description="A field name of type dict to map additional arguments to."
-    )
-    literal_fields: list = Field(
         None,
-        description="A list of fields to use without.",
+        description="A field name of type dict to map additional arguments to.",
     )
 
     model_config = ConfigDict(
@@ -246,29 +245,32 @@ class DclHookInput(BaseModel):
     exec_: Any = Field(
         None,
         description="An exec method to run after validating input variables. See"
-        " [docs]().",
+        " [docs]().",  # TODO
         alias="exec",
     )
-    return_: Any = Field(
-        None,
-        # TODO: Move to macro?
-        description="",
-        alias="return",
-    )
+    # return_: Any = Field(
+    #     None,
+    #     # TODO: Move to macro?
+    #     description="",
+    #     alias="return",
+    # )
     type_: str | None = Field(
-        None, alias='type', description="For type hooks, the name of the type."
+        None,
+        alias='type',
+        description="For type hooks, the name of the type.",
     )
     validators: dict[str, dict | HookFieldValidator] = Field(
-        {}, description="A list of validators. Only used for type hooks. See [docs]()."
+        {},
+        description="A list of validators. Only used for type hooks. See [docs]().",
     )
-
     include: list | None = Field(
-        None, description="A list of fields to include when exporting a model."
+        None,
+        description="A list of fields to include when exporting a model.",
     )
     exclude: list | None = Field(
-        None, description="A list of fields to exclude when exporting a model."
+        None,
+        description="A list of fields to exclude when exporting a model.",
     )
-
     hook_model_config_: DclHookModelConfig | None = Field(
         None,
         description="Variables to set wrapping pydantic's existing ConfigDict. See"

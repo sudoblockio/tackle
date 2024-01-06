@@ -505,6 +505,9 @@ def new_inputs(
     input_obj = InputArguments(
         args=args,
         kwargs=kwargs,
+        # string is for printing out the help screen as the vars are mutable above, and
+        # so we need to preserve here. Trimming last arg which should be `help`
+        help_string=f"{' '.join(args[:-1])} {' '.join([f'--{k} {v}' for k, v in kwargs.items()])}",
     )
 
     return input_obj
@@ -586,5 +589,6 @@ def new_context_from_context(context: Context, **kwargs):
         no_input=context.no_input,
         verbose=context.verbose,
         _path=context.path,
+        # _hooks=context.hooks,
         **kwargs,
     )

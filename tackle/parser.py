@@ -1259,6 +1259,7 @@ def raise_if_args_exist(
 def run_declarative_hook(
     context: 'Context',
     hook_name: str,
+    Hook,
 ) -> Any:
     """
     Function to run hooks called from the command line which requires different logic
@@ -1274,12 +1275,6 @@ def run_declarative_hook(
      versions of this logic exist in parser.run_hook and render.JinjaHook but are all
      slightly different based on the use case.
     """
-    if hook_name == DEFAULT_HOOK_NAME:
-        Hook = context.hooks.default
-    else:
-        # Have already qualified that this hook exists
-        Hook = context.hooks.public[hook_name]
-
     if isinstance(Hook, LazyBaseHook):
         # Unless it is a python hook, this will need to be run to get CompiledHookType
         Hook = create_dcl_hook(
@@ -1289,8 +1284,8 @@ def run_declarative_hook(
         )
 
     # Handle kwargs / args for methods
-    kwargs = get_declarative_hook_kwargs(context, Hook=Hook)
     Hook = update_declarative_hook_methods(context, Hook=Hook)
+    kwargs = get_declarative_hook_kwargs(context, Hook=Hook)
     # update_declarative_hook_overrides(context, Hook=Hook, kwargs=kwargs)
 
     # Check if we are running help
@@ -1311,7 +1306,7 @@ def run_declarative_hook(
 
     try:
         hook = Hook(**kwargs, **arg_dict)
-    except ValidationError as e:
+    except (ValidationError, TypeError) as e:
         raise exceptions.MalformedHookFieldException(
             str(e),
             hook_name=hook_name,
@@ -1332,6 +1327,7 @@ def parse_input_args_for_hooks(context: 'Context'):
             context.data.public = run_declarative_hook(
                 context=context,
                 hook_name=DEFAULT_HOOK_NAME,
+                Hook=context.hooks.default,
             )
     elif (
         num_args == 1
@@ -1354,24 +1350,22 @@ def parse_input_args_for_hooks(context: 'Context'):
             # Search within the public hook for additional args that could be
             # interpreted as methods which always get priority over consuming the arg
             # as an arg within the hook itself.
-            hook_name = context.input.args.pop(0)  # Consume arg
-            context.data.public = run_declarative_hook(
-                context=context,
-                hook_name=hook_name,
-            )
-            raise_if_args_exist(  # Raise if there are any args left
-                context=context,
-                Hook=context.hooks.public[hook_name],
-            )
-        elif context.hooks.default:
+            hook_name = context.input.args.pop(0)
+            Hook = context.hooks.public[hook_name]
+            context.data.public = run_declarative_hook(context, hook_name, Hook)
+            raise_if_args_exist(context=context, Hook=Hook)
+        elif context.input.args[0] in context.hooks.private:  # Private hook call
+            hook_name = context.input.args.pop(0)
+            Hook = context.hooks.private[hook_name]
+            context.data.public = run_declarative_hook(context, hook_name, Hook)
+            raise_if_args_exist(context=context, Hook=Hook)
+        elif context.hooks.default:  # Default hook call
             context.data.public = run_declarative_hook(
                 context=context,
                 hook_name=DEFAULT_HOOK_NAME,
-            )
-            raise_if_args_exist(  # Raise if there are any args left
-                context=context,
                 Hook=context.hooks.default,
             )
+            raise_if_args_exist(context=context, Hook=context.hooks.default)
         else:
             raise_if_args_exist(  # Raise if there are any args left
                 context=context,
