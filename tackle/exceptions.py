@@ -12,6 +12,12 @@ if TYPE_CHECKING:
 DOCS_DOMAIN = "https://sudoblockio.github.io/tackle"
 
 
+def get_message_input_string(context: 'Context'):
+    if context.path.current.file is None:
+        return f'input_directory={context.path.current.directory}'
+    return f'input_file={context.path.current.file}'
+
+
 def raise_unknown_hook(context: 'Context', hook_name: str, method: bool = None):
     """Raise an exception for when there is a missing hook with some context."""
     if method:
@@ -23,7 +29,6 @@ def raise_unknown_hook(context: 'Context', hook_name: str, method: bool = None):
         if context.verbose:
             available_hooks = "".join(sorted([str(i) for i in context.hooks.keys()]))
             extra = f'Available hooks = {available_hooks}'
-
         else:
             extra = "Run the application with `--verbose` to see available hook types."
 
@@ -80,7 +85,7 @@ class UnknownFieldInputException(Exception):
 
     def __init__(self, extra_message: str, context: 'Context', Hook: 'BaseHook' = None):
         self.message = (
-            f"Error parsing input_file='{context.path.current.file}' at "
+            f"Error parsing {get_message_input_string(context=context)}' at "
             f"key_path='{get_readable_key_path(key_path=context.key_path)}' \n"
             f"{extra_message}"
         )
@@ -129,7 +134,7 @@ class TackleHookParseException(Exception):
 
     def __init__(self, extra_message: str, context: 'Context'):
         self.message = (
-            f"Error parsing input_file='{context.path.calling.file}' at "
+            f"Error parsing {get_message_input_string(context=context)}' at "
             f"key_path='{get_readable_key_path(key_path=context.key_path)}' \n"
             f"{extra_message}"
         )
@@ -159,7 +164,7 @@ class TackleHookCallException(Exception):
         hook_name: str,
     ):
         self.message = (
-            f"Error parsing input_file='{context.path.calling.file}' at "
+            f"Error parsing {get_message_input_string(context=context)}' at "
             f"hook='{hook_name}' at ",
             f"key_path='{get_readable_key_path(key_path=context.key_path)}' \n"
             f"{extra_message}",
@@ -193,7 +198,7 @@ class TackleParserException(Exception):
 
     def __init__(self, extra_message: str, context: 'Context'):
         self.message = (
-            f"Error parsing input_file='{context.path.current.file}' at "
+            f"Error parsing {get_message_input_string(context=context)}' at "
             f"key_path='{get_readable_key_path(key_path=context.key_path)}' \n"
             f"{extra_message}"
         )
@@ -222,8 +227,7 @@ class PromptHookCallException(TackleParserException):
             extra_message="Error calling hook most likely due to hook being called in "
             "automation where no input was given for key. Try setting "
             "the key with an `override` if that is the case. Check: "
-            "https://sudoblockio.github.io/tackle/testing-providers/#testing-tackle-scripts",
-            # noqa
+            "https://sudoblockio.github.io/tackle/testing-providers/#testing-tackle-scripts",  # noqa
             context=context,
         )
 
@@ -365,13 +369,13 @@ class UnknownSourceException(TackleSourceParserException):
 
 
 #
-# Util exceptions -> No context
+# General exceptions -> No context
 #
-class TackleException(Exception):
+class GeneralException(Exception):
     """
     Base exception class.
 
-    All Tackle-specific exceptions should subclass this class.
+    All general exceptions not requiring context should subclass this class.
     """
 
     def __init__(self, message: str):
@@ -380,7 +384,33 @@ class TackleException(Exception):
         super().__init__(self.message)
 
 
-class InvalidConfiguration(TackleException):
+class NoInputOrParentTackleException(GeneralException):
+    """
+    Exception when no input has been given, nor is there a parent tackle.
+
+    Raised when a hook is called with an unknown argument in it's mapping (ie missing
+    `_args` param in the hook definition.
+    """
+
+
+class TackleImportError(GeneralException):
+    """
+    Exception when functions with field inputs of type dict are not formatted
+    appropriately.
+
+    Happens when a tackle file is parsed.
+    """
+
+
+class TackleFileInitialParsingException(GeneralException):
+    """
+    Exception when parsing a tackle file.
+
+    Raised when first parsing a file.
+    """
+
+
+class InvalidConfiguration(GeneralException):
     """
     Exception for invalid configuration file.
 
@@ -397,7 +427,7 @@ class InvalidConfiguration(TackleException):
 #     """
 
 
-class VCSNotInstalled(TackleException):
+class VCSNotInstalled(GeneralException):
     """
     Exception when version control is unavailable.
 
@@ -405,7 +435,7 @@ class VCSNotInstalled(TackleException):
     """
 
 
-class InternetConnectivityError(TackleException):
+class InternetConnectivityError(GeneralException):
     """
     Exception when version control is unable to access the internet (ie github).
 
@@ -413,7 +443,7 @@ class InternetConnectivityError(TackleException):
     """
 
 
-class VersionNotFoundError(TackleException):
+class VersionNotFoundError(GeneralException):
     """
     Exception when a version to a provider is given but does not exist.
 
@@ -421,7 +451,7 @@ class VersionNotFoundError(TackleException):
     """
 
 
-class UnsupportedBaseFileTypeException(TackleException):
+class UnsupportedBaseFileTypeException(GeneralException):
     """
     Exception for when a none json / yaml file are read
 
@@ -429,7 +459,7 @@ class UnsupportedBaseFileTypeException(TackleException):
     """
 
 
-class TackleFileNotFoundError(TackleException):
+class TackleFileNotFoundError(GeneralException):
     """
     Exception for when a none json / yaml file are read
 
@@ -437,7 +467,7 @@ class TackleFileNotFoundError(TackleException):
     """
 
 
-class FileLoadingException(TackleException):
+class FileLoadingException(GeneralException):
     """
     Exception for failed JSON decoding.
 
@@ -445,7 +475,7 @@ class FileLoadingException(TackleException):
     """
 
 
-class GenericGitException(TackleException):
+class GenericGitException(GeneralException):
     """
     Generic exception.
 
@@ -453,7 +483,7 @@ class GenericGitException(TackleException):
     """
 
 
-class RepositoryNotFound(TackleException):
+class RepositoryNotFound(GeneralException):
     """
     Exception for missing repo.
 
@@ -461,7 +491,7 @@ class RepositoryNotFound(TackleException):
     """
 
 
-class ContextFileNotFound(TackleException):
+class ContextFileNotFound(GeneralException):
     """
     Exception for missing context file.
 
@@ -469,7 +499,7 @@ class ContextFileNotFound(TackleException):
     """
 
 
-class RepositoryCloneFailed(TackleException):
+class RepositoryCloneFailed(GeneralException):
     """
     Exception for un-cloneable repo.
 
@@ -477,7 +507,7 @@ class RepositoryCloneFailed(TackleException):
     """
 
 
-class InvalidZipRepository(TackleException):
+class InvalidZipRepository(GeneralException):
     """
     Exception for bad zip repo.
 
@@ -494,8 +524,8 @@ class BaseHookCreateException(Exception):
 
     def __init__(self, extra_message: str, hook_name: str, context: 'Context' = None):
         self.message = (
-            f"Error creating hook='{hook_name}' in file="
-            f"'{context.path.current.file}', {extra_message}"
+            f"Error parsing {get_message_input_string(context=context)}' "
+            f"creating hook='{hook_name}',\n{extra_message}"
         )
         if not context.verbose:
             sys.tracebacklimit = 0
@@ -525,40 +555,6 @@ class ShadowedHookFieldException(BaseHookCreateException):
     appropriately.
 
     Happens when a tackle file is parsed.
-    """
-
-
-class TackleGeneralException(Exception):
-    """Base hook call exception class."""
-
-    def __init__(self, message: str):
-        sys.tracebacklimit = 0
-        super().__init__(message)
-
-
-class NoInputOrParentTackleException(TackleGeneralException):
-    """
-    Exception when no input has been given, nor is there a parent tackle.
-
-    Raised when a hook is called with an unknown argument in it's mapping (ie missing
-    `_args` param in the hook definition.
-    """
-
-
-class TackleImportError(TackleGeneralException):
-    """
-    Exception when functions with field inputs of type dict are not formatted
-    appropriately.
-
-    Happens when a tackle file is parsed.
-    """
-
-
-class TackleFileInitialParsingException(TackleGeneralException):
-    """
-    Exception when parsing a tackle file.
-
-    Raised when first parsing a file.
     """
 
 
