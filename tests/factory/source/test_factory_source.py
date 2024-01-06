@@ -10,11 +10,6 @@ from tackle.context import Context, InputArguments
 from tackle.factory import new_inputs, new_source
 from tackle.settings import settings
 
-"""
-TODO: Make paths consistent
- https://github.com/sudoblockio/tackle/issues/175
-"""
-
 INPUT_FIXTURES: list[[list]] = [
     # ([None]),
     ([]),

@@ -1,4 +1,6 @@
-from tackle import tackle
+import pytest
+
+from tackle import exceptions, tackle
 
 
 def test_parser_methods_chdir():
@@ -14,6 +16,12 @@ def test_parser_methods_chdir_loop():
     output = tackle('chdir-loop.yaml')
 
     assert output['stuff'] == [{'foo': 'bar'}, {'foo': 'baz'}]
+
+
+def test_parser_methods_chdir_error():
+    """Raise when dir not found."""
+    with pytest.raises(exceptions.HookUnknownChdirException):
+        tackle('chdir-error.yaml')
 
 
 def test_parser_methods_try():
@@ -33,3 +41,11 @@ def test_parser_methods_except():
     assert output['dict_render_block'] == {'stuff': '{{stuff}}'}
     assert output['stuff'] == 'things'
     assert output['listed']['hook_call'][1]['stuff'] == 'things'
+
+
+def test_parser_methods_skip_output(cd):
+    """"""
+    cd('skip-output')
+    output = tackle('skip-output.yaml')
+
+    assert output

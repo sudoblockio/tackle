@@ -1,0 +1,4 @@
+import->: call-hook-from-method.yaml
+
+()<-:
+  call->: MyMethod Method1

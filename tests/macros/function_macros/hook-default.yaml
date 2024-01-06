@@ -1,0 +1,14 @@
+greeter(target str = literal('universe'))<-: Hello {{target}}!
+
+greeter<-:
+  target:
+    type: str
+    default->: "{{literal('universe')}}"
+#    default->: literal universe
+  args: ["target"]
+  exec:
+    returns->: Hello {{target}}!
+
+call->: greeter
+render->: "{{greeter()}}"
+error->: greeter 1 --try --except 2

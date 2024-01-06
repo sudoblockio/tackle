@@ -120,8 +120,10 @@ def test_function_macro_defaults(input_file, args):
 @pytest.mark.parametrize(
     "input_file",
     [
-        'function-default.yaml',
-        'function-required.yaml',
+        # 'function-default.yaml',
+        # 'function-required.yaml',
+        # TODO: Determine if hooks can be
+        'hook-default.yaml',
     ],
 )
 def test_function_macro_function_calls(input_file):

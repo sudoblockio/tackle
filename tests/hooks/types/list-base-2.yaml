@@ -1,0 +1,19 @@
+base<-:
+  foo: bar
+
+obj<-:
+  stuff: things
+  bar:
+    type: list[base]
+
+()<-:
+  check_ok:
+    ->: obj
+    bar:
+      - foo: baz
+      - foo: baz2
+
+  check_false:
+    ->: obj --try --except 1
+    bar:
+      - not foo: baz

@@ -1,0 +1,5 @@
+MyHook()<-: foo
+
+MyMethod<-:
+  Method1()<-:
+    call->: MyHook

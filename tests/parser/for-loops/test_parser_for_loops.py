@@ -71,3 +71,10 @@ def test_parser_for_loop_dict_parameterized(fixture):
     assert o['compact_key'] == ['foo', 'baz']
     assert o['compact_value'] == ['bar', 'bing']
     assert o['compact_index'] == [0, 1]
+
+
+def test_parser_for_loop_embedded_block():
+    output = tackle('embedded-block.yaml')
+
+    assert output['foo'][0]['bar'][1]['j_is'] == 4
+    assert output['foo'][1]['bar'][1]['j_is'] == 4

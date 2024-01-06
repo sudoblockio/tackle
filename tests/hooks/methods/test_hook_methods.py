@@ -80,3 +80,22 @@ def test_hooks_method_no_default():
     assert o['compact'] == o['expanded']
     assert o['jinja_base']['word'] == 'foo'
     assert o['jinja_method']['v'] == 'foo'
+
+
+def test_hooks_method_external_call_required():
+    """Make sure required variables are assessed properly."""
+    output = tackle('external-call-required.yaml', 'MyHook', 'MyMethod', a_var=1)
+
+    assert output == 1
+
+
+def test_hooks_method_call_hook_from_method():
+    output = tackle('call-hook-from-method.yaml', 'MyMethod', 'Method1')
+
+    assert output
+
+
+def test_hooks_method_call_hook_from_import():
+    output = tackle('call-hook-from-import.yaml')
+
+    assert output

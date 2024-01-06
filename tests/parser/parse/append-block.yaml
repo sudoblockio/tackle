@@ -1,0 +1,7 @@
+
+a_list: []
+foo->:
+  for: i in [1, 2]
+  bar: bar
+  append to the list->: append a_list {{i}}
+#  baz: baz

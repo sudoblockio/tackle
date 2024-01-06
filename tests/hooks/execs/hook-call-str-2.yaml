@@ -1,7 +1,7 @@
 <-:
   foo:
     bar: baz
-  exec: "{{foo}}"
+  exec: print(foo)
 
 #()<-: print this
 

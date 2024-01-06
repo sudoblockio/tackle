@@ -32,8 +32,8 @@ def test_hooks_execs_no_exec():
     assert output['arg_call']['target'] == 'things'
 
 
-# def test_hooks_execs_hook_call_str():
-#     """When an exec method is a hook call vs def, parse that."""
-#     output = tackle('hook-call-str.yaml')
-#
-#     assert output == 'foo'
+def test_hooks_execs_hook_call_str():
+    """When an exec method is a hook call vs def, parse that."""
+    output = tackle('hook-call-str.yaml')
+
+    assert output == {'bar': 'baz'}

@@ -1,9 +1,17 @@
+#MyHook<-:
+#  foo: bar
+#  MyMethod<-:
+#    foo: baz
+#    stuff: things
+#  exec:
+#    call_self->: self MyMethod
+
 MyHook<-:
   foo: bar
   MyMethod<-:
     foo: baz
     stuff: things
   exec:
-    call_self->: self MyMethod
+    call_self->: MyMethod
 
 call->: MyHook

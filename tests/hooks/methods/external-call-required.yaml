@@ -1,0 +1,7 @@
+MyHook<-:
+#  MyMethod(a_var int)<-: "{{literal(a_var)}}"
+  MyMethod<-:
+    a_var: int
+
+    exec:
+      return->: a_var

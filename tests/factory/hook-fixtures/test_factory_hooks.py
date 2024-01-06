@@ -48,4 +48,4 @@ def test_factory_hooks_create_hooks_with_hooks(
     create_hooks(context=context, hooks_dir=os.path.join(base_dir, '../.hooks'))
     patch_import_hooks_from_hooks_directory.assert_called_once()
     # TODO: Fix this - it should have some public hooks
-    # assert context.hooks.public == {}
+    assert context.hooks.public == {}
