@@ -6,8 +6,10 @@ from typing import TYPE_CHECKING, Any, Union
 
 from ruyaml.comments import CommentedKeyMap
 
+from tackle import exceptions
+
 if TYPE_CHECKING:
-    from tackle.models import Context
+    from tackle.context import Context
 
 
 def encode_list_index(list_index: int) -> bytes:
@@ -268,9 +270,7 @@ def get_set_temporary_context(
      target context (public / private) sets that value within the temporary context
      so that it can be used for rendering.
     """
-    target_context, set_key_path = get_target_and_key(
-        context=context, key_path=context.key_path
-    )
+    target_context, set_key_path = get_target_and_key(context, context.key_path)
     value = nested_get(element=target_context, keys=set_key_path)
     set_temporary_context(
         context=context,
@@ -297,7 +297,14 @@ def set_key(
         key_path = context.key_path
 
     target_context, set_key_path = get_target_and_key(context, key_path=key_path)
-    nested_set(target_context, set_key_path, value)
+
+    try:
+        nested_set(target_context, set_key_path, value)
+    except TypeError as e:
+        raise exceptions.GeneralException(
+            f"Error setting key at key=`{get_readable_key_path(set_key_path)}`\n{e}\n"
+            f"target type=`{type(target_context).__name__}`.",
+        )
 
     if len(context.key_path_block) != 0:
         # When inside a block
