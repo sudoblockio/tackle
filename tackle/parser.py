@@ -243,6 +243,104 @@ def update_hook_call_with_kwargs_field(
         raise Exception("This should never happen...")
 
 
+def update_missing_hook_vars(
+    context: 'Context',
+    hook_call: HookCallInput,
+    Hook: CompiledHookType,
+    key: str,
+    value: Any,
+):
+    # Check if the field is within the hook
+    if Hook.model_fields['kwargs'].default is None:
+        # We have an unknown key but it could be allowed
+        if Hook.model_config['extra'] in ['allow', 'ignore']:
+            return
+        # The Hook has some extra field in it, and we don't have a `kwargs` field which
+        # will map extra args to a field so we need to raise here.
+        hook_name = Hook.model_fields['hook_name'].default
+        exceptions.raise_hook_parse_exception_with_link(
+            context=context,
+            Hook=Hook,
+            msg=f"The field=`{key}` is not available in the hook=`{hook_name}` "
+            f"and there is no `kwargs` mapper either. Remove that field...",
+        )
+        raise  # Should have raised by now
+    else:
+        # Map the extra fields to the `kwargs` field
+        kwargs_field = Hook.model_fields['kwargs'].default
+        # Check that the kwargs_field is a dict - if not it can't be mapped
+        if Hook.model_fields[kwargs_field].annotation == dict:
+            # Create an empty dict if the field is not defined
+            if kwargs_field not in hook_call.model_extra:
+                hook_call.model_extra[kwargs_field] = {}
+            # Update the field with the extra field
+            hook_call.model_extra[kwargs_field].update(
+                {key: render_variable(context, value)}
+            )
+            # Remove the field from the hook_call as it is now mapped
+            hook_call.model_extra.pop(key)
+        else:
+            # Mapping additional kwargs must be to a dict field
+            raise exceptions.BadHookKwargsRefException(
+                "The hook's kwargs field references a non-dict field. Need to"
+                " fix this in the hook's definition to reference a dict field.",
+                context=context,
+                hook_name=Hook,
+            )
+
+
+def get_hook_level_render_var(
+    context: 'Context',
+    Hook: CompiledHookType,
+    render_var: str,
+) -> list[str]:
+    """Getter for both hook level `render_by_default` and `render_exclude` variables."""
+    render_var = Hook.model_fields[render_var].default
+    if render_var:
+        # We need manually validate this here as Hook is not instantiated
+        if isinstance(render_var, list):
+            # Add any alias
+            for i in render_var:
+                if i not in Hook.model_fields:
+                    raise exceptions.MalformedHookDefinitionException(
+                        f'The values in the field=`{render_var}` need to be names of '
+                        f'fields. Got `{i}` which is not as field name.',
+                        context=context,
+                        hook_name=Hook.hook_name,
+                    )
+            return render_var
+        else:
+            raise exceptions.MalformedHookDefinitionException(
+                "The `render_exclude` field must be a list of fields to exclude.",
+                context=context,
+                hook_name=Hook.hook_name,
+            )
+    return []
+
+
+def get_field_level_render_var(
+    context: 'Context',
+    Hook: CompiledHookType,
+    hook_key: str,
+    render_var: str,
+):
+    # Need to check for this field in the `json_schema_extra`
+    if (
+        Hook.model_fields[hook_key].json_schema_extra is not None
+        and render_var in Hook.model_fields[hook_key].json_schema_extra
+    ):
+        if not isinstance(
+            Hook.model_fields[hook_key].json_schema_extra[render_var],
+            bool,
+        ):
+            raise exceptions.MalformedHookDefinitionException(
+                f"The `{render_var}` field in key=`{hook_key}` must be a boolean.",
+                context=context,
+                hook_name=Hook,
+            )
+        return Hook.model_fields[hook_key].json_schema_extra[render_var]
+
+
 def update_hook_vars(
     context: 'Context',
     hook_call: HookCallInput,
@@ -258,119 +356,42 @@ def update_hook_vars(
     """
     # Update hook_call.model_extra with any `kwargs` field specified in the call
     update_hook_call_with_kwargs_field(context, hook_call)
+    hook_render_exclude = get_hook_level_render_var(context, Hook, 'render_exclude')
+    hook_render_by_default = get_hook_level_render_var(context, Hook, 'render_exclude')
+
+    alias_fields = {
+        v.alias: k for k, v in Hook.model_fields.items() if v.alias is not None
+    }
+    field_map = Hook.model_fields | alias_fields
 
     # Iterate through all the extra hook call items
     for k, v in hook_call.model_extra.copy().items():
-        # Handle `kwargs` field which maps unknown keys to a field
-        if k not in Hook.model_fields:
-            # TODO: Fix this for model_config in hook
-            # if Hook.model_config['extra'] in ['allow']:
-            #     continue
+        if k not in field_map:
+            update_missing_hook_vars(context, hook_call, Hook=Hook, key=k, value=v)
+            continue
+        elif k in hook_render_exclude:
+            # Hook level `render_exclude`
+            continue
+        elif k in hook_render_by_default:
+            # Hook level `render_by_default`
+            hook_call.model_extra[k] = render_variable(context, wrap_jinja_braces(v))
+            continue
 
-            # Check if the field is within the hook
-            if Hook.model_fields['kwargs'].default is None:
-                # The Hook has some extra field in it and we don't have a `kwargs` field
-                # which will map extra args to a field so we need to raise here.
-                hook_name = Hook.model_fields['hook_name'].default
-                # available_fields =
-                exceptions.raise_hook_parse_exception_with_link(
-                    context=context,
-                    Hook=Hook,
-                    msg=f"The field=`{k}` is not available in the hook=`{hook_name}` "
-                    f"and there is no `kwargs` mapper either. Remove that field...",
-                )
-                raise  # Should have raised by now
-            else:
-                # Map the extra fields to the `kwargs` field
-                kwargs_field = Hook.model_fields['kwargs'].default
-                # Check that the kwargs_field is a dict - if not it can't be mapped
-                if Hook.model_fields[kwargs_field].annotation == dict:
-                    # Create an empty dict if the field is not defined
-                    if kwargs_field not in hook_call.model_extra:
-                        hook_call.model_extra[kwargs_field] = {}
-                    # Update the field with the extra field
-                    hook_call.model_extra[kwargs_field].update(
-                        {k: render_variable(context, v)}
-                    )
-                    # Remove the field from the hook_call as it is now mapped
-                    hook_call.model_extra.pop(k)
-                    continue
-                else:
-                    # Mapping additional kwargs must be to a dict field
-                    raise exceptions.BadHookKwargsRefException(
-                        "The hook's kwargs field references a non-dict field. Need to"
-                        " fix this in the hook's definition to reference a dict field.",
-                        context=context,
-                        hook_name=Hook,
-                    )
-        # TODO: Test / update this -> render_exclude in json_schema_extra now
-        # Exclude rendering any fields defined in the `render_exclude` field
-        render_exclude = Hook.model_fields['render_exclude'].default
-        if render_exclude:
-            if isinstance(render_exclude, list):
-                # We need manually validate this here as Hook is not instantiated
-                if k in render_exclude:
-                    continue
-            else:
-                raise exceptions.MalformedHookDefinitionException(
-                    "The `render_exclude` field must be a list of fields to exclude.",
-                    context=context,
-                    hook_name=Hook,
-                )
+        # Update any fields that should be aliased to their actual key
+        if k in alias_fields:
+            hook_key = alias_fields[k]
+        else:
+            hook_key = k
 
-        # Render any field defined in the `render_exclude` field by default (ie it
-        # doesn't need to be wrapped in jinja braces).
-        render_by_default = Hook.model_fields['render_by_default'].default
-        if render_by_default:
-            if isinstance(render_by_default, list):
-                # We need manually validate this here as Hook is not instantiated
-                if k in render_by_default:
-                    hook_call.model_extra[k] = render_variable(
-                        context=context, raw=wrap_jinja_braces(v)
-                    )
-                    continue
-            else:
-                raise exceptions.MalformedHookDefinitionException(
-                    "The `render_by_default` field must be a list of fields to "
-                    "render even if it isn't wrapped in jinja braces (ie {{foo}}).",
-                    context=context,
-                    hook_name=Hook,
-                )
-
-        # Render any field marked with `render_by_default`
-        if Hook.model_fields[k].json_schema_extra is not None:
-            # Need to check for this field in the `json_schema_extra`
-            if 'render_by_default' in Hook.model_fields[k].json_schema_extra:
-                if not isinstance(
-                    Hook.model_fields[k].json_schema_extra['render_by_default'], bool
-                ):
-                    raise exceptions.MalformedHookDefinitionException(
-                        f"The `render_by_default` field in key=`{k}` must be a boolean.",
-                        context=context,
-                        hook_name=Hook,
-                    )
-                if Hook.model_fields[k].json_schema_extra['render_by_default']:
-                    if isinstance(v, str):
-                        hook_call.model_extra[k] = render_variable(
-                            context, wrap_jinja_braces(v)
-                        )
-                        continue
-                    # Relates to https://github.com/sudoblockio/tackle/issues/183
-                    # Where we might want to have variadic arguments.
-                    else:
-                        logger.debug(
-                            f"Encountered a `render_by_default` field={k} "
-                            f"of type {type(v).__name__}. Skipping rendering..."
-                        )
-
-        # Finally render any field that is left over with jinja braces
-        hook_call.model_extra[k] = render_variable(context, v)
+        if get_field_level_render_var(context, Hook, hook_key, 'render_by_default'):
+            # Field level `render_by_default`
+            hook_call.model_extra[k] = render_variable(context, wrap_jinja_braces(v))
+        elif not get_field_level_render_var(context, Hook, hook_key, 'render_exclude'):
+            # Finally render any field that is left over with jinja braces
+            hook_call.model_extra[k] = render_variable(context, v)
 
 
-def parse_sub_context(
-    context: 'Context',
-    hook_target: Any,
-):
+def parse_sub_context(context: 'Context', hook_target: Any):
     """
     Reparse a subcontext as in the case with `else` and `except` where you have to
      handle the negative side of the either `if` or `try`. Works on both looped and
