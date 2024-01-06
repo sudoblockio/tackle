@@ -202,7 +202,7 @@ def run_help(context: 'Context', Hook: Type[BaseHook] = None):
         flags=flags,
         general_help=general_help,
         general_kwargs=general_kwargs,
-        input_string=' '.join([i for i in context.input.args if i != 'help']),
+        input_string=context.input.help_string,
         methods=methods,
         hook_name=hook_name,
         max_name_length=max_name_length,
