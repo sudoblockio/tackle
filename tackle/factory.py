@@ -14,6 +14,7 @@ from tackle.imports import (
 from tackle.settings import settings
 from tackle.utils.files import read_config_file
 from tackle.utils.paths import (
+    find_hooks_dir_from_tests,
     find_hooks_directory_in_dir,
     find_tackle_base_in_parent_dir,
     find_tackle_base_in_parent_dir_with_exception,
@@ -143,7 +144,7 @@ def new_data(
     # Data can be passed from one tackle call to another
     if _data is None:
         if context.data is None:
-            data = Data()
+            data = Data()  # New data
         else:
             # This is a hack where we can take dict / list args in the main tackle
             # function and to bypass the source logic, we simply create the data object
@@ -293,12 +294,12 @@ def update_source(
             ) from None
         source.file = file_path
     elif source.file is None:
-        file = find_tackle_file_in_dir(dir=source.directory)
+        file = find_tackle_file_in_dir(directory=source.directory)
         if file is None:
-            file = find_tackle_file_in_dir(dir=source.base_dir)
+            file = find_tackle_file_in_dir(directory=source.base_dir)
         source.file = file
 
-    source.hooks_dir = find_hooks_directory_in_dir(dir=source.base_dir)
+    source.hooks_dir = find_hooks_directory_in_dir(directory=source.base_dir)
 
 
 def new_source_from_unknown_args(
@@ -314,7 +315,7 @@ def new_source_from_unknown_args(
      there is, use that as source and don't consume the arg. Will raise error later if
      the arg was not used.
     """
-    source.base_dir = find_tackle_base_in_parent_dir(dir=os.path.abspath('.'))
+    source.base_dir = find_tackle_base_in_parent_dir(directory=os.path.abspath('.'))
     if source.base_dir is None:
         raise exceptions.UnknownSourceException(
             f"No tackle source or base directory was found with the "
@@ -367,7 +368,7 @@ def new_source(
             source.find_in_parent = True
             source.base_dir = find_tackle_base_in_parent_dir_with_exception(
                 context=context,
-                dir=os.path.abspath('..'),
+                directory=os.path.abspath('..'),
             )
             source.name = os.path.basename(source.base_dir)
             update_source(
@@ -376,7 +377,7 @@ def new_source(
                 directory=directory,
                 file=file,
             )
-            source.hooks_dir = find_hooks_directory_in_dir(dir=source.base_dir)
+            source.hooks_dir = find_hooks_directory_in_dir(directory=source.base_dir)
             context.input.args.insert(0, first_arg)
         elif isinstance(first_arg, (dict, list)):
             # Will be picked up later in data as the input_raw to be parsed
@@ -408,7 +409,7 @@ def new_source(
                 directory=directory,
                 file=file,
             )
-            source.hooks_dir = find_hooks_directory_in_dir(dir=source.base_dir)
+            source.hooks_dir = find_hooks_directory_in_dir(directory=source.base_dir)
         # Repo
         elif is_repo_url(first_arg):
             if latest:
@@ -429,7 +430,7 @@ def new_source(
                 directory=directory,
                 file=file,
             )
-            source.hooks_dir = find_hooks_directory_in_dir(dir=source.base_dir)
+            source.hooks_dir = find_hooks_directory_in_dir(directory=source.base_dir)
         # Directory
         elif is_directory_with_tackle(first_arg):
             # Special case where the input is a path to a directory with a provider
@@ -450,7 +451,9 @@ def new_source(
             source.file = file_path
             source.directory = source.base_dir = str(Path(file_path).parent.absolute())
             source.name = format_path_to_name(path=source.base_dir)
-            source.hooks_dir = find_hooks_directory_in_dir(dir=str(source.base_dir))
+            source.hooks_dir = find_hooks_directory_in_dir(
+                directory=str(source.base_dir)
+            )
         else:
             if _strict_source:
                 raise exceptions.UnknownSourceException(
@@ -471,7 +474,7 @@ def new_source(
         # or parent directories.
         source.base_dir = find_tackle_base_in_parent_dir_with_exception(
             context=context,
-            dir=os.path.abspath('.'),
+            directory=os.path.abspath('.'),
         )
         source.name = format_path_to_name(path=source.base_dir)
         update_source(
@@ -480,6 +483,9 @@ def new_source(
             directory=directory,
             file=file,
         )
+
+    if source.hooks_dir is None and source.base_dir is not None:
+        source.hooks_dir = find_hooks_dir_from_tests(source.base_dir)
 
     return source
 

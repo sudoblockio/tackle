@@ -168,52 +168,46 @@ DEFAULT_HOOKS_DIRECTORIES = {
 }
 
 
-def find_hooks_directory_in_dir(dir: str) -> str:
-    for i in os.scandir(dir):
+def find_hooks_directory_in_dir(directory: str) -> str:
+    for i in os.scandir(directory):
         if i.is_dir() and i.name in DEFAULT_HOOKS_DIRECTORIES:
-            return os.path.abspath(os.path.join(dir, i))
+            return os.path.abspath(os.path.join(directory, i))
 
 
-def find_tackle_file_in_dir(dir: str) -> str:
+def find_tackle_file_in_dir(directory: str) -> str:
     """Return the path to a tackle file if it exists in a dir."""
-    for i in os.scandir(dir):
+    for i in os.scandir(directory):
         if i.is_file() and i.name in DEFAULT_TACKLE_FILES:
-            return os.path.abspath(os.path.join(dir, i.name))
+            return os.path.abspath(os.path.join(directory, i.name))
 
 
 def find_tackle_base_in_parent_dir(
-    dir: str,
-    fallback=None,
+    directory: str,
 ) -> Optional[str]:
     """
     Recursively search in parent directories for a tackle base which is defined as
      a directory with either a tackle file or a hooks directory.
     """
-    hooks_directory = find_hooks_directory_in_dir(dir=dir)
+    hooks_directory = find_hooks_directory_in_dir(directory=directory)
     if hooks_directory is not None:
-        return dir
-    tackle_file = find_tackle_file_in_dir(dir=dir)
+        return directory
+    tackle_file = find_tackle_file_in_dir(directory=directory)
     if tackle_file is not None:
-        return dir
+        return directory
 
-    if os.path.abspath(dir) == '/':
-        if fallback:
-            return fallback
-        else:
-            return None
+    if os.path.abspath(directory) == '/':
+        return None
     return find_tackle_base_in_parent_dir(
-        dir=os.path.dirname(os.path.abspath(dir)),
-        fallback=fallback,
+        directory=os.path.dirname(os.path.abspath(directory)),
     )
 
 
 def find_tackle_base_in_parent_dir_with_exception(
     context: 'Context',
-    dir: str,
-    fallback=None,
+    directory: str,
 ) -> str:
     """Call find_tackle_base_in_parent_dir and raise if no base is in parent."""
-    base = find_tackle_base_in_parent_dir(dir=dir, fallback=fallback)
+    base = find_tackle_base_in_parent_dir(directory=directory)
     if base is None:
         targets = list(DEFAULT_TACKLE_FILES) + list(DEFAULT_HOOKS_DIRECTORIES)
         raise exceptions.UnknownSourceException(
@@ -225,11 +219,61 @@ def find_tackle_base_in_parent_dir_with_exception(
     return base
 
 
-def is_directory_with_tackle(dir: str) -> bool:
+def find_tests_base_dir(directory: str) -> str | None:
+    """Find the base dir of the parent test(s) directory."""
+    # Normalize the path
+    norm_dir = os.path.normpath(directory)
+
+    # Split the path into parts
+    path_split = norm_dir.split(os.sep)
+
+    # Handle the root slash or drive letter
+    if os.name == 'nt':  # Windows
+        # Ensure the drive letter is preserved
+        if norm_dir.startswith("\\\\"):  # UNC path
+            root = "\\\\" + path_split[0]
+            path_split = [root] + path_split[2:]
+        else:
+            path_split[0] += os.sep
+    else:  # Unix-like
+        if norm_dir.startswith(os.sep):
+            path_split = [os.sep] + path_split[1:]
+
+    # Iterate in reverse to find 'test' or 'tests'
+    for i, v in enumerate(reversed(path_split)):
+        if v == 'test' or v == 'tests':
+            # Return the path index
+            return os.path.join(*path_split[: len(path_split) - 1 - i])
+
+
+def find_hooks_dir_from_tests(directory: str) -> str | None:
+    """
+    Super hacky way to determine if we are running tackle from a tests directory that is
+     not a native provider
+    """
+    test_base = find_tests_base_dir(directory)
+    if test_base is None:
+        return
+    # Check if native provider
+    if os.path.isfile(os.path.join(test_base, '..', '.native')):
+        return
+    # Check if we are in tackle/tests/* dir
+    base_dir_contents = os.listdir(test_base)
+    if 'tackle' in base_dir_contents:
+        if os.path.isfile(os.path.join(test_base, 'tackle', 'parser.py')):
+            return
+    # Return hooks dir
+    if 'hooks' in base_dir_contents:
+        return os.path.join(test_base, 'hooks')
+    if '.hooks' in base_dir_contents:
+        return os.path.join(test_base, '.hooks')
+
+
+def is_directory_with_tackle(directory: str) -> bool:
     """Return true if directory."""
-    if not os.path.isdir(dir):
+    if not os.path.isdir(directory):
         return False
-    for i in os.scandir(dir):
+    for i in os.scandir(directory):
         if i.is_dir() and i.name in DEFAULT_HOOKS_DIRECTORIES:
             return True
         if i.is_file() and i.name in DEFAULT_TACKLE_FILES:

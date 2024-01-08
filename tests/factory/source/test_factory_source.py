@@ -33,6 +33,7 @@ def test_factory_source_new_source_parameterized(args):
     assert source.file.endswith('tackle.yaml')
     # Check that the full path is in the source.file
     assert 'factory' in source.file
+    assert source.hooks_dir is None
 
 
 def test_factory_source_new_source_find_in_parent_arg(cd):
@@ -50,6 +51,7 @@ def test_factory_source_new_source_find_in_parent_arg(cd):
     assert 'tests' in source.file
     # Args should be reinserted
     assert context.input.args[0] == {'foo': 'bar'}
+    assert source.hooks_dir is None
 
 
 def test_factory_source_new_source_dict_arg():
@@ -63,6 +65,7 @@ def test_factory_source_new_source_dict_arg():
         )
     )
     assert source.raw == {'foo': 'bar'}
+    assert source.hooks_dir is None
 
 
 def test_factory_source_new_source_int_arg():
@@ -80,6 +83,7 @@ def test_factory_source_new_source_int_arg():
     )
     # Source is the tackle file in the current directory
     assert source.base_dir.endswith('source')
+    assert source.hooks_dir is None
 
 
 def test_factory_source_new_source_zip(cd):
@@ -100,6 +104,7 @@ def test_factory_source_new_source_zip(cd):
     assert source.file.endswith('tackle.yaml')
     assert 'zipped-provider' in source.file
     assert not source.find_in_parent
+    assert source.hooks_dir is None
 
 
 @pytest.fixture()
@@ -133,6 +138,7 @@ def test_factory_source_new_source_repo(mocker, repo_path):
     assert not source.find_in_parent
     assert source.hooks_dir is None
     assert mock.called
+    assert source.hooks_dir is None
 
 
 def test_factory_source_new_source_with_directory():
@@ -144,6 +150,7 @@ def test_factory_source_new_source_with_directory():
     assert source.directory.endswith('a-dir')
     assert source.file.endswith('tackle.yaml')
     assert 'tests' in source.file
+    assert source.hooks_dir is None
 
 
 def test_factory_source_new_source_with_file():
@@ -155,6 +162,7 @@ def test_factory_source_new_source_with_file():
     assert source.directory == source.base_dir
     assert source.file.endswith('a-file.yaml')
     assert 'tests' in source.file
+    assert source.hooks_dir is None
 
 
 def test_factory_source_new_source_with_file_arg():
@@ -167,6 +175,7 @@ def test_factory_source_new_source_with_file_arg():
     assert source.directory == source.base_dir
     assert source.file.endswith('a-file.yaml')
     assert 'tests' in source.file
+    assert source.hooks_dir is None
 
 
 def test_factory_source_as_dict():
@@ -177,6 +186,7 @@ def test_factory_source_as_dict():
 
     # Should be without any data in it but still initialized
     assert source.file is None
+    assert source.hooks_dir is None
 
 
 EXCEPTION_FIXTURES = [
