@@ -20,7 +20,7 @@ def get_provider_paths(provider_name: str = None):
 
 @pytest.mark.parametrize("provider_path", get_provider_paths())
 def test_provider_docs_hook(provider_path):
-    """Check that we can run the collections provider."""
+    """Check that we can gather metadata from each native provider."""
     Hook = get_hook('provider_docs')
     output = Hook(path=provider_path).exec(context=Context())
 
@@ -29,7 +29,7 @@ def test_provider_docs_hook(provider_path):
 
 def test_local_hooks_generate_provider_docs():
     """Generate the provider docs."""
-    output = tackle('gen_docs')
+    output = tackle('docs_gen')
     paths = [
         'provider_dir',
         'provider_docs_dir',

@@ -1,105 +1,95 @@
 # Note: If changing the name of this hook, also update the `import` hook's test since they ref this
-gen_docs<-:
-  exec:
-    problem_hooks:
-      # Has "\n" as a default value which messes up table
-      print: Console
+docs_gen()<-:
+  problem_hooks:
+    # Has "\n" as a default value which messes up table
+    print: Console
 
-    provider_dir->: "{{ cwd }}/providers"
-    provider_docs_dir->: "{{ cwd }}/docs/providers"
-    schemas_dir->: "{{ cwd }}/docs/schemas"
-    templates_dir->: "{{ cwd }}/hooks/templates"
+  provider_dir->: "{{ cwd }}/providers"
+  provider_docs_dir->: "{{ cwd }}/docs/providers"
+  schemas_dir->: "{{ cwd }}/docs/schemas"
+  templates_dir->: "{{ cwd }}/hooks/templates"
 
-    # Directories / files to ignore inside the `tackle/providers` directory
-    provider_ignore:
-      - __init__.py
-      - __pycache__
-      - .gitignore
-      - README.md
-      # WIP
-      - postgres
-      - time
-      - kubernetes
+  # Directories / files to ignore inside the `tackle/providers` directory
+  provider_ignore:
+    - __init__.py
+    - __pycache__
+    - .gitignore
+    - README.md
+    - .native
 
-    # mkdocs.yml navigation sidebar options - Empty list that will be appended to
-    mkdocs_nav_list: []
-    remove old provider docs dir->: remove "{{ item }}" --for ['provider_docs_dir','schemas_dir'] --try
+  # mkdocs.yml navigation sidebar options - Empty list that will be appended to
+  mkdocs_nav_list: []
+  remove old provider docs dir->: remove "{{ item }}" --for ['provider_docs_dir','schemas_dir'] --try
 
-    gen->:
-      # Iterate through the providers via list comprehesion
-      for: sort(listdir(provider_dir) | reject('in', provider_ignore) | list)
-      chdir: "{{ provider_dir }}/{{ item }}"
-      print->: print "Generating {{item}} provider"
+  gen->:
+    # Iterate through the providers via list comprehesion
+    for: provider in sort(listdir(provider_dir) | reject('in', provider_ignore) | list)
+    chdir: "{{ provider_dir }}/{{ provider }}"
+    print->: "Generating {{provider}} provider"
 
-      # Embedded for loops need to have the iterand `item` referenced if being used in inner loops
-      provider->: "{{ item }}"
+    # Get the provider metadata and schemas
+    render_context->: provider_docs
+    schemas->: provider_docs --output_schemas
 
-      # Get the provider metadata and schemas
-      render_context->: provider_docs
-      schemas->: provider_docs --output_schemas
+    Put schemas in schema directory_>: json {{schemas_dir}}/{{provider}}.json {{schemas}}
 
-      Put schemas in schema directory_>: json {{schemas_dir}}/{{provider}}.json {{schemas}}
+    # Read the provider metadata
+    provider_meta:
+      ->: tackle .tackle.meta.yaml
+      if: isfile('.tackle.meta.yaml')
+      else:
+        examples: []
 
-      # Read the provider metadata
-      provider_meta:
-        ->: tackle .tackle.meta.yaml
-        if: isfile('.tackle.meta.yaml')
-        else:
-          examples: []
+    # Build the provider navigation for mkdocs
+    provider_mkdocs_nav_list:
+      - Index->: providers/{{ provider | title }}/index.md
+    append multiple hooks providers:
+      ->: append provider_mkdocs_nav_list
+      for: hook in render_context.hooks
+      if: render_context.hooks|length != 1
+      item:
+        "{{hook.hook_name}}": providers/{{ provider | title }}/{{ hook.hook_name }}.md
+    append to mkdocs_nav_list:
+      ->: append mkdocs_nav_list
+      item:
+        "{{provider|title}}": "{{provider_mkdocs_nav_list}}"
 
-      # Build the provider navigation for mkdocs
-      provider_mkdocs_nav_list:
-        - Index->: providers/{{ provider | title }}/index.md
-      append multiple hooks providers:
-        ->: append provider_mkdocs_nav_list
-        for: render_context.hooks
-        if: render_context.hooks|length != 1
-        item:
-          "{{item.hook_name}}": providers/{{ provider | title }}/{{ item.hook_name }}.md
-      append to mkdocs_nav_list:
-        ->: append mkdocs_nav_list
-        item:
-          "{{provider|title}}": "{{provider_mkdocs_nav_list}}"
+    source_code_link_stub->: https://github.com/robcxyz/tackle/blob/main/providers/{{provider}}/hooks
+    Generate single hook provider as a single page:
+      if: render_context['hooks'] | length == 1
+      ->: generate {{templates_dir}}/hook-doc.md.tpl {{provider_docs_dir}}/{{provider|title }}/index.md
+      extra_context:
+        - "{{ provider_meta }}"
+        - "{{ render_context.hooks[0] }}"
 
-    #  d->: debug render_context
-      source_code_link_stub->: https://github.com/robcxyz/tackle/blob/main/tackle/providers/{{provider}}/hooks
-      Generate single hook provider as a single page:
-        if: render_context['hooks'] | length == 1
-        ->: generate {{templates_dir}}/hook-doc.md.tpl {{provider_docs_dir}}/{{provider|title }}/index.md
-        extra_context:
-          - "{{ provider_meta }}"
-          - "{{ render_context.hooks[0] }}"
+  #  Generate multiple->:
+  #    if: render_context['hooks'] | length != 1
+  #    Render hook templates from the tackle provider:
+  #      ->: generate {{templates_dir}}/hook-doc.md.tpl {{provider_docs_dir}}/{{provider|title }}/{{ item.hook_name }}.md
+  #      for: render_context['hooks']
+  #      if: item.hook_name not in problem_hooks
+  #      extra_context:
+  #        - "{{ provider_meta }}"
+  #        - "{{ item }}"
+  #  d->: debug render_context
 
-    #  d->: debug render_context
+    Generate multiple:
+      when: render_context['hooks'] | length != 1
+      for: hook in render_context['hooks']
+      _>: generate {{templates_dir}}/hook-doc.md.tpl {{provider_docs_dir}}/{{provider|title }}/{{ hook.hook_name }}.md
+      if: hook.hook_name not in problem_hooks
+      extra_context:
+        - "{{ provider_meta }}"
+        - "{{ hook }}"
 
-    #  Generate multiple->:
-    #    if: render_context['hooks'] | length != 1
-    #    Render hook templates from the tackle provider:
-    #      ->: generate {{templates_dir}}/hook-doc.md.tpl {{provider_docs_dir}}/{{provider|title }}/{{ item.hook_name }}.md
-    #      for: render_context['hooks']
-    #      if: item.hook_name not in problem_hooks
-    #      extra_context:
-    #        - "{{ provider_meta }}"
-    #        - "{{ item }}"
-    #  d->: debug render_context
+    Render provider template:
+      ->: generate {{templates_dir}}/provider-doc.md.tpl {{provider_docs_dir}}/{{provider|title }}/index.md
+      extra_context:
+        - "{{ render_context }}"
+        - "{{ provider_meta }}"
 
-      Generate multiple:
-        when: render_context['hooks'] | length != 1
-        _>: generate {{templates_dir}}/hook-doc.md.tpl {{provider_docs_dir}}/{{provider|title }}/{{ item.hook_name }}.md
-        for: render_context['hooks']
-        if: item.hook_name not in problem_hooks
-        extra_context:
-          - "{{ provider_meta }}"
-          - "{{ item }}"
+  copy problem hooks:
+    _>: copy {{templates_dir}}/problem-hooks/{{hook}}.md {{provider_docs_dir}}/{{problem_hooks[hook]}}/{{hook}}.md
+    for: hook in keys(problem_hooks)
 
-      Render provider template:
-        ->: generate {{templates_dir}}/provider-doc.md.tpl {{provider_docs_dir}}/{{provider|title }}/index.md
-        extra_context:
-          - "{{ render_context }}"
-          - "{{ provider_meta }}"
-
-    copy problem hooks:
-      _>: copy {{templates_dir}}/problem-hooks/{{item}}.md {{provider_docs_dir}}/{{problem_hooks[item]}}/{{item}}.md
-      for: keys(problem_hooks)
-
-    Regenerate mkdocs->: tackle mkdocs.tackle.yml  # Already at base
+  Regenerate mkdocs->: tackle mkdocs.tackle.yml  # Already at base

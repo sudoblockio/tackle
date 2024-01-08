@@ -2,11 +2,15 @@ from typing import Type
 
 from pydantic import BaseModel
 
-from tackle import BaseHook, Context
+from tackle import BaseHook, HookCallInput
+from tackle.pydantic.config import DclHookModelConfig
+from tackle.pydantic.field_types import FieldInput
 
 MODELS = [
     BaseHook,
-    Context,
+    HookCallInput,
+    FieldInput,
+    DclHookModelConfig,
 ]
 
 
@@ -40,6 +44,7 @@ class GetModelData(BaseHook):
 
     def exec(self) -> dict:
         output = {}
-        output[BaseHook.__name__] = self.extract_model_data(BaseHook)
+        for M in MODELS:
+            output[M.__name__] = self.extract_model_data(M)
 
         return output
