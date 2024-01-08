@@ -1,7 +1,10 @@
 import os
 from typing import Union
 
-import tomli as toml
+try:
+    import tomllib as toml
+except ImportError:
+    import tomli as toml
 
 from tackle import BaseHook, Field
 
