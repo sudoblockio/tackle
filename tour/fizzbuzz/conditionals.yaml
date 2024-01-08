@@ -1,0 +1,6 @@
+(input int)<-:
+  fizz->: print fizz --if "input % 3 == 0"
+  buzz->: print buzz --if "input % 5 == 0"
+  non-fizz:
+    ->: print {{input}}
+    if: "'fizz' not in this and 'buzz' not in this"

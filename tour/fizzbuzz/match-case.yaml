@@ -1,0 +1,10 @@
+<-:
+  input: int
+  args: ['input']
+  exec:
+    ->: match
+    case:
+      "{{input % 15 == 0}}->": print fizzbuzz
+      "{{input % 3 == 0}}->": print fizz
+      "{{input % 5 == 0}}->": print buzz
+      _->: print {{input}}
