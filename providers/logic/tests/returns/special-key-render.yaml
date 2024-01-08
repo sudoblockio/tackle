@@ -1,0 +1,5 @@
+foo: bar
+
+returns->: hello {{foo}}
+
+should-not-be-here: true

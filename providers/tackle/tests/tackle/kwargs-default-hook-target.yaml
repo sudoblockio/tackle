@@ -1,6 +1,2 @@
-
-<-:
-  foo: str
-  args: ['foo']
-  exec:
-    v->: var {{foo}}
+(foo str)<-:
+  v->: var {{foo}}

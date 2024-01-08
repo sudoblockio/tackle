@@ -38,7 +38,7 @@ class AssertHook(BaseHook):
                     return True
                 except AssertionError:
                     raise exceptions.HookCallException(
-                        f"Error asserting {self.input}=={self.value}", context=context
+                        f"Error asserting {self.input}", context=context
                     ) from None
         else:
             if not self.exit_on_failure:

@@ -8,7 +8,10 @@ class UpdateSectionHook(BaseHook):
     """Hook for updating a section of a document."""
 
     hook_name: str = 'update_section'
-    document: str = Field(..., description="Path to a document to render a section of.")
+    document: str = Field(
+        ...,
+        description="Path to a document to render a section of.",
+    )
     content: str = Field(
         ..., description="A string to update within the section of the document"
     )
@@ -21,7 +24,7 @@ class UpdateSectionHook(BaseHook):
         description="Marker generally in some kind of comment to end rendering from.",
     )
 
-    args: list = ['document', 'content']
+    args: list = ['document', 'content', 'start_render', 'end_render']
 
     def split_document(self, doc: List[str]) -> str:
         upper_section = []

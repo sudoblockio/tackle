@@ -23,3 +23,11 @@ def test_provider_console_markdown_frontmatter():
 
     assert output['foo'] == 'bar'
     assert len(output['stuff']) == 1
+
+
+def test_provider_console_markdown_frontmatter_none():
+    """Check that an empty dict returns when there is no frontmatter."""
+    Hook = get_hook('markdown_frontmatter')
+    output = Hook(path='frontmatter-none.md').exec()
+
+    assert output == {}
