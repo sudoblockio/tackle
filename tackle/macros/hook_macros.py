@@ -6,6 +6,7 @@ from pydantic.fields import FieldInfo
 from ruyaml.constructor import CommentedMap, CommentedSeq, ScalarFloat
 
 from tackle import Context, exceptions
+from tackle.macros.function_macros import function_macro
 from tackle.models import DCL_HOOK_FIELDS
 
 LITERAL_TYPES = {'list', 'dict', 'str', 'int', 'float', 'bytes', 'bool'}
@@ -206,8 +207,11 @@ def hook_dict_macro(
             # Don't run a macro on any field that is part of base
             output[k] = v
         elif k.endswith(('<-', '<_')):
-            # We have a method. Value handled elsewhere
-            output[k[:-2]] = {k[-2:]: v}
+            # A method
+            hook_name, hook_value, methods = function_macro(context, k[:-2], value=v)
+            if methods:  # Can't define functional macros yet
+                raise NotImplementedError("Haven't implemented functional methods yet.")
+            output[hook_name] = {k[-2:]: hook_value}
         elif k.endswith(('->', '_>')):
             output[k[:-2]] = dict_field_hook_macro(
                 context=context,

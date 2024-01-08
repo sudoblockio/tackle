@@ -165,10 +165,10 @@ def handle_ambiguous_keys(
 
     def lookup_ambigous_key(context: 'Context', ambiguous_key: Any):
         if context.data.temporary and ambiguous_key in context.data.temporary:
-            return context.temporary_context[ambiguous_key]
+            return context.data.temporary[ambiguous_key]
         elif ambiguous_key in context.data.public:
             return context.data.public[ambiguous_key]
-        elif context.data.private and ambiguous_key in context.private_context:
+        elif context.data.private and ambiguous_key in context.data.private:
             return context.data.private[ambiguous_key]
         elif context.data.existing and ambiguous_key in context.data.existing:
             return context.data.existing[ambiguous_key]
