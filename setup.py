@@ -36,6 +36,9 @@ INSTALL_REQUIREMENTS = [
     'xdg==5.1.1',
 ]
 
+# Add tomli only for Python 3.10
+EXTRAS_REQUIRE = {':python_version == "3.10"': ['tomli>=1.0.0']}
+
 setup(
     name='tackle',
     version=get_version(os.path.join('tackle', '__init__.py')),
@@ -56,6 +59,7 @@ setup(
     include_package_data=True,
     python_requires='>=3.10',
     install_requires=INSTALL_REQUIREMENTS,
+    extras_require=EXTRAS_REQUIRE,
     license='BSD',
     zip_safe=False,
     classifiers=[

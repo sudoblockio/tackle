@@ -50,6 +50,7 @@ class AppendHook(BaseHook):
                 )
 
             target.append(self.item)
+            self.skip_output = True
         else:
             self.src.append(self.item)
             return self.src
