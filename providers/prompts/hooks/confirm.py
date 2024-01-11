@@ -14,8 +14,15 @@ class InquirerConfirmHook(BaseHook):
 
     hook_name: str = 'confirm'
 
-    default: bool = Field(True, description="Default choice.")
-    message: str = Field(None, description="String message to show when prompting.")
+    message: str = Field(
+        None,
+        description="String message to show when prompting.",
+    )
+    default: bool = Field(
+        True,
+        description="Default selection.",
+        alias="d",
+    )
 
     args: list = ['message']
     _docs_order = 4

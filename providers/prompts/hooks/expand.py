@@ -15,8 +15,15 @@ class InquirerExpandHook(BaseHook):
 
     hook_name: str = 'expand'
 
-    default: Any = Field(None, description="Default selection.")
-    message: str = Field(None, description="String message to show when prompting.")
+    message: str = Field(
+        None,
+        description="String message to show when prompting.",
+    )
+    default: Any = Field(
+        None,
+        description="Default selection.",
+        alias="d",
+    )
 
     args: list = ['message', 'default']
 

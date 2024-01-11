@@ -19,8 +19,10 @@ class InquirerCheckboxHook(BaseHook):
 
     hook_name: str = 'checkbox'
 
-    message: str = Field(None, description="String message to show when prompting.")
-    # default: Any = Field([], description="Default for the return value")
+    message: str = Field(
+        None,
+        description="String message to show when prompting.",
+    )
     choices: Union[list[str], list[dict]] = Field(
         ...,
         description="Either a list of strings or dictionary .",

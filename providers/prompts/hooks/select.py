@@ -17,7 +17,10 @@ class InquirerListHook(BaseHook):
 
     hook_name: str = 'select'
 
-    message: str = Field(None, description="String message to show when prompting.")
+    message: str = Field(
+        None,
+        description="String message to show when prompting.",
+    )
     choices: Union[List[str], List[dict]] = Field(
         ...,
         description="List of strings or dicts with keys as output and values as display.",

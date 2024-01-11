@@ -15,8 +15,15 @@ class InquirerRawListHook(BaseHook):
 
     hook_name: str = 'rawlist'
 
-    default: Any = Field(None, description="Default choice.")
-    message: str = Field(None, description="String message to show when prompting.")
+    message: str = Field(
+        None,
+        description="String message to show when prompting.",
+    )
+    default: Any = Field(
+        None,
+        description="Default selection.",
+        alias="d",
+    )
     choices: list = Field(..., description="A list of choices.")
 
     args: list = ['message', 'default']
