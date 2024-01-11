@@ -2,927 +2,927 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://sudoblockio.github.io/tackle/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/authors/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/command-line/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/contributing/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/creating-providers/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/debugging-tackle/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/declarative-cli/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/declarative-hook-attributes/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/declarative-hooks/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/definitions/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/demos/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/development-roadmap/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/hook-methods/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/installation/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/jinja/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/key-words/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/known-issues/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/memory-management/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/project-structure/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/python-hooks/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/special-variables/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/testing-providers/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/using-providers/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/validators/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/writing-tackle-files/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/yaml-deficiencies/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/articles/comparisons/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/cookbook/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/cookbook/base-methods/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/cookbook/block-match/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/cookbook/config-management/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/cookbook/creating-hooks/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/cookbook/creating-providers/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/cookbook/creating-schemas/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/cookbook/data-manipulation/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/cookbook/flow-control/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/cookbook/generating-code/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/cookbook/iac-file-structuring/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/cookbook/prompting/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/cookbook/reading-writing-data/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Arithmatic/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Arithmatic/average/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Arithmatic/modulo/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Arithmatic/sum/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Collections/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Collections/concat/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Collections/distinct/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Collections/list_key_values/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Collections/range/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Collections/sort/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Command/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Command/command/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Command/os_system/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Console/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Console/markdown/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Console/markdown_frontmatter/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Console/pprint/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Console/print/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Console/table/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Context/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Context/append/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Context/delete/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Context/get/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Context/keys/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Context/pop/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Context/set/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Context/update/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Context/values/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Datetime/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Datetime/date_now/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Datetime/datetimme/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Environment/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Environment/export/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Environment/get_env/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Environment/set_env/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Environment/unset/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Files/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Files/chmod/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Files/chown/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Files/copy/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Files/create_file/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Files/file/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Files/move/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Files/read_section/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Files/remove/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Files/shred/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Files/unzipfile/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Files/which/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Files/zipfile/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Generate/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Generate/file_update/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Generate/generate/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Generate/jinja/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Generate/update_section/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Ini/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Ini/ini/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Ini/ini_decode/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Ini/ini_encode/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Json/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Json/json/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Json/json_decode/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Json/json_encode/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Logic/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Logic/assert/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Logic/match/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Logic/raise/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Logic/return/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Logic/returns/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Paths/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Paths/basename/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Paths/dirname/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Paths/find_in_child/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Paths/find_in_parent/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Paths/flatten_paths/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Paths/glob/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Paths/isdir/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Paths/isfile/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Paths/listdir/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Paths/mkdir/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Paths/path_exists/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Paths/path_join/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Paths/symlink/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Paths/temp_dir/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Prompts/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Prompts/checkbox/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Prompts/confirm/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Prompts/editor/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Prompts/expand/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Prompts/input/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Prompts/password/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Prompts/rawlist/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Prompts/select/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Strings/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Strings/base64_decode/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Strings/base64_encode/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Strings/ends_with/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Strings/join/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Strings/random_hex/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Strings/random_string/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Strings/regex_match/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Strings/split/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Strings/starts_with/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Tackle/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Tackle/block/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Tackle/debug/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Tackle/exit/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Tackle/import/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Tackle/literal/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Tackle/run_hook/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Tackle/tackle/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Tackle/var/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Toml/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Toml/toml/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Toml/toml_decode/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Types/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Types/bool/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Types/float/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Types/hex/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Types/int/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Types/str/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Types/type/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Web/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Web/http_delete/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Web/http_get/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Web/http_patch/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Web/http_post/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Web/http_put/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Web/webbrowser/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Yaml/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Yaml/yaml/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Yaml/yaml_decode/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Yaml/yaml_encode/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/providers/Yaml/yaml_in_place/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/tour/fizzbuzz/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/tour/fizzbuzz/TODO/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/tour/hello-world/hello-worlds/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/tutorials/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/tutorials/infrastructure/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/tutorials/kubernetes/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/tutorials/utilities/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/tutorials/code-generation/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/tutorials/code-generation/basics/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/tutorials/code-generation/modular/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/tutorials/code-generation/partial/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://sudoblockio.github.io/tackle/tutorials/code-generation/stateful/</loc>
-         <lastmod>2024-01-08</lastmod>
+         <lastmod>2024-01-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
