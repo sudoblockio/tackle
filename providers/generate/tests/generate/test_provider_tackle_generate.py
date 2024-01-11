@@ -16,6 +16,7 @@ FIXTURES = [
     "render-file-additional-context.yaml",
     "render-dir-file.yaml",
     "render-dir-file-base.yaml",
+    "special-key.yaml",
     # # "tackle-provider-remote.yaml",
 ]
 

@@ -68,6 +68,14 @@ def debug_key_macro(value: 'DocumentValueType', arrow: str) -> 'DocumentValueTyp
     return {arrow: 'debug', 'key': value[arrow]}
 
 
+def generate_key_macro(value: 'DocumentValueType', arrow: str) -> 'DocumentValueType':
+    if isinstance(value, str):
+        return {arrow: f'generate {value}'}
+    elif isinstance(value, dict):
+        return {arrow: 'generate'} | value
+    return {arrow: 'generate', 'templates': value}  # Will error upstream
+
+
 # Both the keys and the aliases
 HOOK_CALL_KEYS = {k for k, v in HookCallInput.model_fields.items()} | {
     v.alias for k, v in HookCallInput.model_fields.items() if v.alias is not None
