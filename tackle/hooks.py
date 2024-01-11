@@ -741,6 +741,11 @@ def create_dcl_hook(
     #     update_dict=context.data.overrides,
     # )
 
+    hook_input_field_dict = {
+        k: (v.annotation, FieldInfo(default=getattr(hook_input, k), exclude=True))
+        for k, v in hook_input.model_fields.items()
+    }
+
     # Create a function with the __module__ default to pydantic.main
     try:
         Hook = create_model(
@@ -750,12 +755,11 @@ def create_dcl_hook(
             # TODO: RM this and overlay validators from field def on funcational field
             #  field validators?
             # __validators__=hook_input.validators,
-            hook_name=(str, hook_name),
-            help=(str, hook_input.help),
-            args=(list, hook_input.args),
-            hook_field_set=(set, hook_field_set),
-            hook_method_set=(set, hook_method_set),
+            hook_name=(str, FieldInfo(default=hook_name, exclude=True)),
+            hook_field_set=(set, FieldInfo(default=hook_field_set, exclude=True)),
+            hook_method_set=(set, FieldInfo(default=hook_method_set, exclude=True)),
             **field_dict,
+            **hook_input_field_dict,
         )
     except NameError as e:
         if 'shadows a BaseModel attribute' in e.args[0]:

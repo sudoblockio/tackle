@@ -1,7 +1,7 @@
 import enum
 from typing import Any, Optional, Union
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field
 
 from tackle.pydantic.config import DclHookModelConfig
 
@@ -121,13 +121,7 @@ class HookMethods:
         self.default = default
 
 
-class BaseHook(BaseModel):
-    """Base class that all python hooks extend."""
-
-    hook_name: str = Field(
-        ...,
-        description="Name of the hook.",
-    )
+class HookBase(BaseModel):
     help: str = Field(
         None,
         description="A string to display when calling with the `help` argument.",
@@ -136,32 +130,49 @@ class BaseHook(BaseModel):
         None,
         description="A list of string fields to wrap with jinja braces and render by "
         "default.",
+        exclude=True,
     )
     render_exclude: list = Field(
-        None, description="A list of field names to not render."
+        None,
+        description="A list of field names to not render.",
+        exclude=True,
     )
     is_public: bool = Field(
         None,
         description="A boolean if hook is public / callable from outside the provider).",
+        exclude=True,
     )
     skip_output: bool = Field(
         False,
         description="A flag to skip the output and not set the key. Can also be set"
         " within a hook call.",
+        exclude=True,
     )
     args: list = Field(
         [],
         description="A list of fields map arguments. See [docs]() for details.",
+        # exclude=True,
     )
     kwargs: str = Field(
         None,
         description="A field name of type dict to map additional arguments to.",
+        exclude=True,
+    )
+
+
+class BaseHook(HookBase):
+    """Base class that all python hooks extend."""
+
+    hook_name: str = Field(
+        ...,
+        description="Name of the hook.",
     )
 
     model_config = ConfigDict(
         extra='forbid',
         arbitrary_types_allowed=True,
         validate_assignment=True,
+        populate_by_name=True,
         # TODO: Make this dynamic when config is exposed. This is fine for now as there
         #  is no reason to have enum's in raw form.
         use_enum_values=True,
@@ -219,27 +230,13 @@ class HookFieldValidator(BaseModel):
     )
 
 
-class DclHookInput(BaseModel):
+class DclHookInput(HookBase):
     """Function input model. Used to validate the raw function input."""
 
-    help: str | None = Field(
-        None, description="A string to display when calling with the `help` argument."
-    )
     extends: Union[str, list[str]] | None = Field(
         None,
         description="A string or list of hook types to inherit from. See  [docs]().",
     )
-    args: list[str] | str | None = Field(
-        [],
-        description="A string or list of strings references to field names to map"
-        " arguments to.",
-    )
-
-    @field_validator('args')
-    def args_str_to_list(cls, v):
-        if isinstance(v, str):
-            return [v]
-        return v
 
     # Note: Needs underscore suffix to differentiate from internal exec
     exec_: Any = Field(

@@ -75,7 +75,8 @@ def test_hooks_types_base():
 def test_hooks_types_base_embed():
     """Check that we can compose embedded hook types."""
     output = tackle('base-embed.yaml')
-    assert output['check_ok']['bar']['foo2']['foo1'] == 'baz'
+    assert output['check_ok']['bar']['foo2'] == {'foo1': 'baz'}
+    assert output['check_ok_render']['bar']['foo2'] == {'foo1': 'baz'}
     assert output['check_false'] == 1
 
 
@@ -206,3 +207,13 @@ def test_hooks_default_hook_types():
     output = tackle('default-hook-types.yaml', a_pipe='bar')
 
     assert output
+
+
+def test_hooks_python_hook():
+    """We can validate data with a python hook."""
+    output = tackle('python-hook.yaml')
+
+    assert output['call_py_hook']['foo'] == 'bar'
+    assert output['call_a_func'] == 'bar'
+    assert output['error_missing'] == 1
+    assert output['error_a_func'] == 1

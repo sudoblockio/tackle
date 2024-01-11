@@ -1,0 +1,13 @@
+
+a_func(input py_hook)<-: "{{input.foo}}"
+
+data:
+  foo: bar
+
+call_py_hook->: "{{py_hook(**data)}}"
+call_a_func->: a_func {{data}}
+
+error_missing->: py_hook --try --except 1
+bad_data:
+  not_foo: bar
+error_a_func->: a_func bad_data --try --except 1
