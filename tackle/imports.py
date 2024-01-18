@@ -8,6 +8,7 @@ from typing import Any
 
 from pydantic import PydanticUserError, ValidationError
 from pydantic._internal._model_construction import ModelMetaclass  # noqa
+from pydantic_core import PydanticUndefined
 
 from tackle import exceptions
 from tackle.context import Context, Data
@@ -72,6 +73,10 @@ def import_python_hooks_from_file(
         if not is_base_hook_subclass(key=k, value=v):
             continue  # Skip all non-hooks
         hook_name = v.model_fields['hook_name'].default
+
+        if hook_name == PydanticUndefined:
+            # The `hook_name` field was not specified so just using the class name
+            hook_name = k
         if not isinstance(hook_name, str):
             raise exceptions.MalformedHookDefinitionException(
                 f"The python hook defined in class=`{k}` does not "

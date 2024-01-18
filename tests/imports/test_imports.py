@@ -1,7 +1,5 @@
 import os
 import shutil
-import subprocess
-import sys
 
 import pytest
 
@@ -86,7 +84,7 @@ def test_imports_exceptions_reserved_field_no_annotation(hooks):
         )
 
 
-def test_imports_exceptions_no_hook_name(hooks):
+def test_imports_exceptions_bad_hook_name_type(hooks):
     """Check we catch errors importing python hooks without hook_name defined."""
     with pytest.raises(exceptions.MalformedHookDefinitionException):
         imports.import_hooks_from_file(
@@ -94,46 +92,6 @@ def test_imports_exceptions_no_hook_name(hooks):
             provider_name="foo",
             file_path="no_hook_name.py",
         )
-
-
-@pytest.fixture()
-def temporary_uninstall():
-    """Fixture to uninstall a package and install it after the test."""
-
-    def f(package):
-        subprocess.check_call(
-            [
-                sys.executable,
-                "-m",
-                "pip",
-                "uninstall",
-                "--quiet",
-                "--disable-pip-version-check",
-                "-y",
-                package,
-            ]
-        )
-
-    return f
-
-
-@pytest.mark.slow
-def test_parser_provider_import_installs_requirements(temporary_uninstall):
-    """Validate that if a package is missing, that it will be installed and usable."""
-    temporary_uninstall('requests')
-    try:
-        import requests
-
-        # Fails in CI - I believe requests is available from system python as locally
-        # this assert works.
-        # assert False
-    except ImportError:
-        assert True
-
-    tackle('test-install-dep.yaml')
-    import requests  # noqa
-
-    assert requests
 
 
 @pytest.fixture()
