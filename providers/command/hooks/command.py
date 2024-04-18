@@ -32,7 +32,7 @@ class CommandFailedException(Exception):
 class CommandHook(BaseHook):
     """Run system commands."""
 
-    hook_name: str = 'command'
+    hook_name = 'command'
 
     command: str = Field(..., description="A shell command.")
     ignore_error: bool = Field(False, description="Ignore errors.")
@@ -132,7 +132,7 @@ class CommandHook(BaseHook):
 # class CommandHook(BaseHook):
 #     """System commands."""
 #
-#     hook_name: str = 'command'
+#     hook_name = 'command'
 #
 #     command: str = Field(..., description="A shell command.")
 #     ignore_error: bool = Field(False, description="Ignore errors.")

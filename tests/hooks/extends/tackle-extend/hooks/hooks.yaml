@@ -1,0 +1,5 @@
+TackleBase<-:
+  a_str_required: str
+  in_base:
+    type: str
+  stuff: things

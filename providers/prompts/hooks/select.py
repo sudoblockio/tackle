@@ -15,7 +15,7 @@ class InquirerListHook(BaseHook):
      [Source example](https://github.com/kazhala/InquirerPy/blob/master/examples/list.py)
     """
 
-    hook_name: str = 'select'
+    hook_name = 'select'
 
     message: str = Field(
         None,

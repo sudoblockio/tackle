@@ -34,7 +34,7 @@ def find_in_parent(
 class FindInParentHook(BaseHook):
     """Hook to find the absolute path to a file or directory in parent directories."""
 
-    hook_name: str = 'find_in_parent'
+    hook_name = 'find_in_parent'
     target: str = Field(
         ..., description="The name of the file to find the absolute path to"
     )
@@ -60,7 +60,7 @@ class FindInParentHook(BaseHook):
 class FindInChildHook(BaseHook):
     """Hook to find the absolute path to a file or directory in child directories."""
 
-    hook_name: str = 'find_in_child'
+    hook_name = 'find_in_child'
     target: str = Field(
         ..., description="The name of the file to find the absolute path to"
     )

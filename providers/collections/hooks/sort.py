@@ -12,7 +12,7 @@ class SortHook(BaseHook):
      output.
     """
 
-    hook_name: str = 'sort'
+    hook_name = 'sort'
     # fmt: off
     src: Union[list, dict, str] = Field(
         ...,

@@ -6,7 +6,7 @@ from tackle import BaseHook, Field
 class LiteralHook(BaseHook):
     """Literally return the input."""
 
-    hook_name: str = 'literal'
+    hook_name = 'literal'
     input: Any = Field(..., description="Any variable input.")
 
     args: list = ['input']

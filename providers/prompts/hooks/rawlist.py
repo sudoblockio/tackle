@@ -13,7 +13,7 @@ class InquirerRawListHook(BaseHook):
     flexibility. [Source example](https://github.com/kazhala/InquirerPy/blob/master/examples/rawlist.py)
     """
 
-    hook_name: str = 'rawlist'
+    hook_name = 'rawlist'
 
     message: str = Field(
         None,

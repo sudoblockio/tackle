@@ -2,7 +2,7 @@ import pytest
 
 from tackle import exceptions, tackle
 
-EXCEPTIONS = [
+@pytest.mark.parametrize("exception,fixture,error_message", [
     (
         exceptions.UnknownTemplateVariableException,
         'unknown-variable.yaml',
@@ -33,10 +33,7 @@ EXCEPTIONS = [
     #     'hooks-args-too-many-args.yaml',
     #     '',  # TODO: RM since this is an effect of joining remaining args that are str
     # ),
-]
-
-
-@pytest.mark.parametrize("exception,fixture,error_message", EXCEPTIONS)
+])
 def test_render_raise_error(cd_fixtures, exception, fixture, error_message):
     with pytest.raises(exception) as e:
         tackle(fixture)

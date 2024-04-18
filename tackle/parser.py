@@ -257,7 +257,7 @@ def update_missing_hook_vars(
             return
         # The Hook has some extra field in it, and we don't have a `kwargs` field which
         # will map extra args to a field so we need to raise here.
-        hook_name = Hook.model_fields['hook_name'].default
+        hook_name = Hook.hook_name
         exceptions.raise_hook_parse_exception_with_link(
             context=context,
             Hook=Hook,
@@ -466,7 +466,7 @@ def new_hook(
         raise exceptions.UnknownHookInputArgumentException(
             str(e) + " - Can't assign duplicate base fields.",
             context=context,
-            hook_name=Hook.model_fields['hook_name'].default,
+            hook_name=Hook.hook_name,
         ) from None
     # Prioritize HookCallException
     except exceptions.HookCallException as e:
@@ -919,7 +919,7 @@ def evaluate_args(
             raise exceptions.UnknownHookInputArgumentException(
                 f"The input_arg=`{args[i]}` is not known. Exiting...",
                 context=context,
-                hook_name=Hook.model_fields['hook_name'].default,
+                hook_name=Hook.hook_name,
             )
 
         hook_arg = Hook.model_fields['args'].default[index]
@@ -1052,7 +1052,7 @@ def run_hook_at_key_path(
         raise exceptions.UnknownHookInputArgumentException(
             e.__str__(),
             context=context,
-            hook_name=Hook.model_fields['hook_name'].default,
+            hook_name=Hook.hook_name.default,
         ) from None
 
     # Main parser
@@ -1154,7 +1154,7 @@ def get_declarative_hook_kwargs(context: 'Context', Hook: CompiledHookType) -> d
             raise exceptions.UnknownHookInputArgumentException(
                 f"The input key word arg=`{k}` is not recognized as a valid field.",
                 context=context,
-                hook_name=Hook.model_fields['hook_name'].default,
+                hook_name=Hook.hook_name,
             )
     return kwargs
 
@@ -1246,7 +1246,7 @@ def raise_if_args_exist(
                 f"Run the same command without the arg/kwarg/flag + \"help\" to see the "
                 f"available args/kwargs/flags.",
                 context=context,
-                hook_name=Hook.model_fields['hook_name'].default,
+                hook_name=Hook.hook_name,
             ) from None
         else:
             raise exceptions.UnknownSourceException(
@@ -1400,8 +1400,13 @@ def split_input_data(context: 'Context'):
     """
     if isinstance(context.data.raw_input, list):
         # Nothing to do. Our input is a list and no hooks or pre/post data can be built
-        # TODO: When parsing yaml - check if we have a split document (ie with `---`)
-        #  which will be read as a list in which case we need to split that up somehow
+        # TODO: v1 - When parsing yaml - check if we have a split document
+        #  (ie with `---`) which will be read as a list in which case we need to split
+        #  that up somehow
+        # TODO: v2 - The execution of a hook needs to happen within a module where local
+        #  variables are brought in scope before qualifying whether there is an
+        #  accessible
+
         return
 
     pre_data_flag = True

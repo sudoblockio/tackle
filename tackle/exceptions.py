@@ -255,11 +255,10 @@ def raise_hook_parse_exception_with_link(
     provider_name = getattr(Hook, '__provider_name', None)
     if provider_name is not None:
         # if Hook.__module__.startswith('tackle.hooks.'):
-        hook_name = Hook.model_fields['hook_name'].default
         msg += (
             f"\n Check the docs for more information on the hook -> "
             f"https://sudoblockio.github.io/tackle/providers/"
-            f"{Hook.__provider_name.title()}/{hook_name}/"
+            f"{Hook.__provider_name.title()}/{Hook.hook_name}/"
         )
     raise HookParseException(str(msg), context=context) from None
 

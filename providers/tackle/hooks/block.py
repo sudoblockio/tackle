@@ -13,7 +13,7 @@ class BlockHook(BaseHook):
      parsing.
     """
 
-    hook_name: str = 'block'
+    hook_name = 'block'
     items: Union[dict, list] = Field(
         ..., description="Items to be parsed like a normal input."
     )

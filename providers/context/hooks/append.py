@@ -7,7 +7,7 @@ from tackle.utils.data_crud import encode_key_path, get_target_and_key, nested_g
 class AppendHook(BaseHook):
     """Hook for updating dict objects with items."""
 
-    hook_name: str = 'append'
+    hook_name = 'append'
     # fmt: off
     src: Union[list, str] = Field(
         ..., description="A list append to and output the result or a str with "

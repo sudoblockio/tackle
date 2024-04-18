@@ -13,7 +13,7 @@ class InquirerEditorHook(BaseHook):
      field. [Source example](https://github.com/kazhala/InquirerPy/blob/master/examples/editor.py)
     """
 
-    hook_name: str = 'editor'
+    hook_name = 'editor'
     message: str = Field(
         None,
         description="String message to show when prompting.",

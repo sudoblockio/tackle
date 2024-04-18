@@ -17,7 +17,7 @@ def run_evaluate_args(args: list, Hook: Type[BaseHook]):
 
 def test_parser_evaluate_args_single_str():
     class MyHook(BaseHook):
-        hook_name: str = 'my_hook'
+        hook_name = 'my_hook'
         foo: str
         args: list = ['foo']
 
@@ -29,7 +29,7 @@ def test_parser_evaluate_args_single_str():
 
 def test_parser_evaluate_args_many_str():
     class MyHook(BaseHook):
-        hook_name: str = 'my_hook'
+        hook_name = 'my_hook'
         foo: str
         bar: str
         baz: str
@@ -43,7 +43,7 @@ def test_parser_evaluate_args_many_str():
 
 def test_parser_evaluate_args_joined_str():
     class MyHook(BaseHook):
-        hook_name: str = 'my_hook'
+        hook_name = 'my_hook'
         foo: str
         bar: str
         args: list = ['foo', 'bar']
@@ -56,7 +56,7 @@ def test_parser_evaluate_args_joined_str():
 
 def test_parser_evaluate_args_joined_list():
     class MyHook(BaseHook):
-        hook_name: str = 'my_hook'
+        hook_name = 'my_hook'
         foo: str
         bar: list
         args: list = ['foo', 'bar']
@@ -70,7 +70,7 @@ def test_parser_evaluate_args_joined_list():
 def test_parser_evaluate_args_overflow_bool_error():
     # TODO: This should be an error?
     class MyHook(BaseHook):
-        hook_name: str = 'my_hook'
+        hook_name = 'my_hook'
         foo: bool
         args: list = ['foo']
 

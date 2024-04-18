@@ -72,12 +72,10 @@ def import_python_hooks_from_file(
     for k, v in mod.__dict__.items():
         if not is_base_hook_subclass(key=k, value=v):
             continue  # Skip all non-hooks
-        hook_name = v.model_fields['hook_name'].default
-
-        if hook_name == PydanticUndefined:
+        if v.hook_name is None:
             # The `hook_name` field was not specified so just using the class name
-            hook_name = k
-        if not isinstance(hook_name, str):
+            v.hook_name = k
+        if not isinstance(v.hook_name, str):
             raise exceptions.MalformedHookDefinitionException(
                 f"The python hook defined in class=`{k}` does not "
                 f"have a hook_name field defined. Please add one looking like "
@@ -89,9 +87,9 @@ def import_python_hooks_from_file(
         # TODO: Add when fixing third_party imports
         # v.__provider_name = provider_name
         if v.model_fields['is_public'].default:
-            context.hooks.public[hook_name] = v
+            context.hooks.public[v.hook_name] = v
         else:
-            context.hooks.private[hook_name] = v
+            context.hooks.private[v.hook_name] = v
 
 
 def import_declarative_hooks_from_file(
@@ -101,6 +99,7 @@ def import_declarative_hooks_from_file(
 ) -> object:
     """Import all the declarative hooks from a directory."""
     from tackle.parser import parse_context
+    from tackle.factory import new_data
 
     file_contents = read_config_file(file=file_path, file_extension=file_extension)
     if file_contents is None:
@@ -108,7 +107,8 @@ def import_declarative_hooks_from_file(
         return
     # Temporarily hold the data in another var to parse the file contents
     old_data = context.data
-    context.data = Data(raw_input=file_contents)
+    context.data = None
+    context.data = new_data(context=context, raw_input=file_contents)
     parse_context(context=context, call_hooks=False)
     # Bring the data back
     context.data = old_data
@@ -187,7 +187,7 @@ def import_native_hooks_from_directory(
             for k, v in mod.__dict__.items():
                 if is_base_hook_subclass(key=k, value=v):
                     v.__provider_name = provider_name
-                    native_hooks[v.model_fields['hook_name'].default] = v
+                    native_hooks[v.hook_name] = v
 
     return native_hooks
 

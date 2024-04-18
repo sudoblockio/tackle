@@ -7,7 +7,7 @@ from pydantic.fields import FieldInfo
 
 from tackle import exceptions
 from tackle.context import Context
-from tackle.models import BaseHook, LazyBaseHook
+from tackle.models import BaseHook, LazyBaseHook, CompiledHookType
 from tackle.utils.type_strings import field_to_string
 
 HELP_TEMPLATE = """usage: tackle {{input_string}} {% for i in general_kwargs %}{{i}} {% endfor %}
@@ -147,7 +147,7 @@ def get_methods_on_default_hook(context: 'Context') -> List[dict]:
     return methods
 
 
-def run_help(context: 'Context', Hook: Type[BaseHook] = None):
+def run_help(context: 'Context', Hook: CompiledHookType = None):
     """
     Print the help screen then exit. Help can be displayed in three different scenarios.
     1. For the base (no args) -> this shows default / other function's help
@@ -161,7 +161,7 @@ def run_help(context: 'Context', Hook: Type[BaseHook] = None):
 
         # Unpack the arguments from the hook
         args, kwargs, flags, methods = unpack_hook(context, Hook)
-        hook_name = Hook.model_fields['hook_name'].default
+        hook_name = Hook.hook_name
         if hook_name == '_default':  # Default hook
             hook_name = 'default'
             # Add the additional methods adjacent to the default hook.

@@ -15,7 +15,7 @@ class TomlHook(BaseHook):
      writing toml, only reading.
     """
 
-    hook_name: str = 'toml'
+    hook_name = 'toml'
     path: str = Field(..., description="The file path to read or write to.")
 
     args: list = ['path']
@@ -30,7 +30,7 @@ class TomlHook(BaseHook):
 class TomlDecodeHook(BaseHook):
     """Hook for decoding a TOML string to a dict."""
 
-    hook_name: str = 'toml_decode'
+    hook_name = 'toml_decode'
     data: str = Field(..., description="TOML string to convert to dict.")
     args: list = ['data']
 

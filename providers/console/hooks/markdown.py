@@ -10,7 +10,7 @@ from tackle import BaseHook, Field
 class MarkdownPrintHook(BaseHook):
     """Hook for printing markdown and returning the output."""
 
-    hook_name: str = 'markdown'
+    hook_name = 'markdown'
     text: str = Field(..., description="The text to render as markdown.")
     justify: str = Field(
         None, description="Justify value for paragraphs. Defaults to None."
@@ -29,7 +29,7 @@ class MarkdownPrintHook(BaseHook):
 class MarkdownFrontmatterHook(BaseHook):
     """Hook for reading frontmatter from a Markdown file."""
 
-    hook_name: str = 'markdown_frontmatter'
+    hook_name = 'markdown_frontmatter'
     path: str = Field(..., description="Path to the Markdown file.")
 
     args: list = ['path']

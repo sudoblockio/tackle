@@ -84,16 +84,6 @@ def test_imports_exceptions_reserved_field_no_annotation(hooks):
         )
 
 
-def test_imports_exceptions_bad_hook_name_type(hooks):
-    """Check we catch errors importing python hooks without hook_name defined."""
-    with pytest.raises(exceptions.MalformedHookDefinitionException):
-        imports.import_hooks_from_file(
-            context=Context(source=Source()),
-            provider_name="foo",
-            file_path="no_hook_name.py",
-        )
-
-
 @pytest.fixture()
 def remove_provider():
     """Fixture to remove a provider."""

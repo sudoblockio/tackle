@@ -32,7 +32,7 @@ def expand_path(path):
 class CopyHook(BaseHook):
     """Hook coying a file/files or directory/directories to a location."""
 
-    hook_name: str = 'copy'
+    hook_name = 'copy'
     src: Union[List, str] = Field(
         ..., description="String or list of sources, either a directories or files"
     )
@@ -68,7 +68,7 @@ class CopyHook(BaseHook):
 class MoveHook(BaseHook):
     """Hook  for moving a directory or directories to a location."""
 
-    hook_name: str = 'move'
+    hook_name = 'move'
     src: Union[List, str] = Field(
         ..., description="String or list of sources, either directories or files"
     )
@@ -99,7 +99,7 @@ class MoveHook(BaseHook):
 class RemoveHook(BaseHook):
     """Hook for removing a directory or directories."""
 
-    hook_name: str = 'remove'
+    hook_name = 'remove'
     path: Union[List, str] = Field(
         ..., description="String or list of paths to remove."
     )
@@ -128,7 +128,7 @@ class RemoveHook(BaseHook):
 class WhichHook(BaseHook):
     """Wrapper of shutil.which -> posix which."""
 
-    hook_name: str = 'which'
+    hook_name = 'which'
     path: str = Field(..., description="String path run `which` against.")
 
     args: list = ['path']
@@ -157,7 +157,7 @@ def wipe(f, passes=30):
 class ShredHook(BaseHook):
     """Hook for shredding file/files."""
 
-    hook_name: str = 'shred'
+    hook_name = 'shred'
     src: Union[List, str] = Field(
         ..., description="String or list of sources, either directories or files"
     )
@@ -179,7 +179,7 @@ class ShredHook(BaseHook):
 class ChmodHook(BaseHook):
     """Hook for changing the mode of a path or paths."""
 
-    hook_name: str = 'chmod'
+    hook_name = 'chmod'
     path: Union[str, list] = Field(
         ..., description="String or list of paths, either directories or files."
     )
@@ -205,7 +205,7 @@ class ChmodHook(BaseHook):
 class ChownHook(BaseHook):
     """Hook for changing the ownership of a file with shutil."""
 
-    hook_name: str = 'chown'
+    hook_name = 'chown'
     path: Union[str, list] = Field(
         ..., description="String or list of paths, either directories or files."
     )
@@ -231,7 +231,7 @@ class ChownHook(BaseHook):
 class CreateFileHook(BaseHook):
     """Hook to create an empty file - like touch."""
 
-    hook_name: str = 'create_file'
+    hook_name = 'create_file'
     path: Union[str, list] = Field(
         ..., description="String or list of paths to create files at."
     )
@@ -251,7 +251,7 @@ class CreateFileHook(BaseHook):
 class FileHook(BaseHook):
     """Hook to read or write a file."""
 
-    hook_name: str = 'file'
+    hook_name = 'file'
     path: str = Field(
         ..., description="Path to read a file or write file if contents are given."
     )

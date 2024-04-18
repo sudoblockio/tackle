@@ -8,7 +8,7 @@ class FlattenHook(BaseHook):
     input and turns it into a string that can be used to call a generic CLI program.
     """
 
-    hook_name: str = 'flatten'
+    hook_name = 'flatten'
     hook: str = Field(None, description="A hook")
 
     positional_args: list = Field(

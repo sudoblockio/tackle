@@ -15,7 +15,7 @@ class GetKeyHook(BaseHook):
      for indexes in a list.
     """
 
-    hook_name: str = 'get'
+    hook_name = 'get'
     # fmt: off
     path: Union[list, str] = Field(
         ...,

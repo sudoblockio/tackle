@@ -20,7 +20,7 @@ class GenerateNativeHookCache(BaseHook):
      startup times much faster.
     """
 
-    hook_name: str = 'provider_cache_data'
+    hook_name = 'provider_cache_data'
     providers_dir: str = Field(
         None,
         description="Abs path to providers dir.",

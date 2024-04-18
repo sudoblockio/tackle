@@ -187,7 +187,7 @@ def handle_ambiguous_keys(
         return lookup_ambigous_key(context, ambiguous_key)
     elif isinstance(rendered_template, JinjaHook):
         # Handle hooks
-        hook_name = rendered_template.Hook.model_fields['hook_name'].default
+        hook_name = rendered_template.Hook.hook_name
         raise exceptions.MalformedTemplateVariableException(
             f"Uncalled hook=`{hook_name}` within rendering, try calling "
             f"`{hook_name}()` with args or kwargs.",
@@ -196,7 +196,8 @@ def handle_ambiguous_keys(
     elif isinstance(rendered_template, str):
         if 'jinja2.utils' not in rendered_template:
             return rendered_template
-        match = re.search(r"<class 'jinja2\.utils\.(.*?)'>(.*)", rendered_template)
+        match = re.search(r"<class 'jinja2\.utils\.(.*?)'>(.*)",
+                          rendered_template)
         if match.group(1) in ['Namespace']:
             return lookup_ambigous_key(context, match.group(1).lower()) + match.group(2)
 

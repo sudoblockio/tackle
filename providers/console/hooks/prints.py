@@ -16,7 +16,7 @@ class PrintHook(BaseHook):
     [Link](https://docs.python.org/3/library/functions.html#print)
     """
 
-    hook_name: str = 'print'
+    hook_name = 'print'
 
     objects: Any = Field(None, description="The objects to print.")
     sep: str = Field(
@@ -37,7 +37,7 @@ class PprintHook(BaseHook):
     [Link](https://docs.python.org/3/library/pprint.html#pprint.PrettyPrinter)
     """
 
-    hook_name: str = 'pprint'
+    hook_name = 'pprint'
 
     # fmt: off
     objects: Any = Field(None, description="The object to be pretty printed.")

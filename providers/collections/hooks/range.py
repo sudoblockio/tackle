@@ -9,7 +9,7 @@ class RangeHook(BaseHook):
      range.
     """
 
-    hook_name: str = 'range'
+    hook_name = 'range'
     # fmt: off
     start: int = Field(
         0,

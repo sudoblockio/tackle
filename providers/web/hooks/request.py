@@ -47,7 +47,7 @@ class RequestsGetHook(BaseHook, AuthMixin):
     [Link](https://docs.python-requests.org/en/latest/api/#requests.get)
     """
 
-    hook_name: str = 'http_get'
+    hook_name = 'http_get'
 
     # fmt: off
     url: str = Field(
@@ -101,7 +101,7 @@ class RequestsPostHook(BaseHook, AuthMixin):
     [Link](https://docs.python-requests.org/en/latest/api/#requests.post)
     """
 
-    hook_name: str = 'http_post'
+    hook_name = 'http_post'
 
     # fmt: off
     url: str = Field(
@@ -161,7 +161,7 @@ class RequestsPutHook(BaseHook, AuthMixin):
     [Link](https://docs.python-requests.org/en/latest/api/#requests.put)
     """
 
-    hook_name: str = 'http_put'
+    hook_name = 'http_put'
 
     # fmt: on
     url: str = Field(
@@ -210,7 +210,7 @@ class RequestsPatchHook(BaseHook, AuthMixin):
     [Link](https://docs.python-requests.org/en/latest/api/#requests.patch)
     """
 
-    hook_name: str = 'http_patch'
+    hook_name = 'http_patch'
 
     # fmt: off
     url: str = Field(..., description="URL for the new request object.")
@@ -254,7 +254,7 @@ class RequestsDeleteHook(BaseHook, AuthMixin):
     [Link](https://docs.python-requests.org/en/latest/api/#requests.delete)
     """
 
-    hook_name: str = 'http_delete'
+    hook_name = 'http_delete'
 
     # fmt: off
     url: str = Field(..., description="URL for the new request object.")

@@ -14,7 +14,7 @@ class MatchHook(BaseHook):
      away. All matched values are ran as hooks.
     """
 
-    hook_name: str = 'match'
+    hook_name = 'match'
     value: str | int | float | bool = Field(
         True,
         render_by_default=True,

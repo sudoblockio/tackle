@@ -10,7 +10,7 @@ class WebBrowserHook(BaseHook):
      module.
     """
 
-    hook_name: str = 'webbrowser'
+    hook_name = 'webbrowser'
     # fmt: off
     url: str = Field(
         ...,

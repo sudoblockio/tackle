@@ -6,7 +6,7 @@ from tackle import BaseHook, Field
 class Base64EncodeHook(BaseHook):
     """Hook for `base64_encode`. Base64 encodes a string."""
 
-    hook_name: str = 'base64_encode'
+    hook_name = 'base64_encode'
     input: str = Field(..., description="A string to encode.")
 
     args: list = ['input']
@@ -19,7 +19,7 @@ class Base64EncodeHook(BaseHook):
 class Base64DecodeHook(BaseHook):
     """Hook for `base64_decode`. Base64 decodes a string."""
 
-    hook_name: str = 'base64_decode'
+    hook_name = 'base64_decode'
     input: str = Field(..., description="A string to decode.")
 
     args: list = ['input']

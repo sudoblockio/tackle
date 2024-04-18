@@ -17,7 +17,7 @@ class InquirerCheckboxHook(BaseHook):
      list of maps with the key as the question, the value as the output.
     """
 
-    hook_name: str = 'checkbox'
+    hook_name = 'checkbox'
 
     message: str = Field(
         None,

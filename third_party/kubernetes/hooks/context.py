@@ -9,7 +9,7 @@ from tackle.models import BaseHook, Field
 class K8sCurrentContextHook(BaseHook):
     """Hook for getting current kubeconfig context."""
 
-    hook_name: str = 'k8s_current_context'
+    hook_name = 'k8s_current_context'
 
     def exec(self) -> str:
         kubeconfig_locations = os.environ.get("KUBECONFIG", None)
@@ -26,7 +26,7 @@ class K8sCurrentContextHook(BaseHook):
 class K8sContextListHook(BaseHook):
     """Hook for listing kubeconfig contexts."""
 
-    hook_name: str = 'k8s_context_list'
+    hook_name = 'k8s_context_list'
 
     def exec(self) -> list:
         kubeconfig_locations = os.environ.get("KUBECONFIG", None)
@@ -49,7 +49,7 @@ class K8sContextListHook(BaseHook):
 class K8sContextMapHook(BaseHook):
     """Hook for return a map of the kubeconfig context details."""
 
-    hook_name: str = 'k8s_context_map'
+    hook_name = 'k8s_context_map'
 
     def exec(self) -> dict:
         kubeconfig_locations = os.environ.get("KUBECONFIG", None)
@@ -72,7 +72,7 @@ class K8sContextMapHook(BaseHook):
 class K8sUseContextHook(BaseHook):
     """Hook for using a kube context."""
 
-    hook_name: str = 'k8s_use_context'
+    hook_name = 'k8s_use_context'
     context: str = Field(..., description="The context to use.")
 
     def exec(self):

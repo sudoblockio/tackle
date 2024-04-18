@@ -12,7 +12,7 @@ class InquirerConfirmHook(BaseHook):
      [Source example](https://github.com/kazhala/InquirerPy/blob/master/examples/confirm.py)
     """
 
-    hook_name: str = 'confirm'
+    hook_name = 'confirm'
 
     message: str = Field(
         None,

@@ -118,7 +118,7 @@ def get_private_model_field(hook: BaseHook, field_name: str, default: Any = None
 class ProviderDocsHook(BaseHook):
     """Hook for extracting provider metadata for building docs."""
 
-    hook_name: str = "provider_docs"
+    hook_name = "provider_docs"
 
     # fmt: off
     path: str = Field(".", description="The path to the provider.")

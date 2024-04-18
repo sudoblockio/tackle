@@ -6,7 +6,7 @@ from tackle import BaseHook, Field
 class PathExistsListHook(BaseHook):
     """Hook for os package 'path.exists'."""
 
-    hook_name: str = 'path_exists'
+    hook_name = 'path_exists'
     path: str = Field(..., description="The path to file or directory")
 
     args: list = ['path']
@@ -18,7 +18,7 @@ class PathExistsListHook(BaseHook):
 class PathIsDirListHook(BaseHook):
     """Hook for os package 'path.isdir'."""
 
-    hook_name: str = 'isdir'
+    hook_name = 'isdir'
     path: str = Field(..., description="The path to a directory")
 
     args: list = ['path']
@@ -30,7 +30,7 @@ class PathIsDirListHook(BaseHook):
 class PathIsFileListHook(BaseHook):
     """Hook for os package 'path.isfile'."""
 
-    hook_name: str = 'isfile'
+    hook_name = 'isfile'
     path: str = Field(..., description="The path to a file")
 
     args: list = ['path']
@@ -42,7 +42,7 @@ class PathIsFileListHook(BaseHook):
 class PathJoinHook(BaseHook):
     """Hook joining paths."""
 
-    hook_name: str = 'path_join'
+    hook_name = 'path_join'
     paths: list = Field(
         ...,
         description="List of items in a path to file or directory.",
@@ -58,7 +58,7 @@ class PathJoinHook(BaseHook):
 class PathBasenameHook(BaseHook):
     """Hook for getting the basename from a path."""
 
-    hook_name: str = 'basename'
+    hook_name = 'basename'
     path: str = Field(
         ...,
         description="Path to the file/directory to get the basename of.",
@@ -74,7 +74,7 @@ class PathBasenameHook(BaseHook):
 class PathDirNameHook(BaseHook):
     """Hook for getting the basename from a path."""
 
-    hook_name: str = 'dirname'
+    hook_name = 'dirname'
     path: str = Field(
         ...,
         description="Path to the file/directory to get the directory name of.",

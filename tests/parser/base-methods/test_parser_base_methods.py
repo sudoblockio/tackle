@@ -44,7 +44,8 @@ def test_parser_methods_except():
 
 
 def test_parser_methods_skip_output(cd):
-    """"""
+    """Setting skip_output in a hook definition results in no output."""
+    # TODO: Fix me later - consequence of bad memory model
     cd('skip-output')
     output = tackle('skip-output.yaml')
 

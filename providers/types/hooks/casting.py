@@ -7,7 +7,7 @@ from tackle import BaseHook, Field
 class IntegerHook(BaseHook):
     """Hook for casting a variable to an integer type."""
 
-    hook_name: str = 'int'
+    hook_name = 'int'
     input: Any = Field(..., description="Any variable input.", render_by_default=True)
     args: list = ['input']
 
@@ -18,7 +18,7 @@ class IntegerHook(BaseHook):
 class FloatHook(BaseHook):
     """Hook for casting a variable to a float type."""
 
-    hook_name: str = 'float'
+    hook_name = 'float'
     input: Any = Field(..., description="Any variable input.", render_by_default=True)
     args: list = ['input']
 
@@ -29,7 +29,7 @@ class FloatHook(BaseHook):
 class BoolHook(BaseHook):
     """Hook for casting a variable to a bool type."""
 
-    hook_name: str = 'bool'
+    hook_name = 'bool'
     input: Any = Field(..., description="Any variable input.", render_by_default=True)
     args: list = ['input']
 
@@ -40,7 +40,7 @@ class BoolHook(BaseHook):
 class StrHook(BaseHook):
     """Hook for casting a variable to a string type."""
 
-    hook_name: str = 'str'
+    hook_name = 'str'
     input: Any = Field(..., description="Any variable input.", render_by_default=True)
     args: list = ['input']
 
@@ -51,7 +51,7 @@ class StrHook(BaseHook):
 class HexHook(BaseHook):
     """Hook for changing an int to a hexidecimal."""
 
-    hook_name: str = 'hex'
+    hook_name = 'hex'
     input: int = Field(..., description="Any variable input.", render_by_default=True)
     args: list = ['input']
 

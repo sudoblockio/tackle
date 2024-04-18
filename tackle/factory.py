@@ -175,7 +175,7 @@ def new_data(
     if data.public is not None:
         # If we were passed a data object by calling tackle from tackle then the
         # parent's public data is used as existing which is immutable
-        if isinstance(_data.public, dict):
+        if _data is not None and isinstance(_data.public, dict):
             data.existing.update(_data.public)
         else:
             data.existing = {}

@@ -10,7 +10,7 @@ from tackle import BaseHook, Context, Field
 class TackleHook(BaseHook):
     """Hook for calling external tackle providers."""
 
-    hook_name: str = 'tackle'
+    hook_name = 'tackle'
 
     # fmt: off
     input_arg: str = Field(

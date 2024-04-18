@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 
-VENV_NAME?=venv
+VENV_NAME?=".venv"
 VENV_ACTIVATE=. $(VENV_NAME)/bin/activate
 PYTHON=${VENV_NAME}/bin/python3
 

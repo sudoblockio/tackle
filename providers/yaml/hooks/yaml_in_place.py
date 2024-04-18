@@ -14,7 +14,7 @@ class YamlHook(BaseHook):
      in one operation). WIP -> https://github.com/sudoblockio/tackle/issues/100.
     """
 
-    hook_name: str = 'yaml_in_place'
+    hook_name = 'yaml_in_place'
 
     path: str = Field(..., description="The file path to put read or write to.")
     remove: Union[List, str] = Field(

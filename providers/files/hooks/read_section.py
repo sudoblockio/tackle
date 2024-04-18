@@ -6,7 +6,7 @@ from tackle import BaseHook, Field
 class UpdateSectionHook(BaseHook):
     """Hook for reading a section of a document."""
 
-    hook_name: str = 'read_section'
+    hook_name = 'read_section'
     document: str = Field(..., description="Path to a document to render a section of.")
     start: str = Field(
         '--start--',

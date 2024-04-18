@@ -4,7 +4,7 @@ from tackle import BaseHook, Context, Field, exceptions
 class RaiseHook(BaseHook):
     """Hook for raising an error."""
 
-    hook_name: str = 'raise'
+    hook_name = 'raise'
     message: str = Field(None, description="A message to show when raising an error.")
 
     args: list = ['message']

@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 class ZipHook(BaseHook):
     """Hook to zip a file or directory."""
 
-    hook_name: str = 'zipfile'
+    hook_name = 'zipfile'
 
     input: str = Field(..., description="Input path")
     output: str = Field(..., description="Output path")
@@ -36,7 +36,7 @@ class ZipHook(BaseHook):
 class UnzipHook(BaseHook):
     """Hook to unzip a file."""
 
-    hook_name: str = 'unzipfile'
+    hook_name = 'unzipfile'
 
     input: str = Field(..., description="Input path")
     output: str = Field(".", description="Output path, default to current directory")

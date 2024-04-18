@@ -698,7 +698,7 @@ def create_dcl_hook(
     context: 'Context',
     hook_name: str,
     hook_input_raw: dict | str,
-) -> 'Type[BaseHook]':
+) -> 'CompiledHookType':
     """
     Create a model from the hook input dict. Calls numerous functions to upgrade the
      hook input dict including:
@@ -755,7 +755,8 @@ def create_dcl_hook(
             # TODO: RM this and overlay validators from field def on funcational field
             #  field validators?
             # __validators__=hook_input.validators,
-            hook_name=(str, FieldInfo(default=hook_name, exclude=True)),
+            # hook_name=(typing.ClassVar[str], FieldInfo(default=hook_name, exclude=True)),
+            hook_name=(typing.ClassVar[str], hook_name),
             hook_field_set=(set, FieldInfo(default=hook_field_set, exclude=True)),
             hook_method_set=(set, FieldInfo(default=hook_method_set, exclude=True)),
             **field_dict,
@@ -850,7 +851,7 @@ def enrich_hook(
             raise exceptions.UnknownHookInputArgumentException(
                 f"Unknown arg supplied `{arg}`",
                 context=context,
-                hook_name=Hook.model_fields['hook_name'].default,
+                hook_name=Hook.hook_name.default,
             )
     return Hook
 

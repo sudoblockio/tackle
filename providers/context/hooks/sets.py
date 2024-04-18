@@ -10,7 +10,7 @@ class SetKeyHook(BaseHook):
      for indexes in a list.
     """
 
-    hook_name: str = 'set'
+    hook_name = 'set'
     # fmt: off
     path: Any = Field(..., description="A list or string with a separator for the path to the value you want to update with strings for keys and ints for indexes in the list.")
     value: Any = Field(..., description="The value to update the key with.")

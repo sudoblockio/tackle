@@ -7,7 +7,7 @@ from tackle import BaseHook, Field
 class TypeHook(BaseHook):
     """Hook for getting the type of a variable."""
 
-    hook_name: str = 'type'
+    hook_name = 'type'
 
     input: Any = Field(
         ...,

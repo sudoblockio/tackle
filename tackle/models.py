@@ -1,5 +1,5 @@
 import enum
-from typing import Any, Optional, Union
+from typing import Any, Optional, Union, ClassVar
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -148,6 +148,12 @@ class HookBase(BaseModel):
         " within a hook call.",
         exclude=True,
     )
+    # args: ClassVar[list] = Field(
+    #     None,
+    #     description="A list of fields map arguments. See [docs]() for details.",
+    #     # exclude=True,
+    # )
+
     args: list = Field(
         [],
         description="A list of fields map arguments. See [docs]() for details.",
@@ -162,11 +168,7 @@ class HookBase(BaseModel):
 
 class BaseHook(HookBase):
     """Base class that all python hooks extend."""
-
-    hook_name: str = Field(
-        ...,
-        description="Name of the hook.",
-    )
+    hook_name: ClassVar[str]
 
     model_config = ConfigDict(
         extra='forbid',
@@ -280,8 +282,8 @@ class DclHookInput(HookBase):
         validate_assignment=True,
     )
 
-    def exec(self):
-        return self.model_dump(include=self.hook_fields_)
+    # def exec(self):
+    #     return self.model_dump(include=self.hook_fields_)
 
 
 # Set of DclHookInput fields that account for anything with aliases
@@ -293,6 +295,6 @@ DCL_HOOK_FIELDS = {
 }
 
 AnyHookType = BaseHook | DclHookInput | LazyBaseHook
-GenericHookType = Union[BaseHook, LazyBaseHook]
+GenericHookType = BaseHook | LazyBaseHook
 HookDictType = dict[str, AnyHookType]
 CompiledHookType = BaseHook | DclHookInput

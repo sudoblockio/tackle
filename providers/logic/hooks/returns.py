@@ -12,7 +12,7 @@ class ReturnHook(BaseHook):
      everything else (bool / int) it returns the value as is.
     """
 
-    hook_name: str = 'return'
+    hook_name = 'return'
     value: Any = Field(None, description="The value to return.")
 
     args: list = ['value']
@@ -40,7 +40,7 @@ class ReturnsHook(BaseHook):
      `return` hook which renders / parses by default.
     """
 
-    hook_name: str = 'returns'
+    hook_name = 'returns'
     value: Any = Field(None, description="The value to return.")
 
     args: list = ['value']

@@ -20,12 +20,32 @@ def test_hooks_extends_method():
 
 
 def test_hooks_extends_python_hook(cd):
-    """Check that we can extend a python hook."""
+    """Check that we can extend a python hook into tackle."""
     cd('python-extend')
     output = tackle('DerivedPython', a_str_required='bar')
 
     assert output['stuff'] == 'things'
     assert output['foo'] == 'bar'
+    assert output['in_base'] == 'bar'
+    assert output['a_str_required'] == 'bar'
+
+
+def test_hooks_extends_tackle_hook(cd):
+    """Check that we can extend a tackle hook into python."""
+    cd('tackle-extend')
+    from tackle import get_hook, new_context
+
+    MyHook = get_hook('TackleBase')
+
+    class MyPyHook(MyHook):
+        hook_name = 'base_hook'
+        foo: str = 'bar'
+        in_base: str = 'bar'
+        an_optional_str: str | None = None
+
+    output = MyPyHook(a_str_required='bar').exec(new_context())
+
+    assert output['stuff'] == 'things'
     assert output['in_base'] == 'bar'
     assert output['a_str_required'] == 'bar'
 

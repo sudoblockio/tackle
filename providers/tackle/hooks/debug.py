@@ -12,7 +12,7 @@ DATA_NAMESPACES = ['public', 'private', 'temporary', 'existing']
 class DebugHook(BaseHook):
     """Hook for debugging that prints the output data and pauses runtime."""
 
-    hook_name: str = 'debug'
+    hook_name = 'debug'
     key: str | None = Field(None, description="A path to a key to debug")
     data: str = Field(
         None,

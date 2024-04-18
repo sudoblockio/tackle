@@ -6,7 +6,7 @@ from tackle import BaseHook, Field
 class ConcatenateHook(BaseHook):
     """Hook for concatenating a list of items."""
 
-    hook_name: str = 'concat'
+    hook_name = 'concat'
     # Relates to https://github.com/sudoblockio/tackle/issues/183 where we might want to
     # `render_by_default` src
     src: list = Field(

@@ -11,7 +11,7 @@ class VarHook(BaseHook):
      rendered is still renderable - ie a template within a template.
     """
 
-    hook_name: str = 'var'
+    hook_name = 'var'
     input: Any = Field(
         ...,
         description="Any variable input.",

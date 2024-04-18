@@ -1,0 +1,4 @@
+foo: bar
+
+my_hook()<-:
+  stuff: things

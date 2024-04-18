@@ -11,7 +11,7 @@ class JsonHook(BaseHook):
      provided, otherwise it writes the `data` to `path`.
     """
 
-    hook_name: str = 'json'
+    hook_name = 'json'
     path: str = Field(..., description="The file path to put read or write to.")
     data: Union[dict, list, str] = Field(
         None,
@@ -39,7 +39,7 @@ class JsonHook(BaseHook):
 class JsonEncodeHook(BaseHook):
     """Hook for converting a dict to a JSON encoded string."""
 
-    hook_name: str = 'json_encode'
+    hook_name = 'json_encode'
     data: Union[dict, list, str] = Field(
         ...,
         description="Map/list or renderable string to data to convert to JSON string.",
@@ -54,7 +54,7 @@ class JsonEncodeHook(BaseHook):
 class JsonDecodeHook(BaseHook):
     """Hook for decoding a JSON string to a dict."""
 
-    hook_name: str = 'json_decode'
+    hook_name = 'json_decode'
     data: str = Field(..., description="JSON string to convert to dict.")
     args: list = ['data']
 

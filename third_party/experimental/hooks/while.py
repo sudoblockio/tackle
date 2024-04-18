@@ -13,7 +13,7 @@ class MatchHook(BaseHook):
 
     # TODO: Not Implemented yet.
 
-    hook_name: str = 'while'
+    hook_name = 'while'
     condition: str = Field(
         ..., description="A jinja expression to evaluated on each pass through `run`."
     )

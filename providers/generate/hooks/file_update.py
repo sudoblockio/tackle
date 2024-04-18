@@ -10,7 +10,7 @@ class FileUpdateHook(BaseHook):
      a file, otherwise the rendered contents are output as a string.
     """
 
-    hook_name: str = 'file_update'
+    hook_name = 'file_update'
     # fmt: off
     template: str = Field(..., description="Path to the template to render relative to `file_system_loader`.")
 

@@ -24,7 +24,7 @@ class GenerateHook(BaseHook):
      separators.
     """
 
-    hook_name: str = 'generate'
+    hook_name = 'generate'
     # fmt: off
     templates: Union[str, list] = Field(
         "templates",

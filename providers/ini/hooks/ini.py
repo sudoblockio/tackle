@@ -12,7 +12,7 @@ class IniHook(BaseHook):
      provided, otherwise it writes the `data` to `path`.
     """
 
-    hook_name: str = 'ini'
+    hook_name = 'ini'
     path: str = Field(..., description="The file path to put read or write to.")
     data: Union[dict, list, str] = Field(
         None,
@@ -59,7 +59,7 @@ class IniHook(BaseHook):
 class IniEncodeHook(BaseHook):
     """Hook for converting a dict to an ini encoded string."""
 
-    hook_name: str = 'ini_encode'
+    hook_name = 'ini_encode'
     data: dict | str = Field(
         ...,
         description="Map or renderable string to data to convert to ini string.",
@@ -86,7 +86,7 @@ class IniEncodeHook(BaseHook):
 class IniDecodeHook(BaseHook):
     """Hook for decoding an ini string to a dict."""
 
-    hook_name: str = 'ini_decode'
+    hook_name = 'ini_decode'
     data: str = Field(
         ...,
         description="Yaml string to convert to dict.",

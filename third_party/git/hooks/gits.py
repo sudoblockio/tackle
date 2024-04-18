@@ -11,7 +11,7 @@ class GitCloneHook(BaseHook):
     [Source API](https://gitpython.readthedocs.io/en/stable/reference.html#git.repo.base.Repo.clone)
     """
 
-    hook_name: str = 'git_clone'
+    hook_name = 'git_clone'
     url: str = Field(
         None,
         description="valid git url - [Docs](http://www.kernel.org/pub/software/scm/git/docs/git-clone.html#URLS)",

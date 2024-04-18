@@ -13,7 +13,7 @@ class InquirerExpandHook(BaseHook):
      [Source example](https://github.com/kazhala/InquirerPy/blob/master/examples/expand.py)
     """
 
-    hook_name: str = 'expand'
+    hook_name = 'expand'
 
     message: str = Field(
         None,

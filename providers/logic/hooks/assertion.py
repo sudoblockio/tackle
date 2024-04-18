@@ -6,7 +6,7 @@ from tackle import BaseHook, Context, Field, exceptions
 class AssertHook(BaseHook):
     """Hook for asserting an input is equal to a value."""
 
-    hook_name: str = 'assert'
+    hook_name = 'assert'
     input: Any = Field(
         ...,
         description="The input - ie right hand side of assert.",

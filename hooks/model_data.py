@@ -23,7 +23,7 @@ class ModelOutput(BaseModel):
 class GetModelData(BaseHook):
     """Get all the data out of models so that we can render documentation."""
 
-    hook_name: str = 'model_data'
+    hook_name = 'model_data'
 
     def extract_model_data(self, model: Type[BaseModel]) -> dict[str, ModelOutput]:
         model_output = {}

@@ -7,7 +7,7 @@ from tackle import BaseHook, Field
 class FlattenPathHook(BaseHook):
     """Hook for flattening a dictionary into a list of paths."""
 
-    hook_name: str = 'flatten_paths'
+    hook_name = 'flatten_paths'
     paths: Union[dict, list] = Field(
         ...,
         description="A list or map representing paths to files that should be flattened",

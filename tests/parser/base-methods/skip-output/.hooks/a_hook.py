@@ -2,7 +2,7 @@ from tackle import BaseHook
 
 
 class MyHook(BaseHook):
-    hook_name: str = 'my_hook'
+    hook_name = 'my_hook'
     foo: str = 'bar'
     skip_output: bool = True
 

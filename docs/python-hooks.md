@@ -21,7 +21,7 @@ from tackle import BaseHook
 
 
 class DoStuffHook(BaseHook):
-    hook_name: str = "do_stuff"
+    hook_name = "do_stuff"
 
     def exec(self):
         print("Doing stuff!")
@@ -45,7 +45,7 @@ from tackle import BaseHook
 
 
 class DoStuffHook(BaseHook):
-    hook_name: str = "do_stuff"
+    hook_name = "do_stuff"
 
     stuff: str = "things"
 
@@ -79,7 +79,7 @@ from tackle import BaseHook
 
 
 class DoStuffHook(BaseHook):
-    hook_name: str = "do_stuff"
+    hook_name = "do_stuff"
     stuff: str
     things: list = ['foo']
 
@@ -145,7 +145,7 @@ from typing import Union
 
 
 class DoStuffHook(BaseHook):
-    hook_name: str = "do_stuff"
+    hook_name = "do_stuff"
     things: Union[str] = None
     args: list = ['things']
 
@@ -164,7 +164,7 @@ Input arguments can be of any type though in practical terms, the only way to in
 
 ```python
 class DoStuffHook(BaseHook):
-    hook_name: str = "do_stuff"
+    hook_name = "do_stuff"
     things: dict = None
     more_things: list = None
     args: list = ['things', 'more_things']
@@ -195,7 +195,7 @@ from tackle import BaseHook, Field
 
 
 class DoStuffHook(BaseHook):
-    hook_name: str = "do_stuff"
+    hook_name = "do_stuff"
     things: dict = Field(None, render_by_default=True)
 ```
 
@@ -206,7 +206,7 @@ from tackle import BaseHook
 
 
 class DoStuffHook(BaseHook):
-    hook_name: str = "do_stuff"
+    hook_name = "do_stuff"
     things: dict = None
 
     _render_by_default: list = ['things']
@@ -236,7 +236,7 @@ from tackle import BaseHook
 
 
 class DoStuffHook(BaseHook):
-    hook_name: str = "a_hook"
+    hook_name = "a_hook"
     stuff: str
     args: list = ['things']
 
@@ -269,7 +269,7 @@ from tackle import BaseHook, Field
 
 class DoStuffHook(BaseHook):
     """Put your hooks description here. Will be rendered as markdown."""
-    hook_name: str = "do_stuff"
+    hook_name = "do_stuff"
     things: dict = Field(None, description="Put the field's description here.")
 
     _render_by_default: list = ['things']

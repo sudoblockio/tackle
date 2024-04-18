@@ -4,7 +4,7 @@ from tackle import BaseHook, Context, Field, exceptions
 class SumHook(BaseHook):
     """Hook for summing a list of numbers."""
 
-    hook_name: str = 'sum'
+    hook_name = 'sum'
     input: list[int | float | dict] = Field(
         ...,
         description="The list to sum.",
@@ -31,7 +31,7 @@ class SumHook(BaseHook):
 class AverageHook(BaseHook):
     """Hook for taking the average of a list of numbers."""
 
-    hook_name: str = 'average'
+    hook_name = 'average'
     input: list[int | float | dict] = Field(
         ...,
         description="The list to calculate the average from.",
@@ -79,7 +79,7 @@ class ModuloHook(BaseHook):
      to another number, 0 by default.
     """
 
-    hook_name: str = 'modulo'
+    hook_name = 'modulo'
     # Relates to https://github.com/sudoblockio/tackle/issues/183 where we might want to
     # `render_by_default` src
     input: int = Field(

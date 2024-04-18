@@ -13,7 +13,7 @@ class InquirerInputHook(BaseHook):
      [Source example](https://github.com/kazhala/InquirerPy/blob/master/examples/input.py)
     """
 
-    hook_name: str = 'input'
+    hook_name = 'input'
 
     message: str = Field(
         None,

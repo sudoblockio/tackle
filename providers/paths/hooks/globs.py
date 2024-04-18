@@ -17,7 +17,7 @@ class GlobHook(BaseHook):
      that match pathname, which must be a string containing a path specification.
     """
 
-    hook_name: str = 'glob'
+    hook_name = 'glob'
     pathname: str = Field(..., description="The path to file or directory")
     root_dir: str = Field(None, description="The root dir to run glob from.")
     dir_fd: int = Field(

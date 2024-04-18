@@ -36,7 +36,7 @@ class ImportHook(BaseHook):
      `version` import targets.
     """
 
-    hook_name: str = 'import'
+    hook_name = 'import'
     src: str | list = Field(
         ...,
         description="A str reference to a source or a list of dicts with strings that "

@@ -13,7 +13,7 @@ class InquirerPasswordHook(BaseHook):
      in. [Source example](https://github.com/kazhala/InquirerPy/blob/master/examples/password.py)
     """
 
-    hook_name: str = 'password'
+    hook_name = 'password'
 
     message: str = Field(
         None,

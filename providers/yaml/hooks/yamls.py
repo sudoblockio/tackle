@@ -14,7 +14,7 @@ class YamlHook(BaseHook):
      provided, otherwise it writes the `data` to `path`.
     """
 
-    hook_name: str = 'yaml'
+    hook_name = 'yaml'
     path: str = Field(..., description="The file path to put read or write to.")
     data: Union[dict, list, str] = Field(
         None,
@@ -56,7 +56,7 @@ class YamlHook(BaseHook):
 class YamlEncodeHook(BaseHook):
     """Hook for converting a dict to a yaml encoded string."""
 
-    hook_name: str = 'yaml_encode'
+    hook_name = 'yaml_encode'
     data: Union[dict, list, str] = Field(
         ...,
         description="Map/list or renderable string to data to convert to yaml string.",
@@ -74,7 +74,7 @@ class YamlEncodeHook(BaseHook):
 class YamlDecodeHook(BaseHook):
     """Hook for decoding a yaml string to a dict."""
 
-    hook_name: str = 'yaml_decode'
+    hook_name = 'yaml_decode'
     data: str = Field(..., description="Yaml string to convert to dict.")
     args: list = ['data']
 

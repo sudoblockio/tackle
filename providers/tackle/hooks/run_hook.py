@@ -8,7 +8,7 @@ from tackle.parser import run_hook_exec
 class RunHookHook(BaseHook):
     """Hook to run other hooks dynamically."""
 
-    hook_name: str = 'run_hook'
+    hook_name = 'run_hook'
     hook: str = Field(..., description="The name of the hook to run.")
     hook_dict: dict = Field(
         None,

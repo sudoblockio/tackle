@@ -29,6 +29,11 @@ def test_hook_match_block_match_block():
 
 def test_hook_match_block_loop_match_block():
     """Check that we can merge from a looped block into a looped match."""
+    # TODO: Fix me next version....
+    #  https://github.com/sudoblockio/tackle/issues/267
+    #  Could not find one of `matches` in the context, Exiting...
+    #  Looks like something to do with the temp data not being reset which is an
+    #  artifact of the current broken memory model. Won't fix till next version
     output = tackle('block-loop-match-block.yaml')
     assert len(output['block']) == 2
     assert output['block'][0]['matches']['foo'] == 'bar'

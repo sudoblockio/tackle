@@ -39,6 +39,7 @@ site
 .Python
 env/
 venv/
+.venv/
 Pipfile*
 build/
 develop-eggs/

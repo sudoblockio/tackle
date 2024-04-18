@@ -154,7 +154,7 @@ from tackle import BaseHook
 
 
 class Greeter(BaseHook):
-    hook_name: str = "greeter"
+    hook_name = "greeter"
     target: str
     args: list = ['target']
 

@@ -7,7 +7,7 @@ from tackle.utils.data_crud import encode_key_path, nested_get
 class DistinctHook(BaseHook):
     """Hook for getting distinct items from a list."""
 
-    hook_name: str = 'distinct'
+    hook_name = 'distinct'
     # fmt: off
     src: Union[list, str] = Field(
         ..., description="A list to get the distinct values from or a str with "

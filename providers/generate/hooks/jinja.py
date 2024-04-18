@@ -14,7 +14,7 @@ class JinjaHook(BaseHook):
      a file, otherwise the rendered contents are output as a string.
     """
 
-    hook_name: str = 'jinja'
+    hook_name = 'jinja'
     # fmt: off
     template: str = Field(
         ...,

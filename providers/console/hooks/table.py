@@ -9,7 +9,7 @@ from tackle import BaseHook, Field
 class TableHook(BaseHook):
     """Hook for creating tables with rich - github.com/willmcgugan/rich."""
 
-    hook_name: str = 'table'
+    hook_name = 'table'
 
     column_names: List = Field([], description="List of column names")
     sort: bool = Field(False, description="Boolean to sort contents or contents_split")
