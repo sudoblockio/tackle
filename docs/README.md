@@ -116,9 +116,10 @@ from tackle import BaseHook
 
 
 class Greeter(BaseHook):
-  hook_name: str = "greeter"
+  hook_name = "greeter"
   target: str
-  args: list = ['target']
+
+  hook_args = ['target']
 
   def exec(self):
     expression = f"Hello {self.target}"
@@ -169,7 +170,7 @@ Documentation can be embedded into the hooks.
 <-:
   help: This is the default hook
   target:
-    type: str
+    type: list[greeter]
     default->: input
     description: The thing to say hello to
   exec<-:
