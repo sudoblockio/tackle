@@ -13,7 +13,7 @@
 * [Discord](https://discord.gg/7uVUfUVD7K)
 * [PyPI](https://pypi.org/project/tackle/)
 
-tackle is an experimental DSL written in documents such as json, yaml, or toml with primitives of a general purpose programming language including functions, structs, methods, and types with rich control flow. It turns a config file into self documenting CLI in a concise declarative syntax.  
+tackle is an experimental DSL built as a fork of cookiecutter written in documents such as json, yaml, or toml with primitives of a general purpose programming language including functions, structs, methods, and types with rich control flow. It turns a config file into self documenting CLI in a concise declarative syntax.  
 
 Core to the language is the notion of a `hook` which is a [pydantic](https://github.com/pydantic/pydantic) [BaseModel](https://docs.pydantic.dev/latest/api/base_model/) under the hood. These hooks can be created, called, or combined in documents and / or python with inheritance and composition. Tackle ships with over 100 native hooks to perform rudimentary tasks from prompting users for CLI inputs, reading / manipulating / writing data to and from files, to rendering templates for code generation / schema translations.
 
@@ -22,9 +22,6 @@ Major syntax changes are coming soon and thus using the language is discouraged 
 **`=< v0.6.0`**
 
 ```yaml
-base_greeter<-:
-  greeting: str
-  
 greeter(target str = 'world')<-:
   print->: Hello {{target}}
 ```
@@ -37,3 +34,11 @@ greeter(target str = 'world')->:
 ```
 
 When the syntax is stable, this project will be formally released. Please reach out via [discord](https://discord.gg/7uVUfUVD7K) if you want to talk directly about it in the meantime. 
+
+### Code of Conduct
+
+Everyone interacting in the tackle project's codebases, issue trackers, chat rooms, and mailing lists is expected to follow the [PyPA Code of Conduct](https://github.com/pypa/.github/blob/main/CODE_OF_CONDUCT.md.
+
+## Credit
+
+Special thanks to the cookiecutter community for laying the basis for this project.
