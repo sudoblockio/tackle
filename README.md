@@ -41,4 +41,4 @@ Everyone interacting in the tackle project's codebases, issue trackers, chat roo
 
 ## Credit
 
-Special thanks to the [cookiecutter](https://github.com/cookiecutter/cookiecutter) community for laying the basis for this project.
+Special thanks to [audreyfeldroy](https://github.com/audreyfeldroy) for creating [cookiecutter](https://github.com/cookiecutter/cookiecutter), the basis for this project. Would not have been possible without it and other core dependencies like [pydantic](https://github.com/pydantic/pydantic) and [jinja](https://github.com/pallets/jinja).
