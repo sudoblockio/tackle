@@ -1,0 +1,5 @@
+MyHook<-:
+  method(foo str)<-:
+    return->: foo
+
+call->: MyHook method --foo bar

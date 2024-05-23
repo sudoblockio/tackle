@@ -1,5 +1,5 @@
 import enum
-from typing import Any, Optional, Union, ClassVar
+from typing import Any, Optional, Union, ClassVar, Callable, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -122,6 +122,16 @@ class HookMethods:
 
 
 class HookBase(BaseModel):
+
+    __methods__: ClassVar[set[str]]
+
+    __args__: ClassVar[set[tuple[str, str]]] = set()
+
+    __public_methods__: ClassVar[list[str]] = []
+    __private_methods__: ClassVar[list[str]] = []
+    __is_public__: ClassVar[bool] = False
+    __provider_name__: ClassVar[str]
+
     help: str = Field(
         None,
         description="A string to display when calling with the `help` argument.",
@@ -168,7 +178,15 @@ class HookBase(BaseModel):
 
 class BaseHook(HookBase):
     """Base class that all python hooks extend."""
-    hook_name: ClassVar[str]
+    hook_name: ClassVar[str] = None
+
+    __is_python__: ClassVar[bool] = True
+
+    # hook_config: ClassVar[HookConfig] = HookConfig()
+    # __public_methods__: ClassVar[list[str]] = []
+    # __private_methods__: ClassVar[list[str]] = []
+    # __is_public__: ClassVar[bool] = False
+    # __provider_name__: ClassVar[str]
 
     model_config = ConfigDict(
         extra='forbid',
@@ -179,15 +197,6 @@ class BaseHook(HookBase):
         #  is no reason to have enum's in raw form.
         use_enum_values=True,
     )
-
-    # @model_validator(mode='before')
-    # @classmethod
-    # def keep_parent_types(cls, data: Any) -> Any:
-    #     for i in BaseHook.model_fields:
-    #         if cls.model_fields[i].annotation != BaseHook.model_fields[i].annotation:
-    #             from tackle import exceptions
-    #             raise exceptions.TackleHookImportException("Alias not _id.")
-    #     return data
 
 
 class HookValidatorModes(str, enum.Enum):
@@ -240,6 +249,9 @@ class DclHookInput(HookBase):
         description="A string or list of hook types to inherit from. See  [docs]().",
     )
 
+    public_methods: dict[str, Callable] = {}
+    private_methods: dict[str, Callable] = {}
+
     # Note: Needs underscore suffix to differentiate from internal exec
     exec_: Any = Field(
         None,
@@ -253,11 +265,11 @@ class DclHookInput(HookBase):
     #     description="",
     #     alias="return",
     # )
-    type_: str | None = Field(
-        None,
-        alias='type',
-        description="For type hooks, the name of the type.",
-    )
+    # type_: str | None = Field(
+    #     None,
+    #     alias='type',
+    #     description="For type hooks, the name of the type.",
+    # )
     validators: dict[str, dict | HookFieldValidator] = Field(
         {},
         description="A list of validators. Only used for type hooks. See [docs]().",

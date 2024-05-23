@@ -4,7 +4,7 @@ import os
 import subprocess
 import sys
 from functools import lru_cache
-from typing import Any
+from typing import Any, Callable
 
 from pydantic import PydanticUserError, ValidationError
 from pydantic._internal._model_construction import ModelMetaclass  # noqa
@@ -20,6 +20,14 @@ from tackle.utils.prompts import confirm_prompt
 logger = logging.getLogger(__name__)
 
 
+class PyImportContext:
+
+    key = '__py_import_context'
+    def __init__(self):
+        self.public_hook_methods: dict[str, list[str]] = {}
+        self.private_hook_methods: dict[str, list[str]] = {}
+
+
 def get_module_from_path(
     context: 'Context',
     module_name: str,
@@ -33,6 +41,7 @@ def get_module_from_path(
         spec = importlib.util.spec_from_loader(loader.name, loader)
         mod = importlib.util.module_from_spec(spec)
         sys.modules[spec.name] = mod
+        mod.__dict__[PyImportContext.key] = PyImportContext()
         try:
             loader.exec_module(mod)
         except (ValidationError, PydanticUserError) as e:
@@ -68,6 +77,10 @@ def import_python_hooks_from_file(
         module_name=module_name,
         file_path=file_path,
     )
+    module_import_context: PyImportContext = mod.__dict__.pop(PyImportContext.key)
+    public_hook_methods = module_import_context.public_hook_methods
+    private_hook_methods = module_import_context.private_hook_methods
+
     # Loop through all the module items and add the hooks
     for k, v in mod.__dict__.items():
         if not is_base_hook_subclass(key=k, value=v):
@@ -86,10 +99,18 @@ def import_python_hooks_from_file(
 
         # TODO: Add when fixing third_party imports
         # v.__provider_name = provider_name
-        if v.model_fields['is_public'].default:
-            context.hooks.public[v.hook_name] = v
+        hook_name = v.hook_name
+        hook_class_name = v.__qualname__
+        if v.__is_public__:
+            if hook_class_name in public_hook_methods:
+                v.__public_methods__ = public_hook_methods[hook_class_name]
+            context.hooks.public[hook_name] = v
         else:
-            context.hooks.private[v.hook_name] = v
+            if hook_class_name in private_hook_methods:
+                v.__private_methods__ = private_hook_methods[hook_class_name]
+            if hook_class_name in public_hook_methods:
+                v.__public_methods__ = public_hook_methods[hook_class_name]
+            context.hooks.private[hook_name] = v
 
 
 def import_declarative_hooks_from_file(

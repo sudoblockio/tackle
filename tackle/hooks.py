@@ -171,6 +171,14 @@ def hook_extends_merge_hook(
             if k not in hook_input.model_extra:
                 hook_input.model_extra[k] = v
 
+        for mn in base_hook.__public_methods__:
+            hook_input.public_methods[mn] = getattr(base_hook, mn)
+        for mn in base_hook.__private_methods__:
+            hook_input.private_methods[mn] = getattr(base_hook, mn)
+
+        if hasattr(base_hook, 'exec'):
+            hook_input.exec_ = base_hook.exec
+
     # Merge methods
     if 'hook_method_set' in base_hook.model_fields:
         # We are in a dcl hook - python hook
@@ -587,6 +595,9 @@ def create_dcl_hook_fields(
     hook_method_set: set[str] = set()
     for k, v in hook_input.model_extra.items():
         if isinstance(v, FieldInfo):
+            if v.annotation == Callable:
+                # TODO: RM methods
+                hook_method_set.add(k)
             field_dict[k] = (v.annotation, v)
         elif '<-' in v:
             # Raw public method
@@ -629,6 +640,7 @@ def create_dcl_hook_fields(
             field_dict[k] = (type(v), Field(v))
         elif isinstance(v, LazyBaseHook):
             # Is encountered when inheritance is imposed and calling function methods
+            # TODO: Missing hook_method_set.add(k)?
             field_dict[k] = (Callable, v)
         else:
             raise Exception("This should never happen")
@@ -776,12 +788,19 @@ def create_dcl_hook(
     except Exception as e:
         raise e
 
+    for method_name, method in hook_input.public_methods.items():
+        setattr(Hook, method_name, method)
+        Hook.__public_methods__.append(method_name)
+
+    for method_name, method in hook_input.private_methods.items():
+        setattr(Hook, method_name, method)
+        Hook.__private_methods__.append(method_name)
+
     # Create an 'exec' method on the function that can be called later.
-    setattr(
-        Hook,
-        'exec',
-        partialmethod(dcl_hook_exec, hook_input.exec_),
-    )
+    if isinstance(hook_input.exec_, Callable):
+        setattr(Hook, 'exec', hook_input.exec_)
+    else:
+        setattr(Hook, 'exec', partialmethod(dcl_hook_exec, hook_input.exec_))
 
     # TODO: Rm when filters fixed
     # context.env_.filters[func_name] = Hook(

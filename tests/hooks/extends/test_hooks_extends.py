@@ -16,7 +16,9 @@ def test_hooks_extends_list():
 def test_hooks_extends_method():
     """Check that we can extend a method from a base hook."""
     output = tackle('extends-method.yaml')
-    assert output['t']
+    # TODO: Fix this -> the 'call' is be leaked to the output because the call param
+    #  is being treated like a hook and not a method.
+    assert 'call' not in output['t']
 
 
 def test_hooks_extends_python_hook(cd):
@@ -28,6 +30,22 @@ def test_hooks_extends_python_hook(cd):
     assert output['foo'] == 'bar'
     assert output['in_base'] == 'bar'
     assert output['a_str_required'] == 'bar'
+
+
+def test_hooks_extends_python_hook_with_exec(cd):
+    """Check that we can extend a python hook into tackle with an extends method."""
+    cd('python-extend')
+    output = tackle('DerivedPythonWithExec', a_str_required='bar')
+
+    assert output == 'barbar'
+
+
+def test_hooks_extends_python_hook_private_method(cd):
+    """Check that we can extend a python hook into tackle with an extends method."""
+    cd('python-extend')
+    output = tackle('DerivedPythonWithExec', 'another_method', a_str_required='bar')
+
+    assert output == 'barbar2'
 
 
 def test_hooks_extends_tackle_hook(cd):

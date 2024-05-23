@@ -1,7 +1,7 @@
 
 greeter<-:
   call<-:
-    in: str
-    args: ['in']
+    my_var: str
+    args: ['my_var']
 
 foo->: greeter call bar

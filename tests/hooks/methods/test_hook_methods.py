@@ -33,7 +33,7 @@ def test_hooks_method_inherit():
 def test_hooks_method_args():
     """Check that we can create a method that takes args."""
     output = tackle('args.yaml')
-    assert output == {'foo': {'in': 'bar'}}
+    assert output == {'foo': {'my_var': 'bar'}}
 
 
 def test_hooks_method_call_from_default():

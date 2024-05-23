@@ -269,7 +269,6 @@ def render_string(context: 'Context', raw: str) -> Any:
     # Extract variables
     variables = meta.find_undeclared_variables(context.env_.parse(raw))
 
-    pass
     # Create a render_context (dict) from variables and return any unknown_variables
     # which will be hooks. Any left over variables will throw error in rendering
     render_context, unknown_variables = create_render_context(context, variables)

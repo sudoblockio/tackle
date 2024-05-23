@@ -186,6 +186,7 @@ def run_hook_exec(
             injected_params[k] = context
         elif param_type == 'HookCallInput':
             injected_params[k] = hook_call
+
         else:
             raise exceptions.MalformedHookDefinitionException(
                 f"The exec method in hook={hook.hook_name} has an unknown "
@@ -911,6 +912,7 @@ def evaluate_args(
     pop_all: bool = False
     # Keep track of the number of args popped to maintain the right index
     num_popped = 0
+    # Check if we have
     for index, v in enumerate(args.copy()):
         # Build a new index based on the number of args popped
         i = index - num_popped
@@ -1175,8 +1177,24 @@ def update_declarative_hook_methods(
         # When an arg is not a string, there will never be a method after so we break
         if not isinstance(arg, str):
             break
-        # For running hooks in tackle files (ie not in `hooks` dir), we run this logic
-        # as the hook is already compiled.
+        # Only methods will be attributes on the hook. Fields will be in the model
+        if hasattr(Hook, arg):
+            hook_method = getattr(Hook, arg)
+            if not isinstance(hook_method, Callable):
+                raise exceptions.UnknownHookInputArgumentException(
+                    f"Method args must be callable. The arg='{arg}' is of "
+                    f"type={type(hook_method)}. Exitting...",
+                    context=context, hook_name=Hook.hook_name
+                )
+            # TODO: Change this when we make tackle hook fields methods instead of
+            #  callable fields with the default factory.
+            setattr(Hook, 'exec', hook_method)
+            context.input.args.pop(0)
+            continue
+
+        # TODO: Remove this -> Methods are no longer callable fields by default. So
+        #  this will change and that logic will go above and break because it does
+        #  not support
         if arg in Hook.model_fields and Hook.model_fields[arg].annotation == Callable:
             # Consume the args
             context.input.args.pop(i - num_popped)

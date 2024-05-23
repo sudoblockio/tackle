@@ -114,6 +114,6 @@ def test_hooks_exceptions_raises_on_list_hook_value():
 def test_hooks_exceptions_raises_on_dict_hook_value(cd):
     """When a hook's base field is not the right type - args: dict in this case."""
     cd('bad-hooks')
-    # with pytest.raises(exceptions.MalformedHookDefinitionException):
-    o = tackle('hook_1')
-    assert o
+    with pytest.raises(exceptions.MalformedHookDefinitionException):
+        o = tackle('hook_1')
+        # assert o

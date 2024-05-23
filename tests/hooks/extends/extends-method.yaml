@@ -1,9 +1,8 @@
 
 greeter_base<-:
   call<-:
-    in: str
-    args: ['in']
-    return: in
+    my_arg: str
+    args: ['my_arg']
 
 greeter_exec<-:
   extends: greeter_base

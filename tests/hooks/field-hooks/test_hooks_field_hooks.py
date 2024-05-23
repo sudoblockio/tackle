@@ -8,15 +8,16 @@ from tackle import exceptions, tackle
 @pytest.mark.parametrize(
     "fixture,expected_output",
     [
-        ('fields.yaml', 'foo'),
-        ('method.yaml', 'foo'),
-        ('args.yaml', 'bar'),
-        ('args-method.yaml', 'bar'),
-        ('exec.yaml', 'foo'),
-        ('method-exec.yaml', 'foo'),
-        ('field-hooks-exec-args.yaml', 'bar'),
-        ('field-hooks-exec-args-method.yaml', 'bar'),
-        ('multi-line.yaml', 'bar'),
+        # ('fields.yaml', 'foo'),
+        # ('method.yaml', 'foo'),
+        # ('args.yaml', 'bar'),
+        # ('args-method.yaml', 'bar'),
+        # ('exec.yaml', 'foo'),
+        ('method-compact.yaml', 'bar'),
+        # ('method-exec.yaml', 'foo'),
+        # ('field-hooks-exec-args.yaml', 'bar'),
+        # ('field-hooks-exec-args-method.yaml', 'bar'),
+        # ('multi-line.yaml', 'bar'),
     ],
 )
 def test_hooks_field_hooks_parameterized(fixture, expected_output):

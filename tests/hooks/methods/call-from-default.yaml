@@ -10,6 +10,5 @@
 greeter<-:
   help: A reusable greeter object
   target: str
-  return: hi
   exec<-:
     ->: var Hello {{target}}
