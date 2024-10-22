@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 
 from jinja2 import StrictUndefined
@@ -15,6 +17,7 @@ class Source:
     latest: bool | None = None
     find_in_parent: bool | None = None
     directory: str | None = None
+    calling_directory: str | None = None
     file: str | None = None
     base_dir: str | None = None
     hooks_dir: str | None = None

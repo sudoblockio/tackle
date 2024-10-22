@@ -82,7 +82,7 @@ def _providers_dir():
 
 
 def _calling_directory(context: 'Context'):
-    return context.path.calling.directory
+    return context.path.calling.calling_directory
 
 
 def _calling_file(context: 'Context'):

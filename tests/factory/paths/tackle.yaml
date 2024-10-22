@@ -1,0 +1,12 @@
+
+calling_dir->: "{{calling_directory}}"
+
+some_func()<-:
+  outer_calling_file->: "{{calling_file}}"
+  outer_calling_directory->: "{{calling_directory}}"
+
+  outer_current_file->: "{{current_file}}"
+
+  inner->: tackle tackle_dir/inner.yaml
+
+  outer_calling_file_2->: "{{calling_file}}"

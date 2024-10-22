@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import os
+from copy import copy
 from pathlib import Path
 from typing import Optional, Union
 
@@ -238,17 +241,17 @@ def new_path(
     tackle provider, will be in the XDG config directory (ie on linux
     ~./.config/tackle/providers/<provider_name>).
     """
-    if _path is None:
+    if _path is not None:
         return Paths(
             current=context.source,
-            calling=context.source,
+            calling=_path.current,
             tackle=context.source,
         )
     else:
         # TODO: Fix logic for tackle or RM
         return Paths(
             current=context.source,
-            calling=_path.current,
+            calling=context.source,
             tackle=context.source,
         )
 
@@ -359,7 +362,7 @@ def new_source(
     if _source is not None:
         # Skip importing a source if it already there (ie we are creating temp context)
         return _source
-    source = Source()
+    source = Source(calling_directory=os.path.abspath('.'))
     if len(context.input.args) > 0:
         first_arg = context.input.args.pop(0)
         # `find_in_parent` is a command line argument that tries to find a base
@@ -483,7 +486,7 @@ def new_source(
             directory=directory,
             file=file,
         )
-
+        source.find_in_parent = True
     if source.hooks_dir is None and source.base_dir is not None:
         source.hooks_dir = find_hooks_dir_from_tests(source.base_dir)
 
