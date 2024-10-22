@@ -14,8 +14,8 @@ def hooks():
     return Hooks(private={}, public={})
 
 
-def test_imports_import_hooks_from_file_yaml(cd, hooks):
-    """Check that we can import a python hook."""
+def test_imports_import_hooks_from_file_yaml(cd):
+    """Check that we can import a yaml hook."""
     cd("with-init")
     context = new_context()
     imports.import_hooks_from_file(
@@ -25,6 +25,19 @@ def test_imports_import_hooks_from_file_yaml(cd, hooks):
     )
     assert context.hooks.public['public_hook']
     assert context.hooks.private['private_hook']
+
+
+def test_imports_import_hooks_from_file_python(cd):
+    """Check that we can import a python hook with its own import."""
+    cd("with-init")
+    context = new_context()
+    imports.import_hooks_from_file(
+        context=context,
+        provider_name="this",
+        file_path="hook_1.py",
+    )
+    assert context.hooks.public['hook_1']
+    assert context.hooks.private['hook_2']
 
 
 @pytest.fixture()

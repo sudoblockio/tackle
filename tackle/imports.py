@@ -41,15 +41,22 @@ def get_module_from_path(
         spec = importlib.util.spec_from_loader(loader.name, loader)
         mod = importlib.util.module_from_spec(spec)
         sys.modules[spec.name] = mod
+
+        # Set a temporary key to hold imported methods - to be accessed later
+        # TODO: This is going to be replaced with metaclass
         mod.__dict__[PyImportContext.key] = PyImportContext()
+
+        # Add dirname to path to support imports between hooks
+        module_dir = os.path.dirname(os.path.abspath(file_path))
+        if module_dir not in sys.path:
+            sys.path.insert(0, module_dir)
+
         try:
             loader.exec_module(mod)
         except (ValidationError, PydanticUserError) as e:
             raise exceptions.TackleHookImportException(
                 e.__str__(), context=context, file=file_path
             )
-        except Exception as e:
-            raise e
     return mod
 
 
@@ -77,6 +84,8 @@ def import_python_hooks_from_file(
         module_name=module_name,
         file_path=file_path,
     )
+
+    # Remove the key which the methods were loaded into
     module_import_context: PyImportContext = mod.__dict__.pop(PyImportContext.key)
     public_hook_methods = module_import_context.public_hook_methods
     private_hook_methods = module_import_context.private_hook_methods
