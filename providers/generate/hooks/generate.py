@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import fnmatch
 import os.path
 import shutil
@@ -48,7 +50,7 @@ class GenerateHook(BaseHook):
         None,
         description="List of files to skip generating over if they exist."
     )
-    render_context: dict = Field(
+    render_context: dict | None = Field(
         None,
         description="A render context that invalidates the default context."
     )
@@ -64,6 +66,10 @@ class GenerateHook(BaseHook):
         description="List of paths or string path to directory with templates to load "
                     "from. [Docs](https://jinja.palletsprojects.com/en/3.0.x/api/#jinja2.FileSystemLoader)."
         # noqa
+    )
+    convert_template_filenames: bool = Field(
+        True,
+        description="Convert filenames like foo.py.j2 to foo.py when rendering."
     )
 
     base_dir_: Path = None
@@ -89,36 +95,34 @@ class GenerateHook(BaseHook):
             if not self.output.startswith('/'):
                 self.output = os.path.join(context.path.calling.directory, self.output)
 
-    # def _init_context(self, context: Context):
-    #     # Update the render_context that will be used
-    #     if self.render_context is not None:
-    #         return
-    #
-    #     # fmt: off
-    #     existing_context = context.data.existing if context.data.temporary is not None else {}
-    #     temporary_context = context.data.temporary if context.data.temporary is not None else {}
-    #     private_context = context.data.private if context.data.private is not None else {}
-    #     public_context = context.data.public if context.data.public is not None else {}
-    #     # fmt: on
-    #
-    #     self.render_context = {
-    #         **existing_context,
-    #         **temporary_context,
-    #         **private_context,
-    #         **public_context,
-    #     }
-    #
-    #     if self.extra_context is not None:
-    #         if isinstance(self.extra_context, list):
-    #             for i in self.extra_context:
-    #                 self.render_context.update(i)
-    #         else:
-    #             self.render_context.update(self.extra_context)
+    def _init_context(self, context: Context):
+        # Update the render_context that will be used
+        if self.render_context is None:
+            # fmt: off
+            existing_context = context.data.existing if context.data.temporary is not None else {}
+            temporary_context = context.data.temporary if context.data.temporary is not None else {}
+            private_context = context.data.private if context.data.private is not None else {}
+            public_context = context.data.public if context.data.public is not None else {}
+            # fmt: on
+
+            self.render_context = {
+                **existing_context,
+                **temporary_context,
+                **private_context,
+                **public_context,
+            }
+
+        if self.extra_context is not None:
+            if isinstance(self.extra_context, list):
+                for i in self.extra_context:
+                    self.render_context.update(i)
+            else:
+                self.render_context.update(self.extra_context)
 
     def exec(self, context: Context):
         """Generate files / directories."""
         self._init_paths(context=context)
-        # self._init_context(context=context)
+        self._init_context(context=context)
         init_context(self=self, context=context)
 
         # https://stackoverflow.com/questions/42368678/jinja-environment-is-not-supporting-absolute-paths
@@ -230,6 +234,10 @@ class GenerateHook(BaseHook):
         except UndefinedError as e:
             msg = f"The `generate` hook failed to render -> {e}"
             raise UndefinedVariableInTemplate(msg, context=context) from None
+
+        if self.convert_template_filenames:
+            if output_path.endswith('.j2'):
+                output_path = output_path[:-3]
 
         # Write contents
         with open(output_path, 'w') as f:
