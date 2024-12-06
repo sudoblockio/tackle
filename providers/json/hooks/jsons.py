@@ -18,6 +18,15 @@ class JsonHook(BaseHook):
         description="Map/list or renderable string to a map/list key to write.",
         render_by_default=True,
     )
+    indent: int = Field(
+        4,
+        description="Indentation level for pretty-printing JSON output. Default is 4.",
+    )
+    sort_keys: bool = Field(
+        False,
+        description="Whether to sort the keys in the JSON output. Default is False.",
+    )
+
     args: list = ['path', 'data']
 
     def exec(self) -> Union[dict, str]:
@@ -28,7 +37,12 @@ class JsonHook(BaseHook):
 
         if self.data:
             with open(self.path, 'w') as f:
-                json.dump(self.data, f)
+                json.dump(
+                    self.data,
+                    f,
+                    indent=self.indent,
+                    sort_keys=self.sort_keys,
+                )
             return self.path
         else:
             with open(self.path, 'r') as f:
