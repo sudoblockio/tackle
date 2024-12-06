@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 
 from tackle import BaseHook, Field
 
@@ -85,3 +86,36 @@ class PathDirNameHook(BaseHook):
 
     def exec(self):
         return os.path.dirname(self.path)
+
+
+class PathAbsPathHook(BaseHook):
+    """Hook for getting the absolute path from a path."""
+
+    hook_name = 'abspath'
+    path: str = Field(
+        ...,
+        description="Path to the file/directory to get the absolute path of.",
+        render_by_default=True,
+    )
+
+    args: list = ['path']
+
+    def exec(self):
+        return os.path.abspath(self.path)
+
+
+class PathRelPathHook(BaseHook):
+    """Hook for getting the absolute path from a path."""
+
+    hook_name = 'relpath'
+    path: str = Field(
+        ...,
+        description="Path to the file/directory to get the absolute path of.",
+        render_by_default=True,
+    )
+    start: Optional[str] = None
+
+    args: list = ['path']
+
+    def exec(self):
+        return os.path.relpath(self.path, start=self.start)
