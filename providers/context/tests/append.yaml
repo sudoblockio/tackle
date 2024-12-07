@@ -30,4 +30,4 @@ output->: append {{list}} foo
 
 output_list->: append {{list}} ['foo']
 
-in place_>: append path/to/list foo
+in place_>: append path.to.list foo

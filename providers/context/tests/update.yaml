@@ -2,7 +2,7 @@ input:
   map:
     stuff: things
 #update with string in place_>: update input/map "more things"
-update with map in place_>: update input/map {'foo':'bar'}
+update with map in place_>: update input.map {'foo':'bar'}
 
 
 input_map:
@@ -32,7 +32,7 @@ arg->: update "{{ input_map }}" "{{ dict_map }}"
 
 arg2->: update {{input_map}} {'stuff':{{dict_map}}}
 
-update in place_>: update dict_map/foo bar
+update in place_>: update dict_map.foo bar
 update in place list_>: update ['dict_map','bar'] bar
 
 update_ref->: update input_map {{new_map}}

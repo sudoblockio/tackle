@@ -15,7 +15,7 @@ class AppendHook(BaseHook):
                          "to within the context.")
     src_is_key_path: bool = Field(
         False, description="If the src is a list and is meant to be a key path.")
-    sep: str = Field('/', description="For string src's, a separator for key path.")
+    sep: str = Field('.', description="For string src's, a separator for key path.")
     # item: Union[str, list, dict, int, float, bool] = Field(
     #     ..., description="An item to append to a list."
     # )

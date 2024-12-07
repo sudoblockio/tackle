@@ -18,9 +18,9 @@ getter_list:
 
 getter_str:
   ->: get
-  path: two/0/that/stuff
+  path: two.0.that.stuff
 
 getter_str_sep:
   ->: get
-  path: three.0.that.stuff
-  sep: .
+  path: three/0/that/stuff
+  sep: /

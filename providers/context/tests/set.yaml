@@ -19,11 +19,11 @@ setter_list:
 
 setter_str:
   ->: set
-  path: two/0/that/stuff
+  path: two.0.that.stuff
   value: more things
 
 setter_str_sep:
   ->: set
-  path: three.0.that.stuff
+  path: three/0/that/stuff
   value: more things
-  sep: .
+  sep: /

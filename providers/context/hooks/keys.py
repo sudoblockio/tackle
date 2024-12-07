@@ -12,7 +12,7 @@ class DictKeysHook(BaseHook):
     # fmt: off
     src: Union[dict, str, list] = Field(
         description="A dict to get the keys from and output the result or a str with separators or list for a key path to the element to get the keys from within the context.")
-    sep: str = Field('/', description="For string src's, a separator for key path.")
+    sep: str = Field('.', description="For string src's, a separator for key path.")
     # fmt: on
 
     args: list = ['src']

@@ -23,7 +23,7 @@ class GetKeyHook(BaseHook):
                     "want to update with strings for keys and ints for indexes in the "
                     "list."
     )
-    sep: str = Field('/', description="For string paths, a separator for key path.")
+    sep: str = Field('.', description="For string paths, a separator for key path.")
     fallback: Any = Field(
         FALLBACK_VALUE, description="Fallback value if the keys is not found."
     )
@@ -45,15 +45,15 @@ class GetKeyHook(BaseHook):
             if value is not None:
                 break
 
-        if value is None and self.verbose:
-            if self.verbose:
+        if value is None and context.verbose:
+            if context.verbose:
                 print(f"Could not find a key in {self.path} in any context.")
             if self.fallback == FALLBACK_VALUE:
                 raise HookCallException(
                     f"Could not find a key in {self.path} in any context.",
                     context=context,
                 )
-            if self.verbose:
+            if context.verbose:
                 print(f"Using fallback={self.fallback}.")
             value = self.fallback
 

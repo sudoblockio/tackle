@@ -24,7 +24,7 @@ class DictPopHook(BaseHook):
         description="A string for a key to remove from a dict `src` or integer for an "
                     "index to remove from a list `src`.",
     )
-    sep: str = Field('/', description="For string src's, a separator for key path.")
+    sep: str = Field('.', description="For string src's, a separator for key path.")
     # fmt: on
 
     args: list = ['src', 'item']

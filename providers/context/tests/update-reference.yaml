@@ -12,4 +12,4 @@ update_map:
   input:
     stuff: "{{ dict_map }}"
 
-update in place_>: update dict_map/foo bar
+update in place_>: update dict_map.foo bar

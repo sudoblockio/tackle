@@ -12,6 +12,6 @@ another_map:
     things:
       bar: baz
 
-key_path_>: values another_map/key
+key_path_>: values another_map.key
 
 check_key_path->: assert {{key_path}} ["foo",{"bar":"baz"}]

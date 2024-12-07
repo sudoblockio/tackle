@@ -7,5 +7,5 @@ embedded:
     - stuff
     - things
 
-pop embedded list_>: pop embedded/list
+pop embedded list_>: pop embedded.list
 pop list_>: pop list 0

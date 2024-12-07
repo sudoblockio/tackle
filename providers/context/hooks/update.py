@@ -22,7 +22,7 @@ class DictUpdateHook(BaseHook):
         description="A dict to update and output the result or a str with separators "
                     "or list for a key path to the item update within the context.")
     input: Any = Field(description="The value to update the input `src`.")
-    sep: str = Field('/', description="For string src's, a separator for key path.")
+    sep: str = Field('.', description="For string src's, a separator for key path.")
     # fmt: on
 
     args: list = ['src', 'input']
