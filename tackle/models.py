@@ -135,6 +135,7 @@ class HookBase(BaseModel):
     help: str = Field(
         None,
         description="A string to display when calling with the `help` argument.",
+        exclude=True,
     )
     render_by_default: list = Field(
         None,
@@ -167,7 +168,7 @@ class HookBase(BaseModel):
     args: list = Field(
         [],
         description="A list of fields map arguments. See [docs]() for details.",
-        # exclude=True,
+        exclude=True,
     )
     kwargs: str = Field(
         None,
