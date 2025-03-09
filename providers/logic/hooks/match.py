@@ -167,6 +167,11 @@ class MatchHook(BaseHook):
             if _match:
                 return self.match_case(context=context, v=v)
 
+            elif isinstance(k, bool):
+                if k == self.value:
+                    return self.match_case(context=context, v=v)
+                continue
+
             # TODO: This regex needs to be modified to not match empty hooks
             #  ie - `->`: x - should not match everything
             # Case where we have an arrow in a key - ie `key->: ...`

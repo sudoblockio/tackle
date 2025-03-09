@@ -1,0 +1,15 @@
+an_int: 1
+a_str: foo
+
+render_single:
+  ->: match true
+  case:
+    "{{an_int==1}}": true
+    _: false
+
+render_with_multiple:
+  ->: match true
+  case:
+    "{{an_int==2}}": false
+    "{{a_str=='foo'}}": true
+    _: false

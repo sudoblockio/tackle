@@ -147,6 +147,14 @@ def test_hook_match_render_bool_no_value():
     assert o['15'] == "fizzbuzz"
 
 
+def test_hook_match_bool_match():
+    """Check we can render keys in a match statement."""
+    o = tackle('bool-match.yaml')
+
+    assert o['render_single']
+    assert o['render_with_multiple']
+
+
 def test_hook_match_error_malformed_regex():
     """Validate that errors are caught appropriately for bad regex."""
     with pytest.raises(exceptions.HookCallException):
