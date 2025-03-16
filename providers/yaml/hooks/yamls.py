@@ -8,6 +8,14 @@ from ruyaml.composer import ComposerError
 from tackle import BaseHook, Field
 
 
+def str_representer(dumper, data):
+    """Add support for multiline strings when dumping otherwise mangled."""
+    # Credit: https://gist.github.com/alertedsnake/c521bc485b3805aa3839aef29e39f376
+    if len(data.splitlines()) > 1:  # check for multiline string
+        return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='|')
+    return dumper.represent_scalar('tag:yaml.org,2002:str', data)
+
+
 class YamlHook(BaseHook):
     """
     Hook for reading and writing yaml. Hook reads from `path` if no `data` field is
@@ -30,6 +38,11 @@ class YamlHook(BaseHook):
             os.makedirs(os.path.dirname(self.path))
 
         yaml = YAML()
+
+        yaml.default_flow_style = False
+        yaml.indent(sequence=4, offset=2)
+        yaml.representer.add_representer(str, str_representer)
+
         if self.data:
             with open(self.path, 'w') as f:
                 yaml.dump(self.data, f)
