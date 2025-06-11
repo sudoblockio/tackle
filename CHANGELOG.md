@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.1](https://github.com/sudoblockio/tackle/compare/v0.6.0...v0.6.1) (2025-06-11)
+
+
+### Bug Fixes
+
+* broken release ci bad version ([c76f7e7](https://github.com/sudoblockio/tackle/commit/c76f7e715322b13c43352b3f7a814283bff683db))
+
 ## [0.6.0](https://github.com/sudoblockio/tackle/compare/v0.5.1...v0.6.0) (2025-03-16)
 
 
