@@ -1,0 +1,83 @@
+examples:
+  - name: Simple conditionals
+    file: conditionals.yaml
+    description: |
+      Here we can see simple conditional statements being run both as a single line and expanded over multiple lines.
+  - name: List of conditionals
+    file: list-conditionals.yaml
+    description: |
+      When tackle parses a list it can do a conditional on each item and then reference itself
+  - name: Loop of conditionals
+    file: loop-conditional.yaml
+    description: |
+      Here we have a list of objects which we can loop over and then use within a
+  - name: Match case
+    file: match-case.yaml
+    description: |
+      Tackle has a match hook which can have keys rendered in order to support cascading conditionals
+  - name: Appending to a list
+    file: list-append.yaml
+    description: |
+      Here we can see a list `output` being declared which can then be appended to before printing the output with a conditional
+  - name: Validator
+    file: validator.yaml
+    description: |
+      Logic can be embedded on creation of a field in a hook through a validator which can also check against other fields
+
+<-:
+  exec:
+    info->: print Welcome to tackle fizzbuzz examples
+    choices:
+      ->: var --for i in examples
+      input:
+        "{{i.name}}":
+          file: "{{i.file}}"
+          description: "{{i.description}}"
+    example_choices:
+      ->: checkbox Select which example of fizzbuzz you want to run? --checked
+      choices: choices
+
+    loop->:
+      for: i in example_choices
+      file_contents->: file {{i.file}}
+      show_file_info_>: markdown
+        {{i.description}}
+
+        **{{i.file}}**
+      show_file_>: print "{{file(i.file)}}"
+      numbers->: input Which numbers do you want to run it against? --default "1 3 5 15"
+      run_numbers->:
+        for: n in split(numbers,' ')
+        print->: number = {{n}}
+        run->: tackle {{i.file}} {{n}}
+        continue->: confirm Continue?
+
+update_readme<-:
+  exec:
+    toc->:
+      table:
+        ->: var
+        input: |
+          {% for e in examples %}- [{{e.name}}]({{e.file}})
+          {% endfor %}
+      generate table:
+        ->: update_section README.md {{table}}
+        start_render: "--start-table--"
+        end_render: "--end-table--"
+
+      sections:
+        ->: var --no_recursion
+        input: |
+          {% for e in examples %}
+          ### {{e.name}}
+
+          {{e.description}}
+          ```yaml
+          {{file(path=e.file)}}
+          ```
+          {% endfor %}
+
+      generate sections:
+        ->: update_section README.md {{sections}}
+        start_render: "--start-sections--"
+        end_render: "--end-sections--"

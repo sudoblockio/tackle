@@ -15,7 +15,7 @@ from tackle import tackle
 @pytest.mark.parametrize(
     "file_name",
     [
-        'conditionals.yaml',
+        # 'conditionals.yaml',  # Has prompt
         'list-append.yaml',
         'list-conditionals.yaml',
         'loop-conditional.yaml',
@@ -30,6 +30,13 @@ def test_fizzbuzz_all(file_name, capsys, number, output):
     captured_output = capsys.readouterr().out
     for o in output:
         assert o in captured_output
+
+
+def test_random():
+    output = tackle(
+        'loop-conditional.yaml', 15
+    )
+    assert output
 
 
 def test_f():

@@ -33,12 +33,13 @@ Solving this problem many ways in tackle demonstrates some of tackle's flow cont
 Here we can see simple conditional statements being run both as a single line and expanded over multiple lines.
 
 ```yaml
-(input int)<-:
-  fizz->: print fizz --if "input % 3 == 0"
-  buzz->: print buzz --if "input % 5 == 0"
-  non-fizz:
-    ->: print {{input}}
-    if: "'fizz' not in this and 'buzz' not in this"
+i->: "{{int(input('Enter a number...'))}}"
+fizz->: print fizz --if "i %3 == 0"
+buzz->: print buzz --if "i % 5 == 0"
+non-fizz:
+  ->: print {{i}}
+  if: "'fizz' not in this and 'buzz' not in this"
+
 ```
 
 ### List of conditionals

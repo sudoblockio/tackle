@@ -1,0 +1,25 @@
+#import->:
+#  - loop-conditional.yaml
+#
+#fizzbuzz_decoder<-:
+#  conditionals(input str)<-:
+#    fizz->: print fizz --if input % 3 == 0
+#    buzz->: print buzz --if "input % 5 == 0"
+#    non-fizz:
+#      ->: print {{input}}
+#      if: "'fizz' not in this and 'buzz' not in this"
+#
+#  list_append<-:
+#    help: Solve with a list + loop appending fizz / buzz to output
+#    input:
+#      type: str
+#      description: Some input int
+#    exec:
+#      output: [ ]
+#      fizz->: append output fizz --if "input % 3 == 0"
+#      buzz->: append output buzz --if "input % 5 == 0"
+#      out->: print "{{join(output)}}" --if output|length!=0 --else {{print(input)}}
+#
+##  # TODO: Fix this
+##  loop_conditional<-:
+##    extends: loop

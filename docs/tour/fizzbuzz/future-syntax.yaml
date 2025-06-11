@@ -1,0 +1,52 @@
+# Fix memory model...
+---
+# Current function syntax
+my_func()<-:
+  return->:
+
+---
+# Flip arrows
+def my_func():
+  # Make this is a valid hook call
+  print()=: "Hello, World!"
+
+---
+# Fix this as a class declaration structure
+my_func:
+  input_var: foo
+  ->:
+    pass()=:
+---
+# New function declaration syntax
+def my_func():
+  pass()=:
+---
+
+# Update inheritance syntax
+# OLD
+my_thing<-:
+  foo: bar
+child<-:
+  extends: my_thing
+# NEW
+child[my_thing]<-:
+
+---
+# Add self
+my_thing<-:
+  foo: bar
+  method_that_extends_parent[MyType]=:
+    # Would return with foo: bar
+  independent_method<-:
+    # Parent accessible but
+
+---
+# Builders / [?]
+func_returns_list(*some_inputs)<-:
+  # New return syntax
+  return()->:
+    - stuff
+    - things
+
+builder_on_the_list[func_returns_list]:
+  .map(a_func_that_takes_a_list): some_args_to_a_func...
