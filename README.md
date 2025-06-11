@@ -23,14 +23,14 @@ Major syntax changes will be made before the language is officially released and
 
 ```yaml
 greeter(target str = 'world')<-:
-  print->: Hello {{target}}
+  ->: print Hello {{target}}
 ```
 
 **`Future`**
 
 ```yaml
 def greeter(target str = 'world'):
-  print()<-: Hello {{target}}
+  =: print Hello {{target}}
 ```
 
 When the syntax is stable, this project will be formally released. Please reach out via [discord](https://discord.gg/7uVUfUVD7K) if you want to talk directly about it in the meantime. 
