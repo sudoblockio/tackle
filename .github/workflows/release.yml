@@ -33,9 +33,9 @@ jobs:
       # happens when the release-please PR is merged
       - name: Set up Python
         if: ${{ steps.release-please.outputs.release_created }}
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.7"
+          python-version: "3.10"
 
       - name: Install dependencies
         if: ${{ steps.release-please.outputs.release_created }}

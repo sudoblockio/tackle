@@ -5,12 +5,12 @@
 [![pypi](https://img.shields.io/pypi/v/tackle.svg)](https://pypi.python.org/pypi/tackle)
 [![python](https://img.shields.io/pypi/pyversions/tackle.svg)](https://pypi.python.org/pypi/tackle)
 [![codecov](https://codecov.io/gh/sudoblockio/tackle/branch/main/graphs/badge.svg?branch=main)](https://codecov.io/github/sudoblockio/tackle?branch=main)
-[![codeql](https://github.com/sudoblockio/tackle/actions/workflows/codeql.yml/badge.svg)](https://github.com/sudoblockio/tackle/actions/workflows/codeql.yml)
 
+[//]: # ([![codeql]&#40;https://github.com/sudoblockio/tackle/actions/workflows/codeql.yml/badge.svg&#41;]&#40;https://github.com/sudoblockio/tackle/actions/workflows/codeql.yml&#41;)
 [//]: # ([![main-tests]&#40;https://github.com/sudoblockio/tackle/actions/workflows/main.yml/badge.svg&#41;]&#40;https://github.com/sudoblockio/tackle/actions&#41;)
+[//]: # (* [Discord]&#40;https://discord.gg/7uVUfUVD7K&#41;)
 
 * [Documentation](https://sudoblockio.github.io/tackle)
-* [Discord](https://discord.gg/7uVUfUVD7K)
 * [PyPI](https://pypi.org/project/tackle/)
 
 tackle is an experimental DSL built as a fork of [cookiecutter](https://github.com/cookiecutter/cookiecutter) written in documents such as json, yaml, or toml with primitives of a general purpose programming language including functions, structs, methods, and types with rich control flow. It turns a config file into self documenting CLI in a concise declarative syntax.
@@ -37,7 +37,7 @@ When the syntax is stable, this project will be formally released. Please reach 
 
 ### Code of Conduct
 
-Everyone interacting in the tackle project's codebases, issue trackers, chat rooms, and mailing lists is expected to follow the [PyPA Code of Conduct](https://github.com/pypa/.github/blob/main/CODE_OF_CONDUCT.md.
+Everyone interacting in the tackle project's codebases, issue trackers, chat rooms, and mailing lists is expected to follow the [PyPA Code of Conduct](https://github.com/pypa/.github/blob/main/CODE_OF_CONDUCT.md).
 
 ## Credit
 
