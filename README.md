@@ -17,7 +17,7 @@ tackle is an experimental DSL built as a fork of [cookiecutter](https://github.c
 
 Core to the language is the notion of a `hook` which is a [pydantic](https://github.com/pydantic/pydantic) [BaseModel](https://docs.pydantic.dev/latest/api/base_model/) under the hood. These hooks can be created, called, or combined in documents and / or python with inheritance and composition. Tackle ships with over 100 native hooks to perform rudimentary tasks from prompting users for CLI inputs, reading / manipulating / writing data to and from files, to rendering templates for code generation / schema translations.
 
-Major syntax changes are coming soon and thus using the language is discouraged without reaching out first via discord or leaving issues in this repo. A formal spec is under active development and will be made public Q3/Q4 2024. A private version of this repo is under active development and will be merged in as soon as the spec becomes public. 
+Major syntax changes will be made before the language is officially released and thus using the language is discouraged without reaching out first by leaving issues in this repo. A formal spec is under active development but has sort of taken the back seat while Rob is working on sudoblock.
 
 **`=< v0.6.0`**
 
@@ -29,7 +29,7 @@ greeter(target str = 'world')<-:
 **`Future`**
 
 ```yaml
-greeter(target str = 'world')->:
+def greeter(target str = 'world'):
   print()<-: Hello {{target}}
 ```
 
