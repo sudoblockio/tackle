@@ -1,0 +1,38 @@
+(help str = "Update a section in a readme with tackle")<-:
+  ->: update_section README.md
+  content: |
+ 
+    #### Dir structure 
+    
+    ```   
+    ├── demo.py
+    ├── hooks
+    │   ├── foo.py
+    │   └── foo.yaml
+    └── other_hooks
+        └── bar.py
+    ```
+    
+    #### [demo.py](demo.py)
+
+    ```python
+    {{ file('demo.py') }}
+    ```
+    
+    #### [hooks/foo.py](hooks/foo.py)
+
+    ```python
+    {{ file('hooks/foo.py') }}
+    ```
+
+    #### [hooks/foo.yaml](hooks/foo.yaml)
+
+    ```yaml
+    {{ file('hooks/foo.yaml') }}
+    ```
+
+    #### [other_hooks/bar.py](other_hooks/bar.py)
+
+    ```python
+    {{ file('other_hooks/bar.py') }}
+    ```
