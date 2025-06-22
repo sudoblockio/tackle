@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.6.2](https://github.com/sudoblockio/tackle/compare/v0.6.1...v0.6.2) (2025-06-22)
+
+
+### Bug Fixes
+
+* add hooks_directory special var ([c7388b7](https://github.com/sudoblockio/tackle/commit/c7388b793e8a50b9d68592475e7291db7870344a))
+
+
+### Provider Changes
+
+* add chdir hook ([1636ce0](https://github.com/sudoblockio/tackle/commit/1636ce0216d6a722ee175f72393f1b53ab62a32c))
+
 ## [0.6.1](https://github.com/sudoblockio/tackle/compare/v0.6.0...v0.6.1) (2025-06-11)
 
 
