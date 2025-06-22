@@ -1,3 +1,4 @@
+import os
 import pathlib
 import tempfile
 
@@ -26,3 +27,14 @@ class MakeTempDirectoryHook(BaseHook):
 
     def exec(self) -> str:
         return tempfile.mkdtemp()
+
+
+class ChangeDirectoryHook(BaseHook):
+    """Hook changing directory."""
+
+    hook_name = 'chdir'
+    path: str
+    args: list = ['path']
+
+    def exec(self):
+        os.chdir(self.path)
