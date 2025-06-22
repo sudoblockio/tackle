@@ -97,6 +97,10 @@ def _current_directory(context: 'Context'):
     return context.source.directory
 
 
+def _hooks_directory(context: 'Context'):
+    return context.source.hooks_dir
+
+
 def _this(context: 'Context'):
     return context.data.public
 
@@ -168,6 +172,7 @@ special_variables = {
     'calling_file': _calling_file,
     'current_file': _current_file,
     'current_directory': _current_directory,
+    'hooks_directory': _hooks_directory,
     'this': _this,
     'public_data': _public_data,
     'private_data': _private_data,
