@@ -1,8 +1,12 @@
-from inspect import signature, currentframe
-from typing import Any, TypeVar
+from pydantic.fields import FieldInfo
+from tackle.pydantic.create_model import create_model
+from tackle import Context, exceptions
+
+from inspect import signature, currentframe, Parameter
+from typing import Any, TypeVar, Callable
 
 from tackle.imports import PyImportContext
-from tackle.models import BaseHook
+from tackle.models import BaseHook, HookCallInput
 
 TFunc = TypeVar("TFunc", bound=BaseHook)
 
@@ -66,3 +70,84 @@ def private(func: TFunc):
     if not _is_hook_or_method(func):
         _add_method_to_module_import_context(func, is_public=True)
     return func
+
+
+def hook(*, is_public: bool = False, name: str = None):
+    def decorator(func: Callable):
+        func_name = name or func.__name__
+        sig = signature(func)
+
+        # Known injectable types (you can extend this freely)
+        known_injectables: dict[type, Callable[..., Any]] = {
+            Context: lambda ctx, _: ctx,
+            HookCallInput: lambda _, hc: hc,
+        }
+
+        # Find which args are injectable
+        injectable_params: dict[str, type] = {}
+        standard_params: list[str] = []
+
+        for param in sig.parameters.values():
+            # skip 'self', not relevant here
+            if param.name == 'self':
+                continue
+            annotation = param.annotation
+            if annotation in known_injectables or str(annotation) in {"Context",
+                                                                      "HookCallInput"}:
+                injectable_params[param.name] = annotation
+            else:
+                standard_params.append(param.name)
+
+        # Build field defs for Pydantic
+        field_defs = {
+            param.name: (
+                param.annotation if param.annotation is not Parameter.empty else Any,
+                param.default if param.default is not Parameter.empty else ...
+            )
+            for param in sig.parameters.values()
+            if param.name in standard_params
+        }
+
+        # Required tackle metadata
+        field_defs["args"] = (list[str], standard_params)
+        field_defs["help"] = (str, func.__doc__)
+
+        # Create model
+        HookCls = create_model(
+            func_name,
+            __base__=BaseHook,
+            __config__=None,
+            **field_defs,
+        )
+
+        HookCls.__is_public__ = is_public
+        HookCls.__public_methods__ = []
+        HookCls.__private_methods__ = []
+        HookCls.hook_name = func_name
+        HookCls.__provider_name__ = "inline"
+
+        # Attach generic exec
+        def _exec(self, context: Context, hook_call: HookCallInput):
+            kwargs: dict[str, Any] = {}
+
+            # Inject all standard fields
+            for param in standard_params:
+                kwargs[param] = getattr(self, param)
+
+            # Inject known runtime parameters
+            for param_name, annotation in injectable_params.items():
+                if annotation in (Context, 'Context'):
+                    injectable_value = context
+                elif annotation in (HookCallInput, 'HookCallInput'):
+                    injectable_value = hook_call
+                else:
+                    raise RuntimeError(f"Unsupported injectable type: {annotation}")
+                kwargs[param_name] = injectable_value
+
+            return func(**kwargs)
+
+        setattr(HookCls, "exec", _exec)
+
+        return HookCls
+
+    return decorator

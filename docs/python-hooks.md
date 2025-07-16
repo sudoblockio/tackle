@@ -17,11 +17,15 @@ We could have a file `do_stuff.py` that has an object `DoStuffHook` that extends
 #### **`do_stuff.py`**
 
 ```python
-from tackle import BaseHook
+from tackle import BaseHook, hook
+
+@hook()
+def do_stuff_function():
+      print("Doing stuff!")
 
 
 class DoStuffHook(BaseHook):
-    hook_name = "do_stuff"
+    hook_name = "do_stuff_class"
 
     def exec(self):
         print("Doing stuff!")
@@ -31,7 +35,8 @@ This hook could then be called within a tackle file printing a statement.:
 
 #### **`tackle.yaml`**
 ```yaml
-d->: do_stuff
+df->: do_stuff_function
+dc->: do_stuff_class
 ```
 
 ## Hook Fields
@@ -41,17 +46,12 @@ The BaseHook object is in fact a [pydantic](https://github.com/samuelcolvin/pyda
 For instance given the following where we added the `stuff` attribute:
 
 ```python
-from tackle import BaseHook
+from tackle import hook
 
-
-class DoStuffHook(BaseHook):
-    hook_name = "do_stuff"
-
-    stuff: str = "things"
-
-    def exec(self) -> str:
-        print(f"Doing {self.stuff}!")
-        return self.stuff
+@hook()
+def do_stuff(stuff: str = "things"):
+    print(f"Doing {stuff}!")
+    return stuff
 ```
 
 We could **optionally** override the `stuff` attribute which would be printed and returned when called as below:
@@ -75,11 +75,16 @@ Hooks also have a notion of positional arguments that can be mapped to attribute
 - An `args` field which is a list of attributes that are positionally mapped to their inputs
 
 ```python
-from tackle import BaseHook
+from tackle import BaseHook, hook
 
+@hook()
+def do_stuff_function(stuff: str, things: list = ['foo']):
+    """Some docs which shows when running `tackle help`..."""
+    print(f"Doing {stuff}!")
+    return things
 
 class DoStuffHook(BaseHook):
-    hook_name = "do_stuff"
+    hook_name = "do_stuff_class"
     stuff: str
     things: list = ['foo']
 
@@ -229,6 +234,10 @@ test->: assert "{{ do-1 }}" "{{ do-2 }}"
 ### Validators and `__init__`
 
 While not a tackle specific functionality, pydantic validators and `__init__` special methods are supported.
+
+> TODO: 
+> - Update to pydantic 2 
+> - Add Annotated + decorator example
 
 ```python
 from pydantic import validator
