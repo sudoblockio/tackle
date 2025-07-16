@@ -4,7 +4,7 @@ __version__ = "0.7.0"  # x-release-please-version
 from pydantic import Field
 
 from tackle.context import Context
-from tackle.decorators import public, private
+from tackle.decorators import public, private, hook
 from tackle.factory import new_context
 from tackle.main import tackle
 from tackle.models import BaseHook, HookCallInput
@@ -14,6 +14,7 @@ from tackle.utils.hooks import get_hook
 
 __all__ = [
     'tackle',
+    'hook',
     'BaseHook',
     'public',
     'private',
