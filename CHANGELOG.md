@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.1](https://github.com/sudoblockio/tackle/compare/v0.7.0...v0.7.1) (2025-07-16)
+
+
+### Bug Fixes
+
+* add hook decorator to __init__ ([15f4af4](https://github.com/sudoblockio/tackle/commit/15f4af4ef3eb6092a7dabb7a70a0b5e2e1a3b96e))
+
 ## [0.7.0](https://github.com/sudoblockio/tackle/compare/v0.6.1...v0.7.0) (2025-07-16)
 
 
