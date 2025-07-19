@@ -46,11 +46,21 @@ def takes_context(context: Context):
 @hook(is_public=True)
 def takes_context_and_var(
     context: Context, foo: Annotated[str, Field(description="foos")]):
-    """A function I can call within a yaml document which has context injected."""
     return context.path.calling.calling_directory
 
 
-@hook()
-def do_stuff_class(stuff: str, things: list = ['foo']):
-    print(f"Doing {stuff}!")
-    return things
+@hook(is_public=True)
+def annotated_field(foo: Annotated[int, Field(lt=1)]):
+    return foo
+
+
+# @hook(is_public=True)
+# def some_args(*a: str):
+#     # TODO: Doesn't work - need to make args not typed... - hook_args...
+#     return a
+#
+#
+# @hook(is_public=True)
+# def some_kwargs(**kwargs):
+#     # TODO: Doesn't error but needs same fix as above
+#     return kwargs

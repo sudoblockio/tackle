@@ -109,7 +109,7 @@ def hook(*, is_public: bool = False, name: str = None):
         }
 
         # Required tackle metadata
-        field_defs["args"] = (list[str], standard_params)
+        field_defs["args"] = (list, standard_params)
         field_defs["help"] = (str, func.__doc__)
 
         # Create model

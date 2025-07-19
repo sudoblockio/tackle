@@ -6,6 +6,7 @@ from tackle import tackle, exceptions
 @pytest.mark.parametrize("hook_name, hook_args, assertion", [
     ("required_input", ["bar"], lambda x: x == "bar"),
     ("takes_context_and_var", ["bar"], lambda x: "tests" in x),
+    ("annotated_field", [0], lambda x: x == 0),
 ])
 def test_decorators_hook_tackle_args(hook_name, hook_args, assertion):
     output = tackle(hook_name, *hook_args)
@@ -28,6 +29,7 @@ def test_decorators_hook_tackle_kwargs(hook_name, hook_kwargs, assertion):
 @pytest.mark.parametrize("hook_name, hook_args, hook_kwargs, exception", [
     ("no_inputs", ["bar"], {}, exceptions.UnknownHookInputArgumentException),
     ("required_input", [], {}, exceptions.MalformedHookFieldException),
+    ("annotated_field", [10], {}, exceptions.MalformedHookFieldException),
 ])
 def test_decorators_hook_tackle_errors(hook_name, hook_args, hook_kwargs, exception):
     with pytest.raises(exception):
