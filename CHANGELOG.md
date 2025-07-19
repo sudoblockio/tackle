@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.2](https://github.com/sudoblockio/tackle/compare/v0.7.1...v0.7.2) (2025-07-19)
+
+
+### Bug Fixes
+
+* args type in hook decorator ([791dfff](https://github.com/sudoblockio/tackle/commit/791dffff24de8e70944661f35718fc28173c2991))
+
 ## [0.7.1](https://github.com/sudoblockio/tackle/compare/v0.7.0...v0.7.1) (2025-07-16)
 
 
