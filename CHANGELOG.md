@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.7.3](https://github.com/sudoblockio/tackle/compare/v0.7.2...v0.7.3) (2025-09-16)
+
+
+### Bug Fixes
+
+* add factory capability to hook decorator ([caec2af](https://github.com/sudoblockio/tackle/commit/caec2afa12c216441a58fb4835764758ee5fe23a))
+* path hooks add include to listdir and arg to relpath ([df6763f](https://github.com/sudoblockio/tackle/commit/df6763fa4e9bd5f45e3ac815e306f5d133676a5b))
+
 ## [0.7.2](https://github.com/sudoblockio/tackle/compare/v0.7.1...v0.7.2) (2025-07-19)
 
 
