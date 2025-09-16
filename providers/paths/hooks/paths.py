@@ -115,7 +115,7 @@ class PathRelPathHook(BaseHook):
     )
     start: Optional[str] = None
 
-    args: list = ['path']
+    args: list = ['path', 'start']
 
     def exec(self):
         return os.path.relpath(self.path, start=self.start)

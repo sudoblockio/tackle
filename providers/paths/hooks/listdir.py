@@ -24,7 +24,10 @@ class ListdirHook(BaseHook):
     only_directories: bool = Field(False, description="Only return directories.")
 
     exclude: Union[str, list] = Field(
-        None, description="A list or string of regexes to ignore."
+        None, description="A list or string of regexes to exclude."
+    )
+    include: Union[str, list] = Field(
+        None, description="A list or string of regexes to include."
     )
 
     args: list = ['path']
@@ -60,5 +63,11 @@ class ListdirHook(BaseHook):
                 self.exclude = [self.exclude]
             for e in self.exclude:
                 files = [f for f in files if not re.match(e, f)]
+
+        if self.include is not None:
+            if isinstance(self.include, str):
+                self.include = [self.include]
+            for e in self.include:
+                files = [f for f in files if re.match(e, f)]
 
         return files
