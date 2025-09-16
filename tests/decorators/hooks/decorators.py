@@ -1,7 +1,7 @@
 from typing import Annotated
-from pydantic import Field
+from pydantic import Field, BaseModel
 
-from tackle import hook, Context, BaseHook
+from tackle import hook, Context
 
 
 @hook()
@@ -53,6 +53,14 @@ def takes_context_and_var(
 def annotated_field(foo: Annotated[int, Field(lt=1)]):
     return foo
 
+
+class MyModel(BaseModel):
+    foo: str = "bar"
+
+
+@hook()
+def hook_taking_model(my_model: MyModel) -> str:
+    return my_model.foo
 
 # @hook(is_public=True)
 # def some_args(*a: str):

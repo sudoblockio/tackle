@@ -4,14 +4,13 @@ import os
 import subprocess
 import sys
 from functools import lru_cache
-from typing import Any, Callable
+from typing import Any
 
 from pydantic import PydanticUserError, ValidationError
 from pydantic._internal._model_construction import ModelMetaclass  # noqa
-from pydantic_core import PydanticUndefined
 
 from tackle import exceptions
-from tackle.context import Context, Data
+from tackle.context import Context
 from tackle.models import BaseHook, GenericHookType
 from tackle.settings import settings
 from tackle.utils.files import read_config_file

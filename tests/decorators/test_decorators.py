@@ -4,9 +4,14 @@ from tackle import tackle, exceptions
 
 
 @pytest.mark.parametrize("hook_name, hook_args, assertion", [
+    # decorators.py
     ("required_input", ["bar"], lambda x: x == "bar"),
     ("takes_context_and_var", ["bar"], lambda x: "tests" in x),
     ("annotated_field", [0], lambda x: x == 0),
+    ("hook_taking_model", [{'foo': 'baz'}], lambda x: x == "baz"),
+    # factories.py
+    ("a_func", ["bar"], lambda x: x == "bar"),
+    ("b_func", ["bar"], lambda x: x == "bar"),
 ])
 def test_decorators_hook_tackle_args(hook_name, hook_args, assertion):
     output = tackle(hook_name, *hook_args)
