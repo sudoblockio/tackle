@@ -69,6 +69,7 @@ def _build_hook_from_func(
     *,
     is_public: bool,
     name: str | None,
+    help: str | None,
 ) -> type[BaseHook]:
     fn = name or func.__name__
     sig = signature(func)
@@ -101,7 +102,7 @@ def _build_hook_from_func(
         if p.name in std_params
     }
     field_defs["args"] = (list, std_params)
-    field_defs["help"] = (str, func.__doc__)
+    field_defs["help"] = (str, help or func.__doc__)
 
     HookCls = create_model(
         fn,
@@ -144,15 +145,17 @@ def hook(
     func: Callable[..., Any] | None = None,
     *,
     is_public: bool = False,
-    name: str | None = None
+    name: str | None = None,
+    help: str | None = None,
 ):
+    """Decorator / hook factory for making new hooks."""
     if callable(func):
-        cls = _build_hook_from_func(func, is_public=is_public, name=name)
+        cls = _build_hook_from_func(func, is_public=is_public, name=name, help=help)
         _bind_into_module(cls)
         return cls
 
     def deco(f: Callable[..., Any]) -> type[BaseHook]:
-        cls = _build_hook_from_func(f, is_public=is_public, name=name)
+        cls = _build_hook_from_func(f, is_public=is_public, name=name, help=help)
         _bind_into_module(cls)
         return cls
 

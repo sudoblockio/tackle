@@ -19,8 +19,9 @@ def non_required_input(foo: str = "bar"):
     return foo
 
 
-@hook(is_public=True)
+@hook(is_public=True, help="Real docs.")
 def public_hook():
+    """Masked docs."""
     return "bar"
 
 
