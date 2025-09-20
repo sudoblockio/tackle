@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.4](https://github.com/sudoblockio/tackle/compare/v0.7.3...v0.7.4) (2025-09-20)
+
+
+### Bug Fixes
+
+* add help param to hook decorator ([4eff2dc](https://github.com/sudoblockio/tackle/commit/4eff2dced7a80e35d15d34b8ae540e36af39404e))
+
 ## [0.7.3](https://github.com/sudoblockio/tackle/compare/v0.7.2...v0.7.3) (2025-09-16)
 
 
