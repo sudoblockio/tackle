@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.5](https://github.com/sb-icon/tackle/compare/v0.7.4...v0.7.5) (2025-10-15)
+
+
+### Bug Fixes
+
+* command hook not using context ([a136d56](https://github.com/sb-icon/tackle/commit/a136d56299b384c98b3565140e4e104e8a288071))
+
 ## [0.7.4](https://github.com/sudoblockio/tackle/compare/v0.7.3...v0.7.4) (2025-09-20)
 
 
