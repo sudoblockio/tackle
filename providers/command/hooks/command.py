@@ -9,7 +9,7 @@ from itertools import chain
 from select import select
 from typing import Any
 
-from tackle import BaseHook, Field
+from tackle import BaseHook, Field, Context
 from tackle.exceptions import HookCallException
 
 if os.name != 'nt':
@@ -55,7 +55,7 @@ class CommandHook(BaseHook):
         size = struct.pack("HHHH", _ROWS, _COLUMNS, 0, 0)
         fcntl.ioctl(fd, termios.TIOCSWINSZ, size)
 
-    def exec(self) -> Any:
+    def exec(self, context: Context) -> Any:
         # TODO: Fix multi-line calls
         # https://github.com/sudoblockio/tackle/issues/14
         if self.multiline:
@@ -108,7 +108,7 @@ class CommandHook(BaseHook):
                 #     os.close(fd)
                 logger.debug("Process exited with %s return code." % p.returncode)
                 if p.returncode != 0 and not self.ignore_error:
-                    if self.verbose:
+                    if context.verbose:
                         raise HookCallException(data.decode('utf-8'))
                     else:
                         # Exception already printed
