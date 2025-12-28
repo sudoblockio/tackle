@@ -15,7 +15,7 @@ class VarHook(BaseHook):
     input: Any = Field(
         ...,
         description="Any variable input.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
     )
     no_recursion: bool = Field(
         False, description="Don't recursively render embedded templates."

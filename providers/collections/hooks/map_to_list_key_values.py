@@ -10,7 +10,7 @@
 #     hook_name = 'map_to_list_key_values'
 #     # fmt: off
 #     src: dict = Field(
-#         ..., description="A map to extract the keys out of.", render_by_default=True)
+#         ..., description="A map to extract the keys out of.", json_schema_extra={"render_by_default": True})
 #     # fmt: on
 #
 #     args: list = ['src']

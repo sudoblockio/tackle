@@ -32,41 +32,41 @@ class HookCallInput(BaseModel):
     if_: Union[str, bool, type(None)] = Field(
         None,
         description="Conditional evaluated within a loop. Strings rendered by default.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
         alias='if',
     )
     else_: Any = Field(
         None,
         description="Data to parse for a negative `if` or `when` condition.",
         alias='else',
-        render_exclude=True,
+        json_schema_extra={"render_by_default": True},
     )
     when: Union[str, bool, type(None)] = Field(
         None,
         description="Conditional evaluated before a loop. Strings rendered by default.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
     )
     for_: Union[str, list, dict, type(None)] = Field(
         None,
         description="Loop over items in a list or keys and values in a dict.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
         alias='for',
     )
     reverse: Union[str, bool, type(None)] = Field(
         None,
         description="With `for` loops, iterate in reverse.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
     )
     try_: Union[str, bool, type(None)] = Field(
         None,
         description="Catch errors of hook call. Can be used with except.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
         alias='try',
     )
     except_: Any = Field(
         None,
         description="Data to parse when encountering an error for `try`.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
         alias='except',
     )
     chdir: Optional[str] = Field(
@@ -77,23 +77,23 @@ class HookCallInput(BaseModel):
     merge: Union[bool, str, type(None)] = Field(
         None,
         description="Merge result to the parent key for objects or append if a list.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
     )
     confirm: Union[bool, str, dict, type(None)] = Field(
         None,
         description="Change directory while executing the hook returning after.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
     )
     kwargs: Union[str, dict, type(None)] = Field(
         None,
         description="A dict to map to inputs for a hook. String inputs rendered by"
         " default but must be references to dicts.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
     )
     skip_output: bool | None = Field(
         False,
         description="A flag to not set the key. Can also be set in hook definition.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
     )
     return_: bool | None = Field(
         False,
@@ -104,7 +104,7 @@ class HookCallInput(BaseModel):
     no_input: bool | None = Field(
         False,
         description="A flag to skip any prompting. Can also be set from command line.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
     )
 
     # We'll be accessing all extra fields via __pydantic_fields_set__ instance attribute
@@ -179,7 +179,7 @@ class HookBase(BaseModel):
 
 class BaseHook(HookBase):
     """Base class that all python hooks extend."""
-    hook_name: ClassVar[str] = None
+    hook_name: ClassVar[str | None] = None
 
     __is_python__: ClassVar[bool] = True
 

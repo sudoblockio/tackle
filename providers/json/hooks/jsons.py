@@ -16,7 +16,7 @@ class JsonHook(BaseHook):
     data: Union[dict, list, str] = Field(
         None,
         description="Map/list or renderable string to a map/list key to write.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
     )
     indent: int = Field(
         4,
@@ -57,7 +57,7 @@ class JsonEncodeHook(BaseHook):
     data: Union[dict, list, str] = Field(
         ...,
         description="Map/list or renderable string to data to convert to JSON string.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
     )
     args: list = ['data']
 

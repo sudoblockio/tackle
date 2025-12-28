@@ -24,7 +24,7 @@ class InquirerListHook(BaseHook):
     choices: Union[List[str], List[dict]] = Field(
         ...,
         description="List of strings or dicts with keys as output and values as display.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
     )
     index: bool = Field(
         False, description="Boolean to return the index instead of the answer"

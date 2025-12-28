@@ -12,7 +12,7 @@ class ConcatenateHook(BaseHook):
     src: list = Field(
         ...,
         description="A list to concatenate the items of.",
-        # render_by_default=True,
+        # json_schema_extra={"render_by_default": True},
     )
 
     args: list = ['src']

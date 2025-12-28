@@ -9,7 +9,10 @@ class ListKeyValuesHook(BaseHook):
     hook_name = 'list_key_values'
     # fmt: off
     src: list = Field(
-        ..., description="A list to extract the keys out of.", render_by_default=True)
+        ...,
+        description="A list to extract the keys out of.",
+        json_schema_extra={"render_by_default": True},
+    )
     key: str = Field(...)
     reject_keys: dict = Field(
         None, description="A dict of keys with values to not include in output.")
@@ -31,7 +34,6 @@ class ListKeyValuesHook(BaseHook):
             return [i[self.key] for i in self.src]
         else:
             return [i[self.key] for i in self.src if self.reject(i)]
-
 
 # class KeyListHook(BaseHook):
 #     """Hook for getting an item in a list of maps with a key matching a value."""

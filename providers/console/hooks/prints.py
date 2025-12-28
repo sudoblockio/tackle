@@ -20,7 +20,9 @@ class PrintHook(BaseHook):
 
     objects: Any = Field(None, description="The objects to print.")
     sep: str = Field(
-        ' ', description="Separator between printed objects.", render_by_default=True
+        ' ',
+        description="Separator between printed objects.",
+        json_schema_extra={"render_by_default": True},
     )
     end: str = Field('\n', description="What to print at the end")
     flush: bool = Field(False, description="No clue.")

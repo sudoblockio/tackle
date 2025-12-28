@@ -59,7 +59,7 @@ class GenerateHook(BaseHook):
         description="A map / list of maps to use as extra context when rendering. "
                     "Lists inputs are merged together as lists themselves don't make "
                     "sense.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
     )
     file_system_loader: Union[str, list] = Field(
         '.',

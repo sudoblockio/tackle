@@ -19,7 +19,7 @@ class IniHook(BaseHook):
         description="Map or renderable string to a map key to write. Must have three "
         "levels for the section, key, and value - ie "
         "{section:{key1:value1, key2:value2}}.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
     )
     allow_no_value: bool = Field(True, description="Whether to allow a no values.")
     args: list = ['path', 'data']
@@ -63,7 +63,7 @@ class IniEncodeHook(BaseHook):
     data: dict | str = Field(
         ...,
         description="Map or renderable string to data to convert to ini string.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
     )
     args: list = ['data']
 

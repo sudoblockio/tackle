@@ -5,7 +5,7 @@ class ExitHook(BaseHook):
     """Exit the parser with an exit code."""
 
     hook_name = 'exit'
-    code: int = Field(0, description="The exit code.", render_by_default=True)
+    code: int = Field(0, description="The exit code.", json_schema_extra={"render_by_default": True})
 
     args: list = ['code']
 

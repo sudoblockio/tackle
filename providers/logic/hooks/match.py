@@ -17,7 +17,7 @@ class MatchHook(BaseHook):
     hook_name = 'match'
     value: str | int | float | bool = Field(
         True,
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
         description="The value to match against. Defaults to boolean true so that "
         "cases can be conditionals.",
     )

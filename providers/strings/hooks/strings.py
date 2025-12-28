@@ -24,7 +24,9 @@ class JoinHook(BaseHook):
     hook_name = 'join'
 
     input: List[str | int] = Field(
-        ..., description="A list of strings to join.", render_by_default=True
+        ...,
+        description="A list of strings to join.",
+        json_schema_extra={"render_by_default": True},
     )
     separator: str = Field('', description="String separator.")
 

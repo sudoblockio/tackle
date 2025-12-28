@@ -562,6 +562,11 @@ def parse_hook_execute(
             # We hit some hook like `return` where temporary data is not relevant
             return
         elif context.data.temporary:
+            # TODO: UPDATE 2024
+            #  This is nonsense and needs ripping out. Point is we store state and 
+            #  discard on serialization. All these memory spaces need to go away. They 
+            #  are way too confusing. 
+
             # Write the indexed output to the `data.temporary` as it was only written
             # to the `data.public` and not maintained between items in a list
             if context.key_path_block and isinstance(context.key_path_block[-1], bytes):
@@ -1054,7 +1059,7 @@ def run_hook_at_key_path(
         raise exceptions.UnknownHookInputArgumentException(
             e.__str__(),
             context=context,
-            hook_name=Hook.hook_name.default,
+            hook_name=Hook.hook_name,
         ) from None
 
     # Main parser
@@ -1399,8 +1404,16 @@ def parse_input_args_for_hooks(context: 'Context'):
         # TODO: We should raise here - we're not dealing with kwargs, only args
 
 
-def is_dcl_hook(key: str):
+def is_dcl_hook(key: str) -> bool:
+    """
+
+    """
+    # Old way
     return bool(re.match(r'^[a-zA-Z0-9_]*(\(([^()]*)\))*\[([^[\]]*)\]*(<\-|<\_)$', key))
+    # TODO:
+    # return bool(re.match(
+    #     r'^fn*[a-zA-Z_]*(\(([^()]*)\))*\[([^[\]]*)\]*(\->|\_>)*[a-zA-Z_]$', key)
+    # )
 
 
 def split_input_data(context: 'Context'):

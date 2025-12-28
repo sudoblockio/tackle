@@ -60,7 +60,7 @@ class RequestsGetHook(BaseHook, AuthMixin):
     )
     extra_kwargs: Union[str, dict] = Field(
         {}, description="Optional arguments that request takes.",
-        render_by_default=True
+        json_schema_extra={"render_by_default": True},
     )
     params: dict = Field(
         None,
@@ -115,18 +115,18 @@ class RequestsPostHook(BaseHook, AuthMixin):
     extra_kwargs: Union[str, dict] = Field(
         {},
         description="Optional arguments that request takes.",
-        render_by_default=True
+        json_schema_extra={"render_by_default": True},
     )
     # Requests API docs call for additional functionality not for yaml
     data: Any = Field(
         None,
         description="Dictionary, list of tuples, bytes, or file-like object to send in the body of the Request.",
-        render_by_default=True
+        json_schema_extra={"render_by_default": True},
     )
     json_: dict = Field(
         False,
         description="A json payload to post.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
         alias='json'
     )
     no_exit: bool = Field(False, description="Whether to exit on non-200 response.")
@@ -171,7 +171,7 @@ class RequestsPutHook(BaseHook, AuthMixin):
     extra_kwargs: Union[str, dict] = Field(
         {},
         description="Optional arguments that request takes.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
     )
     data: Any = Field(
         None,
@@ -180,7 +180,7 @@ class RequestsPutHook(BaseHook, AuthMixin):
     json_: dict = Field(
         None,
         description="A json payload to put.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
         alias='json',
     )
     no_exit: bool = Field(
@@ -216,7 +216,7 @@ class RequestsPatchHook(BaseHook, AuthMixin):
     url: str = Field(..., description="URL for the new request object.")
     extra_kwargs: Union[str, dict] = Field(
         {}, description="Optional arguments that request takes.",
-        render_by_default=True
+        json_schema_extra={"render_by_default": True},
     )
     headers: dict = Field(None, description="Headers to include in request.")
     data: Any = Field(
@@ -226,7 +226,7 @@ class RequestsPatchHook(BaseHook, AuthMixin):
     json_: dict = Field(
         None,
         description="A json payload to patch.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
         alias='json'
     )
     no_exit: bool = Field(False, description="Whether to exit on non-200 response.")
@@ -260,7 +260,7 @@ class RequestsDeleteHook(BaseHook, AuthMixin):
     url: str = Field(..., description="URL for the new request object.")
     extra_kwargs: Union[str, dict] = Field(
         {}, description="Optional arguments that request takes.",
-        render_by_default=True
+        json_schema_extra={"render_by_default": True},
     )
     no_exit: bool = Field(False, description="Whether to exit on non-200 response.")
     # fmt: on

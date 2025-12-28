@@ -12,7 +12,7 @@ class TypeHook(BaseHook):
     input: Any = Field(
         ...,
         description="Any variable input.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
     )
 
     args: list = ['input']

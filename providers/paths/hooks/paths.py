@@ -47,7 +47,7 @@ class PathJoinHook(BaseHook):
     paths: list = Field(
         ...,
         description="List of items in a path to file or directory.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
     )
 
     args: list = ['paths']
@@ -63,7 +63,7 @@ class PathBasenameHook(BaseHook):
     path: str = Field(
         ...,
         description="Path to the file/directory to get the basename of.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
     )
 
     args: list = ['path']
@@ -79,7 +79,7 @@ class PathDirNameHook(BaseHook):
     path: str = Field(
         ...,
         description="Path to the file/directory to get the directory name of.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
     )
 
     args: list = ['path']
@@ -95,7 +95,7 @@ class PathAbsPathHook(BaseHook):
     path: str = Field(
         ...,
         description="Path to the file/directory to get the absolute path of.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
     )
 
     args: list = ['path']
@@ -111,7 +111,7 @@ class PathRelPathHook(BaseHook):
     path: str = Field(
         ...,
         description="Path to the file/directory to get the absolute path of.",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
     )
     start: Optional[str] = None
 

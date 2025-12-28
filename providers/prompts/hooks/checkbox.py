@@ -26,7 +26,7 @@ class InquirerCheckboxHook(BaseHook):
     choices: Union[list[str], list[dict]] = Field(
         ...,
         description="Either a list of strings or dictionary .",
-        render_by_default=True,
+        json_schema_extra={"render_by_default": True},
     )
     checked: bool = Field(
         False, description="Boolean if the default choices should all be checked."
