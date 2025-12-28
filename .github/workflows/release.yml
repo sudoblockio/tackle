@@ -16,7 +16,7 @@ jobs:
       - uses: google-github-actions/release-please-action@v3
         id: release-please
         with:
-          release-type: python
+          release-type: simple
           extra-files: |
             tackle/__init__.py
           changelog-types: |
