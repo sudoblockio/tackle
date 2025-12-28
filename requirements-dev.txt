@@ -1,3 +1,4 @@
+setuptools
 tox
 pytest
 pytest-cov
