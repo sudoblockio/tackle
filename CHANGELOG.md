@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.7.5](https://github.com/sudoblockio/tackle/compare/tackle-v0.7.4...tackle-v0.7.5) (2025-12-30)
+
+
+### Bug Fixes
+
+* command hook not using context ([a136d56](https://github.com/sudoblockio/tackle/commit/a136d56299b384c98b3565140e4e104e8a288071))
+* move extra vars to json_schema_extra to fix breaking change ([4518c5c](https://github.com/sudoblockio/tackle/commit/4518c5cd9ddbccae1cc1b4d3fda030233133d898))
+
 ## [0.7.4](https://github.com/sudoblockio/tackle/compare/v0.7.3...v0.7.4) (2025-09-20)
 
 
