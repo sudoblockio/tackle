@@ -1,5 +1,5 @@
 """Main package for tackle."""
-__version__ = "0.7.4"  # x-release-please-version
+__version__ = "0.8.0"  # x-release-please-version
 
 from pydantic import Field
 
