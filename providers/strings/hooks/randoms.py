@@ -1,7 +1,7 @@
 import random
 import string
 
-from pydantic import validator
+from pydantic import field_validator
 
 from tackle import BaseHook, Field
 from tackle.exceptions import HookCallException
@@ -20,7 +20,8 @@ class RandomStringHook(BaseHook):
     args: list = ['length', 'case']
     _docs_order = 6
 
-    @validator('case')
+    @field_validator('case')
+    @classmethod
     def validate_string_case(cls, v):
         if v not in ['upper', 'lower']:
             raise HookCallException(
