@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.6](https://github.com/sudoblockio/tackle/compare/tackle-v0.7.5...tackle-v0.7.6) (2025-12-31)
+
+
+### Bug Fixes
+
+* random provider old pydantic incompat ([242c1fa](https://github.com/sudoblockio/tackle/commit/242c1fa0b8bbd237aea9196eae7493470779903f))
+
 ## [0.7.5](https://github.com/sudoblockio/tackle/compare/tackle-v0.7.4...tackle-v0.7.5) (2025-12-30)
 
 
